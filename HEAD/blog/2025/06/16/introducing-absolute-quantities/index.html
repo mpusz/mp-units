@@ -12043,40 +12043,46 @@ Conversely, using deltas everywhere hides physical intent and allows nonsensical
 <td style="text-align: center;"><span class="arithmatex">\(10\ \mathrm{K}\)</span>, <span class="arithmatex">\(-5\ \mathrm{kg}\)</span></td>
 </tr>
 <tr>
-<td><strong>True Zero?</strong></td>
-<td style="text-align: center;">No (Arbitrary Zero)</td>
-<td style="text-align: center;">Yes (True Zero)</td>
+<td><strong>Has True Zero?</strong></td>
+<td style="text-align: center;">No (arbitrary/conventional)</td>
+<td style="text-align: center;">Yes (physical)</td>
 <td style="text-align: center;">N/A</td>
 </tr>
 <tr>
 <td><strong>Allows Negative?</strong></td>
-<td style="text-align: center;">Yes (<span class="arithmatex">\(-10\ \mathrm{°C}\)</span>)</td>
-<td style="text-align: center;">No (Opt-in)</td>
-<td style="text-align: center;">Yes (<span class="arithmatex">\(-10\ \mathrm{m}\)</span>)</td>
+<td style="text-align: center;">Yes (below arbitrary origin)</td>
+<td style="text-align: center;">No (opt-in)</td>
+<td style="text-align: center;">Yes (direction matters)</td>
 </tr>
 <tr>
-<td><strong>A + A</strong></td>
-<td style="text-align: center;">Error (<span class="arithmatex">\(20\ \mathrm{°C} + 10\ \mathrm{°C}\)</span>)</td>
-<td style="text-align: center;">Absolute (<span class="arithmatex">\(10\ \mathrm{kg} + 5\ \mathrm{kg}\)</span>)</td>
-<td style="text-align: center;">Delta</td>
+<td><strong>Addition (A + A)</strong></td>
+<td style="text-align: center;">❌ Error (<span class="arithmatex">\(20\ \mathrm{°C} + 10\ \mathrm{°C}\)</span>)</td>
+<td style="text-align: center;">✅ Absolute (<span class="arithmatex">\(10\ \mathrm{kg} + 5\ \mathrm{kg}\)</span>)</td>
+<td style="text-align: center;">✅ Delta</td>
 </tr>
 <tr>
-<td><strong>A - A</strong></td>
-<td style="text-align: center;">Delta (<span class="arithmatex">\(30\ \mathrm{°C} - 10\ \mathrm{°C}\)</span>)</td>
-<td style="text-align: center;">Delta (<span class="arithmatex">\(50\ \mathrm{kg} - 5\ \mathrm{kg}\)</span>)</td>
-<td style="text-align: center;">Delta</td>
+<td><strong>Subtraction (A − A)</strong></td>
+<td style="text-align: center;">✅ Delta (<span class="arithmatex">\(30\ \mathrm{°C} - 10\ \mathrm{°C}\)</span>)</td>
+<td style="text-align: center;">✅ Delta (<span class="arithmatex">\(50\ \mathrm{kg} - 5\ \mathrm{kg}\)</span>)</td>
+<td style="text-align: center;">✅ Delta</td>
 </tr>
 <tr>
-<td><strong>scalar * A</strong></td>
-<td style="text-align: center;">Error (<span class="arithmatex">\(2 \times 20\ \mathrm{°C}\)</span>)</td>
-<td style="text-align: center;">Absolute (<span class="arithmatex">\(2 \times 10\ \mathrm{kg}\)</span>)</td>
-<td style="text-align: center;">Delta</td>
+<td><strong>Multiplication (k×A)</strong></td>
+<td style="text-align: center;">❌ Error (<span class="arithmatex">\(2 \times 20\ \mathrm{°C}\)</span>)</td>
+<td style="text-align: center;">✅ Absolute (<span class="arithmatex">\(2 \times 10\ \mathrm{kg}\)</span>)</td>
+<td style="text-align: center;">✅ Delta (<span class="arithmatex">\(-2 \times 5\ \mathrm{m}\)</span>)</td>
 </tr>
 <tr>
-<td><strong>A / A</strong></td>
-<td style="text-align: center;">Error</td>
-<td style="text-align: center;">scalar (<span class="arithmatex">\(10\ \mathrm{kg} / 5\ \mathrm{kg}\)</span>)</td>
-<td style="text-align: center;">scalar</td>
+<td><strong>Division (A / A)</strong></td>
+<td style="text-align: center;">❌ Error</td>
+<td style="text-align: center;">✅ Scalar (<span class="arithmatex">\(10\ \mathrm{kg} / 5\ \mathrm{kg}\)</span>)</td>
+<td style="text-align: center;">✅ Scalar (ratio)</td>
+</tr>
+<tr>
+<td><strong>A + Delta</strong></td>
+<td style="text-align: center;">✅ Point (shift)</td>
+<td style="text-align: center;">✅ Delta</td>
+<td style="text-align: center;">✅ Delta</td>
 </tr>
 <tr>
 <td><strong>API</strong></td>
@@ -12729,10 +12735,10 @@ answers:</p>
     ask_delta -- No --&gt; Absolute[Absolute]
 
     %% Styling
-    classDef pointStyle fill:#ff9999,stroke:#cc0000,stroke-width:2px,color:#000
-    classDef deltaStyle fill:#99ff99,stroke:#00cc00,stroke-width:2px,color:#000
-    classDef absoluteStyle fill:#99ccff,stroke:#0066cc,stroke-width:2px,color:#000
-    classDef questionStyle fill:#fff2cc,stroke:#d6b656,stroke-width:2px,color:#000
+    classDef pointStyle fill:#c0392b,stroke:#e74c3c,stroke-width:2px,color:#fff
+    classDef deltaStyle fill:#27ae60,stroke:#2ecc71,stroke-width:2px,color:#fff
+    classDef absoluteStyle fill:#2980b9,stroke:#3498db,stroke-width:2px,color:#fff
+    classDef questionStyle fill:#d4a017,stroke:#f0b429,stroke-width:2px,color:#fff
 
     class Point pointStyle
     class Delta deltaStyle

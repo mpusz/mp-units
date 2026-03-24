@@ -808,10 +808,10 @@ You're not viewing the latest version.
 </li>
       
         <li class="md-nav__item">
-  <a href="#dimension-safety" class="md-nav__link">
+  <a href="#level-1-dimension-safety" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Dimension Safety
+        Level 1: Dimension Safety
       
     </span>
   </a>
@@ -819,10 +819,10 @@ You're not viewing the latest version.
 </li>
       
         <li class="md-nav__item">
-  <a href="#unit-safety" class="md-nav__link">
+  <a href="#level-2-unit-safety" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Unit Safety
+        Level 2: Unit Safety
       
     </span>
   </a>
@@ -830,10 +830,10 @@ You're not viewing the latest version.
 </li>
       
         <li class="md-nav__item">
-  <a href="#representation-safety" class="md-nav__link">
+  <a href="#level-3-representation-safety" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Representation Safety
+        Level 3: Representation Safety
       
     </span>
   </a>
@@ -841,10 +841,10 @@ You're not viewing the latest version.
 </li>
       
         <li class="md-nav__item">
-  <a href="#quantity-kind-safety" class="md-nav__link">
+  <a href="#level-4-quantity-kind-safety" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Quantity Kind Safety
+        Level 4: Quantity Kind Safety
       
     </span>
   </a>
@@ -852,10 +852,10 @@ You're not viewing the latest version.
 </li>
       
         <li class="md-nav__item">
-  <a href="#quantity-safety" class="md-nav__link">
+  <a href="#level-5-quantity-safety" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Quantity Safety
+        Level 5: Quantity Safety
       
     </span>
   </a>
@@ -863,10 +863,21 @@ You're not viewing the latest version.
 </li>
       
         <li class="md-nav__item">
-  <a href="#affine-space-safety" class="md-nav__link">
+  <a href="#level-6-mathematical-space-safety" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Affine Space Safety
+        Level 6: Mathematical Space Safety
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#choosing-a-safety-level" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing a Safety Level
       
     </span>
   </a>
@@ -11466,11 +11477,11 @@ analysis, library comparisons, and the rationale behind each level, see the blog
 <li><strong>Representation Safety</strong> - Protects against overflows and precision loss</li>
 <li><strong>Quantity Kind Safety</strong> - Prevents arithmetic on quantities of different kinds</li>
 <li><strong>Quantity Safety</strong> - Enforces correct quantity relationships and equations</li>
-<li><strong>Affine Space Safety</strong> - Distinguishes points and deltas</li>
+<li><strong>Mathematical Space Safety</strong> - Distinguishes points and deltas</li>
 </ol>
 <p><strong>mp-units</strong> provides all six levels. The following sections introduce each level
 with simple examples.</p>
-<h2 id="dimension-safety">Dimension Safety<a class="headerlink" href="#dimension-safety" title="Permanent link">&para;</a></h2>
+<h2 id="level-1-dimension-safety">Level 1: Dimension Safety<a class="headerlink" href="#level-1-dimension-safety" title="Permanent link">&para;</a></h2>
 <p><strong>Dimension safety</strong> prevents mixing quantities with incompatible dimensions through
 automatic dimensional analysis.</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">second</span><span class="o">&gt;</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">km</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">h</span><span class="p">;</span><span class="w">  </span><span class="c1">// ✅ OK: km/h is a unit of speed (same as m/s)</span>
@@ -11484,7 +11495,7 @@ automatic dimensional analysis.</p>
 </span></code></pre></div>
 <p><strong>All major C++ units libraries provide dimension safety.</strong> This is the foundational
 feature that enables dimensional analysis.</p>
-<h2 id="unit-safety">Unit Safety<a class="headerlink" href="#unit-safety" title="Permanent link">&para;</a></h2>
+<h2 id="level-2-unit-safety">Level 2: Unit Safety<a class="headerlink" href="#level-2-unit-safety" title="Permanent link">&para;</a></h2>
 <p><strong>Unit safety</strong> ensures compatible units at interface boundaries—function arguments, return
 types, and component integration.</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">// Function accepts any length and time units</span>
@@ -11512,7 +11523,7 @@ types, and component integration.</p>
 extraction. While <code>std::chrono::duration::count()</code> returns raw numbers without verification,
 <code>mp-units::numerical_value_in(Unit)</code> requires specifying the exact unit. For more details,
 see <a href="../../how_to_guides/integration/working_with_legacy_interfaces/">Working with Legacy Interfaces</a>.</p>
-<h2 id="representation-safety">Representation Safety<a class="headerlink" href="#representation-safety" title="Permanent link">&para;</a></h2>
+<h2 id="level-3-representation-safety">Level 3: Representation Safety<a class="headerlink" href="#level-3-representation-safety" title="Permanent link">&para;</a></h2>
 <p><strong>Representation safety</strong> protects against numerical issues like overflow, underflow, and
 precision loss during conversions and arithmetic operations.</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1">// Truncation prevention (inspired by std::chrono::duration)</span>
@@ -11539,7 +11550,7 @@ by <code>std::chrono::duration</code>) and compile-time scaling overflow detecti
 Additionally, no library prevents overflow or underflow for floating-point types.
 For such cases, use custom representation types with runtime checks.</p>
 </div>
-<h2 id="quantity-kind-safety">Quantity Kind Safety<a class="headerlink" href="#quantity-kind-safety" title="Permanent link">&para;</a></h2>
+<h2 id="level-4-quantity-kind-safety">Level 4: Quantity Kind Safety<a class="headerlink" href="#level-4-quantity-kind-safety" title="Permanent link">&para;</a></h2>
 <p><strong>Quantity kind safety</strong> distinguishes between quantities that share the same dimension but
 represent different physical concepts.</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">absorbed_dose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Gy</span><span class="p">;</span>
@@ -11563,7 +11574,7 @@ represent different physical concepts.</p>
 <p><strong>mp-units is the only C++ library implementing quantity kind safety.</strong> It fully
 distinguishes all SI quantity kinds including Gy/Sv, Hz/Bq, and rad/sr.</p>
 </div>
-<h2 id="quantity-safety">Quantity Safety<a class="headerlink" href="#quantity-safety" title="Permanent link">&para;</a></h2>
+<h2 id="level-5-quantity-safety">Level 5: Quantity Safety<a class="headerlink" href="#level-5-quantity-safety" title="Permanent link">&para;</a></h2>
 <p><strong>Quantity safety</strong> is the highest level, providing semantic correctness through:</p>
 <ol>
 <li><strong>Quantity Type Correctness</strong> - Hierarchies, conversions, and quantity equation
@@ -11598,17 +11609,9 @@ distinguishes all SI quantity kinds including Gy/Sv, Hz/Bq, and rad/sr.</p>
 </ul>
 <p><strong>mp-units</strong> is the only C++ library providing quantity safety through ISO 80000 (ISQ)
 implementation. Full character-specific operations planned for V3.</p>
-<div class="admonition tip">
-<p class="admonition-title">Gradual Adoption</p>
-<p><strong>mp-units</strong> allows choosing your safety level. Start with
-<a href="../../users_guide/framework_basics/simple_and_typed_quantities/#simple-quantities">simple quantities</a>
-(dimension safety only) and gradually adopt
-<a href="../../users_guide/framework_basics/simple_and_typed_quantities/#typed-quantities">typed quantities</a>
-(full quantity safety) as needs evolve.</p>
-</div>
-<h2 id="affine-space-safety">Affine Space Safety<a class="headerlink" href="#affine-space-safety" title="Permanent link">&para;</a></h2>
-<p><strong>Affine Space safety</strong> distinguishes between <strong>quantity points</strong> (absolute positions on
-a scale) and <strong>quantity deltas</strong> (differences/displacements).</p>
+<h2 id="level-6-mathematical-space-safety">Level 6: Mathematical Space Safety<a class="headerlink" href="#level-6-mathematical-space-safety" title="Permanent link">&para;</a></h2>
+<p><strong>Mathematical space safety</strong> distinguishes between <strong>quantity points</strong> (absolute positions
+on a scale) and <strong>quantity deltas</strong> (differences/displacements).</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1">// Points: Positions on a scale with an origin</span>
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">quantity_point</span><span class="w"> </span><span class="n">room_temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">20.</span><span class="p">);</span>
 </span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">quantity_point</span><span class="w"> </span><span class="n">outside_temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">5.</span><span class="p">);</span>
@@ -11633,19 +11636,40 @@ a scale) and <strong>quantity deltas</strong> (differences/displacements).</p>
 <li><strong>Point + Point</strong> → ❌ Error (meaningless operation)</li>
 <li><strong>Delta - Point</strong> → ❌ Error (meaningless operation)</li>
 </ul>
-<p>Examples where affine space safety prevents errors:</p>
+<p>Examples where mathematical space safety prevents errors:</p>
 <ul>
 <li><strong>Temperature</strong>: Cannot add 20 °C + 10 °C (meaningless), but can compute difference (10 K)</li>
 <li><strong>Time</strong>: Cannot add two <em>timestamps</em>, but can subtract them to get <em>duration</em></li>
 <li><strong>Position</strong>: Cannot add two GPS coordinates, but can compute displacement between them</li>
 <li><strong>Altitude</strong>: Cannot add two <em>altitudes</em> above sea level, but can compute <em>height</em> difference</li>
 </ul>
-<p><strong>mp-units</strong> implements affine space safety using <code>quantity_point</code> for positions and <code>quantity</code>
-for differences.</p>
+<p><strong>mp-units</strong> implements mathematical space safety using <code>quantity_point</code> for positions and
+<code>quantity</code> for differences.</p>
+<h2 id="choosing-a-safety-level">Choosing a Safety Level<a class="headerlink" href="#choosing-a-safety-level" title="Permanent link">&para;</a></h2>
+<p><a href="../../users_guide/framework_basics/simple_and_typed_quantities/#simple-quantities"><strong>Simple quantities</strong></a>
+(<code>quantity&lt;unit, Rep&gt;</code>) are the natural starting point and already cover Levels 1–4 with
+no extra effort. From there, two independent opt-in choices extend coverage further:</p>
+<ul>
+<li><strong><code>quantity_point</code></strong> brings Level 6 (mathematical space safety) for domains involving
+  affine spaces — <em>time</em> instants, <em>temperatures</em>, <em>positions</em> — at no additional code overhead.
+  If adding two quantities of the same kind makes no physical or domain sense — as with
+  two <em>timestamps</em> or two absolute <em>temperatures</em> — they should be modeled as points.</li>
+<li>
+<p><a href="../../users_guide/framework_basics/simple_and_typed_quantities/#typed-quantities"><strong>Typed quantities</strong></a>
+  (<code>quantity&lt;isq::quantity[unit], Rep&gt;</code>) add Level 5: full ISQ quantity hierarchy
+  enforcement (e.g., <code>isq::height</code> vs <code>isq::width</code> vs <code>isq::distance</code>). The tradeoffs are:</p>
+<ul>
+<li>more verbose code at the call site, though more expressive and self-documenting,</li>
+<li>longer type names in compiler diagnostics and during debugging.</li>
+</ul>
+</li>
+</ul>
+<p>Use them where multiple distinct quantities of the same kind are in play and that
+  distinction matters.</p>
 <h2 id="learn-more">Learn More<a class="headerlink" href="#learn-more" title="Permanent link">&para;</a></h2>
 <p>To dive deeper into <strong>mp-units</strong> safety features:</p>
 <ul>
-<li><strong><a href="../../blog/2026/03/23/understanding-safety-levels-in-physical-units-libraries/">Understanding Safety Levels (Blog)</a></strong> -
+<li><a href="../../blog/2026/03/23/understanding-safety-levels-in-physical-units-libraries/">Understanding Safety Levels (Blog)</a> -
   In-depth analysis, library comparisons, and why safety matters for C++ standardization</li>
 <li><a href="../../users_guide/framework_basics/simple_and_typed_quantities/">Simple and Typed Quantities</a> -
   Choose your level of type safety</li>

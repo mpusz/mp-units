@@ -47,3 +47,127 @@ mjx-math {
 .md-typeset .tabbed-content .tabbed-block> :last-child {
   margin-bottom: 0;
 }
+
+/* ------------------------------------------------------------------ */
+/* Comparison tables with hover tooltips (used in library comparisons) */
+/* ------------------------------------------------------------------ */
+.tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: help;
+  border-bottom: 1px dotted #666;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 350px;
+  background-color: #333;
+  color: #fff;
+  text-align: left;
+  border-radius: 6px;
+  padding: 10px;
+  position: absolute;
+  z-index: 1000;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 10px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 0.9em;
+  line-height: 1.4;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  white-space: normal;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #333 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  overflow: visible;
+}
+
+.comparison-table th,
+.comparison-table td {
+  border: 1px solid #ddd;
+  padding: 12px 8px;
+  text-align: center;
+  overflow: visible;
+}
+
+.comparison-table th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+}
+
+.comparison-table tr:first-child th {
+  background-color: #e0e0e0;
+}
+
+.comparison-table td:first-child {
+  text-align: left;
+  font-weight: bold;
+}
+
+/* Dark mode support via MkDocs Material slate scheme */
+[data-md-color-scheme="slate"] .comparison-table th {
+  background-color: #2d2d2d;
+  color: #e0e0e0;
+}
+
+[data-md-color-scheme="slate"] .comparison-table tr:first-child th {
+  background-color: #3d3d3d;
+}
+
+[data-md-color-scheme="slate"] .comparison-table th,
+[data-md-color-scheme="slate"] .comparison-table td {
+  border-color: #555;
+}
+
+[data-md-color-scheme="slate"] .tooltip {
+  border-bottom-color: #999;
+}
+
+/* Mobile: shrink tooltip width to stay within viewport */
+@media (max-width: 600px) {
+  .comparison-table th {
+    font-size: 0.75em;
+    padding: 6px 4px;
+  }
+
+  .comparison-table tr:first-child th {
+    font-size: 0.7em;
+  }
+
+  .comparison-table th,
+  .comparison-table td {
+    padding: 6px 4px;
+  }
+
+  .tooltip {
+    border-bottom: none;
+  }
+
+  .tooltip .tooltiptext {
+    width: calc(100vw - 40px);
+    left: 0;
+    transform: none;
+  }
+}

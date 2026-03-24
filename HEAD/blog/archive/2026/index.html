@@ -11318,6 +11318,74 @@ You're not viewing the latest version.
     <div class="md-post__meta md-meta">
       <ul class="md-meta__list">
         <li class="md-meta__item">
+          <time datetime="2026-03-23 00:00:00+00:00">March 23, 2026</time></li>
+        
+          <li class="md-meta__item">
+            in
+            
+              <a href="../../category/metrology/" class="md-meta__link">Metrology</a></li>
+        
+        
+          
+          <li class="md-meta__item">
+            
+              42 min read
+            
+          </li>
+        
+        
+      </ul>
+      
+    </div>
+  </header>
+  <div class="md-post__content md-typeset">
+    <h2 id="understanding-safety-levels-in-physical-units-libraries"><a class="toclink" href="../../2026/03/23/understanding-safety-levels-in-physical-units-libraries/">Understanding Safety Levels in Physical Units Libraries</a></h2>
+<p>Physical quantities and units libraries exist primarily to prevent errors at compile time.
+However, not all libraries provide the same level of safety. Some focus only on dimensional
+analysis and unit conversions, while others go further to prevent representation errors,
+semantic misuse of same-dimension quantities, and even errors in the mathematical structure
+of equations.</p>
+<p>This article explores six distinct safety levels that a comprehensive quantities and units
+library can provide. We'll examine each level in detail with practical examples, then compare
+how leading C++ libraries and units libraries from other languages perform across these
+safety dimensions. Finally, we'll analyze the performance and memory costs associated
+with different approaches, helping you understand the trade-offs between safety guarantees
+and runtime efficiency.</p>
+<p>We'll pay particular attention to the upper safety levels—especially <strong>quantity kind
+safety</strong> (distinguishing dimensionally equivalent concepts such as work vs. torque, or
+Hz vs. Bq) and <strong>quantity safety</strong> (enforcing correct quantity hierarchies and
+scalar/vector/tensor mathematical rules)—which are well-established concepts in metrology
+and physics, yet remain widely overlooked in the C++ ecosystem. Most units library authors
+and users simply do not realize these guarantees are achievable, or how much they matter
+in practice. These levels go well beyond dimensional analysis, preventing subtle semantic
+errors that unit conversions alone cannot catch, and are essential for realizing truly
+strongly-typed numerics in C++.</p>
+
+    
+      <nav class="md-post__action">
+        <a href="../../2026/03/23/understanding-safety-levels-in-physical-units-libraries/">
+          Continue reading
+        </a>
+      </nav>
+    
+    
+  </div>
+</article>
+      
+        <article class="md-post md-post--excerpt">
+  <header class="md-post__header">
+    
+      <nav class="md-post__authors md-typeset">
+        
+          <span class="md-author">
+            <img src="https://avatars.githubusercontent.com/u/506260" alt="Mateusz Pusz">
+          </span>
+        
+      </nav>
+    
+    <div class="md-post__meta md-meta">
+      <ul class="md-meta__list">
+        <li class="md-meta__item">
           <time datetime="2026-01-29 00:00:00+00:00">January 29, 2026</time></li>
         
           <li class="md-meta__item">
