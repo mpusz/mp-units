@@ -31,3 +31,19 @@ mjx-math {
   -webkit-mask-image: var(--md-admonition-icon--important);
   mask-image: var(--md-admonition-icon--important);
 }
+
+/* Frame content tabs with a border so their extent is visually clear */
+.md-typeset .tabbed-set {
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.2rem;
+  padding: 0 0.8rem 0.6rem;
+}
+
+.md-typeset .tabbed-set .tabbed-labels {
+  margin: 0 -0.8rem;
+}
+
+/* Normalize bottom spacing regardless of whether a tab ends with text or code */
+.md-typeset .tabbed-content .tabbed-block> :last-child {
+  margin-bottom: 0;
+}

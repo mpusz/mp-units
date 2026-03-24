@@ -11355,7 +11355,7 @@ You're not viewing the latest version.
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20a8 8 0 0 0 8-8 8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10 10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67-.75 1.23L11 13V7z"/></svg>
                           <span class="md-ellipsis">
                             
-                              24 min read
+                              27 min read
                             
                           </span>
                         </div>
@@ -11779,6 +11779,17 @@ You're not viewing the latest version.
 </li>
         
           <li class="md-nav__item">
+  <a href="#why-not-just-use-t-t0-as-a-workaround" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why Not Just Use (T − T₀) as a Workaround?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#design-philosophy-and-standardization" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -11786,6 +11797,23 @@ You're not viewing the latest version.
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Design Philosophy and Standardization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mathematical-grounding-ratio-scale-and-convex-sets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mathematical Grounding: Ratio Scale and Convex Sets
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -12078,7 +12106,13 @@ current model, motivating the need for a new abstraction.</p>
    (different deltas from various origins). Should such a point have the same or
    a different textual output for each representation?</li>
 <li><strong>Error-prone simplifications</strong> – Developers frequently replace points with deltas for
-   convenience, losing safety and physical clarity.</li>
+   convenience, losing safety and physical clarity. This is the most dangerous pain point,
+   because it compiles silently. In V2, both <code>quantity&lt;K&gt;</code> and <code>quantity&lt;deg_C&gt;</code> are deltas
+   and are numerically interchangeable. A function accepting <code>quantity&lt;K&gt;</code> will silently
+   accept <code>20 * deg_C</code>, using the numeric value <code>20</code> instead of <code>293.15</code>. Thermodynamic
+   expressions such as Carnot efficiency will then produce results that are off by a factor
+   of roughly 15, with no compiler warning and no runtime error — the bug is invisible until
+   you check the numbers.</li>
 </ol>
 <h3 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h3>
 <div class="admonition example">
@@ -12254,13 +12288,14 @@ engineering textbooks:</p>
   relative to an origin.</li>
 <li><strong>Deltas</strong> (differences) are the result of subtracting two points or two absolutes.</li>
 </ul>
-<p>The following table maps each abstraction to its mathematical space, physical meaning,
-and typical C++ representation:</p>
+<p>The following table maps each abstraction to its measurement scale, mathematical structure,
+physical meaning, and typical C++ representation:</p>
 <table>
 <thead>
 <tr>
 <th style="text-align: left;">Concept</th>
-<th style="text-align: left;">Mathematical Space</th>
+<th style="text-align: left;">Measurement Scale</th>
+<th style="text-align: left;">Mathematical Structure</th>
 <th style="text-align: left;">Physical Meaning</th>
 <th style="text-align: left;">Example</th>
 </tr>
@@ -12268,12 +12303,14 @@ and typical C++ representation:</p>
 <tbody>
 <tr>
 <td style="text-align: left;"><strong>Point</strong></td>
+<td style="text-align: left;"><strong>Interval Scale</strong></td>
 <td style="text-align: left;"><strong>Affine Space</strong></td>
 <td style="text-align: left;">A location on a scale or in space.</td>
 <td style="text-align: left;"><code>point&lt;mass&gt;</code>, <code>point&lt;time&gt;</code>, <code>point&lt;altitude&gt;</code>, <code>point&lt;position_vector&gt;</code> (vector), <code>point&lt;velocity&gt;</code> (vector)</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Delta</strong></td>
+<td style="text-align: left;">—</td>
 <td style="text-align: left;"><strong>Vector Space</strong></td>
 <td style="text-align: left;">A change, displacement, or interval.</td>
 <td style="text-align: left;"><code>delta&lt;mass&gt;</code>, <code>delta&lt;duration&gt;</code>, <code>delta&lt;height&gt;</code>, <code>displacement</code> (vector), <code>velocity</code> (vector)</td>
@@ -12281,6 +12318,7 @@ and typical C++ representation:</p>
 <tr>
 <td style="text-align: left;"><strong>Absolute</strong></td>
 <td style="text-align: left;"><strong>Ratio Scale</strong></td>
+<td style="text-align: left;"><strong>Convex Cone</strong> (<span class="arithmatex">\(\ge 0\)</span>)</td>
 <td style="text-align: left;">A magnitude measured from a true zero.</td>
 <td style="text-align: left;"><code>mass</code>, <code>duration</code>, <code>height</code>, <code>distance</code> (scalar), <code>speed</code> (scalar)</td>
 </tr>
@@ -12654,6 +12692,20 @@ non-negative precondition check on construction and assignment.</p>
 <p>As we pointed out before, it will be possible to form absolute quantities of <em>temperature</em>,
 but only when the unit is (potentially prefixed) Kelvin. For offset units like degree
 Celsius, it will not be possible.</p>
+<p>The reason runs deeper than a mere unit-system rule. Kelvin temperature encodes
+<em>thermodynamic energy content</em>: the mean molecular kinetic energy of an ideal gas is
+proportional to <span class="arithmatex">\(k_B T\)</span>, where <span class="arithmatex">\(T\)</span> must be an absolute temperature. This makes Kelvin a
+<strong>ratio scale</strong> quantity — ratios and products involving <span class="arithmatex">\(T\)</span> are physically meaningful
+(<span class="arithmatex">\(T_h / T_c\)</span> in the Carnot efficiency, <span class="arithmatex">\(nRT\)</span> in the ideal gas law). Degree Celsius, by
+contrast, is an <strong>interval scale</strong>: only <em>differences</em> of Celsius temperatures are
+physically meaningful, not their ratios or products. A Celsius value of <span class="arithmatex">\(20\ ^\circ\mathrm{C}\)</span>
+is not "twice as hot" as <span class="arithmatex">\(10\ ^\circ\mathrm{C}\)</span>.</p>
+<p>This distinction is exactly what the Point/Absolute split captures:</p>
+<ul>
+<li><code>quantity&lt;K&gt;</code> — <strong>Absolute</strong>: ratio-scale magnitude, safe in multiplicative expressions.</li>
+<li><code>quantity&lt;point&lt;deg_C&gt;&gt;</code> — <strong>Point</strong>: interval-scale location, blocked in multiplicative
+  expressions by the type system.</li>
+</ul>
 <p>If the user has a temperature point in Celsius and wants to treat it as an absolute
 quantity and pass it to some quantity equation, then such point first needs to
 be converted to use Kelvin as its unit and then we need to create an absolute
@@ -12661,6 +12713,10 @@ quantity from it:</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">21</span><span class="p">);</span>
 </span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">kinetic_energy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">boltzmann_constant</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">temp</span><span class="p">.</span><span class="n">in</span><span class="p">(</span><span class="n">K</span><span class="p">).</span><span class="n">absolute</span><span class="p">();</span>
 </span></code></pre></div>
+<p>The explicit <code>.in(K).absolute()</code> chain is a <strong>type-safety checkpoint</strong>: it ensures the
+programmer consciously acknowledges the shift from an interval-scale location to a
+ratio-scale magnitude, preventing the silent <code>20</code> vs. <code>293.15</code> error described in the
+<a href="#current-pain-points">Current Pain Points</a> section above.</p>
 <h3 id="which-quantity-abstraction-should-i-use">Which Quantity Abstraction Should I Use?<a class="headerlink" href="#which-quantity-abstraction-should-i-use" title="Permanent link">&para;</a></h3>
 <p>The decision tree below provides guidance on choosing the appropriate quantity abstraction
 for a specific use case. Start with the first question and follow the path based on your
@@ -12933,6 +12989,32 @@ with:</p>
 </span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="n">quantity</span><span class="w"> </span><span class="n">carnot_eff_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">temp_hot</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">temp_cold</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">temp_hot</span><span class="p">.</span><span class="n">quantity_from_zero</span><span class="p">();</span>
 </span></code></pre></div>
 <p>It worked, but was far from being physically pure and pretty.</p>
+<h3 id="why-not-just-use-t-t0-as-a-workaround">Why Not Just Use <code>(T − T₀)</code> as a Workaround?<a class="headerlink" href="#why-not-just-use-t-t0-as-a-workaround" title="Permanent link">&para;</a></h3>
+<p>A common suggestion is to work around the absence of a distinct Absolute type by
+replacing every absolute temperature <span class="arithmatex">\(T\)</span> with the explicit expression <span class="arithmatex">\((T - T_0)\)</span>, where
+<span class="arithmatex">\(T_0\)</span> is a <code>quantity_point</code> at absolute zero. For example:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">point</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">temp_cold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">300.</span><span class="p">);</span>
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">point</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">temp_hot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">500.</span><span class="p">);</span>
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="c1">// Force deltas from zero explicitly every time:</span>
+</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="n">quantity</span><span class="w"> </span><span class="n">carnot_eff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">temp_cold</span><span class="p">.</span><span class="n">quantity_from_zero</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">temp_hot</span><span class="p">.</span><span class="n">quantity_from_zero</span><span class="p">();</span>
+</span></code></pre></div>
+<p>While this produces the correct numerical answer, it has several drawbacks:</p>
+<ol>
+<li><strong>Manual burden</strong> — the user must remember to apply the <code>quantity_from_zero()</code> call
+   every time a thermodynamic formula requires ratio-scale semantics.</li>
+<li><strong>No call-site enforcement</strong> — generic function interfaces cannot require an
+   Absolute at the type level; a <code>quantity_point&lt;deg_C&gt;</code> can slip through silently.</li>
+<li><strong>Lost semantic intent</strong> — the type <code>quantity_point&lt;K&gt;</code> says "a location on the
+   temperature scale," not "a thermodynamic energy magnitude." The distinction between
+   an interval-scale location and a ratio-scale magnitude disappears.</li>
+<li><strong>Verbose code</strong> — the workaround turns clean physics equations into manual
+   conversions, defeating the purpose of a high-level units library.</li>
+</ol>
+<p>The V3 Absolute Quantity abstraction internalizes this conversion. <code>300 * K</code> is an
+Absolute Quantity by default and is directly usable in multiplicative expressions.
+When an offset-unit measurement must enter a ratio-scale equation, the explicit
+<code>.in(K).absolute()</code> chain makes the conversion visible and type-safe — exactly once,
+at the boundary, rather than scattered throughout the codebase.</p>
 <h3 id="design-philosophy-and-standardization">Design Philosophy and Standardization<a class="headerlink" href="#design-philosophy-and-standardization" title="Permanent link">&para;</a></h3>
 <p>Absolute quantities make physical semantics explicit while simplifying common use cases.
 They expose existing conceptual complexity rather than adding new layers. The design is:</p>
@@ -12951,6 +13033,28 @@ They expose existing conceptual complexity rather than adding new layers. The de
 <li><strong>Improved readability and verification</strong> in generic C++ code.</li>
 <li><strong>Zero runtime overhead</strong> — all checks are compile‑time or lightweight preconditions.</li>
 </ol>
+<h4 id="mathematical-grounding-ratio-scale-and-convex-sets">Mathematical Grounding: Ratio Scale and Convex Sets<a class="headerlink" href="#mathematical-grounding-ratio-scale-and-convex-sets" title="Permanent link">&para;</a></h4>
+<p>The term <strong>Ratio Scale</strong> used throughout this article comes from <em>measurement theory</em>
+(Stevens, 1946) and is standard in metrology (VIM) and physics. A ratio scale has a true
+physical zero so that ratios of values are meaningful: <span class="arithmatex">\(2\ \mathrm{kg}\)</span> is genuinely
+twice as much as <span class="arithmatex">\(1\ \mathrm{kg}\)</span>, whereas <span class="arithmatex">\(40\ ^\circ\mathrm{C}\)</span> is <em>not</em> twice as hot
+as <span class="arithmatex">\(20\ ^\circ\mathrm{C}\)</span>.</p>
+<p><strong>Convex Cone</strong> is the corresponding <em>mathematical structure</em>: the set of all admissible
+values of a ratio-scale quantity is the non-negative half-line <span class="arithmatex">\([0, +\infty)\)</span>, which is a
+convex cone — it is closed under addition and under multiplication by a non-negative
+scalar. Requests for a "validator" or "convex space" abstraction in quantities libraries
+are describing exactly this property.</p>
+<p>The two terms therefore describe the same thing from two complementary angles:
+<em>Ratio Scale</em> is the measurement-theory characterisation (what operations are physically
+meaningful), while <em>Convex Cone</em> is the algebraic-structure characterisation (what set the
+values live in). Both appear in the literature and both are correct; the
+<a href="#alignment-with-scientific-practice">Alignment with scientific practice</a> table in the
+Semantics section shows all three columns side-by-side.</p>
+<p>The <code>.absolute()</code> conversion method is the explicit, type-safe crossing from an
+Interval-Scale Affine Space (Points) or an unrestricted Vector Space (Deltas) into the
+Ratio-Scale Convex Cone (Absolutes). Rather than relying on a separate validation layer or
+runtime validators, the type system itself encodes the constraint — providing the
+mathematical rigor that metrology and physics demand.</p>
 <h2 id="frequently-asked-questions-the-v3-physical-model">Frequently Asked Questions: The V3 Physical Model<a class="headerlink" href="#frequently-asked-questions-the-v3-physical-model" title="Permanent link">&para;</a></h2>
 <p>As <strong>mp-units</strong> moves toward a more rigorous modeling of physical spaces, several questions
 arise regarding the distinction between <strong>Points</strong>, <strong>Deltas</strong>, and <strong>Absolute Quantities</strong>.
