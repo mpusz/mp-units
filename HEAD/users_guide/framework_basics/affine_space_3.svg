@@ -73,6 +73,16 @@
          id="path6-0-1" />
     </marker>
   </defs>
+  <style>
+    @media (prefers-color-scheme: dark) {
+      [style*="fill:#000000"] { fill: #cccccc !important; }
+      [style*="stroke:#000000"] { stroke: #cccccc !important; }
+      [style*="fill:#0000dd"], [style*="fill:#0000df"], [style*="fill:#0000e0"] { fill: #5599ff !important; }
+      [style*="stroke:#0000e0"], [style*="stroke:#0000e1"] { stroke: #5599ff !important; }
+      [style*="fill:#a4a4a4"] { fill: #666666 !important; }
+      [style*="stroke:#a4a4a4"] { stroke: #666666 !important; }
+    }
+  </style>
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"

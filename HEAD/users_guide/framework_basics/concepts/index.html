@@ -11735,8 +11735,10 @@ that satisfies <a href="#QuantitySpecOf"><code>QuantitySpecOf&lt;V&gt;</code></a
 <ul>
 <li><strong>Weakly regular</strong>: copyable and equality comparable (default-constructibility is not required).</li>
 <li><strong><code>MagnitudeScalable</code></strong>: the library must be able to apply a unit magnitude ratio to it
-  internally. Most standard types satisfy this
-  automatically; see
+  internally. Most standard types satisfy this automatically via the built-in scaling paths;
+  custom types may additionally provide <code>operator*(T, UnitMagnitude)</code> for
+  <a href="../representation_types/#magnitude-aware-scaling">magnitude-aware scaling</a> that can change
+  the representation type during unit conversion. See
   <a href="../representation_types/#how-scaling-works">Representation Types</a> for details.</li>
 <li><strong>Character-specific operations</strong>: additional arithmetic operations required by the
   <a href="../../../reference/glossary/#character">quantity character</a> (e.g. total ordering for real
