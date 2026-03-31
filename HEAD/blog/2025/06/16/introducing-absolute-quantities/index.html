@@ -11809,13 +11809,52 @@ You're not viewing the latest version.
 </li>
         
           <li class="md-nav__item">
-  <a href="#why-not-just-use-t-t0-as-a-workaround" class="md-nav__link">
+  <a href="#why-obvious-workarounds-fall-short" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Why Not Just Use (T − T₀) as a Workaround?
+        Why Obvious Workarounds Fall Short?
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Why Obvious Workarounds Fall Short?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#approach-1-quantity_from_unit_zero" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Approach 1: quantity_from_unit_zero()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#approach-2-subtract-siabsolute_zero" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Approach 2: Subtract si::absolute_zero
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-bottom-line" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The bottom line
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -12132,8 +12171,8 @@ current model, motivating the need for a new abstraction.</p>
 <ol>
 <li><strong>Limited arithmetic for points</strong> – Points can’t be multiplied, divided, or accumulated.
    This often forces the users to convert the quantity point to a delta with either
-   <code>qp.quantity_from_zero()</code> or <code>qp.quantity_from(some_origin)</code> member functions, which is
-   at least cumbersome.</li>
+   <code>qp.quantity_from_unit_zero()</code> or <code>qp.quantity_from(some_origin)</code> member functions,
+   which is at least cumbersome.</li>
 <li><strong>No text output for points</strong> – A point's textual representation depends on its origin,
    which is often implicit or user-defined. As of today, we do not have the means to
    provide a text symbol for the point origin. Moreover, points may contain both an
@@ -12181,18 +12220,18 @@ change in moisture content (on a wet basis) during the drying process.</p>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">                                          </span><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;</span><span class="w"> </span><span class="n">total</span><span class="p">)</span>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="p">{</span>
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="n">gsl_Expects</span><span class="p">(</span><span class="n">is_gt_zero</span><span class="p">(</span><span class="n">total</span><span class="p">));</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">water_lost</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">total</span><span class="p">.</span><span class="n">quantity_from_zero</span><span class="p">();</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">water_lost</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">total</span><span class="p">.</span><span class="n">quantity_from_unit_zero</span><span class="p">();</span>
 </span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="p">}</span>
 </span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
 </span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;</span><span class="w"> </span><span class="n">initial</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">2.34</span><span class="p">),</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">1.93</span><span class="p">),</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">2.43</span><span class="p">)</span><span class="w"> </span><span class="p">};</span>
 </span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;</span><span class="w"> </span><span class="n">dried</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">1.89</span><span class="p">),</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">1.52</span><span class="p">),</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">1.92</span><span class="p">)</span><span class="w"> </span><span class="p">};</span>
 </span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="k">auto</span><span class="w"> </span><span class="n">point_plus</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[](</span><span class="n">QuantityPoint</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">QuantityPoint</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">b</span><span class="p">){</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">quantity_from_zero</span><span class="p">();</span><span class="w"> </span><span class="p">};</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="k">auto</span><span class="w"> </span><span class="n">point_plus</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[](</span><span class="n">QuantityPoint</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">QuantityPoint</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">b</span><span class="p">){</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">quantity_from_unit_zero</span><span class="p">();</span><span class="w"> </span><span class="p">};</span>
 </span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="n">quantity_point</span><span class="w"> </span><span class="n">total_initial</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">reduce</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cbegin</span><span class="p">(</span><span class="n">initial</span><span class="p">),</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cend</span><span class="p">(</span><span class="n">initial</span><span class="p">),</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">0.</span><span class="p">),</span><span class="w"> </span><span class="n">point_plus</span><span class="p">);</span>
 </span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="n">quantity_point</span><span class="w"> </span><span class="n">total_dried</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">reduce</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cbegin</span><span class="p">(</span><span class="n">dried</span><span class="p">),</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cend</span><span class="p">(</span><span class="n">dried</span><span class="p">),</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">0.</span><span class="p">),</span><span class="w"> </span><span class="n">point_plus</span><span class="p">);</span>
 </span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>
-</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Initial product mass: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">total_initial</span><span class="p">.</span><span class="n">quantity_from_zero</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
-</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Dried product mass: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">total_dried</span><span class="p">.</span><span class="n">quantity_from_zero</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Initial product mass: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">total_initial</span><span class="p">.</span><span class="n">quantity_from_unit_zero</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Dried product mass: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">total_dried</span><span class="p">.</span><span class="n">quantity_from_unit_zero</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
 </span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Moisture content change: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">moisture_content_change</span><span class="p">(</span><span class="n">total_initial</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">total_dried</span><span class="p">,</span><span class="w"> </span><span class="n">total_initial</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
 </span></code></pre></div>
 </div>
@@ -13021,36 +13060,52 @@ arithmetic on them. Previously, we had to create deltas from both points artific
 with:</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">temp_cold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">300.</span><span class="p">);</span>
 </span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">temp_hot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">500.</span><span class="p">);</span>
-</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="n">quantity</span><span class="w"> </span><span class="n">carnot_eff_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">temp_cold</span><span class="p">.</span><span class="n">quantity_from_zero</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">temp_hot</span><span class="p">.</span><span class="n">quantity_from_zero</span><span class="p">();</span>
-</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="n">quantity</span><span class="w"> </span><span class="n">carnot_eff_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">temp_hot</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">temp_cold</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">temp_hot</span><span class="p">.</span><span class="n">quantity_from_zero</span><span class="p">();</span>
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="n">quantity</span><span class="w"> </span><span class="n">carnot_eff_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">temp_cold</span><span class="p">.</span><span class="n">quantity_from_unit_zero</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">temp_hot</span><span class="p">.</span><span class="n">quantity_from_unit_zero</span><span class="p">();</span>
+</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="n">quantity</span><span class="w"> </span><span class="n">carnot_eff_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">temp_hot</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">temp_cold</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">temp_hot</span><span class="p">.</span><span class="n">quantity_from_unit_zero</span><span class="p">();</span>
 </span></code></pre></div>
 <p>It worked, but was far from being physically pure and pretty.</p>
-<h3 id="why-not-just-use-t-t0-as-a-workaround">Why Not Just Use <code>(T − T₀)</code> as a Workaround?<a class="headerlink" href="#why-not-just-use-t-t0-as-a-workaround" title="Permanent link">&para;</a></h3>
-<p>A common suggestion is to work around the absence of a distinct Absolute type by
-replacing every absolute temperature <span class="arithmatex">\(T\)</span> with the explicit expression <span class="arithmatex">\((T - T_0)\)</span>, where
-<span class="arithmatex">\(T_0\)</span> is a <code>quantity_point</code> at absolute zero. For example:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">point</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">temp_cold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">300.</span><span class="p">);</span>
-</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">point</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">temp_hot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">500.</span><span class="p">);</span>
-</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="c1">// Force deltas from zero explicitly every time:</span>
-</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="n">quantity</span><span class="w"> </span><span class="n">carnot_eff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">temp_cold</span><span class="p">.</span><span class="n">quantity_from_zero</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">temp_hot</span><span class="p">.</span><span class="n">quantity_from_zero</span><span class="p">();</span>
+<h3 id="why-obvious-workarounds-fall-short">Why Obvious Workarounds Fall Short?<a class="headerlink" href="#why-obvious-workarounds-fall-short" title="Permanent link">&para;</a></h3>
+<p>Two workaround approaches exist, each with its own caveat.</p>
+<h4 id="approach-1-quantity_from_unit_zero">Approach 1: <code>quantity_from_unit_zero()</code><a class="headerlink" href="#approach-1-quantity_from_unit_zero" title="Permanent link">&para;</a></h4>
+<p><code>quantity_from_unit_zero()</code> returns the displacement of a quantity point from its unit's
+origin. For Kelvin this is <code>si::absolute_zero</code>, so the result is exactly the
+thermodynamic temperature:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="n">point</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">294.15</span><span class="p">).</span><span class="n">quantity_from_unit_zero</span><span class="p">();</span><span class="w">  </span><span class="c1">// 294.15 K ✓</span>
 </span></code></pre></div>
-<p>While this produces the correct numerical answer, it has several drawbacks:</p>
-<ol>
-<li><strong>Manual burden</strong> — the user must remember to apply the <code>quantity_from_zero()</code> call
-   every time a thermodynamic formula requires ratio-scale semantics.</li>
-<li><strong>No call-site enforcement</strong> — generic function interfaces cannot require an
-   Absolute at the type level; a <code>quantity_point&lt;deg_C&gt;</code> can slip through silently.</li>
-<li><strong>Lost semantic intent</strong> — the type <code>quantity_point&lt;K&gt;</code> says "a location on the
-   temperature scale," not "a thermodynamic energy magnitude." The distinction between
-   an interval-scale location and a ratio-scale magnitude disappears.</li>
-<li><strong>Verbose code</strong> — the workaround turns clean physics equations into manual
-   conversions, defeating the purpose of a high-level units library.</li>
-</ol>
-<p>The V3 Absolute Quantity abstraction internalizes this conversion. <code>300 * K</code> is an
-Absolute Quantity by default and is directly usable in multiplicative expressions.
-When an offset-unit measurement must enter a ratio-scale equation, the explicit
-<code>.in(K).absolute()</code> chain makes the conversion visible and type-safe — exactly once,
-at the boundary, rather than scattered throughout the codebase.</p>
+<p>For Celsius, however, the unit's origin is <code>si::ice_point</code> — the <em>ice point</em>.
+The function therefore returns the displacement from the ice point, not from absolute
+zero:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="n">point</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">21</span><span class="p">).</span><span class="n">quantity_from_unit_zero</span><span class="p">();</span><span class="w">  </span><span class="c1">// 21 ℃ — displacement from ice point, not 294.15 K!</span>
+</span></code></pre></div>
+<p>This is a silent pitfall: the call compiles and returns a plausible-looking value for any
+temperature unit, but is only thermodynamically meaningful when the point is already in
+Kelvin. Explicit conversion before the call fixes it:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="n">point</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">21</span><span class="p">).</span><span class="n">in</span><span class="p">(</span><span class="n">K</span><span class="p">).</span><span class="n">quantity_from_unit_zero</span><span class="p">();</span><span class="w">  </span><span class="c1">// 294.15 K ✓</span>
+</span></code></pre></div>
+<h4 id="approach-2-subtract-siabsolute_zero">Approach 2: Subtract <code>si::absolute_zero</code><a class="headerlink" href="#approach-2-subtract-siabsolute_zero" title="Permanent link">&para;</a></h4>
+<p>Subtracting the absolute-zero origin always gives the correct thermodynamic temperature
+regardless of the unit the point was stored in:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="n">quantity_point</span><span class="w"> </span><span class="n">temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">21</span><span class="p">);</span>
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">temp</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">absolute_zero</span><span class="p">;</span><span class="w">  </span><span class="c1">// always correct</span>
+</span></code></pre></div>
+<p>The only thing to be aware of is the resulting unit. Because <code>si::ice_point</code> (the origin
+of the Celsius scale) is defined internally in <code>milli&lt;kelvin&gt;</code>, the subtraction yields
+<code>mK</code> rather than <code>K</code>:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>T == 294150 mK   // correct value, can be rescaled with .in(K)
+</span></code></pre></div>
+<p>The value is correct and rescales cleanly to any unit. In a physical equation like the
+ideal gas law, <code>p</code> will come out in <code>mPa</code> instead of <code>Pa</code>, but it will convert
+automatically on the first assignment to a typed quantity such as <code>quantity&lt;Pa&gt;</code>.</p>
+<h4 id="the-bottom-line">The bottom line<a class="headerlink" href="#the-bottom-line" title="Permanent link">&para;</a></h4>
+<p>Both approaches work correctly when used with care. <code>quantity_from_unit_zero()</code> is concise but
+requires the point to already be in Kelvin; subtraction from <code>si::absolute_zero</code> is
+always safe but carries an <code>mK</code> unit until rescaled. In either case, the right idiom —
+<code>.in(K).quantity_from_unit_zero()</code> — must be remembered and applied at every call site, and
+there is no way to enforce it through the type system.</p>
+<p>V3 Absolute Quantities address this: <code>300 * K</code> is already an Absolute Quantity, directly
+usable in any multiplicative expression. When an offset-unit point must enter a
+thermodynamic equation, the explicit <code>.in(K).absolute()</code> chain makes the conversion
+visible and type-safe — exactly once, at the boundary.</p>
 <h3 id="design-philosophy-and-standardization">Design Philosophy and Standardization<a class="headerlink" href="#design-philosophy-and-standardization" title="Permanent link">&para;</a></h3>
 <p>Absolute quantities make physical semantics explicit while simplifying common use cases.
 They expose existing conceptual complexity rather than adding new layers. The design is:</p>

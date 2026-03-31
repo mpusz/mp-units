@@ -11469,7 +11469,7 @@ You're not viewing the latest version.
 <td><span id="degree_Fahrenheit"></span><code>degree_<wbr>Fahrenheit</code></td>
 <td style="text-align: center;">℉ (`F)</td>
 <td style="text-align: center;"><code>deg_F</code></td>
-<td><code><a href="#rankine">rankine</a><br>origin: <a href="#zeroth_degree_Fahrenheit">zeroth_<wbr>degree_<wbr>Fahrenheit</a></code></td>
+<td><code><a href="#rankine">rankine</a>, <a href="#fahrenheit_zero">fahrenheit_<wbr>zero</a></code></td>
 </tr>
 <tr>
 <td><span id="dry_barrel"></span><code>dry_<wbr>barrel</code></td>
@@ -11595,7 +11595,7 @@ You're not viewing the latest version.
 <td><span id="rankine"></span><code>rankine</code></td>
 <td style="text-align: center;">°R (`R)</td>
 <td style="text-align: center;">—</td>
-<td><code>mag_ratio&lt;5, 9&gt; * <wbr><a href="../si/#kelvin">si::kelvin</a><br>origin: <a href="#zeroth_rankine">zeroth_<wbr>rankine</a></code></td>
+<td><code>mag_ratio&lt;5, 9&gt; * <wbr><a href="../si/#kelvin">si::kelvin</a>, <a href="../si/#absolute_zero">si::absolute_<wbr>zero</a></code></td>
 </tr>
 <tr>
 <td><span id="rod"></span><code>rod</code></td>
@@ -11712,14 +11712,19 @@ You're not viewing the latest version.
 </thead>
 <tbody>
 <tr>
-<td><span id="zeroth_degree_Fahrenheit"></span><code>zeroth_degree_Fahrenheit</code></td>
+<td><span id="fahrenheit_zero"></span><code>fahrenheit_zero</code></td>
 <td style="text-align: center;">relative</td>
 <td><code>::mp_units::point&lt;<a href="../si/#milli">si::milli</a>&lt;<a href="#rankine">rankine</a>&gt;&gt;(459'670)</code></td>
 </tr>
 <tr>
+<td><span id="zeroth_degree_Fahrenheit"></span><code>zeroth_degree_Fahrenheit</code></td>
+<td style="text-align: center;">—</td>
+<td>alias to <a href="#fahrenheit_zero">fahrenheit_<wbr>zero</a></td>
+</tr>
+<tr>
 <td><span id="zeroth_rankine"></span><code>zeroth_rankine</code></td>
 <td style="text-align: center;">—</td>
-<td>alias to <a href="../si/#zeroth_kelvin">si::zeroth_<wbr>kelvin</a></td>
+<td>alias to <a href="../si/#absolute_zero">si::absolute_<wbr>zero</a></td>
 </tr>
 </tbody>
 </table>

@@ -222,6 +222,8 @@
 \rSecindex{library}{N}
 
   \item \texttt  {\frenchspacing named_unit}, \hyperpage{33}
+  \item \texttt  {\frenchspacing natural_point_origin}, \hyperpage{14}
+  \item \texttt  {\frenchspacing natural_point_origin_}, \hyperpage{62}
   \item \texttt  {\frenchspacing numerical_value_in}
     \subitem \texttt  {\frenchspacing quantity}, \hyperpage{54}
   \item \texttt  {\frenchspacing numerical_value_ref_in}
@@ -426,7 +428,7 @@
   \item \texttt  {\frenchspacing quantity_character}, \hyperpage{11}
   \item \texttt  {\frenchspacing quantity_from}
     \subitem \texttt  {\frenchspacing quantity_point}, \hyperpage{68}
-  \item \texttt  {\frenchspacing quantity_from_zero}
+  \item \texttt  {\frenchspacing quantity_from_unit_zero}
     \subitem \texttt  {\frenchspacing quantity_point}, \hyperpage{69}
   \item \texttt  {\frenchspacing quantity_like_traits}
     \subitem \texttt  {\frenchspacing std::chrono::duration}, 
@@ -450,7 +452,7 @@
     \subitem \texttt  {\frenchspacing point_for}, \hyperpage{68}
     \subitem \texttt  {\frenchspacing quantity_cast}, \hyperpage{72}
     \subitem \texttt  {\frenchspacing quantity_from}, \hyperpage{68}
-    \subitem \texttt  {\frenchspacing quantity_from_zero}, 
+    \subitem \texttt  {\frenchspacing quantity_from_unit_zero}, 
 		\hyperpage{69}
     \subitem \texttt  {\frenchspacing quantity_ref_from}, 
 		\hyperpage{68}
@@ -650,7 +652,5 @@
 
   \item \texttt  {\frenchspacing zero}
     \subitem \texttt  {\frenchspacing quantity}, \hyperpage{53}
-  \item \texttt  {\frenchspacing zeroth_point_origin}, \hyperpage{14}
-  \item \texttt  {\frenchspacing zeroth_point_origin_}, \hyperpage{62}
 
 \end{theindex}

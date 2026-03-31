@@ -116,7 +116,7 @@
 \contentsline {subsubsection}{\numberline {5.7.2.3}Types}{61}{subsubsection.5.7.2.3}%
 \contentsline {paragraph}{\numberline {5.7.2.3.1}Absolute}{61}{paragraph.5.7.2.3.1}%
 \contentsline {paragraph}{\numberline {5.7.2.3.2}Relative}{61}{paragraph.5.7.2.3.2}%
-\contentsline {paragraph}{\numberline {5.7.2.3.3}Zeroth}{61}{paragraph.5.7.2.3.3}%
+\contentsline {paragraph}{\numberline {5.7.2.3.3}Natural}{61}{paragraph.5.7.2.3.3}%
 \contentsline {subsubsection}{\numberline {5.7.2.4}Operations}{62}{subsubsection.5.7.2.4}%
 \contentsline {subsubsection}{\numberline {5.7.2.5}Utilities}{63}{subsubsection.5.7.2.5}%
 \contentsline {paragraph}{\numberline {5.7.2.5.1}Same absolute}{63}{paragraph.5.7.2.5.1}%

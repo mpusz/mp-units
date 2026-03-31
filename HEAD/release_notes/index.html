@@ -11608,6 +11608,10 @@ You're not viewing the latest version.
 <li>feat: <code>hep</code> system extended with new constants and specialized quantities</li>
 <li>feat: <code>unit_for</code>, <code>reference_for</code>, and <code>rep_for</code> added</li>
 <li>feat: type conversions improved to raise compile-time warnings on truncation</li>
+<li>feat: <code>natural_point_origin&lt;QuantitySpec&gt;</code> added (replaces <code>zeroth_point_origin&lt;QuantitySpec&gt;</code>)</li>
+<li>feat: <code>is_natural_point_origin&lt;T&gt;</code> added (replaces <code>is_zeroth_point_origin&lt;T&gt;</code>)</li>
+<li>feat: <code>quantity_from_unit_zero()</code> member function added (replaces <code>quantity_from_zero()</code>)</li>
+<li>feat: <code>fahrenheit_zero</code> point origin added (replaces <code>zeroth_degree_Fahrenheit</code>)</li>
 <li>feat: dimensionless quantities with unit one can now be created with <code>quantity_spec::op(Val)</code>
         explicit conversions</li>
 <li>feat: explicit construction from number enabled for <code>dimensionless</code> subkinds</li>
@@ -11621,6 +11625,13 @@ You're not viewing the latest version.
 <li>feat: explicit <code>quantity_spec</code> conversions added for <code>quantity_point</code></li>
 <li>(!) refactor: <code>pi</code> magnitude constant renamed to <code>pi_c</code></li>
 <li>(!) refactor: <code>international</code> system renamed to <code>yard_pound</code></li>
+<li>(!) refactor: <code>zeroth_point_origin&lt;QuantitySpec&gt;</code> deprecated (use <code>natural_point_origin&lt;QuantitySpec&gt;</code>)</li>
+<li>(!) refactor: <code>is_zeroth_point_origin&lt;T&gt;</code> deprecated (use <code>is_natural_point_origin&lt;T&gt;</code>)</li>
+<li>(!) refactor: <code>quantity_from_zero()</code> deprecated (use <code>quantity_from_unit_zero()</code>)</li>
+<li>(!) refactor: <code>zeroth_kelvin</code> deprecated (use <code>absolute_zero</code>)</li>
+<li>(!) refactor: <code>zeroth_degree_Celsius</code> deprecated (use <code>ice_point</code>)</li>
+<li>(!) refactor: <code>zeroth_degree_Fahrenheit</code> deprecated (use <code>fahrenheit_zero</code>)</li>
+<li>(!) refactor: <code>zeroth_rankine</code> deprecated (use <code>si::absolute_zero</code>)</li>
 <li>refactor: CGS &lt;-&gt; SI interop improved with using declarations</li>
 <li>refactor: <code>isq::time</code> swapped with <code>isq::duration</code></li>
 <li>refactor: deprecation warnings now include the release version</li>

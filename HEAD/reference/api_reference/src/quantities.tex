@@ -592,13 +592,13 @@ struct absolute_point_origin;
 template<@\libconcept{QuantityPoint}@ auto QP>
 struct relative_point_origin;
 
-// \ref{qty.zeroth.pt.orig}, zeroth
+// \ref{qty.natural.pt.orig}, natural
 
 template<@\libconcept{QuantitySpec}@ auto QS>
-struct zeroth_point_origin_;
+struct natural_point_origin_;
 
 template<@\libconcept{QuantitySpec}@ auto QS>
-constexpr zeroth_point_origin_<QS> @\libglobal{zeroth_point_origin}@{};
+constexpr natural_point_origin_<QS> @\libglobal{natural_point_origin}@{};
 
 // \ref{qty.def.pt.orig}, default
 
@@ -5514,7 +5514,7 @@ struct @\libglobal{relative_point_origin}@ : @\exposidnc{point-origin-interface}
 A \defnadj{relative}{origin} is an origin
 of a subspace\irefiev{102-03-03}.
 A specialization of \tcode{relative_point_origin} is used as a base type when defining a relative origin \placeholder{O}.
-\placeholder{O} is offset from \tcode{QP.absolute_point_origin} by \tcode{QP.quantity_from_zero()}.
+\placeholder{O} is offset from \tcode{QP.absolute_point_origin} by \tcode{QP.quantity_from_unit_zero()}.
 
 \pnum
 The member \exposid{quantity-spec} is equal to
@@ -5525,19 +5525,19 @@ The member \exposid{quantity-spec} is equal to
 is satisfied, and
 to \tcode{QP.\exposidnc{quantity-spec}} otherwise.
 
-\rSec4[qty.zeroth.pt.orig]{Zeroth}
+\rSec4[qty.natural.pt.orig]{Natural}
 
 \begin{codeblock}
 namespace mp_units {
 
 template<@\libconcept{QuantitySpec}@ auto QS>
-struct @\libglobal{zeroth_point_origin_}@ final : absolute_point_origin<QS> {};
+struct @\libglobal{natural_point_origin_}@ final : absolute_point_origin<QS> {};
 
 }
 \end{codeblock}
 
 \pnum
-\tcode{zeroth_point_origin_<QS>} represents an origin
+\tcode{natural_point_origin_<QS>} represents an origin
 chosen by convention as the value $0$ of the quantity \tcode{QS}.
 
 \rSec3[qty.pt.orig.ops]{Operations}
@@ -5648,18 +5648,18 @@ Equivalent to:
 if constexpr (@\exposidnc{is-derived-from-specialization-of}@<PO1, absolute_point_origin>() &&
               @\exposidnc{is-derived-from-specialization-of}@<PO2, absolute_point_origin>())
   return std::is_same_v<PO1, PO2> ||
-         (@\exposidnc{is-specialization-of}@<PO1, zeroth_point_origin>() &&
-          @\exposidnc{is-specialization-of}@<PO2, zeroth_point_origin>() &&
+         (@\exposidnc{is-specialization-of}@<PO1, natural_point_origin>() &&
+          @\exposidnc{is-specialization-of}@<PO2, natural_point_origin>() &&
           interconvertible(po1.@\exposidnc{quantity-spec}@, po2.@\exposidnc{quantity-spec}@));
 else if constexpr (@\exposidnc{is-derived-from-specialization-of}@<PO1, relative_point_origin>() &&
                    @\exposidnc{is-derived-from-specialization-of}@<PO2, relative_point_origin>())
   return PO1::@\exposidnc{quantity-point}@ == PO2::@\exposidnc{quantity-point}@;
 else if constexpr (@\exposidnc{is-derived-from-specialization-of}@<PO1, relative_point_origin>())
   return @\exposidnc{same-absolute-point-origins}@(po1, po2) &&
-         is_eq_zero(PO1::@\exposidnc{quantity-point}@.quantity_from_zero());
+         is_eq_zero(PO1::@\exposidnc{quantity-point}@.quantity_from_unit_zero());
 else if constexpr (@\exposidnc{is-derived-from-specialization-of}@<PO2, relative_point_origin>())
   return @\exposidnc{same-absolute-point-origins}@(po1, po2) &&
-         is_eq_zero(PO2::@\exposidnc{quantity-point}@.quantity_from_zero());
+         is_eq_zero(PO2::@\exposidnc{quantity-point}@.quantity_from_unit_zero());
 \end{codeblock}
 \end{itemdescr}
 
@@ -5709,7 +5709,7 @@ Equivalent to:
 if constexpr (requires { get_unit(R{}).@\exposidnc{point-origin}@; })
   return get_unit(R{}).@\exposidnc{point-origin}@;
 else
-  return zeroth_point_origin<get_quantity_spec(R{})>;
+  return natural_point_origin<get_quantity_spec(R{})>;
 \end{codeblock}
 \end{itemdescr}
 
@@ -5847,7 +5847,7 @@ public:
   template<@\libconcept{QuantityPointOf}@<absolute_point_origin> QP>
   constexpr @\libconcept{Quantity}@ auto quantity_from(const QP&) const;
 
-  constexpr @\libconcept{Quantity}@ auto quantity_from_zero() const;
+  constexpr @\libconcept{Quantity}@ auto quantity_from_unit_zero() const;
 
   // \ref{qty.pt.conv.ops}, conversion operations
   template<typename QP_, @\libconcept{QuantityPointLike}@ QP = std::remove_cvref_t<QP_>>
@@ -6156,9 +6156,9 @@ Equivalent to:
 \tcode{return *this - rhs;}
 \end{itemdescr}
 
-\indexlibrarymember{quantity_from_zero}{quantity_point}
+\indexlibrarymember{quantity_from_unit_zero}{quantity_point}
 \begin{itemdecl}
-constexpr @\libconcept{Quantity}@ auto quantity_from_zero() const;
+constexpr @\libconcept{Quantity}@ auto quantity_from_unit_zero() const;
 \end{itemdecl}
 
 \begin{itemdescr}
@@ -6346,7 +6346,7 @@ friend constexpr @\libconcept{QuantityPoint}@ auto operator-(const QP& qp, const
 \effects
 Equivalent to:
 \begin{codeblock}
-if constexpr (@\exposidnc{is-specialization-of}@<PO, zeroth_point_origin>())
+if constexpr (@\exposidnc{is-specialization-of}@<PO, natural_point_origin>())
   return ::mp_units::quantity_point{qp.quantity_ref_from(PO) @\atsign@ q};
 else
   return ::mp_units::quantity_point{qp.quantity_ref_from(PO) @\atsign@ q, PO};

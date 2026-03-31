@@ -97,6 +97,8 @@
 		\memjustarg{44}}}
 \glossitem {\memgloterm{qty.named.unit}}{\memglodesc{(\ref {qty.named.unit})}} {\memgloref{}}{\memglonum{
 		\memjustarg{33}}}
+\glossitem {\memgloterm{qty.natural.pt.orig}}{\memglodesc{(\ref {qty.natural.pt.orig})}} {\memgloref{}}{\memglonum{
+		\memjustarg{61}}}
 \glossitem {\memgloterm{qty.non.mem.conv}}{\memglodesc{(\ref {qty.non.mem.conv})}} {\memgloref{}}{\memglonum{
 		\memjustarg{59}}}
 \glossitem {\memgloterm{qty.obs}}{\memglodesc{(\ref {qty.obs})}} {\memgloref{}}{\memglonum{
@@ -257,8 +259,6 @@
 		\memjustarg{59}}}
 \glossitem {\memgloterm{qty.val.traits}}{\memglodesc{(\ref {qty.val.traits})}} {\memgloref{}}{\memglonum{
 		\memjustarg{43}}}
-\glossitem {\memgloterm{qty.zeroth.pt.orig}}{\memglodesc{(\ref {qty.zeroth.pt.orig})}} {\memgloref{}}{\memglonum{
-		\memjustarg{61}}}
 \glossitem {\memgloterm{quantities}}{\memglodesc{(\ref {quantities})}} {\memgloref{}}{\memglonum{
 		\memjustarg{5}}}
 \glossitem {\memgloterm{quantities.summary}}{\memglodesc{(\ref {quantities.summary})}} {\memgloref{}}{\memglonum{

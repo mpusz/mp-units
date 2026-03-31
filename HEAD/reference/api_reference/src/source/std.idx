@@ -186,7 +186,7 @@
 \indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{14}
 \indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{14}
 \indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{14}
-\indexentry[libraryindex]{zeroth_point_origin@\texttt  {\frenchspacing zeroth_point_origin}|hyperpage}{14}
+\indexentry[libraryindex]{natural_point_origin@\texttt  {\frenchspacing natural_point_origin}|hyperpage}{14}
 \indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{14}
 \indexentry[conceptindex]{PointOriginFor@\texttt  {\frenchspacing PointOriginFor}|hyperpage}{14}
 \indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{14}
@@ -1326,7 +1326,7 @@
 \indexentry[generalindex]{origin!relative|hyperpage}{61}
 \indexentry[conceptindex]{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{61}
 \indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{62}
-\indexentry[libraryindex]{zeroth_point_origin_@\texttt  {\frenchspacing zeroth_point_origin_}|hyperpage}{62}
+\indexentry[libraryindex]{natural_point_origin_@\texttt  {\frenchspacing natural_point_origin_}|hyperpage}{62}
 \indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{62}
 \indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{62}
 \indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{62}
@@ -1496,8 +1496,8 @@
 \indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{68}
 \indexentry[conceptindex]{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{69}
 \indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{69}
-\indexentry[libraryindex]{quantity_from_zero@\texttt  {\frenchspacing quantity_from_zero}!quantity_point@\texttt  {\frenchspacing quantity_point}|hyperpage}{69}
-\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!quantity_from_zero@\texttt  {\frenchspacing quantity_from_zero}|hyperpage}{69}
+\indexentry[libraryindex]{quantity_from_unit_zero@\texttt  {\frenchspacing quantity_from_unit_zero}!quantity_point@\texttt  {\frenchspacing quantity_point}|hyperpage}{69}
+\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!quantity_from_unit_zero@\texttt  {\frenchspacing quantity_from_unit_zero}|hyperpage}{69}
 \indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{69}
 \indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!operator QuantityPointLike@\texttt  {\frenchspacing operator QuantityPointLike}|hyperpage}{69}
 \indexentry[conceptindex]{QuantityPointLike@\texttt  {\frenchspacing QuantityPointLike}|hyperpage}{69}

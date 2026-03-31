@@ -2290,10 +2290,10 @@ You're not viewing the latest version.
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#zeroth_point_originquantityspec" class="md-nav__link">
+  <a href="#natural_point_originquantityspec" class="md-nav__link">
     <span class="md-ellipsis">
       
-        zeroth_point_origin&lt;QuantitySpec&gt;
+        natural_point_origin&lt;QuantitySpec&gt;
       
     </span>
   </a>
@@ -2399,6 +2399,17 @@ You're not viewing the latest version.
     <span class="md-ellipsis">
       
         Available Overflow Policies
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example Usage
       
     </span>
   </a>
@@ -11685,12 +11696,12 @@ a <code>quantity_point</code> can be considered as a model of a vector space fro
 <p>Forcing the user to manually predefine an origin for every domain may be cumbersome and
 discourage users from using such abstractions at all. This is why, by default, the <code>PO</code>
 template parameter is initialized with the <code>default_point_origin(R)</code> that provides the
-quantity points' scale zeroth point using the following rules:</p>
+quantity points' scale origin using the following rules:</p>
 <ul>
 <li>if the measurement unit of a quantity specifies its point origin in its definition
   (e.g., degree Celsius), then this origin is being used,</li>
-<li>otherwise, an instantiation of <code>zeroth_point_origin&lt;QuantitySpec&gt;</code> is being used which
-  provides a well-established zeroth point for a specific quantity type.</li>
+<li>otherwise, an instantiation of <code>natural_point_origin&lt;QuantitySpec&gt;</code> is being used which
+  provides a well-established natural origin for a specific quantity type.</li>
 </ul>
 <p>Quantity points with default point origins may be constructed with the <code>point</code> construction
 helper or forcing an explicit conversion from the <code>quantity</code>:</p>
@@ -11708,17 +11719,17 @@ helper or forcing an explicit conversion from the <code>quantity</code>:</p>
 <p class="admonition-title">Tip</p>
 <p>The <code>quantity_point</code> definition can be found in the <code>mp-units/quantity_point.h</code> header file.</p>
 </div>
-<h4 id="zeroth_point_originquantityspec"><code>zeroth_point_origin&lt;QuantitySpec&gt;</code><a class="headerlink" href="#zeroth_point_originquantityspec" title="Permanent link">&para;</a></h4>
-<p><code>zeroth_point_origin&lt;QuantitySpec&gt;</code> is meant to be used in cases where the specific domain
-has a well-established, non-controversial, and unique zeroth point on the measurement scale.
+<h4 id="natural_point_originquantityspec"><code>natural_point_origin&lt;QuantitySpec&gt;</code><a class="headerlink" href="#natural_point_originquantityspec" title="Permanent link">&para;</a></h4>
+<p><code>natural_point_origin&lt;QuantitySpec&gt;</code> is meant to be used in cases where the specific domain
+has a well-established, non-controversial, and unique natural origin on the measurement scale.
 This saves the user from the need to write a boilerplate code that would predefine such a type
 for this domain.</p>
 <p><img alt="affine_space_1" src="../affine_space_1.svg" style="width:80%;display: block;margin: 0 auto;" /></p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">distance</span><span class="p">[</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">qp1</span><span class="p">(</span><span class="mi">100</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">);</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">distance</span><span class="p">[</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">qp2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">m</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">120</span><span class="p">);</span>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">assert</span><span class="p">(</span><span class="n">qp1</span><span class="p">.</span><span class="n">quantity_from_zero</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">100</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">);</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">assert</span><span class="p">(</span><span class="n">qp2</span><span class="p">.</span><span class="n">quantity_from_zero</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">120</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">);</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">assert</span><span class="p">(</span><span class="n">qp1</span><span class="p">.</span><span class="n">quantity_from_unit_zero</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">100</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">);</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">assert</span><span class="p">(</span><span class="n">qp2</span><span class="p">.</span><span class="n">quantity_from_unit_zero</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">120</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">);</span>
 </span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="n">assert</span><span class="p">(</span><span class="n">qp2</span><span class="p">.</span><span class="n">quantity_from</span><span class="p">(</span><span class="n">qp1</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">20</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">);</span>
 </span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="n">assert</span><span class="p">(</span><span class="n">qp1</span><span class="p">.</span><span class="n">quantity_from</span><span class="p">(</span><span class="n">qp2</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">-20</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">);</span>
 </span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
@@ -11729,13 +11740,13 @@ for this domain.</p>
 </span></code></pre></div>
 <p>In the above code <code>100 * m</code> and <code>120 * m</code> still create two quantities that serve as
 <em>displacement vectors</em> here. Quantity point objects can be explicitly constructed from
-such quantities only when their origin is an instantiation of the <code>zeroth_point_origin&lt;QuantitySpec&gt;</code>.</p>
-<p>It is really important to understand that even though we can use <code>.quantity_from_zero()</code>
+such quantities only when their origin is an instantiation of the <code>natural_point_origin&lt;QuantitySpec&gt;</code>.</p>
+<p>It is really important to understand that even though we can use <code>.quantity_from_unit_zero()</code>
 to obtain the <em>displacement vector</em> of a point from the origin, the point by itself does
 not represent or have any associated physical value. It is just a point in some space.
 The same point can be expressed with different <em>displacement vectors</em> from different origins.</p>
 <p>It is also worth mentioning that simplicity comes with a safety cost here. For some users,
-it might be surprising that the usage of <code>zeroth_point_origin&lt;QuantitySpec&gt;</code> makes various
+it might be surprising that the usage of <code>natural_point_origin&lt;QuantitySpec&gt;</code> makes various
 quantity point objects compatible as long as quantity types used in the origin and reference
 are compatible:</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="o">&gt;</span><span class="w"> </span><span class="n">qp1</span><span class="p">{</span><span class="n">isq</span><span class="o">::</span><span class="n">distance</span><span class="p">(</span><span class="mi">100</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">)};</span>
@@ -11758,8 +11769,8 @@ an absolute point origin.</p>
 </span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="o">&gt;</span><span class="w"> </span><span class="n">qp1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">origin</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">100</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span>
 </span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="o">&gt;</span><span class="w"> </span><span class="n">qp2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">120</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">origin</span><span class="p">;</span>
 </span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="c1">// assert(qp1.quantity_from_zero() == 100 * m);   // Compile-time error</span>
-</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="c1">// assert(qp2.quantity_from_zero() == 120 * m);   // Compile-time error</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="c1">// assert(qp1.quantity_from_unit_zero() == 100 * m);   // Compile-time error</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="c1">// assert(qp2.quantity_from_unit_zero() == 120 * m);   // Compile-time error</span>
 </span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="n">assert</span><span class="p">(</span><span class="n">qp1</span><span class="p">.</span><span class="n">quantity_from</span><span class="p">(</span><span class="n">origin</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">100</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">);</span>
 </span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="n">assert</span><span class="p">(</span><span class="n">qp2</span><span class="p">.</span><span class="n">quantity_from</span><span class="p">(</span><span class="n">origin</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">120</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">);</span>
 </span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="n">assert</span><span class="p">(</span><span class="n">qp2</span><span class="p">.</span><span class="n">quantity_from</span><span class="p">(</span><span class="n">qp1</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">20</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">);</span>
@@ -11794,10 +11805,10 @@ can be achieved with a two-parameter constructor:</p>
 </span></code></pre></div>
 <p>Again, CTAD always helps to use precisely the type we need in a current case.</p>
 <p>Additionally, if a quantity point is defined in terms of a custom, named origin, then we
-can't use a <code>quantity_from_zero()</code> member function anymore. This is to prevent surprises,
+can't use a <code>quantity_from_unit_zero()</code> member function anymore. This is to prevent surprises,
 as our origin may not necessarily be perceived as an absolute zero in the domain we model.
 Also, as we will learn soon, we can define several related origins in one space, and then
-it gets harder to understand which one is the "zero" one. This is why, to be specific and
+it gets harder to understand which one is the zero one. This is why, to be specific and
 always correct about the points we use, a <code>quantity_from(QP)</code> member function can be used
 (where <code>QP</code> can either be an origin or another quantity point).</p>
 <p>Finally, please note that it is not allowed to subtract two point origins defined in terms
@@ -11929,24 +11940,22 @@ predefined point origins for this purpose:</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">si</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
 </span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">absolute_zero</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">absolute_point_origin</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">thermodynamic_temperature</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">absolute_zero</span><span class="p">;</span>
-</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">zeroth_kelvin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">absolute_zero</span><span class="p">;</span>
-</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>
-</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">ice_point</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">relative_point_origin</span><span class="o">&lt;</span><span class="n">point</span><span class="o">&lt;</span><span class="n">milli</span><span class="o">&lt;</span><span class="n">kelvin</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="mi">273&#39;150</span><span class="p">)}</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">ice_point</span><span class="p">;</span>
-</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">zeroth_degree_Celsius</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ice_point</span><span class="p">;</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">ice_point</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">relative_point_origin</span><span class="o">&lt;</span><span class="n">point</span><span class="o">&lt;</span><span class="n">milli</span><span class="o">&lt;</span><span class="n">kelvin</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="mi">273&#39;150</span><span class="p">)}</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">ice_point</span><span class="p">;</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="p">}</span>
 </span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>
-</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="p">}</span>
+</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">usc</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>
-</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">usc</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-11-12"><a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>
-</span><span id="__span-11-13"><a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">zeroth_degree_Fahrenheit</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span>
-</span><span id="__span-11-14"><a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a><span class="w">  </span><span class="n">relative_point_origin</span><span class="o">&lt;</span><span class="n">point</span><span class="o">&lt;</span><span class="n">mag_ratio</span><span class="o">&lt;</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="o">&gt;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">degree_Celsius</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">-32</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">zeroth_degree_Fahrenheit</span><span class="p">;</span>
-</span><span id="__span-11-15"><a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a>
-</span><span id="__span-11-16"><a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a><span class="p">}</span>
+</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">fahrenheit_zero</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span>
+</span><span id="__span-11-12"><a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a><span class="w">  </span><span class="n">relative_point_origin</span><span class="o">&lt;</span><span class="n">point</span><span class="o">&lt;</span><span class="n">mag_ratio</span><span class="o">&lt;</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="o">&gt;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">degree_Celsius</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">-32</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">fahrenheit_zero</span><span class="p">;</span>
+</span><span id="__span-11-13"><a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>
+</span><span id="__span-11-14"><a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a><span class="p">}</span>
 </span></code></pre></div>
 <p>The above is a great example of how point origins can be stacked on top of each other:</p>
 <ul>
-<li><code>usc::zeroth_degree_Fahrenheit</code> is defined relative to <code>si::zeroth_degree_Celsius</code></li>
-<li><code>si::zeroth_degree_Celsius</code> is defined relative to <code>si::zeroth_kelvin</code>.</li>
+<li><code>usc::fahrenheit_zero</code> is defined relative to <code>si::ice_point</code></li>
+<li><code>si::ice_point</code> is defined relative to <code>si::absolute_zero</code>.</li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -11960,9 +11969,9 @@ definitions:</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">si</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>
 </span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">kelvin</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span>
-</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">    </span><span class="n">named_unit</span><span class="o">&lt;</span><span class="s">&quot;K&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">thermodynamic_temperature</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">zeroth_kelvin</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">kelvin</span><span class="p">;</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">    </span><span class="n">named_unit</span><span class="o">&lt;</span><span class="s">&quot;K&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">thermodynamic_temperature</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">absolute_zero</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">kelvin</span><span class="p">;</span>
 </span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">degree_Celsius</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span>
-</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="w">    </span><span class="n">named_unit</span><span class="o">&lt;</span><span class="p">{</span><span class="sa">u8</span><span class="s">&quot;℃&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;`C&quot;</span><span class="p">},</span><span class="w"> </span><span class="n">kelvin</span><span class="p">,</span><span class="w"> </span><span class="n">zeroth_degree_Celsius</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">degree_Celsius</span><span class="p">;</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="w">    </span><span class="n">named_unit</span><span class="o">&lt;</span><span class="p">{</span><span class="sa">u8</span><span class="s">&quot;℃&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;`C&quot;</span><span class="p">},</span><span class="w"> </span><span class="n">kelvin</span><span class="p">,</span><span class="w"> </span><span class="n">ice_point</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">degree_Celsius</span><span class="p">;</span>
 </span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>
 </span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="p">}</span>
 </span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>
@@ -11970,11 +11979,11 @@ definitions:</p>
 </span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>
 </span><span id="__span-12-12"><a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">degree_Fahrenheit</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span>
 </span><span id="__span-12-13"><a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a><span class="w">    </span><span class="n">named_unit</span><span class="o">&lt;</span><span class="p">{</span><span class="sa">u8</span><span class="s">&quot;℉&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;`F&quot;</span><span class="p">},</span><span class="w"> </span><span class="n">mag_ratio</span><span class="o">&lt;</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="o">&gt;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">degree_Celsius</span><span class="p">,</span>
-</span><span id="__span-12-14"><a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a><span class="w">               </span><span class="n">zeroth_degree_Fahrenheit</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">degree_Fahrenheit</span><span class="p">;</span>
+</span><span id="__span-12-14"><a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a><span class="w">               </span><span class="n">fahrenheit_zero</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">degree_Fahrenheit</span><span class="p">;</span>
 </span><span id="__span-12-15"><a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a>
 </span><span id="__span-12-16"><a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a><span class="p">}</span>
 </span></code></pre></div>
-<p>As it was described above, <code>default_point_origin(R)</code> returns a <code>zeroth_point_origin&lt;QuantitySpec&gt;</code>
+<p>As it was described above, <code>default_point_origin(R)</code> returns a <code>natural_point_origin&lt;QuantitySpec&gt;</code>
 when a unit does not provide any origin in its definition. As of today, the units of temperature
 are the only ones in the entire <strong>mp-units</strong> library that provide such origins.</p>
 <p>Now, let's see how we can benefit from the above definitions. We have quite a few alternatives
@@ -11982,24 +11991,24 @@ to choose from here. Depending on our needs or tastes, we can:</p>
 <ul>
 <li>
 <p>be explicit about the unit and origin:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">degree_Celsius</span><span class="p">,</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">zeroth_degree_Celsius</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">zeroth_degree_Celsius</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">delta</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">20.5</span><span class="p">);</span>
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">degree_Celsius</span><span class="p">,</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">zeroth_degree_Celsius</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q2</span><span class="p">{</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">20.5</span><span class="p">),</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">zeroth_degree_Celsius</span><span class="p">};</span>
-</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">degree_Celsius</span><span class="p">,</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">zeroth_degree_Celsius</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q3</span><span class="p">{</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">20.5</span><span class="p">)};</span>
-</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">degree_Celsius</span><span class="p">,</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">zeroth_degree_Celsius</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">20.5</span><span class="p">);</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">degree_Celsius</span><span class="p">,</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">ice_point</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">ice_point</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">delta</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">20.5</span><span class="p">);</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">degree_Celsius</span><span class="p">,</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">ice_point</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q2</span><span class="p">{</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">20.5</span><span class="p">),</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">ice_point</span><span class="p">};</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">degree_Celsius</span><span class="p">,</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">ice_point</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q3</span><span class="p">{</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">20.5</span><span class="p">)};</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">degree_Celsius</span><span class="p">,</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">ice_point</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">20.5</span><span class="p">);</span>
 </span></code></pre></div>
 </li>
 <li>
-<p>specify a unit and use its zeroth point origin implicitly:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">degree_Celsius</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q5</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">zeroth_degree_Celsius</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">delta</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">20.5</span><span class="p">);</span>
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">degree_Celsius</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q6</span><span class="p">{</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">20.5</span><span class="p">),</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">zeroth_degree_Celsius</span><span class="p">};</span>
+<p>specify a unit and use its point origin implicitly:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">degree_Celsius</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q5</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">ice_point</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">delta</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">20.5</span><span class="p">);</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">degree_Celsius</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q6</span><span class="p">{</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">20.5</span><span class="p">),</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">ice_point</span><span class="p">};</span>
 </span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">degree_Celsius</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q7</span><span class="p">{</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">20.5</span><span class="p">)};</span>
 </span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">degree_Celsius</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q8</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">20.5</span><span class="p">);</span>
 </span></code></pre></div>
 </li>
 <li>
 <p>benefit from CTAD:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">quantity_point</span><span class="w"> </span><span class="n">q9</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">zeroth_degree_Celsius</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">delta</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">20.5</span><span class="p">);</span>
-</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="n">quantity_point</span><span class="w"> </span><span class="n">q10</span><span class="p">{</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">20.5</span><span class="p">),</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">zeroth_degree_Celsius</span><span class="p">};</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">quantity_point</span><span class="w"> </span><span class="n">q9</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">ice_point</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">delta</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">20.5</span><span class="p">);</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="n">quantity_point</span><span class="w"> </span><span class="n">q10</span><span class="p">{</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">20.5</span><span class="p">),</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">ice_point</span><span class="p">};</span>
 </span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="n">quantity_point</span><span class="w"> </span><span class="n">q11</span><span class="p">{</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">20.5</span><span class="p">)};</span>
 </span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="n">quantity_point</span><span class="w"> </span><span class="n">q12</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">20.5</span><span class="p">);</span>
 </span></code></pre></div>
@@ -12020,9 +12029,9 @@ in the following way:</p>
 </span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="n">room_temp</span><span class="w"> </span><span class="n">room_high</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">room_ref</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">number_of_steps</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">step_delta</span><span class="p">;</span>
 </span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>
 </span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a><span class="n">std</span><span class="o">::</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Room reference temperature: {} ({}, {::N[.2f]})</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
-</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a><span class="w">             </span><span class="n">room_ref</span><span class="p">.</span><span class="n">quantity_from_zero</span><span class="p">(),</span>
-</span><span id="__span-16-13"><a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a><span class="w">             </span><span class="n">room_ref</span><span class="p">.</span><span class="n">in</span><span class="p">(</span><span class="n">usc</span><span class="o">::</span><span class="n">degree_Fahrenheit</span><span class="p">).</span><span class="n">quantity_from_zero</span><span class="p">(),</span>
-</span><span id="__span-16-14"><a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a><span class="w">             </span><span class="n">room_ref</span><span class="p">.</span><span class="n">in</span><span class="p">(</span><span class="n">si</span><span class="o">::</span><span class="n">kelvin</span><span class="p">).</span><span class="n">quantity_from_zero</span><span class="p">());</span>
+</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a><span class="w">             </span><span class="n">room_ref</span><span class="p">.</span><span class="n">quantity_from_unit_zero</span><span class="p">(),</span>
+</span><span id="__span-16-13"><a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a><span class="w">             </span><span class="n">room_ref</span><span class="p">.</span><span class="n">in</span><span class="p">(</span><span class="n">usc</span><span class="o">::</span><span class="n">degree_Fahrenheit</span><span class="p">).</span><span class="n">quantity_from_unit_zero</span><span class="p">(),</span>
+</span><span id="__span-16-14"><a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a><span class="w">             </span><span class="n">room_ref</span><span class="p">.</span><span class="n">in</span><span class="p">(</span><span class="n">si</span><span class="o">::</span><span class="n">kelvin</span><span class="p">).</span><span class="n">quantity_from_unit_zero</span><span class="p">());</span>
 </span><span id="__span-16-15"><a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a>
 </span><span id="__span-16-16"><a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a><span class="n">std</span><span class="o">::</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;| {:&lt;18} | {:^18} | {:^18} | {:^18} |&quot;</span><span class="p">,</span>
 </span><span id="__span-16-17"><a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a><span class="w">             </span><span class="s">&quot;Temperature delta&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Room reference&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Ice point&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Absolute zero&quot;</span><span class="p">);</span>
@@ -12067,10 +12076,76 @@ by itself.</p>
 <li>Temperature sensors: operating range [−40°C, 85°C]</li>
 <li>Control systems: valid input range [0, 100] units</li>
 </ul>
-<p>The library provides four overflow policies (<code>assert_in_range</code>, <code>clamp_to_range</code>,
-<code>wrap_to_range</code>, <code>reflect_in_range</code>) that can be attached to point origins via the
+<p>The library provides six overflow policies that can be attached to point origins via the
 <code>quantity_bounds</code> customization point. These policies enforce bounds during construction,
 unit conversion, and arithmetic operations.</p>
+<h3 id="available-overflow-policies">Available Overflow Policies<a class="headerlink" href="#available-overflow-policies" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Policy</th>
+<th>Availability</th>
+<th>Behavior</th>
+<th>Error Handling</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>assert_in_range</code></td>
+<td>Always</td>
+<td>Asserts if out of bounds (may be disabled in release builds)</td>
+<td>Contract violation</td>
+<td>Development/debugging, logic error detection</td>
+</tr>
+<tr>
+<td><code>throw_on_overflow</code></td>
+<td>Hosted only</td>
+<td>Throws <code>std::overflow_error</code> when out of bounds</td>
+<td>Exception (recoverable)</td>
+<td>Input validation, user-facing APIs</td>
+</tr>
+<tr>
+<td><code>terminate_on_overflow</code></td>
+<td>Always</td>
+<td>Terminates immediately when out of bounds (always checks)</td>
+<td>Terminate (fatal)</td>
+<td>Safety-critical systems requiring immediate halt</td>
+</tr>
+<tr>
+<td><code>clamp_to_range</code></td>
+<td>Always</td>
+<td>Clamps to nearest boundary: <code>clamp(value, min, max)</code></td>
+<td>Silent correction</td>
+<td>Saturating arithmetic, sensor limits, UI controls</td>
+</tr>
+<tr>
+<td><code>wrap_to_range</code></td>
+<td>Always</td>
+<td>Wraps circularly to <code>[min, max)</code>: modulo arithmetic</td>
+<td>Value transformation</td>
+<td>Periodic quantities (angles, time-of-day, longitude)</td>
+</tr>
+<tr>
+<td><code>reflect_in_range</code></td>
+<td>Always</td>
+<td>Reflects at boundaries (like a bouncing ball)</td>
+<td>Value transformation</td>
+<td>Geographic latitude, physical boundaries</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Contract Checking vs. Always-On Checking</p>
+<ul>
+<li><code>assert_in_range</code> uses <code>MP_UNITS_EXPECTS</code> which may be disabled in release builds</li>
+<li><code>terminate_on_overflow</code> <strong>always</strong> checks bounds and <strong>always</strong> terminates on violation (freestanding-safe)</li>
+<li><code>throw_on_overflow</code> <strong>always</strong> checks bounds and <strong>always</strong> throws on violation (hosted only)</li>
+</ul>
+<p>Use <code>assert_in_range</code> for logic errors you expect to never happen in correct code.
+Use <code>terminate_on_overflow</code> or <code>throw_on_overflow</code> when you need guaranteed bounds checking.</p>
+</div>
+<h3 id="example-usage">Example Usage<a class="headerlink" href="#example-usage" title="Permanent link">&para;</a></h3>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mp-units/overflow_policies.h&gt;</span>
 </span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mp-units/framework.h&gt;</span>
 </span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>
@@ -12106,38 +12181,6 @@ unit conversion, and arithmetic operations.</p>
 </span><span id="__span-18-33"><a id="__codelineno-18-33" name="__codelineno-18-33" href="#__codelineno-18-33"></a><span class="w">  </span><span class="n">lon</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mf">200.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">deg</span><span class="p">;</span><span class="w">          </span><span class="c1">// Result wraps: -90 + 200 = 110°</span>
 </span><span id="__span-18-34"><a id="__codelineno-18-34" name="__codelineno-18-34" href="#__codelineno-18-34"></a><span class="p">}</span>
 </span></code></pre></div>
-<h3 id="available-overflow-policies">Available Overflow Policies<a class="headerlink" href="#available-overflow-policies" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Policy</th>
-<th>Behavior</th>
-<th>Use Case</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>assert_in_range</code></td>
-<td>Asserts if value is out of bounds (default, fastest)</td>
-<td>Development/debugging, critical safety</td>
-</tr>
-<tr>
-<td><code>clamp_to_range</code></td>
-<td>Clamps to nearest boundary: <code>min(max(value, min), max)</code></td>
-<td>Sensors with saturation, UI sliders</td>
-</tr>
-<tr>
-<td><code>wrap_to_range</code></td>
-<td>Wraps circularly: <code>(value - min) mod range + min</code></td>
-<td>Angles, cyclic coordinates (longitude)</td>
-</tr>
-<tr>
-<td><code>reflect_in_range</code></td>
-<td>Reflects at boundaries like a bouncing ball</td>
-<td>Geographic latitude, oscillating systems</td>
-</tr>
-</tbody>
-</table>
 <h3 id="how-it-works">How It Works?<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h3>
 <p>Bounds are enforced at these points:</p>
 <ol>
@@ -12148,13 +12191,6 @@ unit conversion, and arithmetic operations.</p>
 </ol>
 <p>The implementation calls <code>enforce_bounds&lt;origin&gt;()</code> after each mutation, which applies the
 policy specified in <code>quantity_bounds&lt;origin&gt;</code>.</p>
-<div class="admonition info">
-<p class="admonition-title">Contract Checking</p>
-<p>When using <code>assert_in_range</code> (the default), bounds checking uses the library's contract
-checking macros (<code>MP_UNITS_EXPECTS</code>). See [Contract Checking Macros]
-(../../how_to_guides/integration/wide_compatibility.md#contract-checking-macros)
-for configuration options.</p>
-</div>
 <details class="note">
 <summary>Implementation reference</summary>
 <p>See <a href="https://github.com/mpusz/mp-units/blob/master/example/include/geographic.h"><code>geographic.h</code></a> for a complete working example, and <a href="https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/overflow_policies.h"><code>overflow_policies.h</code></a> for policy implementations.</p>

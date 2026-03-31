@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.3.31)  31 MAR 2026 09:44
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.3.31)  31 MAR 2026 20:06
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -1391,7 +1391,7 @@ LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2020/03/25>
  ***********
 Package rerunfilecheck Info: File `std.out' has not changed.
-(rerunfilecheck)             Checksum: A5A00963E80CB29FC6732D2CF72A8A4C;26639.
+(rerunfilecheck)             Checksum: 3915B00F338F4CC42C44F193C217E0A2;26644.
  )
 (\end occurred inside a group at level 1)
 
@@ -1399,7 +1399,7 @@ Package rerunfilecheck Info: File `std.out' has not changed.
 ### bottom level 
 Here is how much of TeX's memory you used:
  24768 strings out of 476182
- 388398 string characters out of 5795595
+ 388414 string characters out of 5795595
  2010975 words of memory out of 5000000
  45346 multiletter control sequences out of 15000+600000
  681921 words of font info for 209 fonts, out of 8000000 for 9000
@@ -1422,7 +1422,7 @@ ype1/public/lm/lmsy9.pfb></usr/share/texmf/fonts/type1/public/lm/lmtcsc10.pfb><
 /public/lm/lmtko10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></usr
 /share/texmf/fonts/type1/public/lm/lmtt8.pfb></usr/share/texmf/fonts/type1/publ
 ic/lm/lmtt9.pfb></usr/share/texmf/fonts/type1/public/lm/lmtti10.pfb>
-Output written on std.pdf (89 pages, 741069 bytes).
+Output written on std.pdf (89 pages, 741089 bytes).
 PDF statistics:
  3092 PDF objects out of 3580 (max. 8388607)
  2910 compressed objects within 30 object streams

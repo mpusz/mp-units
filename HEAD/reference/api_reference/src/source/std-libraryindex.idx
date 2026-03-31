@@ -25,7 +25,7 @@
 \indexentry{disable_scalar@\texttt  {\frenchspacing disable_scalar}!std::complex@\texttt  {\frenchspacing std::complex}|hyperpage}{12}
 \indexentry{delta@\texttt  {\frenchspacing delta}|hyperpage}{13}
 \indexentry{std::common_type@\texttt  {\frenchspacing std::common_type}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{13}
-\indexentry{zeroth_point_origin@\texttt  {\frenchspacing zeroth_point_origin}|hyperpage}{14}
+\indexentry{natural_point_origin@\texttt  {\frenchspacing natural_point_origin}|hyperpage}{14}
 \indexentry{point@\texttt  {\frenchspacing point}|hyperpage}{14}
 \indexentry{chrono_point_origin@\texttt  {\frenchspacing chrono_point_origin}|hyperpage}{15}
 \indexentry{is-specialization-of@\texttt  {\frenchspacing \textit  {is-specialization-of}}|hyperpage}{15}
@@ -431,7 +431,7 @@
 \indexentry{PointOriginFor@\texttt  {\frenchspacing PointOriginFor}|hyperpage}{61}
 \indexentry{absolute_point_origin@\texttt  {\frenchspacing absolute_point_origin}|hyperpage}{61}
 \indexentry{relative_point_origin@\texttt  {\frenchspacing relative_point_origin}|hyperpage}{61}
-\indexentry{zeroth_point_origin_@\texttt  {\frenchspacing zeroth_point_origin_}|hyperpage}{62}
+\indexentry{natural_point_origin_@\texttt  {\frenchspacing natural_point_origin_}|hyperpage}{62}
 \indexentry{operator+@\texttt  {\frenchspacing operator+}!point-origin-interface@\texttt  {\frenchspacing \textit  {point-origin-interface}}|hyperpage}{62}
 \indexentry{point-origin-interface@\texttt  {\frenchspacing \textit  {point-origin-interface}}!operator+@\texttt  {\frenchspacing operator+}|hyperpage}{62}
 \indexentry{operator+@\texttt  {\frenchspacing operator+}!quantity@\texttt  {\frenchspacing \textit  {quantity}}|hyperpage}{62}
@@ -470,8 +470,8 @@
 \indexentry{quantity_point@\texttt  {\frenchspacing quantity_point}!quantity_ref_from@\texttt  {\frenchspacing quantity_ref_from}|hyperpage}{68}
 \indexentry{quantity_from@\texttt  {\frenchspacing quantity_from}!quantity_point@\texttt  {\frenchspacing quantity_point}|hyperpage}{68}
 \indexentry{quantity_point@\texttt  {\frenchspacing quantity_point}!quantity_from@\texttt  {\frenchspacing quantity_from}|hyperpage}{68}
-\indexentry{quantity_from_zero@\texttt  {\frenchspacing quantity_from_zero}!quantity_point@\texttt  {\frenchspacing quantity_point}|hyperpage}{69}
-\indexentry{quantity_point@\texttt  {\frenchspacing quantity_point}!quantity_from_zero@\texttt  {\frenchspacing quantity_from_zero}|hyperpage}{69}
+\indexentry{quantity_from_unit_zero@\texttt  {\frenchspacing quantity_from_unit_zero}!quantity_point@\texttt  {\frenchspacing quantity_point}|hyperpage}{69}
+\indexentry{quantity_point@\texttt  {\frenchspacing quantity_point}!quantity_from_unit_zero@\texttt  {\frenchspacing quantity_from_unit_zero}|hyperpage}{69}
 \indexentry{quantity_point@\texttt  {\frenchspacing quantity_point}!operator QuantityPointLike@\texttt  {\frenchspacing operator QuantityPointLike}|hyperpage}{69}
 \indexentry{operator++@\texttt  {\frenchspacing operator++}!quantity_point@\texttt  {\frenchspacing quantity_point}|hyperpage}{69}
 \indexentry{quantity_point@\texttt  {\frenchspacing quantity_point}!operator++@\texttt  {\frenchspacing operator++}|hyperpage}{69}
