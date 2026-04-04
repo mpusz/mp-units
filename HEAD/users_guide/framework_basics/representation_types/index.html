@@ -2260,6 +2260,17 @@ You're not viewing the latest version.
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#constraint-violation-handler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        constraint_violation_handler&lt;Rep&gt;
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -11956,9 +11967,12 @@ overflow policies can be attached directly to point origins via <code>quantity_b
 See <a href="../the_affine_space/#range-validated-quantity-points">Range-Validated Quantity Points</a>.</p>
 </div>
 <h2 id="customization-points">Customization Points<a class="headerlink" href="#customization-points" title="Permanent link">&para;</a></h2>
-<p>The library provides several customization mechanisms for representation types. These fall
-into two categories: <strong>Character determination</strong> (what kind of representation type you have)
-and <strong>Behavior and values</strong> (how the library interacts with your type).</p>
+<p>The library provides several customization mechanisms for representation types.
+For a complete implementation guide and code examples for custom types, see
+<a href="../../../how_to_guides/integration/using_custom_representation_types/">Using Custom Representation Types</a>.</p>
+<p>These mechanisms fall into two categories: <strong>Character determination</strong> (what kind of
+representation type you have) and <strong>Behavior and values</strong> (how the library interacts with
+your type).</p>
 <h3 id="character-determination">Character Determination<a class="headerlink" href="#character-determination" title="Permanent link">&para;</a></h3>
 <h4 id="customization-point-objects-cpos">Customization Point Objects (CPOs)<a class="headerlink" href="#customization-point-objects-cpos" title="Permanent link">&para;</a></h4>
 <p>The library uses several CPOs to support different representation types. Providing these CPOs
@@ -12212,6 +12226,11 @@ for the full picture.</p>
 <li>Mathematical operations like <code>floor()</code>, <code>ceil()</code>, <code>round()</code></li>
 <li>Division by zero checks</li>
 </ul>
+<hr />
+<h4 id="constraint-violation-handler"><code>constraint_violation_handler&lt;Rep&gt;</code><a class="headerlink" href="#constraint-violation-handler" title="Permanent link">&para;</a></h4>
+<p>A specializable class template that defines how constraint violations are reported for
+a representation type. For usage and code examples, see
+<a href="../../../how_to_guides/advanced_usage/ultimate_safety/">Ensure Ultimate Safety</a>.</p>
 <h2 id="character-specific-operations">Character-Specific Operations<a class="headerlink" href="#character-specific-operations" title="Permanent link">&para;</a></h2>
 <p>The library enforces character at compile-time: vector quantities require <code>scalar_product()</code> or
 <code>vector_product()</code> instead of <code>*</code>; complex quantities restrict <code>real()</code>, <code>imag()</code>, and <code>modulus()</code>
@@ -12259,6 +12278,7 @@ examples.</p>
 <li><a href="../value_conversions/">Value Conversions</a> - How <code>treat_as_floating_point</code> affects conversions</li>
 <li><a href="../concepts/#RepresentationOf">Concepts</a> - The <code>RepresentationOf</code> concept definition</li>
 <li><a href="../../../how_to_guides/integration/using_custom_representation_types/">Using Custom Representation Types</a> - Step-by-step guide to creating custom representation types</li>
+<li><a href="../../../how_to_guides/advanced_usage/ultimate_safety/">Ensure Ultimate Safety</a> - Combining <code>constrained</code> reps with bounded quantity points</li>
 </ul>
 <!-- markdownlint-enable MD013 -->
 

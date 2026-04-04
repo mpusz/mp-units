@@ -11725,7 +11725,7 @@ You're not viewing the latest version.
 <ul>
 <li><a href="https://github.com/mpusz/mp-units/blob/c54d18e4892d8b4c0173054750aca5507fbf8e2e/example/glide_computer_lib/include/glide_computer_lib.h"><code>glide_computer_lib/glide_computer_lib.h</code></a> - Glider performance models and polar curves</li>
 <li><a href="https://github.com/mpusz/mp-units/blob/c54d18e4892d8b4c0173054750aca5507fbf8e2e/example/glide_computer_lib/glide_computer_lib.cpp"><code>glide_computer_lib/glide_computer_lib.cpp</code></a> - Implementation</li>
-<li><a href="https://github.com/mpusz/mp-units/blob/master/example/include/geographic.h"><code>include/geographic.h</code></a> - Geographic primitives with bounded <em>latitude</em>/<em>longitude</em> using overflow policies</li>
+<li><a href="https://github.com/mpusz/mp-units/blob/master/example/include/geographic.h"><code>include/geographic.h</code></a> - Geographic primitives: bounded coordinates (<em>latitude</em>, <em>longitude</em>, <em>elevation</em>) and orientation angles (<em>azimuth</em>, <em>bearing</em>, <em>heading</em>) with overflow policies and type-safe <code>is_kind</code> constraints</li>
 </ul>
 <p><strong>Example:</strong></p>
 <ul>
@@ -11810,73 +11810,231 @@ fundamental aerodynamic data needed for flight planning.</p>
 <h2 id="geographic-integration">Geographic Integration<a class="headerlink" href="#geographic-integration" title="Permanent link">&para;</a></h2>
 <p>The example uses a separate <code>geographic</code> module that provides type-safe geographic primitives.</p>
 <h3 id="position-and-coordinates">Position and Coordinates<a class="headerlink" href="#position-and-coordinates" title="Permanent link">&para;</a></h3>
-<div class="language-cpp highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">geographic.h</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-71">71</a></span>
-<span class="normal"><a href="#__codelineno-3-72">72</a></span>
-<span class="normal"><a href="#__codelineno-3-73">73</a></span>
-<span class="normal"><a href="#__codelineno-3-74">74</a></span>
-<span class="normal"><a href="#__codelineno-3-75">75</a></span>
-<span class="normal"><a href="#__codelineno-3-76">76</a></span>
-<span class="normal"><a href="#__codelineno-3-77">77</a></span>
-<span class="normal"><a href="#__codelineno-3-78">78</a></span>
-<span class="normal"><a href="#__codelineno-3-79">79</a></span>
-<span class="normal"><a href="#__codelineno-3-80">80</a></span>
-<span class="normal"><a href="#__codelineno-3-81">81</a></span>
-<span class="normal"><a href="#__codelineno-3-82">82</a></span>
-<span class="normal"><a href="#__codelineno-3-83">83</a></span>
-<span class="normal"><a href="#__codelineno-3-84">84</a></span>
-<span class="normal"><a href="#__codelineno-3-85">85</a></span>
-<span class="normal"><a href="#__codelineno-3-86">86</a></span>
-<span class="normal"><a href="#__codelineno-3-87">87</a></span>
-<span class="normal"><a href="#__codelineno-3-88">88</a></span>
-<span class="normal"><a href="#__codelineno-3-89">89</a></span>
-<span class="normal"><a href="#__codelineno-3-90">90</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-71"><a id="__codelineno-3-71" name="__codelineno-3-71"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">geographic</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-3-72"><a id="__codelineno-3-72" name="__codelineno-3-72"></a>
-</span><span id="__span-3-73"><a id="__codelineno-3-73" name="__codelineno-3-73"></a><span class="c1">// quantity specifications for geographic coordinates</span>
-</span><span id="__span-3-74"><a id="__codelineno-3-74" name="__codelineno-3-74"></a><span class="n">QUANTITY_SPEC</span><span class="p">(</span><span class="n">geo_latitude</span><span class="p">,</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="p">);</span>
-</span><span id="__span-3-75"><a id="__codelineno-3-75" name="__codelineno-3-75"></a><span class="n">QUANTITY_SPEC</span><span class="p">(</span><span class="n">geo_longitude</span><span class="p">,</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="p">);</span>
-</span><span id="__span-3-76"><a id="__codelineno-3-76" name="__codelineno-3-76"></a>
-</span><span id="__span-3-77"><a id="__codelineno-3-77" name="__codelineno-3-77"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">equator</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">absolute_point_origin</span><span class="o">&lt;</span><span class="n">geo_latitude</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-3-78"><a id="__codelineno-3-78" name="__codelineno-3-78"></a><span class="p">}</span><span class="w"> </span><span class="n">equator</span><span class="p">;</span>
-</span><span id="__span-3-79"><a id="__codelineno-3-79" name="__codelineno-3-79"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">prime_meridian</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">absolute_point_origin</span><span class="o">&lt;</span><span class="n">geo_longitude</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-3-80"><a id="__codelineno-3-80" name="__codelineno-3-80"></a><span class="p">}</span><span class="w"> </span><span class="n">prime_meridian</span><span class="p">;</span>
-</span><span id="__span-3-81"><a id="__codelineno-3-81" name="__codelineno-3-81"></a>
-</span><span id="__span-3-82"><a id="__codelineno-3-82" name="__codelineno-3-82"></a><span class="p">}</span><span class="w">  </span><span class="c1">// namespace geographic</span>
-</span><span id="__span-3-83"><a id="__codelineno-3-83" name="__codelineno-3-83"></a>
-</span><span id="__span-3-84"><a id="__codelineno-3-84" name="__codelineno-3-84"></a><span class="k">template</span><span class="o">&lt;&gt;</span>
-</span><span id="__span-3-85"><a id="__codelineno-3-85" name="__codelineno-3-85"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">quantity_bounds</span><span class="o">&lt;</span><span class="n">geographic</span><span class="o">::</span><span class="n">equator</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span>
-</span><span id="__span-3-86"><a id="__codelineno-3-86" name="__codelineno-3-86"></a><span class="w">  </span><span class="n">mp_units</span><span class="o">::</span><span class="n">reflect_in_range</span><span class="p">{</span><span class="mi">-90</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">si</span><span class="o">::</span><span class="n">degree</span><span class="p">,</span><span class="w"> </span><span class="mi">90</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">si</span><span class="o">::</span><span class="n">degree</span><span class="p">};</span>
-</span><span id="__span-3-87"><a id="__codelineno-3-87" name="__codelineno-3-87"></a>
-</span><span id="__span-3-88"><a id="__codelineno-3-88" name="__codelineno-3-88"></a><span class="k">template</span><span class="o">&lt;&gt;</span>
-</span><span id="__span-3-89"><a id="__codelineno-3-89" name="__codelineno-3-89"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">quantity_bounds</span><span class="o">&lt;</span><span class="n">geographic</span><span class="o">::</span><span class="n">prime_meridian</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span>
-</span><span id="__span-3-90"><a id="__codelineno-3-90" name="__codelineno-3-90"></a><span class="w">  </span><span class="n">mp_units</span><span class="o">::</span><span class="n">wrap_to_range</span><span class="p">{</span><span class="mi">-180</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">si</span><span class="o">::</span><span class="n">degree</span><span class="p">,</span><span class="w"> </span><span class="mi">180</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">si</span><span class="o">::</span><span class="n">degree</span><span class="p">};</span>
+<div class="language-cpp highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">geographic.h</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-96"> 96</a></span>
+<span class="normal"><a href="#__codelineno-3-97"> 97</a></span>
+<span class="normal"><a href="#__codelineno-3-98"> 98</a></span>
+<span class="normal"><a href="#__codelineno-3-99"> 99</a></span>
+<span class="normal"><a href="#__codelineno-3-100">100</a></span>
+<span class="normal"><a href="#__codelineno-3-101">101</a></span>
+<span class="normal"><a href="#__codelineno-3-102">102</a></span>
+<span class="normal"><a href="#__codelineno-3-103">103</a></span>
+<span class="normal"><a href="#__codelineno-3-104">104</a></span>
+<span class="normal"><a href="#__codelineno-3-105">105</a></span>
+<span class="normal"><a href="#__codelineno-3-106">106</a></span>
+<span class="normal"><a href="#__codelineno-3-107">107</a></span>
+<span class="normal"><a href="#__codelineno-3-108">108</a></span>
+<span class="normal"><a href="#__codelineno-3-109">109</a></span>
+<span class="normal"><a href="#__codelineno-3-110">110</a></span>
+<span class="normal"><a href="#__codelineno-3-111">111</a></span>
+<span class="normal"><a href="#__codelineno-3-112">112</a></span>
+<span class="normal"><a href="#__codelineno-3-113">113</a></span>
+<span class="normal"><a href="#__codelineno-3-114">114</a></span>
+<span class="normal"><a href="#__codelineno-3-115">115</a></span>
+<span class="normal"><a href="#__codelineno-3-116">116</a></span>
+<span class="normal"><a href="#__codelineno-3-117">117</a></span>
+<span class="normal"><a href="#__codelineno-3-118">118</a></span>
+<span class="normal"><a href="#__codelineno-3-119">119</a></span>
+<span class="normal"><a href="#__codelineno-3-120">120</a></span>
+<span class="normal"><a href="#__codelineno-3-121">121</a></span>
+<span class="normal"><a href="#__codelineno-3-122">122</a></span>
+<span class="normal"><a href="#__codelineno-3-123">123</a></span>
+<span class="normal"><a href="#__codelineno-3-124">124</a></span>
+<span class="normal"><a href="#__codelineno-3-125">125</a></span>
+<span class="normal"><a href="#__codelineno-3-126">126</a></span>
+<span class="normal"><a href="#__codelineno-3-127">127</a></span>
+<span class="normal"><a href="#__codelineno-3-128">128</a></span>
+<span class="normal"><a href="#__codelineno-3-129">129</a></span>
+<span class="normal"><a href="#__codelineno-3-130">130</a></span>
+<span class="normal"><a href="#__codelineno-3-131">131</a></span>
+<span class="normal"><a href="#__codelineno-3-132">132</a></span>
+<span class="normal"><a href="#__codelineno-3-133">133</a></span>
+<span class="normal"><a href="#__codelineno-3-134">134</a></span>
+<span class="normal"><a href="#__codelineno-3-135">135</a></span>
+<span class="normal"><a href="#__codelineno-3-136">136</a></span>
+<span class="normal"><a href="#__codelineno-3-137">137</a></span>
+<span class="normal"><a href="#__codelineno-3-138">138</a></span>
+<span class="normal"><a href="#__codelineno-3-139">139</a></span>
+<span class="normal"><a href="#__codelineno-3-140">140</a></span>
+<span class="normal"><a href="#__codelineno-3-141">141</a></span>
+<span class="normal"><a href="#__codelineno-3-142">142</a></span>
+<span class="normal"><a href="#__codelineno-3-143">143</a></span>
+<span class="normal"><a href="#__codelineno-3-144">144</a></span>
+<span class="normal"><a href="#__codelineno-3-145">145</a></span>
+<span class="normal"><a href="#__codelineno-3-146">146</a></span>
+<span class="normal"><a href="#__codelineno-3-147">147</a></span>
+<span class="normal"><a href="#__codelineno-3-148">148</a></span>
+<span class="normal"><a href="#__codelineno-3-149">149</a></span>
+<span class="normal"><a href="#__codelineno-3-150">150</a></span>
+<span class="normal"><a href="#__codelineno-3-151">151</a></span>
+<span class="normal"><a href="#__codelineno-3-152">152</a></span>
+<span class="normal"><a href="#__codelineno-3-153">153</a></span>
+<span class="normal"><a href="#__codelineno-3-154">154</a></span>
+<span class="normal"><a href="#__codelineno-3-155">155</a></span>
+<span class="normal"><a href="#__codelineno-3-156">156</a></span>
+<span class="normal"><a href="#__codelineno-3-157">157</a></span>
+<span class="normal"><a href="#__codelineno-3-158">158</a></span>
+<span class="normal"><a href="#__codelineno-3-159">159</a></span>
+<span class="normal"><a href="#__codelineno-3-160">160</a></span>
+<span class="normal"><a href="#__codelineno-3-161">161</a></span>
+<span class="normal"><a href="#__codelineno-3-162">162</a></span>
+<span class="normal"><a href="#__codelineno-3-163">163</a></span>
+<span class="normal"><a href="#__codelineno-3-164">164</a></span>
+<span class="normal"><a href="#__codelineno-3-165">165</a></span>
+<span class="normal"><a href="#__codelineno-3-166">166</a></span>
+<span class="normal"><a href="#__codelineno-3-167">167</a></span>
+<span class="normal"><a href="#__codelineno-3-168">168</a></span>
+<span class="normal"><a href="#__codelineno-3-169">169</a></span>
+<span class="normal"><a href="#__codelineno-3-170">170</a></span>
+<span class="normal"><a href="#__codelineno-3-171">171</a></span>
+<span class="normal"><a href="#__codelineno-3-172">172</a></span>
+<span class="normal"><a href="#__codelineno-3-173">173</a></span>
+<span class="normal"><a href="#__codelineno-3-174">174</a></span>
+<span class="normal"><a href="#__codelineno-3-175">175</a></span>
+<span class="normal"><a href="#__codelineno-3-176">176</a></span>
+<span class="normal"><a href="#__codelineno-3-177">177</a></span>
+<span class="normal"><a href="#__codelineno-3-178">178</a></span>
+<span class="normal"><a href="#__codelineno-3-179">179</a></span>
+<span class="normal"><a href="#__codelineno-3-180">180</a></span>
+<span class="normal"><a href="#__codelineno-3-181">181</a></span>
+<span class="normal"><a href="#__codelineno-3-182">182</a></span>
+<span class="normal"><a href="#__codelineno-3-183">183</a></span>
+<span class="normal"><a href="#__codelineno-3-184">184</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-96"><a id="__codelineno-3-96" name="__codelineno-3-96"></a><span class="c1">// Basic geographic coordinates</span>
+</span><span id="__span-3-97"><a id="__codelineno-3-97" name="__codelineno-3-97"></a><span class="n">QUANTITY_SPEC</span><span class="p">(</span><span class="n">geo_latitude</span><span class="p">,</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="p">,</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">is_kind</span><span class="p">);</span>
+</span><span id="__span-3-98"><a id="__codelineno-3-98" name="__codelineno-3-98"></a><span class="n">QUANTITY_SPEC</span><span class="p">(</span><span class="n">geo_longitude</span><span class="p">,</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="p">,</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">is_kind</span><span class="p">);</span>
+</span><span id="__span-3-99"><a id="__codelineno-3-99" name="__codelineno-3-99"></a><span class="n">QUANTITY_SPEC</span><span class="p">(</span><span class="n">geo_elevation</span><span class="p">,</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="p">,</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">is_kind</span><span class="p">);</span>
+</span><span id="__span-3-100"><a id="__codelineno-3-100" name="__codelineno-3-100"></a>
+</span><span id="__span-3-101"><a id="__codelineno-3-101" name="__codelineno-3-101"></a><span class="c1">// Orientation angles (different zero references and rotation directions)</span>
+</span><span id="__span-3-102"><a id="__codelineno-3-102" name="__codelineno-3-102"></a><span class="n">QUANTITY_SPEC</span><span class="p">(</span><span class="n">geometric_azimuth</span><span class="p">,</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="p">,</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">is_kind</span><span class="p">);</span>
+</span><span id="__span-3-103"><a id="__codelineno-3-103" name="__codelineno-3-103"></a><span class="n">QUANTITY_SPEC</span><span class="p">(</span><span class="n">geo_bearing</span><span class="p">,</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="p">,</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">is_kind</span><span class="p">);</span>
+</span><span id="__span-3-104"><a id="__codelineno-3-104" name="__codelineno-3-104"></a><span class="n">QUANTITY_SPEC</span><span class="p">(</span><span class="n">heading_azimuth</span><span class="p">,</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="p">,</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">is_kind</span><span class="p">);</span>
+</span><span id="__span-3-105"><a id="__codelineno-3-105" name="__codelineno-3-105"></a>
+</span><span id="__span-3-106"><a id="__codelineno-3-106" name="__codelineno-3-106"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">equator</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">absolute_point_origin</span><span class="o">&lt;</span><span class="n">geo_latitude</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-107"><a id="__codelineno-3-107" name="__codelineno-3-107"></a><span class="p">}</span><span class="w"> </span><span class="n">equator</span><span class="p">;</span>
+</span><span id="__span-3-108"><a id="__codelineno-3-108" name="__codelineno-3-108"></a>
+</span><span id="__span-3-109"><a id="__codelineno-3-109" name="__codelineno-3-109"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">prime_meridian</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">absolute_point_origin</span><span class="o">&lt;</span><span class="n">geo_longitude</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-110"><a id="__codelineno-3-110" name="__codelineno-3-110"></a><span class="p">}</span><span class="w"> </span><span class="n">prime_meridian</span><span class="p">;</span>
+</span><span id="__span-3-111"><a id="__codelineno-3-111" name="__codelineno-3-111"></a>
+</span><span id="__span-3-112"><a id="__codelineno-3-112" name="__codelineno-3-112"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">horizon</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">absolute_point_origin</span><span class="o">&lt;</span><span class="n">geo_elevation</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-113"><a id="__codelineno-3-113" name="__codelineno-3-113"></a><span class="p">}</span><span class="w"> </span><span class="n">horizon</span><span class="p">;</span>
+</span><span id="__span-3-114"><a id="__codelineno-3-114" name="__codelineno-3-114"></a>
+</span><span id="__span-3-115"><a id="__codelineno-3-115" name="__codelineno-3-115"></a><span class="c1">// Geometric azimuth: 0° = East, counter-clockwise positive, mirrored wrapping [-180°, 180°)</span>
+</span><span id="__span-3-116"><a id="__codelineno-3-116" name="__codelineno-3-116"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">east</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">absolute_point_origin</span><span class="o">&lt;</span><span class="n">geometric_azimuth</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-117"><a id="__codelineno-3-117" name="__codelineno-3-117"></a><span class="p">}</span><span class="w"> </span><span class="n">east</span><span class="p">;</span>
+</span><span id="__span-3-118"><a id="__codelineno-3-118" name="__codelineno-3-118"></a>
+</span><span id="__span-3-119"><a id="__codelineno-3-119" name="__codelineno-3-119"></a><span class="p">}</span><span class="w">  </span><span class="c1">// namespace geographic</span>
+</span><span id="__span-3-120"><a id="__codelineno-3-120" name="__codelineno-3-120"></a>
+</span><span id="__span-3-121"><a id="__codelineno-3-121" name="__codelineno-3-121"></a><span class="c1">// Geometric azimuth: mirrored wrapping [-180°, 180°)</span>
+</span><span id="__span-3-122"><a id="__codelineno-3-122" name="__codelineno-3-122"></a><span class="c1">// Note: This must be defined before using &#39;east&#39; in relative_point_origin</span>
+</span><span id="__span-3-123"><a id="__codelineno-3-123" name="__codelineno-3-123"></a><span class="k">template</span><span class="o">&lt;&gt;</span>
+</span><span id="__span-3-124"><a id="__codelineno-3-124" name="__codelineno-3-124"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">quantity_bounds</span><span class="o">&lt;</span><span class="n">geographic</span><span class="o">::</span><span class="n">east</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span>
+</span><span id="__span-3-125"><a id="__codelineno-3-125" name="__codelineno-3-125"></a><span class="w">  </span><span class="n">mp_units</span><span class="o">::</span><span class="n">wrap_to_range</span><span class="p">{</span><span class="mi">-180</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">si</span><span class="o">::</span><span class="n">degree</span><span class="p">,</span><span class="w"> </span><span class="mi">180</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">si</span><span class="o">::</span><span class="n">degree</span><span class="p">};</span>
+</span><span id="__span-3-126"><a id="__codelineno-3-126" name="__codelineno-3-126"></a>
+</span><span id="__span-3-127"><a id="__codelineno-3-127" name="__codelineno-3-127"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">geographic</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-128"><a id="__codelineno-3-128" name="__codelineno-3-128"></a>
+</span><span id="__span-3-129"><a id="__codelineno-3-129" name="__codelineno-3-129"></a><span class="c1">// Bearing: 0° = North, clockwise positive</span>
+</span><span id="__span-3-130"><a id="__codelineno-3-130" name="__codelineno-3-130"></a><span class="c1">// Note: bearing = 90° - geometric_azimuth (involves sign flip - cannot use relative_point_origin)</span>
+</span><span id="__span-3-131"><a id="__codelineno-3-131" name="__codelineno-3-131"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">north_cw</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">absolute_point_origin</span><span class="o">&lt;</span><span class="n">geo_bearing</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-132"><a id="__codelineno-3-132" name="__codelineno-3-132"></a><span class="p">}</span><span class="w"> </span><span class="n">north_cw</span><span class="p">;</span>
+</span><span id="__span-3-133"><a id="__codelineno-3-133" name="__codelineno-3-133"></a>
+</span><span id="__span-3-134"><a id="__codelineno-3-134" name="__codelineno-3-134"></a><span class="c1">// Heading azimuth: 0° = North, counter-clockwise positive (heading = geometric_azimuth - 90°)</span>
+</span><span id="__span-3-135"><a id="__codelineno-3-135" name="__codelineno-3-135"></a><span class="c1">// Implemented as a relative origin: offset -90° from east</span>
+</span><span id="__span-3-136"><a id="__codelineno-3-136" name="__codelineno-3-136"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">north_ccw</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">relative_point_origin</span><span class="o">&lt;</span><span class="n">east</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">90.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">si</span><span class="o">::</span><span class="n">degree</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-137"><a id="__codelineno-3-137" name="__codelineno-3-137"></a><span class="p">}</span><span class="w"> </span><span class="n">north_ccw</span><span class="p">;</span>
+</span><span id="__span-3-138"><a id="__codelineno-3-138" name="__codelineno-3-138"></a>
+</span><span id="__span-3-139"><a id="__codelineno-3-139" name="__codelineno-3-139"></a><span class="p">}</span><span class="w">  </span><span class="c1">// namespace geographic</span>
+</span><span id="__span-3-140"><a id="__codelineno-3-140" name="__codelineno-3-140"></a>
+</span><span id="__span-3-141"><a id="__codelineno-3-141" name="__codelineno-3-141"></a><span class="c1">// Latitude: reflects at ±90° (symmetric wrapping - can&#39;t go past poles)</span>
+</span><span id="__span-3-142"><a id="__codelineno-3-142" name="__codelineno-3-142"></a><span class="k">template</span><span class="o">&lt;&gt;</span>
+</span><span id="__span-3-143"><a id="__codelineno-3-143" name="__codelineno-3-143"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">quantity_bounds</span><span class="o">&lt;</span><span class="n">geographic</span><span class="o">::</span><span class="n">equator</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span>
+</span><span id="__span-3-144"><a id="__codelineno-3-144" name="__codelineno-3-144"></a><span class="w">  </span><span class="n">mp_units</span><span class="o">::</span><span class="n">reflect_in_range</span><span class="p">{</span><span class="mi">-90</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">si</span><span class="o">::</span><span class="n">degree</span><span class="p">,</span><span class="w"> </span><span class="mi">90</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">si</span><span class="o">::</span><span class="n">degree</span><span class="p">};</span>
+</span><span id="__span-3-145"><a id="__codelineno-3-145" name="__codelineno-3-145"></a>
+</span><span id="__span-3-146"><a id="__codelineno-3-146" name="__codelineno-3-146"></a><span class="c1">// Longitude: mirrored wrapping [-180°, 180°)</span>
+</span><span id="__span-3-147"><a id="__codelineno-3-147" name="__codelineno-3-147"></a><span class="k">template</span><span class="o">&lt;&gt;</span>
+</span><span id="__span-3-148"><a id="__codelineno-3-148" name="__codelineno-3-148"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">quantity_bounds</span><span class="o">&lt;</span><span class="n">geographic</span><span class="o">::</span><span class="n">prime_meridian</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span>
+</span><span id="__span-3-149"><a id="__codelineno-3-149" name="__codelineno-3-149"></a><span class="w">  </span><span class="n">mp_units</span><span class="o">::</span><span class="n">wrap_to_range</span><span class="p">{</span><span class="mi">-180</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">si</span><span class="o">::</span><span class="n">degree</span><span class="p">,</span><span class="w"> </span><span class="mi">180</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">si</span><span class="o">::</span><span class="n">degree</span><span class="p">};</span>
+</span><span id="__span-3-150"><a id="__codelineno-3-150" name="__codelineno-3-150"></a>
+</span><span id="__span-3-151"><a id="__codelineno-3-151" name="__codelineno-3-151"></a><span class="c1">// Elevation: reflects at ±90° (symmetric wrapping like latitude)</span>
+</span><span id="__span-3-152"><a id="__codelineno-3-152" name="__codelineno-3-152"></a><span class="k">template</span><span class="o">&lt;&gt;</span>
+</span><span id="__span-3-153"><a id="__codelineno-3-153" name="__codelineno-3-153"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">quantity_bounds</span><span class="o">&lt;</span><span class="n">geographic</span><span class="o">::</span><span class="n">horizon</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span>
+</span><span id="__span-3-154"><a id="__codelineno-3-154" name="__codelineno-3-154"></a><span class="w">  </span><span class="n">mp_units</span><span class="o">::</span><span class="n">reflect_in_range</span><span class="p">{</span><span class="mi">-90</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">si</span><span class="o">::</span><span class="n">degree</span><span class="p">,</span><span class="w"> </span><span class="mi">90</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">si</span><span class="o">::</span><span class="n">degree</span><span class="p">};</span>
+</span><span id="__span-3-155"><a id="__codelineno-3-155" name="__codelineno-3-155"></a>
+</span><span id="__span-3-156"><a id="__codelineno-3-156" name="__codelineno-3-156"></a><span class="c1">// Bearing: mirrored wrapping [-180°, 180°)</span>
+</span><span id="__span-3-157"><a id="__codelineno-3-157" name="__codelineno-3-157"></a><span class="k">template</span><span class="o">&lt;&gt;</span>
+</span><span id="__span-3-158"><a id="__codelineno-3-158" name="__codelineno-3-158"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">quantity_bounds</span><span class="o">&lt;</span><span class="n">geographic</span><span class="o">::</span><span class="n">north_cw</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span>
+</span><span id="__span-3-159"><a id="__codelineno-3-159" name="__codelineno-3-159"></a><span class="w">  </span><span class="n">mp_units</span><span class="o">::</span><span class="n">wrap_to_range</span><span class="p">{</span><span class="mi">-180</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">si</span><span class="o">::</span><span class="n">degree</span><span class="p">,</span><span class="w"> </span><span class="mi">180</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">si</span><span class="o">::</span><span class="n">degree</span><span class="p">};</span>
+</span><span id="__span-3-160"><a id="__codelineno-3-160" name="__codelineno-3-160"></a>
+</span><span id="__span-3-161"><a id="__codelineno-3-161" name="__codelineno-3-161"></a><span class="c1">// Heading azimuth: mirrored wrapping [-180°, 180°)</span>
+</span><span id="__span-3-162"><a id="__codelineno-3-162" name="__codelineno-3-162"></a><span class="k">template</span><span class="o">&lt;&gt;</span>
+</span><span id="__span-3-163"><a id="__codelineno-3-163" name="__codelineno-3-163"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">quantity_bounds</span><span class="o">&lt;</span><span class="n">geographic</span><span class="o">::</span><span class="n">north_ccw</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span>
+</span><span id="__span-3-164"><a id="__codelineno-3-164" name="__codelineno-3-164"></a><span class="w">  </span><span class="n">mp_units</span><span class="o">::</span><span class="n">wrap_to_range</span><span class="p">{</span><span class="mi">-180</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">si</span><span class="o">::</span><span class="n">degree</span><span class="p">,</span><span class="w"> </span><span class="mi">180</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">si</span><span class="o">::</span><span class="n">degree</span><span class="p">};</span>
+</span><span id="__span-3-165"><a id="__codelineno-3-165" name="__codelineno-3-165"></a>
+</span><span id="__span-3-166"><a id="__codelineno-3-166" name="__codelineno-3-166"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">geographic</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-167"><a id="__codelineno-3-167" name="__codelineno-3-167"></a>
+</span><span id="__span-3-168"><a id="__codelineno-3-168" name="__codelineno-3-168"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span>
+</span><span id="__span-3-169"><a id="__codelineno-3-169" name="__codelineno-3-169"></a><span class="k">using</span><span class="w"> </span><span class="n">latitude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">geo_latitude</span><span class="p">[</span><span class="n">mp_units</span><span class="o">::</span><span class="n">si</span><span class="o">::</span><span class="n">degree</span><span class="p">],</span><span class="w"> </span><span class="n">equator</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-3-170"><a id="__codelineno-3-170" name="__codelineno-3-170"></a>
+</span><span id="__span-3-171"><a id="__codelineno-3-171" name="__codelineno-3-171"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span>
+</span><span id="__span-3-172"><a id="__codelineno-3-172" name="__codelineno-3-172"></a><span class="k">using</span><span class="w"> </span><span class="n">longitude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">geo_longitude</span><span class="p">[</span><span class="n">mp_units</span><span class="o">::</span><span class="n">si</span><span class="o">::</span><span class="n">degree</span><span class="p">],</span><span class="w"> </span><span class="n">prime_meridian</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-3-173"><a id="__codelineno-3-173" name="__codelineno-3-173"></a>
+</span><span id="__span-3-174"><a id="__codelineno-3-174" name="__codelineno-3-174"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span>
+</span><span id="__span-3-175"><a id="__codelineno-3-175" name="__codelineno-3-175"></a><span class="k">using</span><span class="w"> </span><span class="n">elevation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">geo_elevation</span><span class="p">[</span><span class="n">mp_units</span><span class="o">::</span><span class="n">si</span><span class="o">::</span><span class="n">degree</span><span class="p">],</span><span class="w"> </span><span class="n">horizon</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-3-176"><a id="__codelineno-3-176" name="__codelineno-3-176"></a>
+</span><span id="__span-3-177"><a id="__codelineno-3-177" name="__codelineno-3-177"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span>
+</span><span id="__span-3-178"><a id="__codelineno-3-178" name="__codelineno-3-178"></a><span class="k">using</span><span class="w"> </span><span class="n">azimuth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">geometric_azimuth</span><span class="p">[</span><span class="n">mp_units</span><span class="o">::</span><span class="n">si</span><span class="o">::</span><span class="n">degree</span><span class="p">],</span><span class="w"> </span><span class="n">east</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-3-179"><a id="__codelineno-3-179" name="__codelineno-3-179"></a>
+</span><span id="__span-3-180"><a id="__codelineno-3-180" name="__codelineno-3-180"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span>
+</span><span id="__span-3-181"><a id="__codelineno-3-181" name="__codelineno-3-181"></a><span class="k">using</span><span class="w"> </span><span class="n">bearing</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">geo_bearing</span><span class="p">[</span><span class="n">mp_units</span><span class="o">::</span><span class="n">si</span><span class="o">::</span><span class="n">degree</span><span class="p">],</span><span class="w"> </span><span class="n">north_cw</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-3-182"><a id="__codelineno-3-182" name="__codelineno-3-182"></a>
+</span><span id="__span-3-183"><a id="__codelineno-3-183" name="__codelineno-3-183"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span>
+</span><span id="__span-3-184"><a id="__codelineno-3-184" name="__codelineno-3-184"></a><span class="k">using</span><span class="w"> </span><span class="n">heading</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">heading_azimuth</span><span class="p">[</span><span class="n">mp_units</span><span class="o">::</span><span class="n">si</span><span class="o">::</span><span class="n">degree</span><span class="p">],</span><span class="w"> </span><span class="n">north_ccw</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="o">&gt;</span><span class="p">;</span>
 </span></code></pre></div></td></tr></table></div>
-<p><em>Latitude</em> and <em>longitude</em> are modeled as <code>quantity_point</code> with:</p>
+<p>The module defines <strong>six distinct angle types</strong> for geographic and aviation use:</p>
 <ul>
-<li>Distinct origins (<code>equator</code>, <code>prime_meridian</code>)</li>
-<li>Range-validated representations (±90° for <em>latitude</em>, ±180° for <em>longitude</em>)</li>
-<li>Custom user-defined literals (<code>_N</code>, <code>_S</code>, <code>_E</code>, <code>_W</code>)</li>
+<li><strong><em>Latitude</em></strong>: reflects at ±90° boundaries (symmetric wrapping - can't cross poles)</li>
+<li><strong><em>Longitude</em></strong>: wraps in half-open interval [-180°, 180°) (exclusive max)</li>
+<li><strong><em>Elevation</em></strong>: reflects at ±90° (like <em>latitude</em>)</li>
+<li><strong><em>Geometric Azimuth</em></strong>: 0° = East, counter-clockwise, wraps [-180°, 180°)</li>
+<li><strong><em>Bearing</em></strong>: 0° = North, clockwise, wraps [-180°, 180°)</li>
+<li><strong><em>Heading</em></strong>: 0° = North, counter-clockwise, wraps [-180°, 180°)</li>
+</ul>
+<p>All types use <strong><code>is_kind</code></strong> to prevent accidental mixing (e.g., <code>latitude + longitude</code> or
+<code>bearing + heading</code> won't compile). Each has:</p>
+<ul>
+<li>Distinct point origins with appropriate overflow policies</li>
+<li>Custom user-defined literals for coordinates (<code>_N</code>, <code>_S</code>, <code>_E</code>, <code>_W</code>)</li>
+<li>Aviation-style display formatting with prefixes (<code>"Az "</code>, <code>"BRG "</code>, <code>"HDG "</code>)</li>
 </ul>
 <h3 id="great-circle-distance">Great Circle Distance<a class="headerlink" href="#great-circle-distance" title="Permanent link">&para;</a></h3>
-<div class="language-cpp highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">geographic.h</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-185">185</a></span>
-<span class="normal"><a href="#__codelineno-4-186">186</a></span>
-<span class="normal"><a href="#__codelineno-4-187">187</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-4-185"><a id="__codelineno-4-185" name="__codelineno-4-185"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
-</span><span id="__span-4-186"><a id="__codelineno-4-186" name="__codelineno-4-186"></a><span class="c1">// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)</span>
-</span><span id="__span-4-187"><a id="__codelineno-4-187" name="__codelineno-4-187"></a><span class="n">distance</span><span class="w"> </span><span class="n">spherical_distance</span><span class="p">(</span><span class="n">position</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">position</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">to</span><span class="p">)</span>
+<div class="language-cpp highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">geographic.h</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-335">335</a></span>
+<span class="normal"><a href="#__codelineno-4-336">336</a></span>
+<span class="normal"><a href="#__codelineno-4-337">337</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-4-335"><a id="__codelineno-4-335" name="__codelineno-4-335"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+</span><span id="__span-4-336"><a id="__codelineno-4-336" name="__codelineno-4-336"></a><span class="c1">// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)</span>
+</span><span id="__span-4-337"><a id="__codelineno-4-337" name="__codelineno-4-337"></a><span class="n">distance</span><span class="w"> </span><span class="n">spherical_distance</span><span class="p">(</span><span class="n">position</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">position</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">to</span><span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
 <p>The <code>spherical_distance</code> function calculates the shortest <em>distance</em> between two points
-on Earth's surface using the great-circle formula, automatically handling all unit
-conversions and trigonometric operations with proper dimensional analysis.</p>
+on Earth's surface using the great-circle formula. Since <em>latitude</em> and <em>longitude</em> use
+<code>is_kind</code>, the function explicitly converts them to plain <code>angular_measure</code> for
+trigonometric operations:</p>
+<div class="language-cpp highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">geographic.h</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-5-344">344</a></span>
+<span class="normal"><a href="#__codelineno-5-345">345</a></span>
+<span class="normal"><a href="#__codelineno-5-346">346</a></span>
+<span class="normal"><a href="#__codelineno-5-347">347</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-5-344"><a id="__codelineno-5-344" name="__codelineno-5-344"></a><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">quantity</span><span class="w"> </span><span class="n">from_lat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="p">(</span><span class="n">from</span><span class="p">.</span><span class="n">lat</span><span class="p">.</span><span class="n">quantity_from_unit_zero</span><span class="p">());</span>
+</span><span id="__span-5-345"><a id="__codelineno-5-345" name="__codelineno-5-345"></a><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">quantity</span><span class="w"> </span><span class="n">from_lon</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="p">(</span><span class="n">from</span><span class="p">.</span><span class="n">lon</span><span class="p">.</span><span class="n">quantity_from_unit_zero</span><span class="p">());</span>
+</span><span id="__span-5-346"><a id="__codelineno-5-346" name="__codelineno-5-346"></a><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">quantity</span><span class="w"> </span><span class="n">to_lat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="p">(</span><span class="n">to</span><span class="p">.</span><span class="n">lat</span><span class="p">.</span><span class="n">quantity_from_unit_zero</span><span class="p">());</span>
+</span><span id="__span-5-347"><a id="__codelineno-5-347" name="__codelineno-5-347"></a><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">quantity</span><span class="w"> </span><span class="n">to_lon</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="p">(</span><span class="n">to</span><span class="p">.</span><span class="n">lon</span><span class="p">.</span><span class="n">quantity_from_unit_zero</span><span class="p">());</span>
+</span></code></pre></div></td></tr></table></div>
+<p>This ensures type safety while allowing mathematical operations when explicitly intended.</p>
 <h3 id="waypoint-definition">Waypoint Definition<a class="headerlink" href="#waypoint-definition" title="Permanent link">&para;</a></h3>
 <p>With these geographic primitives, waypoints become simple and type-safe:</p>
-<div class="language-cpp highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">glide_computer_lib.h</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-5-103">103</a></span>
-<span class="normal"><a href="#__codelineno-5-104">104</a></span>
-<span class="normal"><a href="#__codelineno-5-105">105</a></span>
-<span class="normal"><a href="#__codelineno-5-106">106</a></span>
-<span class="normal"><a href="#__codelineno-5-107">107</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-5-103"><a id="__codelineno-5-103" name="__codelineno-5-103"></a><span class="k">struct</span><span class="w"> </span><span class="nc">waypoint</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-5-104"><a id="__codelineno-5-104" name="__codelineno-5-104"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">;</span>
-</span><span id="__span-5-105"><a id="__codelineno-5-105" name="__codelineno-5-105"></a><span class="w">  </span><span class="n">geographic</span><span class="o">::</span><span class="n">position</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">pos</span><span class="p">;</span>
-</span><span id="__span-5-106"><a id="__codelineno-5-106" name="__codelineno-5-106"></a><span class="w">  </span><span class="n">geographic</span><span class="o">::</span><span class="n">msl_altitude</span><span class="w"> </span><span class="n">alt</span><span class="p">;</span>
-</span><span id="__span-5-107"><a id="__codelineno-5-107" name="__codelineno-5-107"></a><span class="p">};</span>
+<div class="language-cpp highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">glide_computer_lib.h</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-6-103">103</a></span>
+<span class="normal"><a href="#__codelineno-6-104">104</a></span>
+<span class="normal"><a href="#__codelineno-6-105">105</a></span>
+<span class="normal"><a href="#__codelineno-6-106">106</a></span>
+<span class="normal"><a href="#__codelineno-6-107">107</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-6-103"><a id="__codelineno-6-103" name="__codelineno-6-103"></a><span class="k">struct</span><span class="w"> </span><span class="nc">waypoint</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-104"><a id="__codelineno-6-104" name="__codelineno-6-104"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">;</span>
+</span><span id="__span-6-105"><a id="__codelineno-6-105" name="__codelineno-6-105"></a><span class="w">  </span><span class="n">geographic</span><span class="o">::</span><span class="n">position</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">pos</span><span class="p">;</span>
+</span><span id="__span-6-106"><a id="__codelineno-6-106" name="__codelineno-6-106"></a><span class="w">  </span><span class="n">geographic</span><span class="o">::</span><span class="n">msl_altitude</span><span class="w"> </span><span class="n">alt</span><span class="p">;</span>
+</span><span id="__span-6-107"><a id="__codelineno-6-107" name="__codelineno-6-107"></a><span class="p">};</span>
 </span></code></pre></div></td></tr></table></div>
 <p>Each waypoint contains:</p>
 <ul>
@@ -11888,69 +12046,69 @@ conversions and trigonometric operations with proper dimensional analysis.</p>
 type safety across module boundaries.</p>
 <h2 id="multi-system-units">Multi-System Units<a class="headerlink" href="#multi-system-units" title="Permanent link">&para;</a></h2>
 <p>The example naturally mixes unit systems as aviators actually do:</p>
-<div class="language-cpp highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">glide_computer.cpp</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-6-53">53</a></span>
-<span class="normal"><a href="#__codelineno-6-54">54</a></span>
-<span class="normal"><a href="#__codelineno-6-55">55</a></span>
-<span class="normal"><a href="#__codelineno-6-56">56</a></span>
-<span class="normal"><a href="#__codelineno-6-57">57</a></span>
-<span class="normal"><a href="#__codelineno-6-58">58</a></span>
-<span class="normal"><a href="#__codelineno-6-59">59</a></span>
-<span class="normal"><a href="#__codelineno-6-60">60</a></span>
-<span class="normal"><a href="#__codelineno-6-61">61</a></span>
-<span class="normal"><a href="#__codelineno-6-62">62</a></span>
-<span class="normal"><a href="#__codelineno-6-63">63</a></span>
-<span class="normal"><a href="#__codelineno-6-64">64</a></span>
-<span class="normal"><a href="#__codelineno-6-65">65</a></span>
-<span class="normal"><a href="#__codelineno-6-66">66</a></span>
-<span class="normal"><a href="#__codelineno-6-67">67</a></span>
-<span class="normal"><a href="#__codelineno-6-68">68</a></span>
-<span class="normal"><a href="#__codelineno-6-69">69</a></span>
-<span class="normal"><a href="#__codelineno-6-70">70</a></span>
-<span class="normal"><a href="#__codelineno-6-71">71</a></span>
-<span class="normal"><a href="#__codelineno-6-72">72</a></span>
-<span class="normal"><a href="#__codelineno-6-73">73</a></span>
-<span class="normal"><a href="#__codelineno-6-74">74</a></span>
-<span class="normal"><a href="#__codelineno-6-75">75</a></span>
-<span class="normal"><a href="#__codelineno-6-76">76</a></span>
-<span class="normal"><a href="#__codelineno-6-77">77</a></span>
-<span class="normal"><a href="#__codelineno-6-78">78</a></span>
-<span class="normal"><a href="#__codelineno-6-79">79</a></span>
-<span class="normal"><a href="#__codelineno-6-80">80</a></span>
-<span class="normal"><a href="#__codelineno-6-81">81</a></span>
-<span class="normal"><a href="#__codelineno-6-82">82</a></span>
-<span class="normal"><a href="#__codelineno-6-83">83</a></span>
-<span class="normal"><a href="#__codelineno-6-84">84</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-6-53"><a id="__codelineno-6-53" name="__codelineno-6-53"></a><span class="k">auto</span><span class="w"> </span><span class="n">get_gliders</span><span class="p">()</span>
-</span><span id="__span-6-54"><a id="__codelineno-6-54" name="__codelineno-6-54"></a><span class="p">{</span>
-</span><span id="__span-6-55"><a id="__codelineno-6-55" name="__codelineno-6-55"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="o">::</span><span class="nn">si</span><span class="o">::</span><span class="nn">unit_symbols</span><span class="p">;</span>
-</span><span id="__span-6-56"><a id="__codelineno-6-56" name="__codelineno-6-56"></a><span class="w">  </span><span class="n">MP_UNITS_DIAGNOSTIC_PUSH</span>
-</span><span id="__span-6-57"><a id="__codelineno-6-57" name="__codelineno-6-57"></a><span class="w">  </span><span class="n">MP_UNITS_DIAGNOSTIC_IGNORE_MISSING_BRACES</span>
-</span><span id="__span-6-58"><a id="__codelineno-6-58" name="__codelineno-6-58"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="w"> </span><span class="n">gliders</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">glider</span><span class="p">{</span><span class="s">&quot;SZD-30 Pirat&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="mi">83</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">km</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.7389</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">s</span><span class="p">}},</span>
-</span><span id="__span-6-59"><a id="__codelineno-6-59" name="__codelineno-6-59"></a><span class="w">                                     </span><span class="n">glider</span><span class="p">{</span><span class="s">&quot;SZD-51 Junior&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="mi">80</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">km</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.6349</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">s</span><span class="p">}},</span>
-</span><span id="__span-6-60"><a id="__codelineno-6-60" name="__codelineno-6-60"></a><span class="w">                                     </span><span class="n">glider</span><span class="p">{</span><span class="s">&quot;SZD-48 Jantar Std 3&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="mi">110</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">km</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.77355</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">s</span><span class="p">}},</span>
-</span><span id="__span-6-61"><a id="__codelineno-6-61" name="__codelineno-6-61"></a><span class="w">                                     </span><span class="n">glider</span><span class="p">{</span><span class="s">&quot;SZD-56 Diana&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="mi">110</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">km</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.63657</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">s</span><span class="p">}}};</span>
-</span><span id="__span-6-62"><a id="__codelineno-6-62" name="__codelineno-6-62"></a><span class="w">  </span><span class="n">MP_UNITS_DIAGNOSTIC_POP</span>
-</span><span id="__span-6-63"><a id="__codelineno-6-63" name="__codelineno-6-63"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">gliders</span><span class="p">;</span>
-</span><span id="__span-6-64"><a id="__codelineno-6-64" name="__codelineno-6-64"></a><span class="p">}</span>
-</span><span id="__span-6-65"><a id="__codelineno-6-65" name="__codelineno-6-65"></a>
-</span><span id="__span-6-66"><a id="__codelineno-6-66" name="__codelineno-6-66"></a><span class="k">auto</span><span class="w"> </span><span class="n">get_weather_conditions</span><span class="p">()</span>
-</span><span id="__span-6-67"><a id="__codelineno-6-67" name="__codelineno-6-67"></a><span class="p">{</span>
-</span><span id="__span-6-68"><a id="__codelineno-6-68" name="__codelineno-6-68"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="o">::</span><span class="nn">si</span><span class="o">::</span><span class="nn">unit_symbols</span><span class="p">;</span>
-</span><span id="__span-6-69"><a id="__codelineno-6-69" name="__codelineno-6-69"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="w"> </span><span class="n">weather_conditions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="p">{</span><span class="s">&quot;Good&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">weather</span><span class="p">{</span><span class="mi">1900</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="mf">4.3</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">s</span><span class="p">}},</span>
-</span><span id="__span-6-70"><a id="__codelineno-6-70" name="__codelineno-6-70"></a><span class="w">                                                </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="p">{</span><span class="s">&quot;Medium&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">weather</span><span class="p">{</span><span class="mi">1550</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="mf">2.8</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">s</span><span class="p">}},</span>
-</span><span id="__span-6-71"><a id="__codelineno-6-71" name="__codelineno-6-71"></a><span class="w">                                                </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="p">{</span><span class="s">&quot;Bad&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">weather</span><span class="p">{</span><span class="mi">850</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="mf">1.8</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">s</span><span class="p">}}};</span>
-</span><span id="__span-6-72"><a id="__codelineno-6-72" name="__codelineno-6-72"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">weather_conditions</span><span class="p">;</span>
-</span><span id="__span-6-73"><a id="__codelineno-6-73" name="__codelineno-6-73"></a><span class="p">}</span>
-</span><span id="__span-6-74"><a id="__codelineno-6-74" name="__codelineno-6-74"></a>
-</span><span id="__span-6-75"><a id="__codelineno-6-75" name="__codelineno-6-75"></a><span class="k">auto</span><span class="w"> </span><span class="n">get_waypoints</span><span class="p">()</span>
-</span><span id="__span-6-76"><a id="__codelineno-6-76" name="__codelineno-6-76"></a><span class="p">{</span>
-</span><span id="__span-6-77"><a id="__codelineno-6-77" name="__codelineno-6-77"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">geographic</span><span class="o">::</span><span class="nn">literals</span><span class="p">;</span>
-</span><span id="__span-6-78"><a id="__codelineno-6-78" name="__codelineno-6-78"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="o">::</span><span class="nn">yard_pound</span><span class="o">::</span><span class="nn">unit_symbols</span><span class="p">;</span>
-</span><span id="__span-6-79"><a id="__codelineno-6-79" name="__codelineno-6-79"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="w"> </span><span class="n">waypoints</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-6-80"><a id="__codelineno-6-80" name="__codelineno-6-80"></a><span class="w">    </span><span class="n">waypoint</span><span class="p">{</span><span class="s">&quot;EPPR&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="mf">54.24772</span><span class="n">_N</span><span class="p">,</span><span class="w"> </span><span class="mf">18.6745</span><span class="n">_E</span><span class="p">},</span><span class="w"> </span><span class="n">mean_sea_level</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">16.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ft</span><span class="p">},</span><span class="w">   </span><span class="c1">// N54°14&#39;51.8&quot; E18°40&#39;28.2&quot;</span>
-</span><span id="__span-6-81"><a id="__codelineno-6-81" name="__codelineno-6-81"></a><span class="w">    </span><span class="n">waypoint</span><span class="p">{</span><span class="s">&quot;EPGI&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="mf">53.52442</span><span class="n">_N</span><span class="p">,</span><span class="w"> </span><span class="mf">18.84947</span><span class="n">_E</span><span class="p">},</span><span class="w"> </span><span class="n">mean_sea_level</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">115.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ft</span><span class="p">}</span><span class="w">  </span><span class="c1">// N53°31&#39;27.9&quot; E18°50&#39;58.1&quot;</span>
-</span><span id="__span-6-82"><a id="__codelineno-6-82" name="__codelineno-6-82"></a><span class="w">  </span><span class="p">};</span>
-</span><span id="__span-6-83"><a id="__codelineno-6-83" name="__codelineno-6-83"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">waypoints</span><span class="p">;</span>
-</span><span id="__span-6-84"><a id="__codelineno-6-84" name="__codelineno-6-84"></a><span class="p">}</span>
+<div class="language-cpp highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">glide_computer.cpp</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-7-53">53</a></span>
+<span class="normal"><a href="#__codelineno-7-54">54</a></span>
+<span class="normal"><a href="#__codelineno-7-55">55</a></span>
+<span class="normal"><a href="#__codelineno-7-56">56</a></span>
+<span class="normal"><a href="#__codelineno-7-57">57</a></span>
+<span class="normal"><a href="#__codelineno-7-58">58</a></span>
+<span class="normal"><a href="#__codelineno-7-59">59</a></span>
+<span class="normal"><a href="#__codelineno-7-60">60</a></span>
+<span class="normal"><a href="#__codelineno-7-61">61</a></span>
+<span class="normal"><a href="#__codelineno-7-62">62</a></span>
+<span class="normal"><a href="#__codelineno-7-63">63</a></span>
+<span class="normal"><a href="#__codelineno-7-64">64</a></span>
+<span class="normal"><a href="#__codelineno-7-65">65</a></span>
+<span class="normal"><a href="#__codelineno-7-66">66</a></span>
+<span class="normal"><a href="#__codelineno-7-67">67</a></span>
+<span class="normal"><a href="#__codelineno-7-68">68</a></span>
+<span class="normal"><a href="#__codelineno-7-69">69</a></span>
+<span class="normal"><a href="#__codelineno-7-70">70</a></span>
+<span class="normal"><a href="#__codelineno-7-71">71</a></span>
+<span class="normal"><a href="#__codelineno-7-72">72</a></span>
+<span class="normal"><a href="#__codelineno-7-73">73</a></span>
+<span class="normal"><a href="#__codelineno-7-74">74</a></span>
+<span class="normal"><a href="#__codelineno-7-75">75</a></span>
+<span class="normal"><a href="#__codelineno-7-76">76</a></span>
+<span class="normal"><a href="#__codelineno-7-77">77</a></span>
+<span class="normal"><a href="#__codelineno-7-78">78</a></span>
+<span class="normal"><a href="#__codelineno-7-79">79</a></span>
+<span class="normal"><a href="#__codelineno-7-80">80</a></span>
+<span class="normal"><a href="#__codelineno-7-81">81</a></span>
+<span class="normal"><a href="#__codelineno-7-82">82</a></span>
+<span class="normal"><a href="#__codelineno-7-83">83</a></span>
+<span class="normal"><a href="#__codelineno-7-84">84</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-7-53"><a id="__codelineno-7-53" name="__codelineno-7-53"></a><span class="k">auto</span><span class="w"> </span><span class="n">get_gliders</span><span class="p">()</span>
+</span><span id="__span-7-54"><a id="__codelineno-7-54" name="__codelineno-7-54"></a><span class="p">{</span>
+</span><span id="__span-7-55"><a id="__codelineno-7-55" name="__codelineno-7-55"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="o">::</span><span class="nn">si</span><span class="o">::</span><span class="nn">unit_symbols</span><span class="p">;</span>
+</span><span id="__span-7-56"><a id="__codelineno-7-56" name="__codelineno-7-56"></a><span class="w">  </span><span class="n">MP_UNITS_DIAGNOSTIC_PUSH</span>
+</span><span id="__span-7-57"><a id="__codelineno-7-57" name="__codelineno-7-57"></a><span class="w">  </span><span class="n">MP_UNITS_DIAGNOSTIC_IGNORE_MISSING_BRACES</span>
+</span><span id="__span-7-58"><a id="__codelineno-7-58" name="__codelineno-7-58"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="w"> </span><span class="n">gliders</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">glider</span><span class="p">{</span><span class="s">&quot;SZD-30 Pirat&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="mi">83</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">km</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.7389</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">s</span><span class="p">}},</span>
+</span><span id="__span-7-59"><a id="__codelineno-7-59" name="__codelineno-7-59"></a><span class="w">                                     </span><span class="n">glider</span><span class="p">{</span><span class="s">&quot;SZD-51 Junior&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="mi">80</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">km</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.6349</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">s</span><span class="p">}},</span>
+</span><span id="__span-7-60"><a id="__codelineno-7-60" name="__codelineno-7-60"></a><span class="w">                                     </span><span class="n">glider</span><span class="p">{</span><span class="s">&quot;SZD-48 Jantar Std 3&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="mi">110</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">km</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.77355</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">s</span><span class="p">}},</span>
+</span><span id="__span-7-61"><a id="__codelineno-7-61" name="__codelineno-7-61"></a><span class="w">                                     </span><span class="n">glider</span><span class="p">{</span><span class="s">&quot;SZD-56 Diana&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="mi">110</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">km</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.63657</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">s</span><span class="p">}}};</span>
+</span><span id="__span-7-62"><a id="__codelineno-7-62" name="__codelineno-7-62"></a><span class="w">  </span><span class="n">MP_UNITS_DIAGNOSTIC_POP</span>
+</span><span id="__span-7-63"><a id="__codelineno-7-63" name="__codelineno-7-63"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">gliders</span><span class="p">;</span>
+</span><span id="__span-7-64"><a id="__codelineno-7-64" name="__codelineno-7-64"></a><span class="p">}</span>
+</span><span id="__span-7-65"><a id="__codelineno-7-65" name="__codelineno-7-65"></a>
+</span><span id="__span-7-66"><a id="__codelineno-7-66" name="__codelineno-7-66"></a><span class="k">auto</span><span class="w"> </span><span class="n">get_weather_conditions</span><span class="p">()</span>
+</span><span id="__span-7-67"><a id="__codelineno-7-67" name="__codelineno-7-67"></a><span class="p">{</span>
+</span><span id="__span-7-68"><a id="__codelineno-7-68" name="__codelineno-7-68"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="o">::</span><span class="nn">si</span><span class="o">::</span><span class="nn">unit_symbols</span><span class="p">;</span>
+</span><span id="__span-7-69"><a id="__codelineno-7-69" name="__codelineno-7-69"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="w"> </span><span class="n">weather_conditions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="p">{</span><span class="s">&quot;Good&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">weather</span><span class="p">{</span><span class="mi">1900</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="mf">4.3</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">s</span><span class="p">}},</span>
+</span><span id="__span-7-70"><a id="__codelineno-7-70" name="__codelineno-7-70"></a><span class="w">                                                </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="p">{</span><span class="s">&quot;Medium&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">weather</span><span class="p">{</span><span class="mi">1550</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="mf">2.8</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">s</span><span class="p">}},</span>
+</span><span id="__span-7-71"><a id="__codelineno-7-71" name="__codelineno-7-71"></a><span class="w">                                                </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="p">{</span><span class="s">&quot;Bad&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">weather</span><span class="p">{</span><span class="mi">850</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="mf">1.8</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">s</span><span class="p">}}};</span>
+</span><span id="__span-7-72"><a id="__codelineno-7-72" name="__codelineno-7-72"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">weather_conditions</span><span class="p">;</span>
+</span><span id="__span-7-73"><a id="__codelineno-7-73" name="__codelineno-7-73"></a><span class="p">}</span>
+</span><span id="__span-7-74"><a id="__codelineno-7-74" name="__codelineno-7-74"></a>
+</span><span id="__span-7-75"><a id="__codelineno-7-75" name="__codelineno-7-75"></a><span class="k">auto</span><span class="w"> </span><span class="n">get_waypoints</span><span class="p">()</span>
+</span><span id="__span-7-76"><a id="__codelineno-7-76" name="__codelineno-7-76"></a><span class="p">{</span>
+</span><span id="__span-7-77"><a id="__codelineno-7-77" name="__codelineno-7-77"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">geographic</span><span class="o">::</span><span class="nn">literals</span><span class="p">;</span>
+</span><span id="__span-7-78"><a id="__codelineno-7-78" name="__codelineno-7-78"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="o">::</span><span class="nn">yard_pound</span><span class="o">::</span><span class="nn">unit_symbols</span><span class="p">;</span>
+</span><span id="__span-7-79"><a id="__codelineno-7-79" name="__codelineno-7-79"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="w"> </span><span class="n">waypoints</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-7-80"><a id="__codelineno-7-80" name="__codelineno-7-80"></a><span class="w">    </span><span class="n">waypoint</span><span class="p">{</span><span class="s">&quot;EPPR&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="mf">54.24772</span><span class="n">_N</span><span class="p">,</span><span class="w"> </span><span class="mf">18.6745</span><span class="n">_E</span><span class="p">},</span><span class="w"> </span><span class="n">mean_sea_level</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">16.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ft</span><span class="p">},</span><span class="w">   </span><span class="c1">// N54°14&#39;51.8&quot; E18°40&#39;28.2&quot;</span>
+</span><span id="__span-7-81"><a id="__codelineno-7-81" name="__codelineno-7-81"></a><span class="w">    </span><span class="n">waypoint</span><span class="p">{</span><span class="s">&quot;EPGI&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="mf">53.52442</span><span class="n">_N</span><span class="p">,</span><span class="w"> </span><span class="mf">18.84947</span><span class="n">_E</span><span class="p">},</span><span class="w"> </span><span class="n">mean_sea_level</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">115.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ft</span><span class="p">}</span><span class="w">  </span><span class="c1">// N53°31&#39;27.9&quot; E18°50&#39;58.1&quot;</span>
+</span><span id="__span-7-82"><a id="__codelineno-7-82" name="__codelineno-7-82"></a><span class="w">  </span><span class="p">};</span>
+</span><span id="__span-7-83"><a id="__codelineno-7-83" name="__codelineno-7-83"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">waypoints</span><span class="p">;</span>
+</span><span id="__span-7-84"><a id="__codelineno-7-84" name="__codelineno-7-84"></a><span class="p">}</span>
 </span></code></pre></div></td></tr></table></div>
 <ul>
 <li><strong>SI units</strong> (<code>km/h</code>, <code>m/s</code>) for glider performance</li>
@@ -11960,26 +12118,26 @@ type safety across module boundaries.</p>
 <p><strong>mp-units</strong> handles these conversions automatically and safely.</p>
 <h2 id="key-features-demonstrated">Key Features Demonstrated<a class="headerlink" href="#key-features-demonstrated" title="Permanent link">&para;</a></h2>
 <h3 id="1-quantity-points-for-absolute-values">1. Quantity Points for Absolute Values<a class="headerlink" href="#1-quantity-points-for-absolute-values" title="Permanent link">&para;</a></h3>
-<div class="language-cpp highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">glide_computer_lib.h</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-7-75">75</a></span>
-<span class="normal"><a href="#__codelineno-7-76">76</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-7-75"><a id="__codelineno-7-75" name="__codelineno-7-75"></a><span class="k">using</span><span class="w"> </span><span class="n">timestamp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">mp_units</span><span class="o">::</span><span class="n">isq</span><span class="o">::</span><span class="n">time</span><span class="p">[</span><span class="n">mp_units</span><span class="o">::</span><span class="n">si</span><span class="o">::</span><span class="n">second</span><span class="p">],</span>
-</span><span id="__span-7-76"><a id="__codelineno-7-76" name="__codelineno-7-76"></a><span class="w">                                           </span><span class="n">mp_units</span><span class="o">::</span><span class="n">chrono_point_origin</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">system_clock</span><span class="o">&gt;&gt;</span><span class="p">;</span>
+<div class="language-cpp highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">glide_computer_lib.h</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-8-75">75</a></span>
+<span class="normal"><a href="#__codelineno-8-76">76</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-8-75"><a id="__codelineno-8-75" name="__codelineno-8-75"></a><span class="k">using</span><span class="w"> </span><span class="n">timestamp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">mp_units</span><span class="o">::</span><span class="n">isq</span><span class="o">::</span><span class="n">time</span><span class="p">[</span><span class="n">mp_units</span><span class="o">::</span><span class="n">si</span><span class="o">::</span><span class="n">second</span><span class="p">],</span>
+</span><span id="__span-8-76"><a id="__codelineno-8-76" name="__codelineno-8-76"></a><span class="w">                                           </span><span class="n">mp_units</span><span class="o">::</span><span class="n">chrono_point_origin</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">system_clock</span><span class="o">&gt;&gt;</span><span class="p">;</span>
 </span></code></pre></div></td></tr></table></div>
 <p><em>Timestamps</em> are absolute points in <em>time</em>, not <em>durations</em> - correctly modeled using
 <code>quantity_point</code> with <code>chrono_point_origin</code>.</p>
 <h3 id="2-custom-quantity-specifications">2. Custom Quantity Specifications<a class="headerlink" href="#2-custom-quantity-specifications" title="Permanent link">&para;</a></h3>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">QUANTITY_SPEC</span><span class="p">(</span><span class="n">rate_of_climb_speed</span><span class="p">,</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">isq</span><span class="o">::</span><span class="n">speed</span><span class="p">,</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">              </span><span class="n">mp_units</span><span class="o">::</span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">isq</span><span class="o">::</span><span class="n">duration</span><span class="p">);</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">QUANTITY_SPEC</span><span class="p">(</span><span class="n">rate_of_climb_speed</span><span class="p">,</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">isq</span><span class="o">::</span><span class="n">speed</span><span class="p">,</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">              </span><span class="n">mp_units</span><span class="o">::</span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">isq</span><span class="o">::</span><span class="n">duration</span><span class="p">);</span>
 </span></code></pre></div>
 <p>Creates a specialized <em>speed</em> quantity specifically for vertical movement, distinct from
 general <em>speed</em>.</p>
 <h3 id="3-dimensionless-ratios">3. Dimensionless Ratios<a class="headerlink" href="#3-dimensionless-ratios" title="Permanent link">&para;</a></h3>
-<div class="language-cpp highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">glide_computer_lib.h</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-9-93">93</a></span>
-<span class="normal"><a href="#__codelineno-9-94">94</a></span>
-<span class="normal"><a href="#__codelineno-9-95">95</a></span>
-<span class="normal"><a href="#__codelineno-9-96">96</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-9-93"><a id="__codelineno-9-93" name="__codelineno-9-93"></a><span class="k">constexpr</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">mp_units</span><span class="o">::</span><span class="n">dimensionless</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">glide_ratio</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">glider</span><span class="o">::</span><span class="n">polar_point</span><span class="o">&amp;</span><span class="w"> </span><span class="n">polar</span><span class="p">)</span>
-</span><span id="__span-9-94"><a id="__codelineno-9-94" name="__codelineno-9-94"></a><span class="p">{</span>
-</span><span id="__span-9-95"><a id="__codelineno-9-95" name="__codelineno-9-95"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">polar</span><span class="p">.</span><span class="n">v</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="o">-</span><span class="n">polar</span><span class="p">.</span><span class="n">climb</span><span class="p">;</span>
-</span><span id="__span-9-96"><a id="__codelineno-9-96" name="__codelineno-9-96"></a><span class="p">}</span>
+<div class="language-cpp highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">glide_computer_lib.h</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-10-93">93</a></span>
+<span class="normal"><a href="#__codelineno-10-94">94</a></span>
+<span class="normal"><a href="#__codelineno-10-95">95</a></span>
+<span class="normal"><a href="#__codelineno-10-96">96</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-10-93"><a id="__codelineno-10-93" name="__codelineno-10-93"></a><span class="k">constexpr</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">mp_units</span><span class="o">::</span><span class="n">dimensionless</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">glide_ratio</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">glider</span><span class="o">::</span><span class="n">polar_point</span><span class="o">&amp;</span><span class="w"> </span><span class="n">polar</span><span class="p">)</span>
+</span><span id="__span-10-94"><a id="__codelineno-10-94" name="__codelineno-10-94"></a><span class="p">{</span>
+</span><span id="__span-10-95"><a id="__codelineno-10-95" name="__codelineno-10-95"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">polar</span><span class="p">.</span><span class="n">v</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="o">-</span><span class="n">polar</span><span class="p">.</span><span class="n">climb</span><span class="p">;</span>
+</span><span id="__span-10-96"><a id="__codelineno-10-96" name="__codelineno-10-96"></a><span class="p">}</span>
 </span></code></pre></div></td></tr></table></div>
 <p>The <em>glide ratio</em> (<em>distance</em> traveled per unit <em>altitude</em> lost) is a <em>dimensionless</em> quantity,
 correctly computed as a ratio of two <em>speeds</em>.</p>
@@ -11994,9 +12152,9 @@ correctly computed as a ratio of two <em>speeds</em>.</p>
 </ul>
 <p>All with full compile-time dimensional analysis.</p>
 <h3 id="5-formatted-output">5. Formatted Output<a class="headerlink" href="#5-formatted-output" title="Permanent link">&para;</a></h3>
-<div class="language-cpp highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">glide_computer.cpp</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-10-97">97</a></span>
-<span class="normal"><a href="#__codelineno-10-98">98</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-10-97"><a id="__codelineno-10-97" name="__codelineno-10-97"></a><span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MP_UNITS_STD_FMT</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">&quot;  * {::N[.4f]} @ {::N[.1f]} -&gt; {::N[.1f]} ({::N[.1f]})</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">climb</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">v</span><span class="p">,</span>
-</span><span id="__span-10-98"><a id="__codelineno-10-98" name="__codelineno-10-98"></a><span class="w">                                            </span><span class="n">ratio</span><span class="p">,</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">asin</span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">ratio</span><span class="p">).</span><span class="n">force_in</span><span class="p">(</span><span class="n">si</span><span class="o">::</span><span class="n">degree</span><span class="p">));</span>
+<div class="language-cpp highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">glide_computer.cpp</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-11-97">97</a></span>
+<span class="normal"><a href="#__codelineno-11-98">98</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-11-97"><a id="__codelineno-11-97" name="__codelineno-11-97"></a><span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MP_UNITS_STD_FMT</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">&quot;  * {::N[.4f]} @ {::N[.1f]} -&gt; {::N[.1f]} ({::N[.1f]})</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">climb</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">v</span><span class="p">,</span>
+</span><span id="__span-11-98"><a id="__codelineno-11-98" name="__codelineno-11-98"></a><span class="w">                                            </span><span class="n">ratio</span><span class="p">,</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">asin</span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">ratio</span><span class="p">).</span><span class="n">force_in</span><span class="p">(</span><span class="n">si</span><span class="o">::</span><span class="n">degree</span><span class="p">));</span>
 </span></code></pre></div></td></tr></table></div>
 <p>Custom formatting for all quantity types makes the output readable for pilots.</p>
 <h2 id="scenario-simulation">Scenario Simulation<a class="headerlink" href="#scenario-simulation" title="Permanent link">&para;</a></h2>
@@ -12009,58 +12167,58 @@ correctly computed as a ratio of two <em>speeds</em>.</p>
 <p>For each combination, it calculates whether the flight is possible and estimates the time required.</p>
 <h3 id="sample-output">Sample Output<a class="headerlink" href="#sample-output" title="Permanent link">&para;</a></h3>
 <p>The program outputs detailed flight plans with proper unit formatting:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>Safety:
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>=======
-</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>- Min AGL separation: 300 m
-</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>
-</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>Gliders:
-</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>========
-</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>- Name: SZD-56 Diana
-</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>- Polar:
-</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>  * -0.6366 m/s @ 110.0 km/h -&gt; 48.0 (1.2°)
-</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>
-</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>Waypoints:
-</span><span id="__span-11-12"><a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>==========
-</span><span id="__span-11-13"><a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>- EPPR: 54.24772° N 18.6745° E, 4.9 m AMSL
-</span><span id="__span-11-14"><a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a>- EPGI: 53.52442° N 18.84947° E, 35.1 m AMSL
-</span><span id="__span-11-15"><a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a>
-</span><span id="__span-11-16"><a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a>Weather:
-</span><span id="__span-11-17"><a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a>========
-</span><span id="__span-11-18"><a id="__codelineno-11-18" name="__codelineno-11-18" href="#__codelineno-11-18"></a>- Good
-</span><span id="__span-11-19"><a id="__codelineno-11-19" name="__codelineno-11-19" href="#__codelineno-11-19"></a>  * Cloud base:        1900 m AGL
-</span><span id="__span-11-20"><a id="__codelineno-11-20" name="__codelineno-11-20" href="#__codelineno-11-20"></a>  * Thermals strength: 4.3 m/s
-</span><span id="__span-11-21"><a id="__codelineno-11-21" name="__codelineno-11-21" href="#__codelineno-11-21"></a>
-</span><span id="__span-11-22"><a id="__codelineno-11-22" name="__codelineno-11-22" href="#__codelineno-11-22"></a>Task:
-</span><span id="__span-11-23"><a id="__codelineno-11-23" name="__codelineno-11-23" href="#__codelineno-11-23"></a>=====
-</span><span id="__span-11-24"><a id="__codelineno-11-24" name="__codelineno-11-24" href="#__codelineno-11-24"></a>- Start: EPPR
-</span><span id="__span-11-25"><a id="__codelineno-11-25" name="__codelineno-11-25" href="#__codelineno-11-25"></a>- Finish: EPPR
-</span><span id="__span-11-26"><a id="__codelineno-11-26" name="__codelineno-11-26" href="#__codelineno-11-26"></a>- Length:  162.5 km
-</span><span id="__span-11-27"><a id="__codelineno-11-27" name="__codelineno-11-27" href="#__codelineno-11-27"></a>- Legs:
-</span><span id="__span-11-28"><a id="__codelineno-11-28" name="__codelineno-11-28" href="#__codelineno-11-28"></a>  * EPPR -&gt; EPGI (81.2 km)
-</span><span id="__span-11-29"><a id="__codelineno-11-29" name="__codelineno-11-29" href="#__codelineno-11-29"></a>  * EPGI -&gt; EPPR (81.2 km)
-</span><span id="__span-11-30"><a id="__codelineno-11-30" name="__codelineno-11-30" href="#__codelineno-11-30"></a>
-</span><span id="__span-11-31"><a id="__codelineno-11-31" name="__codelineno-11-31" href="#__codelineno-11-31"></a>Tow:
-</span><span id="__span-11-32"><a id="__codelineno-11-32" name="__codelineno-11-32" href="#__codelineno-11-32"></a>====
-</span><span id="__span-11-33"><a id="__codelineno-11-33" name="__codelineno-11-33" href="#__codelineno-11-33"></a>- Type:        aircraft
-</span><span id="__span-11-34"><a id="__codelineno-11-34" name="__codelineno-11-34" href="#__codelineno-11-34"></a>- Height:      400 m
-</span><span id="__span-11-35"><a id="__codelineno-11-35" name="__codelineno-11-35" href="#__codelineno-11-35"></a>- Performance: 1.6 m/s
-</span><span id="__span-11-36"><a id="__codelineno-11-36" name="__codelineno-11-36" href="#__codelineno-11-36"></a>
-</span><span id="__span-11-37"><a id="__codelineno-11-37" name="__codelineno-11-37" href="#__codelineno-11-37"></a>Scenario: Glider = SZD-56 Diana, Weather = Good
-</span><span id="__span-11-38"><a id="__codelineno-11-38" name="__codelineno-11-38" href="#__codelineno-11-38"></a>===============================================
-</span><span id="__span-11-39"><a id="__codelineno-11-39" name="__codelineno-11-39" href="#__codelineno-11-39"></a>
-</span><span id="__span-11-40"><a id="__codelineno-11-40" name="__codelineno-11-40" href="#__codelineno-11-40"></a>| Flight phase | Duration                    | Distance                  | Height                |
-</span><span id="__span-11-41"><a id="__codelineno-11-41" name="__codelineno-11-41" href="#__codelineno-11-41"></a>|--------------|-----------------------------|---------------------------|-----------------------|
-</span><span id="__span-11-42"><a id="__codelineno-11-42" name="__codelineno-11-42" href="#__codelineno-11-42"></a>| Tow          | 4.2 min (Total:   4.2 min)  | 0.0 km (Total:   0.0 km)  | 400 m ( 405 m AMSL)   |
-</span><span id="__span-11-43"><a id="__codelineno-11-43" name="__codelineno-11-43" href="#__codelineno-11-43"></a>| Glide        | 2.6 min (Total:   6.8 min)  | 4.8 km (Total:   4.8 km)  | -100 m ( 305 m AMSL)  |
-</span><span id="__span-11-44"><a id="__codelineno-11-44" name="__codelineno-11-44" href="#__codelineno-11-44"></a>| Circle       | 7.3 min (Total:  14.1 min)  | 0.0 km (Total:   4.8 km)  | 1602 m (1907 m AMSL)  |
-</span><span id="__span-11-45"><a id="__codelineno-11-45" name="__codelineno-11-45" href="#__codelineno-11-45"></a>| Glide        | 41.9 min (Total:  56.0 min) | 76.8 km (Total:  81.6 km) | -1600 m ( 307 m AMSL) |
-</span><span id="__span-11-46"><a id="__codelineno-11-46" name="__codelineno-11-46" href="#__codelineno-11-46"></a>| Circle       | 6.3 min (Total:  62.3 min)  | 0.0 km (Total:  81.6 km)  | 1383 m (1690 m AMSL)  |
-</span><span id="__span-11-47"><a id="__codelineno-11-47" name="__codelineno-11-47" href="#__codelineno-11-47"></a>| Final Glide  | 44.1 min (Total: 106.4 min) | 80.8 km (Total: 162.5 km) | -1685 m (   5 m AMSL) |
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>Safety:
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>=======
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>- Min AGL separation: 300 m
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>Gliders:
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>========
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>- Name: SZD-56 Diana
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>- Polar:
+</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>  * -0.6366 m/s @ 110.0 km/h -&gt; 48.0 (1.2°)
+</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>
+</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>Waypoints:
+</span><span id="__span-12-12"><a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a>==========
+</span><span id="__span-12-13"><a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a>- EPPR: 54.24772° N 18.6745° E, 4.9 m AMSL
+</span><span id="__span-12-14"><a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a>- EPGI: 53.52442° N 18.84947° E, 35.1 m AMSL
+</span><span id="__span-12-15"><a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a>
+</span><span id="__span-12-16"><a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a>Weather:
+</span><span id="__span-12-17"><a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a>========
+</span><span id="__span-12-18"><a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a>- Good
+</span><span id="__span-12-19"><a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a>  * Cloud base:        1900 m AGL
+</span><span id="__span-12-20"><a id="__codelineno-12-20" name="__codelineno-12-20" href="#__codelineno-12-20"></a>  * Thermals strength: 4.3 m/s
+</span><span id="__span-12-21"><a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a>
+</span><span id="__span-12-22"><a id="__codelineno-12-22" name="__codelineno-12-22" href="#__codelineno-12-22"></a>Task:
+</span><span id="__span-12-23"><a id="__codelineno-12-23" name="__codelineno-12-23" href="#__codelineno-12-23"></a>=====
+</span><span id="__span-12-24"><a id="__codelineno-12-24" name="__codelineno-12-24" href="#__codelineno-12-24"></a>- Start: EPPR
+</span><span id="__span-12-25"><a id="__codelineno-12-25" name="__codelineno-12-25" href="#__codelineno-12-25"></a>- Finish: EPPR
+</span><span id="__span-12-26"><a id="__codelineno-12-26" name="__codelineno-12-26" href="#__codelineno-12-26"></a>- Length:  162.5 km
+</span><span id="__span-12-27"><a id="__codelineno-12-27" name="__codelineno-12-27" href="#__codelineno-12-27"></a>- Legs:
+</span><span id="__span-12-28"><a id="__codelineno-12-28" name="__codelineno-12-28" href="#__codelineno-12-28"></a>  * EPPR -&gt; EPGI (81.2 km)
+</span><span id="__span-12-29"><a id="__codelineno-12-29" name="__codelineno-12-29" href="#__codelineno-12-29"></a>  * EPGI -&gt; EPPR (81.2 km)
+</span><span id="__span-12-30"><a id="__codelineno-12-30" name="__codelineno-12-30" href="#__codelineno-12-30"></a>
+</span><span id="__span-12-31"><a id="__codelineno-12-31" name="__codelineno-12-31" href="#__codelineno-12-31"></a>Tow:
+</span><span id="__span-12-32"><a id="__codelineno-12-32" name="__codelineno-12-32" href="#__codelineno-12-32"></a>====
+</span><span id="__span-12-33"><a id="__codelineno-12-33" name="__codelineno-12-33" href="#__codelineno-12-33"></a>- Type:        aircraft
+</span><span id="__span-12-34"><a id="__codelineno-12-34" name="__codelineno-12-34" href="#__codelineno-12-34"></a>- Height:      400 m
+</span><span id="__span-12-35"><a id="__codelineno-12-35" name="__codelineno-12-35" href="#__codelineno-12-35"></a>- Performance: 1.6 m/s
+</span><span id="__span-12-36"><a id="__codelineno-12-36" name="__codelineno-12-36" href="#__codelineno-12-36"></a>
+</span><span id="__span-12-37"><a id="__codelineno-12-37" name="__codelineno-12-37" href="#__codelineno-12-37"></a>Scenario: Glider = SZD-56 Diana, Weather = Good
+</span><span id="__span-12-38"><a id="__codelineno-12-38" name="__codelineno-12-38" href="#__codelineno-12-38"></a>===============================================
+</span><span id="__span-12-39"><a id="__codelineno-12-39" name="__codelineno-12-39" href="#__codelineno-12-39"></a>
+</span><span id="__span-12-40"><a id="__codelineno-12-40" name="__codelineno-12-40" href="#__codelineno-12-40"></a>| Flight phase | Duration                    | Distance                  | Height                |
+</span><span id="__span-12-41"><a id="__codelineno-12-41" name="__codelineno-12-41" href="#__codelineno-12-41"></a>|--------------|-----------------------------|---------------------------|-----------------------|
+</span><span id="__span-12-42"><a id="__codelineno-12-42" name="__codelineno-12-42" href="#__codelineno-12-42"></a>| Tow          | 4.2 min (Total:   4.2 min)  | 0.0 km (Total:   0.0 km)  | 400 m ( 405 m AMSL)   |
+</span><span id="__span-12-43"><a id="__codelineno-12-43" name="__codelineno-12-43" href="#__codelineno-12-43"></a>| Glide        | 2.6 min (Total:   6.8 min)  | 4.8 km (Total:   4.8 km)  | -100 m ( 305 m AMSL)  |
+</span><span id="__span-12-44"><a id="__codelineno-12-44" name="__codelineno-12-44" href="#__codelineno-12-44"></a>| Circle       | 7.3 min (Total:  14.1 min)  | 0.0 km (Total:   4.8 km)  | 1602 m (1907 m AMSL)  |
+</span><span id="__span-12-45"><a id="__codelineno-12-45" name="__codelineno-12-45" href="#__codelineno-12-45"></a>| Glide        | 41.9 min (Total:  56.0 min) | 76.8 km (Total:  81.6 km) | -1600 m ( 307 m AMSL) |
+</span><span id="__span-12-46"><a id="__codelineno-12-46" name="__codelineno-12-46" href="#__codelineno-12-46"></a>| Circle       | 6.3 min (Total:  62.3 min)  | 0.0 km (Total:  81.6 km)  | 1383 m (1690 m AMSL)  |
+</span><span id="__span-12-47"><a id="__codelineno-12-47" name="__codelineno-12-47" href="#__codelineno-12-47"></a>| Final Glide  | 44.1 min (Total: 106.4 min) | 80.8 km (Total: 162.5 km) | -1685 m (   5 m AMSL) |
 </span></code></pre></div>
-<details class="note">
-<summary>Note</summary>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <p>The above is just a part of the actual text output.</p>
-</details>
+</div>
 <p>Each flight phase shows:</p>
 <ul>
 <li><strong>Duration</strong> - <em>time</em> for this phase and cumulative total</li>
