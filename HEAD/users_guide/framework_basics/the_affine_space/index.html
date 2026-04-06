@@ -1470,6 +1470,10 @@ You're not viewing the latest version.
       
         
       
+        
+      
+        
+      
     
     
     
@@ -1612,6 +1616,62 @@ You're not viewing the latest version.
     
   
     Temperature Applications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/affine_space/bounded_quantity_points/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bounded Quantity Points
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/affine_space/custom_contract_handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom Contract Handlers
   
 
     
@@ -3411,6 +3471,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -3453,6 +3515,34 @@ You're not viewing the latest version.
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../workshops/advanced/bounds_validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bounds Validation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -3639,6 +3729,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -3734,6 +3826,34 @@ You're not viewing the latest version.
     
   
     Type-Safe Indices and Offsets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../how_to_guides/advanced_usage/ultimate_safety/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ensure Ultimate Safety
   
 
     
@@ -12037,13 +12157,27 @@ and coordinate reference conversions.</p>
 <td>Value transformation</td>
 <td>Geographic <em>latitude</em>, physical boundaries</td>
 </tr>
+<tr>
+<td><code>check_non_negative</code></td>
+<td>Reports violation if <code>value &lt; 0</code></td>
+<td>Depends on rep type</td>
+<td>Inherently non-negative quantities (<em>length</em>, <em>mass</em>)</td>
+</tr>
+<tr>
+<td><code>clamp_non_negative</code></td>
+<td>Clamps negative values to zero</td>
+<td>Silent correction</td>
+<td>FP rounding noise in non-negative domains</td>
+</tr>
 </tbody>
 </table>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>All built-in policies expose public <code>min</code> and <code>max</code> data members, enabling <code>std::numeric_limits</code>
-specializations to reflect the constrained bounds. See the <code>std::numeric_limits</code> note below
-for details.</p>
+<p>The four bounded-range policies (<code>check_in_range</code>, <code>clamp_to_range</code>, <code>wrap_to_range</code>,
+<code>reflect_in_range</code>) expose public <code>min</code> and <code>max</code> data members, enabling <code>std::numeric_limits</code>
+specializations to reflect the constrained bounds. <code>check_non_negative</code> and
+<code>clamp_non_negative</code> are halfline policies with no upper bound and therefore do not
+expose <code>max</code>. See the <code>std::numeric_limits</code> note below for details.</p>
 </div>
 <div class="admonition info">
 <p class="admonition-title">Error behavior of <code>check_in_range</code></p>
@@ -12055,7 +12189,9 @@ for details.</p>
 <li>Otherwise, falls back to <a href="../../../how_to_guides/integration/wide_compatibility/#contract-checking-macros"><code>MP_UNITS_EXPECTS</code></a>,
   which may be disabled in release builds.</li>
 </ul>
-<p>See <a href="../../../how_to_guides/advanced_usage/ultimate_safety/">How to: Ensure Ultimate Safety</a> for a
+<p>See <a href="../../../tutorials/affine_space/custom_contract_handlers/">Tutorial: Custom Contract Handlers</a>
+for a step-by-step guide to implementing custom error policies, or
+<a href="../../../how_to_guides/advanced_usage/ultimate_safety/">How to: Ensure Ultimate Safety</a> for a
 complete example of combining <code>check_in_range</code> with <code>constrained</code> rep types.</p>
 </div>
 <h3 id="example-usage">Example Usage<a class="headerlink" href="#example-usage" title="Permanent link">&para;</a></h3>
@@ -12112,7 +12248,12 @@ complete example of combining <code>check_in_range</code> with <code>constrained
 <code>quantity_bounds</code> policy, <code>std::numeric_limits</code> delegates to the representation type's limits.</p>
 </div>
 <h3 id="custom-policies-one-sided-bounds">Custom Policies (One-Sided Bounds)<a class="headerlink" href="#custom-policies-one-sided-bounds" title="Permanent link">&para;</a></h3>
-<p>You can create custom policies for one-sided constraints like <code>[min, +∞)</code> or <code>(-∞, max]</code>:</p>
+<p>The library ships two built-in one-sided halfline policies for <code>[0, +∞)</code> domains:
+<code>check_non_negative</code> (reports a violation when the value is negative) and
+<code>clamp_non_negative</code> (silently clamps negative values to zero). These are automatically
+applied to any <code>quantity_point</code> whose origin is a <code>natural_point_origin</code> of a non-negative
+quantity spec (such as <code>isq::length</code>, <code>isq::mass</code>, or <code>isq::duration</code>).</p>
+<p>For other one-sided constraints, you can create a fully custom policy:</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">Quantity</span><span class="w"> </span><span class="n">Q</span><span class="o">&gt;</span>
 </span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="k">struct</span><span class="w"> </span><span class="nc">clamp_bottom</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">  </span><span class="n">Q</span><span class="w"> </span><span class="n">min</span><span class="p">;</span><span class="w">  </span><span class="c1">// Public member enables std::numeric_limits support</span>

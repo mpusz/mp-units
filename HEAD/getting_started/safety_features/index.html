@@ -852,6 +852,17 @@ You're not viewing the latest version.
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#non-negative-quantities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Non-Negative Quantities
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1638,6 +1649,10 @@ You're not viewing the latest version.
       
         
       
+        
+      
+        
+      
     
     
     
@@ -1780,6 +1795,62 @@ You're not viewing the latest version.
     
   
     Temperature Applications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/affine_space/bounded_quantity_points/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bounded Quantity Points
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/affine_space/custom_contract_handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom Contract Handlers
   
 
     
@@ -3303,6 +3374,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -3345,6 +3418,34 @@ You're not viewing the latest version.
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../workshops/advanced/bounds_validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bounds Validation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -3531,6 +3632,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -3626,6 +3729,34 @@ You're not viewing the latest version.
     
   
     Type-Safe Indices and Offsets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how_to_guides/advanced_usage/ultimate_safety/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ensure Ultimate Safety
   
 
     
@@ -11621,17 +11752,62 @@ unit-qualified construction.</p>
 <a href="../../how_to_guides/advanced_usage/ultimate_safety/">Ensure Ultimate Safety</a> and
 <a href="../../users_guide/framework_basics/representation_types/#constraint-violation-handler">Representation Types: <code>constraint_violation_handler</code></a>.</p>
 </div>
+<h3 id="non-negative-quantities">Non-Negative Quantities<a class="headerlink" href="#non-negative-quantities" title="Permanent link">&para;</a></h3>
+<p>The library also tracks which physical quantities are inherently non-negative (e.g.,
+<em>length</em>, <em>mass</em>, <em>duration</em>) through the type system. This property propagates through
+derived equations and is automatically inherited by named real-scalar children:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">is_non_negative</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="p">));</span><span class="w">      </span><span class="c1">// ✅ Tagged in ISQ definitions</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">is_non_negative</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">mass</span><span class="p">));</span><span class="w">        </span><span class="c1">// ✅ Tagged in ISQ definitions</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">is_non_negative</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">distance</span><span class="p">));</span><span class="w">    </span><span class="c1">// ✅ Named real-scalar child of length</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">is_non_negative</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">speed</span><span class="p">));</span><span class="w">       </span><span class="c1">// ✅ Derived: length / duration</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">is_non_negative</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">velocity</span><span class="p">));</span><span class="w">   </span><span class="c1">// ❌ Vector character — excluded from inheritance</span>
+</span></code></pre></div>
+<div class="admonition question">
+<p class="admonition-title">How is non-negativity enforced?</p>
+<p>Non-negativity is enforced at <strong>two levels</strong>:</p>
+<dl>
+<dt><strong>Compile time (always)</strong></dt>
+<dd>The <code>non_negative</code> flag is tracked in the type system and propagated through
+dimensional equations, so the compiler knows whether any derived quantity is
+non-negative.</dd>
+<dt><strong>Runtime (automatic for <code>quantity_point</code> with a natural origin)</strong></dt>
+<dd>
+<p>Every <code>quantity_point</code> whose reference is rooted at the natural point origin of a
+non-negative quantity spec automatically has <code>check_non_negative</code> bounds attached.
+This means construction of, or arithmetic on, such a point checks the value:</p>
+<ul>
+<li>If the representation type has a
+  <a href="../../users_guide/framework_basics/representation_types/#constraint-violation-handler"><code>constraint_violation_handler</code></a>
+  specialization (e.g., a <code>constrained&lt;T, Policy&gt;</code> rep), the handler is invoked on
+  violation — behaviour is guaranteed regardless of build mode.</li>
+<li>For plain types (like <code>double</code>) the library falls back to
+  <a href="../../how_to_guides/integration/wide_compatibility/#contract-checking-macros"><code>MP_UNITS_EXPECTS</code></a>,
+  which may be disabled in release builds.</li>
+</ul>
+<p>You can override the default policy for a specific quantity spec by providing a
+full specialization of <code>quantity_bounds</code> before the point type is first used:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1">// Replace error-on-negative with silent clamp-to-zero (e.g., for FP noise):</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">template</span><span class="o">&lt;&gt;</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">quantity_bounds</span><span class="o">&lt;</span><span class="n">natural_point_origin</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">clamp_non_negative</span><span class="p">{};</span>
+</span></code></pre></div>
+<p>See <a href="../../tutorials/affine_space/custom_contract_handlers/">Tutorial: Custom Contract Handlers</a>
+for a step-by-step guide to implementing custom error policies with <code>constrained&lt;T, ErrorPolicy&gt;</code>.</p>
+</dd>
+</dl>
+<p>For quantities modeled only as a <code>quantity</code> displacement (not as a <code>quantity_point</code>),
+non-negativity remains a compile-time property only.</p>
+</div>
 <h2 id="level-4-quantity-kind-safety">Level 4: Quantity Kind Safety<a class="headerlink" href="#level-4-quantity-kind-safety" title="Permanent link">&para;</a></h2>
 <p><strong>Quantity kind safety</strong> distinguishes between quantities that share the same dimension but
 represent different physical concepts.</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">absorbed_dose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Gy</span><span class="p">;</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">dose_equivalent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Sv</span><span class="p">;</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1">// auto result = absorbed_dose + dose_equivalent;           // ❌ Compile-time error!</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="c1">// Error: cannot add absorbed dose and dose equivalent (both L²T⁻², but different kinds)</span>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c1">// auto equal = (absorbed_dose == dose_equivalent);          // ❌ Compile-time error!</span>
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="c1">// Error: cannot compare absorbed dose and dose equivalent</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">absorbed_dose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Gy</span><span class="p">;</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">dose_equivalent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Sv</span><span class="p">;</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1">// auto result = absorbed_dose + dose_equivalent;           // ❌ Compile-time error!</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="c1">// Error: cannot add absorbed dose and dose equivalent (both L²T⁻², but different kinds)</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="c1">// auto equal = (absorbed_dose == dose_equivalent);          // ❌ Compile-time error!</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="c1">// Error: cannot compare absorbed dose and dose equivalent</span>
 </span></code></pre></div>
 <p>Examples of quantities with same dimension but different kinds:</p>
 <ul>
@@ -11652,22 +11828,22 @@ distinguishes all SI quantity kinds including Gy/Sv, Hz/Bq, and rad/sr.</p>
   ingredients validation</li>
 <li><strong>Quantity Character Correctness</strong> - Representation types and character-specific operations</li>
 </ol>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1">// Quantity Type: Hierarchy prevents mixing energy types</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="kt">void</span><span class="w"> </span><span class="nf">process_kinetic</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">kinetic_energy</span><span class="p">[</span><span class="n">J</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ke</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1">// Quantity Type: Ingredient validation requires specific quantity types</span>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="k">constexpr</span><span class="w"> </span><span class="n">quantity</span><span class="w"> </span><span class="n">g0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">acceleration_of_free_fall</span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">standard_gravity</span><span class="p">);</span>
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">[</span><span class="n">m</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span>
-</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">gravitational_potential_energy</span><span class="p">[</span><span class="n">J</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Ep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mass</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">g0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">height</span><span class="p">;</span><span class="w">  </span>
-</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="c1">// quantity&lt;gravitational_potential_energy[J]&gt; wrong = mass * g0 * width;  // ❌ Compile-time error!</span>
-</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="c1">// Error: cannot form gravitational potential energy from width</span>
-</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>
-</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="c1">// process_kinetic(pe);                                                   // ❌ Compile-time error!</span>
-</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="c1">// Error: cannot pass potential_energy where kinetic_energy is required</span>
-</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>
-</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="c1">// Quantity Character: Vector vs. scalar distinction</span>
-</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">speed</span><span class="p">[</span><span class="n">m</span><span class="o">/</span><span class="n">s</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cartesian_vector</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">s</span><span class="p">;</span><span class="w">      </span><span class="c1">// ❌ Compile-time error!</span>
-</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="c1">// Error: cannot initialize scalar quantity (speed) with vector representation</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1">// Quantity Type: Hierarchy prevents mixing energy types</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="kt">void</span><span class="w"> </span><span class="nf">process_kinetic</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">kinetic_energy</span><span class="p">[</span><span class="n">J</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ke</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1">// Quantity Type: Ingredient validation requires specific quantity types</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="k">constexpr</span><span class="w"> </span><span class="n">quantity</span><span class="w"> </span><span class="n">g0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">acceleration_of_free_fall</span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">standard_gravity</span><span class="p">);</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">[</span><span class="n">m</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">gravitational_potential_energy</span><span class="p">[</span><span class="n">J</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Ep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mass</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">g0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">height</span><span class="p">;</span><span class="w">  </span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="c1">// quantity&lt;gravitational_potential_energy[J]&gt; wrong = mass * g0 * width;  // ❌ Compile-time error!</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="c1">// Error: cannot form gravitational potential energy from width</span>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="c1">// process_kinetic(pe);                                                   // ❌ Compile-time error!</span>
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="c1">// Error: cannot pass potential_energy where kinetic_energy is required</span>
+</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>
+</span><span id="__span-7-14"><a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="c1">// Quantity Character: Vector vs. scalar distinction</span>
+</span><span id="__span-7-15"><a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">speed</span><span class="p">[</span><span class="n">m</span><span class="o">/</span><span class="n">s</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cartesian_vector</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">s</span><span class="p">;</span><span class="w">      </span><span class="c1">// ❌ Compile-time error!</span>
+</span><span id="__span-7-16"><a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a><span class="c1">// Error: cannot initialize scalar quantity (speed) with vector representation</span>
 </span></code></pre></div>
 <p>Quantity safety distinguishes:</p>
 <ul>
@@ -11683,21 +11859,21 @@ implementation. Full character-specific operations planned for V3.</p>
 <h2 id="level-6-mathematical-space-safety">Level 6: Mathematical Space Safety<a class="headerlink" href="#level-6-mathematical-space-safety" title="Permanent link">&para;</a></h2>
 <p><strong>Mathematical space safety</strong> distinguishes between <strong>quantity points</strong> (absolute positions
 on a scale) and <strong>quantity deltas</strong> (differences/displacements).</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1">// Points: Positions on a scale with an origin</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">quantity_point</span><span class="w"> </span><span class="n">room_temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">20.</span><span class="p">);</span>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">quantity_point</span><span class="w"> </span><span class="n">outside_temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">5.</span><span class="p">);</span>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="n">quantity</span><span class="w"> </span><span class="n">temp_diff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">room_temp</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">outside_temp</span><span class="p">;</span><span class="w">      </span><span class="c1">// ✅ OK: 15 K (delta)</span>
-</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="c1">// auto temp_sum = room_temp + outside_temp;        // ❌ Compile-time error!</span>
-</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="c1">// Error: cannot add points (meaningless: what is 20 °C + 5 °C?)</span>
-</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>
-</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="c1">// Deltas: Differences between values</span>
-</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="n">quantity</span><span class="w"> </span><span class="n">temp_change</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">delta</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
-</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="n">quantity_point</span><span class="w"> </span><span class="n">new_temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">room_temp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">temp_change</span><span class="p">;</span><span class="w">  </span><span class="c1">// ✅ OK: point + delta = 30 °C</span>
-</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="n">quantity</span><span class="w"> </span><span class="n">total_change</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">temp_change</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">temp_change</span><span class="p">;</span><span class="w">  </span><span class="c1">// ✅ OK: delta + delta = 20 K</span>
-</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>
-</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="c1">// auto wrong = temp_change - room_temp;            // ❌ Compile-time error!</span>
-</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="c1">// Error: cannot subtract point from delta (meaningless: what is 10 K - 20 °C?)</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1">// Points: Positions on a scale with an origin</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">quantity_point</span><span class="w"> </span><span class="n">room_temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">20.</span><span class="p">);</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="n">quantity_point</span><span class="w"> </span><span class="n">outside_temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">5.</span><span class="p">);</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="n">quantity</span><span class="w"> </span><span class="n">temp_diff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">room_temp</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">outside_temp</span><span class="p">;</span><span class="w">      </span><span class="c1">// ✅ OK: 15 K (delta)</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="c1">// auto temp_sum = room_temp + outside_temp;        // ❌ Compile-time error!</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="c1">// Error: cannot add points (meaningless: what is 20 °C + 5 °C?)</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="c1">// Deltas: Differences between values</span>
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="n">quantity</span><span class="w"> </span><span class="n">temp_change</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">delta</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="n">quantity_point</span><span class="w"> </span><span class="n">new_temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">room_temp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">temp_change</span><span class="p">;</span><span class="w">  </span><span class="c1">// ✅ OK: point + delta = 30 °C</span>
+</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="n">quantity</span><span class="w"> </span><span class="n">total_change</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">temp_change</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">temp_change</span><span class="p">;</span><span class="w">  </span><span class="c1">// ✅ OK: delta + delta = 20 K</span>
+</span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>
+</span><span id="__span-8-14"><a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="c1">// auto wrong = temp_change - room_temp;            // ❌ Compile-time error!</span>
+</span><span id="__span-8-15"><a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a><span class="c1">// Error: cannot subtract point from delta (meaningless: what is 10 K - 20 °C?)</span>
 </span></code></pre></div>
 <p>Key operations:</p>
 <ul>

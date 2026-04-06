@@ -1470,6 +1470,10 @@ You're not viewing the latest version.
       
         
       
+        
+      
+        
+      
     
     
     
@@ -1612,6 +1616,62 @@ You're not viewing the latest version.
     
   
     Temperature Applications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tutorials/affine_space/bounded_quantity_points/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bounded Quantity Points
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tutorials/affine_space/custom_contract_handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom Contract Handlers
   
 
     
@@ -3135,6 +3195,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -3177,6 +3239,34 @@ You're not viewing the latest version.
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../workshops/advanced/bounds_validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bounds Validation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -3363,6 +3453,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -3458,6 +3550,34 @@ You're not viewing the latest version.
     
   
     Type-Safe Indices and Offsets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../how_to_guides/advanced_usage/ultimate_safety/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ensure Ultimate Safety
   
 
     
@@ -11497,6 +11617,7 @@ You're not viewing the latest version.
 <th style="text-align: center;">Character</th>
 <th style="text-align: center;">Dimension</th>
 <th style="text-align: center;">is_kind</th>
+<th style="text-align: center;">non_negative</th>
 <th style="text-align: center;">Kind of</th>
 <th style="text-align: center;">Parent</th>
 <th>Equation</th>
@@ -11509,6 +11630,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">E</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#energy">energy</a></code></td>
 <td style="text-align: center;"><code><a href="#energy">energy</a></code></td>
 <td>—</td>
@@ -11518,6 +11640,7 @@ You're not viewing the latest version.
 <td><span id="absorbed_dose"></span><code>absorbed_<wbr>dose</code></td>
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">L²T⁻²</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#absorbed_dose">absorbed_<wbr>dose</a></code></td>
 <td style="text-align: center;">—</td>
@@ -11529,6 +11652,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">T⁻¹</td>
 <td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#activity">activity</a></code></td>
 <td style="text-align: center;">—</td>
 <td><code>inverse(<a href="#duration">duration</a>)</code></td>
@@ -11538,6 +11662,7 @@ You're not viewing the latest version.
 <td><span id="amount_of_substance"></span><code>amount_<wbr>of_<wbr>substance</code></td>
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">N</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#amount_of_substance">amount_<wbr>of_<wbr>substance</a></code></td>
 <td style="text-align: center;">—</td>
@@ -11551,6 +11676,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
 <td>alias to <a href="#angle">angular::angle</a></td>
 <td style="text-align: center;">—</td>
 </tr>
@@ -11558,6 +11684,7 @@ You're not viewing the latest version.
 <td><span id="area"></span><code>area</code></td>
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">L²</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#area">area</a></code></td>
 <td style="text-align: center;">—</td>
@@ -11569,6 +11696,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">α</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
 <td style="text-align: center;"><code><a href="#angle">angular::angle</a></code></td>
 <td style="text-align: center;"><code><a href="#angle">angular::angle</a></code></td>
 <td>—</td>
@@ -11579,6 +11707,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">E</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#energy">energy</a></code></td>
 <td style="text-align: center;"><code><a href="#energy">energy</a></code></td>
 <td>—</td>
@@ -11589,6 +11718,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">E</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#energy">energy</a></code></td>
 <td style="text-align: center;"><code><a href="#energy">energy</a></code></td>
 <td>—</td>
@@ -11598,6 +11728,7 @@ You're not viewing the latest version.
 <td><span id="coordinate_time"></span><code>coordinate_<wbr>time</code></td>
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">T</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#coordinate_time">coordinate_<wbr>time</a></code></td>
 <td style="text-align: center;"><code><a href="#duration">duration</a></code></td>
@@ -11609,6 +11740,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">L²</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#area">area</a></code></td>
 <td style="text-align: center;"><code><a href="#area">area</a></code></td>
 <td>—</td>
@@ -11619,6 +11751,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">T⁻¹</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#frequency">frequency</a></code></td>
 <td style="text-align: center;"><code><a href="#frequency">frequency</a></code></td>
 <td>—</td>
@@ -11629,6 +11762,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">L</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#length">length</a></code></td>
 <td style="text-align: center;"><code><a href="#length">length</a></code></td>
 <td>—</td>
@@ -11639,6 +11773,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">1</td>
 <td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
 <td style="text-align: center;"><code><a href="../core/#dimensionless">dimensionless</a></code></td>
 <td style="text-align: center;">—</td>
 <td>—</td>
@@ -11648,6 +11783,7 @@ You're not viewing the latest version.
 <td><span id="displacement"></span><code>displacement</code></td>
 <td style="text-align: center;">Vector</td>
 <td style="text-align: center;">L</td>
+<td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
 <td style="text-align: center;"><code><a href="#length">length</a></code></td>
 <td style="text-align: center;"><code><a href="#length">length</a></code></td>
@@ -11659,6 +11795,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">T</td>
 <td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#duration">duration</a></code></td>
 <td style="text-align: center;">—</td>
 <td>—</td>
@@ -11669,6 +11806,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">ET²L⁻²</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#mass">mass</a></code></td>
 <td style="text-align: center;"><code><a href="#mass">mass</a></code></td>
 <td>—</td>
@@ -11678,6 +11816,7 @@ You're not viewing the latest version.
 <td><span id="electric_capacitance"></span><code>electric_<wbr>capacitance</code></td>
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">Q²E⁻¹</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#electric_capacitance">electric_<wbr>capacitance</a></code></td>
 <td style="text-align: center;">—</td>
@@ -11689,6 +11828,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">Q</td>
 <td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
 <td style="text-align: center;"><code><a href="#electric_charge">electric_<wbr>charge</a></code></td>
 <td style="text-align: center;">—</td>
 <td>—</td>
@@ -11699,6 +11839,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">QT⁻¹</td>
 <td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
 <td style="text-align: center;"><code><a href="#electric_current">electric_<wbr>current</a></code></td>
 <td style="text-align: center;">—</td>
 <td><code><a href="#electric_charge">electric_<wbr>charge</a> / <wbr><a href="#duration">duration</a></code></td>
@@ -11709,6 +11850,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">EQ⁻¹</td>
 <td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
 <td style="text-align: center;"><code><a href="#electric_potential">electric_<wbr>potential</a></code></td>
 <td style="text-align: center;">—</td>
 <td><code><a href="#energy">energy</a> / <wbr><a href="#electric_charge">electric_<wbr>charge</a></code></td>
@@ -11718,6 +11860,7 @@ You're not viewing the latest version.
 <td><span id="electric_resistance"></span><code>electric_<wbr>resistance</code></td>
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">ETQ⁻²</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#electric_resistance">electric_<wbr>resistance</a></code></td>
 <td style="text-align: center;">—</td>
@@ -11729,6 +11872,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">E</td>
 <td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#energy">energy</a></code></td>
 <td style="text-align: center;">—</td>
 <td>—</td>
@@ -11739,6 +11883,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">E</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#energy">energy</a></code></td>
 <td style="text-align: center;"><code><a href="#energy">energy</a></code></td>
 <td>—</td>
@@ -11748,6 +11893,7 @@ You're not viewing the latest version.
 <td><span id="force"></span><code>force</code></td>
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">EL⁻¹</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#force">force</a></code></td>
 <td style="text-align: center;">—</td>
@@ -11759,6 +11905,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">T⁻¹</td>
 <td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#frequency">frequency</a></code></td>
 <td style="text-align: center;">—</td>
 <td><code>inverse(<a href="#duration">duration</a>)</code></td>
@@ -11769,6 +11916,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">T</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#duration">duration</a></code></td>
 <td style="text-align: center;"><code><a href="#lifetime">lifetime</a></code></td>
 <td>—</td>
@@ -11779,6 +11927,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">L</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#length">length</a></code></td>
 <td style="text-align: center;"><code><a href="#length">length</a></code></td>
 <td>—</td>
@@ -11788,6 +11937,7 @@ You're not viewing the latest version.
 <td><span id="illuminance"></span><code>illuminance</code></td>
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">α²IL⁻²</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#illuminance">illuminance</a></code></td>
 <td style="text-align: center;">—</td>
@@ -11799,6 +11949,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">L</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#length">length</a></code></td>
 <td style="text-align: center;"><code><a href="#length">length</a></code></td>
 <td>—</td>
@@ -11808,6 +11959,7 @@ You're not viewing the latest version.
 <td><span id="inductance"></span><code>inductance</code></td>
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">ET²Q⁻²</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#inductance">inductance</a></code></td>
 <td style="text-align: center;">—</td>
@@ -11819,6 +11971,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">L</td>
 <td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#interaction_length">interaction_<wbr>length</a></code></td>
 <td style="text-align: center;"><code><a href="#length">length</a></code></td>
 <td>—</td>
@@ -11829,6 +11982,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">ET²L⁻²</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#mass">mass</a></code></td>
 <td style="text-align: center;"><code><a href="#mass">mass</a></code></td>
 <td>—</td>
@@ -11839,6 +11993,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">E</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#energy">energy</a></code></td>
 <td style="text-align: center;"><code><a href="#energy">energy</a></code></td>
 <td>—</td>
@@ -11849,6 +12004,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">E</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#energy">energy</a></code></td>
 <td style="text-align: center;"><code><a href="#total_energy">total_<wbr>energy</a></code></td>
 <td>—</td>
@@ -11858,6 +12014,7 @@ You're not viewing the latest version.
 <td><span id="length"></span><code>length</code></td>
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">L</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#length">length</a></code></td>
 <td style="text-align: center;">—</td>
@@ -11869,6 +12026,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">T</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#duration">duration</a></code></td>
 <td style="text-align: center;"><code><a href="#duration">duration</a></code></td>
 <td>—</td>
@@ -11879,6 +12037,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">—</td>
 <td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
 <td style="text-align: center;"><code><a href="#lorentz_factor">lorentz_<wbr>factor</a></code></td>
 <td style="text-align: center;"><code><a href="../core/#dimensionless">dimensionless</a></code></td>
 <td>—</td>
@@ -11888,6 +12047,7 @@ You're not viewing the latest version.
 <td><span id="luminous_flux"></span><code>luminous_<wbr>flux</code></td>
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">α²I</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#luminous_flux">luminous_<wbr>flux</a></code></td>
 <td style="text-align: center;">—</td>
@@ -11899,6 +12059,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">I</td>
 <td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#luminous_intensity">luminous_<wbr>intensity</a></code></td>
 <td style="text-align: center;">—</td>
 <td>—</td>
@@ -11909,6 +12070,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">ETQ⁻¹L⁻²</td>
 <td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
 <td style="text-align: center;"><code><a href="#magnetic_field">magnetic_<wbr>field</a></code></td>
 <td style="text-align: center;">—</td>
 <td><code><a href="#duration">duration</a> * <wbr><a href="#energy">energy</a> / <wbr><a href="#electric_charge">electric_<wbr>charge</a> / <wbr>pow&lt;2&gt;(<a href="#length">length</a>)</code></td>
@@ -11919,6 +12081,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">ETQ⁻¹</td>
 <td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
 <td style="text-align: center;"><code><a href="#magnetic_flux">magnetic_<wbr>flux</a></code></td>
 <td style="text-align: center;">—</td>
 <td><code><a href="#duration">duration</a> * <wbr><a href="#energy">energy</a> / <wbr><a href="#electric_charge">electric_<wbr>charge</a></code></td>
@@ -11928,6 +12091,7 @@ You're not viewing the latest version.
 <td><span id="mass"></span><code>mass</code></td>
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">ET²L⁻²</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#mass">mass</a></code></td>
 <td style="text-align: center;">—</td>
@@ -11939,6 +12103,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">L</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#length">length</a></code></td>
 <td style="text-align: center;"><code><a href="#length">length</a></code></td>
 <td>—</td>
@@ -11949,6 +12114,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">T</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#duration">duration</a></code></td>
 <td style="text-align: center;"><code><a href="#lifetime">lifetime</a></code></td>
 <td>—</td>
@@ -11959,6 +12125,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">E</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#energy">energy</a></code></td>
 <td style="text-align: center;"><code><a href="#energy">energy</a></code></td>
 <td>—</td>
@@ -11968,6 +12135,7 @@ You're not viewing the latest version.
 <td><span id="momentum"></span><code>momentum</code></td>
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">ETL⁻¹</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#momentum">momentum</a></code></td>
 <td style="text-align: center;">—</td>
@@ -11979,6 +12147,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">L</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#interaction_length">interaction_<wbr>length</a></code></td>
 <td style="text-align: center;"><code><a href="#interaction_length">interaction_<wbr>length</a></code></td>
 <td>—</td>
@@ -11988,6 +12157,7 @@ You're not viewing the latest version.
 <td><span id="number_density"></span><code>number_<wbr>density</code></td>
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">L⁻³</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#number_density">number_<wbr>density</a></code></td>
 <td style="text-align: center;">—</td>
@@ -11999,6 +12169,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">α</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
 <td style="text-align: center;"><code><a href="#angle">angular::angle</a></code></td>
 <td style="text-align: center;"><code><a href="#angle">angular::angle</a></code></td>
 <td>—</td>
@@ -12009,6 +12180,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">L</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#length">length</a></code></td>
 <td style="text-align: center;"><code><a href="#length">length</a></code></td>
 <td>—</td>
@@ -12019,6 +12191,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">—</td>
 <td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
 <td style="text-align: center;"><code><a href="#phase">phase</a></code></td>
 <td style="text-align: center;"><code><a href="../core/#dimensionless">dimensionless</a></code></td>
 <td>—</td>
@@ -12028,6 +12201,7 @@ You're not viewing the latest version.
 <td><span id="polar_angle"></span><code>polar_<wbr>angle</code></td>
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">α</td>
+<td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
 <td style="text-align: center;"><code><a href="#angle">angular::angle</a></code></td>
 <td style="text-align: center;"><code><a href="#angle">angular::angle</a></code></td>
@@ -12039,6 +12213,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Vector</td>
 <td style="text-align: center;">L</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
 <td style="text-align: center;"><code><a href="#length">length</a></code></td>
 <td style="text-align: center;"><code><a href="#displacement">displacement</a></code></td>
 <td>—</td>
@@ -12048,6 +12223,7 @@ You're not viewing the latest version.
 <td><span id="power"></span><code>power</code></td>
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">ET⁻¹</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#power">power</a></code></td>
 <td style="text-align: center;">—</td>
@@ -12059,6 +12235,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">EL⁻³</td>
 <td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#pressure">pressure</a></code></td>
 <td style="text-align: center;">—</td>
 <td><code><a href="#energy">energy</a> / <wbr>pow&lt;3&gt;(<a href="#length">length</a>)</code></td>
@@ -12068,6 +12245,7 @@ You're not viewing the latest version.
 <td><span id="proper_time"></span><code>proper_<wbr>time</code></td>
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">T</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#proper_time">proper_<wbr>time</a></code></td>
 <td style="text-align: center;"><code><a href="#duration">duration</a></code></td>
@@ -12079,6 +12257,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Vector</td>
 <td style="text-align: center;">LT⁻¹</td>
 <td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
 <td style="text-align: center;"><code><a href="#proper_velocity">proper_<wbr>velocity</a></code></td>
 <td style="text-align: center;">—</td>
 <td><code><a href="#displacement">displacement</a> / <wbr><a href="#proper_time">proper_<wbr>time</a></code></td>
@@ -12088,6 +12267,7 @@ You're not viewing the latest version.
 <td><span id="radiation_length"></span><code>radiation_<wbr>length</code></td>
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">L</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#radiation_length">radiation_<wbr>length</a></code></td>
 <td style="text-align: center;"><code><a href="#length">length</a></code></td>
@@ -12099,6 +12279,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">L</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#length">length</a></code></td>
 <td style="text-align: center;"><code><a href="#length">length</a></code></td>
 <td>—</td>
@@ -12109,6 +12290,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">L</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#length">length</a></code></td>
 <td style="text-align: center;"><code><a href="#length">length</a></code></td>
 <td>—</td>
@@ -12119,6 +12301,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">ET²L⁻²</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#mass">mass</a></code></td>
 <td style="text-align: center;"><code><a href="#mass">mass</a></code></td>
 <td>—</td>
@@ -12129,6 +12312,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">—</td>
 <td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
 <td style="text-align: center;"><code><a href="#relativistic_beta">relativistic_<wbr>beta</a></code></td>
 <td style="text-align: center;"><code><a href="../core/#dimensionless">dimensionless</a></code></td>
 <td>—</td>
@@ -12139,6 +12323,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">ET²L⁻²</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#mass">mass</a></code></td>
 <td style="text-align: center;"><code><a href="#mass">mass</a></code></td>
 <td>—</td>
@@ -12149,6 +12334,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">E</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#energy">energy</a></code></td>
 <td style="text-align: center;"><code><a href="#total_energy">total_<wbr>energy</a></code></td>
 <td>—</td>
@@ -12158,6 +12344,7 @@ You're not viewing the latest version.
 <td><span id="scattering_angle"></span><code>scattering_<wbr>angle</code></td>
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">α</td>
+<td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
 <td style="text-align: center;"><code><a href="#angle">angular::angle</a></code></td>
 <td style="text-align: center;"><code><a href="#angle">angular::angle</a></code></td>
@@ -12169,6 +12356,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">E</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#energy">energy</a></code></td>
 <td style="text-align: center;"><code><a href="#binding_energy">binding_<wbr>energy</a></code></td>
 <td>—</td>
@@ -12181,6 +12369,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
 <td>alias to <a href="#solid_angle">angular::solid_<wbr>angle</a></td>
 <td style="text-align: center;">—</td>
 </tr>
@@ -12188,6 +12377,7 @@ You're not viewing the latest version.
 <td><span id="speed"></span><code>speed</code></td>
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">LT⁻¹</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#speed">speed</a></code></td>
 <td style="text-align: center;">—</td>
@@ -12199,6 +12389,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">Θ</td>
 <td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#temperature">temperature</a></code></td>
 <td style="text-align: center;">—</td>
 <td>—</td>
@@ -12209,6 +12400,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">E</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#energy">energy</a></code></td>
 <td style="text-align: center;"><code><a href="#energy">energy</a></code></td>
 <td>—</td>
@@ -12219,6 +12411,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">T</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#duration">duration</a></code></td>
 <td style="text-align: center;"><code><a href="#duration">duration</a></code></td>
 <td>—</td>
@@ -12229,6 +12422,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">E</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#energy">energy</a></code></td>
 <td style="text-align: center;"><code><a href="#energy">energy</a></code></td>
 <td>—</td>
@@ -12239,6 +12433,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">E</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#energy">energy</a></code></td>
 <td style="text-align: center;"><code><a href="#energy">energy</a></code></td>
 <td>—</td>
@@ -12249,6 +12444,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">ETL⁻¹</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#momentum">momentum</a></code></td>
 <td style="text-align: center;"><code><a href="#momentum">momentum</a></code></td>
 <td>—</td>
@@ -12259,6 +12455,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Vector</td>
 <td style="text-align: center;">LT⁻¹</td>
 <td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
 <td style="text-align: center;"><code><a href="#velocity">velocity</a></code></td>
 <td style="text-align: center;">—</td>
 <td><code><a href="#displacement">displacement</a> / <wbr><a href="#duration">duration</a></code></td>
@@ -12269,6 +12466,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">L</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#length">length</a></code></td>
 <td style="text-align: center;"><code><a href="#length">length</a></code></td>
 <td>—</td>
@@ -12278,6 +12476,7 @@ You're not viewing the latest version.
 <td><span id="volume"></span><code>volume</code></td>
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">L³</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#volume">volume</a></code></td>
 <td style="text-align: center;">—</td>
@@ -12289,6 +12488,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">L</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#length">length</a></code></td>
 <td style="text-align: center;"><code><a href="#length">length</a></code></td>
 <td>—</td>
@@ -12299,6 +12499,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">L</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#length">length</a></code></td>
 <td style="text-align: center;"><code><a href="#length">length</a></code></td>
 <td>—</td>

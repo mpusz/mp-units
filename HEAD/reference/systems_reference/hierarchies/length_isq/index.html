@@ -1470,6 +1470,10 @@ You're not viewing the latest version.
       
         
       
+        
+      
+        
+      
     
     
     
@@ -1612,6 +1616,62 @@ You're not viewing the latest version.
     
   
     Temperature Applications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tutorials/affine_space/bounded_quantity_points/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bounded Quantity Points
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../tutorials/affine_space/custom_contract_handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom Contract Handlers
   
 
     
@@ -3135,6 +3195,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -3177,6 +3239,34 @@ You're not viewing the latest version.
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../workshops/advanced/bounds_validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bounds Validation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -3363,6 +3453,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -3458,6 +3550,34 @@ You're not viewing the latest version.
     
   
     Type-Safe Indices and Offsets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../how_to_guides/advanced_usage/ultimate_safety/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ensure Ultimate Safety
   
 
     
@@ -11360,12 +11480,14 @@ You're not viewing the latest version.
 <p><strong>Dimension:</strong> dim_length</p>
 <pre class="mermaid"><code>flowchart LR
     isq_length["&lt;b&gt;&lt;a href="../../systems/isq/#length" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::length&lt;/a&gt;&lt;/b&gt;"]
+    isq_altitude["&lt;b&gt;&lt;a href="../../systems/isq/#altitude" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::altitude&lt;/a&gt; | &lt;a href="../../systems/isq/#depth" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::depth&lt;/a&gt;&lt;/b&gt;"]
+    isq_length --- isq_altitude
+    isq_height["&lt;b&gt;&lt;a href="../../systems/isq/#height" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::height&lt;/a&gt;&lt;/b&gt;"]
+    isq_altitude --- isq_height
     isq_displacement["&lt;b&gt;&lt;a href="../../systems/isq/#displacement" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::displacement&lt;/a&gt;&lt;/b&gt;"]
     isq_length --- isq_displacement
     isq_position_vector["&lt;b&gt;&lt;a href="../../systems/isq/#position_vector" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::position_vector&lt;/a&gt;&lt;/b&gt;"]
     isq_displacement --- isq_position_vector
-    isq_height["&lt;b&gt;&lt;a href="../../systems/isq/#height" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::height&lt;/a&gt; | &lt;a href="../../systems/isq/#altitude" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::altitude&lt;/a&gt; | &lt;a href="../../systems/isq/#depth" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::depth&lt;/a&gt;&lt;/b&gt;"]
-    isq_length --- isq_height
     isq_path_length["&lt;b&gt;&lt;a href="../../systems/isq/#path_length" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::path_length&lt;/a&gt; | &lt;a href="../../systems/isq/#arc_length" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::arc_length&lt;/a&gt;&lt;/b&gt;"]
     isq_length --- isq_path_length
     isq_distance["&lt;b&gt;&lt;a href="../../systems/isq/#distance" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::distance&lt;/a&gt;&lt;/b&gt;"]
