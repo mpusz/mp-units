@@ -11468,6 +11468,69 @@ You're not viewing the latest version.
     <div class="md-post__meta md-meta">
       <ul class="md-meta__list">
         <li class="md-meta__item">
+          <time datetime="2026-04-06 00:00:00+00:00">April 6, 2026</time></li>
+        
+          <li class="md-meta__item">
+            in
+            
+              <a href="../../category/metrology/" class="md-meta__link">Metrology</a></li>
+        
+        
+          
+          <li class="md-meta__item">
+            
+              12 min read
+            
+          </li>
+        
+        
+      </ul>
+      
+    </div>
+  </header>
+  <div class="md-post__content md-typeset">
+    <h2 id="range-validated-quantity-points"><a class="toclink" href="../../2026/04/06/range-validated-quantity-points/">Range-Validated Quantity Points</a></h2>
+<p>Physical units libraries have always been very good at preventing dimensional
+errors and unit mismatches. But there is a category of correctness that they have
+universally ignored: <strong>domain constraints on quantity point values</strong>.</p>
+<p>A <em>latitude</em> is not just a <em>length</em> divided by a <em>radius</em>. It is a value that lives in
+<span class="arithmatex">\([-90°, +90°]\)</span>; anything outside that range is physically meaningless. An angle
+used in bearing navigation wraps cyclically around a circle; treating it as an
+unbounded real number ignores a fundamental property of the domain. A clinical
+body-temperature sensor should reject a reading of <span class="arithmatex">\(44\ \mathrm{°C}\)</span> at the API
+boundary, not silently pass it downstream.</p>
+<p>No units library — before this work — has provided a way to attach this kind of
+constraint to a quantity point at the type level, have it enforced automatically,
+and express different flavours (clamp, wrap, reflect, check) without any runtime
+polymorphism.</p>
+<p>This article describes the motivation in depth, the design we arrived at, and
+the open questions we would love the community's help to answer.</p>
+
+    
+      <nav class="md-post__action">
+        <a href="../../2026/04/06/range-validated-quantity-points/">
+          Continue reading
+        </a>
+      </nav>
+    
+    
+  </div>
+</article>
+      
+        <article class="md-post md-post--excerpt">
+  <header class="md-post__header">
+    
+      <nav class="md-post__authors md-typeset">
+        
+          <span class="md-author">
+            <img src="https://avatars.githubusercontent.com/u/506260" alt="Mateusz Pusz">
+          </span>
+        
+      </nav>
+    
+    <div class="md-post__meta md-meta">
+      <ul class="md-meta__list">
+        <li class="md-meta__item">
           <time datetime="2026-03-28 00:00:00+00:00">March 28, 2026</time></li>
         
           <li class="md-meta__item">
