@@ -11988,7 +11988,7 @@ built-in decision tree is:</p>
     FIXED --&gt; G{"magnitude?"}
     EWS --&gt; G
     G -- "integral (e.g. m→mm, ×1000)" --&gt; I["exact integer multiplication"]
-    G -- "rational (e.g. ft→m, ×3048/10000)" --&gt; R["double-width integer arithmetic&lt;br&gt;(avoids overflow &amp;amp; FP rounding)"]
+    G -- "rational (e.g. ft→m, ×3048/10000)" --&gt; R["widened integer arithmetic&lt;br&gt;(int64_t or 128-bit;&lt;br&gt;avoids overflow &amp;amp; FP rounding)"]
     G -- "irrational (e.g. deg→rad, ×π/180)" --&gt; IR["long double fixed-point approximation"]</code></pre>
 <p>The integer paths (<code>UsesFixedPointScaling</code> / <code>UsesElementWiseScaling</code>) never promote
 values to floating-point, even for the rational and irrational sub-paths. This is
@@ -12027,16 +12027,23 @@ to the target integer type ("fixed-point approximation").</p>
 <strong>exact integer &gt; exact rational &gt; approximate irrational</strong>.</p>
 </details>
 <details class="question">
-<summary>Why double-width integers for the rational path?</summary>
+<summary>Why widened integers for the rational path?</summary>
 <p>The library computes <code>value * numerator / denominator</code> entirely in integer
 arithmetic. Without extra width, the intermediate product
 <code>value * numerator</code> can overflow even when the final result fits — for example,
 converting feet to metres multiplies by 3048 before dividing by 10000, which
 overflows a 64-bit integer for values above ~3×10¹⁵.</p>
-<p>Double-width integers (e.g. 128-bit for 64-bit values) absorb that intermediate
-growth. Using <code>long double</code> instead would violate the no-FP principle above and
-introduce rounding (<code>0.3048</code> is not exactly representable in binary floating-point),
-and on ARM / Apple Silicon <code>long double == double</code> anyway, giving no extra range.</p>
+<p><strong>mp-units uses widened integers to absorb that intermediate growth:</strong></p>
+<ul>
+<li>For types up to 32 bits (<code>int8_t</code>, <code>int16_t</code>, <code>int32_t</code>): widens to <code>int64_t</code></li>
+<li>For <code>int64_t</code>: widens to 128-bit arithmetic (<code>__int128</code> or custom emulation)</li>
+</ul>
+<p>This approach provides maximum safety headroom for smaller types (with no performance
+cost on modern 64-bit systems), while 128-bit arithmetic handles the vast majority
+of real-world <code>int64_t</code> conversions. Using <code>long double</code> instead would violate the
+no-FP principle above and introduce rounding (<code>0.3048</code> is not exactly representable
+in binary floating-point), and on ARM / Apple Silicon <code>long double == double</code> anyway,
+giving no extra range.</p>
 </details>
 <p>If different internal fields need different scale factors, encode that logic in
 <code>operator*</code> and <code>operator/</code> — the library routes scaling through them via the

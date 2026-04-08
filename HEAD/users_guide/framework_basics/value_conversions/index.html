@@ -11759,9 +11759,9 @@ that a naive implementation cannot handle correctly:</p>
 </li>
 </ul>
 <p>Both challenges are addressed by using <strong>fixed-point arithmetic</strong>: the conversion factor is
-represented at compile time as a double-width integer constant, so the runtime computation
-is a pure integer multiply followed by a right-shift with no risk of intermediate overflow
-and no floating-point operations.</p>
+represented at compile time as a widened integer constant (64-bit for types up to 32 bits,
+128-bit for <code>int64_t</code>), so the runtime computation is a pure integer multiply followed by
+a right-shift with no risk of intermediate overflow and no floating-point operations.</p>
 <details class="info">
 <summary>Implementation details</summary>
 <p>The library distinguishes three sub-cases based on the magnitude <span class="arithmatex">\(M\)</span> that relates the
@@ -11801,20 +11801,21 @@ two units:</p>
 </tbody>
 </table>
 <p>For the non-integer case the magnitude is converted <strong>at compile time</strong> to a
-fixed-point constant with double the bit-width of the representation type.  For
-example, when scaling a 32-bit integer value, a 64-bit fixed-point intermediate is
-used.  The actual runtime computation is then a pure integer multiply followed by a
-right-shift:</p>
+fixed-point constant with widened bit-width. The library uses <strong><code>int64_t</code> for
+all types up to 32 bits</strong> (<code>int8_t</code>, <code>int16_t</code>, <code>int32_t</code>) and <strong>128-bit arithmetic
+for <code>int64_t</code></strong>.  The actual runtime computation is then a pure integer multiply
+followed by a right-shift:</p>
 <div class="arithmatex">\[
 \text{result} = \left\lfloor \text{value} \times \lfloor M \cdot 2^N \rfloor \right\rfloor \gg N
 \]</div>
-<p>where <span class="arithmatex">\(N\)</span> equals the bit-width of the source representation type.  On platforms where
-<code>__int128</code> is available (most 64-bit targets), the double-width arithmetic is
+<p>where <span class="arithmatex">\(N\)</span> equals 64 for types up to 32 bits, and 128 for <code>int64_t</code>.  On platforms
+where <code>__int128</code> is available (most 64-bit targets), the 128-bit arithmetic is
 implemented natively; on others, a portable <code>double_width_int</code> emulation is used in
 <code>constexpr</code> context.</p>
-<p>Because the intermediate is double-width, it cannot overflow as long as the input
-value fits in the representation type — a value of <code>std::int64_t</code> will never silently
-overflow during the multiplication step.</p>
+<p>Because the intermediate is significantly widened (e.g., <code>int64_t</code> for types up to
+32 bits, providing much more than double-width headroom for smaller types), it cannot
+overflow as long as the input value fits in the representation type — for example,
+a value of <code>std::int32_t</code> computed in <code>int64_t</code> has 32 extra bits of safety margin.</p>
 <p>For the non-integer ratio path, the result is <strong>truncated toward zero</strong>.  The
 fixed-point constant is rounded <em>away</em> from zero at compile time to compensate for
 one level of double-rounding, keeping the maximum error within 1 ULP of the true
