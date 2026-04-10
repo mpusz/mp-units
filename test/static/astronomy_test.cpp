@@ -50,4 +50,5 @@ static_assert(approx_equal(1. * Jy, 1e-26 * W / m2 / Hz));
 // legacy constants
 static_assert(approx_equal(1. * k, 1'720'209'895. / 100'000'000'000. * pow<3, 2>(iau::astronomical_unit) /
                                      pow<1, 2>(iau::solar_mass) / D));
+
 }  // namespace
