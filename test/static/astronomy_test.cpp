@@ -33,9 +33,9 @@ using mp_units::astronomy::unit_symbols::a;
 
 // time units
 static_assert(1 * D == 86'400 * s);
-static_assert(10'000 * D_sid == 861'640'905 * s));
-static_assert(100 * a == 36525 * D));
-static_assert(1 * a == 31'557'600 * s));
+static_assert(10'000 * D_sid == 861'640'905 * s);
+static_assert(100 * a == 36525 * D);
+static_assert(1 * a == 31'557'600 * s);
 static_assert(approx_equal(1. * a_trop, 365.242189 * D));
 static_assert(1 * c == 100 * a);
 static_assert(1 * ka == 1000 * a);
