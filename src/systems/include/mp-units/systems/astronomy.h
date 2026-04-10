@@ -41,8 +41,8 @@ namespace mp_units::astronomy {
 // time
 inline constexpr struct day final : named_unit<"D", non_si::day> {} day;
 inline constexpr struct sidereal_day final : named_unit<"D_sid", mag_ratio<861'640'905, 10'000> * si::second> {} sidereal_day;
-inline constexpr struct Julian_year final : named_unit<"a", mag_ratio<365'25, 100> * day> {} Julian_year;
-inline constexpr struct tropical_year final : named_unit<"a_trop", mag_ratio<365'242189, 1'000'000> * day> {} tropical_year;
+inline constexpr struct Julian_year final : named_unit<"a", mag_ratio<36'525, 100> * day> {} Julian_year;
+inline constexpr struct tropical_year final : named_unit<"a_trop", mag_ratio<365'242'189, 1'000'000> * day> {} tropical_year;
 inline constexpr struct century final : named_unit<"c", mag<100> * Julian_year> {} century;
 inline constexpr struct millennium final : named_unit<"ka", mag<1000> * Julian_year> {} millennium;
 
