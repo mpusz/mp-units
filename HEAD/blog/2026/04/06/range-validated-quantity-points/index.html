@@ -11853,10 +11853,10 @@ used in bearing navigation wraps cyclically around a circle; treating it as an
 unbounded real number ignores a fundamental property of the domain. A clinical
 body-temperature sensor should reject a reading of <span class="arithmatex">\(44\ \mathrm{°C}\)</span> at the API
 boundary, not silently pass it downstream.</p>
-<p>No units library — before this work — has provided a way to attach this kind of
-constraint to a quantity point at the type level, have it enforced automatically,
-and express different flavours (clamp, wrap, reflect, check) without any runtime
-polymorphism.</p>
+<p>Type-level constraint enforcement for quantity points with this level of
+flexibility is a relatively unexplored area in mainstream physical units libraries.
+The approach we present here is novel and experimental — we are certain there are
+edge cases and design considerations we haven't yet discovered.</p>
 <p>This article describes the motivation in depth, the design we arrived at, and
 the open questions we would love the community's help to answer.</p>
 <!-- more -->
@@ -12295,9 +12295,10 @@ directly — for example, clamping a sensor's <em>mass</em> reading to its physi
 measurement range, or bounding a <em>duration</em> to a maximum scheduling window?</p>
 <hr />
 <h2 id="we-want-your-feedback">We Want Your Feedback<a class="headerlink" href="#we-want-your-feedback" title="Permanent link">&para;</a></h2>
-<p>This feature is new in the units-library space. <strong>No prior library that we
-know of provides this capability.</strong> We have tried to make the design principled
-and composable, but there are certainly use cases we have not thought of.</p>
+<p>This feature is novel in the units-library space. No prior mainstream library
+that we know of provides this capability, so the solution is not yet proven in
+production. We have tried to make the design principled and composable, but
+there are certainly use cases we have not thought of.</p>
 <p>If you work with geodetic coordinates, sensor data pipelines, game physics,
 audio DSP, or any domain where your quantity points live in a bounded or periodic
 domain, we would love to hear from you:</p>

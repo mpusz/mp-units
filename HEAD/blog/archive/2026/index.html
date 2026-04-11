@@ -11599,10 +11599,10 @@ used in bearing navigation wraps cyclically around a circle; treating it as an
 unbounded real number ignores a fundamental property of the domain. A clinical
 body-temperature sensor should reject a reading of <span class="arithmatex">\(44\ \mathrm{°C}\)</span> at the API
 boundary, not silently pass it downstream.</p>
-<p>No units library — before this work — has provided a way to attach this kind of
-constraint to a quantity point at the type level, have it enforced automatically,
-and express different flavours (clamp, wrap, reflect, check) without any runtime
-polymorphism.</p>
+<p>Type-level constraint enforcement for quantity points with this level of
+flexibility is a relatively unexplored area in mainstream physical units libraries.
+The approach we present here is novel and experimental — we are certain there are
+edge cases and design considerations we haven't yet discovered.</p>
 <p>This article describes the motivation in depth, the design we arrived at, and
 the open questions we would love the community's help to answer.</p>
 
