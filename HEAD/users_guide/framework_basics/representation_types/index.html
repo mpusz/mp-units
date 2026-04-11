@@ -18,7 +18,7 @@
         <link rel="prev" href="../character_of_a_quantity/">
       
       
-        <link rel="next" href="../dimensionless_quantities/">
+        <link rel="next" href="../safe_int/">
       
       
         
@@ -1847,6 +1847,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -2378,6 +2380,34 @@ You're not viewing the latest version.
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../safe_int/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    `safe_int<T>`
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -11930,7 +11960,7 @@ to apply a unit magnitude ratio to it internally. This is captured by the <code>
 concept, which directly names the three built-in scaling paths:</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">concept</span><span class="w"> </span><span class="nc">MagnitudeScalable</span><span class="w"> </span><span class="o">=</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="n">WeaklyRegular</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">UsesMagnitudeAwareScaling</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">UsesFloatingPointScaling</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="o">||</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">                       </span><span class="n">UsesFixedPointScaling</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">UsesElementWiseScaling</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">);</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">                       </span><span class="n">UsesIntegerScaling</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">);</span>
 </span></code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Magnitude-aware scaling</p>
@@ -11941,7 +11971,8 @@ for example, a range-validated representation can return a new type with scaled 
 so that a conversion from degrees to radians adjusts the valid range from
 [-180, 180] to [-π, π]. See <a href="#magnitude-aware-scaling">Magnitude-aware scaling</a> for details.</p>
 </div>
-<p>The three sub-concepts and their requirements:</p>
+<p>The two <strong>built-in numeric</strong> sub-concepts and their requirements
+(<code>UsesMagnitudeAwareScaling</code> is described in the tip box above):</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">// Floating-point type, or container whose element type is floating-point</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="c1">// (e.g. double, cartesian_vector&lt;double&gt;).</span>
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="k">concept</span><span class="w"> </span><span class="nc">UsesFloatingPointScaling</span><span class="w"> </span><span class="o">=</span>
@@ -11951,24 +11982,18 @@ so that a conversion from degrees to radians adjusts the valid range from
 </span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">WeaklyRegular</span><span class="p">;</span>
 </span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">  </span><span class="p">};</span>
 </span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>
-</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="c1">// Fundamental integer type, or a wrapper that is implicitly convertible to/from it</span>
-</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="c1">// (e.g. int, long, std::int64_t).  value_type_t&lt;T&gt; must be std::integral (not just</span>
-</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="c1">// an integer-like type) because the implementation uses double_width_int_for_t&lt;&gt;.</span>
-</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="k">concept</span><span class="w"> </span><span class="nc">UsesFixedPointScaling</span><span class="w"> </span><span class="o">=</span>
-</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">integral</span><span class="o">&lt;</span><span class="n">value_type_t</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="o">&amp;&amp;</span>
-</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">is_convertible_v</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">value_type_t</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="o">&amp;&amp;</span>
-</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">is_convertible_v</span><span class="o">&lt;</span><span class="n">value_type_t</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="o">&gt;</span><span class="p">;</span>
-</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>
-</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="c1">// Container whose element type is a fundamental integer and which is NOT freely</span>
-</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="c1">// convertible to that type (e.g. cartesian_vector&lt;int&gt;).  Scaling is applied</span>
-</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="c1">// element-wise via operator* / operator/.</span>
-</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="k">concept</span><span class="w"> </span><span class="nc">UsesElementWiseScaling</span><span class="w"> </span><span class="o">=</span>
-</span><span id="__span-4-22"><a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">integral</span><span class="o">&lt;</span><span class="n">value_type_t</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="o">&amp;&amp;</span>
-</span><span id="__span-4-23"><a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="w">  </span><span class="o">!</span><span class="n">std</span><span class="o">::</span><span class="n">convertible_to</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">value_type_t</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="o">&amp;&amp;</span>
-</span><span id="__span-4-24"><a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="w">  </span><span class="k">requires</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="n">value_type_t</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">f</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-4-25"><a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">common_with</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">;</span>
-</span><span id="__span-4-26"><a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">common_with</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">;</span>
-</span><span id="__span-4-27"><a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a><span class="w">  </span><span class="p">};</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="c1">// Integer type, wrapper, or container whose element type is a fundamental integer</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="c1">// (e.g. int, safe_int&lt;int&gt;, cartesian_vector&lt;int&gt;).</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="c1">// std::integral&lt;value_type_t&lt;T&gt;&gt; is required (not just treat_as_integral) because</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="c1">// the scaling engine uses get_value&lt;element_t&gt; and fixed_point&lt;element_t&gt;.</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="c1">// Scaling is applied through the type&#39;s own operator* / operator/, so wrappers</span>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="c1">// can check for overflow and containers can scale element-wise.</span>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="k">concept</span><span class="w"> </span><span class="nc">UsesIntegerScaling</span><span class="w"> </span><span class="o">=</span>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">integral</span><span class="o">&lt;</span><span class="n">value_type_t</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="o">&amp;&amp;</span>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="w">  </span><span class="k">requires</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="n">value_type_t</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">f</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="p">};</span>
+</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="p">};</span>
+</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="w">  </span><span class="p">};</span>
 </span></code></pre></div>
 <p>Most standard types satisfy <code>MagnitudeScalable</code> automatically. See
 <a href="#scaling-operators">Scaling operators</a> in the Customization Points section for how to
@@ -11981,16 +12006,13 @@ built-in decision tree is:</p>
     A["scale(M, value)"] --&gt; MA{"provides&lt;br&gt;op*(T, UnitMagnitude)?"}
     MA -- "Yes" --&gt; MAR["&lt;b&gt;Magnitude-aware scaling&lt;/b&gt;&lt;br&gt;calls value * M{}&lt;br&gt;return type may differ from input&lt;br&gt;&lt;br&gt;e.g. custom type&lt;br&gt;with scaled bounds"]
     MA -- "No (fallback)" --&gt; B{"treat_as_floating_point&amp;lt;T&amp;gt;&lt;br&gt;or treat_as_floating_point&amp;lt;value_type_t&amp;lt;T&amp;gt;&amp;gt;&lt;br&gt;?"}
-    B -- True --&gt; FP["&lt;b&gt;UsesFloatingPointScaling&lt;/b&gt;&lt;br&gt;ratio at common precision&lt;br&gt;of source/target value_type_t&lt;br&gt;&lt;br&gt;e.g. double, cartesian_vector&amp;lt;double&amp;gt;"]
-    B -- False --&gt; C{"value_type_t&amp;lt;T&amp;gt; is fundamental integer&lt;br&gt;AND T is convertible to/from it?"}
-    C -- "Yes (e.g. int, long)" --&gt; FIXED["&lt;b&gt;UsesFixedPointScaling&lt;/b&gt;"]
-    C -- "No (e.g. cartesian_vector&amp;lt;int&amp;gt;)" --&gt; EWS["&lt;b&gt;UsesElementWiseScaling&lt;/b&gt;&lt;br&gt;same 3 paths applied element-wise&lt;br&gt;via T::operator* / T::operator/"]
-    FIXED --&gt; G{"magnitude?"}
-    EWS --&gt; G
+    B -- True --&gt; FP["&lt;b&gt;UsesFloatingPointScaling&lt;/b&gt;&lt;br&gt;ratio at source's value_type_t precision&lt;br&gt;&lt;br&gt;e.g. double, cartesian_vector&amp;lt;double&amp;gt;"]
+    B -- False --&gt; INT["&lt;b&gt;UsesIntegerScaling&lt;/b&gt;&lt;br&gt;e.g. int, safe_int&amp;lt;int&amp;gt;, cartesian_vector&amp;lt;int&amp;gt;"]
+    INT --&gt; G{"magnitude?"}
     G -- "integral (e.g. m→mm, ×1000)" --&gt; I["exact integer multiplication"]
     G -- "rational (e.g. ft→m, ×3048/10000)" --&gt; R["widened integer arithmetic&lt;br&gt;(int64_t or 128-bit;&lt;br&gt;avoids overflow &amp;amp; FP rounding)"]
     G -- "irrational (e.g. deg→rad, ×π/180)" --&gt; IR["long double fixed-point approximation"]</code></pre>
-<p>The integer paths (<code>UsesFixedPointScaling</code> / <code>UsesElementWiseScaling</code>) never promote
+<p>The integer path (<code>UsesIntegerScaling</code>) never promotes
 values to floating-point, even for the rational and irrational sub-paths. This is
 intentional: the user explicitly chose an integer representation type, opting out of
 floating-point arithmetic. Their platform may lack FP hardware (embedded systems, DSPs),
@@ -12044,6 +12066,14 @@ of real-world <code>int64_t</code> conversions. Using <code>long double</code> i
 no-FP principle above and introduce rounding (<code>0.3048</code> is not exactly representable
 in binary floating-point), and on ARM / Apple Silicon <code>long double == double</code> anyway,
 giving no extra range.</p>
+<div class="admonition tip">
+<p class="admonition-title">Detecting overflow in the final result</p>
+<p>While double-width arithmetic avoids UB during the intermediate scaling multiplication,
+it cannot prevent overflow in the final result when that result doesn't fit in the
+target type. For runtime overflow detection, use
+<a href="../safe_int/"><code>safe_int&lt;T&gt;</code></a>, which wraps the representation type and checks all
+arithmetic operations for overflow.</p>
+</div>
 </details>
 <p>If different internal fields need different scale factors, encode that logic in
 <code>operator*</code> and <code>operator/</code> — the library routes scaling through them via the
@@ -12232,8 +12262,10 @@ on how this affects implicit conversions between quantities.</p>
 <hr />
 <h4 id="scaling-operators">Scaling operators<a class="headerlink" href="#scaling-operators" title="Permanent link">&para;</a></h4>
 <p>The library scales a representation value by calling <code>value * factor</code> and <code>value / factor</code>,
-where <code>factor</code> is of type <code>value_type_t&lt;T&gt;</code>. These operators must be provided so that the
-built-in scaling paths can apply the unit magnitude ratio during unit conversions.</p>
+where <code>factor</code> is of type <code>value_type_t&lt;T&gt;</code> (or a wider integer type for the rational
+integer path — see <a href="#how-scaling-works">widened integers</a> for details).
+These operators must be provided so that the built-in scaling paths can apply the unit
+magnitude ratio during unit conversions.</p>
 <p>Alternatively (or additionally), a type may provide <code>operator*(T, UnitMagnitude)</code> to
 receive the full compile-time unit magnitude instead of a numeric factor. When present,
 this operator is called <strong>first</strong> and the <code>value_type_t&lt;T&gt;</code>-based operators serve as a
@@ -12276,9 +12308,8 @@ definitions, and design rationale.</p>
 explicit cast via <code>value_cast</code>/<code>force_in</code>:</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">auto</span><span class="w"> </span><span class="n">FromUnit</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">FromRep</span><span class="p">,</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">ToUnit</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">ToRep</span><span class="o">&gt;</span>
 </span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">implicitly_scalable</span><span class="w"> </span><span class="o">=</span>
-</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">is_convertible_v</span><span class="o">&lt;</span><span class="n">FromRep</span><span class="p">,</span><span class="w"> </span><span class="n">ToRep</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;&amp;</span>
-</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">  </span><span class="p">(</span><span class="n">treat_as_floating_point</span><span class="o">&lt;</span><span class="n">ToRep</span><span class="o">&gt;</span><span class="w"> </span><span class="o">||</span>
-</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">   </span><span class="p">(</span><span class="o">!</span><span class="n">treat_as_floating_point</span><span class="o">&lt;</span><span class="n">FromRep</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">is_integral_scaling</span><span class="p">(</span><span class="n">FromUnit</span><span class="p">,</span><span class="w"> </span><span class="n">ToUnit</span><span class="p">)));</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">  </span><span class="n">treat_as_floating_point</span><span class="o">&lt;</span><span class="n">ToRep</span><span class="o">&gt;</span><span class="w"> </span><span class="o">||</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">   </span><span class="p">(</span><span class="o">!</span><span class="n">treat_as_floating_point</span><span class="o">&lt;</span><span class="n">FromRep</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">is_integral_scaling</span><span class="p">(</span><span class="n">FromUnit</span><span class="p">,</span><span class="w"> </span><span class="n">ToUnit</span><span class="p">));</span>
 </span></code></pre></div>
 <p><code>mp_units::is_integral_scaling(from, to)</code> is a <code>consteval</code> predicate you can also use
 in your own specializations to distinguish the integral-factor case (e.g. <code>m → mm</code> (×1000))
@@ -12461,13 +12492,13 @@ examples.</p>
         
         
           
-          <a href="../dimensionless_quantities/" class="md-footer__link md-footer__link--next" aria-label="Next: Dimensionless Quantities">
+          <a href="../safe_int/" class="md-footer__link md-footer__link--next" aria-label="Next: `safe_int&lt;T&gt;`">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Dimensionless Quantities
+                `safe_int<T>`
               </div>
             </div>
             <div class="md-footer__button md-icon">

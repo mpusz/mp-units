@@ -1840,6 +1840,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -2094,6 +2096,34 @@ You're not viewing the latest version.
     
   
     Representation Types
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../users_guide/framework_basics/safe_int/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    `safe_int<T>`
   
 
     
@@ -11907,8 +11937,9 @@ on using bounds checking with quantity points.</p>
 unit conversions. Three built-in paths handle this automatically — see
 <a href="../../../users_guide/framework_basics/representation_types/#how-scaling-works">How Scaling Works</a>
 for the full concept definitions and algorithm.</p>
-<p><code>my_scalar_type&lt;T&gt;</code> already satisfies the floating-point or element-wise scaling path
-through its existing <code>operator*(my_scalar_type, T)</code> and <code>operator/(my_scalar_type, T)</code> —
+<p><code>my_scalar_type&lt;T&gt;</code> already satisfies the floating-point or integer scaling path
+(<code>UsesFloatingPointScaling</code> or <code>UsesIntegerScaling</code>) through its existing
+<code>operator*(my_scalar_type, T)</code> and <code>operator/(my_scalar_type, T)</code> —
 no further customization is needed.</p>
 <p>If your type is not automatically recognized (e.g., a third-party floating-point type with
 no <code>value_type</code> member), expose <code>value_type</code> via

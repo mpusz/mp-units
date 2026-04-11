@@ -1840,6 +1840,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -2094,6 +2096,34 @@ You're not viewing the latest version.
     
   
     Representation Types
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../users_guide/framework_basics/safe_int/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    `safe_int<T>`
   
 
     
@@ -11468,6 +11498,76 @@ You're not viewing the latest version.
     <div class="md-post__meta md-meta">
       <ul class="md-meta__list">
         <li class="md-meta__item">
+          <time datetime="2026-04-11 00:00:00+00:00">April 11, 2026</time></li>
+        
+          <li class="md-meta__item">
+            in
+            
+              <a href="./" class="md-meta__link">Metrology</a></li>
+        
+        
+          
+          <li class="md-meta__item">
+            
+              25 min read
+            
+          </li>
+        
+        
+      </ul>
+      
+    </div>
+  </header>
+  <div class="md-post__content md-typeset">
+    <h2 id="preventing-integer-overflow-in-physical-computations"><a class="toclink" href="../../2026/04/11/preventing-integer-overflow-in-physical-computations/">Preventing Integer Overflow in Physical Computations</a></h2>
+<p>Integers overflow. That is not a controversial statement. What <em>is</em> surprising
+is how easily overflow can hide behind the abstraction of a units library.</p>
+<p>Most developers immediately think of <strong>explicit or implicit scaling operations</strong> —
+calling <code>.in(unit)</code> to convert a quantity, constructing a quantity from a different
+unit, or assigning between quantities with different units. These are indeed
+places where overflow can occur, and the library cannot prevent it at compile time
+when the values are only known at runtime. But at least these operations are
+<strong>visible in your code</strong>: you wrote the conversion, you asked for the scaling,
+and you can reason about whether the multiplication or division might overflow
+your integer type.</p>
+<p>The far more insidious problem is what happens when you <em>don't</em> ask for a conversion.</p>
+<p>When you write <code>1 * m + 1 * ft</code>, the library must automatically convert both
+operands to a common unit before performing the addition. That conversion —
+which you never explicitly requested — involves multiplication or division by
+scaling factors. With integer representations, those scaling operations can
+overflow silently, producing garbage results that propagate through your
+calculations undetected.</p>
+<p><strong>No compile-time programming can prevent this.</strong> The values are only known at
+runtime. But very few libraries provide proper tools to detect it.</p>
+<p>This article explains why that limitation is real, how other libraries have
+tried to work around it, and what <strong>mp-units</strong> provides to close the gap as
+tightly as the language allows.</p>
+
+    
+      <nav class="md-post__action">
+        <a href="../../2026/04/11/preventing-integer-overflow-in-physical-computations/">
+          Continue reading
+        </a>
+      </nav>
+    
+    
+  </div>
+</article>
+      
+        <article class="md-post md-post--excerpt">
+  <header class="md-post__header">
+    
+      <nav class="md-post__authors md-typeset">
+        
+          <span class="md-author">
+            <img src="https://avatars.githubusercontent.com/u/506260" alt="Mateusz Pusz">
+          </span>
+        
+      </nav>
+    
+    <div class="md-post__meta md-meta">
+      <ul class="md-meta__list">
+        <li class="md-meta__item">
           <time datetime="2026-04-06 00:00:00+00:00">April 6, 2026</time></li>
         
           <li class="md-meta__item">
@@ -11980,63 +12080,6 @@ we base the quantities and units library on just units or dimensions.</p>
   </div>
 </article>
       
-        <article class="md-post md-post--excerpt">
-  <header class="md-post__header">
-    
-      <nav class="md-post__authors md-typeset">
-        
-          <span class="md-author">
-            <img src="https://avatars.githubusercontent.com/u/506260" alt="Mateusz Pusz">
-          </span>
-        
-      </nav>
-    
-    <div class="md-post__meta md-meta">
-      <ul class="md-meta__list">
-        <li class="md-meta__item">
-          <time datetime="2024-10-07 00:00:00+00:00">October 7, 2024</time></li>
-        
-          <li class="md-meta__item">
-            in
-            
-              <a href="./" class="md-meta__link">Metrology</a></li>
-        
-        
-          
-          <li class="md-meta__item">
-            
-              4 min read
-            
-          </li>
-        
-        
-      </ul>
-      
-    </div>
-  </header>
-  <div class="md-post__content md-typeset">
-    <h2 id="international-system-of-quantities-isq-part-1-introduction"><a class="toclink" href="../../2024/10/07/international-system-of-quantities-isq-part-1---introduction/">International System of Quantities (ISQ): Part 1 - Introduction</a></h2>
-<p>This post starts a series of articles about the International System of
-Quantities (ISQ).
-In this series, we will describe:</p>
-<ul>
-<li>What is ISQ?</li>
-<li>Which engineering problems does ISQ help to solve and how?</li>
-<li>How to model and implement it in the programming language?</li>
-<li>What is missing in the ISQ, and why is that a problem?</li>
-</ul>
-
-    
-      <nav class="md-post__action">
-        <a href="../../2024/10/07/international-system-of-quantities-isq-part-1---introduction/">
-          Continue reading
-        </a>
-      </nav>
-    
-    
-  </div>
-</article>
-      
       
         
           
@@ -12044,7 +12087,7 @@ In this series, we will describe:</p>
 
 
 <nav class="md-pagination">
-  
+  <span class="md-pagination__current">1</span> <a class="md-pagination__link" href="page/2/">2</a>
 </nav>
         
       

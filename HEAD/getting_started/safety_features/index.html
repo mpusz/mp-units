@@ -2019,6 +2019,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -2273,6 +2275,34 @@ You're not viewing the latest version.
     
   
     Representation Types
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/framework_basics/safe_int/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    `safe_int<T>`
   
 
     
@@ -11748,9 +11778,17 @@ unit-qualified construction.</p>
 </span></code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Deep Dive</p>
-<p>For complete coverage, see
-<a href="../../how_to_guides/advanced_usage/ultimate_safety/">Ensure Ultimate Safety</a> and
-<a href="../../users_guide/framework_basics/representation_types/#constraint-violation-handler">Representation Types: <code>constraint_violation_handler</code></a>.</p>
+<p>For complete coverage, see:</p>
+<ul>
+<li><a href="../../users_guide/framework_basics/safe_int/"><code>safe_int&lt;T&gt;</code></a> —
+  overflow-safe integer arithmetic reference</li>
+<li><a href="../../blog/2026/04/11/preventing-integer-overflow-in-physical-computations/">Preventing Integer Overflow in Physical Computations</a> —
+  in-depth narrative on automatic scaling overflow and design tradeoffs</li>
+<li><a href="../../how_to_guides/advanced_usage/ultimate_safety/">Ensure Ultimate Safety</a> —
+  combining <code>safe_int</code>, <code>constrained</code>, and <code>quantity_bounds</code></li>
+<li><a href="../../users_guide/framework_basics/representation_types/#constraint-violation-handler">Representation Types: <code>constraint_violation_handler</code></a> —
+  customization point reference</li>
+</ul>
 </div>
 <h3 id="non-negative-quantities">Non-Negative Quantities<a class="headerlink" href="#non-negative-quantities" title="Permanent link">&para;</a></h3>
 <p>The library also tracks which physical quantities are inherently non-negative (e.g.,
