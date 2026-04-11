@@ -2700,6 +2700,23 @@ You're not viewing the latest version.
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#historical-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Historical Context
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -2753,10 +2770,10 @@ You're not viewing the latest version.
 </li>
       
         <li class="md-nav__item">
-  <a href="#system-of-units-base-units" class="md-nav__link">
+  <a href="#commonly-used-units-in-hep" class="md-nav__link">
     <span class="md-ellipsis">
       
-        System of Units (Base Units)
+        Commonly Used Units in HEP
       
     </span>
   </a>
@@ -2771,6 +2788,23 @@ You're not viewing the latest version.
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Specialized Quantities of the Same Kind">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#motivation-the-argument-soup-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Motivation: The "Argument Soup" Problem
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -11781,6 +11815,15 @@ The goal is to provide a modern, type-safe units library that can eventually rep
 hand-maintained unit constants across multiple HEP frameworks while maintaining compatibility
 during migration.</p>
 </div>
+<h3 id="historical-context">Historical Context<a class="headerlink" href="#historical-context" title="Permanent link">&para;</a></h3>
+<p>The need for compile-time dimensional analysis in HEP was recognized early. Walter Brown
+presented <a href="https://digital.library.unt.edu/ark:/67531/metadc668099">"SI Library of Unit-Based Computation"</a>
+at CHEP '98 (International Conference in High Energy Physics, Chicago, IL, August 31 -
+September 4, 1998) — the first systematic approach to compile-time dimensional analysis
+in C++. Nearly three decades later, most HEP code still uses raw <code>double</code> values, making
+dimensional errors invisible to the compiler. The <strong>mp-units</strong> HEP system builds on this
+foundation with modern C++20 features to finally bring compile-time safety to production
+HEP codebases.</p>
 <h2 id="system-of-quantities">System of Quantities<a class="headerlink" href="#system-of-quantities" title="Permanent link">&para;</a></h2>
 <p>The HEP System of Quantities defines a dimensional system fundamentally different
 from the <a href="../isq/">International System of Quantities (ISQ)</a>. While both systems describe
@@ -11863,9 +11906,6 @@ referring to rest energy. In the HEP system, <em>energy</em> is the base quantit
 </span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="c1">// Calculate rest energies from mass (dimension: E)</span>
 </span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="n">quantity</span><span class="w"> </span><span class="n">electron_rest_energy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_e</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">c2</span><span class="p">;</span><span class="w">  </span><span class="c1">// E = mc² ≈ 0.511 MeV</span>
 </span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="n">quantity</span><span class="w"> </span><span class="n">proton_rest_energy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_p</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">c2</span><span class="p">;</span><span class="w">    </span><span class="c1">// E = mc² ≈ 938.3 MeV</span>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="c1">// In natural units where c=1, physicists often say &quot;electron mass = 0.511 MeV&quot;</span>
-</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="c1">// but in HEP system with explicit units, we distinguish mass from rest energy</span>
 </span></code></pre></div>
 <p><strong><em>Electric Charge</em> instead of <em>Electric Current</em>:</strong></p>
 <p><em>Electric charge</em> (Q) is treated as a base quantity rather than <em>electric current</em>.
@@ -11892,17 +11932,18 @@ analysis:</p>
 </ul>
 <p>This dimensional structure ensures dimensional consistency while using quantities
 natural to particle physics calculations.</p>
-<h2 id="system-of-units-base-units">System of Units (Base Units)<a class="headerlink" href="#system-of-units-base-units" title="Permanent link">&para;</a></h2>
-<p>The HEP System of Units provides concrete measurement scales for the base
-quantities. Unlike SI (which uses metre, second, kilogram, ampere), the HEP
-system uses units natural to particle physics:</p>
+<h2 id="commonly-used-units-in-hep">Commonly Used Units in HEP<a class="headerlink" href="#commonly-used-units-in-hep" title="Permanent link">&para;</a></h2>
+<p>The HEP system provides units that are conventional in particle physics practice.
+<strong>Unlike some libraries, mp-units does not force conversion to privileged "base units"</strong> —
+quantities can natively store values in any unit without automatic conversion. The units
+listed below simply reflect common HEP conventions for numerical convenience:</p>
 <table>
 <thead>
 <tr>
 <th>Quantity</th>
-<th>Unit</th>
+<th>Typical Unit</th>
 <th style="text-align: center;">Symbol</th>
-<th>Why?</th>
+<th>Why commonly used?</th>
 </tr>
 </thead>
 <tbody>
@@ -11956,15 +11997,34 @@ system uses units natural to particle physics:</p>
 </tr>
 </tbody>
 </table>
+<p>You're free to use any units you prefer — for example, <code>quantity&lt;hep::length[hep::metre]&gt;</code>
+and <code>quantity&lt;hep::length[hep::millimetre]&gt;</code> are both valid, and conversions happen
+automatically when needed without forcing storage in a particular unit.</p>
 <h2 id="specialized-quantities-of-the-same-kind">Specialized Quantities of the Same Kind<a class="headerlink" href="#specialized-quantities-of-the-same-kind" title="Permanent link">&para;</a></h2>
 <p>Beyond the basic dimensional safety, the HEP system provides <strong>specialized quantities</strong>
 to distinguish physically distinct concepts that share the same dimension. This
 addresses real problems in particle physics code where mixing conceptually different
 values is physically meaningless but dimensionally valid.</p>
+<h3 id="motivation-the-argument-soup-problem">Motivation: The "Argument Soup" Problem<a class="headerlink" href="#motivation-the-argument-soup-problem" title="Permanent link">&para;</a></h3>
+<p>Consider the Geant4 <code>G4Trap</code> constructor, which takes 12 <code>G4double</code> parameters —
+some <em>lengths</em>, some <em>angles</em>:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">G4Trap</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">G4String</span><span class="o">&amp;</span><span class="w"> </span><span class="n">name</span><span class="p">,</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">       </span><span class="n">G4double</span><span class="w"> </span><span class="n">pDz</span><span class="p">,</span><span class="w"> </span><span class="n">G4double</span><span class="w"> </span><span class="n">pTheta</span><span class="p">,</span><span class="w"> </span><span class="n">G4double</span><span class="w"> </span><span class="n">pPhi</span><span class="p">,</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">       </span><span class="n">G4double</span><span class="w"> </span><span class="n">pDy1</span><span class="p">,</span><span class="w"> </span><span class="n">G4double</span><span class="w"> </span><span class="n">pDx1</span><span class="p">,</span><span class="w"> </span><span class="n">G4double</span><span class="w"> </span><span class="n">pDx2</span><span class="p">,</span><span class="w"> </span><span class="n">G4double</span><span class="w"> </span><span class="n">pAlp1</span><span class="p">,</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">       </span><span class="n">G4double</span><span class="w"> </span><span class="n">pDy2</span><span class="p">,</span><span class="w"> </span><span class="n">G4double</span><span class="w"> </span><span class="n">pDx3</span><span class="p">,</span><span class="w"> </span><span class="n">G4double</span><span class="w"> </span><span class="n">pDx4</span><span class="p">,</span><span class="w"> </span><span class="n">G4double</span><span class="w"> </span><span class="n">pAlp2</span><span class="p">);</span>
+</span></code></pre></div>
+<p>Swapping <code>pDx2</code> (a <em>length</em>) with <code>pAlp1</code> (an <em>angle</em>) compiles without warning because
+both are <code>G4double</code>. Even worse, swapping two <em>length</em> parameters that represent
+different geometric axes (e.g., <code>pDx1</code> with <code>pDy1</code>) also compiles, despite being
+physically meaningless for the geometry.</p>
+<p>Specialized quantities solve this by giving each conceptually distinct quantity
+its own type, making such errors impossible.</p>
 <p>The HEP system provides specialized quantities for:</p>
 <ul>
-<li><strong>Energy</strong>: <code>total_energy</code>, <code>kinetic_energy</code>, <code>rest_mass_energy</code>, <code>binding_energy</code>,
-  <code>excitation_energy</code>, <code>ionization_energy</code>, <code>threshold_energy</code>, <code>Q_value</code>, and more</li>
+<li><strong>Energy</strong>: <code>total_energy</code>, <code>kinetic_energy</code>, <code>rest_mass_energy</code>,
+  <code>center_of_mass_energy</code>, <code>binding_energy</code>, <code>separation_energy</code>, <code>excitation_energy</code>,
+  <code>ionization_energy</code>, <code>threshold_energy</code>, <code>Q_value</code>, <code>transverse_energy</code>,
+  <code>missing_energy</code>, and more</li>
 <li><strong>Length</strong>: <code>path_length</code>, <code>displacement</code>, <code>decay_length</code>, <code>radiation_length</code>,
   <code>interaction_length</code>, <code>impact_parameter</code>, <code>wavelength</code>, <code>range</code>, and more</li>
 <li><strong>Time</strong>: <code>proper_time</code>, <code>coordinate_time</code>, <code>mean_lifetime</code>, <code>half_life</code>,
@@ -11978,7 +12038,7 @@ values is physically meaningless but dimensionally valid.</p>
 <p>For complete hierarchy trees and all available specialized quantities, see the
 <a href="../../../reference/systems_reference/systems/hep/">HEP System Reference</a>.</p>
 <h2 id="distinct-quantity-subkinds">Distinct Quantity Subkinds<a class="headerlink" href="#distinct-quantity-subkinds" title="Permanent link">&para;</a></h2>
-<p>Some HEP quantities share the same dimension, unit,  and even the same parent quantity,
+<p>Some HEP quantities share the same dimension, unit, and even the same parent quantity,
 yet represent fundamentally <strong>incompatible physical concepts</strong> that should never be added
 to or compared with each other. The HEP system uses the <code>is_kind</code> specifier to enforce
 this at compile time. See
@@ -11986,64 +12046,68 @@ this at compile time. See
 for the general mechanism.</p>
 <h3 id="relativistic-time-proper_time-and-coordinate_time">Relativistic Time: <code>proper_time</code> and <code>coordinate_time</code><a class="headerlink" href="#relativistic-time-proper_time-and-coordinate_time" title="Permanent link">&para;</a></h3>
 <p>Both are sub-quantities of <code>duration</code>, but they live in different reference frames and
-are related by the Lorentz factor, not by addition:</p>
+are related by the <em>Lorentz factor</em>, not by addition:</p>
 <div class="arithmatex">\[\tau = \frac{t}{\gamma}\]</div>
-<p>Adding a proper time to a coordinate time is a classic special-relativity mistake —
+<p>Adding a <em>proper time</em> to a <em>coordinate time</em> is a classic special-relativity mistake —
 one is Lorentz-invariant, the other is frame-dependent:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">tau</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">10.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">hep</span><span class="o">::</span><span class="n">ns</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">proper_time</span><span class="p">;</span><span class="w">  </span><span class="c1">// particle rest frame</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">t</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mf">25.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">hep</span><span class="o">::</span><span class="n">ns</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">coordinate_time</span><span class="p">;</span><span class="w">  </span><span class="c1">// lab frame</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1">// auto wrong = tau + t;  // Compile error — different kinds ✓</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="o">::</span><span class="nn">hep</span><span class="o">::</span><span class="nn">unit_symbols</span><span class="p">;</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">quantity</span><span class="w"> </span><span class="n">tau</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">hep</span><span class="o">::</span><span class="n">proper_time</span><span class="p">(</span><span class="mf">0.385</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ns</span><span class="p">);</span><span class="w">    </span><span class="c1">// B⁰ meson rest-frame lifetime</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">quantity</span><span class="w"> </span><span class="n">t_lab</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hep</span><span class="o">::</span><span class="n">coordinate_time</span><span class="p">(</span><span class="mf">4.2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ns</span><span class="p">);</span><span class="w">  </span><span class="c1">// observed lab time of flight</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="c1">// auto wrong = tau + t_lab;  // Compile error — different kinds ✓</span>
 </span></code></pre></div>
 <p>To convert between them, the Lorentz factor must be applied explicitly:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">gamma</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">lorentz_factor</span><span class="p">;</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">t_lab</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">coordinate_time</span><span class="p">(</span><span class="n">tau</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">gamma</span><span class="p">);</span><span class="w">  </span><span class="c1">// explicit physics conversion</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">gamma</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hep</span><span class="o">::</span><span class="n">lorentz_factor</span><span class="p">(</span><span class="n">t_lab</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">tau</span><span class="p">);</span><span class="w">  </span><span class="c1">// γ ≈ 10.9</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">tau_from_t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">proper_time</span><span class="p">(</span><span class="n">t_lab</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">gamma</span><span class="p">);</span><span class="w">   </span><span class="c1">// explicit physics conversion</span>
 </span></code></pre></div>
 <h3 id="material-characteristic-lengths-radiation_length-and-interaction_length">Material Characteristic Lengths: <code>radiation_length</code> and <code>interaction_length</code><a class="headerlink" href="#material-characteristic-lengths-radiation_length-and-interaction_length" title="Permanent link">&para;</a></h3>
-<p>These are properties of a material, not distances travelled by a particle. They appear
+<p>These are properties of a material, not distances traveled by a particle. They appear
 as <strong>denominators</strong> in physics expressions (number of radiation lengths traversed = path
 / X₀), never as addends.</p>
 <ul>
-<li><strong><code>radiation_length</code> (X₀)</strong>: mean distance over which an electron loses 1/e of its
-  energy through Bremsstrahlung — an electromagnetic material property.</li>
-<li><strong><code>interaction_length</code> (λ_I)</strong>: mean free path before a hadronic nuclear interaction —
+<li><strong><code>radiation_length</code> (X₀)</strong>: <em>mean distance</em> over which an electron loses 1/e of its
+  <em>energy</em> through Bremsstrahlung — an electromagnetic material property.</li>
+<li><strong><code>interaction_length</code> (λ_I)</strong>: <em>mean free path</em> before a hadronic nuclear interaction —
   a nuclear material property.</li>
 <li><strong><code>nuclear_interaction_length</code></strong>: a specialization of <code>interaction_length</code> for nuclear
   (as opposed to hadronic-elastic) interactions.</li>
 </ul>
-<p>All three are distinct from each other and from geometric lengths:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">X0</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="mf">88.97</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">hep</span><span class="o">::</span><span class="n">mm</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">radiation_length</span><span class="p">;</span><span class="w">      </span><span class="c1">// lead X₀</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">lambda_I</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">194.4</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">hep</span><span class="o">::</span><span class="n">mm</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">interaction_length</span><span class="p">;</span><span class="w">   </span><span class="c1">// lead λ_I</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">quantity</span><span class="w"> </span><span class="n">path</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mf">50.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">hep</span><span class="o">::</span><span class="n">mm</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">path_length</span><span class="p">;</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="c1">// auto wrong1 = X0 + lambda_I;  // Compile error — different kinds ✓</span>
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="c1">// auto wrong2 = X0 + path;      // Compile error — different kinds ✓</span>
-</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>
-</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="c1">// Correct usage: use as a denominator</span>
-</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="n">quantity</span><span class="w"> </span><span class="n">n_X0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">X0</span><span class="p">;</span><span class="w">                             </span><span class="c1">// dimensionless: number of X₀ traversed</span>
+<p>All three are distinct from each other and from geometric <em>lengths</em>:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="o">::</span><span class="nn">hep</span><span class="o">::</span><span class="nn">unit_symbols</span><span class="p">;</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">quantity</span><span class="w"> </span><span class="n">X0</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">hep</span><span class="o">::</span><span class="n">radiation_length</span><span class="p">(</span><span class="mf">88.97</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mm</span><span class="p">);</span><span class="w">  </span><span class="c1">// lead X₀</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="n">quantity</span><span class="w"> </span><span class="n">lambda_I</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hep</span><span class="o">::</span><span class="n">interaction_length</span><span class="p">(</span><span class="mf">194.4</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mm</span><span class="p">);</span><span class="w">  </span><span class="c1">// lead λ_I  </span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="n">quantity</span><span class="w"> </span><span class="n">path</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">hep</span><span class="o">::</span><span class="n">path_length</span><span class="p">(</span><span class="mf">50.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mm</span><span class="p">);</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="c1">// auto bad1 = X0 + lambda_I;  // Compile error — different kinds ✓</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="c1">// auto bad2 = X0 + path;      // Compile error — different kinds ✓</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="c1">// Correct usage: use as a denominator</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="n">quantity</span><span class="w"> </span><span class="n">n_X0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">X0</span><span class="p">;</span><span class="w">  </span><span class="c1">// dimensionless: number of radiation lengths traversed ✓</span>
 </span></code></pre></div>
 <h3 id="dimensionless-relativistic-quantities">Dimensionless Relativistic Quantities<a class="headerlink" href="#dimensionless-relativistic-quantities" title="Permanent link">&para;</a></h3>
 <p><code>lorentz_factor</code> (γ) and <code>relativistic_beta</code> (β) are dimensionless quantities with
 specific physical meaning that must not be mixed with generic dimensionless values or
 with each other:</p>
 <ul>
-<li><strong><code>lorentz_factor</code> (γ = E/E₀)</strong>: characterises relativistic time dilation and length
-  contraction; ranges from 1 (at rest) to ∞.</li>
-<li><strong><code>relativistic_beta</code> (β = v/c)</strong>: velocity expressed as a fraction of the speed of
-  light; ranges from 0 to 1. Related to γ by <span class="arithmatex">\(\beta = \sqrt{1 - 1/\gamma^2}\)</span>.</li>
-<li><strong><code>phase</code></strong>: quantum mechanical phase angle — a cyclic, dimensionless quantity
+<li><strong><code>lorentz_factor</code> (γ = E/E₀)</strong>: characterizes <em>relativistic time dilation</em> and
+  <em>length contraction</em>; ranges from 1 (at rest) to ∞.</li>
+<li><strong><code>relativistic_beta</code> (β = v/c)</strong>: <em>velocity</em> expressed as a fraction of the
+  <em>speed of light</em>; ranges from 0 to 1. Related to γ by <span class="arithmatex">\(\beta = \sqrt{1 - 1/\gamma^2}\)</span>.</li>
+<li><strong><code>phase</code></strong>: quantum mechanical <em>phase angle</em> — a cyclic, dimensionless quantity
   incompatible with both γ and β and with the angular <code>angle</code> kind.</li>
 </ul>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">gamma</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mf">10.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">lorentz_factor</span><span class="p">;</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">beta</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mf">0.995</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">relativistic_beta</span><span class="p">;</span>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">quantity</span><span class="w"> </span><span class="n">phi</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mf">1.57</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">phase</span><span class="p">;</span>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="c1">// auto wrong1 = gamma + beta;   // Compile error — different kinds ✓</span>
-</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="c1">// auto wrong2 = gamma + phi;    // Compile error — different kinds ✓</span>
-</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="c1">// auto wrong3 = gamma + 1.;     // Compile error — not a plain dimensionless ✓</span>
-</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>
-</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="c1">// Physics: recover beta from gamma</span>
-</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="n">quantity</span><span class="w"> </span><span class="n">beta_from_gamma</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">relativistic_beta</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">1.</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">pow</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="p">(</span><span class="n">gamma</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">lorentz_factor</span><span class="p">)));</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">gamma</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hep</span><span class="o">::</span><span class="n">lorentz_factor</span><span class="p">(</span><span class="mf">10.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">one</span><span class="p">);</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">beta</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">hep</span><span class="o">::</span><span class="n">relativistic_beta</span><span class="p">(</span><span class="mf">0.995</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">one</span><span class="p">);</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">quantity</span><span class="w"> </span><span class="n">phi</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">hep</span><span class="o">::</span><span class="n">phase</span><span class="p">(</span><span class="mf">1.57</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">one</span><span class="p">);</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="c1">// auto bad1 = gamma + beta;  // Compile error — different kinds ✓</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="c1">// auto bad2 = gamma + phi;   // Compile error — different kinds ✓  </span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="c1">// auto bad3 = gamma + 1.;    // Compile error — not a plain dimensionless ✓</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="c1">// Physics: convert between gamma and beta</span>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="n">quantity</span><span class="w"> </span><span class="n">beta_from_gamma</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hep</span><span class="o">::</span><span class="n">relativistic_beta</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">1.</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">pow</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="p">(</span><span class="n">gamma</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">hep</span><span class="o">::</span><span class="n">lorentz_factor</span><span class="p">)));</span>
 </span></code></pre></div>
 <h2 id="physical-constants-with-codata-versions">Physical Constants with CODATA Versions<a class="headerlink" href="#physical-constants-with-codata-versions" title="Permanent link">&para;</a></h2>
 <p>One of the major challenges in HEP software is that physical constants change
@@ -12065,31 +12129,31 @@ then that would make things easier."</p>
 <h3 id="the-solution-codata-namespaces">The Solution: CODATA Namespaces<a class="headerlink" href="#the-solution-codata-namespaces" title="Permanent link">&para;</a></h3>
 <p>The <strong>mp-units</strong> HEP system provides constants organized by CODATA release,
 allowing explicit version selection:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mp-units/systems/hep.h&gt;</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="p">;</span>
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="o">::</span><span class="nn">hep</span><span class="o">::</span><span class="nn">unit_symbols</span><span class="p">;</span>
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>
-</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="c1">// Default: CODATA 2018 (inline namespace - matches CLHEP, Gaudi, Geant4)</span>
-</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="n">quantity</span><span class="w"> </span><span class="n">kinetic_energy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">10.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">MeV</span><span class="p">;</span>
-</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="n">quantity</span><span class="w"> </span><span class="n">beta_2018</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kinetic_energy</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">hep</span><span class="o">::</span><span class="n">electron_mass</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">c2</span><span class="p">);</span><span class="w">  </span><span class="c1">// Uses CODATA 2018</span>
-</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>
-</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="c1">// Interface with ROOT analysis using CODATA 2022</span>
-</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="n">quantity</span><span class="w"> </span><span class="nf">analyze_with_root</span><span class="p">()</span>
-</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="p">{</span>
-</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="w">  </span><span class="c1">// All constants now use CODATA 2022 values to match ROOT</span>
-</span><span id="__span-7-14"><a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">rest_energy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hep</span><span class="o">::</span><span class="n">codata2022</span><span class="o">::</span><span class="n">electron_mass</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">c2</span><span class="p">;</span><span class="w">  </span><span class="c1">// 0.51099895069 MeV</span>
-</span><span id="__span-7-15"><a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">momentum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqrt</span><span class="p">(</span><span class="n">pow</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kinetic_energy</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">rest_energy</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">pow</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="p">(</span><span class="n">rest_energy</span><span class="p">));</span>
-</span><span id="__span-7-16"><a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">momentum</span><span class="p">;</span>
-</span><span id="__span-7-17"><a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a><span class="p">}</span>
-</span><span id="__span-7-18"><a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a>
-</span><span id="__span-7-19"><a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a><span class="c1">// Reproduce legacy results with CODATA 2014</span>
-</span><span id="__span-7-20"><a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a><span class="n">quantity</span><span class="w"> </span><span class="nf">validate_legacy_analysis</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">MeV</span><span class="o">&gt;</span><span class="w"> </span><span class="n">E_gamma</span><span class="p">)</span>
-</span><span id="__span-7-21"><a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a><span class="p">{</span>
-</span><span id="__span-7-22"><a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a><span class="w">  </span><span class="c1">// Use older constants for exact reproducibility</span>
-</span><span id="__span-7-23"><a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">hep</span><span class="o">::</span><span class="n">codata2014</span><span class="o">::</span><span class="n">electron_mass</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">c2</span><span class="p">;</span><span class="w">  </span><span class="c1">// Pair production</span>
-</span><span id="__span-7-24"><a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">E_gamma</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">threshold</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">E_gamma</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">threshold</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mf">0.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">MeV</span><span class="p">;</span>
-</span><span id="__span-7-25"><a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a><span class="p">}</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mp-units/systems/hep.h&gt;</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="p">;</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="o">::</span><span class="nn">hep</span><span class="o">::</span><span class="nn">unit_symbols</span><span class="p">;</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="c1">// Default: CODATA 2018 (inline namespace - matches CLHEP, Gaudi, Geant4)</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="n">quantity</span><span class="w"> </span><span class="n">kinetic_energy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">10.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">MeV</span><span class="p">;</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="n">quantity</span><span class="w"> </span><span class="n">beta_2018</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kinetic_energy</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">hep</span><span class="o">::</span><span class="n">electron_mass</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">c2</span><span class="p">);</span><span class="w">  </span><span class="c1">// Uses CODATA 2018</span>
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="c1">// Interface with ROOT analysis using CODATA 2022</span>
+</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="n">quantity</span><span class="w"> </span><span class="nf">analyze_with_root</span><span class="p">()</span>
+</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="p">{</span>
+</span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="w">  </span><span class="c1">// All constants now use CODATA 2022 values to match ROOT</span>
+</span><span id="__span-8-14"><a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">rest_energy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hep</span><span class="o">::</span><span class="n">codata2022</span><span class="o">::</span><span class="n">electron_mass</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">c2</span><span class="p">;</span><span class="w">  </span><span class="c1">// 0.51099895069 MeV</span>
+</span><span id="__span-8-15"><a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">momentum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqrt</span><span class="p">(</span><span class="n">pow</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kinetic_energy</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">rest_energy</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">pow</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="p">(</span><span class="n">rest_energy</span><span class="p">));</span>
+</span><span id="__span-8-16"><a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">momentum</span><span class="p">;</span>
+</span><span id="__span-8-17"><a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a><span class="p">}</span>
+</span><span id="__span-8-18"><a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a>
+</span><span id="__span-8-19"><a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a><span class="c1">// Reproduce legacy results with CODATA 2014</span>
+</span><span id="__span-8-20"><a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a><span class="n">quantity</span><span class="w"> </span><span class="nf">validate_legacy_analysis</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">MeV</span><span class="o">&gt;</span><span class="w"> </span><span class="n">E_gamma</span><span class="p">)</span>
+</span><span id="__span-8-21"><a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a><span class="p">{</span>
+</span><span id="__span-8-22"><a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a><span class="w">  </span><span class="c1">// Use older constants for exact reproducibility</span>
+</span><span id="__span-8-23"><a id="__codelineno-8-23" name="__codelineno-8-23" href="#__codelineno-8-23"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">hep</span><span class="o">::</span><span class="n">codata2014</span><span class="o">::</span><span class="n">electron_mass</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">c2</span><span class="p">;</span><span class="w">  </span><span class="c1">// Pair production</span>
+</span><span id="__span-8-24"><a id="__codelineno-8-24" name="__codelineno-8-24" href="#__codelineno-8-24"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">E_gamma</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">threshold</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">E_gamma</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">threshold</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mf">0.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">MeV</span><span class="p">;</span>
+</span><span id="__span-8-25"><a id="__codelineno-8-25" name="__codelineno-8-25" href="#__codelineno-8-25"></a><span class="p">}</span>
 </span></code></pre></div>
 <h3 id="key-differences-between-codata-releases">Key Differences Between CODATA Releases<a class="headerlink" href="#key-differences-between-codata-releases" title="Permanent link">&para;</a></h3>
 <table>
