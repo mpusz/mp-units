@@ -11533,7 +11533,7 @@ You're not viewing the latest version.
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20a8 8 0 0 0 8-8 8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10 10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67-.75 1.23L11 13V7z"/></svg>
                           <span class="md-ellipsis">
                             
-                              25 min read
+                              27 min read
                             
                           </span>
                         </div>
@@ -11635,10 +11635,10 @@ You're not viewing the latest version.
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#integral-promotion-result-types" class="md-nav__link">
+  <a href="#integral-promotion-for-arithmetic-operations-result-types" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Integral Promotion (Result Types)
+        Integral Promotion for Arithmetic Operations (Result Types)
       
     </span>
   </a>
@@ -11646,10 +11646,10 @@ You're not viewing the latest version.
 </li>
         
           <li class="md-nav__item">
-  <a href="#widened-intermediate-arithmetic-intmax_t" class="md-nav__link">
+  <a href="#widened-intermediate-arithmetic-for-unit-conversions-intmax_t" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Widened Intermediate Arithmetic (intmax_t)
+        Widened Intermediate Arithmetic for Unit Conversions (intmax_t)
       
     </span>
   </a>
@@ -11907,11 +11907,11 @@ tightly as the language allows.</p>
 
 <h2 id="the-landscape-no-library-provides-full-compile-time-coverage">The Landscape: No Library Provides Full Compile Time Coverage<a class="headerlink" href="#the-landscape-no-library-provides-full-compile-time-coverage" title="Permanent link">&para;</a></h2>
 <h3 id="what-libraries-can-catch-at-compile-time">What libraries <em>can</em> catch at compile time?<a class="headerlink" href="#what-libraries-can-catch-at-compile-time" title="Permanent link">&para;</a></h3>
-<p>Most serious units libraries — including <strong>mp-units</strong> and <strong>Au</strong> — will refuse
-to compile conversions where the scaling factor is known to overflow the
-representation type:</p>
+<p>Only a very small number of units libraries — notably <strong>mp-units</strong> and <strong>Au</strong> —
+will refuse to compile conversions where the scaling factor is known to overflow
+the representation type:</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int8_t</span><span class="p">{</span><span class="mi">2</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">mm</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int8_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">length_mm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">length</span><span class="p">;</span><span class="w">  </span><span class="c1">// ❌ Compile-time error!</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">mm</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int8_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">length_mm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">length</span><span class="p">;</span><span class="w">    </span><span class="c1">// ❌ Compile-time error!</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1">// 2 m → 2000 mm; ×1000 is guaranteed to overflow int8_t (max 127)</span>
 </span></code></pre></div>
 <p>This is useful and important. It catches the "static overflow" where both the
@@ -11921,7 +11921,7 @@ fixed at compile time and the result definitely doesn't fit.</p>
 <p class="admonition-title">Comparing mp-units and Au Approaches</p>
 <p>Both libraries take different approaches to compile-time overflow protection, each with its own tradeoffs.
 It's difficult to judge which is objectively better — they represent different design philosophies.</p>
-<p><strong>Au</strong> uses a <strong>conservative compile-time heuristic</strong> with a
+<p><strong>Au</strong> uses an <strong>aggressive compile-time heuristic</strong> with a
 <a href="https://aurora-opensource.github.io/au/main/discussion/concepts/overflow/#adapt">threshold of 2'147</a>:
 if a value as small as 2'147 would overflow after scaling, the conversion is rejected at compile time.
 This provides <strong>more aggressive protection</strong> — catching potential overflows earlier — but produces
@@ -11939,12 +11939,14 @@ no opt-out. When <strong>mp-units</strong> fires a compile-time error, it <stron
 depending on the actual value. This is why <strong>mp-units</strong> provides <code>safe_int&lt;T&gt;</code> — a
 representation wrapper that detects all arithmetic overflow at runtime, regardless of
 where it occurs.</p>
+<p>For a comprehensive discussion of overflow risks and approaches, see Au's
+<a href="https://aurora-opensource.github.io/au/main/discussion/concepts/overflow/">Overflow Discussion</a>.</p>
 </div>
 <h3 id="what-no-library-can-catch-at-compile-time">What no library can catch at compile time?<a class="headerlink" href="#what-no-library-can-catch-at-compile-time" title="Permanent link">&para;</a></h3>
 <p>The obvious case is plain arithmetic overflow:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int16_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">distance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">300</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int16_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">doubled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">distance</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">distance</span><span class="p">;</span><span class="w">            </span><span class="c1">// ⚠️ 600 — fine</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int16_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">six_x</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">doubled</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">doubled</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">doubled</span><span class="p">;</span><span class="w">     </span><span class="c1">// ⚠️ 2400 — overflows int16_t!</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">cm</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int16_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">dist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span><span class="w">           </span><span class="c1">// 10&#39;000</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">cm</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int16_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">dist2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dist</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">dist</span><span class="p">;</span><span class="w">      </span><span class="c1">// 20&#39;000 — fine</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">cm</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int16_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">dist4</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">dist2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">dist2</span><span class="p">;</span><span class="w">   </span><span class="c1">// ⚠️ 40&#39;000 — overflows int16_t!</span>
 </span></code></pre></div>
 <p>The values involved in arithmetic operations are only known at runtime,
 so the compiler cannot predict whether overflow will occur:</p>
@@ -12064,26 +12066,43 @@ compiler is free to produce literally any result (or crash).</p>
 <hr />
 <h2 id="approach-2-mp-units-250-two-layer-protection">Approach 2: <strong>mp-units 2.5.0</strong> — Two-Layer Protection<a class="headerlink" href="#approach-2-mp-units-250-two-layer-protection" title="Permanent link">&para;</a></h2>
 <p><strong>mp-units</strong> (up to version 2.5.0) introduced two separate improvements over Approach 1,
-each addressing different aspects of overflow safety:</p>
-<h3 id="integral-promotion-result-types">Integral Promotion (Result Types)<a class="headerlink" href="#integral-promotion-result-types" title="Permanent link">&para;</a></h3>
+addressing two distinct categories of operations:</p>
+<ol>
+<li><strong>Arithmetic operations</strong> (addition, subtraction, multiplication, division between quantities):
+   the result type follows C++ integral promotion rules</li>
+<li><strong>Unit conversions</strong> (explicit conversions like <code>.in()</code>, and implicit conversions during
+   common-unit scaling): intermediate arithmetic is widened to prevent UB</li>
+</ol>
+<p>These improvements are independent and address different aspects of overflow safety.</p>
+<h3 id="integral-promotion-for-arithmetic-operations-result-types">Integral Promotion for Arithmetic Operations (Result Types)<a class="headerlink" href="#integral-promotion-for-arithmetic-operations-result-types" title="Permanent link">&para;</a></h3>
 <p><strong>mp-units</strong> <a href="https://en.cppreference.com/w/cpp/language/implicit_conversion#Integral_promotion">correctly respects integral promotion rules</a>
 for the <em>result type</em> of arithmetic operations:</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">is_same_v</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">total</span><span class="p">)</span><span class="o">::</span><span class="n">rep</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="p">);</span>
 </span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="c1">// Result type is int, not int16_t — consistent with C++!</span>
 </span></code></pre></div>
-<p>It not only improves correctness and behaves like built-in types ("Do as <code>ints</code> do") but also,
-such <strong>result type promotion</strong> provides an important safety margin: even before considering
+<p>This behavior is <strong>consistent with Au</strong> and other well-designed units libraries — when you
+perform arithmetic on quantities with small integer types (<code>int8_t</code>, <code>int16_t</code>), the result
+uses the promoted type (<code>int</code>) just like C++ arithmetic. This matches the "Do as <code>ints</code> do"
+principle.</p>
+<p>Such <strong>result type promotion</strong> provides an important safety margin: even before considering
 intermediate arithmetic, the result is stored in a wider type (<code>int</code> instead of <code>int16_t</code>).
 This prevents overflow for typical use cases at the <code>int8_t</code> and <code>int16_t</code> levels. For larger
 types like <code>int</code>, users working with extreme values typically scale to appropriate units or
 prefixes first, naturally limiting the scope of overflow issues.</p>
-<h3 id="widened-intermediate-arithmetic-intmax_t">Widened Intermediate Arithmetic (<code>intmax_t</code>)<a class="headerlink" href="#widened-intermediate-arithmetic-intmax_t" title="Permanent link">&para;</a></h3>
+<h3 id="widened-intermediate-arithmetic-for-unit-conversions-intmax_t">Widened Intermediate Arithmetic for Unit Conversions (<code>intmax_t</code>)<a class="headerlink" href="#widened-intermediate-arithmetic-for-unit-conversions-intmax_t" title="Permanent link">&para;</a></h3>
 <p>However, integral promotion rules provide no help if the source arguments already use <code>int</code>
 or larger types — there's no wider result type to promote to. And even for smaller types,
 the result type alone doesn't prevent undefined behavior during the <strong>intermediate</strong> scaling
-arithmetic <em>within</em> the conversion. <strong>mp-units</strong> up to the version 2.5.0 addressed this by
-widening intermediate calculations to <code>std::intmax_t</code> (typically <code>int64_t</code>), even when the
-user is working with smaller types like <code>int16_t</code>:</p>
+arithmetic <em>within</em> the conversion.</p>
+<p><strong>This is where mp-units and Au differ.</strong> While both libraries use promoted types for
+arithmetic operations, they take different approaches to unit conversion scaling:</p>
+<ul>
+<li><strong>Au</strong> performs unit conversions in the promoted type (benefiting from integer promotion
+  for the smallest types like <code>int8_t</code> and <code>int16_t</code>), but doesn't widen beyond that</li>
+<li><strong>mp-units 2.5.0</strong> explicitly widens intermediate calculations to <code>std::intmax_t</code>
+  (typically <code>int64_t</code>), even when working with smaller types like <code>int16_t</code></li>
+</ul>
+<p>mp-units' widening approach addresses the intermediate scaling issue:</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1">// Pseudo-code for mp-units 2.5.0 scaling:</span>
 </span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">auto</span><span class="w"> </span><span class="n">scale</span><span class="p">(</span><span class="kt">int16_t</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="kt">intmax_t</span><span class="w"> </span><span class="n">num</span><span class="p">,</span><span class="w"> </span><span class="kt">intmax_t</span><span class="w"> </span><span class="n">den</span><span class="p">)</span>
 </span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="p">{</span>
@@ -12167,23 +12186,32 @@ library must scale to a common unit internally:</p>
 undefined behavior in 2.5.0, potentially producing incorrect comparison results.</p>
 <div class="admonition info">
 <p class="admonition-title">Real-World Context</p>
-<p>These large volumes (trillions of liters, billions of gallons) are realistic in domains
-that specifically need <code>int64_t</code>'s range:</p>
+<p>While floating-point representations are often more practical for large-scale volumetric
+calculations, there are legitimate scenarios where <code>int64_t</code> is preferred:</p>
+<p><strong>Exact integer arithmetic requirements</strong>: Systems that need precise, reproducible
+calculations without floating-point rounding errors (e.g., billing systems, regulatory
+reporting, distributed consensus algorithms).</p>
+<p><strong>Domains using <code>int64_t</code> for large volumes</strong>:</p>
 <ul>
 <li><strong>Water resource management</strong>: reservoir systems, lake volumes (Lake Tahoe: ~150 trillion gallons)</li>
 <li><strong>Oil &amp; gas industry</strong>: reserves, production volumes, daily global consumption (~35 billion gallons/day)</li>
 <li><strong>Environmental modeling</strong>: oceanic or atmospheric volumes, climate simulations</li>
 <li><strong>Infrastructure</strong>: municipal water systems, large-scale fluid distribution networks</li>
 </ul>
-<p>If an application uses <code>int64_t</code> for volume quantities, it's precisely because it needs
-to represent values at this scale. The overflow problem is not theoretical — it affects
-real calculations in these domains.</p>
+<p>When an application deliberately chooses <code>int64_t</code> for volume quantities (rather than
+<code>double</code>), it's precisely because it needs exactness or compatibility with integer-based
+protocols. The overflow problem in unit conversions is not theoretical — it affects real
+calculations in these domains when different unit systems are mixed (liters vs gallons,
+cubic meters vs cubic feet).</p>
 </div>
 <hr />
 <h2 id="approach-3-mp-units-widened-intermediate-arithmetic">Approach 3: <strong>mp-units</strong> — widened intermediate arithmetic<a class="headerlink" href="#approach-3-mp-units-widened-intermediate-arithmetic" title="Permanent link">&para;</a></h2>
-<p><strong>mp-units</strong> improves upon the 2.5.0 approach by using <strong>widened intermediate arithmetic</strong>
-for scaling operations: <code>int64_t</code> for all types up to <code>int32_t</code>, and 128-bit arithmetic for
-<code>int64_t</code>:</p>
+<p><strong>mp-units</strong> improves upon the 2.5.0 approach by using <strong>widened intermediate arithmetic
+specifically for unit conversion scaling operations</strong>: <code>int64_t</code> for all types up to <code>int32_t</code>,
+and 128-bit arithmetic for <code>int64_t</code>. This widening applies when the library performs
+internal scaling to convert between units (both explicit conversions like <code>.in()</code> and
+implicit conversions during common-unit operations like <code>meters + feet</code>), but <strong>not</strong> to
+plain arithmetic operations, which follow standard C++ integral promotion rules.</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1">// Pseudo-code for mp-units scaling with int16_t:</span>
 </span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="k">auto</span><span class="w"> </span><span class="n">scale</span><span class="p">(</span><span class="kt">int16_t</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="kt">int16_t</span><span class="w"> </span><span class="n">num</span><span class="p">,</span><span class="w"> </span><span class="kt">int16_t</span><span class="w"> </span><span class="n">den</span><span class="p">)</span>
 </span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="p">{</span>
@@ -12468,10 +12496,23 @@ Users can write their own wrapper combining runtime checks with opt-outs:</p>
 <p>This is accurate and efficient for the specific case of unit conversions. It
 does not cover arithmetic overflow, and at the time of writing, it also
 <a href="https://github.com/aurora-opensource/au/issues/352">does not yet cover <code>QuantityPoint</code></a>.</p>
-<p>Both mechanisms focus on <em>explicit</em> conversion calls. Automatic common-unit scaling —
-what happens internally when you write <code>meters(100) + feet(100)</code> — is outside their
-scope, since it occurs inside the library's addition operator rather than in a
-user-visible conversion call.</p>
+<p>The two mechanisms have different scopes:</p>
+<ul>
+<li>
+<p><strong>The overflow safety surface</strong>: Applies to <strong>all</strong> conversions — both explicit (like
+  <code>.as(unit)</code>) and implicit (automatic common-unit scaling inside operations like
+  <code>meters + feet</code>). It examines the scaling factor itself, blocking conversions where
+  even a small value like 2'147 would overflow. However, while explicit conversions can
+  be opted out using <code>ignore(OVERFLOW_RISK)</code>, <strong>there is no way to specify opt-outs for
+  implicit conversions</strong> — this means false positives in automatic common-unit scaling
+  cannot be bypassed, potentially blocking valid operations.</p>
+</li>
+<li>
+<p><strong><code>is_conversion_lossy</code> and related checkers</strong>: Focus on <strong>explicit</strong> conversion calls
+  made by the user. They check the actual runtime value to determine if <em>that specific</em>
+  conversion would overflow or truncate, allowing precise per-value validation.</p>
+</li>
+</ul>
 <hr />
 <h2 id="the-mp-units-approach-safe_intt">The mp-units Approach: <code>safe_int&lt;T&gt;</code><a class="headerlink" href="#the-mp-units-approach-safe_intt" title="Permanent link">&para;</a></h2>
 <p><strong>mp-units</strong> takes a different, complementary approach. Rather than adding heuristics
@@ -12514,6 +12555,18 @@ requires of a representation type. Every arithmetic operation is checked:</p>
 </table>
 <p>The check uses widened intermediate arithmetic for multiplication (e.g., <code>int32_t</code>
 promotes to <code>int64_t</code> for the product), so there is no dependency on UB.</p>
+<div class="admonition warning">
+<p class="admonition-title">Runtime Overhead</p>
+<p><strong><code>safe_int&lt;T&gt;</code> adds runtime overhead to every arithmetic operation.</strong> Each addition,
+subtraction, multiplication, division, and negation includes an overflow check that
+executes at runtime. For many applications — especially those where correctness is
+paramount or integer types are subject to promotion (<code>int8_t</code>, <code>int16_t</code>) — this cost
+is well worth paying. However, users should be aware of the performance trade-off:
+safety comes at the cost of additional instructions per operation.</p>
+<p>The overhead is typically small (a few extra comparisons or branches per operation), but
+in tight inner loops with millions of iterations, it can be measurable. Profile your
+specific use case to determine if the safety benefit justifies the performance cost.</p>
+</div>
 <h3 id="policy-based-error-handling">Policy-based error handling<a class="headerlink" href="#policy-based-error-handling" title="Permanent link">&para;</a></h3>
 <p>What happens when overflow is detected is controlled by the <code>ErrorPolicy</code>
 template parameter. <strong>mp-units</strong> ships two policies:</p>
