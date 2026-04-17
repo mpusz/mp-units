@@ -11535,7 +11535,7 @@ You're not viewing the latest version.
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20a8 8 0 0 0 8-8 8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10 10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67-.75 1.23L11 13V7z"/></svg>
                           <span class="md-ellipsis">
                             
-                              14 min read
+                              15 min read
                             
                           </span>
                         </div>
@@ -12392,10 +12392,31 @@ also requires shifting longitude by 180° — the two coordinates are not
 independent. Similarly, polar coordinates in general couple <span class="arithmatex">\(r \geq 0\)</span> with
 angular constraints such as <span class="arithmatex">\(0 \leq \theta &lt; 2\pi\)</span> or
 <span class="arithmatex">\(-\pi &lt; \theta \leq \pi\)</span>.</p>
-<p>The current per-origin bounds model enforces each axis independently and cannot
-express inter-axis coupling.  A correct geodetic latitude policy would need
-access to the corresponding longitude <code>quantity_point</code> — something the
-single-value <code>operator()</code> interface does not provide.</p>
+<p>The per-origin bounds model enforces each axis independently and cannot express
+inter-axis coupling through the single-value <code>operator()</code> interface alone.
+However, this does not require library-level support — it is naturally handled
+by a <strong>composite type</strong> whose constructor enforces the coupled invariant, much
+like <code>std::complex</code> enforces its own invariants across two components:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="k">struct</span><span class="w"> </span><span class="nc">location</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="w">  </span><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">degree</span><span class="p">,</span><span class="w"> </span><span class="n">equator</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">lat</span><span class="p">;</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="w">  </span><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">degree</span><span class="p">,</span><span class="w"> </span><span class="n">prime_meridian</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">lon</span><span class="p">;</span>
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="w">  </span><span class="k">constexpr</span><span class="w"> </span><span class="n">location</span><span class="p">(</span><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">degree</span><span class="p">,</span><span class="w"> </span><span class="n">equator</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">lat_in</span><span class="p">,</span>
+</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="w">                     </span><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">degree</span><span class="p">,</span><span class="w"> </span><span class="n">prime_meridian</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">lon_in</span><span class="p">)</span><span class="w">  </span>
+</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="w">  </span><span class="p">{</span>
+</span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">lat_val</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lat_in</span><span class="p">.</span><span class="n">quantity_from</span><span class="p">(</span><span class="n">equator</span><span class="p">);</span>
+</span><span id="__span-18-9"><a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a><span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">lon_val</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lon_in</span><span class="p">.</span><span class="n">quantity_from</span><span class="p">(</span><span class="n">prime_meridian</span><span class="p">);</span>
+</span><span id="__span-18-10"><a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a><span class="w">    </span><span class="c1">// coupled normalization: reflect latitude, shift longitude at poles</span>
+</span><span id="__span-18-11"><a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a><span class="w">    </span><span class="c1">// ... normalize lat_val into [-90°, 90°], flipping lon_val by 180° on each reflection ...</span>
+</span><span id="__span-18-12"><a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a><span class="w">    </span><span class="n">lat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">equator</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">lat_val</span><span class="p">;</span>
+</span><span id="__span-18-13"><a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a><span class="w">    </span><span class="n">lon</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">prime_meridian</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">lon_val</span><span class="p">;</span><span class="w">  </span><span class="c1">// wrap_to_range on prime_meridian handles the rest</span>
+</span><span id="__span-18-14"><a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-18-15"><a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a><span class="p">};</span>
+</span></code></pre></div>
+<p>In this design, <code>equator</code> does <strong>not</strong> use <code>reflect_in_range</code> — the coupled
+reflection lives in <code>location</code>'s constructor. Longitude's <code>wrap_to_range</code> on
+<code>prime_meridian</code> still handles the independent cyclic wrapping as usual. The
+single-axis policies and the composite type each do what they are good at.</p>
 <h3 id="logarithmic-quantities">Logarithmic quantities<a class="headerlink" href="#logarithmic-quantities" title="Permanent link">&para;</a></h3>
 <p>Logarithmic quantities (e.g. power ratios in decibels) present a different
 challenge: the underlying linear quantity lives on a half-line <span class="arithmatex">\((0, +\infty)\)</span>,
