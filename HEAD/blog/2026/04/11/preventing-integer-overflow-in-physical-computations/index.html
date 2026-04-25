@@ -12618,7 +12618,7 @@ on freestanding platforms.</p>
 </span><span id="__span-19-8"><a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">abort</span><span class="p">();</span>
 </span><span id="__span-19-9"><a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a><span class="w">  </span><span class="p">}</span>
 </span><span id="__span-19-10"><a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a>
-</span><span id="__span-19-11"><a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a><span class="w">  </span><span class="c1">// Optional: for quantity point bounds checking (quantity_bounds)</span>
+</span><span id="__span-19-11"><a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a><span class="w">  </span><span class="c1">// Optional: for quantity point bounds checking (origin bounds policies)</span>
 </span><span id="__span-19-12"><a id="__codelineno-19-12" name="__codelineno-19-12" href="#__codelineno-19-12"></a><span class="w">  </span><span class="p">[[</span><span class="n">noreturn</span><span class="p">]]</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">on_constraint_violation</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="n">msg</span><span class="p">)</span><span class="w"> </span><span class="k">noexcept</span>
 </span><span id="__span-19-13"><a id="__codelineno-19-13" name="__codelineno-19-13" href="#__codelineno-19-13"></a><span class="w">  </span><span class="p">{</span>
 </span><span id="__span-19-14"><a id="__codelineno-19-14" name="__codelineno-19-14" href="#__codelineno-19-14"></a><span class="w">    </span><span class="n">log_critical_error</span><span class="p">(</span><span class="s">&quot;Constraint violation&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">);</span>
@@ -12630,7 +12630,7 @@ on freestanding platforms.</p>
 </span></code></pre></div>
 <p>The policy must provide a <code>static void on_overflow(std::string_view)</code> method for arithmetic
 overflow. If you also want to use the same policy for quantity point bounds checking
-(<a href="../../../../../users_guide/framework_basics/the_affine_space/#range-validated-quantity-points"><code>quantity_bounds</code></a>),
+(<a href="../../../../../users_guide/framework_basics/the_affine_space/#range-validated-quantity-points">origin bounds policies</a>),
 provide <code>on_constraint_violation(std::string_view)</code> as well.</p>
 <p>Custom policies are useful for integrating with application-specific error handling:
 logging to telemetry systems, sending alerts, recording diagnostics before termination, etc.</p>
@@ -12868,7 +12868,7 @@ return.</p>
 <tr>
 <td>Values outside physical domain</td>
 <td>No protection</td>
-<td>+ <code>quantity_bounds&lt;Origin&gt;</code> policy ✓</td>
+<td>+ origin bounds policy ✓</td>
 </tr>
 <tr>
 <td>Divide-before-convert truncation</td>
@@ -12884,14 +12884,14 @@ or <code>pow&lt;3&gt;</code> quantities with large values) can still overflow ev
 overflow detection in all cases, use <code>safe_int&lt;T&gt;</code>.</p>
 <p>For the full <code>safe_int&lt;T&gt;</code> reference, see the
 <a href="../../../../../users_guide/framework_basics/safe_int/">User's Guide</a>. For usage patterns
-combining <code>safe_int</code> with <code>quantity_bounds</code>, see
+combining <code>safe_int</code> with origin bounds policies, see
 <a href="../../../../../how_to_guides/advanced_usage/ultimate_safety/">Ensure Ultimate Safety</a>.</p>
 <div class="admonition info">
 <p class="admonition-title">Comparing mp-units and Au Approaches</p>
 <p>Au's compile-time overflow safety surface and <code>is_conversion_lossy</code> checker take a
 different approach — see <a href="#how-au-addresses-the-problem">How Au Addresses the Problem?</a>
 for a detailed comparison and the
-<a href="#summary-of-safety-approaches">summary table</a> for a side-by-side overview.</p>
+<a href="#summary-of-approaches">summary table</a> for a side-by-side overview.</p>
 <p><strong>Integral division</strong>: <a href="https://aurora-opensource.github.io/au/main/troubleshooting/#integer-division-forbidden">Au rejects integer Quantity/Quantity division</a>
 whenever the denominator's unit is not quantity-equivalent to the numerator's, protecting
 against divide-before-convert errors like <code>hours(8) / minutes(40)</code> returning 0. Escape

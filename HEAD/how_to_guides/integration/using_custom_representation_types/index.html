@@ -11942,13 +11942,13 @@ for the full concept definitions and algorithm.</p>
 <code>operator*(my_scalar_type, T)</code> and <code>operator/(my_scalar_type, T)</code> —
 no further customization is needed.</p>
 <p>If your type is not automatically recognized (e.g., a third-party floating-point type with
-no <code>value_type</code> member), expose <code>value_type</code> via
-<a href="../../../users_guide/framework_basics/representation_types/#value_type-or-element_type"><code>std::indirectly_readable_traits</code></a> —
+no <code>value_type</code> member), expose the underlying type via
+<a href="../../../users_guide/framework_basics/representation_types/#representation_underlying_type"><code>representation_underlying_type</code></a> —
 <code>treat_as_floating_point</code> will then default to <code>true</code> automatically, with no further
 specialization needed. The example below shows this typical case.
 Only specialize
 <a href="../../../users_guide/framework_basics/representation_types/#treat_as_floating_point"><code>treat_as_floating_point</code></a>
-directly when there is genuinely no meaningful <code>value_type</code> to expose.</p>
+directly when there is genuinely no meaningful underlying type to expose.</p>
 <h4 id="magnitude-aware-scaling">Magnitude-aware scaling (optional)<a class="headerlink" href="#magnitude-aware-scaling" title="Permanent link">&para;</a></h4>
 <p>If your representation type needs to transform its <strong>type</strong> during unit
 conversion — not just its value — provide an <code>operator*(T, UnitMagnitude)</code> hidden friend.
@@ -11999,18 +11999,19 @@ cannot modify:</p>
 </span></code></pre></div>
 <p><code>MyFloat</code> is floating-point in spirit but the library cannot detect this automatically:</p>
 <ul>
-<li>It has no <code>value_type</code> member, so <code>value_type_t&lt;MyFloat&gt;</code> falls back to <code>MyFloat</code> itself.</li>
+<li>It has no <code>value_type</code> member, so <code>representation_underlying_type&lt;MyFloat&gt;</code> is empty
+  and <code>MyFloat</code> is treated as a leaf (its own underlying type).</li>
 <li><code>treat_as_floating_point&lt;MyFloat&gt;</code> defaults to <code>std::is_floating_point_v&lt;MyFloat&gt;</code> = <code>false</code>
   (it is a class, not a fundamental type), so <code>MagnitudeScalable&lt;MyFloat&gt;</code> is not satisfied.</li>
 </ul>
 <p>One specialization fixes this:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1">// Expose the element type so value_type_t&lt;MyFloat&gt; == long double.</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1">// Expose the underlying type so representation_underlying_type_t&lt;MyFloat&gt; == long double.</span>
 </span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="c1">// treat_as_floating_point&lt;MyFloat&gt; then defaults to</span>
 </span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="c1">// std::is_floating_point_v&lt;long double&gt; == true, so no further</span>
 </span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="c1">// specialization is needed.</span>
 </span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="k">template</span><span class="o">&lt;&gt;</span>
-</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="k">struct</span><span class="w"> </span><span class="nc">std</span><span class="o">::</span><span class="n">indirectly_readable_traits</span><span class="o">&lt;</span><span class="n">MyFloat</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">value_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="kt">double</span><span class="p">;</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="k">struct</span><span class="w"> </span><span class="nc">mp_units</span><span class="o">::</span><span class="n">representation_underlying_type</span><span class="o">&lt;</span><span class="n">MyFloat</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="kt">double</span><span class="p">;</span>
 </span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="p">};</span>
 </span></code></pre></div>
 <p>After that specialization <code>MyFloat</code> satisfies <code>UsesFloatingPointScaling</code> and
@@ -12148,7 +12149,8 @@ only when you are certain your type handles the conversion without data loss.</p
 <li><strong>Add <code>value_type</code></strong> to help the library determine the scaling factor type</li>
 <li><strong>Specialize <code>representation_values&lt;Rep&gt;</code></strong> (if needed) for custom special values;
    optionally specialize <code>constraint_violation_handler&lt;Rep&gt;</code> for custom error handling</li>
-<li><strong>Implement <code>operator*(T, value_type_t&lt;T&gt;)</code> and <code>operator/(T, value_type_t&lt;T&gt;)</code></strong> so
+<li><strong>Implement <code>operator*(T, representation_underlying_type_t&lt;T&gt;)</code> and
+   <code>operator/(T, representation_underlying_type_t&lt;T&gt;)</code></strong> so
    that scaling correctly updates all internal fields (e.g. for <code>with_variance&lt;T&gt;</code> scale
    <code>value</code> by <code>k</code> and <code>variance</code> by <code>k²</code>)</li>
 <li><strong>Implement <code>operator*(T, UnitMagnitude)</code></strong> (optional) for
@@ -12175,10 +12177,11 @@ custom types.</p>
 </ul>
 <p><strong>Implementation References:</strong></p>
 <ul>
-<li><a href="https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/representation_concepts.h"><code>representation_concepts.h</code></a> - Concept definitions</li>
-<li><a href="https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/scaling.h"><code>scaling.h</code></a> - built-in scaling implementation</li>
-<li><a href="https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/value_cast.h"><code>value_cast.h</code></a> - <code>implicitly_scalable</code> and <code>is_integral_scaling</code></li>
-<li><a href="https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/customization_points.h"><code>customization_points.h</code></a> - CPO implementations for character determination</li>
+<li><a href="https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/representation_concepts.h"><code>representation_concepts.h</code></a> - Concept definitions and character-determination CPOs (<code>disable_real</code>, <code>real</code>, <code>imag</code>, <code>modulus</code>, <code>norm</code>, <code>magnitude</code>)</li>
+<li><a href="https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/customization_points.h"><code>customization_points.h</code></a> - User-specializable customization points (<code>representation_underlying_type</code>, <code>treat_as_floating_point</code>, <code>implicitly_scalable</code>, <code>representation_values</code>, <code>constraint_violation_handler</code>, <code>quantity_like_traits</code>, <code>quantity_point_like_traits</code>)</li>
+<li><a href="https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/quantity_traits.h"><code>quantity_traits.h</code></a> - Public helpers (<code>unit_for</code>, <code>reference_for</code>, <code>rep_for</code>)</li>
+<li><a href="https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/scaling.h"><code>scaling.h</code></a> - Built-in scaling implementation</li>
+<li><a href="https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/value_cast.h"><code>value_cast.h</code></a> - <code>value_cast</code>, <code>force_in</code>, and <code>is_integral_scaling</code></li>
 <li><a href="https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/cartesian_vector.h"><code>cartesian_vector.h</code></a> - Vector implementation example</li>
 </ul>
 <!-- markdownlint-enable MD013 -->

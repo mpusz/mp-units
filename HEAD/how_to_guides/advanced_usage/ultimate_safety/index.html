@@ -3712,10 +3712,10 @@ You're not viewing the latest version.
 </li>
         
           <li class="md-nav__item">
-  <a href="#step-3-attach-bounds-to-your-origin" class="md-nav__link">
+  <a href="#step-3-pass-bounds-to-your-origin" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 3: Attach Bounds to Your Origin
+        Step 3: Pass Bounds to Your Origin
       
     </span>
   </a>
@@ -11659,7 +11659,7 @@ always-on constraint enforcement for your quantities — independent of build mo
 or compiler optimization level.</p>
 <div class="admonition tip">
 <p class="admonition-title">Background reading</p>
-<p>For in-depth background on how <code>quantity_bounds</code> and overflow policies work, see
+<p>For in-depth background on how bounds policies and overflow handling work, see
 <a href="../../../blog/2026/04/06/range-validated-quantity-points/">Range-Validated Quantity Points</a>.</p>
 </div>
 <h2 id="the-problem">The Problem<a class="headerlink" href="#the-problem" title="Permanent link">&para;</a></h2>
@@ -11675,15 +11675,16 @@ during development, but some domains need <strong>guaranteed enforcement</strong
 <h2 id="the-solution">The Solution<a class="headerlink" href="#the-solution" title="Permanent link">&para;</a></h2>
 <p>The library provides building blocks that work together:</p>
 <ol>
-<li><a href="../../../users_guide/framework_basics/the_affine_space/#range-validated-quantity-points"><strong><code>quantity_bounds&lt;Origin&gt;</code></strong></a> —
-   a customization point that attaches a validation policy to a quantity point origin</li>
+<li><a href="../../../users_guide/framework_basics/the_affine_space/#range-validated-quantity-points"><strong>Bounds on point origins</strong></a> —
+   a bounds policy passed as a template parameter to a point origin, enforcing validation
+   on every construction and mutation</li>
 <li><strong><code>constrained&lt;T, ErrorPolicy&gt;</code></strong> — a transparent wrapper that tags a representation
    type with an error policy</li>
 <li><a href="../../../users_guide/framework_basics/representation_types/#constraint-violation-handler"><strong><code>constraint_violation_handler&lt;Rep&gt;</code></strong></a> —
    a customization point that library features query to dispatch errors</li>
 </ol>
 <p>The library ships <a href="../../../users_guide/framework_basics/the_affine_space/#available-overflow-policies">several overflow policies</a>
-to assign to <code>quantity_bounds</code>: <code>check_in_range</code>, <code>clamp_to_range</code>, <code>wrap_to_range</code>,
+to pass as bounds template parameters: <code>check_in_range</code>, <code>clamp_to_range</code>, <code>wrap_to_range</code>,
 and <code>reflect_in_range</code>. For guaranteed enforcement, this guide uses <code>check_in_range</code>,
 which delegates to the <code>constraint_violation_handler</code> when one is available for
 the representation type.</p>
@@ -11727,8 +11728,8 @@ the representation type.</p>
 arithmetic. But it carries the error policy as a compile-time tag that the library can detect.</p>
 <p>The library automatically registers a <code>constraint_violation_handler</code> for every
 <code>constrained&lt;T, EP&gt;</code> instantiation, forwarding violations to <code>EP::on_constraint_violation()</code>.</p>
-<h3 id="step-3-attach-bounds-to-your-origin">Step 3: Attach Bounds to Your Origin<a class="headerlink" href="#step-3-attach-bounds-to-your-origin" title="Permanent link">&para;</a></h3>
-<p>Specialize <code>quantity_bounds</code> for your origin with an appropriate overflow policy.
+<h3 id="step-3-pass-bounds-to-your-origin">Step 3: Pass Bounds to Your Origin<a class="headerlink" href="#step-3-pass-bounds-to-your-origin" title="Permanent link">&para;</a></h3>
+<p>Pass a bounds policy as a template parameter to your origin.
 For guaranteed enforcement, use <code>check_in_range</code>:</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mp-units/overflow_policies.h&gt;</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mp-units/framework.h&gt;</span>
@@ -11738,10 +11739,8 @@ For guaranteed enforcement, use <code>check_in_range</code>:</p>
 </span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="o">::</span><span class="nn">si</span><span class="o">::</span><span class="nn">unit_symbols</span><span class="p">;</span>
 </span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
 </span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">geo_latitude</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">geo_latitude</span><span class="p">;</span>
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">equator</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">absolute_point_origin</span><span class="o">&lt;</span><span class="n">geo_latitude</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">equator</span><span class="p">;</span>
-</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
-</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="k">template</span><span class="o">&lt;&gt;</span>
-</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">quantity_bounds</span><span class="o">&lt;</span><span class="n">equator</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">check_in_range</span><span class="p">{</span><span class="mi">-90</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">deg</span><span class="p">,</span><span class="w"> </span><span class="mi">90</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">deg</span><span class="p">};</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">equator</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">    </span><span class="n">absolute_point_origin</span><span class="o">&lt;</span><span class="n">geo_latitude</span><span class="p">,</span><span class="w"> </span><span class="n">check_in_range</span><span class="p">{</span><span class="mi">-90</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">deg</span><span class="p">,</span><span class="w"> </span><span class="mi">90</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">deg</span><span class="p">}</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">equator</span><span class="p">;</span>
 </span></code></pre></div>
 <h3 id="step-4-combine-them">Step 4: Combine Them<a class="headerlink" href="#step-4-combine-them" title="Permanent link">&para;</a></h3>
 <p>Use <code>constrained&lt;T&gt;</code> as the representation type in your quantity point:</p>
@@ -11764,7 +11763,7 @@ calls <code>throw_policy::on_constraint_violation("value out of bounds")</code>,
 release-with-debug-info.</p>
 <div class="admonition tip">
 <p class="admonition-title">Extensible policy interface</p>
-<p>The <code>quantity_bounds</code> customization point accepts any callable policy with the
+<p>The origin bounds template parameter accepts any callable policy with the
 signature <code>V operator()(V)</code>. The library ships six built-in policies — <code>check_in_range</code>,
 <code>clamp_to_range</code>, <code>wrap_to_range</code>, <code>reflect_in_range</code>, <code>check_non_negative</code>, and
 <code>clamp_non_negative</code> — and the interface is fully extensible. <code>check_non_negative</code> and
@@ -11774,7 +11773,7 @@ one-sided or asymmetric policy, see <a href="../../../users_guide/framework_basi
 </div>
 <h2 id="how-it-works">How It Works?<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h2>
 <pre class="mermaid"><code>flowchart TB
-    A["quantity_point&lt;br&gt;construction / mutation"] --&gt; B["quantity_bounds&amp;lt;Origin&amp;gt;::operator()"]
+    A["quantity_point&lt;br&gt;construction / mutation"] --&gt; B["bounds policy::operator()"]
     B --&gt; D{"Policy type?"}
     D -- "check_in_range" --&gt; E{"Has constraint_&lt;br&gt;violation_handler&lt;br&gt;for Rep?"}
     E -- "Yes&lt;br&gt;(e.g. constrained&amp;lt;T&amp;gt;)" --&gt; F["handler::on_violation()"]
@@ -11795,7 +11794,7 @@ one-sided or asymmetric policy, see <a href="../../../users_guide/framework_basi
 </span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">  </span><span class="p">}</span>
 </span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="p">};</span>
 </span></code></pre></div>
-<p>Now any <code>quantity_bounds</code> policy that queries <code>constraint_violation_handler</code>
+<p>Now any bounds policy that queries <code>constraint_violation_handler</code>
 (such as <code>check_in_range</code>) will use your handler whenever a <code>quantity_point</code>
 with <code>my_safe_double</code> rep goes out of bounds.</p>
 <h2 id="combining-with-safe_int">Combining with <code>safe_int</code><a class="headerlink" href="#combining-with-safe_int" title="Permanent link">&para;</a></h2>

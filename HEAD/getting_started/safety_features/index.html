@@ -11785,7 +11785,7 @@ unit-qualified construction.</p>
 <li><a href="../../blog/2026/04/11/preventing-integer-overflow-in-physical-computations/">Preventing Integer Overflow in Physical Computations</a> —
   in-depth narrative on automatic scaling overflow and design tradeoffs</li>
 <li><a href="../../how_to_guides/advanced_usage/ultimate_safety/">Ensure Ultimate Safety</a> —
-  combining <code>safe_int</code>, <code>constrained</code>, and <code>quantity_bounds</code></li>
+  combining <code>safe_int</code>, <code>constrained</code>, and origin bounds policies</li>
 <li><a href="../../users_guide/framework_basics/representation_types/#constraint-violation-handler">Representation Types: <code>constraint_violation_handler</code></a> —
   customization point reference</li>
 </ul>
@@ -11822,11 +11822,11 @@ This means construction of, or arithmetic on, such a point checks the value:</p>
   <a href="../../how_to_guides/integration/wide_compatibility/#contract-checking-macros"><code>MP_UNITS_EXPECTS</code></a>,
   which may be disabled in release builds.</li>
 </ul>
-<p>You can override the default policy for a specific quantity spec by providing a
-full specialization of <code>quantity_bounds</code> before the point type is first used:</p>
+<p>You can override the default policy for a specific quantity spec by defining a
+custom origin with different bounds:</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1">// Replace error-on-negative with silent clamp-to-zero (e.g., for FP noise):</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">template</span><span class="o">&lt;&gt;</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">quantity_bounds</span><span class="o">&lt;</span><span class="n">natural_point_origin</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">clamp_non_negative</span><span class="p">{};</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">clamped_length_origin</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="n">absolute_point_origin</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="n">clamp_non_negative</span><span class="p">{}</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">clamped_length_origin</span><span class="p">;</span>
 </span></code></pre></div>
 <p>See <a href="../../tutorials/affine_space/custom_contract_handlers/">Tutorial: Custom Contract Handlers</a>
 for a step-by-step guide to implementing custom error policies with <code>constrained&lt;T, ErrorPolicy&gt;</code>.</p>
@@ -11941,8 +11941,8 @@ no extra effort. From there, two independent opt-in choices extend coverage furt
   two <em>timestamps</em> or two absolute <em>temperatures</em> — they should be modeled as points.
   Additionally, quantity points support
   <a href="../../users_guide/framework_basics/the_affine_space/#range-validated-quantity-points">range validation</a>:
-  <code>quantity_bounds&lt;Origin&gt;</code> lets you attach overflow policies (<code>check_in_range</code>,
-  <code>clamp_to_range</code>, <code>wrap_to_range</code>, <code>reflect_in_range</code>) to point origins, enforcing
+  bounds policies passed as template parameters to point origins (such as <code>check_in_range</code>,
+  <code>clamp_to_range</code>, <code>wrap_to_range</code>, <code>reflect_in_range</code>) enforce
   valid ranges for geographic coordinates, sensor operating limits, and similar domains.</li>
 <li>
 <p><a href="../../users_guide/framework_basics/simple_and_typed_quantities/#typed-quantities"><strong>Typed quantities</strong></a>
