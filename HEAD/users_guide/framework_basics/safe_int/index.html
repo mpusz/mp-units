@@ -2205,6 +2205,17 @@ You're not viewing the latest version.
 </li>
       
         <li class="md-nav__item">
+  <a href="#where-overflow-is-caught" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where overflow is caught?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#policy-based-error-handling" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2244,6 +2255,40 @@ You're not viewing the latest version.
 </li>
       
         <li class="md-nav__item">
+  <a href="#drop-in-replacement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Drop-in replacement
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#constexpr-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        constexpr support
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#arithmetic-result-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Arithmetic result types
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Arithmetic result types">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#integral-promotion-rules" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2252,8 +2297,18 @@ You're not viewing the latest version.
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Integral promotion rules">
-      <ul class="md-nav__list">
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#arithmetic-operators-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Arithmetic operators (+, -, *, /, %)
+      
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#mixed-signedness-arithmetic" class="md-nav__link">
@@ -2272,28 +2327,6 @@ You're not viewing the latest version.
 </li>
       
         <li class="md-nav__item">
-  <a href="#drop-in-replacement" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Drop-in replacement
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#where-overflow-is-caught" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Where overflow is caught?
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#comparisons" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2306,10 +2339,10 @@ You're not viewing the latest version.
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#mixed-signedness-comparisons" class="md-nav__link">
+  <a href="#comparison-operators" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Mixed-signedness comparisons
+        Comparison operators (==, !=, &lt;, &gt;, &lt;=, &gt;=)
       
     </span>
   </a>
@@ -2318,17 +2351,6 @@ You're not viewing the latest version.
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#constexpr-support" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        constexpr support
-      
-    </span>
-  </a>
   
 </li>
       
@@ -11787,11 +11809,54 @@ the final narrowing, so overflow is never silent.</p>
 </table>
 <p>The multiplication check uses widened intermediate arithmetic (e.g., <code>int32_t</code> promotes to
 <code>int64_t</code> for the product), so there is no dependency on undefined behavior.</p>
+<h2 id="where-overflow-is-caught">Where overflow is caught?<a class="headerlink" href="#where-overflow-is-caught" title="Permanent link">&para;</a></h2>
+<p>Because <code>safe_int</code> hooks into the fundamental C++ arithmetic operators, every operation
+is checked — regardless of context:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:5"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><input id="__tabbed_1_4" name="__tabbed_1" type="radio" /><input id="__tabbed_1_5" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Construction</label><label for="__tabbed_1_2">Conversion</label><label for="__tabbed_1_3">Arithmetic</label><label for="__tabbed_1_4">Explicit unit conversion</label><label for="__tabbed_1_5">Automatic common-unit scaling</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kt">int</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">40&#39;000</span><span class="p">;</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="c1">// Constructing a safe_int quantity from a plain integer that doesn&#39;t fit the rep type</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">safe_i16</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q</span><span class="p">{</span><span class="n">value</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">};</span><span class="w">  </span><span class="c1">// throws — 40,000 &gt; INT16_MAX</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">40&#39;000</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">;</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1">// Converting from a quantity with too large numerical value for the rep type</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">safe_i16</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q_safe</span><span class="p">{</span><span class="n">q</span><span class="p">};</span><span class="w">  </span><span class="c1">// throws — 40,000 &gt; INT16_MAX</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1">// Same-unit addition — no unit conversion, plain safe_int arithmetic</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">mm</span><span class="p">,</span><span class="w"> </span><span class="n">safe_i32</span><span class="o">&gt;</span><span class="w"> </span><span class="n">dist</span><span class="p">{</span><span class="mi">1&#39;500</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">km</span><span class="p">};</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">mm</span><span class="p">,</span><span class="w"> </span><span class="n">safe_i32</span><span class="o">&gt;</span><span class="w"> </span><span class="n">total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dist</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">dist</span><span class="p">;</span><span class="w">  </span><span class="c1">// throws — 3×10⁹ &gt; INT32_MAX</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1">// Cross-quantity multiplication: speed × time</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="n">quantity</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">safe_i32</span><span class="p">{</span><span class="mi">50&#39;000</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">second</span><span class="p">;</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="n">quantity</span><span class="w"> </span><span class="n">time</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">safe_i32</span><span class="p">{</span><span class="mi">50&#39;000</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">second</span><span class="p">;</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="n">quantity</span><span class="w"> </span><span class="n">distance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">time</span><span class="p">;</span><span class="w">     </span><span class="c1">// throws — 2.5×10⁹ overflows int32_t</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">dist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">safe_i32</span><span class="p">{</span><span class="mi">2&#39;200&#39;000</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">;</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">huge</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dist</span><span class="p">.</span><span class="n">in</span><span class="p">(</span><span class="n">si</span><span class="o">::</span><span class="n">micro</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="o">&gt;</span><span class="p">);</span><span class="w">  </span><span class="c1">// throws — ×1,000,000 factor overflows int32_t</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">dist_m</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">safe_i32</span><span class="p">{</span><span class="mi">1&#39;500&#39;000&#39;000</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">;</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">dist_km</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">safe_i32</span><span class="p">{</span><span class="mi">1&#39;000&#39;000</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">kilo</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">quantity</span><span class="w"> </span><span class="n">total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dist_m</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">dist_km</span><span class="p">;</span><span class="w">    </span><span class="c1">// throws — scaling 10⁶ km → m overflows int32_t</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
 <h2 id="policy-based-error-handling">Policy-based error handling<a class="headerlink" href="#policy-based-error-handling" title="Permanent link">&para;</a></h2>
 <p>What happens when overflow is detected is controlled by the <code>ErrorPolicy</code> template
 parameter:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">integral</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">ErrorPolicy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="cm">/* see below */</span><span class="o">&gt;</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">safe_int</span><span class="p">;</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">integral</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">ErrorPolicy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="cm">/* see below */</span><span class="o">&gt;</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">safe_int</span><span class="p">;</span>
 </span></code></pre></div>
 <p><strong>mp-units</strong> ships two policies:</p>
 <table>
@@ -11819,108 +11884,59 @@ parameter:</p>
 <code>safe_int_terminate_policy</code> on freestanding platforms.</p>
 <h3 id="convenience-aliases">Convenience aliases<a class="headerlink" href="#convenience-aliases" title="Permanent link">&para;</a></h3>
 <p>All standard fixed-width integer aliases are provided with the default policy:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">using</span><span class="w"> </span><span class="n">safe_i8</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">safe_int</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">int8_t</span><span class="o">&gt;</span><span class="p">;</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">using</span><span class="w"> </span><span class="n">safe_i16</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">safe_int</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">int16_t</span><span class="o">&gt;</span><span class="p">;</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="k">using</span><span class="w"> </span><span class="n">safe_i32</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">safe_int</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">int32_t</span><span class="o">&gt;</span><span class="p">;</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="k">using</span><span class="w"> </span><span class="n">safe_i64</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">safe_int</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">int64_t</span><span class="o">&gt;</span><span class="p">;</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="k">using</span><span class="w"> </span><span class="n">safe_u8</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">safe_int</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span><span class="o">&gt;</span><span class="p">;</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="k">using</span><span class="w"> </span><span class="n">safe_u16</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">safe_int</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span><span class="o">&gt;</span><span class="p">;</span>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="k">using</span><span class="w"> </span><span class="n">safe_u32</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">safe_int</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="p">;</span>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="k">using</span><span class="w"> </span><span class="n">safe_u64</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">safe_int</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uint64_t</span><span class="o">&gt;</span><span class="p">;</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">using</span><span class="w"> </span><span class="n">safe_i8</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">safe_int</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">int8_t</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">using</span><span class="w"> </span><span class="n">safe_i16</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">safe_int</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">int16_t</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="k">using</span><span class="w"> </span><span class="n">safe_i32</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">safe_int</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">int32_t</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="k">using</span><span class="w"> </span><span class="n">safe_i64</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">safe_int</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">int64_t</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="k">using</span><span class="w"> </span><span class="n">safe_u8</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">safe_int</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="k">using</span><span class="w"> </span><span class="n">safe_u16</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">safe_int</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="k">using</span><span class="w"> </span><span class="n">safe_u32</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">safe_int</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="k">using</span><span class="w"> </span><span class="n">safe_u64</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">safe_int</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uint64_t</span><span class="o">&gt;</span><span class="p">;</span>
 </span></code></pre></div>
 <p>For explicit policy control, use the full template:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">safe_int</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">int32_t</span><span class="p">,</span><span class="w"> </span><span class="n">safe_int_throw_policy</span><span class="o">&gt;</span><span class="w"> </span><span class="n">explicit_throw</span><span class="p">;</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">safe_int</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">int32_t</span><span class="p">,</span><span class="w"> </span><span class="n">safe_int_terminate_policy</span><span class="o">&gt;</span><span class="w"> </span><span class="n">explicit_terminate</span><span class="p">;</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">safe_int</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">int32_t</span><span class="p">,</span><span class="w"> </span><span class="n">safe_int_throw_policy</span><span class="o">&gt;</span><span class="w"> </span><span class="n">explicit_throw</span><span class="p">;</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">safe_int</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">int32_t</span><span class="p">,</span><span class="w"> </span><span class="n">safe_int_terminate_policy</span><span class="o">&gt;</span><span class="w"> </span><span class="n">explicit_terminate</span><span class="p">;</span>
 </span></code></pre></div>
 <h3 id="custom-error-policies">Custom error policies<a class="headerlink" href="#custom-error-policies" title="Permanent link">&para;</a></h3>
 <p>You can define your own error policy to integrate with custom logging or diagnostics
 systems:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mp-units/safe_int.h&gt;</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="k">struct</span><span class="w"> </span><span class="nc">logging_policy</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span><span class="p">[[</span><span class="n">noreturn</span><span class="p">]]</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">on_overflow</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="n">msg</span><span class="p">)</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">  </span><span class="p">{</span>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">    </span><span class="n">log_critical_error</span><span class="p">(</span><span class="s">&quot;Arithmetic overflow&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">);</span>
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">abort</span><span class="p">();</span>
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="p">};</span>
-</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>
-</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="k">using</span><span class="w"> </span><span class="n">logged_int</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">safe_int</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">int32_t</span><span class="p">,</span><span class="w"> </span><span class="n">logging_policy</span><span class="o">&gt;</span><span class="p">;</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mp-units/safe_int.h&gt;</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="k">struct</span><span class="w"> </span><span class="nc">logging_policy</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">  </span><span class="p">[[</span><span class="n">noreturn</span><span class="p">]]</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">on_overflow</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="n">msg</span><span class="p">)</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">  </span><span class="p">{</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">    </span><span class="n">log_critical_error</span><span class="p">(</span><span class="s">&quot;Arithmetic overflow&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">);</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">abort</span><span class="p">();</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="p">};</span>
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="k">using</span><span class="w"> </span><span class="n">logged_int</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">safe_int</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">int32_t</span><span class="p">,</span><span class="w"> </span><span class="n">logging_policy</span><span class="o">&gt;</span><span class="p">;</span>
 </span></code></pre></div>
-<p>The policy must provide a <code>static void on_overflow(std::string_view)</code> method.</p>
+<p>The policy must provide a <code>static void on_overflow(std::string_view)</code> member function.</p>
 <div class="admonition tip">
 <p class="admonition-title">Shared policies with <code>constrained&lt;T&gt;</code></p>
-<p>If you also use
-<a href="../the_affine_space/#range-validated-quantity-points">origin bounds policies</a> for range
-validation, you can add <code>on_constraint_violation(std::string_view)</code> to the same
-policy type — both <code>safe_int</code> and <code>constrained</code> will use it. See
+<p>The built-in <code>safe_int_throw_policy</code> and <code>safe_int_terminate_policy</code> already inherit
+from <code>throw_policy</code> / <code>terminate_policy</code>, so they satisfy both <code>OverflowPolicy</code> and
+<code>ConstraintPolicy</code> out of the box. When writing a custom policy, add both
+<code>on_overflow(std::string_view)</code> and <code>on_constraint_violation(std::string_view)</code> to the
+same struct, and it will work with <code>safe_int</code> and <code>constrained</code> alike. See
+<a href="#relation-to-constrainedt-policy">Relation to <code>constrained&lt;T, Policy&gt;</code></a> and
 <a href="../../../how_to_guides/advanced_usage/ultimate_safety/">Ensure Ultimate Safety</a> for
 a complete example.</p>
 </div>
-<h2 id="integral-promotion-rules">Integral promotion rules<a class="headerlink" href="#integral-promotion-rules" title="Permanent link">&para;</a></h2>
-<p><code>safe_int&lt;T&gt;</code> preserves C++ integral promotion behavior — this applies to both the
-homogeneous case (two <code>safe_int&lt;T&gt;</code> operands) and the scalar case (one <code>safe_int&lt;T&gt;</code> and
-one plain integral):</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1">// Underlying types: int16_t + int16_t → int (integral promotion)</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">is_same_v</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">int16_t</span><span class="p">{</span><span class="mi">1</span><span class="p">}</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int16_t</span><span class="p">{</span><span class="mi">1</span><span class="p">}),</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="p">);</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1">// Homogeneous: safe_int&lt;int16_t&gt; + safe_int&lt;int16_t&gt; → safe_int&lt;int&gt;</span>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">is_same_v</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">safe_i16</span><span class="p">{</span><span class="mi">1</span><span class="p">}</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">safe_i16</span><span class="p">{</span><span class="mi">1</span><span class="p">}),</span><span class="w"> </span><span class="n">safe_int</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span><span class="p">);</span>
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
-</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="c1">// Scalar path: safe_int&lt;int16_t&gt; + int16_t → safe_int&lt;int&gt;  (same promotion)</span>
-</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">is_same_v</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">safe_i16</span><span class="p">{</span><span class="mi">1</span><span class="p">}</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int16_t</span><span class="p">{</span><span class="mi">1</span><span class="p">}),</span><span class="w"> </span><span class="n">safe_int</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span><span class="p">);</span>
-</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>
-</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="c1">// This propagates through quantity arithmetic:</span>
-</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">is_same_v</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">safe_i16</span><span class="p">{</span><span class="mi">1</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">safe_i16</span><span class="p">{</span><span class="mi">1</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">),</span>
-</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">                             </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">safe_int</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;&gt;</span><span class="p">);</span>
-</span></code></pre></div>
-<p>This ensures that <code>safe_int</code> acts as a <strong>transparent wrapper</strong> — it adds overflow detection
-without changing the fundamental arithmetic behavior.</p>
-<h3 id="mixed-signedness-arithmetic">Mixed-signedness arithmetic<a class="headerlink" href="#mixed-signedness-arithmetic" title="Permanent link">&para;</a></h3>
-<p>Arithmetic between opposite signedness is <strong>intentionally ill-formed</strong> — a compile-time
-error. This applies to <strong>both</strong> <code>safe_int×safe_int</code> and <code>safe_int×scalar</code> combinations.
-The rationale is the same in both cases: mixed-signedness arithmetic under C++ usual
-arithmetic conversions reinterprets the signed value as unsigned before operating, silently
-producing counterintuitive results (e.g., <code>safe_int&lt;int&gt;{-1} * 2u</code> → <code>UINT_MAX - 1</code>).
-<code>safe_int</code> rejects these outright rather than hiding the problem behind an overflow check.</p>
-<p>Comparisons between <code>safe_int&lt;signed&gt;</code> and unsigned scalars remain allowed — the
-comparison operators use <code>std::cmp_equal</code> / <code>std::cmp_less</code> etc., which correctly handle
-mixed-signedness without reinterpretation.</p>
-<p>Same-signedness, different-width combinations (e.g., <code>safe_int&lt;short&gt;</code> + <code>safe_int&lt;int&gt;</code>)
-continue to work: the narrower type widens implicitly to the broader one, and then the
-homogeneous operator runs with overflow checking.</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">safe_int</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">      </span><span class="n">si</span><span class="p">{</span><span class="mi">1</span><span class="p">};</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">safe_int</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;</span><span class="w"> </span><span class="n">su</span><span class="p">{</span><span class="mi">2u</span><span class="p">};</span>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1">// Compile-time error — two safe_int of opposite signedness:</span>
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="c1">// auto x = si + su;</span>
-</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
-</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="c1">// Compile-time error — safe_int&lt;signed&gt; × unsigned scalar:</span>
-</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="c1">// auto y = si * 2u;</span>
-</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>
-</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="c1">// Explicit mixed-signedness arithmetic — use .value() and cast deliberately:</span>
-</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="k">auto</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">safe_int</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;</span><span class="p">{</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;</span><span class="p">(</span><span class="n">si</span><span class="p">.</span><span class="n">value</span><span class="p">())}</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">su</span><span class="p">;</span><span class="w">  </span><span class="c1">// explicit and auditable</span>
-</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>
-</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="c1">// Same-signedness widening works transparently:</span>
-</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="n">safe_int</span><span class="o">&lt;</span><span class="kt">short</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ss</span><span class="p">{</span><span class="mi">1</span><span class="p">};</span>
-</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="k">auto</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ss</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">si</span><span class="p">;</span><span class="w">  </span><span class="c1">// OK — safe_int&lt;int&gt;</span>
-</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>
-</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="c1">// Comparison with unsigned scalar is allowed (uses std::cmp_less, not sign-reinterpret):</span>
-</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a><span class="kt">bool</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">si</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0u</span><span class="p">;</span><span class="w">  </span><span class="c1">// OK — true (std::cmp_less(-1, 0u) is correct)</span>
-</span></code></pre></div>
 <h2 id="drop-in-replacement">Drop-in replacement<a class="headerlink" href="#drop-in-replacement" title="Permanent link">&para;</a></h2>
 <p><code>safe_int&lt;T&gt;</code> satisfies all the same <a href="../concepts/#RepresentationOf">representation concepts</a>
 as <code>T</code>. Only the representation type changes — everything else stays identical:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">plain int16_t</label><label for="__tabbed_1_2">safe_int<T></label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">plain int16_t</label><label for="__tabbed_2_2">safe_int<T></label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int16_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q</span><span class="p">{</span><span class="mi">30&#39;000</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">};</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int16_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">doubled</span><span class="p">{</span><span class="n">q</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">q</span><span class="p">};</span><span class="w">  </span><span class="c1">// ⚠️ overflows silently</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int16_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q</span><span class="p">{</span><span class="mi">30&#39;000</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">};</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int16_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">doubled</span><span class="p">{</span><span class="n">q</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">q</span><span class="p">};</span><span class="w">  </span><span class="c1">// ⚠️ overflows silently</span>
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">safe_i16</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q</span><span class="p">{</span><span class="mi">30&#39;000</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">};</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">safe_i16</span><span class="o">&gt;</span><span class="w"> </span><span class="n">doubled</span><span class="p">{</span><span class="n">q</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">q</span><span class="p">};</span><span class="w">  </span><span class="c1">// throws std::overflow_error ✓</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">safe_i16</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q</span><span class="p">{</span><span class="mi">30&#39;000</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">};</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">safe_i16</span><span class="o">&gt;</span><span class="w"> </span><span class="n">doubled</span><span class="p">{</span><span class="n">q</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">q</span><span class="p">};</span><span class="w">  </span><span class="c1">// throws std::overflow_error ✓</span>
 </span></code></pre></div>
 </div>
 </div>
@@ -11929,82 +11945,242 @@ as <code>T</code>. Only the representation type changes — everything else stay
 (just as <code>int16_t + int16_t → int</code>), and the <code>quantity&lt;si::metre, safe_i16&gt;</code> constructor
 narrows the result back to <code>int16_t</code> — that narrowing is where <code>safe_int</code> detects that
 60,000 doesn't fit and throws.</p>
-<h2 id="where-overflow-is-caught">Where overflow is caught?<a class="headerlink" href="#where-overflow-is-caught" title="Permanent link">&para;</a></h2>
-<p>Because <code>safe_int</code> hooks into the fundamental C++ arithmetic operators, every operation
-is checked — regardless of context:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="2:5"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><input id="__tabbed_2_3" name="__tabbed_2" type="radio" /><input id="__tabbed_2_4" name="__tabbed_2" type="radio" /><input id="__tabbed_2_5" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Construction</label><label for="__tabbed_2_2">Conversion</label><label for="__tabbed_2_3">Arithmetic</label><label for="__tabbed_2_4">Explicit unit conversion</label><label for="__tabbed_2_5">Automatic common-unit scaling</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kt">int</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">40&#39;000</span><span class="p">;</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="c1">// Constructing a safe_int quantity from a plain integer that doesn&#39;t fit the rep type</span>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">safe_i16</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q</span><span class="p">{</span><span class="n">value</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">};</span><span class="w">  </span><span class="c1">// throws — 40,000 &gt; INT16_MAX</span>
-</span></code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">40&#39;000</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">;</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="c1">// Converting from a quantity with too large numerical value for the rep type</span>
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">safe_i16</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q_safe</span><span class="p">{</span><span class="n">q</span><span class="p">};</span><span class="w">  </span><span class="c1">// throws — 40,000 &gt; INT16_MAX</span>
-</span></code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1">// Same-unit addition — no unit conversion, plain safe_int arithmetic</span>
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">dist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">safe_i32</span><span class="p">{</span><span class="mi">2&#39;000&#39;000&#39;000</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">;</span>
-</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="n">quantity</span><span class="w"> </span><span class="n">total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dist</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">dist</span><span class="p">;</span><span class="w">         </span><span class="c1">// throws — 4×10⁹ overflows int32_t</span>
-</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>
-</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="c1">// Cross-quantity multiplication: speed × time</span>
-</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="n">quantity</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">safe_i32</span><span class="p">{</span><span class="mi">50&#39;000</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">second</span><span class="p">);</span>
-</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="n">quantity</span><span class="w"> </span><span class="n">time</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">safe_i32</span><span class="p">{</span><span class="mi">50&#39;000</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">second</span><span class="p">;</span>
-</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="n">quantity</span><span class="w"> </span><span class="n">distance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">time</span><span class="p">;</span><span class="w">     </span><span class="c1">// throws — 2.5×10⁹ overflows int32_t</span>
-</span></code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">dist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">safe_i32</span><span class="p">{</span><span class="mi">2&#39;200&#39;000</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">;</span>
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">huge</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dist</span><span class="p">.</span><span class="n">in</span><span class="p">(</span><span class="n">si</span><span class="o">::</span><span class="n">micro</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="o">&gt;</span><span class="p">);</span><span class="w">  </span><span class="c1">// throws — ×1,000,000 factor overflows int32_t</span>
-</span></code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">dist_m</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">safe_i32</span><span class="p">{</span><span class="mi">1&#39;500&#39;000&#39;000</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">;</span>
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">dist_km</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">safe_i32</span><span class="p">{</span><span class="mi">1&#39;000&#39;000</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">kilo</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="o">&gt;</span><span class="p">;</span>
-</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="n">quantity</span><span class="w"> </span><span class="n">total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dist_m</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">dist_km</span><span class="p">;</span><span class="w">    </span><span class="c1">// throws — scaling 10⁶ km → m overflows int32_t</span>
-</span></code></pre></div>
-</div>
-</div>
-</div>
-<h2 id="comparisons">Comparisons<a class="headerlink" href="#comparisons" title="Permanent link">&para;</a></h2>
-<p>Comparison operators (<code>==</code>, <code>&lt;</code>, <code>&gt;</code>, etc.) are structurally safer than arithmetic: they
-return only <code>bool</code>, so the widened intermediate values are used to produce the boolean
-result and then discarded. <strong>mp-units</strong> widens the intermediate freely (to <code>int64_t</code>/<code>uint64_t</code>
-or 128-bit), so for the vast majority of practical scenarios comparisons are correct with
-plain integer types — <code>safe_int</code> adds no extra benefit here.</p>
-<p>For extreme corner cases where even 128-bit intermediates overflow, see the <code>static_assert</code>
-examples in the
-<a href="../../../blog/2026/04/11/preventing-integer-overflow-in-physical-computations/#approach-3-mp-units-widened-intermediate-arithmetic">Preventing Integer Overflow</a>
-blog post.</p>
-<h3 id="mixed-signedness-comparisons">Mixed-signedness comparisons<a class="headerlink" href="#mixed-signedness-comparisons" title="Permanent link">&para;</a></h3>
-<p>Comparing <code>safe_int&lt;signed&gt;</code> with <code>safe_int&lt;unsigned&gt;</code> (or vice versa) is <strong>intentionally
-ill-formed</strong> — a compile-time error. This is a deliberate divergence from raw C++ integers,
-where such comparisons are well-formed but silently produce counterintuitive results due to
-the usual arithmetic conversions (e.g., <code>-1 &lt; 0u</code> evaluates to <code>false</code>). Because
-<code>has_common_type</code> is <code>false</code> for mixed-signedness <code>safe_int</code> pairs, the compiler rejects
-these comparisons outright rather than silently computing the wrong answer.</p>
-<p>When you genuinely need to compare a signed and an unsigned value, use <code>.value()</code> together
-with the standard comparison utilities that explicitly handle mixed-signedness:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">safe_int</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">      </span><span class="n">si</span><span class="p">{</span><span class="mi">-1</span><span class="p">};</span>
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="n">safe_int</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;</span><span class="w"> </span><span class="n">su</span><span class="p">{</span><span class="mi">0u</span><span class="p">};</span>
-</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>
-</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="c1">// Compile-time error — intentionally ill-formed:</span>
-</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="c1">// bool b = si &lt; su;</span>
-</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>
-</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="c1">// Explicit cross-signedness comparison:</span>
-</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="kt">bool</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cmp_less</span><span class="p">(</span><span class="n">si</span><span class="p">.</span><span class="n">value</span><span class="p">(),</span><span class="w"> </span><span class="n">su</span><span class="p">.</span><span class="n">value</span><span class="p">());</span><span class="w">  </span><span class="c1">// true</span>
-</span></code></pre></div>
 <h2 id="constexpr-support"><code>constexpr</code> support<a class="headerlink" href="#constexpr-support" title="Permanent link">&para;</a></h2>
 <p><code>safe_int&lt;T&gt;</code> arithmetic is fully <code>constexpr</code>. In C++, any overflow that occurs during
 constant expression evaluation is always a compile-time hard error — for both <code>safe_int</code>
 and plain integers. The difference emerges only at <strong>runtime</strong>, where <code>safe_int</code> catches
 overflows that plain integers silently ignore.</p>
+<h2 id="arithmetic-result-types">Arithmetic result types<a class="headerlink" href="#arithmetic-result-types" title="Permanent link">&para;</a></h2>
+<p>The result type of any <code>safe_int</code> arithmetic expression is fully determined by the operand
+types. The subsections below cover all supported combinations; unsupported pairings are
+<strong>compile-time errors</strong>.</p>
+<h3 id="integral-promotion-rules">Integral promotion rules<a class="headerlink" href="#integral-promotion-rules" title="Permanent link">&para;</a></h3>
+<p><code>safe_int&lt;T&gt;</code> preserves C++ integral promotion behavior — this applies to both the
+homogeneous case (two <code>safe_int&lt;T&gt;</code> operands) and the scalar case (one <code>safe_int&lt;T&gt;</code> and
+one plain integral):</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1">// Underlying types: int16_t + int16_t → int (integral promotion)</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">is_same_v</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">int16_t</span><span class="p">{</span><span class="mi">1</span><span class="p">}</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int16_t</span><span class="p">{</span><span class="mi">1</span><span class="p">}),</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="p">);</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="c1">// Homogeneous: safe_int&lt;int16_t&gt; + safe_int&lt;int16_t&gt; → safe_int&lt;int&gt;</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">is_same_v</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">safe_i16</span><span class="p">{</span><span class="mi">1</span><span class="p">}</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">safe_i16</span><span class="p">{</span><span class="mi">1</span><span class="p">}),</span><span class="w"> </span><span class="n">safe_int</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span><span class="p">);</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="c1">// Scalar path: safe_int&lt;int16_t&gt; + int16_t → safe_int&lt;int&gt;  (same promotion)</span>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">is_same_v</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">safe_i16</span><span class="p">{</span><span class="mi">1</span><span class="p">}</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int16_t</span><span class="p">{</span><span class="mi">1</span><span class="p">}),</span><span class="w"> </span><span class="n">safe_int</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span><span class="p">);</span>
+</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>
+</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="c1">// This propagates through quantity arithmetic:</span>
+</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">is_same_v</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">safe_i16</span><span class="p">{</span><span class="mi">1</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">safe_i16</span><span class="p">{</span><span class="mi">1</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">),</span>
+</span><span id="__span-12-12"><a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="w">                             </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">safe_int</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;&gt;</span><span class="p">);</span>
+</span></code></pre></div>
+<p>This ensures that <code>safe_int</code> acts as a <strong>transparent wrapper</strong> — it adds overflow detection
+without changing the fundamental arithmetic behavior.</p>
+<h3 id="arithmetic-operators-">Arithmetic operators (<code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>%</code>)<a class="headerlink" href="#arithmetic-operators-" title="Permanent link">&para;</a></h3>
+<p>The following tables use this notation:</p>
+<ul>
+<li><code>S&lt;T, EP&gt;</code> — <code>safe_int&lt;T, EP&gt;</code>, where <code>EP</code> is the policy of the <code>safe_int</code> operand</li>
+<li><code>C&lt;U, CP&gt;</code> — <code>constrained&lt;U, CP&gt;</code>, where <code>CP</code> is the policy of the <code>constrained</code> operand</li>
+<li><em>promote(T, U)</em> — the type produced by <code>T{} + U{}</code> under C++ usual arithmetic
+  conversions (integral promotion + common type), as illustrated above</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Left operand</th>
+<th>Right operand</th>
+<th>Condition</th>
+<th>Result type</th>
+<th>Overflow check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>S&lt;T, EP&gt;</code></td>
+<td><code>S&lt;T, EP&gt;</code></td>
+<td>same <code>T</code>, same <code>EP</code></td>
+<td><code>S&lt;promote(T,T), EP&gt;</code></td>
+<td>yes — every operation</td>
+</tr>
+<tr>
+<td><code>S&lt;T, EP&gt;</code></td>
+<td><code>S&lt;U, EP&gt;</code></td>
+<td>same-sign, different width, same <code>EP</code></td>
+<td><code>S&lt;promote(T,U), EP&gt;</code></td>
+<td>yes — narrower widens implicitly, then checked</td>
+</tr>
+<tr>
+<td><code>S&lt;T, EP&gt;</code></td>
+<td><code>S&lt;U, EP&gt;</code></td>
+<td><strong>opposite signedness</strong></td>
+<td><strong>ill-formed</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>S&lt;T, EP1&gt;</code></td>
+<td><code>S&lt;T, EP2&gt;</code></td>
+<td><strong>different <code>EP</code></strong></td>
+<td><strong>ill-formed</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>S&lt;T, EP&gt;</code></td>
+<td>integral <code>U</code></td>
+<td>same-signedness</td>
+<td><code>S&lt;promote(T,U), EP&gt;</code></td>
+<td>yes — every operation</td>
+</tr>
+<tr>
+<td><code>S&lt;T, EP&gt;</code></td>
+<td>integral <code>U</code></td>
+<td><strong>opposite signedness</strong></td>
+<td><strong>ill-formed</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>S&lt;T, EP&gt;</code></td>
+<td>floating-point <code>U</code></td>
+<td>—</td>
+<td>plain <code>U</code> (floating-point)</td>
+<td>no — <code>safe_int</code> wrapper is lost</td>
+</tr>
+<tr>
+<td><code>S&lt;T, EP&gt;</code></td>
+<td><code>C&lt;U, CP&gt;</code> (<code>U</code> integral, same-sign)</td>
+<td>—</td>
+<td><code>S&lt;promote(T,U), EP&gt;</code></td>
+<td>yes — <code>safe_int</code> wins; policy <code>CP</code> is dropped</td>
+</tr>
+<tr>
+<td><code>S&lt;T, EP&gt;</code></td>
+<td><code>C&lt;U, CP&gt;</code> (<code>U</code> non-integral / floating)</td>
+<td>—</td>
+<td><code>C&lt;U, CP&gt;</code></td>
+<td>no — <code>constrained</code> wins; policy <code>CP</code> is preserved</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="admonition-title">safe_int + float loses overflow protection</p>
+<p>When a <code>safe_int</code> operand is combined with a floating-point type, the result is a
+plain floating-point value — the <code>safe_int</code> wrapper is <strong>not</strong> preserved. This is
+intentional: floating-point arithmetic has its own overflow semantics (infinity / NaN)
+that are incompatible with the binary-integer overflow model.</p>
+</div>
+<div class="admonition info">
+<p class="admonition-title"><code>safe_int</code> wins over <code>constrained&lt;integral&gt;</code></p>
+<p>When a <code>safe_int</code> meets a <code>constrained&lt;U&gt;</code> wrapping an <strong>integral</strong> <code>U</code>, the result
+is <code>safe_int</code> and the <code>constrained</code> policy <code>CP</code> is dropped. The rationale is that
+<code>constrained</code> is a transparent policy-carrying tag — it performs no checks itself;
+<code>safe_int</code> is the type that actively checks arithmetic, so it is the more meaningful
+wrapper to preserve.</p>
+<p>When <code>U</code> is a <strong>non-integral</strong> type (e.g. <code>double</code> inside <code>constrained</code>), the result
+is <code>constrained</code> because the <code>safe_int</code> overflow model does not apply to floating-point.</p>
+</div>
+<h3 id="mixed-signedness-arithmetic">Mixed-signedness arithmetic<a class="headerlink" href="#mixed-signedness-arithmetic" title="Permanent link">&para;</a></h3>
+<p>Arithmetic between opposite signedness is <strong>intentionally ill-formed</strong> — a compile-time
+error. This applies to <strong>both</strong> <code>safe_int×safe_int</code> and <code>safe_int×scalar</code> combinations.
+The rationale is the same in both cases: mixed-signedness arithmetic under C++ usual
+arithmetic conversions reinterprets the signed value as unsigned before operating, silently
+producing counterintuitive results (e.g., <code>safe_int&lt;int&gt;{-1} * 2u</code> → <code>UINT_MAX - 1</code>).
+<code>safe_int</code> rejects these outright rather than hiding the problem behind an overflow check.</p>
+<p>Comparisons between mixed-signedness values remain allowed — both when the right-hand side
+is a raw integral scalar and when it is another <code>safe_int</code> of opposite signedness. The
+comparison operators use <code>std::cmp_equal</code> / <code>std::cmp_less</code> etc., which correctly handle
+mixed-signedness without reinterpretation.</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">safe_int</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">      </span><span class="n">si</span><span class="p">{</span><span class="mi">1</span><span class="p">};</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="n">safe_int</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;</span><span class="w"> </span><span class="n">su</span><span class="p">{</span><span class="mi">2u</span><span class="p">};</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="c1">// Compile-time error — two safe_int of opposite signedness:</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="c1">// auto x = si + su;</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="c1">// Compile-time error — safe_int&lt;signed&gt; × unsigned scalar:</span>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="c1">// auto y = si * 2u;</span>
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="c1">// Explicit mixed-signedness arithmetic — use .value() and cast deliberately:</span>
+</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="k">auto</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">safe_int</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;</span><span class="p">{</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;</span><span class="p">(</span><span class="n">si</span><span class="p">.</span><span class="n">value</span><span class="p">())}</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">su</span><span class="p">;</span><span class="w">  </span><span class="c1">// explicit and auditable</span>
+</span><span id="__span-13-12"><a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a>
+</span><span id="__span-13-13"><a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a><span class="c1">// Comparison is allowed for both safe_int pairs and scalars (uses std::cmp_less):</span>
+</span><span id="__span-13-14"><a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a><span class="kt">bool</span><span class="w"> </span><span class="n">b1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">si</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">su</span><span class="p">;</span><span class="w">   </span><span class="c1">// OK — safe_int × safe_int cross-sign comparison</span>
+</span><span id="__span-13-15"><a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a><span class="kt">bool</span><span class="w"> </span><span class="n">b2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">si</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2u</span><span class="p">;</span><span class="w">   </span><span class="c1">// OK — safe_int × scalar cross-sign comparison</span>
+</span></code></pre></div>
+<h2 id="comparisons">Comparisons<a class="headerlink" href="#comparisons" title="Permanent link">&para;</a></h2>
+<p>Comparison operators never overflow — they produce a <code>bool</code>, not a numeric value, so there
+is nothing to overflow. <code>safe_int</code> therefore adds no overflow-detection benefit for
+comparisons; its contribution is elsewhere: the mixed-signedness operators use <code>std::cmp_*</code>
+instead of C++ usual arithmetic conversions, which gives the correct result where raw
+integers would silently mislead.</p>
+<h3 id="comparison-operators">Comparison operators (<code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>)<a class="headerlink" href="#comparison-operators" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Left operand</th>
+<th>Right operand</th>
+<th>Condition</th>
+<th>Result</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>S&lt;T, EP&gt;</code></td>
+<td><code>S&lt;T, EP&gt;</code></td>
+<td>same <code>T</code>, same <code>EP</code></td>
+<td><code>bool</code></td>
+<td>direct value comparison</td>
+</tr>
+<tr>
+<td><code>S&lt;T, EP&gt;</code></td>
+<td><code>S&lt;U, EP&gt;</code></td>
+<td>same-sign, same <code>EP</code></td>
+<td><code>bool</code></td>
+<td>narrower widens implicitly, then compared</td>
+</tr>
+<tr>
+<td><code>S&lt;T, EP1&gt;</code></td>
+<td><code>S&lt;U, EP2&gt;</code></td>
+<td>same-sign, <strong>different <code>EP</code></strong></td>
+<td><code>bool</code></td>
+<td>comparisons yield <code>bool</code> — no result policy to propagate</td>
+</tr>
+<tr>
+<td><code>S&lt;signed T&gt;</code></td>
+<td><code>S&lt;unsigned U&gt;</code></td>
+<td><strong>opposite signedness</strong>, any <code>EP</code></td>
+<td><code>bool</code></td>
+<td>uses <code>std::cmp_equal</code> / <code>std::cmp_less</code> — cross-sign is <strong>correct and allowed</strong></td>
+</tr>
+<tr>
+<td><code>S&lt;T, EP&gt;</code></td>
+<td>integral <code>U</code></td>
+<td><strong>any</strong> sign combination</td>
+<td><code>bool</code></td>
+<td>uses <code>std::cmp_equal</code> / <code>std::cmp_less</code> — cross-sign is <strong>correct and allowed</strong></td>
+</tr>
+<tr>
+<td><code>S&lt;T, EP&gt;</code></td>
+<td>floating-point <code>U</code></td>
+<td>—</td>
+<td><code>bool</code></td>
+<td>standard floating-point comparison</td>
+</tr>
+<tr>
+<td><code>S&lt;T, EP&gt;</code></td>
+<td><code>C&lt;U, CP&gt;</code></td>
+<td>—</td>
+<td><code>bool</code></td>
+<td>compares underlying values directly</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition tip">
+<p class="admonition-title">Cross-sign comparison is intentionally allowed</p>
+<p>All <code>safe_int</code> comparison operators — whether comparing against a raw integral scalar or
+against another <code>safe_int</code> of opposite signedness — use <code>std::cmp_equal</code> / <code>std::cmp_less</code>
+(and friends) rather than C++ usual arithmetic conversions. This gives the mathematically
+correct result regardless of signedness, unlike the raw <code>int &lt; unsigned int</code> which silently
+reinterprets the signed value.</p>
+<p>This asymmetry (arithmetic: ill-formed; comparison: allowed and correct) is
+deliberate: arithmetic under mixed-sign UAC produces wrong <em>values</em>, while
+comparisons using <code>std::cmp_*</code> produce the <em>correct</em> <code>bool</code>.</p>
+</div>
 <h2 id="relation-to-constrainedt-policy">Relation to <code>constrained&lt;T, Policy&gt;</code><a class="headerlink" href="#relation-to-constrainedt-policy" title="Permanent link">&para;</a></h2>
 <p><code>safe_int&lt;T, EP&gt;</code> follows the same policy-based design as
 <a href="../the_affine_space/#range-validated-quantity-points"><code>constrained&lt;T, EP&gt;</code></a>, the wrapper
@@ -12027,15 +12203,34 @@ used for <code>quantity_point</code> domain bounds. They address complementary c
 </tr>
 </tbody>
 </table>
-<p>Both share the same base error policies (<code>throw_policy</code>, <code>terminate_policy</code>) and extend
-them with domain-specific handlers (<code>on_constraint_violation</code> for <code>constrained</code>,
-<code>on_overflow</code> for <code>safe_int</code>). They compose naturally:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1">// A bounded, overflow-safe latitude representation</span>
-</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="k">using</span><span class="w"> </span><span class="n">safe_double</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">constrained</span><span class="o">&lt;</span><span class="kt">double</span><span class="p">,</span><span class="w"> </span><span class="n">throw_policy</span><span class="o">&gt;</span><span class="p">;</span>
-</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="k">using</span><span class="w"> </span><span class="n">safe_latitude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">geo_latitude</span><span class="p">[</span><span class="n">deg</span><span class="p">],</span><span class="w"> </span><span class="n">equator</span><span class="p">,</span><span class="w"> </span><span class="n">safe_double</span><span class="o">&gt;</span><span class="p">;</span>
-</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>
-</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="c1">// A raw-integral distance type where overflow is caught at runtime</span>
-</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="k">using</span><span class="w"> </span><span class="n">safe_i32_m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="p">[</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">],</span><span class="w"> </span><span class="n">safe_int</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">int32_t</span><span class="o">&gt;&gt;</span><span class="p">;</span>
+<p>Both share the same base error policies (<code>throw_policy</code>, <code>terminate_policy</code>) — and the
+relationship is explicit inheritance:</p>
+<pre class="mermaid"><code>classDiagram
+    class terminate_policy {
+        +on_constraint_violation(string_view)
+    }
+    class throw_policy {
+        +on_constraint_violation(string_view)
+    }
+    class safe_int_terminate_policy {
+        +on_overflow(string_view)
+    }
+    class safe_int_throw_policy {
+        +on_overflow(string_view)
+    }
+    terminate_policy &lt;|-- safe_int_terminate_policy
+    throw_policy &lt;|-- safe_int_throw_policy</code></pre>
+<p>This means <code>safe_int_throw_policy</code> and <code>safe_int_terminate_policy</code> satisfy <strong>both</strong>
+<code>OverflowPolicy</code> and <code>ConstraintPolicy</code>. As a result, swapping <code>constrained&lt;T, EP&gt;</code> for
+<code>safe_int&lt;T, EP&gt;</code> using one of the built-in policies preserves any <code>quantity_point</code> bounds
+checking that was already in place — the <code>on_constraint_violation</code> handler is inherited and
+still fires when a domain bound is violated.</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1">// A bounded, overflow-safe latitude representation</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="k">using</span><span class="w"> </span><span class="n">safe_double</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">constrained</span><span class="o">&lt;</span><span class="kt">double</span><span class="p">,</span><span class="w"> </span><span class="n">throw_policy</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="k">using</span><span class="w"> </span><span class="n">safe_latitude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">geo_latitude</span><span class="p">[</span><span class="n">deg</span><span class="p">],</span><span class="w"> </span><span class="n">equator</span><span class="p">,</span><span class="w"> </span><span class="n">safe_double</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="c1">// A raw-integral distance type where overflow is caught at runtime</span>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="k">using</span><span class="w"> </span><span class="n">safe_i32_m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="p">[</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">],</span><span class="w"> </span><span class="n">safe_int</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">int32_t</span><span class="o">&gt;&gt;</span><span class="p">;</span>
 </span></code></pre></div>
 <p>For a complete walkthrough of combining both wrappers, see
 <a href="../../../how_to_guides/advanced_usage/ultimate_safety/">Ensure Ultimate Safety</a>.</p>
