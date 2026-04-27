@@ -2252,6 +2252,23 @@ You're not viewing the latest version.
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Integral promotion rules">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mixed-signedness-arithmetic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mixed-signedness arithmetic
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -2284,6 +2301,23 @@ You're not viewing the latest version.
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Comparisons">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mixed-signedness-comparisons" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mixed-signedness comparisons
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -3666,6 +3700,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -3789,6 +3825,34 @@ You're not viewing the latest version.
     
   
     Ensure Ultimate Safety
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../how_to_guides/advanced_usage/nondimensionalization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Working With Nondimensionalized Physics
   
 
     
@@ -11681,8 +11745,9 @@ plain integers.</p>
 <div class="admonition info">
 <p class="admonition-title">Motivation</p>
 <p><strong>mp-units</strong>' <a href="../representation_types/#built-in-scaling-algorithm">built-in scaling algorithm</a>
-uses widened intermediate arithmetic (<code>int64_t</code> for types up to <code>int32_t</code>, 128-bit for
-<code>int64_t</code>) to avoid undefined behavior during unit conversions. This handles the vast
+uses widened intermediate arithmetic (e.g. <code>int64_t</code>/<code>uint64_t</code> for types up to
+<code>int32_t</code>/<code>uint32_t</code>, 128-bit for 64-bit types) to avoid undefined behavior during
+unit conversions. This handles the vast
 majority of real-world scenarios, but the <strong>final result</strong> must still fit in the target
 type — and that narrowing can overflow silently.</p>
 <p><code>safe_int&lt;T&gt;</code> closes this gap: it checks <strong>every</strong> arithmetic operation, including
@@ -11793,33 +11858,69 @@ policy type — both <code>safe_int</code> and <code>constrained</code> will use
 a complete example.</p>
 </div>
 <h2 id="integral-promotion-rules">Integral promotion rules<a class="headerlink" href="#integral-promotion-rules" title="Permanent link">&para;</a></h2>
-<p><code>safe_int&lt;T&gt;</code> preserves C++ integral promotion behavior — adding two <code>safe_int&lt;int16_t&gt;</code>
-values produces <code>safe_int&lt;int&gt;</code>, exactly matching what happens with the underlying types:</p>
+<p><code>safe_int&lt;T&gt;</code> preserves C++ integral promotion behavior — this applies to both the
+homogeneous case (two <code>safe_int&lt;T&gt;</code> operands) and the scalar case (one <code>safe_int&lt;T&gt;</code> and
+one plain integral):</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1">// Underlying types: int16_t + int16_t → int (integral promotion)</span>
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">is_same_v</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">int16_t</span><span class="p">{</span><span class="mi">1</span><span class="p">}</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int16_t</span><span class="p">{</span><span class="mi">1</span><span class="p">}),</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="p">);</span>
 </span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1">// safe_int preserves this: safe_int&lt;int16_t&gt; + safe_int&lt;int16_t&gt; → safe_int&lt;int&gt;</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1">// Homogeneous: safe_int&lt;int16_t&gt; + safe_int&lt;int16_t&gt; → safe_int&lt;int&gt;</span>
 </span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">is_same_v</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">safe_i16</span><span class="p">{</span><span class="mi">1</span><span class="p">}</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">safe_i16</span><span class="p">{</span><span class="mi">1</span><span class="p">}),</span><span class="w"> </span><span class="n">safe_int</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span><span class="p">);</span>
 </span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
-</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="c1">// This propagates through quantity arithmetic:</span>
-</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">is_same_v</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">safe_i16</span><span class="p">{</span><span class="mi">1</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">safe_i16</span><span class="p">{</span><span class="mi">1</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">),</span>
-</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">                             </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">safe_int</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;&gt;</span><span class="p">);</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="c1">// Scalar path: safe_int&lt;int16_t&gt; + int16_t → safe_int&lt;int&gt;  (same promotion)</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">is_same_v</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">safe_i16</span><span class="p">{</span><span class="mi">1</span><span class="p">}</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int16_t</span><span class="p">{</span><span class="mi">1</span><span class="p">}),</span><span class="w"> </span><span class="n">safe_int</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span><span class="p">);</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="c1">// This propagates through quantity arithmetic:</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">is_same_v</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">safe_i16</span><span class="p">{</span><span class="mi">1</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">safe_i16</span><span class="p">{</span><span class="mi">1</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">),</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">                             </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">safe_int</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;&gt;</span><span class="p">);</span>
 </span></code></pre></div>
 <p>This ensures that <code>safe_int</code> acts as a <strong>transparent wrapper</strong> — it adds overflow detection
 without changing the fundamental arithmetic behavior.</p>
+<h3 id="mixed-signedness-arithmetic">Mixed-signedness arithmetic<a class="headerlink" href="#mixed-signedness-arithmetic" title="Permanent link">&para;</a></h3>
+<p>Arithmetic between opposite signedness is <strong>intentionally ill-formed</strong> — a compile-time
+error. This applies to <strong>both</strong> <code>safe_int×safe_int</code> and <code>safe_int×scalar</code> combinations.
+The rationale is the same in both cases: mixed-signedness arithmetic under C++ usual
+arithmetic conversions reinterprets the signed value as unsigned before operating, silently
+producing counterintuitive results (e.g., <code>safe_int&lt;int&gt;{-1} * 2u</code> → <code>UINT_MAX - 1</code>).
+<code>safe_int</code> rejects these outright rather than hiding the problem behind an overflow check.</p>
+<p>Comparisons between <code>safe_int&lt;signed&gt;</code> and unsigned scalars remain allowed — the
+comparison operators use <code>std::cmp_equal</code> / <code>std::cmp_less</code> etc., which correctly handle
+mixed-signedness without reinterpretation.</p>
+<p>Same-signedness, different-width combinations (e.g., <code>safe_int&lt;short&gt;</code> + <code>safe_int&lt;int&gt;</code>)
+continue to work: the narrower type widens implicitly to the broader one, and then the
+homogeneous operator runs with overflow checking.</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">safe_int</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">      </span><span class="n">si</span><span class="p">{</span><span class="mi">1</span><span class="p">};</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">safe_int</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;</span><span class="w"> </span><span class="n">su</span><span class="p">{</span><span class="mi">2u</span><span class="p">};</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1">// Compile-time error — two safe_int of opposite signedness:</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="c1">// auto x = si + su;</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="c1">// Compile-time error — safe_int&lt;signed&gt; × unsigned scalar:</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="c1">// auto y = si * 2u;</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="c1">// Explicit mixed-signedness arithmetic — use .value() and cast deliberately:</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="k">auto</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">safe_int</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;</span><span class="p">{</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;</span><span class="p">(</span><span class="n">si</span><span class="p">.</span><span class="n">value</span><span class="p">())}</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">su</span><span class="p">;</span><span class="w">  </span><span class="c1">// explicit and auditable</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="c1">// Same-signedness widening works transparently:</span>
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="n">safe_int</span><span class="o">&lt;</span><span class="kt">short</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ss</span><span class="p">{</span><span class="mi">1</span><span class="p">};</span>
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="k">auto</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ss</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">si</span><span class="p">;</span><span class="w">  </span><span class="c1">// OK — safe_int&lt;int&gt;</span>
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>
+</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="c1">// Comparison with unsigned scalar is allowed (uses std::cmp_less, not sign-reinterpret):</span>
+</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a><span class="kt">bool</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">si</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0u</span><span class="p">;</span><span class="w">  </span><span class="c1">// OK — true (std::cmp_less(-1, 0u) is correct)</span>
+</span></code></pre></div>
 <h2 id="drop-in-replacement">Drop-in replacement<a class="headerlink" href="#drop-in-replacement" title="Permanent link">&para;</a></h2>
 <p><code>safe_int&lt;T&gt;</code> satisfies all the same <a href="../concepts/#RepresentationOf">representation concepts</a>
 as <code>T</code>. Only the representation type changes — everything else stays identical:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">plain int16_t</label><label for="__tabbed_1_2">safe_int<T></label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int16_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q</span><span class="p">{</span><span class="mi">30&#39;000</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">};</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int16_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">doubled</span><span class="p">{</span><span class="n">q</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">q</span><span class="p">};</span><span class="w">  </span><span class="c1">// ⚠️ overflows silently</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int16_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q</span><span class="p">{</span><span class="mi">30&#39;000</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">};</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int16_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">doubled</span><span class="p">{</span><span class="n">q</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">q</span><span class="p">};</span><span class="w">  </span><span class="c1">// ⚠️ overflows silently</span>
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">safe_i16</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q</span><span class="p">{</span><span class="mi">30&#39;000</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">};</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">safe_i16</span><span class="o">&gt;</span><span class="w"> </span><span class="n">doubled</span><span class="p">{</span><span class="n">q</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">q</span><span class="p">};</span><span class="w">  </span><span class="c1">// throws std::overflow_error ✓</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">safe_i16</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q</span><span class="p">{</span><span class="mi">30&#39;000</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">};</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">safe_i16</span><span class="o">&gt;</span><span class="w"> </span><span class="n">doubled</span><span class="p">{</span><span class="n">q</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">q</span><span class="p">};</span><span class="w">  </span><span class="c1">// throws std::overflow_error ✓</span>
 </span></code></pre></div>
 </div>
 </div>
@@ -11834,39 +11935,39 @@ is checked — regardless of context:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:5"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><input id="__tabbed_2_3" name="__tabbed_2" type="radio" /><input id="__tabbed_2_4" name="__tabbed_2" type="radio" /><input id="__tabbed_2_5" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Construction</label><label for="__tabbed_2_2">Conversion</label><label for="__tabbed_2_3">Arithmetic</label><label for="__tabbed_2_4">Explicit unit conversion</label><label for="__tabbed_2_5">Automatic common-unit scaling</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kt">int</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">40&#39;000</span><span class="p">;</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="c1">// Constructing a safe_int quantity from a plain integer that doesn&#39;t fit the rep type</span>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">safe_i16</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q</span><span class="p">{</span><span class="n">value</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">};</span><span class="w">  </span><span class="c1">// throws — 40,000 &gt; INT16_MAX</span>
-</span></code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">40&#39;000</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">;</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kt">int</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">40&#39;000</span><span class="p">;</span>
 </span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="c1">// Converting from a quantity with too large numerical value for the rep type</span>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">safe_i16</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q_safe</span><span class="p">{</span><span class="n">q</span><span class="p">};</span><span class="w">  </span><span class="c1">// throws — 40,000 &gt; INT16_MAX</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="c1">// Constructing a safe_int quantity from a plain integer that doesn&#39;t fit the rep type</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">safe_i16</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q</span><span class="p">{</span><span class="n">value</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">};</span><span class="w">  </span><span class="c1">// throws — 40,000 &gt; INT16_MAX</span>
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1">// Same-unit addition — no unit conversion, plain safe_int arithmetic</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">dist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">safe_i32</span><span class="p">{</span><span class="mi">2&#39;000&#39;000&#39;000</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">;</span>
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="n">quantity</span><span class="w"> </span><span class="n">total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dist</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">dist</span><span class="p">;</span><span class="w">         </span><span class="c1">// throws — 4×10⁹ overflows int32_t</span>
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>
-</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="c1">// Cross-quantity multiplication: speed × time</span>
-</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="n">quantity</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">safe_i32</span><span class="p">{</span><span class="mi">50&#39;000</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">second</span><span class="p">);</span>
-</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="n">quantity</span><span class="w"> </span><span class="n">time</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">safe_i32</span><span class="p">{</span><span class="mi">50&#39;000</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">second</span><span class="p">;</span>
-</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="n">quantity</span><span class="w"> </span><span class="n">distance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">time</span><span class="p">;</span><span class="w">     </span><span class="c1">// throws — 2.5×10⁹ overflows int32_t</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">40&#39;000</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">;</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="c1">// Converting from a quantity with too large numerical value for the rep type</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">safe_i16</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q_safe</span><span class="p">{</span><span class="n">q</span><span class="p">};</span><span class="w">  </span><span class="c1">// throws — 40,000 &gt; INT16_MAX</span>
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">dist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">safe_i32</span><span class="p">{</span><span class="mi">2&#39;200&#39;000</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">;</span>
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">huge</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dist</span><span class="p">.</span><span class="n">in</span><span class="p">(</span><span class="n">si</span><span class="o">::</span><span class="n">micro</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="o">&gt;</span><span class="p">);</span><span class="w">  </span><span class="c1">// throws — ×1,000,000 factor overflows int32_t</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1">// Same-unit addition — no unit conversion, plain safe_int arithmetic</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">dist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">safe_i32</span><span class="p">{</span><span class="mi">2&#39;000&#39;000&#39;000</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">;</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="n">quantity</span><span class="w"> </span><span class="n">total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dist</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">dist</span><span class="p">;</span><span class="w">         </span><span class="c1">// throws — 4×10⁹ overflows int32_t</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="c1">// Cross-quantity multiplication: speed × time</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="n">quantity</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">safe_i32</span><span class="p">{</span><span class="mi">50&#39;000</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">second</span><span class="p">);</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="n">quantity</span><span class="w"> </span><span class="n">time</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">safe_i32</span><span class="p">{</span><span class="mi">50&#39;000</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">second</span><span class="p">;</span>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="n">quantity</span><span class="w"> </span><span class="n">distance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">time</span><span class="p">;</span><span class="w">     </span><span class="c1">// throws — 2.5×10⁹ overflows int32_t</span>
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">dist_m</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">safe_i32</span><span class="p">{</span><span class="mi">1&#39;500&#39;000&#39;000</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">;</span>
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">dist_km</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">safe_i32</span><span class="p">{</span><span class="mi">1&#39;000&#39;000</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">kilo</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="o">&gt;</span><span class="p">;</span>
-</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="n">quantity</span><span class="w"> </span><span class="n">total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dist_m</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">dist_km</span><span class="p">;</span><span class="w">    </span><span class="c1">// throws — scaling 10⁶ km → m overflows int32_t</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">dist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">safe_i32</span><span class="p">{</span><span class="mi">2&#39;200&#39;000</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">;</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">huge</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dist</span><span class="p">.</span><span class="n">in</span><span class="p">(</span><span class="n">si</span><span class="o">::</span><span class="n">micro</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="o">&gt;</span><span class="p">);</span><span class="w">  </span><span class="c1">// throws — ×1,000,000 factor overflows int32_t</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">dist_m</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">safe_i32</span><span class="p">{</span><span class="mi">1&#39;500&#39;000&#39;000</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">;</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">dist_km</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">safe_i32</span><span class="p">{</span><span class="mi">1&#39;000&#39;000</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">kilo</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="n">quantity</span><span class="w"> </span><span class="n">total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dist_m</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">dist_km</span><span class="p">;</span><span class="w">    </span><span class="c1">// throws — scaling 10⁶ km → m overflows int32_t</span>
 </span></code></pre></div>
 </div>
 </div>
@@ -11874,13 +11975,31 @@ is checked — regardless of context:</p>
 <h2 id="comparisons">Comparisons<a class="headerlink" href="#comparisons" title="Permanent link">&para;</a></h2>
 <p>Comparison operators (<code>==</code>, <code>&lt;</code>, <code>&gt;</code>, etc.) are structurally safer than arithmetic: they
 return only <code>bool</code>, so the widened intermediate values are used to produce the boolean
-result and then discarded. <strong>mp-units</strong> widens the intermediate freely (to <code>int64_t</code> or
-128-bit), so for the vast majority of practical scenarios comparisons are correct with
+result and then discarded. <strong>mp-units</strong> widens the intermediate freely (to <code>int64_t</code>/<code>uint64_t</code>
+or 128-bit), so for the vast majority of practical scenarios comparisons are correct with
 plain integer types — <code>safe_int</code> adds no extra benefit here.</p>
 <p>For extreme corner cases where even 128-bit intermediates overflow, see the <code>static_assert</code>
 examples in the
 <a href="../../../blog/2026/04/11/preventing-integer-overflow-in-physical-computations/#approach-3-mp-units-widened-intermediate-arithmetic">Preventing Integer Overflow</a>
 blog post.</p>
+<h3 id="mixed-signedness-comparisons">Mixed-signedness comparisons<a class="headerlink" href="#mixed-signedness-comparisons" title="Permanent link">&para;</a></h3>
+<p>Comparing <code>safe_int&lt;signed&gt;</code> with <code>safe_int&lt;unsigned&gt;</code> (or vice versa) is <strong>intentionally
+ill-formed</strong> — a compile-time error. This is a deliberate divergence from raw C++ integers,
+where such comparisons are well-formed but silently produce counterintuitive results due to
+the usual arithmetic conversions (e.g., <code>-1 &lt; 0u</code> evaluates to <code>false</code>). Because
+<code>has_common_type</code> is <code>false</code> for mixed-signedness <code>safe_int</code> pairs, the compiler rejects
+these comparisons outright rather than silently computing the wrong answer.</p>
+<p>When you genuinely need to compare a signed and an unsigned value, use <code>.value()</code> together
+with the standard comparison utilities that explicitly handle mixed-signedness:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">safe_int</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w">      </span><span class="n">si</span><span class="p">{</span><span class="mi">-1</span><span class="p">};</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="n">safe_int</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;</span><span class="w"> </span><span class="n">su</span><span class="p">{</span><span class="mi">0u</span><span class="p">};</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="c1">// Compile-time error — intentionally ill-formed:</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="c1">// bool b = si &lt; su;</span>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="c1">// Explicit cross-signedness comparison:</span>
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="kt">bool</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cmp_less</span><span class="p">(</span><span class="n">si</span><span class="p">.</span><span class="n">value</span><span class="p">(),</span><span class="w"> </span><span class="n">su</span><span class="p">.</span><span class="n">value</span><span class="p">());</span><span class="w">  </span><span class="c1">// true</span>
+</span></code></pre></div>
 <h2 id="constexpr-support"><code>constexpr</code> support<a class="headerlink" href="#constexpr-support" title="Permanent link">&para;</a></h2>
 <p><code>safe_int&lt;T&gt;</code> arithmetic is fully <code>constexpr</code>. In C++, any overflow that occurs during
 constant expression evaluation is always a compile-time hard error — for both <code>safe_int</code>
@@ -11911,12 +12030,12 @@ used for <code>quantity_point</code> domain bounds. They address complementary c
 <p>Both share the same base error policies (<code>throw_policy</code>, <code>terminate_policy</code>) and extend
 them with domain-specific handlers (<code>on_constraint_violation</code> for <code>constrained</code>,
 <code>on_overflow</code> for <code>safe_int</code>). They compose naturally:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1">// A bounded, overflow-safe latitude representation</span>
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="k">using</span><span class="w"> </span><span class="n">safe_double</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">constrained</span><span class="o">&lt;</span><span class="kt">double</span><span class="p">,</span><span class="w"> </span><span class="n">throw_policy</span><span class="o">&gt;</span><span class="p">;</span>
-</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="k">using</span><span class="w"> </span><span class="n">safe_latitude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">geo_latitude</span><span class="p">[</span><span class="n">deg</span><span class="p">],</span><span class="w"> </span><span class="n">equator</span><span class="p">,</span><span class="w"> </span><span class="n">safe_double</span><span class="o">&gt;</span><span class="p">;</span>
-</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>
-</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="c1">// A raw-integral distance type where overflow is caught at runtime</span>
-</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="k">using</span><span class="w"> </span><span class="n">safe_i32_m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="p">[</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">],</span><span class="w"> </span><span class="n">safe_int</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">int32_t</span><span class="o">&gt;&gt;</span><span class="p">;</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1">// A bounded, overflow-safe latitude representation</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="k">using</span><span class="w"> </span><span class="n">safe_double</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">constrained</span><span class="o">&lt;</span><span class="kt">double</span><span class="p">,</span><span class="w"> </span><span class="n">throw_policy</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="k">using</span><span class="w"> </span><span class="n">safe_latitude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">geo_latitude</span><span class="p">[</span><span class="n">deg</span><span class="p">],</span><span class="w"> </span><span class="n">equator</span><span class="p">,</span><span class="w"> </span><span class="n">safe_double</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="c1">// A raw-integral distance type where overflow is caught at runtime</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="k">using</span><span class="w"> </span><span class="n">safe_i32_m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="p">[</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">],</span><span class="w"> </span><span class="n">safe_int</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">int32_t</span><span class="o">&gt;&gt;</span><span class="p">;</span>
 </span></code></pre></div>
 <p>For a complete walkthrough of combining both wrappers, see
 <a href="../../../how_to_guides/advanced_usage/ultimate_safety/">Ensure Ultimate Safety</a>.</p>
