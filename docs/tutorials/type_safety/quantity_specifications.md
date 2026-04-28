@@ -96,7 +96,7 @@ int main()
   static_assert(sum1.quantity_spec == isq::length);
 
   // Thickness is a child of width, so width + thickness = width
-  quantity sum2 = width - thickness;
+  quantity sum2 = width + thickness;
   std::cout << "width + thickness = " << sum2 << "\n";
   static_assert(sum2.quantity_spec == isq::width);
 
