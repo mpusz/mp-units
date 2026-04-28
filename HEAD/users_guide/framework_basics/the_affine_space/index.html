@@ -12149,14 +12149,14 @@ behaviors:</p>
 <li><strong><em>Longitude</em></strong> (mirrored): wraps circularly at -180° to +180°</li>
 <li><strong><em>Elevation</em></strong> (symmetric): reflects at ±90° like <em>latitude</em></li>
 <li><strong><em>Geometric Azimuth</em></strong> (mirrored): 0° = East, counter-clockwise, wraps [-180°, 180°)</li>
-<li><strong><em>Bearing</em></strong> (mirrored): 0° = North, clockwise, wraps [-180°, 180°)<ul>
-<li>Conversion: <code>bearing = 90° - geometric_azimuth</code> (involves negation)</li>
-<li>Cannot use <code>relative_point_origin</code> (requires separate <code>absolute_point_origin</code>)</li>
-</ul>
-</li>
 <li><strong><em>Heading</em></strong> (mirrored): 0° = North, counter-clockwise, wraps [-180°, 180°)<ul>
 <li>Conversion: <code>heading = geometric_azimuth - 90°</code> (simple offset)</li>
 <li>Uses <code>relative_point_origin&lt;east + delta&lt;geometric_azimuth[degree]&gt;(-90.)&gt;</code></li>
+</ul>
+</li>
+<li><strong><em>Bearing</em></strong> (mirrored): 0° = North, clockwise, wraps [-180°, 180°)<ul>
+<li>Conversion: <code>bearing = 90° - geometric_azimuth</code> (involves negation)</li>
+<li>Cannot use <code>relative_point_origin</code> (requires separate <code>absolute_point_origin</code>)</li>
 </ul>
 </li>
 </ul>
@@ -12215,7 +12215,7 @@ and coordinate reference conversions.</p>
 <td><code>reflect_in_range</code></td>
 <td>Reflects at boundaries (like a bouncing ball)</td>
 <td>Value transformation</td>
-<td>Geographic <em>latitude</em>, physical boundaries</td>
+<td>Geographic <em>elevation angle</em>, physical boundaries</td>
 </tr>
 <tr>
 <td><code>check_non_negative</code></td>
@@ -12277,6 +12277,11 @@ complete example of combining <code>check_in_range</code> with <code>constrained
 </span><span id="__span-12-20"><a id="__codelineno-12-20" name="__codelineno-12-20" href="#__codelineno-12-20"></a><span class="w">  </span><span class="n">lon</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mf">200.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">deg</span><span class="p">;</span><span class="w">                            </span><span class="c1">// Result wraps: -90 + 200 = 110°</span>
 </span><span id="__span-12-21"><a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a><span class="p">}</span>
 </span></code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Simplified</p>
+<p>True geodetic <em>latitude</em> reflection also requires shifting <em>longitude</em> by 180° (crossing a pole puts
+you on the opposite side of the globe).</p>
+</div>
 <h3 id="how-it-works">How It Works?<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h3>
 <p>Bounds are enforced at these points:</p>
 <ol>
