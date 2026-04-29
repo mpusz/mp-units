@@ -11976,16 +11976,24 @@ allows expressing it in both <code>one</code> and <code>bit</code> units.</p>
 <a href="../../../reference/glossary/#quantity-hierarchy">quantity hierarchy</a> contains more than
 one <a href="../../../reference/glossary/#kind">quantity kind</a> and more than one unit in its tree:</p>
 <pre class="mermaid"><code>flowchart TD
+    subgraph kind_angular[" "]
+        angular_measure["&lt;b&gt;angular_measure&lt;/b&gt;&lt;br&gt;&lt;i&gt;(arc_length / radius)&lt;/i&gt;&lt;br&gt;[rad]"]
+        angular_measure --- rotational_displacement["&lt;b&gt;rotational_displacement&lt;/b&gt;&lt;br&gt;&lt;i&gt;(path_length / radius)&lt;/i&gt;"]
+        angular_measure --- phase_angle["&lt;b&gt;phase_angle&lt;/b&gt;"]
+    end
+    subgraph kind_solid_angular[" "]
+        solid_angular_measure["&lt;b&gt;solid_angular_measure&lt;/b&gt;&lt;br&gt;&lt;i&gt;(area / radius&lt;sup&gt;2&lt;/sup&gt;)&lt;/i&gt;&lt;br&gt;[sr]"]
+    end
+    subgraph kind_storage[" "]
+        storage_capacity["&lt;b&gt;storage_capacity&lt;/b&gt;&lt;br&gt;[bit]"]
+        storage_capacity --- equivalent_binary_storage_capacity["&lt;b&gt;equivalent_binary_storage_capacity&lt;/b&gt;"]
+    end
     dimensionless["&lt;b&gt;dimensionless&lt;/b&gt;&lt;br&gt;[one]"]
     dimensionless --- rotation["&lt;b&gt;rotation&lt;/b&gt;"]
     dimensionless --- thermodynamic_efficiency["&lt;b&gt;thermodynamic_efficiency&lt;/b&gt;&lt;br&gt;&lt;i&gt;(work / heat)&lt;/i&gt;"]
-    dimensionless --- angular_measure["&lt;b&gt;angular_measure&lt;/b&gt;🔒&lt;br&gt;&lt;i&gt;(arc_length / radius)&lt;/i&gt;&lt;br&gt;[rad]"]
-    angular_measure --- rotational_displacement["&lt;b&gt;rotational_displacement&lt;/b&gt;&lt;br&gt;&lt;i&gt;(path_length / radius)&lt;/i&gt;"]
-    angular_measure --- phase_angle["&lt;b&gt;phase_angle&lt;/b&gt;"]
-    dimensionless --- solid_angular_measure["&lt;b&gt;solid_angular_measure&lt;/b&gt;🔒&lt;br&gt;&lt;i&gt;(area / radius&lt;sup&gt;2&lt;/sup&gt;)&lt;/i&gt;&lt;br&gt;[sr]"]
-    dimensionless --- drag_factor["&lt;b&gt;drag_factor&lt;/b&gt;&lt;br&gt;&lt;i&gt;(drag_force / (mass_density * speed&lt;sup&gt;2&lt;/sup&gt; * area))&lt;/i&gt;"]
-    dimensionless --- storage_capacity["&lt;b&gt;storage_capacity&lt;/b&gt;🔒&lt;br&gt;[bit]"] --- equivalent_binary_storage_capacity["&lt;b&gt;equivalent_binary_storage_capacity&lt;/b&gt;"]
-    dimensionless --- ...</code></pre>
+    dimensionless -.- angular_measure
+    dimensionless -.- solid_angular_measure
+    dimensionless -.- storage_capacity</code></pre>
 <p>To provide such support in the library, we use the <code>is_kind</code> specifier in the quantity
 specification. This feature is not limited to dimensionless quantities—it can be used
 with any dimension to create distinct quantity kinds. For a comprehensive explanation

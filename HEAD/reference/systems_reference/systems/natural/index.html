@@ -5251,6 +5251,17 @@ You're not viewing the latest version.
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#constants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Constants
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -11648,16 +11659,16 @@ You're not viewing the latest version.
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#energy">energy</a></code></td>
 <td style="text-align: center;"><code><a href="#energy">energy</a></code></td>
-<td>—</td>
+<td><code><a href="#velocity">velocity</a> / <wbr><a href="#duration">duration</a></code></td>
 <td style="text-align: center;"><a href="../../hierarchies/energy_natural/">view</a></td>
 </tr>
 <tr>
 <td><span id="angular_measure"></span><code>angular_<wbr>measure</code></td>
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;">—</td>
-<td style="text-align: center;">—</td>
-<td style="text-align: center;"><code><a href="../core/#dimensionless">dimensionless</a></code></td>
+<td style="text-align: center;"><code><a href="#angular_measure">angular_<wbr>measure</a></code></td>
 <td style="text-align: center;"><code><a href="../core/#dimensionless">dimensionless</a></code></td>
 <td>—</td>
 <td style="text-align: center;"><a href="../../hierarchies/dimensionless/">view</a></td>
@@ -11672,6 +11683,17 @@ You're not viewing the latest version.
 <td style="text-align: center;">—</td>
 <td>—</td>
 <td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td><span id="duration"></span><code>duration</code></td>
+<td style="text-align: center;">Real</td>
+<td style="text-align: center;">E⁻¹</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;"><code><a href="#inverse_energy">inverse_<wbr>energy</a></code></td>
+<td style="text-align: center;"><code><a href="#inverse_energy">inverse_<wbr>energy</a></code></td>
+<td>—</td>
+<td style="text-align: center;"><a href="../../hierarchies/inverse_energy/">view</a></td>
 </tr>
 <tr>
 <td><span id="energy"></span><code>energy</code></td>
@@ -11747,41 +11769,19 @@ You're not viewing the latest version.
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;"><code><a href="#energy">energy</a></code></td>
 <td style="text-align: center;"><code><a href="#energy">energy</a></code></td>
-<td>—</td>
+<td><code><a href="#mass">mass</a> * <wbr><a href="#velocity">velocity</a></code></td>
 <td style="text-align: center;"><a href="../../hierarchies/energy_natural/">view</a></td>
 </tr>
 <tr>
 <td><span id="speed"></span><code>speed</code></td>
 <td style="text-align: center;">Real</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;">—</td>
-<td style="text-align: center;">—</td>
+<td style="text-align: center;"><code><a href="#speed">speed</a></code></td>
 <td style="text-align: center;"><code><a href="../core/#dimensionless">dimensionless</a></code></td>
-<td style="text-align: center;"><code><a href="../core/#dimensionless">dimensionless</a></code></td>
-<td>—</td>
+<td><code><a href="#length">length</a> / <wbr><a href="#duration">duration</a></code></td>
 <td style="text-align: center;"><a href="../../hierarchies/dimensionless/">view</a></td>
-</tr>
-<tr>
-<td><span id="temperature"></span><code>temperature</code></td>
-<td style="text-align: center;">Real</td>
-<td style="text-align: center;">E</td>
-<td style="text-align: center;">—</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;"><code><a href="#energy">energy</a></code></td>
-<td style="text-align: center;"><code><a href="#energy">energy</a></code></td>
-<td>—</td>
-<td style="text-align: center;"><a href="../../hierarchies/energy_natural/">view</a></td>
-</tr>
-<tr>
-<td><span id="time"></span><code>time</code></td>
-<td style="text-align: center;">Real</td>
-<td style="text-align: center;">E⁻¹</td>
-<td style="text-align: center;">—</td>
-<td style="text-align: center;">✓</td>
-<td style="text-align: center;"><code><a href="#inverse_energy">inverse_<wbr>energy</a></code></td>
-<td style="text-align: center;"><code><a href="#inverse_energy">inverse_<wbr>energy</a></code></td>
-<td>—</td>
-<td style="text-align: center;"><a href="../../hierarchies/inverse_energy/">view</a></td>
 </tr>
 <tr>
 <td><span id="velocity"></span><code>velocity</code></td>
@@ -11789,7 +11789,7 @@ You're not viewing the latest version.
 <td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
-<td style="text-align: center;"><code><a href="../core/#dimensionless">dimensionless</a></code></td>
+<td style="text-align: center;"><code><a href="#speed">speed</a></code></td>
 <td style="text-align: center;"><code><a href="#speed">speed</a></code></td>
 <td>—</td>
 <td style="text-align: center;"><a href="../../hierarchies/dimensionless/">view</a></td>
@@ -11819,11 +11819,30 @@ You're not viewing the latest version.
 <td style="text-align: center;"><code>GeV</code></td>
 <td><code><a href="../si/#giga">si::giga</a>&lt;<a href="#electronvolt">electronvolt</a>&gt;</code></td>
 </tr>
+</tbody>
+</table>
+<h2 id="constants">Constants<a class="headerlink" href="#constants" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
 <tr>
-<td><span id="speed_of_light"></span><code>speed_<wbr>of_<wbr>light</code></td>
-<td style="text-align: center;">—</td>
-<td style="text-align: center;">—</td>
-<td>alias to ::<a href="../core/#one">one</a></td>
+<th>Name</th>
+<th style="text-align: center;">Symbol</th>
+<th style="text-align: center;">unit_symbol</th>
+<th>Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span id="reduced_planck_constant"></span><code>reduced_<wbr>planck_<wbr>constant</code></td>
+<td style="text-align: center;">\u210f (hbar)</td>
+<td style="text-align: center;"><code>hbar</code></td>
+<td><code><a href="../core/#one">one</a></code></td>
+</tr>
+<tr>
+<td><span id="speed_of_light_in_vacuum"></span><code>speed_<wbr>of_<wbr>light_<wbr>in_<wbr>vacuum</code></td>
+<td style="text-align: center;">c</td>
+<td style="text-align: center;"><code>c</code></td>
+<td><code><a href="../core/#one">one</a></code></td>
 </tr>
 </tbody>
 </table>

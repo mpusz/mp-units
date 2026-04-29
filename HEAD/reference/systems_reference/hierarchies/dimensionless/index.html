@@ -11540,26 +11540,14 @@ You're not viewing the latest version.
 <p><strong>Dimension:</strong> dimensionless</p>
 <pre class="mermaid"><code>flowchart LR
     dimensionless["&lt;b&gt;&lt;a href="../../systems/core/#dimensionless" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;dimensionless&lt;/a&gt;&lt;/b&gt;"]
-    hep_lorentz_factor["&lt;b&gt;&lt;a href="../../systems/hep/#lorentz_factor" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;hep::lorentz_factor&lt;/a&gt; 🔒&lt;/b&gt;"]
-    dimensionless --- hep_lorentz_factor
-    hep_phase["&lt;b&gt;&lt;a href="../../systems/hep/#phase" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;hep::phase&lt;/a&gt; 🔒&lt;/b&gt;"]
-    dimensionless --- hep_phase
-    hep_relativistic_beta["&lt;b&gt;&lt;a href="../../systems/hep/#relativistic_beta" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;hep::relativistic_beta&lt;/a&gt; 🔒&lt;/b&gt;"]
-    dimensionless --- hep_relativistic_beta
+    dimensionless -.- hep_lorentz_factor
+    dimensionless -.- hep_phase
+    dimensionless -.- hep_relativistic_beta
     isq_Hamming_distance["&lt;b&gt;&lt;a href="../../systems/isq/#Hamming_distance" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::Hamming_distance&lt;/a&gt;&lt;/b&gt;"]
     dimensionless --- isq_Hamming_distance
     isq_Poisson_number["&lt;b&gt;&lt;a href="../../systems/isq/#Poisson_number" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::Poisson_number&lt;/a&gt;&lt;/b&gt;&lt;br&gt;&lt;i&gt;(&lt;a href="../../systems/isq/#width" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;width&lt;/a&gt; / &lt;a href="../../systems/isq/#length" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;length&lt;/a&gt;)&lt;/i&gt;"]
     dimensionless --- isq_Poisson_number
-    isq_angular_measure["&lt;b&gt;&lt;a href="../../systems/isq/#angular_measure" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::angular_measure&lt;/a&gt; 🔒&lt;/b&gt;&lt;br&gt;&lt;i&gt;(&lt;a href="../../systems/isq/#arc_length" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;arc_length&lt;/a&gt; / &lt;a href="../../systems/isq/#radius" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;radius&lt;/a&gt;)&lt;/i&gt;"]
-    dimensionless --- isq_angular_measure
-    isq_loss_angle["&lt;b&gt;&lt;a href="../../systems/isq/#loss_angle" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::loss_angle&lt;/a&gt; 🔒&lt;/b&gt;"]
-    isq_angular_measure --- isq_loss_angle
-    isq_phase_angle["&lt;b&gt;&lt;a href="../../systems/isq/#phase_angle" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::phase_angle&lt;/a&gt; 🔒&lt;/b&gt;"]
-    isq_angular_measure --- isq_phase_angle
-    isq_phase_difference["&lt;b&gt;&lt;a href="../../systems/isq/#phase_difference" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::phase_difference&lt;/a&gt;&lt;/b&gt;"]
-    isq_phase_angle --- isq_phase_difference
-    isq_rotational_displacement["&lt;b&gt;&lt;a href="../../systems/isq/#rotational_displacement" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::rotational_displacement&lt;/a&gt; | &lt;a href="../../systems/isq/#angular_displacement" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::angular_displacement&lt;/a&gt;&lt;/b&gt;&lt;br&gt;&lt;i&gt;(&lt;a href="../../systems/isq/#path_length" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;path_length&lt;/a&gt; / &lt;a href="../../systems/isq/#radius" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;radius&lt;/a&gt;)&lt;/i&gt;"]
-    isq_angular_measure --- isq_rotational_displacement
+    dimensionless -.- isq_angular_measure
     isq_coupling_factor["&lt;b&gt;&lt;a href="../../systems/isq/#coupling_factor" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::coupling_factor&lt;/a&gt;&lt;/b&gt;&lt;br&gt;&lt;i&gt;(&lt;a href="../../systems/isq/#mutual_inductance" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;mutual_inductance&lt;/a&gt; / pow&lt;1, 2&gt;(pow&lt;2&gt;(&lt;a href="../../systems/isq/#self_inductance" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;self_inductance&lt;/a&gt;)))&lt;/i&gt;"]
     dimensionless --- isq_coupling_factor
     isq_decision_content["&lt;b&gt;&lt;a href="../../systems/isq/#decision_content" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::decision_content&lt;/a&gt;&lt;/b&gt;"]
@@ -11632,29 +11620,57 @@ You're not viewing the latest version.
     dimensionless --- isq_rotation
     isq_shear_strain["&lt;b&gt;&lt;a href="../../systems/isq/#shear_strain" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::shear_strain&lt;/a&gt;&lt;/b&gt;&lt;br&gt;&lt;i&gt;(&lt;a href="../../systems/isq/#displacement" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;displacement&lt;/a&gt; / &lt;a href="../../systems/isq/#thickness" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;thickness&lt;/a&gt;)&lt;/i&gt;"]
     dimensionless --- isq_shear_strain
-    isq_solid_angular_measure["&lt;b&gt;&lt;a href="../../systems/isq/#solid_angular_measure" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::solid_angular_measure&lt;/a&gt; 🔒&lt;/b&gt;&lt;br&gt;&lt;i&gt;(&lt;a href="../../systems/isq/#area" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;area&lt;/a&gt; / pow&lt;2&gt;(&lt;a href="../../systems/isq/#radius" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;radius&lt;/a&gt;))&lt;/i&gt;"]
-    dimensionless --- isq_solid_angular_measure
+    dimensionless -.- isq_solid_angular_measure
     isq_static_friction_coefficient["&lt;b&gt;&lt;a href="../../systems/isq/#static_friction_coefficient" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::static_friction_coefficient&lt;/a&gt; | &lt;a href="../../systems/isq/#coefficient_of_static_friction" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::coefficient_of_static_friction&lt;/a&gt; | &lt;a href="../../systems/isq/#static_friction_factor" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::static_friction_factor&lt;/a&gt;&lt;/b&gt;&lt;br&gt;&lt;i&gt;(&lt;a href="../../systems/isq/#static_friction_force" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;static_friction_force&lt;/a&gt; / &lt;a href="../../systems/isq/#force" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;force&lt;/a&gt;)&lt;/i&gt;"]
     dimensionless --- isq_static_friction_coefficient
-    isq_storage_capacity["&lt;b&gt;&lt;a href="../../systems/isq/#storage_capacity" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::storage_capacity&lt;/a&gt; | &lt;a href="../../systems/isq/#storage_size" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::storage_size&lt;/a&gt; 🔒&lt;/b&gt;"]
-    dimensionless --- isq_storage_capacity
-    isq_equivalent_binary_storage_capacity["&lt;b&gt;&lt;a href="../../systems/isq/#equivalent_binary_storage_capacity" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::equivalent_binary_storage_capacity&lt;/a&gt;&lt;/b&gt;"]
-    isq_storage_capacity --- isq_equivalent_binary_storage_capacity
+    dimensionless -.- isq_storage_capacity
     isq_strain["&lt;b&gt;&lt;a href="../../systems/isq/#strain" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::strain&lt;/a&gt;&lt;/b&gt;"]
     dimensionless --- isq_strain
     isq_thermodynamic_efficiency["&lt;b&gt;&lt;a href="../../systems/isq/#thermodynamic_efficiency" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::thermodynamic_efficiency&lt;/a&gt;&lt;/b&gt;&lt;br&gt;&lt;i&gt;(&lt;a href="../../systems/isq/#work" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;work&lt;/a&gt; / &lt;a href="../../systems/isq/#heat" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;heat&lt;/a&gt;)&lt;/i&gt;"]
     dimensionless --- isq_thermodynamic_efficiency
     isq_waiting_probability["&lt;b&gt;&lt;a href="../../systems/isq/#waiting_probability" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::waiting_probability&lt;/a&gt;&lt;/b&gt;"]
     dimensionless --- isq_waiting_probability
-    natural_angular_measure["&lt;b&gt;&lt;a href="../../systems/natural/#angular_measure" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;natural::angular_measure&lt;/a&gt;&lt;/b&gt;"]
-    dimensionless --- natural_angular_measure
-    natural_speed["&lt;b&gt;&lt;a href="../../systems/natural/#speed" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;natural::speed&lt;/a&gt;&lt;/b&gt;"]
-    dimensionless --- natural_speed
-    natural_velocity["&lt;b&gt;&lt;a href="../../systems/natural/#velocity" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;natural::velocity&lt;/a&gt;&lt;/b&gt;"]
-    natural_speed --- natural_velocity</code></pre>
+    dimensionless -.- natural_angular_measure
+    dimensionless -.- natural_speed
+    subgraph kind_hep_lorentz_factor[" "]
+        hep_lorentz_factor["&lt;b&gt;&lt;a href="../../systems/hep/#lorentz_factor" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;hep::lorentz_factor&lt;/a&gt;&lt;/b&gt;"]
+    end
+    subgraph kind_hep_phase[" "]
+        hep_phase["&lt;b&gt;&lt;a href="../../systems/hep/#phase" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;hep::phase&lt;/a&gt;&lt;/b&gt;"]
+    end
+    subgraph kind_hep_relativistic_beta[" "]
+        hep_relativistic_beta["&lt;b&gt;&lt;a href="../../systems/hep/#relativistic_beta" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;hep::relativistic_beta&lt;/a&gt;&lt;/b&gt;"]
+    end
+    subgraph kind_isq_angular_measure[" "]
+        isq_angular_measure["&lt;b&gt;&lt;a href="../../systems/isq/#angular_measure" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::angular_measure&lt;/a&gt;&lt;/b&gt;&lt;br&gt;&lt;i&gt;(&lt;a href="../../systems/isq/#arc_length" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;arc_length&lt;/a&gt; / &lt;a href="../../systems/isq/#radius" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;radius&lt;/a&gt;)&lt;/i&gt;"]
+        isq_loss_angle["&lt;b&gt;&lt;a href="../../systems/isq/#loss_angle" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::loss_angle&lt;/a&gt;&lt;/b&gt;"]
+        isq_angular_measure --- isq_loss_angle
+        isq_phase_angle["&lt;b&gt;&lt;a href="../../systems/isq/#phase_angle" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::phase_angle&lt;/a&gt;&lt;/b&gt;"]
+        isq_angular_measure --- isq_phase_angle
+        isq_phase_difference["&lt;b&gt;&lt;a href="../../systems/isq/#phase_difference" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::phase_difference&lt;/a&gt;&lt;/b&gt;"]
+        isq_phase_angle --- isq_phase_difference
+        isq_rotational_displacement["&lt;b&gt;&lt;a href="../../systems/isq/#rotational_displacement" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::rotational_displacement&lt;/a&gt; | &lt;a href="../../systems/isq/#angular_displacement" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::angular_displacement&lt;/a&gt;&lt;/b&gt;&lt;br&gt;&lt;i&gt;(&lt;a href="../../systems/isq/#path_length" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;path_length&lt;/a&gt; / &lt;a href="../../systems/isq/#radius" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;radius&lt;/a&gt;)&lt;/i&gt;"]
+        isq_angular_measure --- isq_rotational_displacement
+    end
+    subgraph kind_isq_solid_angular_measure[" "]
+        isq_solid_angular_measure["&lt;b&gt;&lt;a href="../../systems/isq/#solid_angular_measure" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::solid_angular_measure&lt;/a&gt;&lt;/b&gt;&lt;br&gt;&lt;i&gt;(&lt;a href="../../systems/isq/#area" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;area&lt;/a&gt; / pow&lt;2&gt;(&lt;a href="../../systems/isq/#radius" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;radius&lt;/a&gt;))&lt;/i&gt;"]
+    end
+    subgraph kind_isq_storage_capacity[" "]
+        isq_storage_capacity["&lt;b&gt;&lt;a href="../../systems/isq/#storage_capacity" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::storage_capacity&lt;/a&gt; | &lt;a href="../../systems/isq/#storage_size" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::storage_size&lt;/a&gt;&lt;/b&gt;"]
+        isq_equivalent_binary_storage_capacity["&lt;b&gt;&lt;a href="../../systems/isq/#equivalent_binary_storage_capacity" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::equivalent_binary_storage_capacity&lt;/a&gt;&lt;/b&gt;"]
+        isq_storage_capacity --- isq_equivalent_binary_storage_capacity
+    end
+    subgraph kind_natural_angular_measure[" "]
+        natural_angular_measure["&lt;b&gt;&lt;a href="../../systems/natural/#angular_measure" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;natural::angular_measure&lt;/a&gt;&lt;/b&gt;"]
+    end
+    subgraph kind_natural_speed[" "]
+        natural_speed["&lt;b&gt;&lt;a href="../../systems/natural/#speed" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;natural::speed&lt;/a&gt;&lt;/b&gt;&lt;br&gt;&lt;i&gt;(&lt;a href="../../systems/isq/#length" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;length&lt;/a&gt; / &lt;a href="../../systems/isq/#duration" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;duration&lt;/a&gt;)&lt;/i&gt;"]
+        natural_velocity["&lt;b&gt;&lt;a href="../../systems/natural/#velocity" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;natural::velocity&lt;/a&gt;&lt;/b&gt;"]
+        natural_speed --- natural_velocity
+    end</code></pre>
 <p><strong>Legend:</strong></p>
 <ul>
-<li>🔒 indicates a root of a sub-kind - quantities that cannot be added or compared to other quantities outside their hierarchy subtree</li>
+<li>Subgraphs with a dotted line from the parent indicate a distinct quantity kind (created with <code>is_kind</code>). These subtrees are type-isolated: quantities inside cannot be added or compared to those outside their subgraph without explicit conversion.</li>
 </ul>
 
 

@@ -11539,13 +11539,17 @@ You're not viewing the latest version.
 <p><strong>System:</strong> ISQ</p>
 <pre class="mermaid"><code>flowchart LR
     isq_compressibility["&lt;b&gt;&lt;a href="../../systems/isq/#compressibility" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::compressibility&lt;/a&gt;&lt;/b&gt;&lt;br&gt;&lt;i&gt;(inverse(&lt;a href="../../systems/isq/#volume" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;volume&lt;/a&gt;) * (&lt;a href="../../systems/isq/#volume" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;volume&lt;/a&gt; / &lt;a href="../../systems/isq/#pressure" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;pressure&lt;/a&gt;))&lt;/i&gt;"]
-    isq_isentropic_compressibility["&lt;b&gt;&lt;a href="../../systems/isq/#isentropic_compressibility" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::isentropic_compressibility&lt;/a&gt; 🔒&lt;/b&gt;&lt;br&gt;&lt;i&gt;(inverse(&lt;a href="../../systems/isq/#volume" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;volume&lt;/a&gt;) * (&lt;a href="../../systems/isq/#volume" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;volume&lt;/a&gt; / &lt;a href="../../systems/isq/#pressure" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;pressure&lt;/a&gt;))&lt;/i&gt;"]
-    isq_compressibility --- isq_isentropic_compressibility
-    isq_isothermal_compressibility["&lt;b&gt;&lt;a href="../../systems/isq/#isothermal_compressibility" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::isothermal_compressibility&lt;/a&gt; 🔒&lt;/b&gt;&lt;br&gt;&lt;i&gt;(inverse(&lt;a href="../../systems/isq/#volume" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;volume&lt;/a&gt;) * (&lt;a href="../../systems/isq/#volume" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;volume&lt;/a&gt; / &lt;a href="../../systems/isq/#pressure" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;pressure&lt;/a&gt;))&lt;/i&gt;"]
-    isq_compressibility --- isq_isothermal_compressibility</code></pre>
+    isq_compressibility -.- isq_isentropic_compressibility
+    isq_compressibility -.- isq_isothermal_compressibility
+    subgraph kind_isq_isentropic_compressibility[" "]
+        isq_isentropic_compressibility["&lt;b&gt;&lt;a href="../../systems/isq/#isentropic_compressibility" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::isentropic_compressibility&lt;/a&gt;&lt;/b&gt;&lt;br&gt;&lt;i&gt;(inverse(&lt;a href="../../systems/isq/#volume" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;volume&lt;/a&gt;) * (&lt;a href="../../systems/isq/#volume" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;volume&lt;/a&gt; / &lt;a href="../../systems/isq/#pressure" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;pressure&lt;/a&gt;))&lt;/i&gt;"]
+    end
+    subgraph kind_isq_isothermal_compressibility[" "]
+        isq_isothermal_compressibility["&lt;b&gt;&lt;a href="../../systems/isq/#isothermal_compressibility" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::isothermal_compressibility&lt;/a&gt;&lt;/b&gt;&lt;br&gt;&lt;i&gt;(inverse(&lt;a href="../../systems/isq/#volume" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;volume&lt;/a&gt;) * (&lt;a href="../../systems/isq/#volume" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;volume&lt;/a&gt; / &lt;a href="../../systems/isq/#pressure" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;pressure&lt;/a&gt;))&lt;/i&gt;"]
+    end</code></pre>
 <p><strong>Legend:</strong></p>
 <ul>
-<li>🔒 indicates a root of a sub-kind - quantities that cannot be added or compared to other quantities outside their hierarchy subtree</li>
+<li>Subgraphs with a dotted line from the parent indicate a distinct quantity kind (created with <code>is_kind</code>). These subtrees are type-isolated: quantities inside cannot be added or compared to those outside their subgraph without explicit conversion.</li>
 </ul>
 
 
