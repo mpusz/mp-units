@@ -11992,12 +11992,12 @@ You're not viewing the latest version.
   <a href="#why-obvious-workarounds-fall-short" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Why Obvious Workarounds Fall Short?
+        Why Obvious Workarounds Fall Short
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Why Obvious Workarounds Fall Short?">
+    <nav class="md-nav" aria-label="Why Obvious Workarounds Fall Short">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -12882,12 +12882,15 @@ specification. For example, we can pass a <code>non_negative</code> tag type in 
 </span></code></pre></div>
 <p>With that, we will be able to mark any quantity as non-negative and this property will be
 inherited by the subquantities in the quantity hierarchy tree of the same kind.</p>
-<p>We could also derive non-negativity for derived quantities based on their equations.
-A non-negative flag could be set only if all of the components in the equations are
-marked as non-negative. However, we will not be able to account for a negative scalar
-possibly used in an equation. This is why it is probably better to assume that ad-hoc
-derived quantities do not inherit this property. If this result is assigned to a
-typed/named quantity, then the non-negativity will be checked then (if set).</p>
+<p>Deriving non-negativity automatically from equation factors is explicitly not done.
+A defining equation captures only dimensional relationships, not the full sign domain
+of a physical quantity. Many physically signed quantities have equations where every
+factor is non-negative (e.g., thermal expansion coefficient, reactive power, Massieu
+function), so inferring sign from the equation would silently misclassify them.
+Instead, every non-negative root derived quantity carries an explicit <code>non_negative</code>
+tag at its definition. Named children inherit the tag from their parent; ad-hoc
+anonymous composed specs (e.g., <code>isq::length / isq::time</code>) are never non-negative
+unless they resolve to a named quantity that carries the tag.</p>
 <h3 id="interesting-quantity-types">Interesting Quantity Types<a class="headerlink" href="#interesting-quantity-types" title="Permanent link">&para;</a></h3>
 <h4 id="time">Time<a class="headerlink" href="#time" title="Permanent link">&para;</a></h4>
 <p>Let's look closer at the quantity of <em>time</em>. There is no way to measure its absolute value
@@ -13244,7 +13247,7 @@ with:</p>
 </span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="n">quantity</span><span class="w"> </span><span class="n">carnot_eff_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">temp_hot</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">temp_cold</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">temp_hot</span><span class="p">.</span><span class="n">quantity_from_unit_zero</span><span class="p">();</span>
 </span></code></pre></div>
 <p>It worked, but was far from being physically pure and pretty.</p>
-<h3 id="why-obvious-workarounds-fall-short">Why Obvious Workarounds Fall Short?<a class="headerlink" href="#why-obvious-workarounds-fall-short" title="Permanent link">&para;</a></h3>
+<h3 id="why-obvious-workarounds-fall-short">Why Obvious Workarounds Fall Short<a class="headerlink" href="#why-obvious-workarounds-fall-short" title="Permanent link">&para;</a></h3>
 <p>Two workaround approaches exist, each with its own caveat.</p>
 <h4 id="approach-1-quantity_from_unit_zero">Approach 1: <code>quantity_from_unit_zero()</code><a class="headerlink" href="#approach-1-quantity_from_unit_zero" title="Permanent link">&para;</a></h4>
 <p><code>quantity_from_unit_zero()</code> returns the displacement of a quantity point from its unit's

@@ -973,7 +973,7 @@ You're not viewing the latest version.
   <a href="#why-a-dimensionless-quantity-is-not-just-a-fundamental-arithmetic-type" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Why a dimensionless quantity is not just a fundamental arithmetic type?
+        Why a Dimensionless Quantity Is Not Just a Fundamental Arithmetic Type
       
     </span>
   </a>
@@ -984,7 +984,7 @@ You're not viewing the latest version.
   <a href="#why-derived-units-order-is-not-preserved-from-the-multiplication" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Why derived units order is not preserved from the multiplication?
+        Why Derived Units Order Is Not Preserved from the Multiplication
       
     </span>
   </a>
@@ -1006,7 +1006,7 @@ You're not viewing the latest version.
   <a href="#why-utf-8-quantity-symbols-are-used-by-default-instead-of-portable-characters" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Why UTF-8 quantity symbols are used by default instead of portable characters?
+        Why UTF-8 Quantity Symbols Are Used by Default Instead of Portable Characters
       
     </span>
   </a>
@@ -11750,7 +11750,7 @@ providing both a <code>quantity</code> and a
 <a href="../../users_guide/framework_basics/concepts/#PointOrigin"><code>PointOrigin</code></a>
 to use as a reference point.</p>
 </div>
-<h2 id="why-a-dimensionless-quantity-is-not-just-a-fundamental-arithmetic-type">Why a dimensionless quantity is not just a fundamental arithmetic type?<a class="headerlink" href="#why-a-dimensionless-quantity-is-not-just-a-fundamental-arithmetic-type" title="Permanent link">&para;</a></h2>
+<h2 id="why-a-dimensionless-quantity-is-not-just-a-fundamental-arithmetic-type">Why a Dimensionless Quantity Is Not Just a Fundamental Arithmetic Type<a class="headerlink" href="#why-a-dimensionless-quantity-is-not-just-a-fundamental-arithmetic-type" title="Permanent link">&para;</a></h2>
 <p>In the initial design of this library, the resulting type of division of two quantities was
 their common representation type:</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">is_same_v</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="mi">10</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">km</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">km</span><span class="p">)),</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="p">);</span>
@@ -11776,7 +11776,7 @@ with the rest of the library.</p>
 <p>More information on the current design can be found in
 <a href="../../users_guide/framework_basics/dimensionless_quantities/">the Dimensionless Quantities chapter</a>.</p>
 </div>
-<h2 id="why-derived-units-order-is-not-preserved-from-the-multiplication">Why derived units order is not preserved from the multiplication?<a class="headerlink" href="#why-derived-units-order-is-not-preserved-from-the-multiplication" title="Permanent link">&para;</a></h2>
+<h2 id="why-derived-units-order-is-not-preserved-from-the-multiplication">Why Derived Units Order Is Not Preserved from the Multiplication<a class="headerlink" href="#why-derived-units-order-is-not-preserved-from-the-multiplication" title="Permanent link">&para;</a></h2>
 <p>It might be surprising, but the order of multiplication of quantities and units does not impact
 the order of components in the derived unit. Let's try the following example:</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">std</span><span class="o">::</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">42</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kW</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">h</span><span class="p">);</span>
@@ -11862,7 +11862,7 @@ identifiers to a <code>standard_case</code>, even if it results in harder-to-und
 <a href="../../users_guide/framework_basics/concepts/">existing concepts</a> to the <code>standard_case</code>,
 please let us know in the associated <a href="https://github.com/mpusz/mp-units/issues/93">GitHub Issue</a>.</p>
 </div>
-<h2 id="why-utf-8-quantity-symbols-are-used-by-default-instead-of-portable-characters">Why UTF-8 quantity symbols are used by default instead of portable characters?<a class="headerlink" href="#why-utf-8-quantity-symbols-are-used-by-default-instead-of-portable-characters" title="Permanent link">&para;</a></h2>
+<h2 id="why-utf-8-quantity-symbols-are-used-by-default-instead-of-portable-characters">Why UTF-8 Quantity Symbols Are Used by Default Instead of Portable Characters<a class="headerlink" href="#why-utf-8-quantity-symbols-are-used-by-default-instead-of-portable-characters" title="Permanent link">&para;</a></h2>
 <p>Both C++ and <a href="../../reference/bibliography/#ISO80000">ISO 80000</a> are standardized by the ISO.
 <a href="../../reference/bibliography/#ISO80000">ISO 80000</a> and the <a href="../../reference/bibliography/#SIBrochure">SI</a>
 standards specify UTF-8 symbols as the official unit names for some quantities (e.g. <code>Ω</code> symbol
