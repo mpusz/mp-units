@@ -32,13 +32,13 @@ wouldn't be possible without the dedication and hard work of our amazing communi
 
 ## Statistics
 
-- **Total Contributors**: 36
-- **Total Contributions**: 327
+- **Total Contributors**: 37
+- **Total Contributions**: 328
 - **Major Contributors** (50+ contributions): 0
 - **Regular Contributors** (10-49 contributions): 10
-- **Occasional Contributors** (1-9 contributions): 26
+- **Occasional Contributors** (1-9 contributions): 27
 
-_Last updated: 2026-04-01_
+_Last updated: 2026-05-01_
 
 
 ### Major Contributors
@@ -84,6 +84,7 @@ _Everyone who has contributed to mp-units_
 - **[dbraeckelmann](https://github.com/dbraeckelmann)**
 - **[tobylorenz](https://github.com/tobylorenz)**
 - **[TheCoconutChef](https://github.com/TheCoconutChef)**
+- **[reneparis](https://github.com/reneparis)**
 - **[mkrupcale](https://github.com/mkrupcale)**
 - **[komputerwiz](https://github.com/komputerwiz)**
 - **[KangarooKoala](https://github.com/KangarooKoala)**
