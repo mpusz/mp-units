@@ -103,4 +103,59 @@ TEST_CASE("check_in_range throws on arithmetic that crosses bounds", "[bounded][
   }
 }
 
+// ============================================================================
+// check_non_negative propagates through relative_point_origin.
+//
+// A relative_point_origin derived from a non_negative natural_point_origin
+// inherits check_non_negative bounds.  Values whose absolute position goes
+// negative trigger a contract violation.
+//
+// Using constrained<double, throw_policy> as the rep guarantees a throw
+// regardless of MP_UNITS_API_CONTRACTS build settings — same technique as the
+// check_in_range tests above.
+// ============================================================================
+
+namespace {
+
+QUANTITY_SPEC(avg_height_qs, isq::height);
+
+// natural_point_origin<avg_height_qs> auto-receives check_non_negative (isq::height
+// is non_negative).  This relative origin at +1700 m inherits that constraint.
+inline constexpr struct average_height_origin final :
+    relative_point_origin<natural_point_origin<avg_height_qs> + 1700.0 * m> {
+} average_height_origin;
+
+using qp_avg_safe = quantity_point<avg_height_qs[m], average_height_origin, constrained<double, throw_policy>>;
+
+}  // namespace
+
+TEST_CASE("check_non_negative propagates through relative_point_origin", "[bounded][non_negative]")
+{
+  // Values whose absolute height >= 0 are valid (no throw).
+  CHECK_NOTHROW(qp_avg_safe(0.0 * avg_height_qs[m], average_height_origin));
+  CHECK_NOTHROW(qp_avg_safe(500.0 * avg_height_qs[m], average_height_origin));
+  CHECK_NOTHROW(qp_avg_safe(-1500.0 * avg_height_qs[m], average_height_origin));  // 200 m absolute
+  CHECK_NOTHROW(qp_avg_safe(-1700.0 * avg_height_qs[m], average_height_origin));  // 0 m absolute (boundary)
+
+  // Values whose absolute height < 0 trigger check_non_negative.
+  CHECK_THROWS_AS(qp_avg_safe(-1701.0 * avg_height_qs[m], average_height_origin), std::domain_error);
+  CHECK_THROWS_AS(qp_avg_safe(-2000.0 * avg_height_qs[m], average_height_origin), std::domain_error);
+}
+
+TEST_CASE("check_non_negative propagates through relative_point_origin — mutating operators", "[bounded][non_negative]")
+{
+  SECTION("operator-= crosses absolute zero")
+  {
+    auto pt = qp_avg_safe(-1700.0 * avg_height_qs[m], average_height_origin);  // at 0 m absolute
+    CHECK_THROWS_AS(pt -= 1.0 * avg_height_qs[m], std::domain_error);
+  }
+
+  SECTION("operator-= stays non-negative")
+  {
+    auto pt = qp_avg_safe(-1500.0 * avg_height_qs[m], average_height_origin);  // 200 m absolute
+    CHECK_NOTHROW(pt -= 100.0 * avg_height_qs[m]);                             // 100 m absolute -- still >= 0
+    CHECK(pt.quantity_from(average_height_origin).numerical_value_in(m) == -1600.0);
+  }
+}
+
 #endif  // MP_UNITS_HOSTED

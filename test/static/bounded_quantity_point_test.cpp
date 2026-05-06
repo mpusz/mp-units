@@ -1108,4 +1108,45 @@ static_assert(
 static_assert(mp_units::natural_point_origin_<mp_units::isq::length>::_bounds_(5.0 * m) == 5.0 * m);
 static_assert(mp_units::natural_point_origin_<mp_units::isq::length>::_bounds_(0.0 * m) == 0.0 * m);
 
+// ============================================================================
+// Non-negative natural_point_origin: bounds inherited by relative origins.
+//
+// When QS is tagged non_negative, natural_point_origin<QS> receives
+// check_non_negative bounds automatically.  A relative_point_origin with no own
+// bounds inherits this constraint via enforce_bounds — values may be negative
+// relative to the offset origin as long as the absolute value stays ≥ 0.
+//
+// Example: average_height_origin at +1700 m above the ground floor.
+//   rel = -1500 m → abs = 200 m  (≥ 0) → valid, unchanged.
+//   rel = -1700 m → abs =   0 m         → valid (boundary).
+//   rel = -1701 m → abs =  -1 m  (< 0) → check_non_negative fires.
+//
+// The violation case cannot be verified at compile time (check_non_negative uses
+// MP_UNITS_EXPECTS, which may be a no-op in release builds).  See the runtime
+// test for violation coverage with constrained<double, throw_policy> rep.
+// ============================================================================
+
+QUANTITY_SPEC(avg_height_qs, isq::height);
+
+// natural_point_origin gets check_non_negative automatically (isq::height is non_negative).
+static_assert(detail::HasQuantityBounds<natural_point_origin_<avg_height_qs>>);
+
+// Relative origin at +1700 m — no own bounds, inherits check_non_negative.
+inline constexpr struct average_height_origin final :
+    relative_point_origin<natural_point_origin<avg_height_qs> + 1700.0 * m> {
+} average_height_origin;
+
+// Inherits bounds from ancestor but has none of its own.
+static_assert(!detail::HasQuantityBounds<decltype(average_height_origin)>);
+static_assert(detail::any_ancestor_has_bounds(average_height_origin));
+
+using qp_avg_height = quantity_point<avg_height_qs[m], average_height_origin, double>;
+
+// Values that keep absolute height ≥ 0 pass through unchanged.
+static_assert(qp_avg_height(0.0 * m, average_height_origin).quantity_from(average_height_origin) == 0.0 * m);
+static_assert(qp_avg_height(500.0 * m, average_height_origin).quantity_from(average_height_origin) == 500.0 * m);
+static_assert(qp_avg_height(-1500.0 * m, average_height_origin).quantity_from(average_height_origin) == -1500.0 * m);
+// Boundary: −1700 m relative = 0 m absolute (natural ground level).
+static_assert(qp_avg_height(-1700.0 * m, average_height_origin).quantity_from(average_height_origin) == -1700.0 * m);
+
 }  // namespace
