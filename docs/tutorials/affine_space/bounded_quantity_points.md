@@ -175,6 +175,37 @@ inline constexpr struct clamped_distance_origin final :
     absolute_point_origin<distance_traveled, clamp_non_negative{}> {} clamped_distance_origin;
 ```
 
+### Non-Negative Bounds Through Relative Origins
+
+The same inheritance applies when the parent bounds come from the automatic
+`check_non_negative` protection.  A relative origin sitting *above* the ground
+floor may hold negative values — as long as the absolute position stays ≥ 0:
+
+```cpp
+// inherits non_negative from ISQ
+inline constexpr struct height_spec final : quantity_spec<isq::height> {} height_spec;
+
+// natural_point_origin<height_spec> auto-gets check_non_negative — no explicit bounds needed.
+// The relative origin at +1700 m inherits that constraint.
+inline constexpr struct average_height_origin final :
+    relative_point_origin<natural_point_origin<height_spec> + 1700.0 * m> {} average_height_origin;
+
+// −1500 m relative = 200 m absolute (≥ 0) → valid.
+quantity_point low    = average_height_origin - 1500.0 * m;
+
+// −1700 m relative = 0 m absolute → valid (boundary).
+quantity_point ground = average_height_origin - 1700.0 * m;
+
+// −1701 m relative = −1 m absolute → check_non_negative fires.
+// quantity_point bad = average_height_origin - 1701.0 * m;  // ❌
+```
+
+The enforcement is a single flat translation: the library converts the relative value
+to the absolute frame, applies `check_non_negative` there, then converts back.  The
+result is always the original value (no clamping), so the violation is *reported* but
+the stored value is unchanged — unless you use a `constrained<T, Policy>` representation
+that throws or terminates unconditionally.
+
 ### Kinds are never auto-bounded
 
 `kind_of<QS>` represents the *entire* quantity tree rooted at `QS` — including vector

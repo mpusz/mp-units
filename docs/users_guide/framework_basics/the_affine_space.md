@@ -538,6 +538,48 @@ Bounds are enforced at these points:
 
 After each mutation the library transparently applies the bounds policy specified on the origin.
 
+### Origin Inheritance
+
+A `relative_point_origin` that defines **no own bounds** automatically inherits the parent
+origin's enforcement. Bounds translate through the chain at compile time — the relative
+value is translated to the owning ancestor's frame, the policy is applied there, and the
+result is translated back:
+
+```cpp
+inline constexpr struct sea_level final :
+    absolute_point_origin<isq::altitude, clamp_to_range{-500 * m, 12'000 * m}> {} sea_level;
+
+// Relative origin — no own bounds; inherits clamping from sea_level.
+inline constexpr struct airport_elevation final :
+    relative_point_origin<sea_level + 200 * m> {} airport_elevation;
+
+// 11'900 m above airport = 12'100 m MSL → exceeds 12'000 m cap → clamped to 11'800 m from airport.
+quantity_point takeoff = airport_elevation + 11'900.0 * m;
+```
+
+This applies to all bound policies — including the `check_non_negative` bounds that are
+automatically attached to `natural_point_origin` of a non-negative quantity spec.  A relative
+origin *above* the ground floor may therefore hold negative values, as long as the absolute
+position stays ≥ 0:
+
+```cpp
+inline constexpr struct height_spec final : quantity_spec<isq::height> {} height_spec;
+
+// natural_point_origin<height_spec> auto-gets check_non_negative (isq::height is non_negative).
+inline constexpr struct average_height_origin final :
+    relative_point_origin<natural_point_origin<height_spec> + 1700.0 * m> {} average_height_origin;
+
+// −1500 m relative = 200 m absolute (≥ 0) → valid, unchanged.
+quantity_point low = average_height_origin - 1500.0 * m;
+
+// −1701 m relative = −1 m absolute → check_non_negative fires.
+// quantity_point bad = average_height_origin - 1701.0 * m;  // ❌
+```
+
+When a `relative_point_origin` defines its **own bounds**, they are additionally checked at
+compile time to nest within the parent's bounds (see the _Hierarchical bounds validation_
+note in the [Custom Policies](#custom-policies-one-sided-bounds) section below).
+
 !!! info "`std::numeric_limits` integration"
 
     When a `quantity_point` has a bounds policy on its origin, the
