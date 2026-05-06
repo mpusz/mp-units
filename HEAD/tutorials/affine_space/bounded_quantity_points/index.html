@@ -1781,6 +1781,17 @@ You're not viewing the latest version.
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#non-negative-bounds-through-relative-origins" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Non-Negative Bounds Through Relative Origins
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#kinds-are-never-auto-bounded" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -6009,8 +6020,6 @@ You're not viewing the latest version.
       
         
       
-        
-      
     
     
     
@@ -6890,6 +6899,34 @@ You're not viewing the latest version.
     
   
     capacitance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/systems_reference/hierarchies/catalytic_activity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    catalytic_activity
   
 
     
@@ -8058,14 +8095,42 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../../reference/systems_reference/hierarchies/illuminance/" class="md-nav__link">
+      <a href="../../../reference/systems_reference/hierarchies/illuminance_hep/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    illuminance
+    illuminance (hep)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/systems_reference/hierarchies/illuminance_isq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    illuminance (isq)
   
 
     
@@ -8422,14 +8487,42 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../../reference/systems_reference/hierarchies/luminous_flux/" class="md-nav__link">
+      <a href="../../../reference/systems_reference/hierarchies/luminous_flux_hep/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    luminous_flux
+    luminous_flux (hep)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/systems_reference/hierarchies/luminous_flux_isq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    luminous_flux (isq)
   
 
     
@@ -8954,90 +9047,6 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../../reference/systems_reference/hierarchies/modulus_of_compression/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    modulus_of_compression
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../reference/systems_reference/hierarchies/modulus_of_elasticity/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    modulus_of_elasticity
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../reference/systems_reference/hierarchies/modulus_of_rigidity/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    modulus_of_rigidity
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../../reference/systems_reference/hierarchies/moment_of_force_isq/" class="md-nav__link">
         
   
@@ -9186,34 +9195,6 @@ You're not viewing the latest version.
     
   
     momentum (isq)
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../reference/systems_reference/hierarchies/mutual_inductance/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    mutual_inductance
   
 
     
@@ -11856,18 +11837,44 @@ to silently clamp rounding-noise negatives in a computed result rather than fail
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">clamped_distance_origin</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span>
 </span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">    </span><span class="n">absolute_point_origin</span><span class="o">&lt;</span><span class="n">distance_traveled</span><span class="p">,</span><span class="w"> </span><span class="n">clamp_non_negative</span><span class="p">{}</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">clamped_distance_origin</span><span class="p">;</span>
 </span></code></pre></div>
+<h3 id="non-negative-bounds-through-relative-origins">Non-Negative Bounds Through Relative Origins<a class="headerlink" href="#non-negative-bounds-through-relative-origins" title="Permanent link">&para;</a></h3>
+<p>The same inheritance applies when the parent bounds come from the automatic
+<code>check_non_negative</code> protection.  A relative origin sitting <em>above</em> the ground
+floor may hold negative values — as long as the absolute position stays ≥ 0:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1">// inherits non_negative from ISQ</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">height_spec</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">height_spec</span><span class="p">;</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1">// natural_point_origin&lt;height_spec&gt; auto-gets check_non_negative — no explicit bounds needed.</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="c1">// The relative origin at +1700 m inherits that constraint.</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">average_height_origin</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">    </span><span class="n">relative_point_origin</span><span class="o">&lt;</span><span class="n">natural_point_origin</span><span class="o">&lt;</span><span class="n">height_spec</span><span class="o">&gt;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1700.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">average_height_origin</span><span class="p">;</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="c1">// −1500 m relative = 200 m absolute (≥ 0) → valid.</span>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="n">quantity_point</span><span class="w"> </span><span class="n">low</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">average_height_origin</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">1500.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="c1">// −1700 m relative = 0 m absolute → valid (boundary).</span>
+</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="n">quantity_point</span><span class="w"> </span><span class="n">ground</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">average_height_origin</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">1700.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span>
+</span><span id="__span-7-14"><a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>
+</span><span id="__span-7-15"><a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="c1">// −1701 m relative = −1 m absolute → check_non_negative fires.</span>
+</span><span id="__span-7-16"><a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a><span class="c1">// quantity_point bad = average_height_origin - 1701.0 * m;  // ❌</span>
+</span></code></pre></div>
+<p>The enforcement is a single flat translation: the library converts the relative value
+to the absolute frame, applies <code>check_non_negative</code> there, then converts back.  The
+result is always the original value (no clamping), so the violation is <em>reported</em> but
+the stored value is unchanged — unless you use a <code>constrained&lt;T, Policy&gt;</code> representation
+that throws or terminates unconditionally.</p>
 <h3 id="kinds-are-never-auto-bounded">Kinds are never auto-bounded<a class="headerlink" href="#kinds-are-never-auto-bounded" title="Permanent link">&para;</a></h3>
 <p><code>kind_of&lt;QS&gt;</code> represents the <em>entire</em> quantity tree rooted at <code>QS</code> — including vector
 quantities and signed coordinates. It is therefore never <code>non_negative</code>, even when <code>QS</code>
 itself is:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">is_non_negative</span><span class="p">(</span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="o">&gt;</span><span class="p">));</span><span class="w">  </span><span class="c1">// kind encompasses signed subtypes</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">is_non_negative</span><span class="p">(</span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="o">&gt;</span><span class="p">));</span><span class="w">  </span><span class="c1">// kind encompasses signed subtypes</span>
 </span></code></pre></div>
 <p>This matters in practice because <strong>CTAD from a bare SI unit</strong> deduces <code>kind_of</code>:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1">// quantity_point{5.0 * m} has origin = natural_point_origin&lt;kind_of&lt;isq::length&gt;&gt;.</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="c1">// isq::length is tagged non_negative, but that origin is NOT auto-bounded because</span>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="c1">// kind_of&lt;isq::length&gt; includes displacement and other signed/vector subtypes.</span>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="n">quantity_point</span><span class="w"> </span><span class="nf">generic_len</span><span class="p">(</span><span class="mf">5.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">);</span><span class="w">               </span><span class="c1">// ← no auto-check, kind_of origin</span>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="n">quantity_point</span><span class="w"> </span><span class="nf">dist</span><span class="p">(</span><span class="n">distance_traveled</span><span class="p">(</span><span class="mf">5.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">));</span><span class="w">   </span><span class="c1">// ← auto-checked, named spec</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1">// quantity_point{5.0 * m} has origin = natural_point_origin&lt;kind_of&lt;isq::length&gt;&gt;.</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="c1">// isq::length is tagged non_negative, but that origin is NOT auto-bounded because</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="c1">// kind_of&lt;isq::length&gt; includes displacement and other signed/vector subtypes.</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="n">quantity_point</span><span class="w"> </span><span class="nf">generic_len</span><span class="p">(</span><span class="mf">5.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">);</span><span class="w">               </span><span class="c1">// ← no auto-check, kind_of origin</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="n">quantity_point</span><span class="w"> </span><span class="nf">dist</span><span class="p">(</span><span class="n">distance_traveled</span><span class="p">(</span><span class="mf">5.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">));</span><span class="w">   </span><span class="c1">// ← auto-checked, named spec</span>
 </span></code></pre></div>
 <p>Always use an explicit quantity reference when you need the auto-protection guarantee.</p>
 <h2 id="challenges">Challenges<a class="headerlink" href="#challenges" title="Permanent link">&para;</a></h2>
