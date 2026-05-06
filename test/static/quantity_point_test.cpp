@@ -376,6 +376,14 @@ static_assert(
   quantity_point<isq::height[m], ground_level, int>::max().quantity_from(ground_level).numerical_value_in(m) ==
   std::numeric_limits<int>::max());
 
+// zero() — only available when PO == default_point_origin(R)
+// quantity_from_unit_zero() — available for offset units (any PO) or when PO == default_point_origin(R)
+static_assert(quantity_point<isq::height[m]>::zero().quantity_from_unit_zero() == 0 * isq::height[m]);
+static_assert(quantity_point<isq::height[m]>::zero() == quantity_point<isq::height[m]>{0 * isq::height[m]});
+static_assert(quantity_point<m>::zero().quantity_from_unit_zero() == 0 * m);
+static_assert(quantity_point<deg_C>::zero().quantity_from_unit_zero() == delta<deg_C>(0));
+static_assert(quantity_point<K>::zero().quantity_from_unit_zero() == delta<K>(0));
+
 
 //////////////////////////////
 // construction from a value

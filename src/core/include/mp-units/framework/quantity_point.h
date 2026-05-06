@@ -509,6 +509,12 @@ public:
       return {quantity_type::max(), PO};
   }
 
+  [[nodiscard]] static constexpr quantity_point zero() noexcept
+    requires (PO == default_point_origin(R)) && requires { quantity_type::zero(); }
+  {
+    return {quantity_type::zero(), PO};
+  }
+
   // construction and assignment
   quantity_point() = default;
 
