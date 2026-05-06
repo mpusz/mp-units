@@ -25,6 +25,7 @@ This section contains all quantity hierarchy trees across all systems, grouped b
 
 ## Dimension: J
 
+- [`isq::luminous_flux`](luminous_flux_isq.md) (1 quantity)
 - [`isq::luminous_intensity`](luminous_intensity_isq.md) (1 quantity)
 
 ## Dimension: L
@@ -144,7 +145,7 @@ This section contains all quantity hierarchy trees across all systems, grouped b
 
 ## Dimension: α²I
 
-- [`hep::luminous_flux`](luminous_flux.md) (1 quantity)
+- [`hep::luminous_flux`](luminous_flux_hep.md) (1 quantity)
 
 ## Dimension: EL⁻³
 
@@ -170,6 +171,10 @@ This section contains all quantity hierarchy trees across all systems, grouped b
 
 - [`isq::linear_electric_current_density`](linear_electric_current_density.md) (1 quantity)
 - [`isq::magnetization`](magnetization.md) (3 quantities)
+
+## Dimension: JL⁻²
+
+- [`isq::illuminance`](illuminance_isq.md) (1 quantity)
 
 ## Dimension: LT⁻²
 
@@ -215,6 +220,10 @@ This section contains all quantity hierarchy trees across all systems, grouped b
 
 - [`isq::mass_change_rate`](mass_change_rate.md) (1 quantity)
 - [`isq::mass_flow_rate`](mass_flow_rate.md) (1 quantity)
+
+## Dimension: NT⁻¹
+
+- [`isq::catalytic_activity`](catalytic_activity.md) (1 quantity)
 
 ## Dimension: QT⁻¹
 
@@ -338,7 +347,7 @@ This section contains all quantity hierarchy trees across all systems, grouped b
 
 ## Dimension: α²IL⁻²
 
-- [`hep::illuminance`](illuminance.md) (1 quantity)
+- [`hep::illuminance`](illuminance_hep.md) (1 quantity)
 
 ## Dimension: LΘT²M⁻¹
 
@@ -359,10 +368,7 @@ This section contains all quantity hierarchy trees across all systems, grouped b
 ## Dimension: ML⁻¹T⁻²
 
 - [`isq::electromagnetic_energy_density`](electromagnetic_energy_density.md) (1 quantity)
-- [`isq::modulus_of_compression`](modulus_of_compression.md) (1 quantity)
-- [`isq::modulus_of_elasticity`](modulus_of_elasticity.md) (1 quantity)
-- [`isq::modulus_of_rigidity`](modulus_of_rigidity.md) (1 quantity)
-- [`isq::pressure`](pressure_isq.md) (5 quantities)
+- [`isq::pressure`](pressure_isq.md) (8 quantities)
 - [`isq::radiant_energy_density`](radiant_energy_density.md) (1 quantity)
 - [`isq::spectral_radiant_exposure`](spectral_radiant_exposure.md) (1 quantity)
 
@@ -410,8 +416,7 @@ This section contains all quantity hierarchy trees across all systems, grouped b
 
 ## Dimension: L²MI⁻²T⁻²
 
-- [`isq::inductance`](inductance_isq.md) (1 quantity)
-- [`isq::mutual_inductance`](mutual_inductance.md) (1 quantity)
+- [`isq::inductance`](inductance_isq.md) (2 quantities)
 - [`isq::permeance`](permeance.md) (1 quantity)
 
 ## Dimension: L²MI⁻²T⁻³
@@ -484,4 +489,4 @@ This section contains all quantity hierarchy trees across all systems, grouped b
 
 - [`isq::pressure_coefficient`](pressure_coefficient.md) (1 quantity)
 
-**Total hierarchies:** 179
+**Total hierarchies:** 178

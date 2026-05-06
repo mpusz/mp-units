@@ -50,13 +50,13 @@ composes to express dimensions and units of derived quantities.
     inline constexpr struct gram final : named_unit<"g", kind_of<isq::mass>> {} gram;
     inline constexpr auto kilogram = kilo<gram>;
 
-    inline constexpr struct newton final : named_unit<"N", kilogram * metre / square(second)> {} newton;
-    inline constexpr struct joule final : named_unit<"J", newton * metre> {} joule;
+    inline constexpr struct newton final : named_unit<"N", kilogram * metre / square(second), kind_of<isq::force>> {} newton;
+    inline constexpr struct joule final : named_unit<"J", newton * metre, kind_of<isq::energy>> {} joule;
     inline constexpr struct watt final : named_unit<"W", joule / second> {} watt;
     inline constexpr struct coulomb final : named_unit<"C", ampere * second> {} coulomb;
-    inline constexpr struct volt final : named_unit<"V", watt / ampere> {} volt;
-    inline constexpr struct farad final : named_unit<"F", coulomb / volt> {} farad;
-    inline constexpr struct ohm final : named_unit<{u8"Ω", "ohm"}, volt / ampere> {} ohm;
+    inline constexpr struct volt final : named_unit<"V", watt / ampere, kind_of<isq::electric_potential>> {} volt;
+    inline constexpr struct farad final : named_unit<"F", coulomb / volt, kind_of<isq::capacitance>> {} farad;
+    inline constexpr struct ohm final : named_unit<{u8"Ω", "ohm"}, volt / ampere, kind_of<isq::impedance>> {} ohm;
     ```
 
 === "Prefixes"

@@ -7,7 +7,7 @@
 
 ```mermaid
 flowchart LR
-    isq_force["<b><a href="../../systems/isq/#force" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::force</a></b><br><i>(<a href="../../systems/isq/#mass" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">mass</a> * <a href="../../systems/isq/#acceleration" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">acceleration</a>)</i>"]
+    isq_force["<b><a href="../../systems/isq/#force" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::force</a></b><br><i>(<a href="../../systems/isq/#mass" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">mass</a> * <a href="../../systems/isq/#length" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">length</a> / pow<2>(<a href="../../systems/isq/#time" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">time</a>))</i>"]
     isq_drag_force["<b><a href="../../systems/isq/#drag_force" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::drag_force</a></b>"]
     isq_force --- isq_drag_force
     isq_kinetic_friction_force["<b><a href="../../systems/isq/#kinetic_friction_force" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::kinetic_friction_force</a> | <a href="../../systems/isq/#dynamic_friction_force" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::dynamic_friction_force</a></b>"]

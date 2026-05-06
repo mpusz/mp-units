@@ -356,6 +356,11 @@ static_assert(verify(isq::radiant_exitance, real_scalar, W / m2, kg / s3));
 static_assert(verify(isq::spectral_radiant_exitance, real_scalar, W / (m2 * nm), kg / m / s3));
 static_assert(verify(isq::radiant_exposure, real_scalar, J / m2, kg / s2));
 static_assert(verify(isq::spectral_radiant_exposure, real_scalar, J / (m2 * nm), kg / m / s2));
+static_assert(verify(isq::luminous_flux, real_scalar, lm, cd* sr));
+static_assert(verify(isq::illuminance, real_scalar, lx, lm / m2));
+
+// physical chemistry
+static_assert(verify(isq::catalytic_activity, real_scalar, kat, mol / s));
 
 // atomic and nuclear physics
 static_assert(verify(isq::activity, real_scalar, Bq, one / s));

@@ -316,6 +316,7 @@ nav:
               - attenuation: reference/systems_reference/hierarchies/attenuation.md
               - call_intensity: reference/systems_reference/hierarchies/call_intensity.md
               - capacitance: reference/systems_reference/hierarchies/capacitance.md
+              - catalytic_activity: reference/systems_reference/hierarchies/catalytic_activity.md
               - coefficient_of_heat_transfer: reference/systems_reference/hierarchies/coefficient_of_heat_transfer.md
               - complex_power: reference/systems_reference/hierarchies/complex_power.md
               - compressibility: reference/systems_reference/hierarchies/compressibility.md
@@ -357,7 +358,8 @@ nav:
               - group_speed: reference/systems_reference/hierarchies/group_speed.md
               - heat_capacity: reference/systems_reference/hierarchies/heat_capacity.md
               - heat_flow_rate: reference/systems_reference/hierarchies/heat_flow_rate.md
-              - illuminance: reference/systems_reference/hierarchies/illuminance.md
+              - illuminance (hep): reference/systems_reference/hierarchies/illuminance_hep.md
+              - illuminance (isq): reference/systems_reference/hierarchies/illuminance_isq.md
               - impedance: reference/systems_reference/hierarchies/impedance.md
               - inductance (hep): reference/systems_reference/hierarchies/inductance_hep.md
               - inductance (isq): reference/systems_reference/hierarchies/inductance_isq.md
@@ -370,7 +372,8 @@ nav:
               - linear_electric_current_density: reference/systems_reference/hierarchies/linear_electric_current_density.md
               - linear_expansion_coefficient: reference/systems_reference/hierarchies/linear_expansion_coefficient.md
               - linear_mass_density: reference/systems_reference/hierarchies/linear_mass_density.md
-              - luminous_flux: reference/systems_reference/hierarchies/luminous_flux.md
+              - luminous_flux (hep): reference/systems_reference/hierarchies/luminous_flux_hep.md
+              - luminous_flux (isq): reference/systems_reference/hierarchies/luminous_flux_isq.md
               - luminous_intensity (hep): reference/systems_reference/hierarchies/luminous_intensity_hep.md
               - luminous_intensity (isq): reference/systems_reference/hierarchies/luminous_intensity_isq.md
               - magnetic_constant: reference/systems_reference/hierarchies/magnetic_constant.md
@@ -389,16 +392,12 @@ nav:
               - mass_flow: reference/systems_reference/hierarchies/mass_flow.md
               - mass_flow_rate: reference/systems_reference/hierarchies/mass_flow_rate.md
               - modulation_rate: reference/systems_reference/hierarchies/modulation_rate.md
-              - modulus_of_compression: reference/systems_reference/hierarchies/modulus_of_compression.md
-              - modulus_of_elasticity: reference/systems_reference/hierarchies/modulus_of_elasticity.md
-              - modulus_of_rigidity: reference/systems_reference/hierarchies/modulus_of_rigidity.md
               - moment_of_force (isq): reference/systems_reference/hierarchies/moment_of_force_isq.md
               - moment_of_force (isq_angle): reference/systems_reference/hierarchies/moment_of_force_isq_angle.md
               - moment_of_inertia (isq): reference/systems_reference/hierarchies/moment_of_inertia_isq.md
               - moment_of_inertia (isq_angle): reference/systems_reference/hierarchies/moment_of_inertia_isq_angle.md
               - momentum (hep): reference/systems_reference/hierarchies/momentum_hep.md
               - momentum (isq): reference/systems_reference/hierarchies/momentum_isq.md
-              - mutual_inductance: reference/systems_reference/hierarchies/mutual_inductance.md
               - number_density: reference/systems_reference/hierarchies/number_density.md
               - permeability: reference/systems_reference/hierarchies/permeability.md
               - permeance: reference/systems_reference/hierarchies/permeance.md

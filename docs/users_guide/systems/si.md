@@ -94,24 +94,49 @@ inline constexpr struct radian final : named_unit<"rad", metre / metre, kind_of<
 inline constexpr struct steradian final : named_unit<"sr", square(metre) / square(metre), kind_of<isq::solid_angular_measure>> {} steradian;
 
 // Mechanics
-inline constexpr struct newton final : named_unit<"N", kilogram * metre / square(second)> {} newton;
-inline constexpr struct pascal final : named_unit<"Pa", newton / square(metre)> {} pascal;
-inline constexpr struct joule final : named_unit<"J", newton * metre> {} joule;
+inline constexpr struct newton final : named_unit<"N", kilogram * metre / square(second), kind_of<isq::force>> {} newton;
+inline constexpr struct pascal final : named_unit<"Pa", newton / square(metre), kind_of<isq::pressure>> {} pascal;
+inline constexpr struct joule final : named_unit<"J", newton * metre, kind_of<isq::energy>> {} joule;
 inline constexpr struct watt final : named_unit<"W", joule / second> {} watt;
 
 // Electricity and magnetism
 inline constexpr struct coulomb final : named_unit<"C", ampere * second> {} coulomb;
-inline constexpr struct volt final : named_unit<"V", watt / ampere> {} volt;
-inline constexpr struct farad final : named_unit<"F", coulomb / volt> {} farad;
-inline constexpr struct ohm final : named_unit<symbol_text{u8"Ω", "ohm"}, volt / ampere> {} ohm;
+inline constexpr struct volt final : named_unit<"V", watt / ampere, kind_of<isq::electric_potential>> {} volt;
+inline constexpr struct farad final : named_unit<"F", coulomb / volt, kind_of<isq::capacitance>> {} farad;
+inline constexpr struct ohm final : named_unit<symbol_text{u8"Ω", "ohm"}, volt / ampere, kind_of<isq::impedance>> {} ohm;
+inline constexpr struct siemens final : named_unit<"S", one / ohm, kind_of<isq::admittance>> {} siemens;
+inline constexpr struct weber final : named_unit<"Wb", volt * second> {} weber;
+inline constexpr struct tesla final : named_unit<"T", weber / square(metre), kind_of<isq::magnetic_flux_density>> {} tesla;
+inline constexpr struct henry final : named_unit<"H", weber / ampere> {} henry;
+
+// Photometry
+inline constexpr struct lumen final : named_unit<"lm", candela * steradian, kind_of<isq::luminous_flux>> {} lumen;
+inline constexpr struct lux final : named_unit<"lx", lumen / square(metre), kind_of<isq::illuminance>> {} lux;
 
 // Radioactivity
-inline constexpr struct becquerel final : named_unit<"Bq", one / second> {} becquerel;
-inline constexpr struct gray final : named_unit<"Gy", joule / kilogram> {} gray;
+inline constexpr struct becquerel final : named_unit<"Bq", one / second, kind_of<isq::activity>> {} becquerel;
+inline constexpr struct gray final : named_unit<"Gy", joule / kilogram, kind_of<isq::absorbed_dose>> {} gray;
+inline constexpr struct sievert final : named_unit<"Sv", joule / kilogram, kind_of<isq::dose_equivalent>> {} sievert;
+inline constexpr struct katal final : named_unit<"kat", mole / second, kind_of<isq::catalytic_activity>> {} katal;
 
 // And more...
 }
 ```
+
+!!! note "Units not restricted to a single quantity kind"
+
+    Some SI named units are deliberately defined **without** a `kind_of<>` constraint
+    because they are legitimately used by multiple unrelated ISQ quantity hierarchies:
+
+    | Unit | ISQ quantity hierarchies that use it |
+    |------|--------------------------------------|
+    | `watt (W)` | _power_, _heat flow rate_, _active power_, _radiant flux_, and more — spanning mechanics, thermodynamics, electromagnetism, and radiometry |
+    | `coulomb (C)` | _electric charge_ and _electric flux_ — distinct ISQ hierarchies sharing the same dimension |
+    | `weber (Wb)` | _magnetic flux_, _protoflux_, _linked magnetic flux_, _total magnetic flux_ — distinct electromagnetic ISQ quantities |
+    | `henry (H)` | _inductance_ and _permeance_ — unrelated ISQ quantities with the same dimension |
+
+    Adding `kind_of<>` to any of these units would incorrectly reject legitimate usages
+    with one of the quantity hierarchies it is designed to serve.
 
 ### Expressing the Same Quantity in Different Units
 

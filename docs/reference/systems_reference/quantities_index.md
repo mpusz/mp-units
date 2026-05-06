@@ -81,6 +81,7 @@ Alphabetical list of all quantities.
 - [`capacitance` (isq)](systems/isq.md#capacitance)
 - [`carrier_power` (iec)](systems/iec.md#carrier_power)
 - [`carrier_power` (isq)](systems/isq.md#carrier_power)
+- [`catalytic_activity` (isq)](systems/isq.md#catalytic_activity)
 - [`center_of_mass_energy` (hep)](systems/hep.md#center_of_mass_energy)
 - [`clock_frequency` (iec)](systems/iec.md#clock_frequency)
 - [`clock_frequency` (isq)](systems/isq.md#clock_frequency)
@@ -187,6 +188,7 @@ Alphabetical list of all quantities.
 - [`height` (hep)](systems/hep.md#height)
 - [`height` (isq)](systems/isq.md#height)
 - [`illuminance` (hep)](systems/hep.md#illuminance)
+- [`illuminance` (isq)](systems/isq.md#illuminance)
 - [`impact_parameter` (hep)](systems/hep.md#impact_parameter)
 - [`impedance` (isq)](systems/isq.md#impedance)
 - [`impedance_of_vacuum` (isq)](systems/isq.md#impedance_of_vacuum)
@@ -237,6 +239,7 @@ Alphabetical list of all quantities.
 - [`loss_probability` (isq)](systems/isq.md#loss_probability)
 - [`luminal_speed` (isq)](systems/isq.md#luminal_speed)
 - [`luminous_flux` (hep)](systems/hep.md#luminous_flux)
+- [`luminous_flux` (isq)](systems/isq.md#luminous_flux)
 - [`luminous_intensity` (hep)](systems/hep.md#luminous_intensity)
 - [`luminous_intensity` (isq)](systems/isq.md#luminous_intensity)
 - [`magnetic_area_moment` (isq)](systems/isq.md#magnetic_area_moment)
@@ -501,4 +504,4 @@ Alphabetical list of all quantities.
 - [`width` (isq)](systems/isq.md#width)
 - [`work` (isq)](systems/isq.md#work)
 
-**Total quantities:** 495
+**Total quantities:** 498

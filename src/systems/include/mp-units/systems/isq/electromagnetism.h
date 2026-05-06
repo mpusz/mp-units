@@ -53,17 +53,12 @@ QUANTITY_SPEC(electric_polarization, electric_dipole_moment / volume);          
 QUANTITY_SPEC(electric_current_density, electric_charge_density* velocity);                    // vector
 QUANTITY_SPEC(linear_electric_current_density, surface_density_of_electric_charge* velocity);  // vector
 QUANTITY_SPEC(electric_field_strength, force / electric_charge);                               // vector
-QUANTITY_SPEC(electric_potential, electric_field_strength* length,
-              quantity_character::real_scalar);  // TODO what is a correct equation here?
 QUANTITY_SPEC(electric_potential_difference, electric_potential, quantity_character::real_scalar);
 QUANTITY_SPEC(voltage, electric_potential);
 inline constexpr auto electric_tension = voltage;
 QUANTITY_SPEC(induced_voltage, voltage);                      // TODO what is a correct equation here?
 QUANTITY_SPEC(electric_flux_density, electric_polarization);  // vector
 inline constexpr auto electric_displacement = electric_flux_density;
-QUANTITY_SPEC(capacitance, electric_charge / voltage);
-QUANTITY_SPEC(magnetic_flux_density, force / (electric_charge * velocity),
-              quantity_character::vector);  // TODO how to calculate an argument of a vector product?
 QUANTITY_SPEC(magnetic_constant,
               electric_potential* time / (electric_current * length));  // TODO what is a correct equation here?
 inline constexpr auto permeability_of_vacuum = magnetic_constant;
@@ -117,7 +112,7 @@ QUANTITY_SPEC(reluctance, magnetic_tension / magnetic_flux);
 QUANTITY_SPEC(permeance, inverse(reluctance));
 QUANTITY_SPEC(inductance, protoflux / electric_current);
 inline constexpr auto self_inductance = inductance;
-QUANTITY_SPEC(mutual_inductance, protoflux / electric_current);
+QUANTITY_SPEC(mutual_inductance, inductance, protoflux / electric_current);
 QUANTITY_SPEC(coupling_factor, dimensionless, mutual_inductance / pow<1, 2>(pow<2>(self_inductance)), non_negative);
 QUANTITY_SPEC(leakage_factor, dimensionless, pow<2>(coupling_factor), non_negative);
 QUANTITY_SPEC(conductivity, electric_current_density / electric_field_strength, quantity_character::real_scalar);
@@ -128,7 +123,6 @@ QUANTITY_SPEC(phase_difference, phase_angle);
 QUANTITY_SPEC(electric_current_phasor, electric_current, quantity_character::complex_scalar);
 QUANTITY_SPEC(voltage_phasor, voltage, quantity_character::complex_scalar);
 inline constexpr auto electric_tension_phasor = voltage_phasor;
-QUANTITY_SPEC(impedance, voltage_phasor / electric_current_phasor);    // complex
 inline constexpr auto complex_impedance = impedance;                   // complex
 QUANTITY_SPEC(impedance_of_vacuum, impedance);                         // complex
 inline constexpr auto wave_impedance_in_vacuum = impedance_of_vacuum;  // complex
@@ -138,7 +132,6 @@ QUANTITY_SPEC(
   quantity_character::real_scalar);  // called resistance in the latest ISQ (we use the old name to avoid ambiguity)
 QUANTITY_SPEC(reactance, impedance, quantity_character::real_scalar);
 QUANTITY_SPEC(apparent_impedance, impedance, quantity_character::real_scalar);
-QUANTITY_SPEC(admittance, inverse(impedance));                                  // complex
 inline constexpr auto complex_admittance = admittance;                          // complex
 QUANTITY_SPEC(admittance_of_vacuum, admittance, inverse(impedance_of_vacuum));  // complex
 QUANTITY_SPEC(conductance, admittance, inverse(resistance));

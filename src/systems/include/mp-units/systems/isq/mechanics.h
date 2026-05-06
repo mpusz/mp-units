@@ -46,7 +46,6 @@ inline constexpr auto surface_density = surface_mass_density;
 QUANTITY_SPEC(linear_mass_density, mass / length, non_negative);
 inline constexpr auto linear_density = linear_mass_density;
 QUANTITY_SPEC(momentum, mass* velocity);                        // vector
-QUANTITY_SPEC(force, mass* acceleration);                       // vector  // TODO what is a correct equation here?
 QUANTITY_SPEC(weight, force, mass* acceleration_of_free_fall);  // vector  // differs from ISO 80000
 QUANTITY_SPEC(static_friction_force, force);                    // vector
 inline constexpr auto static_friction = static_friction_force;
@@ -62,7 +61,6 @@ QUANTITY_SPEC(moment_of_inertia, angular_momentum / angular_velocity, quantity_c
 QUANTITY_SPEC(moment_of_force, position_vector* force);  // vector
 QUANTITY_SPEC(torque, moment_of_force, quantity_character::real_scalar);
 QUANTITY_SPEC(angular_impulse, angular_momentum, moment_of_force* time);  // vector
-QUANTITY_SPEC(pressure, force / area, quantity_character::real_scalar);
 QUANTITY_SPEC(gauge_pressure, pressure);
 QUANTITY_SPEC(stress, pressure, quantity_character::tensor);
 QUANTITY_SPEC(normal_stress, stress, quantity_character::real_scalar);
@@ -72,11 +70,11 @@ QUANTITY_SPEC(relative_linear_strain, length / length);
 QUANTITY_SPEC(shear_strain, dimensionless, displacement / thickness, quantity_character::real_scalar);
 QUANTITY_SPEC(relative_volume_strain, volume / volume);
 QUANTITY_SPEC(Poisson_number, dimensionless, width / length);
-QUANTITY_SPEC(modulus_of_elasticity, normal_stress / relative_linear_strain);
+QUANTITY_SPEC(modulus_of_elasticity, normal_stress, normal_stress / relative_linear_strain);
 inline constexpr auto Young_modulus = modulus_of_elasticity;
-QUANTITY_SPEC(modulus_of_rigidity, shear_stress / shear_strain);
+QUANTITY_SPEC(modulus_of_rigidity, shear_stress, shear_stress / shear_strain);
 inline constexpr auto shear_modulus = modulus_of_rigidity;
-QUANTITY_SPEC(modulus_of_compression, pressure / relative_volume_strain);
+QUANTITY_SPEC(modulus_of_compression, pressure, pressure / relative_volume_strain);
 inline constexpr auto bulk_modulus = modulus_of_compression;
 QUANTITY_SPEC(compressibility, inverse(volume) * (volume / pressure));
 QUANTITY_SPEC(second_axial_moment_of_area, pow<2>(radial_distance) * area, non_negative);

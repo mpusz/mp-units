@@ -135,6 +135,18 @@ auto q = 1 * Hz + 1 * Bq;   // Fails to compile
 
 This is exactly what we wanted to achieve to improve the type-safety of the library.
 
+!!! note "Units intentionally without `kind_of<>`"
+
+    Not every SI named unit can be constrained. Some are legitimately shared across multiple
+    unrelated ISQ quantity hierarchies — adding `kind_of<>` would incorrectly reject valid uses:
+
+    | Unit          | Serves multiple ISQ hierarchies                              |
+    |---------------|--------------------------------------------------------------|
+    | `watt (W)`    | _power_, _heat flow rate_, _active power_, _radiant flux_, … |
+    | `coulomb (C)` | _electric charge_ and _electric flux_                        |
+    | `weber (Wb)`  | _magnetic flux_, _protoflux_, _linked magnetic flux_, …      |
+    | `henry (H)`   | _inductance_ and _permeance_                                 |
+
 
 ## Prefixed units
 

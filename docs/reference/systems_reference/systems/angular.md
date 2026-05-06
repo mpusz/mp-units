@@ -25,7 +25,7 @@
 | Quantity | Character | Dimension | is_kind | non_negative | Kind of | Parent | Equation | Hierarchy |
 |----------|:---------:|:---------:|:-------:|:------------:|:-------:|:------:|----------|:---------:|
 | <span id="angle"></span><code>angle</code> | Real | α | ✓ | — | <code>[angle](#angle)</code> | — | — | [view](../hierarchies/angle.md) |
-| <span id="solid_angle"></span><code>solid_<wbr>angle</code> | Real | α² | ✓ | ✓ | <code>[solid_<wbr>angle](#solid_angle)</code> | — | <code>pow<2>([angle](#angle))</code> | [view](../hierarchies/solid_angle.md) |
+| <span id="solid_angle"></span><code>solid_<wbr>angle</code> | Real | α² | ✓ | — | <code>[solid_<wbr>angle](#solid_angle)</code> | — | <code>pow<2>([angle](#angle))</code> | [view](../hierarchies/solid_angle.md) |
 
 ## Units
 

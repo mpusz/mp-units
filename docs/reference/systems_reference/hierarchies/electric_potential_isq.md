@@ -7,7 +7,7 @@
 
 ```mermaid
 flowchart LR
-    isq_electric_potential["<b><a href="../../systems/isq/#electric_potential" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::electric_potential</a></b><br><i>(<a href="../../systems/isq/#electric_field_strength" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">electric_field_strength</a> * <a href="../../systems/isq/#length" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">length</a>)</i>"]
+    isq_electric_potential["<b><a href="../../systems/isq/#electric_potential" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::electric_potential</a></b><br><i>(<a href="../../systems/isq/#energy" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">energy</a> / (<a href="../../systems/isq/#electric_current" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">electric_current</a> * <a href="../../systems/isq/#time" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">time</a>))</i>"]
     isq_electric_potential_difference["<b><a href="../../systems/isq/#electric_potential_difference" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::electric_potential_difference</a></b>"]
     isq_electric_potential --- isq_electric_potential_difference
     isq_voltage["<b><a href="../../systems/isq/#voltage" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::voltage</a> | <a href="../../systems/isq/#electric_tension" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::electric_tension</a></b>"]

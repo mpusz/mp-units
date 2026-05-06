@@ -83,9 +83,9 @@ the value-based [unit equation](../../reference/glossary.md#unit-equation) to a 
 definition:
 
 ```cpp
-inline constexpr struct newton final : named_unit<"N", kilogram * metre / square(second)> {} newton;
-inline constexpr struct pascal final : named_unit<"Pa", newton / square(metre)> {} pascal;
-inline constexpr struct joule  final : named_unit<"J", newton * metre> {} joule;
+inline constexpr struct newton final : named_unit<"N", kilogram * metre / square(second), kind_of<isq::force>> {} newton;
+inline constexpr struct pascal final : named_unit<"Pa", newton / square(metre), kind_of<isq::pressure>> {} pascal;
+inline constexpr struct joule  final : named_unit<"J", newton * metre, kind_of<isq::energy>> {} joule;
 ```
 
 

@@ -57,26 +57,30 @@ inline constexpr struct candela final : named_unit<"cd", kind_of<isq::luminous_i
 inline constexpr struct radian final : named_unit<"rad", metre / metre, kind_of<isq::angular_measure>> {} radian;
 inline constexpr struct steradian final : named_unit<"sr", square(metre) / square(metre), kind_of<isq::solid_angular_measure>> {} steradian;
 inline constexpr struct hertz final : named_unit<"Hz", one / second, kind_of<isq::frequency>> {} hertz;
-inline constexpr struct newton final : named_unit<"N", kilogram * metre / square(second)> {} newton;
+inline constexpr struct newton final : named_unit<"N", kilogram * metre / square(second), kind_of<isq::force>> {} newton;
 #ifdef pascal
 #pragma push_macro("pascal")
 #undef pascal
 #define MP_UNITS_REDEFINE_PASCAL
 #endif
-inline constexpr struct pascal final : named_unit<"Pa", newton / square(metre)> {} pascal;
+inline constexpr struct pascal final : named_unit<"Pa", newton / square(metre), kind_of<isq::pressure>> {} pascal;
 #ifdef MP_UNITS_REDEFINE_PASCAL
 #pragma pop_macro("pascal")
 #undef MP_UNITS_REDEFINE_PASCAL
 #endif
-inline constexpr struct joule final : named_unit<"J", newton * metre> {} joule;
+inline constexpr struct joule final : named_unit<"J", newton * metre, kind_of<isq::energy>> {} joule;
+// No kind_of: W is shared by isq::power, isq::heat_flow_rate, isq::active_power, isq::radiant_flux, etc.
 inline constexpr struct watt final : named_unit<"W", joule / second> {} watt;
+// No kind_of: C is shared by isq::electric_charge and isq::electric_flux (different ISQ hierarchies).
 inline constexpr struct coulomb final : named_unit<"C", ampere * second> {} coulomb;
-inline constexpr struct volt final : named_unit<"V", watt / ampere> {} volt;
-inline constexpr struct farad final : named_unit<"F", coulomb / volt> {} farad;
-inline constexpr struct ohm final : named_unit<symbol_text{u8"Ω", "ohm"}, volt / ampere> {} ohm;
-inline constexpr struct siemens final : named_unit<"S", one / ohm> {} siemens;
+inline constexpr struct volt final : named_unit<"V", watt / ampere, kind_of<isq::electric_potential>> {} volt;
+inline constexpr struct farad final : named_unit<"F", coulomb / volt, kind_of<isq::capacitance>> {} farad;
+inline constexpr struct ohm final : named_unit<symbol_text{u8"Ω", "ohm"}, volt / ampere, kind_of<isq::impedance>> {} ohm;
+inline constexpr struct siemens final : named_unit<"S", one / ohm, kind_of<isq::admittance>> {} siemens;
+// No kind_of: Wb is shared by isq::magnetic_flux, isq::protoflux, isq::linked_magnetic_flux, etc.
 inline constexpr struct weber final : named_unit<"Wb", volt * second> {} weber;
-inline constexpr struct tesla final : named_unit<"T", weber / square(metre)> {} tesla;
+inline constexpr struct tesla final : named_unit<"T", weber / square(metre), kind_of<isq::magnetic_flux_density>> {} tesla;
+// No kind_of: H is shared by isq::inductance and isq::permeance (different ISQ hierarchies).
 inline constexpr struct henry final : named_unit<"H", weber / ampere> {} henry;
 
 inline constexpr struct ice_point final : relative_point_origin<::mp_units::point<milli<kelvin>>(273'150)> {} ice_point;
@@ -84,12 +88,12 @@ inline constexpr struct ice_point final : relative_point_origin<::mp_units::poin
 inline constexpr auto zeroth_degree_Celsius = ice_point;
 inline constexpr struct degree_Celsius final : named_unit<symbol_text{u8"℃", "`C"}, kelvin, ice_point> {} degree_Celsius;
 
-inline constexpr struct lumen final : named_unit<"lm", candela * steradian> {} lumen;
-inline constexpr struct lux final : named_unit<"lx", lumen / square(metre)> {} lux;
+inline constexpr struct lumen final : named_unit<"lm", candela * steradian, kind_of<isq::luminous_flux>> {} lumen;
+inline constexpr struct lux final : named_unit<"lx", lumen / square(metre), kind_of<isq::illuminance>> {} lux;
 inline constexpr struct becquerel final : named_unit<"Bq", one / second, kind_of<isq::activity>> {} becquerel;
 inline constexpr struct gray final : named_unit<"Gy", joule / kilogram, kind_of<isq::absorbed_dose>> {} gray;
 inline constexpr struct sievert final : named_unit<"Sv", joule / kilogram, kind_of<isq::dose_equivalent>> {} sievert;
-inline constexpr struct katal final : named_unit<"kat", mole / second> {} katal;
+inline constexpr struct katal final : named_unit<"kat", mole / second, kind_of<isq::catalytic_activity>> {} katal;
 // clang-format on
 
 }  // namespace si

@@ -50,6 +50,22 @@ QUANTITY_SPEC(frequency, inverse(period_duration), non_negative);
 
 // mechanics
 QUANTITY_SPEC(energy, mass* pow<2>(length) / pow<2>(time), non_negative);  // differs from ISO 80000
+QUANTITY_SPEC(force, mass* length / pow<2>(time), quantity_character::vector);
+QUANTITY_SPEC(pressure, force / area, quantity_character::real_scalar);
+
+// electromagnetism
+QUANTITY_SPEC(electric_potential, energy / (electric_current * time), quantity_character::real_scalar);
+QUANTITY_SPEC(capacitance, electric_current* time / electric_potential, non_negative);
+QUANTITY_SPEC(impedance, electric_potential / electric_current, quantity_character::complex_scalar);  // complex
+QUANTITY_SPEC(admittance, inverse(impedance), quantity_character::complex_scalar);                    // complex
+QUANTITY_SPEC(magnetic_flux_density, mass / (electric_current * pow<2>(time)), quantity_character::vector);
+
+// light_and_radiation
+QUANTITY_SPEC(luminous_flux, luminous_intensity* solid_angular_measure, non_negative);
+QUANTITY_SPEC(illuminance, luminous_flux / area, non_negative);
+
+// physical_chemistry
+QUANTITY_SPEC(catalytic_activity, amount_of_substance / time, non_negative);
 
 // atomic_and_nuclear_physics
 QUANTITY_SPEC(activity, inverse(duration), non_negative);
