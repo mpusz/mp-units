@@ -348,8 +348,12 @@ constexpr quantity<R, Rep> enforce_bounds(quantity<R, Rep> q)
     // both resolved entirely at compile time.
     constexpr auto bpo = bounds_po_for(PO);
     constexpr auto off = bounds_offset(PO);
+    // Cast offset to the same rep as q so that the arithmetic preserves Rep
+    // (e.g., constrained<double, throw_policy>) and check_non_negative uses the
+    // correct violation handler instead of falling back to MP_UNITS_EXPECTS.
+    const auto typed_off = value_cast<Rep>(off);
     // Single flat: translate to owner's frame, apply policy, translate back.
-    return bpo._bounds_(q + off) - off;
+    return bpo._bounds_(q + typed_off) - typed_off;
   }
   return q;
 }
