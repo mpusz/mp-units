@@ -69,7 +69,7 @@ inline constexpr struct pascal final : named_unit<"Pa", newton / square(metre), 
 #undef MP_UNITS_REDEFINE_PASCAL
 #endif
 inline constexpr struct joule final : named_unit<"J", newton * metre, kind_of<isq::energy>> {} joule;
-// No kind_of: W is shared by isq::power, isq::heat_flow_rate, isq::active_power, isq::radiant_flux, etc.
+// No kind_of: W is shared by isq::power, isq::heat_flow_rate, isq::radiant_flux, etc.
 inline constexpr struct watt final : named_unit<"W", joule / second> {} watt;
 // No kind_of: C is shared by isq::electric_charge and isq::electric_flux (different ISQ hierarchies).
 inline constexpr struct coulomb final : named_unit<"C", ampere * second> {} coulomb;
