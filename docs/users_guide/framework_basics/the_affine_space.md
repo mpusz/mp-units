@@ -449,7 +449,7 @@ arithmetic operations.
 
     ```cpp
     // Convert to plain angular_measure for trig functions
-    const quantity<angular_measure> lat_angle = isq::angular_measure(lat.quantity_from_unit_zero());
+    const quantity<angular_measure> lat_angle = isq::angular_measure(lat.quantity_from(geographic::equator));
     const quantity result = sin(lat_angle);  // Works with angular_measure
     ```
 

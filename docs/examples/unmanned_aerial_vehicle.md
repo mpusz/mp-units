@@ -80,7 +80,7 @@ formatting that appends "AMSL" (Above Mean Sea Level) to clearly identify the re
     For trigonometric functions, explicit conversion to `angular_measure` is required:
 
     ```cpp
-    const quantity lat_angle = isq::angular_measure(lat.quantity_from_unit_zero());
+    const quantity lat_angle = isq::angular_measure(lat.quantity_from(geographic::equator));
     sin(lat_angle);  // OK - explicitly converted
     ```
 

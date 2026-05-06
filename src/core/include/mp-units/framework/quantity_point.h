@@ -116,9 +116,11 @@ struct point_origin_interface {
                        is_derived_from_specialization_of_v<PO2, relative_point_origin>)
       return PO1::_quantity_point_ == PO2::_quantity_point_;
     else if constexpr (is_derived_from_specialization_of_v<PO1, relative_point_origin>)
-      return detail::same_absolute_point_origins(po1, po2) && PO1::_quantity_point_.quantity_from_unit_zero() == 0;
+      return detail::same_absolute_point_origins(po1, po2) &&
+             PO1::_quantity_point_.quantity_from(PO1::_quantity_point_.absolute_point_origin) == 0;
     else if constexpr (is_derived_from_specialization_of_v<PO2, relative_point_origin>)
-      return detail::same_absolute_point_origins(po1, po2) && PO2::_quantity_point_.quantity_from_unit_zero() == 0;
+      return detail::same_absolute_point_origins(po1, po2) &&
+             PO2::_quantity_point_.quantity_from(PO2::_quantity_point_.absolute_point_origin) == 0;
   }
 };
 
@@ -610,6 +612,7 @@ public:
   }
 
   [[nodiscard]] constexpr Quantity auto quantity_from_unit_zero() const
+    requires requires { unit._point_origin_; } || (PO == default_point_origin(R))
   {
     if constexpr (requires { unit._point_origin_; }) {
       // original quantity point unit can be lost in the below operation

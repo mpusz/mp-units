@@ -91,7 +91,7 @@ namespace geographic {
 // between different angle reference frames.
 //
 // For trigonometric functions (sin/cos/etc.), explicit conversion to angular_measure is needed:
-//   const quantity<angular_measure> angle = isq::angular_measure(lat.quantity_from_unit_zero());
+//   const quantity<angular_measure> angle = isq::angular_measure(lat.quantity_from(equator));
 //   sin(angle);  // Now works with plain angular_measure
 
 // Basic geographic coordinates
@@ -352,10 +352,10 @@ public:
 
     using si::sin, si::cos, si::asin, si::acos;
 
-    const quantity from_lat = isq::angular_measure(from.lat.quantity_from_unit_zero());
-    const quantity from_lon = isq::angular_measure(from.lon.quantity_from_unit_zero());
-    const quantity to_lat = isq::angular_measure(to.lat.quantity_from_unit_zero());
-    const quantity to_lon = isq::angular_measure(to.lon.quantity_from_unit_zero());
+    const quantity from_lat = isq::angular_measure(from.lat.quantity_ref_from(equator));
+    const quantity from_lon = isq::angular_measure(from.lon.quantity_ref_from(prime_meridian));
+    const quantity to_lat = isq::angular_measure(to.lat.quantity_ref_from(equator));
+    const quantity to_lon = isq::angular_measure(to.lon.quantity_ref_from(prime_meridian));
 
     // https://en.wikipedia.org/wiki/Great-circle_distance#Formulae
     if constexpr (sizeof(T) >= 8) {

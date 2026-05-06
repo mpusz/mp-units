@@ -823,9 +823,9 @@ static_assert(quantity_point{delta<deg_C>(20.)}.in(deg_F).quantity_from_unit_zer
 static_assert(point<deg_C>(20).quantity_from_unit_zero() == delta<deg_C>(20));
 static_assert(point<deg_C>(20.).in(deg_F).quantity_from_unit_zero() == delta<deg_F>(68));
 
-static_assert((mean_sea_level + 42 * m).quantity_from_unit_zero() == 42 * m);
-static_assert((ground_level + 42 * m).quantity_from_unit_zero() == 84 * m);
-static_assert((tower_peak + 42 * m).quantity_from_unit_zero() == 126 * m);
+static_assert((mean_sea_level + 42 * m).quantity_from(mean_sea_level) == 42 * m);
+static_assert((ground_level + 42 * m).quantity_from(mean_sea_level) == 84 * m);
+static_assert((tower_peak + 42 * m).quantity_from(mean_sea_level) == 126 * m);
 
 static_assert((mean_sea_level + 42 * m).quantity_from(mean_sea_level) == 42 * m);
 static_assert((mean_sea_level + isq::height(42 * m)).quantity_from(mean_sea_level) == 42 * m);
@@ -1022,25 +1022,25 @@ static_assert([](auto v) {
 ////////////////////////
 
 // same type
-static_assert(
-  [qp = mean_sea_level + 1 * m]() mutable { return qp += 1 * m; }().quantity_from_unit_zero().numerical_value_in(m) ==
-  2);
-static_assert(
-  [qp = mean_sea_level + 2 * m]() mutable { return qp -= 1 * m; }().quantity_from_unit_zero().numerical_value_in(m) ==
-  1);
+static_assert([qp = mean_sea_level + 1 * m]() mutable { return qp += 1 * m; }()
+                .quantity_from(mean_sea_level)
+                .numerical_value_in(m) == 2);
+static_assert([qp = mean_sea_level + 2 * m]() mutable { return qp -= 1 * m; }()
+                .quantity_from(mean_sea_level)
+                .numerical_value_in(m) == 1);
 
 // different types
-static_assert(
-  [qp = mean_sea_level + 2.5 * m]() mutable { return qp += 3 * m; }().quantity_from_unit_zero().numerical_value_in(m) ==
-  5.5);
+static_assert([qp = mean_sea_level + 2.5 * m]() mutable { return qp += 3 * m; }()
+                .quantity_from(mean_sea_level)
+                .numerical_value_in(m) == 5.5);
 static_assert([qp = mean_sea_level + 123 * m]() mutable { return qp += 1 * km; }()
-                .quantity_from_unit_zero()
+                .quantity_from(mean_sea_level)
                 .numerical_value_in(m) == 1123);
-static_assert(
-  [qp = mean_sea_level + 5.5 * m]() mutable { return qp -= 3 * m; }().quantity_from_unit_zero().numerical_value_in(m) ==
-  2.5);
+static_assert([qp = mean_sea_level + 5.5 * m]() mutable { return qp -= 3 * m; }()
+                .quantity_from(mean_sea_level)
+                .numerical_value_in(m) == 2.5);
 static_assert([qp = mean_sea_level + 1123 * m]() mutable { return qp -= 1 * km; }()
-                .quantity_from_unit_zero()
+                .quantity_from(mean_sea_level)
                 .numerical_value_in(m) == 123);
 
 
@@ -1673,7 +1673,7 @@ static_assert(is_of_type<(zero_Hz + 5 * isq::frequency[Hz]) - (zero_Hz + 10 / (2
 static_assert((quantity_point{10 / (2 * isq::period_duration[s])} + 5 * isq::frequency[Hz]).quantity_from_unit_zero() ==
               10 * isq::frequency[Hz]);
 static_assert((10 / (2 * isq::period_duration[s]) + quantity_point{zero_Hz + 5 * isq::frequency[Hz]})
-                .quantity_from_unit_zero() == 10 * isq::frequency[Hz]);
+                .quantity_from(zero_Hz) == 10 * isq::frequency[Hz]);
 static_assert((quantity_point{5 * isq::frequency[Hz]} + 10 / (2 * isq::period_duration[s])).quantity_from_unit_zero() ==
               10 * isq::frequency[Hz]);
 static_assert((5 * isq::frequency[Hz] + quantity_point{10 / (2 * isq::period_duration[s])}).quantity_from_unit_zero() ==
