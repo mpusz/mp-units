@@ -1066,8 +1066,7 @@ template<QuantitySpec From, QuantitySpec To>
     else if constexpr (requires { To::_equation_; }) {
       if constexpr (detail::defines_equation(To{})) {
         constexpr specs_convertible_result eq_res = detail::convertible(From{}, To::_equation_);
-        if constexpr (eq_res != specs_convertible_result::no)
-          return eq_res;
+        if constexpr (eq_res != specs_convertible_result::no) return eq_res;
       }
       return detail::are_ingredients_convertible(typename From::_num_{}, typename From::_den_{}, type_list<To>{},
                                                  type_list<>{});
@@ -1082,8 +1081,7 @@ template<QuantitySpec From, QuantitySpec To>
     else if constexpr (requires { From::_equation_; }) {
       if constexpr (detail::defines_equation(From{})) {
         constexpr specs_convertible_result eq_res = detail::convertible(From::_equation_, To{});
-        if constexpr (eq_res != specs_convertible_result::no)
-          return eq_res;
+        if constexpr (eq_res != specs_convertible_result::no) return eq_res;
       }
       return detail::are_ingredients_convertible(type_list<From>{}, type_list<>{}, typename To::_num_{},
                                                  typename To::_den_{});
