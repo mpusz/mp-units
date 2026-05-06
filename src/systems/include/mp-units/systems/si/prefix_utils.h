@@ -60,7 +60,7 @@ enum class prefix_range : std::uint8_t { engineering, full };
  *              - @c prefix_range::engineering selects only powers of 1000 (kilo, mega, milli, etc.),
  *                resulting in values in range [1.0, 1000)
  *              - @c prefix_range::full selects all SI prefixes including deca, hecto, deci, centi,
- *                resulting in values in range [1.0, 10.0)
+ *                resulting in values values in [1.0, 10) within the milli–kilo range, [1.0, 1000) elsewhere
  * @param min_integral_digits Minimum number of digits in the integral part (default: 1)
  *
  * @return The result of calling @c func with the scaled quantity
