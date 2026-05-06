@@ -16,5 +16,8 @@
   "MD046": false,
   "MD049": false,
   "MD051": false,
-  "MD053": false
+  "MD053": false,
+  "MD060": {
+    "style": "aligned"
+  }
 }
