@@ -141,202 +141,6 @@ The following table summarizes the requirements for different representation cha
     commonly used in finite element analysis, structural engineering, and materials science.
 
 
-## How Scaling Works
-
-Every representation type must be **unit-conversion scalable** — the library must be able
-to apply a unit magnitude ratio to it internally. This is captured by the `MagnitudeScalable`
-concept, which directly names the three built-in scaling paths:
-
-```cpp
-concept MagnitudeScalable =
-  WeaklyRegular<T> && (UsesMagnitudeAwareScaling<T> || UsesFloatingPointScaling<T> ||
-                       UsesIntegerScaling<T>);
-```
-
-!!! tip "Magnitude-aware scaling"
-
-    A representation type may additionally (or instead of `MagnitudeScalable`) provide an
-    `operator*(T, UnitMagnitude)` hidden friend. When present, this operator is used **first**
-    and the built-in paths act as a fallback. The return type may differ from the input type —
-    for example, a range-validated representation can return a new type with scaled bounds,
-    so that a conversion from degrees to radians adjusts the valid range from
-    [-180, 180] to [-π, π]. See [Magnitude-aware scaling](#magnitude-aware-scaling) for details.
-
-The two **built-in numeric** sub-concepts and their requirements
-(`UsesMagnitudeAwareScaling` is described in the tip box above):
-
-```cpp
-// Floating-point type, or container whose element type is floating-point
-// (e.g. double, cartesian_vector<double>).
-concept UsesFloatingPointScaling =
-  (treat_as_floating_point<T> || treat_as_floating_point<representation_underlying_type_t<T>>) &&
-  requires(T value, representation_underlying_type_t<T> f) {
-    { value * f } -> WeaklyRegular;
-    { value / f } -> WeaklyRegular;
-  };
-
-// Integer type, wrapper, or container whose element type is a fundamental integer
-// (e.g. int, safe_int<int>, cartesian_vector<int>).
-// std::integral<representation_underlying_type_t<T>> is required (not just treat_as_integral) because
-// the scaling engine uses get_value<element_t> and fixed_point<element_t>.
-// Scaling is applied through the type's own operator* / operator/, so wrappers
-// can check for overflow and containers can scale element-wise.
-concept UsesIntegerScaling =
-  std::integral<representation_underlying_type_t<T>> &&
-  requires(T value, representation_underlying_type_t<T> f) {
-    { value * f };
-    { value / f };
-  };
-```
-
-Most standard types satisfy `MagnitudeScalable` automatically. See
-[Scaling operators](#scaling-operators) in the Customization Points section for how to
-provide `operator*` and `operator/` for your own types.
-
-### Built-in scaling algorithm
-
-When two quantities of convertible units are combined or converted, the library applies the
-unit magnitude `M` to the representation value via `detail::scale<To>(M, value)`. The
-built-in decision tree is:
-
-```mermaid
-flowchart TD
-    A["scale(M, value)"] --> MA{"provides<br>op*(T, UnitMagnitude)?"}
-    MA -- "Yes" --> MAR["<b>Magnitude-aware scaling</b><br>calls value * M{}<br>return type may differ from input<br><br>e.g. custom type<br>with scaled bounds"]
-    MA -- "No (fallback)" --> B{"treat_as_floating_point&lt;T&gt;<br>or treat_as_floating_point&lt;representation_underlying_type_t&lt;T&gt;&gt;<br>?"}
-    B -- True --> FP["<b>UsesFloatingPointScaling</b><br>ratio at source's representation_underlying_type_t precision<br><br>e.g. double, cartesian_vector&lt;double&gt;"]
-    B -- False --> INT["<b>UsesIntegerScaling</b><br>e.g. int, safe_int&lt;int&gt;, cartesian_vector&lt;int&gt;"]
-    INT --> G{"magnitude?"}
-    G -- "integral (e.g. m→mm, ×1000)" --> I["exact integer multiplication"]
-    G -- "rational (e.g. ft→m, ×3048/10000)" --> R["widened integer arithmetic<br>(int64_t/uint64_t or 128-bit;<br>signedness-preserving;<br>avoids overflow &amp; FP rounding)"]
-    G -- "irrational (e.g. deg→rad, ×π/180)" --> IR["long double fixed-point approximation"]
-```
-
-The integer path (`UsesIntegerScaling`) never promotes
-values to floating-point, even for the rational and irrational sub-paths. This is
-intentional: the user explicitly chose an integer representation type, opting out of
-floating-point arithmetic. Their platform may lack FP hardware (embedded systems, DSPs),
-rely on software-emulated FP (slow and unpredictable), or enforce a no-FP policy. The
-library respects that choice throughout unit conversion.
-
-The magnitude-aware path (`operator*(T, UnitMagnitude)`) is checked first—before any of
-the built-in paths. If a representation type provides this operator, it has full control
-over how scaling is performed and what type is returned. The built-in paths are only used
-as a fallback when this operator is not available.
-
-??? question "Why fixed-point arithmetic for integer representations?"
-
-    1. **Lossless conversions must stay exact**
-
-        `42 * m` converted to `mm` must give exactly `42000 * mm`. Integer multiplication
-        achieves this; going via `double` would produce correct results for small values
-        but lose exactness near the precision limit (53-bit mantissa ≈ 9×10¹⁵).
-
-    2. **Rational factors remain exactly representable**
-
-        The library multiplies by the numerator, then divides by the denominator
-        using integer arithmetic. The result is exact whenever the integer is
-        divisible by the denominator. Requiring an explicit cast signals that
-        truncation might occur.
-
-    3. **Irrational factors are an unavoidable last resort**
-
-        π/180 (deg→rad), √2, etc. cannot be represented exactly in any integer arithmetic.
-        The library falls back to a `long double` approximation and rounds the result
-        to the target integer type ("fixed-point approximation").
-
-    The design preference order is therefore:
-    **exact integer > exact rational > approximate irrational**.
-
-[](){ #why-widened-integers-for-the-rational-path }
-
-??? question "Why widened integers for the rational path?"
-
-    The library computes `value * numerator / denominator` entirely in integer
-    arithmetic. Without extra width, the intermediate product
-    `value * numerator` can overflow even when the final result fits — for example,
-    converting feet to metres multiplies by 3048 before dividing by 10000, which
-    overflows a 64-bit integer for values above ~3×10¹⁵.
-
-    **mp-units uses widened integers to absorb that intermediate growth:**
-
-    - For signed types up to 32 bits (`int8_t`, `int16_t`, `int32_t`): widens to `int64_t`
-    - For unsigned types up to 32 bits (`uint8_t`, `uint16_t`, `uint32_t`): widens to `uint64_t`
-    - For `int64_t`: widens to signed 128-bit arithmetic (`__int128` or custom emulation)
-    - For `uint64_t`: widens to unsigned 128-bit arithmetic (`unsigned __int128` or custom emulation)
-
-    This approach provides maximum safety headroom for smaller types (with no performance
-    cost on modern 64-bit systems), while 128-bit arithmetic handles the vast majority
-    of real-world `int64_t` conversions. Using `long double` instead would violate the
-    no-FP principle above and introduce rounding (`0.3048` is not exactly representable
-    in binary floating-point), and on ARM / Apple Silicon `long double == double` anyway,
-    giving no extra range.
-
-    !!! tip "Detecting overflow in the final result"
-
-        While double-width arithmetic avoids UB during the intermediate scaling multiplication,
-        it cannot prevent overflow in the final result when that result doesn't fit in the
-        target type. For runtime overflow detection, use
-        [`safe_int<T>`](safe_int.md), which wraps the representation type and checks all
-        arithmetic operations for overflow.
-
-If different internal fields need different scale factors, encode that logic in
-`operator*` and `operator/` — the library routes scaling through them via the
-appropriate built-in path. For an example of integrating a third-party floating-point
-type, see the
-[`MyFloat` example](../../how_to_guides/integration/using_custom_representation_types.md#scale)
-in the how-to guide.
-
-### Magnitude-aware scaling { #magnitude-aware-scaling }
-
-Some representation types need to transform not just their **value** but also their
-**type** during unit conversion. For example, a range-validated representation that
-constrains values to [-180, 180] (degrees) should produce a type constrained to
-[-π, π] when converted to radians — otherwise the bounds would be meaningless or
-overly restrictive in the target unit.
-
-To support this, provide an `operator*(T, UnitMagnitude)` hidden friend. It receives the
-exact compile-time unit magnitude and can return a **different type** (e.g. the same
-template with different bounds):
-
-```cpp
-// Example custom type (not provided by the library)
-template<std::movable T, auto Min, auto Max, typename Policy>
-class bounded_value : /* ... */ {
-public:
-  template<mp_units::UnitMagnitude M>
-    requires mp_units::treat_as_floating_point<T>
-  [[nodiscard]] friend constexpr auto operator*(const bounded_value& val, M m)
-  {
-    constexpr T new_lo = mp_units::scale<T>(M{}, T{Min});
-    constexpr T new_hi = mp_units::scale<T>(M{}, T{Max});
-
-    const T scaled = mp_units::scale<T>(m, val.value());
-
-    if constexpr (new_lo <= new_hi)
-      return bounded_value<T, new_lo, new_hi, Policy>(scaled);
-    else
-      return bounded_value<T, new_hi, new_lo, Policy>(scaled);
-  }
-};
-```
-
-The `scale` function handles precision optimization automatically — when the
-magnitude's inverse is integral (e.g. degree-to-radian with π/180), it divides by the
-inverse instead of multiplying, avoiding FP rounding errors.
-
-The library calls `value * M{}` in `scale()` before trying the built-in paths.
-Because the return type may differ from the input, `quantity::in(unit)` propagates
-the new representation type through `sudo_cast`, and the resulting `quantity` (or
-`quantity_point`) automatically uses the scaled-bounds representation.
-
-!!! note "Bounded Quantity Points"
-
-    For bounded `quantity_point` types, the library provides a different mechanism:
-    overflow policies can be passed directly as template parameters to point origins.
-    See [Range-Validated Quantity Points](the_affine_space.md#range-validated-quantity-points).
-
-
 ## Customization Points
 
 The library provides several customization mechanisms for representation types.
@@ -434,71 +238,14 @@ arithmetic operations.
 
 ### Behavior and Values
 
-#### `value_type` or `element_type`
-
-The library uses `representation_underlying_type_t<T>` to determine the underlying
-arithmetic type of your representation, which is used for:
-
-- Determining the scaling factor type (what type to multiply/divide your type by)
-- Checking if the type should be treated as floating-point
-
-!!! info "How it works?"
-
-    The underlying type is determined by
-    [`representation_underlying_type`](#representation_underlying_type) as follows:
-
-    1. If your type has a `value_type` or `element_type` member type, that member
-       is used
-    2. Otherwise, if your type is a scoped enumeration, `std::underlying_type_t` is
-       used
-    3. Otherwise, your type itself is treated as the underlying type
-
-**Recommendation:** Provide a `value_type` member type for wrapper types:
-
-```cpp
-template<typename T>
-class my_wrapper {
-public:
-  using value_type = T;  // Exposes the underlying type
-  // ...
-};
-```
-
-**Third-party types:** If you cannot modify the source of a type (e.g., a third-party
-floating-point or fixed-point class), specialize
-[`representation_underlying_type`](#representation_underlying_type) to expose its
-element type:
-
-```cpp
-// Third-party type MyFloat wraps long double internally
-template<>
-struct mp_units::representation_underlying_type<MyFloat> {
-  using type = long double;
-};
-```
-
-This makes `representation_underlying_type_t<MyFloat>` resolve to `long double`, giving
-the library the correct precision for scaling and ensuring the right `common_type` is
-used in mixed conversions.
-
-!!! warning "Don't provide both `value_type` and `element_type`"
-
-    If your type provides both `value_type` and `element_type` whose underlying
-    types differ after ignoring top-level cv-qualification,
-    [`representation_underlying_type`](#representation_underlying_type) is empty and
-    the library treats the type as a leaf. If both are present and name the same
-    underlying type, that type is used.
-
-    **Recommendation:** Provide only `value_type` unless you have a specific reason to provide both
-    (e.g., satisfying iterator concepts), in which case ensure they refer to the same type.
-
----
-
 #### `representation_underlying_type<T>` { #representation_underlying_type }
 
 A specializable class template that describes the underlying arithmetic/element type of
 a representation type. It is **the** extension point for exposing this information to
-the library:
+the library, and is used for:
+
+- Determining the scaling factor type (what type to multiply/divide your type by)
+- Checking if the type should be treated as floating-point
 
 ```cpp
 template<typename T>
@@ -524,15 +271,41 @@ cases):
   standard's iterator-oriented trait. Unscoped enumerations are deliberately excluded
   because they already implicitly convert to their underlying type.
 
-**When to specialize:** for third-party types you cannot modify, or for types whose
-underlying representation cannot be deduced by the defaults above:
+**For your own types:** provide a `value_type` member type so the library detects the
+underlying type automatically:
 
 ```cpp
+template<typename T>
+class my_wrapper {
+public:
+  using value_type = T;  // Exposes the underlying type
+  // ...
+};
+```
+
+**For third-party types** you cannot modify, specialize the trait directly:
+
+```cpp
+// Third-party type MyFloat wraps long double internally
 template<>
 struct mp_units::representation_underlying_type<MyFloat> {
   using type = long double;
 };
 ```
+
+This makes `representation_underlying_type_t<MyFloat>` resolve to `long double`, giving
+the library the correct precision for scaling and ensuring the right `common_type` is
+used in mixed conversions.
+
+!!! warning "Don't provide both `value_type` and `element_type`"
+
+    If your type provides both `value_type` and `element_type` whose underlying
+    types differ after ignoring top-level cv-qualification, the trait is empty and
+    the library treats the type as a leaf. If both are present and name the same
+    underlying type, that type is used.
+
+    **Recommendation:** Provide only `value_type` unless you have a specific reason to provide both
+    (e.g., satisfying iterator concepts), in which case ensure they refer to the same type.
 
 !!! question "Why not `std::indirectly_readable_traits`?"
 
@@ -546,37 +319,6 @@ struct mp_units::representation_underlying_type<MyFloat> {
     intentionally **not** mirrored in `representation_underlying_type` — those are
     part of the standard's iterator machinery, not of this library's representation
     model.
-
----
-
-#### `treat_as_floating_point<Rep>` { #treat_as_floating_point }
-
-A specializable variable template that tells the library whether a type should be treated as
-floating-point for the purpose of allowing implicit conversions:
-
-```cpp
-template<typename Rep>
-constexpr bool mp_units::treat_as_floating_point = /* implementation-defined */;
-```
-
-**Default behavior:**
-
-- In hosted environments: uses `std::chrono::treat_as_floating_point_v` on the
-  (recursively-unwrapped) underlying type of `Rep`
-- In freestanding: uses `std::is_floating_point_v` on the (recursively-unwrapped)
-  underlying type of `Rep`
-
-**When to specialize:** If you have a custom type that wraps a floating-point value but the
-automatic detection doesn't work correctly:
-
-```cpp
-template<>
-constexpr bool mp_units::treat_as_floating_point<my_fixed_point_type> = true;
-```
-
-**Impact:** When `treat_as_floating_point<Rep>` is `true`, the type is treated as floating-point
-for conversion purposes. See [Value Conversions](value_conversions.md#value-conversions) for details
-on how this affects implicit conversions between quantities.
 
 ---
 
@@ -633,6 +375,37 @@ definitions, and design rationale.
 
 ---
 
+#### `treat_as_floating_point<Rep>` { #treat_as_floating_point }
+
+A specializable variable template that tells the library whether a type should be treated as
+floating-point for the purpose of allowing implicit conversions:
+
+```cpp
+template<typename Rep>
+constexpr bool mp_units::treat_as_floating_point = /* implementation-defined */;
+```
+
+**Default behavior:**
+
+- In hosted environments: uses `std::chrono::treat_as_floating_point_v` on the
+  (recursively-unwrapped) underlying type of `Rep`
+- In freestanding: uses `std::is_floating_point_v` on the (recursively-unwrapped)
+  underlying type of `Rep`
+
+**When to specialize:** If you have a custom type that wraps a floating-point value but the
+automatic detection doesn't work correctly:
+
+```cpp
+template<>
+constexpr bool mp_units::treat_as_floating_point<my_fixed_point_type> = true;
+```
+
+**Impact:** When `treat_as_floating_point<Rep>` is `true`, the type is treated as floating-point
+for conversion purposes. See [Value Conversions](value_conversions.md#value-conversions) for details
+on how this affects implicit conversions between quantities.
+
+---
+
 #### `implicitly_scalable<FromUnit, FromRep, ToUnit, ToRep>` { #implicitly_scalable }
 
 !!! note "Advanced use case"
@@ -643,10 +416,10 @@ definitions, and design rationale.
 
 A specializable variable template that controls **whether** a conversion from
 `quantity<FromUnit, FromRep>` to `quantity<ToUnit, ToRep>` is implicit or requires an
-explicit cast via `value_cast`/`force_in`. This is orthogonal to — and independent of —
-the customization points that control **how** scaling is performed
-(`representation_underlying_type`, `treat_as_floating_point`, the
-[scaling operators](#scaling-operators), and the magnitude-aware `operator*(T, UnitMagnitude)`).
+explicit cast via `value_cast`/`force_in`. It is the policy layer built on top of
+`treat_as_floating_point`: the default formula derives the implicit-conversion decision
+from it, and a specialization overrides that decision for types where the derived rule
+is incorrect:
 
 ```cpp
 template<auto FromUnit, typename FromRep, auto ToUnit, typename ToRep>
@@ -799,6 +572,228 @@ The library enforces character at compile-time: vector quantities require `scala
 to quantities of the correct character. See
 [Character of a Quantity](character_of_a_quantity.md#character-specific-operations) for full
 details and examples.
+
+
+## How Scaling Works
+
+Every representation type must be **unit-conversion scalable** — the library must be able
+to apply a unit magnitude ratio to it internally. This is captured by the `MagnitudeScalable`
+concept, which directly names the three built-in scaling paths:
+
+```cpp
+concept MagnitudeScalable =
+  WeaklyRegular<T> && (UsesMagnitudeAwareScaling<T> || UsesFloatingPointScaling<T> || UsesIntegerScaling<T>);
+```
+
+!!! tip "Magnitude-aware scaling"
+
+    A representation type may additionally (or instead of `MagnitudeScalable`) provide an
+    `operator*(T, UnitMagnitude)` hidden friend. When present, this operator is used **first**
+    and the built-in paths act as a fallback. The return type may differ from the input type —
+    for example, a range-validated representation can return a new type with scaled bounds,
+    so that a conversion from degrees to radians adjusts the valid range from
+    [-180, 180] to [-π, π]. See [Magnitude-aware scaling](#magnitude-aware-scaling) for details.
+
+`UsesFloatingPointScaling` matches any type — or container thereof — whose underlying
+type satisfies `treat_as_floating_point`, is constructible from `long double` (the
+precision at which magnitude constants are evaluated), and supports `operator*` and
+`operator/` with that underlying type, returning a weakly-regular result:
+
+```cpp
+concept UsesFloatingPointScaling =
+  (treat_as_floating_point<T> || treat_as_floating_point<representation_underlying_type_t<T>>) &&
+  std::constructible_from<representation_underlying_type_t<T>, long double> &&
+  requires(T value, representation_underlying_type_t<T> f) {
+    { value * f } -> WeaklyRegular;
+    { value / f } -> WeaklyRegular;
+  };
+```
+
+`UsesIntegerScaling` matches any type whose underlying type satisfies `detail::integral`
+(the scaling engine uses `get_value<wider_t>`, `wider_int_for<element_t>`, and
+`fixed_point<element_t>` internally, all of which require an integer element type).
+Scaling is routed through the type's own `operator*` and `operator/`, so wrappers can
+check for overflow and containers can scale element-wise. The factor type is
+`wider_int_for<element_t>` — a wider integer of matching sign (e.g. `int64_t` for
+`int16_t`, `uint64_t` for `uint16_t`) — to prevent intermediate overflow in
+rational-magnitude conversions:
+
+```cpp
+concept UsesIntegerScaling =
+  detail::integral<representation_underlying_type_t<T>> &&
+  requires(T value, wider_int_for<representation_underlying_type_t<T>> wf) {
+    { value * wf };
+    { value / wf };
+  };
+```
+
+!!! note "Why `detail::integral` and not `std::integral`?"
+
+    On GCC in strict mode (`-std=c++20`), `std::integral<__int128>` is `false` because
+    the standard traits (`std::is_integral`, `std::is_arithmetic`) are not specialized
+    for `__int128` outside of GNU extensions (`-std=gnu++20`). When the platform lacks
+    `__SIZEOF_INT128__` entirely, `int128_t` and `uint128_t` are `double_width_int<>`
+    software-emulation types that also do not satisfy `std::integral`.
+
+    `detail::integral` patches both gaps:
+
+    ```cpp
+    template<typename T>
+    concept detail::integral =
+      std::integral<T> ||
+      std::same_as<std::remove_cv_t<T>, int128_t> ||
+      std::same_as<std::remove_cv_t<T>, uint128_t>;
+    ```
+
+    The scaling engine internals (`get_value`, `wider_int_for`, `fixed_point`) are all
+    specialized for `int128_t` / `uint128_t`, so the full integer scaling pipeline
+    works correctly for 128-bit element types on all supported compilers.
+
+Most standard types satisfy `MagnitudeScalable` automatically. See
+[Scaling operators](#scaling-operators) in the Customization Points section for how to
+provide `operator*` and `operator/` for your own types.
+
+### Built-in scaling algorithm
+
+When two quantities of convertible units are combined or converted, the library applies the
+unit magnitude `M` to the representation value via `scale<To>(M, value)`. The
+built-in decision tree is:
+
+```mermaid
+flowchart TD
+    A["scale(M, value)"] --> MA{"provides<br>op*(T, UnitMagnitude)?"}
+    MA -- "Yes" --> MAR["<b>Magnitude-aware scaling</b><br>calls value * M{}<br>return type may differ from input<br><br>e.g. custom type<br>with scaled bounds"]
+    MA -- "No (fallback)" --> B{"treat_as_floating_point&lt;T&gt;<br>or treat_as_floating_point&lt;representation_underlying_type_t&lt;T&gt;&gt;<br>?"}
+    B -- True --> FP["<b>UsesFloatingPointScaling</b><br>ratio at source's representation_underlying_type_t precision<br><br>e.g. double, cartesian_vector&lt;double&gt;"]
+    B -- False --> INT["<b>UsesIntegerScaling</b><br>e.g. int, safe_int&lt;int&gt;, cartesian_vector&lt;int&gt;"]
+    INT --> G{"magnitude?"}
+    G -- "integral (e.g. m→mm, ×1000)" --> I["exact integer multiplication"]
+    G -- "rational (e.g. ft→m, ×3048/10000)" --> R["widened integer arithmetic<br>(int64_t/uint64_t or 128-bit;<br>signedness-preserving;<br>avoids overflow &amp; FP rounding)"]
+    G -- "irrational (e.g. deg→rad, ×π/180)" --> IR["long double fixed-point approximation"]
+```
+
+The magnitude-aware path (`operator*(T, UnitMagnitude)`) is checked first—before any of
+the built-in paths. If a representation type provides this operator, it has full control
+over how scaling is performed and what type is returned. The built-in paths are only used
+as a fallback when this operator is not available.
+
+The integer path (`UsesIntegerScaling`) never promotes
+values to floating-point, even for the rational and irrational sub-paths. This is
+intentional: the user explicitly chose an integer representation type, opting out of
+floating-point arithmetic. Their platform may lack FP hardware (embedded systems, DSPs),
+rely on software-emulated FP (slow and unpredictable), or enforce a no-FP policy. The
+library respects that choice throughout unit conversion.
+
+??? question "Why fixed-point arithmetic for integer representations?"
+
+    1. **Lossless conversions must stay exact**
+
+        `42 * m` converted to `mm` must give exactly `42000 * mm`. Integer multiplication
+        achieves this; going via `double` would produce correct results for small values
+        but lose exactness near the precision limit (53-bit mantissa ≈ 9×10¹⁵).
+
+    2. **Rational factors remain exactly representable**
+
+        The library multiplies by the numerator, then divides by the denominator
+        using integer arithmetic. The result is exact whenever the integer is
+        divisible by the denominator. Requiring an explicit cast signals that
+        truncation might occur.
+
+    3. **Irrational factors are an unavoidable last resort**
+
+        π/180 (deg→rad), √2, etc. cannot be represented exactly in any integer arithmetic.
+        The library falls back to a `long double` approximation and rounds the result
+        to the target integer type ("fixed-point approximation").
+
+    The design preference order is therefore:
+    **exact integer > exact rational > approximate irrational**.
+
+[](){ #why-widened-integers-for-the-rational-path }
+
+??? question "Why widened integers for the rational path?"
+
+    The library computes `value * numerator / denominator` entirely in integer
+    arithmetic. Without extra width, the intermediate product
+    `value * numerator` can overflow even when the final result fits — for example,
+    converting feet to metres multiplies by 3048 before dividing by 10000, which
+    overflows a 64-bit integer for values above ~3×10¹⁵.
+
+    **mp-units uses widened integers to absorb that intermediate growth:**
+
+    - For signed types up to 32 bits (`int8_t`, `int16_t`, `int32_t`): widens to `int64_t`
+    - For unsigned types up to 32 bits (`uint8_t`, `uint16_t`, `uint32_t`): widens to `uint64_t`
+    - For `int64_t`: widens to signed 128-bit arithmetic (`__int128` or custom emulation)
+    - For `uint64_t`: widens to unsigned 128-bit arithmetic (`unsigned __int128` or custom emulation)
+
+    This approach provides maximum safety headroom for smaller types (with no performance
+    cost on modern 64-bit systems), while 128-bit arithmetic handles the vast majority
+    of real-world `int64_t` conversions. Using `long double` instead would violate the
+    no-FP principle above and introduce rounding (`0.3048` is not exactly representable
+    in binary floating-point), and on ARM / Apple Silicon `long double == double` anyway,
+    giving no extra range.
+
+    !!! tip "Detecting overflow in the final result"
+
+        While double-width arithmetic avoids UB during the intermediate scaling multiplication,
+        it cannot prevent overflow in the final result when that result doesn't fit in the
+        target type. For runtime overflow detection, use
+        [`safe_int<T>`](safe_int.md), which wraps the representation type and checks all
+        arithmetic operations for overflow.
+
+If different internal fields need different scale factors, encode that logic in
+`operator*` and `operator/` — the library routes scaling through them via the
+appropriate built-in path. For an example of integrating a third-party floating-point
+type, see the
+[`MyFloat` example](../../how_to_guides/integration/using_custom_representation_types.md#scale)
+in the how-to guide.
+
+### Magnitude-aware scaling { #magnitude-aware-scaling }
+
+Some representation types need to transform not just their **value** but also their
+**type** during unit conversion. For example, a range-validated representation that
+constrains values to [-180, 180] (degrees) should produce a type constrained to
+[-π, π] when converted to radians — otherwise the bounds would be meaningless or
+overly restrictive in the target unit.
+
+To support this, provide an `operator*(T, UnitMagnitude)` hidden friend. It receives the
+exact compile-time unit magnitude and can return a **different type** (e.g. the same
+template with different bounds):
+
+```cpp
+// Example custom type (not provided by the library)
+template<mp_units::treat_as_floating_point T, auto Min, auto Max, typename Policy>
+class bounded_value : /* ... */ {
+public:
+  template<mp_units::UnitMagnitude M>
+  [[nodiscard]] friend constexpr auto operator*(const bounded_value& val, M m)
+  {
+    constexpr T new_lo = mp_units::scale<T>(M{}, T{Min});
+    constexpr T new_hi = mp_units::scale<T>(M{}, T{Max});
+
+    const T scaled = mp_units::scale<T>(m, val.value());
+
+    if constexpr (new_lo <= new_hi)
+      return bounded_value<T, new_lo, new_hi, Policy>(scaled);
+    else
+      return bounded_value<T, new_hi, new_lo, Policy>(scaled);
+  }
+};
+```
+
+The `scale` function handles precision optimization automatically — when the
+magnitude's inverse is integral (e.g. degree-to-radian with π/180), it divides by the
+inverse instead of multiplying, avoiding FP rounding errors.
+
+The library calls `value * M{}` in `scale()` before trying the built-in paths.
+Because the return type may differ from the input, `quantity::in(unit)` propagates
+the new representation type through `sudo_cast`, and the resulting `quantity` (or
+`quantity_point`) automatically uses the scaled-bounds representation.
+
+!!! note "Bounded Quantity Points"
+
+    For bounded `quantity_point` types, the library provides a different mechanism:
+    overflow policies can be passed directly as template parameters to point origins.
+    See [Range-Validated Quantity Points](the_affine_space.md#range-validated-quantity-points).
 
 
 ## Built-in Support
