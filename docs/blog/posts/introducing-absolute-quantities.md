@@ -31,7 +31,7 @@ reflecting how scientists express equations in practice.
 
 ---
 
-_Note: Revised on March 23, 2026 for clarity, accuracy, and completeness._
+_Note: Revised on May 12, 2026 for clarity, accuracy, and completeness._
 
 <!-- more -->
 
@@ -69,7 +69,7 @@ Below is a summary table comparing the three main quantity abstractions:
 | **Subtraction (A − A)**  |    ✅ Delta ($30\ \mathrm{°C} - 10\ \mathrm{°C}$)    |  ✅ Delta ($50\ \mathrm{kg} - 5\ \mathrm{kg}$)   |               ✅ Delta               |
 | **Multiplication (k×A)** |        ❌ Error ($2 \times 20\ \mathrm{°C}$)         |     ✅ Absolute ($2 \times 10\ \mathrm{kg}$)     | ✅ Delta ($-2 \times 5\ \mathrm{m}$) |
 | **Division (A / A)**     |                       ❌ Error                       |  ✅ Scalar ($10\ \mathrm{kg} / 5\ \mathrm{kg}$)  |          ✅ Scalar (ratio)           |
-| **A + Delta**            |                   ✅ Point (shift)                   |                     ✅ Delta                     |               ✅ Delta               |
+| **A + Delta**            |                   ✅ Point (shift)                   |                   ✅ Absolute                    |               ✅ Delta               |
 | **API**                  |               `quantity<point<...>>`                |                 `quantity<...>`                 |       `quantity<delta<...>>`        |
 
 This table summarizes the key differences in semantics, API, and physical meaning for each
@@ -345,11 +345,11 @@ quantity<point<C>> temp3(temp1);                   // OK
 
 To summarize:
 
-|    From \ To |         Point          |   Absolute    |         Delta          |
-|-------------:|:----------------------:|:-------------:|:----------------------:|
-|    **Point** |        Identity        | `.absolute()` | point - point → delta  |
-| **Absolute** | Explicit or `.point()` |   Identity    | Explicit or `.delta()` |
-|    **Delta** | origin + delta → point | `.absolute()` |        Identity        |
+|    From \ To |                            Point                            |                                                           Absolute                                                            |                         Delta                         |
+|-------------:|:-----------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------:|
+|    **Point** |  Identity;<br>`point_for(origin)` to change representation  | `.absolute()` (if not offset unit and the origin is `natural_point_origin`);<br>otherwise `(point - origin_or_qp).absolute()` | `point - origin_or_qp`;<br>`delta_from(origin_or_qp)` |
+| **Absolute** | Explicit ctor (using `natural_point_origin`);<br>`.point()` |                                                           Identity                                                            |          Implicit construction;<br>.delta()           |
+|    **Delta** |                   origin + delta → point                    |                 `.absolute()` (precondition: non-negative);<br>always safe: `abs()`, `norm()`, or `modulus()`                 |                       Identity                        |
 
 
 ### Arithmetic Semantics
@@ -365,23 +365,22 @@ another absolute quantity. This is simply the sum of two non-negative amounts, b
 measured from the true zero of the physical property.
 
 **Adding a delta to an absolute quantity** (e.g., $10\ \mathrm{kg} + (-2\ \mathrm{kg})$)
-yields a (potentially negative) delta. The library cannot statically determine at compile
-time whether a delta is positive, so the result is conservatively typed as a delta.
-If you need an absolute quantity as a result, you must explicitly convert via `.absolute()`,
-which checks the non-negativity precondition at runtime and may fail if the value is
-negative. This ensures that negative results are always intentional and checked,
-increasing code safety.
+yields an absolute quantity. The zero-anchor principle applies: a signed delta shifts the
+value but does not destroy the true-zero anchor, so the result remains an absolute.
+For quantity specs marked `non_negative` (e.g., `isq::mass`), a runtime contract check
+fires if the result would be negative — the check fires at the arithmetic operation site,
+not at a later conversion step.
 
 **Adding an absolute quantity or delta to a point** yields a point shifted by the given
 amount.
 
 Here is the summary of all the addition operations:
 
-|    Lhs \ Rhs |         Point          | Absolute | Delta |
-|-------------:|:----------------------:|:--------:|:-----:|
-|    **Point** | :material-close-thick: |  Point   | Point |
-| **Absolute** |         Point          | Absolute | Delta |
-|    **Delta** |         Point          |  Delta   | Delta |
+|    Lhs \ Rhs |         Point          | Absolute |  Delta   |
+|-------------:|:----------------------:|:--------:|:--------:|
+|    **Point** | :material-close-thick: |  Point   |  Point   |
+| **Absolute** |         Point          | Absolute | Absolute |
+|    **Delta** |         Point          | Absolute |  Delta   |
 
 !!! info
 
@@ -394,7 +393,7 @@ Here is the summary of all the addition operations:
     quantity d = delta<isq::height[m]>(2);
     quantity res1 = abs + abs;                 // Absolute
     quantity res2 = pt + abs;                  // Point
-    quantity res3 = d + abs;                   // Delta
+    quantity res3 = d + abs;                   // Absolute
     ```
 
 #### Subtraction
@@ -416,11 +415,11 @@ quantity<kg> remaining = (total - used).absolute();
 This rule prevents invalid negative absolutes while remaining explicit when needed.
 
 **Subtracting a delta from an absolute quantity** (e.g., $10\ \mathrm{kg} - 2\ \mathrm{kg}$)
-yields a delta. If you need an absolute quantity as a result, you must explicitly convert
-the delta to an absolute quantity (i.e., using `.absolute()`), which will check the
-non-negativity precondition at runtime and may fail if the value is negative. This
-approach ensures that negative results are always intentional and checked, increasing
-code safety.
+yields an absolute quantity. The zero-anchor principle applies: removing a signed change from
+a zero-anchored value preserves the zero-anchor. For `non_negative` specs, a runtime contract
+check fires at the subtraction site if the result would be negative. To intentionally obtain
+a signed result that may go negative, demote the absolute to a delta first:
+`abs.delta() - d`.
 
 **Subtracting an absolute quantity from a point** yields a point, and
 **subtracting a point from an absolute** quantity is not meaningful.
@@ -432,11 +431,11 @@ conservatively remains a delta.
 
 Here is a summary of all of the subtraction operations
 
-|    Lhs \ Rhs |         Point          | Absolute | Delta |
-|-------------:|:----------------------:|:--------:|:-----:|
-|    **Point** |         Delta          |  Point   | Point |
-| **Absolute** | :material-close-thick: |  Delta   | Delta |
-|    **Delta** | :material-close-thick: |  Delta   | Delta |
+|    Lhs \ Rhs |         Point          | Absolute |  Delta   |
+|-------------:|:----------------------:|:--------:|:--------:|
+|    **Point** |         Delta          |  Point   |  Point   |
+| **Absolute** | :material-close-thick: |  Delta   | Absolute |
+|    **Delta** | :material-close-thick: |  Delta   |  Delta   |
 
 !!! info
 
@@ -450,7 +449,7 @@ Here is a summary of all of the subtraction operations
     quantity res1 = pt - abs;                  // Point
     // quantity res2 = abs - pt;               // Compile-time error
     quantity res3 = abs - pt.absolute();       // Delta or quantity_difference
-    quantity res4 = abs - d;                   // Delta
+    quantity res4 = abs - d;                   // Absolute
     quantity res5 = d - abs;                   // Delta
     ```
 
@@ -459,14 +458,20 @@ Here is a summary of all of the subtraction operations
 Beyond addition and subtraction, the following table summarises the multiplication,
 division, and magnitude operations involving absolute quantities and deltas:
 
-| Operation             | Result   | Notes                                                          |
-|:----------------------|:---------|:---------------------------------------------------------------|
-| `Absolute / Absolute` | Absolute | A physical ratio (e.g., _efficiency_, _strain_, _density_).    |
-| `Absolute / Delta`    | Delta    | Rate of an absolute with respect to a signed step.             |
-| `Delta / Absolute`    | Delta    | A change scaled by a fixed magnitude.                          |
-| `Delta / Delta`       | Delta    | A rate of change (e.g., `velocity = displacement / duration`). |
-| `abs(delta_scalar)`   | Absolute | Magnitude of a scalar delta. Equivalent to `delta.absolute()`. |
-| `norm(delta_vector)`  | Absolute | Magnitude of a vector delta (e.g., `speed = norm(velocity)`).  |
+| Operation                | Result   | Notes                                                                           |
+|:-------------------------|:---------|:--------------------------------------------------------------------------------|
+| `Absolute × Absolute`    | Absolute | A product of two absolute quantities (e.g., `energy = power × time`).           |
+| `Absolute × Scalar`      | Absolute | Rescaling by a dimensionless factor (e.g., `2 × mass` stays absolute mass).     |
+| `Absolute × Delta`       | Delta    | Absolute scaled by a displacement (e.g., `area × delta_height → delta_volume`). |
+| `Delta × Absolute`       | Delta    | Same as `Absolute × Delta` — multiplication is commutative.                     |
+| `Delta × Scalar`         | Delta    | Rescaling a signed difference (factor preserves delta category).                |
+| `Absolute / Absolute`    | Absolute | A physical ratio (e.g., _efficiency_, _strain_, _density_).                     |
+| `Absolute / Delta`       | Delta    | Rate of an absolute with respect to a signed step.                              |
+| `Delta / Absolute`       | Delta    | A change scaled by a fixed magnitude.                                           |
+| `Delta / Delta`          | Delta    | A rate of change (e.g., `velocity = displacement / duration`).                  |
+| `abs(delta_scalar)`      | Absolute | Magnitude of a scalar delta. Equivalent to `delta.absolute()`.                  |
+| `modulus(delta_complex)` | Absolute | Modulus of a complex scalar delta.                                              |
+| `norm(delta_vector)`     | Absolute | Magnitude of a vector delta (e.g., `speed = norm(velocity)`).                   |
 
 The last two rows highlight the two pathways from a **delta** to an **absolute**:
 
@@ -504,6 +509,20 @@ Instead, every non-negative root derived quantity carries an explicit `non_negat
 tag at its definition. Named children inherit the tag from their parent; ad-hoc
 anonymous composed specs (e.g., `isq::length / isq::time`) are never non-negative
 unless they resolve to a named quantity that carries the tag.
+
+The `non_negative` precondition is checked at three sites:
+
+1. **Construction** — building an absolute from a literal or from a delta value.
+2. **`.absolute()` conversion** — promoting a delta or point to an absolute.
+3. **`Absolute ± Delta` arithmetic** — at the arithmetic site, before the result is stored.
+
+One important subtlety: `kind_of<QS>` is **never** `non_negative`, even when `QS` carries
+the tag. Kind-erased quantities can represent any quantity of that kind — some of which are
+signed — so the constraint is intentionally dropped.
+
+Unary negation of a `non_negative` absolute is an open design question: the two candidate
+behaviors are a compile-time error (safest) or implicit demotion to a delta (most
+convenient). Either way, the result is never an absolute.
 
 
 ### Interesting Quantity Types
@@ -1053,55 +1072,100 @@ Absolute-Scalar space.
 
 ---
 
-### 3. Why does `Absolute - Delta` result in a `Delta`?
+### 3. Why does `Absolute ± Delta` result in an `Absolute`?
 
-One might assume that as $A - A = D$ then $A - D = A$. However, this violates the
-**Non-Negativity Guarantee** of the Absolute type.
+One might expect that, since a delta can be negative, the result of `Absolute ± Delta`
+should be conservatively typed as a `Delta`. This was the initial design — but it was
+rejected in favour of the **zero-anchor principle**.
 
-Consider a fuel tank and an engine that burns fuel on the way to destination:
+The key insight is that the category of a quantity describes _where it lives_, not _what
+sign it has_. A delta has no fixed origin; an absolute is anchored at a physically
+meaningful true zero. Adding or subtracting a signed displacement does not destroy that
+anchor — the result is still measured from the same true zero:
 
-- `fuel_present` = $10\text{ kg}$ (Absolute)
-- `fuel_required` = $15\text{ kg}$ (Delta)
-- `result` = $-5\text{ kg}$
+- `tank(500 kg, absolute) + refuel(200 kg, delta)` → 700 kg (absolute)
+- `tank(500 kg, absolute) - burn(600 kg, delta)` → −100 kg (absolute)
 
-A "Negative Absolute Mass" is a physical impossibility. However, a **Negative Delta**
-is mathematically valid—it represents a deficit. To ensure compile-time safety, any
-operation that _can_ result in a negative value must return a `Delta`. Subtraction
-is a "Type Demoter" that moves you from the restricted absolute Ratio scale back into
-the unrestricted Vector space.
+The second case is a **value-range violation**, not a type-category error. For quantity
+specs marked `non_negative` (e.g., `isq::mass`), a runtime contract check fires at the `±`
+operation site when the result would be negative. To intentionally work in the signed
+domain — for example, to represent a deficit that may go negative — demote first:
+`fuel.delta() - burn` produces `delta<mass>: −100 kg` with no check.
 
----
-
-### 4. If I can't burn "negative fuel," why is `BurnRate * Time` a Delta?
-
-This is a distinction between a Stock (State) and a Flow (Transaction):
-
-- **Stocks (Absolute):** Represent the "Inventory" (e.g., Fuel in the tank). These are strictly
-  non-negative.
-- **Flows (Delta):** Represent the "Transfer." Even if a specific process (like an engine)
-  only flows in one direction, the mathematical category of a flow must support directionality.
-
-Even if an engine only burns fuel (negative flow), the category of "Flow" must support
-directionality to handle both consumption and refueling. By modeling the flow as a Delta
-from the start, we maintain a consistent algebraic chain:
-
-$$State_{new} = State_{old} + Flow$$
-
-$$Absolute_{new} = Absolute_{old} + Delta_{flow}$$
-
-This allows the type system to handle both _Fuel Consumption_ (Negative Delta) and _Refueling_
-(Positive Delta) using the same logic, without forcing the user to treat "Refilling" and
-"Burning" as two different mathematical universes.
+This rule is also consistent with `Absolute × Scalar → Absolute`: multiplying by a
+negative scalar can drive an absolute below zero, yet no one questioned the result type
+there. Both are value-range issues handled by runtime checks, not compile-time type
+demotions.
 
 ---
 
-### 5. Why not just use Runtime Contracts for negative Absolute results?
+### 4. Why is `Absolute × Delta` a Delta, but `Absolute ± Delta` an Absolute?
 
-We could, but it weakens the type system. If $Absolute - Delta$ returns an $Absolute$,
-the compiler assumes the result is a valid non-negative magnitude. If it isn't, the
-program crashes or triggers a contract violation at runtime. By returning a Delta Quantity,
-we handle the "Negative Possibility" at compile-time. The user is forced to acknowledge
-that the result might be a deficit before treating it as a magnitude again.
+Both rules follow the same **zero-anchor principle**, which asks: does the operation
+preserve the true-zero anchor?
+
+**Addition/subtraction** — translating a zero-anchored value up or down does not move
+the anchor. The result is still measured from the same physical zero, so it remains an
+absolute:
+
+$$\text{tank} + \Delta\text{refuel} = \text{new tank level, still measured from 0 kg}$$
+
+**Multiplication** — when you multiply an absolute by a delta, you are combining _two
+different quantities_ into a _third_ (e.g., `power × time → energy`, or
+`area × delta_height → delta_volume`). The delta carries orientation-awareness (it can
+be negative). The resulting derived quantity inherits that orientation-awareness:
+the product can be negative simply because the delta is negative, and there is no single
+physically meaningful true zero shared by both factors. The zero-anchor is not preserved,
+so the result is a `Delta`.
+
+In code:
+
+```cpp
+quantity fuel      = isq::mass(500 * kg);          // absolute
+quantity burn      = delta<isq::mass[kg]>(600);    // delta (signed change)
+quantity remaining = fuel - burn;                  // absolute: −100 kg (contract fires for non_negative)
+
+quantity area      = isq::area(10 * m2);           // absolute
+quantity dh        = delta<isq::height[m]>(3);     // delta
+quantity vol_delta = area * dh;                    // delta: 30 m³ (delta, not absolute)
+```
+
+---
+
+### 5. How do I handle a deficit without triggering the non-negativity contract?
+
+For quantity specs marked `non_negative`, the contract fires whenever an `Absolute ± Delta`
+result would go below zero. Two escape hatches exist:
+
+**Demote before the operation** — convert the absolute to a delta first. The result is a
+`delta` with no invariant, so the deficit is representable without a contract violation:
+
+```cpp
+quantity fuel        = isq::mass(500 * kg);        // non_negative absolute
+quantity consumption = delta<isq::mass[kg]>(600);  // signed delta
+
+quantity balance = fuel.delta() - consumption;     // delta<mass>: −100 kg, no contract
+if (balance < delta<isq::mass[kg]>(0)) {
+  // handle deficit: 100 kg short
+}
+```
+
+**Model consumption as an absolute** — fuel consumption is a non-negative amount burned,
+so it is physically better typed as an absolute. Subtracting two absolutes yields a delta
+via `Absolute − Absolute → Delta` (the affine-space rule), with no check required:
+
+```cpp
+quantity fuel        = isq::mass(500 * kg);        // absolute
+quantity consumption = isq::mass(600 * kg);        // absolute (non-negative burn amount)
+quantity balance     = fuel - consumption;         // delta<mass>: −100 kg, no contract
+if (balance < delta<isq::mass[kg]>(0)) {
+  // handle deficit
+}
+```
+
+The second approach is the stronger design: the type of `consumption` encodes the physical
+invariant (burn amounts cannot be negative), and the `Absolute − Absolute → Delta` rule
+delivers the signed balance naturally.
 
 ---
 
@@ -1127,7 +1191,19 @@ V3 forces you to be explicit about whether the direction of time matters to your
 
 ---
 
-### 7. Why is `Quantity` the default for Absolute in V3?
+### 7. Does `a + b = c` imply the same types work for `a = c - b`?
+
+Not necessarily. The category of `c - b` is determined by what `c` and `b` are, not by
+what `a` was in the original equation. Specifically, `Absolute − Absolute → Delta`, so if
+both `c` and `b` are absolutes, `c - b` is a delta even if `a` was an absolute.
+
+This asymmetry is deliberate: the equation $a + b = c$ is a statement about _values_, not
+about _categories_. Use `.absolute()` to convert back explicitly when the value is known to
+be non-negative.
+
+---
+
+### 8. Why is `Quantity` the default for Absolute in V3?
 
 It aligns the library with how physics is taught. In V2, the most "natural" syntax
 (`quantity<K>`) was often used to represent deltas, forcing users to use more complex
@@ -1142,7 +1218,7 @@ have a magnitude, you just use it.
 
 ---
 
-### 8. Isn't `point.absolute()` just more boilerplate?
+### 9. Isn't `point.absolute()` just more boilerplate?
 
 It is a **Type-Safety Checkpoint**. When you convert a `point<deg_C>` to an `absolute<K>`,
 you are performing a non-trivial physical transformation (shifting the origin to absolute
@@ -1151,7 +1227,7 @@ It prevents the silent bug of dividing two "points" and getting a meaningless ra
 
 ---
 
-### 9. Is the 3-category model too complex for users?
+### 10. Is the 3-category model too complex for users?
 
 It has a learning curve, but it maps more closely to how we think. We don't think of
 "The distance to the moon" as a "Delta of Position" in daily life; we think of it as
