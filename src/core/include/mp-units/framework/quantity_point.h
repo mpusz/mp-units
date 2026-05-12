@@ -584,6 +584,24 @@ public:
       return ::mp_units::quantity_point{*this - new_origin, new_origin};
   }
 
+  template<PointOrigin NewPO, typename... Args>
+    requires detail::HasFrameProjection<absolute_point_origin, detail::get_absolute_point_origin(NewPO{})> &&
+             requires(quantity_point<reference, absolute_point_origin, Rep> at_src, Args... args) {
+               {
+                 frame_projection<absolute_point_origin, detail::get_absolute_point_origin(NewPO{})>(at_src, args...)
+               } -> QuantityPointOf<detail::get_absolute_point_origin(NewPO{})>;
+             }
+  [[nodiscard]] constexpr QuantityPointOf<(NewPO{})> auto point_for(NewPO new_origin, Args&&... args) const
+  {
+    ::mp_units::quantity_point at_src = point_for(absolute_point_origin);
+    constexpr PointOrigin auto abs_tgt = detail::get_absolute_point_origin(NewPO{});
+    auto at_tgt = frame_projection<absolute_point_origin, abs_tgt>(at_src, std::forward<Args>(args)...);
+    if constexpr (std::is_same_v<NewPO, MP_UNITS_NONCONST_TYPE(abs_tgt)>)
+      return at_tgt;
+    else
+      return at_tgt.point_for(new_origin);
+  }
+
   // data access
   template<PointOrigin PO2>
     requires(PO2{} == point_origin)

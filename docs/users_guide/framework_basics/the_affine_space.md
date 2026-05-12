@@ -390,13 +390,112 @@ assert(qp2 == qp2A);
 !!! important
 
     It is only allowed to convert between various origins defined in terms of the same
-    `absolute_point_origin`. Even if it is possible to express the same _point_ as a
-    _displacement vector_ from another `absolute_point_origin`, the library will not provide such
-    a conversion. A custom user-defined conversion function will be needed to add such a
-    functionality.
+    `absolute_point_origin`. To connect two distinct `absolute_point_origin` types, a
+    [frame projection](#frame-proj) must be registered — see the section below.
 
-    Said another way, in the library, there is no way to spell how two distinct `absolute_point_origin`
-    types relate to each other.
+
+### Frame projections between independent origins { #frame-proj }
+
+`relative_point_origin` handles compile-time offsets within a single origin tree. Some
+conversions cannot be expressed that way:
+
+- **Axis-inverting transformations** — altitude ↔ depth: the physical magnitude is the same
+  but the axis direction flips (`depth = −altitude`).
+- **Formula-based conversions** — geometric azimuth ↔ bearing: `bearing = 90° − azimuth`
+  involves negation, which is not a pure offset.
+- **Runtime-parameter conversions** — world frame ↔ camera frame: the transformation
+  depends on calibration data that is not known at compile time.
+
+The `frame_projection` customization point bridges pairs of `absolute_point_origin` values
+with user-supplied callables. The primary template is intentionally left as `undefined`,
+so that the library can detect whether a user specialization exists for a given pair:
+
+| Property                     | `relative_point_origin`      | `frame_projection`                                    |
+|:-----------------------------|:-----------------------------|:------------------------------------------------------|
+| Transformation location      | Compile time (NTTP)          | Runtime (callable specialization)                     |
+| Rep-type requirement         | Structural type              | No restriction                                        |
+| Automatic inverse            | Yes                          | No — both directions must be explicit                 |
+| Compile-time chain discovery | Yes (origin-tree walk)       | No — only direct pairs connected                      |
+| Runtime parameters           | No                           | Yes — extra `point_for` args forwarded to the functor |
+| Suitable for                 | Celsius↔Kelvin, epoch shifts | Axis inversions, camera calibration                   |
+
+#### Defining a projection
+
+Specialize `frame_projection` for each `(From, To)` pair. The specialization must be a
+callable invocable as:
+
+```cpp
+frame_projection<From, To>(quantity_point_at_From, extra_args...) -> quantity_point_at_To
+```
+
+```cpp
+inline constexpr struct sea_level final : absolute_point_origin<isq::height> {} sea_level;
+inline constexpr struct ocean_surface final : absolute_point_origin<isq::height> {} ocean_surface;
+
+template<>
+inline constexpr auto mp_units::frame_projection<sea_level, ocean_surface> =
+    [](QuantityPointOf<isq::height> auto qp) {
+        return ocean_surface - qp.quantity_from(sea_level);
+    };
+
+// The inverse must be provided explicitly — the library never derives it automatically:
+template<>
+inline constexpr auto mp_units::frame_projection<ocean_surface, sea_level> =
+    [](QuantityPointOf<isq::height> auto qp) {
+        return sea_level - qp.quantity_from(ocean_surface);
+    };
+```
+
+#### Using `point_for` with a frame projection
+
+Call `point_for` exactly as you would for same-origin conversions:
+
+```cpp
+quantity_point altitude = sea_level + (-100. * m);            // 100 m below sea level
+quantity_point depth    = altitude.point_for(ocean_surface);  // depth = 100 m (positive downward)
+quantity_point alt2     = depth.point_for(sea_level);         // altitude = −100 m
+```
+
+If the requested origin is a `relative_point_origin` whose absolute root can be reached via
+a `frame_projection`, the library first projects to that absolute root and then walks down
+the origin tree automatically:
+
+```cpp
+// shallow_water is defined 10 m "below" ocean_surface in the depth frame
+inline constexpr struct shallow_water final :
+    relative_point_origin<ocean_surface + 10. * isq::height[m]> {} shallow_water;
+
+quantity_point from_shallow = altitude.point_for(shallow_water);
+// Steps: sea_level → ocean_surface (depth 100 m), walk-down: 100 − 10 = 90 m from shallow_water
+```
+
+#### Runtime arguments
+
+Any extra arguments passed to `point_for` are forwarded to the projection functor, enabling
+runtime-parameter-dependent transformations:
+
+```cpp
+struct CameraCalibration { double R[3][3]; double t[3]; };
+
+template<>
+inline constexpr auto mp_units::frame_projection<world_frame, camera_frame> =
+    [](QuantityPointOf<isq::length> auto qp, const CameraCalibration& cal) {
+        return camera_frame + forward_transform(cal, qp.quantity_from(world_frame));
+    };
+
+// Different call sites supply different calibrations — no global state required:
+CameraCalibration cal = load_calibration("cam.json");
+quantity_point cam_pt = world_pt.point_for(camera_frame, cal);
+```
+
+!!! important
+
+    - **Both directions must be explicit.** The library never derives an inverse automatically.
+    - **Chain walks within a frame are automatic.** Projecting to an `absolute_point_origin`
+      whose tree contains the requested `relative_point_origin` triggers the compile-time
+      walk-down inside `point_for`.
+    - **Chains do not cross frame boundaries.** Only direct `(From, To)` specializations are
+      considered; multi-hop projections must be composed by the caller.
 
 
 ## Range-Validated Quantity Points { #range-validated-quantity-points }
@@ -433,15 +532,17 @@ arithmetic operations.
     - **_Bearing_** (mirrored): 0° = North, clockwise, wraps [-180°, 180°)
         - Conversion: `bearing = 90° - geometric_azimuth` (involves negation)
         - Cannot use `relative_point_origin` (requires separate `absolute_point_origin`)
+        - Use `frame_projection<north_cw, east>` / `frame_projection<east, north_cw>` —
+          see [Frame projections between independent origins](#frame-proj)
 
     These requirements came from companies working with coordinate reference systems (CRS),
     navigation, and geodesy. See the complete discussion in
     [GitHub #782](https://github.com/mpusz/mp-units/discussions/782).
 
     **Key Insight**: `relative_point_origin` can only model offset transformations (addition/subtraction).
-    Transformations involving negation or sign flips (like bearing ↔ azimuth) require separate
-    `absolute_point_origin` types with explicit conversion functions. This ensures type safety
-    while allowing the framework to handle appropriate coordinate transformations automatically.
+    Transformations involving negation or sign flips (like bearing ↔ azimuth) require
+    separate `absolute_point_origin` types connected via `frame_projection`. This ensures
+    type safety while allowing the framework to handle coordinate transformations automatically.
 
     **Type Safety with `is_kind`**: All geographic quantity specs use `is_kind` to prevent
     accidental mixing of different angle types (e.g., `latitude + longitude`, `bearing + heading`).

@@ -40,6 +40,16 @@ import std;
 #endif
 #endif
 
+// Public customization points in this file:
+//   - treat_as_floating_point<Rep>
+//   - representation_values<Rep>
+//   - constraint_violation_handler<Rep>
+//   - quantity_like_traits<T>
+//   - quantity_point_like_traits<T>
+// Additional customization points defined in other headers:
+//   - implicitly_scalable<FromUnit, FromRep, ToUnit, ToRep>  <mp-units/framework/value_cast.h>
+//   - frame_projection<From, To>                             <mp-units/framework/quantity_point_concepts.h>
+
 namespace mp_units {
 
 namespace detail {
@@ -243,8 +253,6 @@ struct representation_values {
 template<typename Rep>
 using quantity_values [[deprecated("2.5.0: Use `representation_values` instead")]] = representation_values<Rep>;
 
-MP_UNITS_EXPORT_END
-
 /**
  * @brief Customization point for handling domain constraint violations.
  *
@@ -257,8 +265,10 @@ MP_UNITS_EXPORT_END
  *
  * @tparam Rep the representation type
  */
-MP_UNITS_EXPORT template<typename Rep>
+template<typename Rep>
 struct constraint_violation_handler;
+
+MP_UNITS_EXPORT_END
 
 namespace detail {
 

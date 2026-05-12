@@ -38,6 +38,29 @@ struct absolute_point_origin;
 
 namespace detail {
 
+// exposition-only: matches types derived from absolute_point_origin
+template<typename T>
+concept AbsolutePointOrigin = PointOrigin<T> && is_derived_from_specialization_of_v<T, absolute_point_origin>;
+
+}  // namespace detail
+
+/**
+ * @brief User-specializable variable template for runtime coordinate frame transformations.
+ *
+ * Connects pairs of absolute point origin values with user-supplied callables. Specialize per
+ * (From, To) pair with a callable invocable as:
+ *   frame_projection<From, To>(quantity_point_at_From, extra_args...) -> quantity_point_at_To
+ *
+ * Both directions must be explicitly specialized — the library never derives an inverse.
+ * The primary template defaults to `detail::undefined_t{}` so that `detail::HasFrameProjection`
+ * can detect whether a specialization exists.
+ */
+MP_UNITS_EXPORT template<detail::AbsolutePointOrigin auto From, detail::AbsolutePointOrigin auto To>
+  requires(From != To)
+inline constexpr detail::undefined_t frame_projection;
+
+namespace detail {
+
 template<typename T>
 constexpr bool is_quantity_point = false;
 
@@ -126,5 +149,12 @@ concept QuantityPointLike = !QuantityPoint<T> && detail::QuantityLikeImpl<T, qua
   typename quantity_point<quantity_point_like_traits<T>::reference, quantity_point_like_traits<T>::point_origin,
                           typename quantity_point_like_traits<T>::rep>;
 };
+
+namespace detail {
+
+template<AbsolutePointOrigin auto From, AbsolutePointOrigin auto To>
+concept HasFrameProjection = !std::is_same_v<MP_UNITS_REMOVE_CONST(decltype(frame_projection<From, To>)), undefined_t>;
+
+}  // namespace detail
 
 }  // namespace mp_units
