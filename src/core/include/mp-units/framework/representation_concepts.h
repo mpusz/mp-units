@@ -46,6 +46,17 @@ namespace mp_units {
 
 namespace detail {
 
+// Extends std::integral to cover int128_t and uint128_t.
+// On GCC in strict mode (-std=c++20), std::integral<__int128> = false because the
+// standard traits (std::is_integral, std::is_arithmetic) are not specialized for
+// __int128 outside of GNU extensions (-std=gnu++20).  When __SIZEOF_INT128__ is
+// absent, int128_t / uint128_t are double_width_int<> emulations which also do not
+// satisfy std::integral.  This concept patches both gaps so the scaling engine can
+// treat all supported 128-bit integer types uniformly.
+template<typename T>
+concept integral =
+  std::integral<T> || std::same_as<std::remove_cv_t<T>, int128_t> || std::same_as<std::remove_cv_t<T>, uint128_t>;
+
 // The wider integer type used for magnitude constants to prevent overflow when
 // scaling by a rational magnitude (v * num / den).  For elements up to 32 bits
 // we widen to (u)int64_t; for 64-bit elements we widen to (u)int128_t; otherwise the
@@ -295,20 +306,26 @@ concept UsesFloatingPointScaling =
     { value / f } -> WeaklyRegular;
   };
 
-// std::integral (not just treat_as_integral) is required because the scaling engine
-// relies on get_value<element_t>, wider_int_for<element_t>, and fixed_point<element_t>,
-// which are only defined for fundamental integer types.  The concept covers both plain
-// arithmetic types (int, long) and wrappers/containers whose element type is a standard
-// integer (safe_int<int>, cartesian_vector<int>): the scaling engine uses the type's
-// own operator* / operator/ so that wrappers can check for overflow, containers can
-// scale element-wise, etc.
+// detail::integral (not std::integral) is required so that int128_t / uint128_t are
+// accepted as element types.  On GCC in strict mode (-std=c++20), std::integral<__int128>
+// = false because the standard traits are not specialized for __int128 outside of GNU
+// extensions; when __SIZEOF_INT128__ is absent, int128_t / uint128_t are double_width_int<>
+// emulations that also do not satisfy std::integral.  detail::integral patches both gaps.
+// The scaling engine internals (get_value<element_t>, wider_int_for<element_t>,
+// fixed_point<element_t>) are all specialized for int128_t / uint128_t, so the full
+// scaling pipeline works correctly once the concept admits those types.
+//
+// The concept covers both plain arithmetic types (int, long, int128_t) and
+// wrappers/containers whose element type is a supported integer (safe_int<int>,
+// cartesian_vector<int>): the scaling engine uses the type's own operator* / operator/
+// so that wrappers can check for overflow, containers can scale element-wise, etc.
 //
 // The rational-magnitude path in detail::scale_int multiplies by a factor of type
 // wider_int_for<element_t> (e.g. int64_t for signed int16_t, uint64_t for uint16_t) to
 // avoid overflowing the intermediate. The concept therefore requires `value * WF` and
 // `value / WF` for the wider factor.
 template<typename T>
-concept UsesIntegerScaling = std::integral<value_type_t<T>> && requires(T value, wider_int_for<value_type_t<T>> wf) {
+concept UsesIntegerScaling = integral<value_type_t<T>> && requires(T value, wider_int_for<value_type_t<T>> wf) {
   { value * wf };
   { value / wf };
 };

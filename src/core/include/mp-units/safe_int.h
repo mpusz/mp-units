@@ -81,34 +81,6 @@ MP_UNITS_EXPORT struct safe_int_throw_policy : throw_policy {
 
 #endif  // MP_UNITS_HOSTED
 
-// ============================================================================
-// detail::integral: extends std::integral to include __int128 / unsigned __int128.
-//
-// On GCC (all supported versions), std::integral<__int128> = false even though
-// __int128 is a fully usable integer type.  This concept corrects that gap so
-// safe_int<T> and its mixed-type operators work uniformly on both GCC and Clang.
-//
-// IMPORTANT: use int128_t / uint128_t (type aliases from fixed_point.h) rather
-// than the raw keywords __int128 / unsigned __int128.  GCC's -Wpedantic fires
-// whenever those keywords appear in source text — including inside a concept
-// body at the point of evaluation, which is outside any DIAGNOSTIC_IGNORE_PEDANTIC
-// scope.  Using the aliases suppresses the warning because the keyword no longer
-// appears literally at the instantiation site.
-// ============================================================================
-
-namespace detail {
-
-#if defined(__SIZEOF_INT128__)
-// int128_t and uint128_t are defined in <mp-units/bits/fixed_point.h> (included above).
-template<typename T>
-concept integral =
-  std::integral<T> || std::same_as<std::remove_cv_t<T>, int128_t> || std::same_as<std::remove_cv_t<T>, uint128_t>;
-#else
-template<typename T>
-concept integral = std::integral<T>;
-#endif
-
-}  // namespace detail
 
 // ============================================================================
 // Overflow detection helpers (for detail::integral T)
