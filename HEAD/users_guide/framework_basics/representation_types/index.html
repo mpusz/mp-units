@@ -2166,45 +2166,6 @@ You're not viewing the latest version.
 </li>
       
         <li class="md-nav__item">
-  <a href="#how-scaling-works" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        How Scaling Works
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="How Scaling Works">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#built-in-scaling-algorithm" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Built-in scaling algorithm
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#magnitude-aware-scaling" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Magnitude-aware scaling
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#customization-points" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2268,17 +2229,6 @@ You're not viewing the latest version.
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#value_type-or-element_type" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        value_type or element_type
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#representation_underlying_type" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2290,10 +2240,10 @@ You're not viewing the latest version.
 </li>
         
           <li class="md-nav__item">
-  <a href="#treat_as_floating_point" class="md-nav__link">
+  <a href="#scaling-operators" class="md-nav__link">
     <span class="md-ellipsis">
       
-        treat_as_floating_point&lt;Rep&gt;
+        Scaling operators
       
     </span>
   </a>
@@ -2301,10 +2251,10 @@ You're not viewing the latest version.
 </li>
         
           <li class="md-nav__item">
-  <a href="#scaling-operators" class="md-nav__link">
+  <a href="#treat_as_floating_point" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Scaling operators
+        treat_as_floating_point&lt;Rep&gt;
       
     </span>
   </a>
@@ -2362,6 +2312,45 @@ You're not viewing the latest version.
       
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-scaling-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How Scaling Works
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How Scaling Works">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#built-in-scaling-algorithm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Built-in scaling algorithm
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#magnitude-aware-scaling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Magnitude-aware scaling
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -11965,13 +11954,358 @@ scalar measures are extracted and used for analysis:</p>
 <p>This is why arithmetic types work for tensor quantities—they represent these scalar measures
 commonly used in finite element analysis, structural engineering, and materials science.</p>
 </details>
+<h2 id="customization-points">Customization Points<a class="headerlink" href="#customization-points" title="Permanent link">&para;</a></h2>
+<p>The library provides several customization mechanisms for representation types.
+For a complete implementation guide and code examples for custom types, see
+<a href="../../../how_to_guides/integration/using_custom_representation_types/">Using Custom Representation Types</a>.</p>
+<p>These mechanisms fall into two categories: <strong>Character determination</strong> (what kind of
+representation type you have) and <strong>Behavior and values</strong> (how the library interacts with
+your type).</p>
+<h3 id="character-determination">Character Determination<a class="headerlink" href="#character-determination" title="Permanent link">&para;</a></h3>
+<h4 id="customization-point-objects-cpos">Customization Point Objects (CPOs)<a class="headerlink" href="#customization-point-objects-cpos" title="Permanent link">&para;</a></h4>
+<p>The library uses several CPOs to support different representation types. Providing these CPOs
+determines the <strong>character</strong> of your representation type. Each CPO checks for implementations
+in the following priority order:</p>
+<p><strong><code>mp_units::real(c)</code></strong> - Returns the real part of a complex number:</p>
+<ol>
+<li><code>c.real()</code> member function</li>
+<li><code>real(c)</code> free function found via ADL</li>
+</ol>
+<p><strong><code>mp_units::imag(c)</code></strong> - Returns the imaginary part of a complex number:</p>
+<ol>
+<li><code>c.imag()</code> member function</li>
+<li><code>imag(c)</code> free function found via ADL</li>
+</ol>
+<p><strong><code>mp_units::modulus(c)</code></strong> - Returns the magnitude of a complex number:</p>
+<ol>
+<li><code>c.modulus()</code> member function</li>
+<li><code>modulus(c)</code> free function found via ADL</li>
+<li><code>c.abs()</code> member function</li>
+<li><code>abs(c)</code> free function found via ADL</li>
+</ol>
+<p><strong><code>mp_units::norm(v)</code></strong> - Returns the norm (magnitude) of a vector or tensor as a scalar:</p>
+<ol>
+<li><code>v.norm()</code> member function</li>
+<li><code>norm(v)</code> free function found via ADL</li>
+<li>For arithmetic types: <code>std::abs(v)</code></li>
+<li>For real scalar types: <code>v.abs()</code> member function</li>
+<li>For real scalar types: <code>abs(v)</code> free function found via ADL</li>
+</ol>
+<p><strong><code>mp_units::magnitude(v)</code></strong> - Returns the magnitude of a vector as a scalar:</p>
+<ol>
+<li>Delegates to <code>mp_units::norm(v)</code> (provided for compatibility with physics terminology)</li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Why <code>abs()</code> is also checked?</p>
+<p><strong>Complex Scalars (<code>modulus()</code> CPO)</strong></p>
+<p>Provides compatibility with <code>std::complex</code> and similar types that use <code>abs()</code> as the
+function name for returning the modulus value. This is checked as a fallback if
+<code>modulus()</code> is not provided.</p>
+<p><strong>Vectors and Tensors (<code>norm()</code> CPO)</strong></p>
+<p>Allows real scalar types (like <code>int</code>, <code>double</code>) to represent:</p>
+<ul>
+<li><strong>1-dimensional vectors</strong> (very common in engineering for linear motion)</li>
+<li><strong>Scalar tensor measures</strong> (von Mises stress, principal stress, etc.)</li>
+</ul>
+<p>This enables seamless use of arithmetic types for scalar, vector, AND tensor quantities,
+which accurately reflects real engineering practice where most calculations use scalar
+values rather than full vector/tensor representations.</p>
+</div>
+<hr />
+<h4 id="disable_realt"><code>disable_real&lt;T&gt;</code><a class="headerlink" href="#disable_realt" title="Permanent link">&para;</a></h4>
+<p>A specializable variable template to opt out a type from being treated as a real scalar:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">disable_real</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>Purpose:</strong> Controls the <strong>character</strong> of your representation type by preventing it from
+being classified as a real scalar, even if it satisfies the real scalar requirements
+(copyable, totally ordered, supports arithmetic operations).</p>
+<p><strong>When to specialize:</strong> If your type accidentally satisfies the real scalar requirements
+but shouldn't be used as one:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">template</span><span class="o">&lt;&gt;</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">disable_real</span><span class="o">&lt;</span><span class="n">my_type</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>Example use case:</strong> The library uses this internally to prevent <code>bool</code> from being used
+as a scalar representation, even though <code>bool</code> is technically totally ordered and supports
+arithmetic operations.</p>
+<hr />
+<h3 id="behavior-and-values">Behavior and Values<a class="headerlink" href="#behavior-and-values" title="Permanent link">&para;</a></h3>
+<h4 id="representation_underlying_type"><code>representation_underlying_type&lt;T&gt;</code><a class="headerlink" href="#representation_underlying_type" title="Permanent link">&para;</a></h4>
+<p>A specializable class template that describes the underlying arithmetic/element type of
+a representation type. It is <strong>the</strong> extension point for exposing this information to
+the library, and is used for:</p>
+<ul>
+<li>Determining the scaling factor type (what type to multiply/divide your type by)</li>
+<li>Checking if the type should be treated as floating-point</li>
+</ul>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">struct</span><span class="w"> </span><span class="nc">mp_units</span><span class="o">::</span><span class="n">representation_underlying_type</span><span class="p">;</span><span class="w">  </span><span class="c1">// primary — empty</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="k">using</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">representation_underlying_type_t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">representation_underlying_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">type</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>Default detection</strong> (via partial specializations provided by the library, mirroring
+the shape of <code>std::indirectly_readable_traits</code> for its <code>value_type</code> / <code>element_type</code>
+cases):</p>
+<ul>
+<li>nested <code>T::value_type</code>, else</li>
+<li>nested <code>T::element_type</code>;</li>
+<li>a top-level <code>const</code> on <code>T</code> is passed through to the unqualified type;</li>
+<li>the detected alias has its cv-qualification removed;</li>
+<li>if <code>T</code> provides both <code>value_type</code> and <code>element_type</code> whose underlying types differ
+  after ignoring top-level cv-qualification, the trait is empty — the user must
+  disambiguate explicitly;</li>
+<li>for scoped enumeration types, the underlying integer type is used (via
+  <code>std::underlying_type_t</code>) — a representation-model extension not present in the
+  standard's iterator-oriented trait. Unscoped enumerations are deliberately excluded
+  because they already implicitly convert to their underlying type.</li>
+</ul>
+<p><strong>For your own types:</strong> provide a <code>value_type</code> member type so the library detects the
+underlying type automatically:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">my_wrapper</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="k">public</span><span class="o">:</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">value_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T</span><span class="p">;</span><span class="w">  </span><span class="c1">// Exposes the underlying type</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">  </span><span class="c1">// ...</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="p">};</span>
+</span></code></pre></div>
+<p><strong>For third-party types</strong> you cannot modify, specialize the trait directly:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1">// Third-party type MyFloat wraps long double internally</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">template</span><span class="o">&lt;&gt;</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="k">struct</span><span class="w"> </span><span class="nc">mp_units</span><span class="o">::</span><span class="n">representation_underlying_type</span><span class="o">&lt;</span><span class="n">MyFloat</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="kt">double</span><span class="p">;</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="p">};</span>
+</span></code></pre></div>
+<p>This makes <code>representation_underlying_type_t&lt;MyFloat&gt;</code> resolve to <code>long double</code>, giving
+the library the correct precision for scaling and ensuring the right <code>common_type</code> is
+used in mixed conversions.</p>
+<div class="admonition warning">
+<p class="admonition-title">Don't provide both <code>value_type</code> and <code>element_type</code></p>
+<p>If your type provides both <code>value_type</code> and <code>element_type</code> whose underlying
+types differ after ignoring top-level cv-qualification, the trait is empty and
+the library treats the type as a leaf. If both are present and name the same
+underlying type, that type is used.</p>
+<p><strong>Recommendation:</strong> Provide only <code>value_type</code> unless you have a specific reason to provide both
+(e.g., satisfying iterator concepts), in which case ensure they refer to the same type.</p>
+</div>
+<div class="admonition question">
+<p class="admonition-title">Why not <code>std::indirectly_readable_traits</code>?</p>
+<p><code>std::indirectly_readable_traits</code> answers "what does <code>*t</code> yield?" — it is the
+standard's extension point for iterators, smart pointers, and other
+indirectly-readable types. Specializing it for a non-iterator representation
+type is a semantic misuse: it tells every other standard-library component
+that your type is iterator-like, which it usually is not.</p>
+<p>Pointer and array specializations from <code>std::indirectly_readable_traits</code> are
+intentionally <strong>not</strong> mirrored in <code>representation_underlying_type</code> — those are
+part of the standard's iterator machinery, not of this library's representation
+model.</p>
+</div>
+<hr />
+<h4 id="scaling-operators">Scaling operators<a class="headerlink" href="#scaling-operators" title="Permanent link">&para;</a></h4>
+<p>The library scales a representation value by calling <code>value * factor</code> and <code>value / factor</code>,
+where <code>factor</code> is of type <code>representation_underlying_type_t&lt;T&gt;</code> (or a wider integer type
+for the rational integer path — see <a href="#how-scaling-works">widened integers</a> for details).
+These operators must be provided so that the built-in scaling paths can apply the unit
+magnitude ratio during unit conversions.</p>
+<p>Alternatively (or additionally), a type may provide <code>operator*(T, UnitMagnitude)</code> to
+receive the full compile-time unit magnitude instead of a numeric factor. When present,
+this operator is called <strong>first</strong> and the underlying-type-based operators serve as a
+fallback. The magnitude-aware operator may return a <strong>different type</strong> — see
+<a href="#magnitude-aware-scaling">Magnitude-aware scaling</a> for the full pattern.</p>
+<p><strong>For your own types</strong>, provide these as hidden friends (defined inside the class
+body, found only via ADL):</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">my_wrapper</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">  </span><span class="n">T</span><span class="w"> </span><span class="n">value_</span><span class="p">;</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="k">public</span><span class="o">:</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">value_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T</span><span class="p">;</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">  </span><span class="c1">// Hidden friends — preferred over non-member overloads</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">  </span><span class="k">friend</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">my_wrapper</span><span class="w"> </span><span class="k">operator</span><span class="o">*</span><span class="p">(</span><span class="n">my_wrapper</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">factor</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">my_wrapper</span><span class="p">{</span><span class="n">v</span><span class="p">.</span><span class="n">value_</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">factor</span><span class="p">};</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="w">  </span><span class="k">friend</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">my_wrapper</span><span class="w"> </span><span class="k">operator</span><span class="o">/</span><span class="p">(</span><span class="n">my_wrapper</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">factor</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">my_wrapper</span><span class="p">{</span><span class="n">v</span><span class="p">.</span><span class="n">value_</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">factor</span><span class="p">};</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>
+</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="w">  </span><span class="c1">// Optional: magnitude-aware scaling (return type may differ from my_wrapper)</span>
+</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="w">  </span><span class="c1">// template&lt;mp_units::UnitMagnitude M&gt;</span>
+</span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="w">  </span><span class="c1">// friend constexpr auto operator*(const my_wrapper&amp; v, M m) { /* ... */ }</span>
+</span><span id="__span-8-14"><a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="p">};</span>
+</span></code></pre></div>
+<p><strong>For third-party types you cannot modify</strong>, place non-member operators in the same namespace
+as the type so that ADL finds them:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">third_party</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="c1">// Non-member scaling operators for a type you do not own.</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1">// Must be in the same namespace as the type so ADL finds them.</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="kr">inline</span><span class="w"> </span><span class="n">ThirdPartyVec</span><span class="w"> </span><span class="k">operator</span><span class="o">*</span><span class="p">(</span><span class="n">ThirdPartyVec</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">f</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">v</span><span class="p">.</span><span class="n">scale</span><span class="p">(</span><span class="n">f</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="kr">inline</span><span class="w"> </span><span class="n">ThirdPartyVec</span><span class="w"> </span><span class="k">operator</span><span class="o">/</span><span class="p">(</span><span class="n">ThirdPartyVec</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">f</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">v</span><span class="p">.</span><span class="n">scale</span><span class="p">(</span><span class="mf">1.0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">f</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="p">}</span><span class="w">  </span><span class="c1">// namespace third_party</span>
+</span></code></pre></div>
+<p>See <a href="#how-scaling-works">How Scaling Works</a> for the full built-in scaling algorithm, concept
+definitions, and design rationale.</p>
+<hr />
+<h4 id="treat_as_floating_point"><code>treat_as_floating_point&lt;Rep&gt;</code><a class="headerlink" href="#treat_as_floating_point" title="Permanent link">&para;</a></h4>
+<p>A specializable variable template that tells the library whether a type should be treated as
+floating-point for the purpose of allowing implicit conversions:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">Rep</span><span class="o">&gt;</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">treat_as_floating_point</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="cm">/* implementation-defined */</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>Default behavior:</strong></p>
+<ul>
+<li>In hosted environments: uses <code>std::chrono::treat_as_floating_point_v</code> on the
+  (recursively-unwrapped) underlying type of <code>Rep</code></li>
+<li>In freestanding: uses <code>std::is_floating_point_v</code> on the (recursively-unwrapped)
+  underlying type of <code>Rep</code></li>
+</ul>
+<p><strong>When to specialize:</strong> If you have a custom type that wraps a floating-point value but the
+automatic detection doesn't work correctly:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">template</span><span class="o">&lt;&gt;</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">treat_as_floating_point</span><span class="o">&lt;</span><span class="n">my_fixed_point_type</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>Impact:</strong> When <code>treat_as_floating_point&lt;Rep&gt;</code> is <code>true</code>, the type is treated as floating-point
+for conversion purposes. See <a href="../value_conversions/#value-conversions">Value Conversions</a> for details
+on how this affects implicit conversions between quantities.</p>
+<hr />
+<h4 id="implicitly_scalable"><code>implicitly_scalable&lt;FromUnit, FromRep, ToUnit, ToRep&gt;</code><a class="headerlink" href="#implicitly_scalable" title="Permanent link">&para;</a></h4>
+<div class="admonition note">
+<p class="admonition-title">Advanced use case</p>
+<p>Most users will never need to specialize <code>implicitly_scalable</code>. The defaults handle
+all standard numeric types correctly. Only specialize when you have a custom
+representation type with non-standard implicit-conversion semantics.</p>
+</div>
+<p>A specializable variable template that controls <strong>whether</strong> a conversion from
+<code>quantity&lt;FromUnit, FromRep&gt;</code> to <code>quantity&lt;ToUnit, ToRep&gt;</code> is implicit or requires an
+explicit cast via <code>value_cast</code>/<code>force_in</code>. It is the policy layer built on top of
+<code>treat_as_floating_point</code>: the default formula derives the implicit-conversion decision
+from it, and a specialization overrides that decision for types where the derived rule
+is incorrect:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">auto</span><span class="w"> </span><span class="n">FromUnit</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">FromRep</span><span class="p">,</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">ToUnit</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">ToRep</span><span class="o">&gt;</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">implicitly_scalable</span><span class="w"> </span><span class="o">=</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">  </span><span class="n">treat_as_floating_point</span><span class="o">&lt;</span><span class="n">ToRep</span><span class="o">&gt;</span><span class="w"> </span><span class="o">||</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">   </span><span class="p">(</span><span class="o">!</span><span class="n">treat_as_floating_point</span><span class="o">&lt;</span><span class="n">FromRep</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">is_integral_scaling</span><span class="p">(</span><span class="n">FromUnit</span><span class="p">,</span><span class="w"> </span><span class="n">ToUnit</span><span class="p">));</span>
+</span></code></pre></div>
+<p><code>mp_units::is_integral_scaling(from, to)</code> is a <code>consteval</code> predicate you can also use
+in your own specializations to distinguish the integral-factor case (e.g. <code>m → mm</code> (×1000))
+from fractional ones (e.g. <code>mm → m</code> (÷1000), <code>ft → m</code>, <code>deg → rad</code>).</p>
+<p>The default rules are:</p>
+<ul>
+<li><code>ToRep</code> is floating-point → always implicit (floating-point absorbs any ratio without truncation)</li>
+<li>Both are integer-like and the unit ratio is an integer multiplier → implicit
+  (exact, no information loss)</li>
+<li>Everything else (fractional or irrational ratio with an integer rep) → explicit
+  (truncation possible)</li>
+</ul>
+<p><strong>When to specialize:</strong> Consider two scenarios where the defaults are wrong for your type:</p>
+<p><strong>Scenario 1 — A decimal type that represents fractions exactly</strong></p>
+<p>Suppose you have a fixed-point decimal type <code>safe_decimal</code> that can represent any rational
+scaling factor (e.g. ×1/1000 for mm→m) without truncation. The default rejects this
+implicitly because the ratio is fractional and <code>safe_decimal</code> is not a floating-point type.
+You can opt in:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1">// safe_decimal handles fractional ratios exactly — allow all unit conversions implicitly.</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">auto</span><span class="w"> </span><span class="n">FromUnit</span><span class="p">,</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">ToUnit</span><span class="o">&gt;</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">implicitly_scalable</span><span class="o">&lt;</span><span class="n">FromUnit</span><span class="p">,</span><span class="w"> </span><span class="n">safe_decimal</span><span class="p">,</span><span class="w"> </span><span class="n">ToUnit</span><span class="p">,</span><span class="w"> </span><span class="n">safe_decimal</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">  </span><span class="nb">true</span><span class="p">;</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="c1">// Before specialization:</span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">millimetre</span><span class="p">,</span><span class="w"> </span><span class="n">safe_decimal</span><span class="o">&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">safe_decimal</span><span class="p">{</span><span class="mi">500</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mm</span><span class="p">;</span>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="c1">// quantity&lt;si::metre, safe_decimal&gt; b = a;  // ❌ Error without specialization</span>
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">safe_decimal</span><span class="o">&gt;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">;</span><span class="w">     </span><span class="c1">// ✅ Implicit after specialization</span>
+</span></code></pre></div>
+<p><strong>Scenario 2 — Asymmetric precision between two types</strong></p>
+<p>Suppose <code>my_decimal</code> has higher precision than <code>double</code>, so a <code>double</code> value can always be
+represented in <code>my_decimal</code> without loss, but not vice versa:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1">// double → my_decimal is always lossless: allow it implicitly.</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">auto</span><span class="w"> </span><span class="n">FromUnit</span><span class="p">,</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">ToUnit</span><span class="o">&gt;</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">implicitly_scalable</span><span class="o">&lt;</span><span class="n">FromUnit</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="p">,</span><span class="w"> </span><span class="n">ToUnit</span><span class="p">,</span><span class="w"> </span><span class="n">my_decimal</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="c1">// my_decimal → double may lose precision: keep it explicit (this is also the default,</span>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="c1">// shown here for clarity).</span>
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">auto</span><span class="w"> </span><span class="n">FromUnit</span><span class="p">,</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">ToUnit</span><span class="o">&gt;</span>
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">implicitly_scalable</span><span class="o">&lt;</span><span class="n">FromUnit</span><span class="p">,</span><span class="w"> </span><span class="n">my_decimal</span><span class="p">,</span><span class="w"> </span><span class="n">ToUnit</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>
+</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="c1">// Usage:</span>
+</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="w">     </span><span class="n">qd</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mf">1.5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span>
+</span><span id="__span-14-12"><a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">my_decimal</span><span class="o">&gt;</span><span class="w"> </span><span class="n">qdm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">qd</span><span class="p">;</span><span class="w">       </span><span class="c1">// ✅ Implicit (double fits in my_decimal)</span>
+</span><span id="__span-14-13"><a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a>
+</span><span id="__span-14-14"><a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">my_decimal</span><span class="o">&gt;</span><span class="w"> </span><span class="n">qm</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">my_decimal</span><span class="p">{</span><span class="mf">1.5</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span>
+</span><span id="__span-14-15"><a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a><span class="c1">// quantity&lt;si::metre, double&gt; qdb = qm;        // ❌ Error — requires value_cast</span>
+</span><span id="__span-14-16"><a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="w">     </span><span class="n">qdb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value_cast</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="n">qm</span><span class="p">);</span><span class="w">  </span><span class="c1">// ✅ Explicit</span>
+</span></code></pre></div>
+<p>You can also reuse the library's own predicate in your specialization:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1">// Permit implicit conversion only when the unit ratio is an integer multiplier.</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="c1">// This mirrors the default for integer types but opts my_special_int in explicitly.</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">auto</span><span class="w"> </span><span class="n">FromUnit</span><span class="p">,</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">ToUnit</span><span class="o">&gt;</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">implicitly_scalable</span><span class="o">&lt;</span><span class="n">FromUnit</span><span class="p">,</span><span class="w"> </span><span class="n">my_special_int</span><span class="p">,</span><span class="w"> </span><span class="n">ToUnit</span><span class="p">,</span><span class="w"> </span><span class="n">my_special_int</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">  </span><span class="n">mp_units</span><span class="o">::</span><span class="n">is_integral_scaling</span><span class="p">(</span><span class="n">FromUnit</span><span class="p">,</span><span class="w"> </span><span class="n">ToUnit</span><span class="p">);</span>
+</span></code></pre></div>
+<p><strong>Impact:</strong> Controls whether conversions between quantity types are implicit or require
+<code>value_cast</code>/<code>force_in</code>. See <a href="../value_conversions/">Value Conversions</a>
+for the full picture.</p>
+<hr />
+<h4 id="representation_values"><code>representation_values&lt;Rep&gt;</code><a class="headerlink" href="#representation_values" title="Permanent link">&para;</a></h4>
+<p>A specializable class template that provides special values for a representation type:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">Rep</span><span class="o">&gt;</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="k">struct</span><span class="w"> </span><span class="nc">mp_units</span><span class="o">::</span><span class="n">representation_values</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">Rep</span><span class="w"> </span><span class="nf">zero</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span><span class="p">;</span><span class="w">  </span><span class="c1">// Required for quantity::zero()</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">Rep</span><span class="w"> </span><span class="nf">one</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span><span class="p">;</span><span class="w">   </span><span class="c1">// Required for quantity operations</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">Rep</span><span class="w"> </span><span class="nf">min</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span><span class="p">;</span><span class="w">   </span><span class="c1">// Required for quantity::min()</span>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">Rep</span><span class="w"> </span><span class="nf">max</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span><span class="p">;</span><span class="w">   </span><span class="c1">// Required for quantity::max()</span>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="p">};</span>
+</span></code></pre></div>
+<p><strong>Default behavior:</strong></p>
+<ul>
+<li>In hosted environments: inherits from <code>std::chrono::duration_values&lt;Rep&gt;</code></li>
+<li><code>zero()</code>: returns <code>Rep(0)</code> if Rep is constructible from <code>int</code></li>
+<li><code>one()</code>: returns <code>Rep(1)</code> if Rep is constructible from <code>int</code></li>
+<li><code>min()</code>: returns <code>std::numeric_limits&lt;Rep&gt;::lowest()</code> if available</li>
+<li><code>max()</code>: returns <code>std::numeric_limits&lt;Rep&gt;::max()</code> if available</li>
+</ul>
+<p><strong>When to specialize:</strong> If your type needs custom special values:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="k">struct</span><span class="w"> </span><span class="nc">mp_units</span><span class="o">::</span><span class="n">representation_values</span><span class="o">&lt;</span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">zero</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">  </span><span class="p">{</span>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">{</span><span class="n">T</span><span class="p">{</span><span class="mi">0</span><span class="p">}};</span>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a>
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">one</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span>
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="w">  </span><span class="p">{</span>
+</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">{</span><span class="n">T</span><span class="p">{</span><span class="mi">1</span><span class="p">}};</span>
+</span><span id="__span-17-11"><a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-17-12"><a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a>
+</span><span id="__span-17-13"><a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">min</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span>
+</span><span id="__span-17-14"><a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a><span class="w">  </span><span class="p">{</span>
+</span><span id="__span-17-15"><a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">{</span><span class="n">std</span><span class="o">::</span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">lowest</span><span class="p">()};</span>
+</span><span id="__span-17-16"><a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-17-17"><a id="__codelineno-17-17" name="__codelineno-17-17" href="#__codelineno-17-17"></a>
+</span><span id="__span-17-18"><a id="__codelineno-17-18" name="__codelineno-17-18" href="#__codelineno-17-18"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">max</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span>
+</span><span id="__span-17-19"><a id="__codelineno-17-19" name="__codelineno-17-19" href="#__codelineno-17-19"></a><span class="w">  </span><span class="p">{</span>
+</span><span id="__span-17-20"><a id="__codelineno-17-20" name="__codelineno-17-20" href="#__codelineno-17-20"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">{</span><span class="n">std</span><span class="o">::</span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">max</span><span class="p">()};</span>
+</span><span id="__span-17-21"><a id="__codelineno-17-21" name="__codelineno-17-21" href="#__codelineno-17-21"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-17-22"><a id="__codelineno-17-22" name="__codelineno-17-22" href="#__codelineno-17-22"></a><span class="p">};</span>
+</span></code></pre></div>
+<p><strong>Usage:</strong> These values are used by:</p>
+<ul>
+<li><code>quantity::zero()</code>, <code>quantity::min()</code>, <code>quantity::max()</code> static member functions</li>
+<li>Mathematical operations like <code>floor()</code>, <code>ceil()</code>, <code>round()</code></li>
+<li>Division by zero checks</li>
+</ul>
+<hr />
+<h4 id="constraint-violation-handler"><code>constraint_violation_handler&lt;Rep&gt;</code><a class="headerlink" href="#constraint-violation-handler" title="Permanent link">&para;</a></h4>
+<p>A specializable class template that defines how constraint violations are reported for
+a representation type. For usage and code examples, see
+<a href="../../../how_to_guides/advanced_usage/ultimate_safety/">Ensure Ultimate Safety</a>.</p>
+<h2 id="character-specific-operations">Character-Specific Operations<a class="headerlink" href="#character-specific-operations" title="Permanent link">&para;</a></h2>
+<p>The library enforces character at compile-time: vector quantities require <code>scalar_product()</code> or
+<code>vector_product()</code> instead of <code>*</code>; complex quantities restrict <code>real()</code>, <code>imag()</code>, and <code>modulus()</code>
+to quantities of the correct character. See
+<a href="../character_of_a_quantity/#character-specific-operations">Character of a Quantity</a> for full
+details and examples.</p>
 <h2 id="how-scaling-works">How Scaling Works<a class="headerlink" href="#how-scaling-works" title="Permanent link">&para;</a></h2>
 <p>Every representation type must be <strong>unit-conversion scalable</strong> — the library must be able
 to apply a unit magnitude ratio to it internally. This is captured by the <code>MagnitudeScalable</code>
 concept, which directly names the three built-in scaling paths:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">concept</span><span class="w"> </span><span class="nc">MagnitudeScalable</span><span class="w"> </span><span class="o">=</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="n">WeaklyRegular</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">UsesMagnitudeAwareScaling</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">UsesFloatingPointScaling</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="o">||</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">                       </span><span class="n">UsesIntegerScaling</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">);</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="k">concept</span><span class="w"> </span><span class="nc">MagnitudeScalable</span><span class="w"> </span><span class="o">=</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="w">  </span><span class="n">WeaklyRegular</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">UsesMagnitudeAwareScaling</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">UsesFloatingPointScaling</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">UsesIntegerScaling</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">);</span>
 </span></code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Magnitude-aware scaling</p>
@@ -11982,36 +12316,57 @@ for example, a range-validated representation can return a new type with scaled 
 so that a conversion from degrees to radians adjusts the valid range from
 [-180, 180] to [-π, π]. See <a href="#magnitude-aware-scaling">Magnitude-aware scaling</a> for details.</p>
 </div>
-<p>The two <strong>built-in numeric</strong> sub-concepts and their requirements
-(<code>UsesMagnitudeAwareScaling</code> is described in the tip box above):</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">// Floating-point type, or container whose element type is floating-point</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="c1">// (e.g. double, cartesian_vector&lt;double&gt;).</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="k">concept</span><span class="w"> </span><span class="nc">UsesFloatingPointScaling</span><span class="w"> </span><span class="o">=</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span><span class="p">(</span><span class="n">treat_as_floating_point</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">treat_as_floating_point</span><span class="o">&lt;</span><span class="n">representation_underlying_type_t</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">  </span><span class="k">requires</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="n">representation_underlying_type_t</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">f</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">WeaklyRegular</span><span class="p">;</span>
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">WeaklyRegular</span><span class="p">;</span>
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">  </span><span class="p">};</span>
-</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>
-</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="c1">// Integer type, wrapper, or container whose element type is a fundamental integer</span>
-</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="c1">// (e.g. int, safe_int&lt;int&gt;, cartesian_vector&lt;int&gt;).</span>
-</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="c1">// std::integral&lt;representation_underlying_type_t&lt;T&gt;&gt; is required (not just treat_as_integral) because</span>
-</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="c1">// the scaling engine uses get_value&lt;element_t&gt; and fixed_point&lt;element_t&gt;.</span>
-</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="c1">// Scaling is applied through the type&#39;s own operator* / operator/, so wrappers</span>
-</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="c1">// can check for overflow and containers can scale element-wise.</span>
-</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="k">concept</span><span class="w"> </span><span class="nc">UsesIntegerScaling</span><span class="w"> </span><span class="o">=</span>
-</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">integral</span><span class="o">&lt;</span><span class="n">representation_underlying_type_t</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="o">&amp;&amp;</span>
-</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="w">  </span><span class="k">requires</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="n">representation_underlying_type_t</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">f</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="p">};</span>
-</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="p">};</span>
-</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="w">  </span><span class="p">};</span>
+<p><code>UsesFloatingPointScaling</code> matches any type — or container thereof — whose underlying
+type satisfies <code>treat_as_floating_point</code>, is constructible from <code>long double</code> (the
+precision at which magnitude constants are evaluated), and supports <code>operator*</code> and
+<code>operator/</code> with that underlying type, returning a weakly-regular result:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="k">concept</span><span class="w"> </span><span class="nc">UsesFloatingPointScaling</span><span class="w"> </span><span class="o">=</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="w">  </span><span class="p">(</span><span class="n">treat_as_floating_point</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">treat_as_floating_point</span><span class="o">&lt;</span><span class="n">representation_underlying_type_t</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span>
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">constructible_from</span><span class="o">&lt;</span><span class="n">representation_underlying_type_t</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;&amp;</span>
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="w">  </span><span class="k">requires</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="n">representation_underlying_type_t</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">f</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">WeaklyRegular</span><span class="p">;</span>
+</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">WeaklyRegular</span><span class="p">;</span>
+</span><span id="__span-19-7"><a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="w">  </span><span class="p">};</span>
 </span></code></pre></div>
+<p><code>UsesIntegerScaling</code> matches any type whose underlying type satisfies <code>detail::integral</code>
+(the scaling engine uses <code>get_value&lt;wider_t&gt;</code>, <code>wider_int_for&lt;element_t&gt;</code>, and
+<code>fixed_point&lt;element_t&gt;</code> internally, all of which require an integer element type).
+Scaling is routed through the type's own <code>operator*</code> and <code>operator/</code>, so wrappers can
+check for overflow and containers can scale element-wise. The factor type is
+<code>wider_int_for&lt;element_t&gt;</code> — a wider integer of matching sign (e.g. <code>int64_t</code> for
+<code>int16_t</code>, <code>uint64_t</code> for <code>uint16_t</code>) — to prevent intermediate overflow in
+rational-magnitude conversions:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="k">concept</span><span class="w"> </span><span class="nc">UsesIntegerScaling</span><span class="w"> </span><span class="o">=</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="w">  </span><span class="n">detail</span><span class="o">::</span><span class="n">integral</span><span class="o">&lt;</span><span class="n">representation_underlying_type_t</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="o">&amp;&amp;</span>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="w">  </span><span class="k">requires</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="n">wider_int_for</span><span class="o">&lt;</span><span class="n">representation_underlying_type_t</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">wf</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">wf</span><span class="w"> </span><span class="p">};</span>
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">wf</span><span class="w"> </span><span class="p">};</span>
+</span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="w">  </span><span class="p">};</span>
+</span></code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Why <code>detail::integral</code> and not <code>std::integral</code>?</p>
+<p>On GCC in strict mode (<code>-std=c++20</code>), <code>std::integral&lt;__int128&gt;</code> is <code>false</code> because
+the standard traits (<code>std::is_integral</code>, <code>std::is_arithmetic</code>) are not specialized
+for <code>__int128</code> outside of GNU extensions (<code>-std=gnu++20</code>). When the platform lacks
+<code>__SIZEOF_INT128__</code> entirely, <code>int128_t</code> and <code>uint128_t</code> are <code>double_width_int&lt;&gt;</code>
+software-emulation types that also do not satisfy <code>std::integral</code>.</p>
+<p><code>detail::integral</code> patches both gaps:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="k">concept</span><span class="w"> </span><span class="nc">detail</span><span class="o">::</span><span class="n">integral</span><span class="w"> </span><span class="o">=</span>
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">integral</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="o">||</span>
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">same_as</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">remove_cv_t</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">int128_t</span><span class="o">&gt;</span><span class="w"> </span><span class="o">||</span>
+</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">same_as</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">remove_cv_t</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">uint128_t</span><span class="o">&gt;</span><span class="p">;</span>
+</span></code></pre></div>
+<p>The scaling engine internals (<code>get_value</code>, <code>wider_int_for</code>, <code>fixed_point</code>) are all
+specialized for <code>int128_t</code> / <code>uint128_t</code>, so the full integer scaling pipeline
+works correctly for 128-bit element types on all supported compilers.</p>
+</div>
 <p>Most standard types satisfy <code>MagnitudeScalable</code> automatically. See
 <a href="#scaling-operators">Scaling operators</a> in the Customization Points section for how to
 provide <code>operator*</code> and <code>operator/</code> for your own types.</p>
 <h3 id="built-in-scaling-algorithm">Built-in scaling algorithm<a class="headerlink" href="#built-in-scaling-algorithm" title="Permanent link">&para;</a></h3>
 <p>When two quantities of convertible units are combined or converted, the library applies the
-unit magnitude <code>M</code> to the representation value via <code>detail::scale&lt;To&gt;(M, value)</code>. The
+unit magnitude <code>M</code> to the representation value via <code>scale&lt;To&gt;(M, value)</code>. The
 built-in decision tree is:</p>
 <pre class="mermaid"><code>flowchart TD
     A["scale(M, value)"] --&gt; MA{"provides&lt;br&gt;op*(T, UnitMagnitude)?"}
@@ -12023,16 +12378,16 @@ built-in decision tree is:</p>
     G -- "integral (e.g. m→mm, ×1000)" --&gt; I["exact integer multiplication"]
     G -- "rational (e.g. ft→m, ×3048/10000)" --&gt; R["widened integer arithmetic&lt;br&gt;(int64_t/uint64_t or 128-bit;&lt;br&gt;signedness-preserving;&lt;br&gt;avoids overflow &amp;amp; FP rounding)"]
     G -- "irrational (e.g. deg→rad, ×π/180)" --&gt; IR["long double fixed-point approximation"]</code></pre>
+<p>The magnitude-aware path (<code>operator*(T, UnitMagnitude)</code>) is checked first—before any of
+the built-in paths. If a representation type provides this operator, it has full control
+over how scaling is performed and what type is returned. The built-in paths are only used
+as a fallback when this operator is not available.</p>
 <p>The integer path (<code>UsesIntegerScaling</code>) never promotes
 values to floating-point, even for the rational and irrational sub-paths. This is
 intentional: the user explicitly chose an integer representation type, opting out of
 floating-point arithmetic. Their platform may lack FP hardware (embedded systems, DSPs),
 rely on software-emulated FP (slow and unpredictable), or enforce a no-FP policy. The
 library respects that choice throughout unit conversion.</p>
-<p>The magnitude-aware path (<code>operator*(T, UnitMagnitude)</code>) is checked first—before any of
-the built-in paths. If a representation type provides this operator, it has full control
-over how scaling is performed and what type is returned. The built-in paths are only used
-as a fallback when this operator is not available.</p>
 <details class="question">
 <summary>Why fixed-point arithmetic for integer representations?</summary>
 <ol>
@@ -12104,25 +12459,24 @@ overly restrictive in the target unit.</p>
 <p>To support this, provide an <code>operator*(T, UnitMagnitude)</code> hidden friend. It receives the
 exact compile-time unit magnitude and can return a <strong>different type</strong> (e.g. the same
 template with different bounds):</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1">// Example custom type (not provided by the library)</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">movable</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">Min</span><span class="p">,</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">Max</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">Policy</span><span class="o">&gt;</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">bounded_value</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="k">public</span><span class="o">:</span>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span><span class="k">template</span><span class="o">&lt;</span><span class="n">mp_units</span><span class="o">::</span><span class="n">UnitMagnitude</span><span class="w"> </span><span class="n">M</span><span class="o">&gt;</span>
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">    </span><span class="k">requires</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">treat_as_floating_point</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span>
-</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">  </span><span class="p">[[</span><span class="n">nodiscard</span><span class="p">]]</span><span class="w"> </span><span class="k">friend</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="k">operator</span><span class="o">*</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">bounded_value</span><span class="o">&amp;</span><span class="w"> </span><span class="n">val</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="w"> </span><span class="n">m</span><span class="p">)</span>
-</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">  </span><span class="p">{</span>
-</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">    </span><span class="k">constexpr</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">new_lo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">scale</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">M</span><span class="p">{},</span><span class="w"> </span><span class="n">T</span><span class="p">{</span><span class="n">Min</span><span class="p">});</span>
-</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">    </span><span class="k">constexpr</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">new_hi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">scale</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">M</span><span class="p">{},</span><span class="w"> </span><span class="n">T</span><span class="p">{</span><span class="n">Max</span><span class="p">});</span>
-</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>
-</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">scaled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">scale</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">val</span><span class="p">.</span><span class="n">value</span><span class="p">());</span>
-</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>
-</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="p">(</span><span class="n">new_lo</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">new_hi</span><span class="p">)</span>
-</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">bounded_value</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">new_lo</span><span class="p">,</span><span class="w"> </span><span class="n">new_hi</span><span class="p">,</span><span class="w"> </span><span class="n">Policy</span><span class="o">&gt;</span><span class="p">(</span><span class="n">scaled</span><span class="p">);</span>
-</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="w">    </span><span class="k">else</span>
-</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">bounded_value</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">new_hi</span><span class="p">,</span><span class="w"> </span><span class="n">new_lo</span><span class="p">,</span><span class="w"> </span><span class="n">Policy</span><span class="o">&gt;</span><span class="p">(</span><span class="n">scaled</span><span class="p">);</span>
-</span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-5-19"><a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="p">};</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="c1">// Example custom type (not provided by the library)</span>
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">mp_units</span><span class="o">::</span><span class="n">treat_as_floating_point</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">Min</span><span class="p">,</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">Max</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">Policy</span><span class="o">&gt;</span>
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">bounded_value</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="k">public</span><span class="o">:</span>
+</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="w">  </span><span class="k">template</span><span class="o">&lt;</span><span class="n">mp_units</span><span class="o">::</span><span class="n">UnitMagnitude</span><span class="w"> </span><span class="n">M</span><span class="o">&gt;</span>
+</span><span id="__span-22-6"><a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a><span class="w">  </span><span class="p">[[</span><span class="n">nodiscard</span><span class="p">]]</span><span class="w"> </span><span class="k">friend</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="k">operator</span><span class="o">*</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">bounded_value</span><span class="o">&amp;</span><span class="w"> </span><span class="n">val</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="w"> </span><span class="n">m</span><span class="p">)</span>
+</span><span id="__span-22-7"><a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a><span class="w">  </span><span class="p">{</span>
+</span><span id="__span-22-8"><a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a><span class="w">    </span><span class="k">constexpr</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">new_lo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">scale</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">M</span><span class="p">{},</span><span class="w"> </span><span class="n">T</span><span class="p">{</span><span class="n">Min</span><span class="p">});</span>
+</span><span id="__span-22-9"><a id="__codelineno-22-9" name="__codelineno-22-9" href="#__codelineno-22-9"></a><span class="w">    </span><span class="k">constexpr</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">new_hi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">scale</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">M</span><span class="p">{},</span><span class="w"> </span><span class="n">T</span><span class="p">{</span><span class="n">Max</span><span class="p">});</span>
+</span><span id="__span-22-10"><a id="__codelineno-22-10" name="__codelineno-22-10" href="#__codelineno-22-10"></a>
+</span><span id="__span-22-11"><a id="__codelineno-22-11" name="__codelineno-22-11" href="#__codelineno-22-11"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">scaled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">scale</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">val</span><span class="p">.</span><span class="n">value</span><span class="p">());</span>
+</span><span id="__span-22-12"><a id="__codelineno-22-12" name="__codelineno-22-12" href="#__codelineno-22-12"></a>
+</span><span id="__span-22-13"><a id="__codelineno-22-13" name="__codelineno-22-13" href="#__codelineno-22-13"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="p">(</span><span class="n">new_lo</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">new_hi</span><span class="p">)</span>
+</span><span id="__span-22-14"><a id="__codelineno-22-14" name="__codelineno-22-14" href="#__codelineno-22-14"></a><span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">bounded_value</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">new_lo</span><span class="p">,</span><span class="w"> </span><span class="n">new_hi</span><span class="p">,</span><span class="w"> </span><span class="n">Policy</span><span class="o">&gt;</span><span class="p">(</span><span class="n">scaled</span><span class="p">);</span>
+</span><span id="__span-22-15"><a id="__codelineno-22-15" name="__codelineno-22-15" href="#__codelineno-22-15"></a><span class="w">    </span><span class="k">else</span>
+</span><span id="__span-22-16"><a id="__codelineno-22-16" name="__codelineno-22-16" href="#__codelineno-22-16"></a><span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">bounded_value</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">new_hi</span><span class="p">,</span><span class="w"> </span><span class="n">new_lo</span><span class="p">,</span><span class="w"> </span><span class="n">Policy</span><span class="o">&gt;</span><span class="p">(</span><span class="n">scaled</span><span class="p">);</span>
+</span><span id="__span-22-17"><a id="__codelineno-22-17" name="__codelineno-22-17" href="#__codelineno-22-17"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-22-18"><a id="__codelineno-22-18" name="__codelineno-22-18" href="#__codelineno-22-18"></a><span class="p">};</span>
 </span></code></pre></div>
 <p>The <code>scale</code> function handles precision optimization automatically — when the
 magnitude's inverse is integral (e.g. degree-to-radian with π/180), it divides by the
@@ -12137,384 +12491,12 @@ the new representation type through <code>sudo_cast</code>, and the resulting <c
 overflow policies can be passed directly as template parameters to point origins.
 See <a href="../the_affine_space/#range-validated-quantity-points">Range-Validated Quantity Points</a>.</p>
 </div>
-<h2 id="customization-points">Customization Points<a class="headerlink" href="#customization-points" title="Permanent link">&para;</a></h2>
-<p>The library provides several customization mechanisms for representation types.
-For a complete implementation guide and code examples for custom types, see
-<a href="../../../how_to_guides/integration/using_custom_representation_types/">Using Custom Representation Types</a>.</p>
-<p>These mechanisms fall into two categories: <strong>Character determination</strong> (what kind of
-representation type you have) and <strong>Behavior and values</strong> (how the library interacts with
-your type).</p>
-<h3 id="character-determination">Character Determination<a class="headerlink" href="#character-determination" title="Permanent link">&para;</a></h3>
-<h4 id="customization-point-objects-cpos">Customization Point Objects (CPOs)<a class="headerlink" href="#customization-point-objects-cpos" title="Permanent link">&para;</a></h4>
-<p>The library uses several CPOs to support different representation types. Providing these CPOs
-determines the <strong>character</strong> of your representation type. Each CPO checks for implementations
-in the following priority order:</p>
-<p><strong><code>mp_units::real(c)</code></strong> - Returns the real part of a complex number:</p>
-<ol>
-<li><code>c.real()</code> member function</li>
-<li><code>real(c)</code> free function found via ADL</li>
-</ol>
-<p><strong><code>mp_units::imag(c)</code></strong> - Returns the imaginary part of a complex number:</p>
-<ol>
-<li><code>c.imag()</code> member function</li>
-<li><code>imag(c)</code> free function found via ADL</li>
-</ol>
-<p><strong><code>mp_units::modulus(c)</code></strong> - Returns the magnitude of a complex number:</p>
-<ol>
-<li><code>c.modulus()</code> member function</li>
-<li><code>modulus(c)</code> free function found via ADL</li>
-<li><code>c.abs()</code> member function</li>
-<li><code>abs(c)</code> free function found via ADL</li>
-</ol>
-<p><strong><code>mp_units::norm(v)</code></strong> - Returns the norm (magnitude) of a vector or tensor as a scalar:</p>
-<ol>
-<li><code>v.norm()</code> member function</li>
-<li><code>norm(v)</code> free function found via ADL</li>
-<li>For arithmetic types: <code>std::abs(v)</code></li>
-<li>For real scalar types: <code>v.abs()</code> member function</li>
-<li>For real scalar types: <code>abs(v)</code> free function found via ADL</li>
-</ol>
-<p><strong><code>mp_units::magnitude(v)</code></strong> - Returns the magnitude of a vector as a scalar:</p>
-<ol>
-<li>Delegates to <code>mp_units::norm(v)</code> (provided for compatibility with physics terminology)</li>
-</ol>
-<div class="admonition note">
-<p class="admonition-title">Why <code>abs()</code> is also checked?</p>
-<p><strong>Complex Scalars (<code>modulus()</code> CPO)</strong></p>
-<p>Provides compatibility with <code>std::complex</code> and similar types that use <code>abs()</code> as the
-function name for returning the modulus value. This is checked as a fallback if
-<code>modulus()</code> is not provided.</p>
-<p><strong>Vectors and Tensors (<code>norm()</code> CPO)</strong></p>
-<p>Allows real scalar types (like <code>int</code>, <code>double</code>) to represent:</p>
-<ul>
-<li><strong>1-dimensional vectors</strong> (very common in engineering for linear motion)</li>
-<li><strong>Scalar tensor measures</strong> (von Mises stress, principal stress, etc.)</li>
-</ul>
-<p>This enables seamless use of arithmetic types for scalar, vector, AND tensor quantities,
-which accurately reflects real engineering practice where most calculations use scalar
-values rather than full vector/tensor representations.</p>
-</div>
-<hr />
-<h4 id="disable_realt"><code>disable_real&lt;T&gt;</code><a class="headerlink" href="#disable_realt" title="Permanent link">&para;</a></h4>
-<p>A specializable variable template to opt out a type from being treated as a real scalar:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">disable_real</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
-</span></code></pre></div>
-<p><strong>Purpose:</strong> Controls the <strong>character</strong> of your representation type by preventing it from
-being classified as a real scalar, even if it satisfies the real scalar requirements
-(copyable, totally ordered, supports arithmetic operations).</p>
-<p><strong>When to specialize:</strong> If your type accidentally satisfies the real scalar requirements
-but shouldn't be used as one:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">template</span><span class="o">&lt;&gt;</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">disable_real</span><span class="o">&lt;</span><span class="n">my_type</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
-</span></code></pre></div>
-<p><strong>Example use case:</strong> The library uses this internally to prevent <code>bool</code> from being used
-as a scalar representation, even though <code>bool</code> is technically totally ordered and supports
-arithmetic operations.</p>
-<hr />
-<h3 id="behavior-and-values">Behavior and Values<a class="headerlink" href="#behavior-and-values" title="Permanent link">&para;</a></h3>
-<h4 id="value_type-or-element_type"><code>value_type</code> or <code>element_type</code><a class="headerlink" href="#value_type-or-element_type" title="Permanent link">&para;</a></h4>
-<p>The library uses <code>representation_underlying_type_t&lt;T&gt;</code> to determine the underlying
-arithmetic type of your representation, which is used for:</p>
-<ul>
-<li>Determining the scaling factor type (what type to multiply/divide your type by)</li>
-<li>Checking if the type should be treated as floating-point</li>
-</ul>
-<div class="admonition info">
-<p class="admonition-title">How it works?</p>
-<p>The underlying type is determined by
-<a href="#representation_underlying_type"><code>representation_underlying_type</code></a> as follows:</p>
-<ol>
-<li>If your type has a <code>value_type</code> or <code>element_type</code> member type, that member
-   is used</li>
-<li>Otherwise, if your type is a scoped enumeration, <code>std::underlying_type_t</code> is
-   used</li>
-<li>Otherwise, your type itself is treated as the underlying type</li>
-</ol>
-</div>
-<p><strong>Recommendation:</strong> Provide a <code>value_type</code> member type for wrapper types:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">my_wrapper</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="k">public</span><span class="o">:</span>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">value_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T</span><span class="p">;</span><span class="w">  </span><span class="c1">// Exposes the underlying type</span>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span><span class="c1">// ...</span>
-</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="p">};</span>
-</span></code></pre></div>
-<p><strong>Third-party types:</strong> If you cannot modify the source of a type (e.g., a third-party
-floating-point or fixed-point class), specialize
-<a href="#representation_underlying_type"><code>representation_underlying_type</code></a> to expose its
-element type:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1">// Third-party type MyFloat wraps long double internally</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="k">template</span><span class="o">&lt;&gt;</span>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="k">struct</span><span class="w"> </span><span class="nc">mp_units</span><span class="o">::</span><span class="n">representation_underlying_type</span><span class="o">&lt;</span><span class="n">MyFloat</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="kt">double</span><span class="p">;</span>
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="p">};</span>
-</span></code></pre></div>
-<p>This makes <code>representation_underlying_type_t&lt;MyFloat&gt;</code> resolve to <code>long double</code>, giving
-the library the correct precision for scaling and ensuring the right <code>common_type</code> is
-used in mixed conversions.</p>
-<div class="admonition warning">
-<p class="admonition-title">Don't provide both <code>value_type</code> and <code>element_type</code></p>
-<p>If your type provides both <code>value_type</code> and <code>element_type</code> whose underlying
-types differ after ignoring top-level cv-qualification,
-<a href="#representation_underlying_type"><code>representation_underlying_type</code></a> is empty and
-the library treats the type as a leaf. If both are present and name the same
-underlying type, that type is used.</p>
-<p><strong>Recommendation:</strong> Provide only <code>value_type</code> unless you have a specific reason to provide both
-(e.g., satisfying iterator concepts), in which case ensure they refer to the same type.</p>
-</div>
-<hr />
-<h4 id="representation_underlying_type"><code>representation_underlying_type&lt;T&gt;</code><a class="headerlink" href="#representation_underlying_type" title="Permanent link">&para;</a></h4>
-<p>A specializable class template that describes the underlying arithmetic/element type of
-a representation type. It is <strong>the</strong> extension point for exposing this information to
-the library:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="k">struct</span><span class="w"> </span><span class="nc">mp_units</span><span class="o">::</span><span class="n">representation_underlying_type</span><span class="p">;</span><span class="w">  </span><span class="c1">// primary — empty</span>
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
-</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="k">using</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">representation_underlying_type_t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">representation_underlying_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">type</span><span class="p">;</span>
-</span></code></pre></div>
-<p><strong>Default detection</strong> (via partial specializations provided by the library, mirroring
-the shape of <code>std::indirectly_readable_traits</code> for its <code>value_type</code> / <code>element_type</code>
-cases):</p>
-<ul>
-<li>nested <code>T::value_type</code>, else</li>
-<li>nested <code>T::element_type</code>;</li>
-<li>a top-level <code>const</code> on <code>T</code> is passed through to the unqualified type;</li>
-<li>the detected alias has its cv-qualification removed;</li>
-<li>if <code>T</code> provides both <code>value_type</code> and <code>element_type</code> whose underlying types differ
-  after ignoring top-level cv-qualification, the trait is empty — the user must
-  disambiguate explicitly;</li>
-<li>for scoped enumeration types, the underlying integer type is used (via
-  <code>std::underlying_type_t</code>) — a representation-model extension not present in the
-  standard's iterator-oriented trait. Unscoped enumerations are deliberately excluded
-  because they already implicitly convert to their underlying type.</li>
-</ul>
-<p><strong>When to specialize:</strong> for third-party types you cannot modify, or for types whose
-underlying representation cannot be deduced by the defaults above:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">template</span><span class="o">&lt;&gt;</span>
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="k">struct</span><span class="w"> </span><span class="nc">mp_units</span><span class="o">::</span><span class="n">representation_underlying_type</span><span class="o">&lt;</span><span class="n">MyFloat</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="kt">double</span><span class="p">;</span>
-</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="p">};</span>
-</span></code></pre></div>
-<div class="admonition question">
-<p class="admonition-title">Why not <code>std::indirectly_readable_traits</code>?</p>
-<p><code>std::indirectly_readable_traits</code> answers "what does <code>*t</code> yield?" — it is the
-standard's extension point for iterators, smart pointers, and other
-indirectly-readable types. Specializing it for a non-iterator representation
-type is a semantic misuse: it tells every other standard-library component
-that your type is iterator-like, which it usually is not.</p>
-<p>Pointer and array specializations from <code>std::indirectly_readable_traits</code> are
-intentionally <strong>not</strong> mirrored in <code>representation_underlying_type</code> — those are
-part of the standard's iterator machinery, not of this library's representation
-model.</p>
-</div>
-<hr />
-<h4 id="treat_as_floating_point"><code>treat_as_floating_point&lt;Rep&gt;</code><a class="headerlink" href="#treat_as_floating_point" title="Permanent link">&para;</a></h4>
-<p>A specializable variable template that tells the library whether a type should be treated as
-floating-point for the purpose of allowing implicit conversions:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">Rep</span><span class="o">&gt;</span>
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">treat_as_floating_point</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="cm">/* implementation-defined */</span><span class="p">;</span>
-</span></code></pre></div>
-<p><strong>Default behavior:</strong></p>
-<ul>
-<li>In hosted environments: uses <code>std::chrono::treat_as_floating_point_v</code> on the
-  (recursively-unwrapped) underlying type of <code>Rep</code></li>
-<li>In freestanding: uses <code>std::is_floating_point_v</code> on the (recursively-unwrapped)
-  underlying type of <code>Rep</code></li>
-</ul>
-<p><strong>When to specialize:</strong> If you have a custom type that wraps a floating-point value but the
-automatic detection doesn't work correctly:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="k">template</span><span class="o">&lt;&gt;</span>
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">treat_as_floating_point</span><span class="o">&lt;</span><span class="n">my_fixed_point_type</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
-</span></code></pre></div>
-<p><strong>Impact:</strong> When <code>treat_as_floating_point&lt;Rep&gt;</code> is <code>true</code>, the type is treated as floating-point
-for conversion purposes. See <a href="../value_conversions/#value-conversions">Value Conversions</a> for details
-on how this affects implicit conversions between quantities.</p>
-<hr />
-<h4 id="scaling-operators">Scaling operators<a class="headerlink" href="#scaling-operators" title="Permanent link">&para;</a></h4>
-<p>The library scales a representation value by calling <code>value * factor</code> and <code>value / factor</code>,
-where <code>factor</code> is of type <code>representation_underlying_type_t&lt;T&gt;</code> (or a wider integer type
-for the rational integer path — see <a href="#how-scaling-works">widened integers</a> for details).
-These operators must be provided so that the built-in scaling paths can apply the unit
-magnitude ratio during unit conversions.</p>
-<p>Alternatively (or additionally), a type may provide <code>operator*(T, UnitMagnitude)</code> to
-receive the full compile-time unit magnitude instead of a numeric factor. When present,
-this operator is called <strong>first</strong> and the underlying-type-based operators serve as a
-fallback. The magnitude-aware operator may return a <strong>different type</strong> — see
-<a href="#magnitude-aware-scaling">Magnitude-aware scaling</a> for the full pattern.</p>
-<p><strong>For your own types</strong>, provide these as hidden friends (defined inside the class
-body, found only via ADL):</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">my_wrapper</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">  </span><span class="n">T</span><span class="w"> </span><span class="n">value_</span><span class="p">;</span>
-</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="k">public</span><span class="o">:</span>
-</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">value_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T</span><span class="p">;</span>
-</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>
-</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="w">  </span><span class="c1">// Hidden friends — preferred over non-member overloads</span>
-</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="w">  </span><span class="k">friend</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">my_wrapper</span><span class="w"> </span><span class="k">operator</span><span class="o">*</span><span class="p">(</span><span class="n">my_wrapper</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">factor</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">my_wrapper</span><span class="p">{</span><span class="n">v</span><span class="p">.</span><span class="n">value_</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">factor</span><span class="p">};</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="w">  </span><span class="k">friend</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">my_wrapper</span><span class="w"> </span><span class="k">operator</span><span class="o">/</span><span class="p">(</span><span class="n">my_wrapper</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">factor</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">my_wrapper</span><span class="p">{</span><span class="n">v</span><span class="p">.</span><span class="n">value_</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">factor</span><span class="p">};</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a>
-</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="w">  </span><span class="c1">// Optional: magnitude-aware scaling (return type may differ from my_wrapper)</span>
-</span><span id="__span-14-12"><a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a><span class="w">  </span><span class="c1">// template&lt;mp_units::UnitMagnitude M&gt;</span>
-</span><span id="__span-14-13"><a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a><span class="w">  </span><span class="c1">// friend constexpr auto operator*(const my_wrapper&amp; v, M m) { /* ... */ }</span>
-</span><span id="__span-14-14"><a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a><span class="p">};</span>
-</span></code></pre></div>
-<p><strong>For third-party types you cannot modify</strong>, place non-member operators in the same namespace
-as the type so that ADL finds them:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">third_party</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>
-</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="c1">// Non-member scaling operators for a type you do not own.</span>
-</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="c1">// Must be in the same namespace as the type so ADL finds them.</span>
-</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="kr">inline</span><span class="w"> </span><span class="n">ThirdPartyVec</span><span class="w"> </span><span class="k">operator</span><span class="o">*</span><span class="p">(</span><span class="n">ThirdPartyVec</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">f</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">v</span><span class="p">.</span><span class="n">scale</span><span class="p">(</span><span class="n">f</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="kr">inline</span><span class="w"> </span><span class="n">ThirdPartyVec</span><span class="w"> </span><span class="k">operator</span><span class="o">/</span><span class="p">(</span><span class="n">ThirdPartyVec</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">f</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">v</span><span class="p">.</span><span class="n">scale</span><span class="p">(</span><span class="mf">1.0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">f</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>
-</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="p">}</span><span class="w">  </span><span class="c1">// namespace third_party</span>
-</span></code></pre></div>
-<p>See <a href="#how-scaling-works">How Scaling Works</a> for the full built-in scaling algorithm, concept
-definitions, and design rationale.</p>
-<hr />
-<h4 id="implicitly_scalable"><code>implicitly_scalable&lt;FromUnit, FromRep, ToUnit, ToRep&gt;</code><a class="headerlink" href="#implicitly_scalable" title="Permanent link">&para;</a></h4>
-<div class="admonition note">
-<p class="admonition-title">Advanced use case</p>
-<p>Most users will never need to specialize <code>implicitly_scalable</code>. The defaults handle
-all standard numeric types correctly. Only specialize when you have a custom
-representation type with non-standard implicit-conversion semantics.</p>
-</div>
-<p>A specializable variable template that controls <strong>whether</strong> a conversion from
-<code>quantity&lt;FromUnit, FromRep&gt;</code> to <code>quantity&lt;ToUnit, ToRep&gt;</code> is implicit or requires an
-explicit cast via <code>value_cast</code>/<code>force_in</code>. This is orthogonal to — and independent of —
-the customization points that control <strong>how</strong> scaling is performed
-(<code>representation_underlying_type</code>, <code>treat_as_floating_point</code>, the
-<a href="#scaling-operators">scaling operators</a>, and the magnitude-aware <code>operator*(T, UnitMagnitude)</code>).</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">auto</span><span class="w"> </span><span class="n">FromUnit</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">FromRep</span><span class="p">,</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">ToUnit</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">ToRep</span><span class="o">&gt;</span>
-</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">implicitly_scalable</span><span class="w"> </span><span class="o">=</span>
-</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">  </span><span class="n">treat_as_floating_point</span><span class="o">&lt;</span><span class="n">ToRep</span><span class="o">&gt;</span><span class="w"> </span><span class="o">||</span>
-</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w">   </span><span class="p">(</span><span class="o">!</span><span class="n">treat_as_floating_point</span><span class="o">&lt;</span><span class="n">FromRep</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">is_integral_scaling</span><span class="p">(</span><span class="n">FromUnit</span><span class="p">,</span><span class="w"> </span><span class="n">ToUnit</span><span class="p">));</span>
-</span></code></pre></div>
-<p><code>mp_units::is_integral_scaling(from, to)</code> is a <code>consteval</code> predicate you can also use
-in your own specializations to distinguish the integral-factor case (e.g. <code>m → mm</code> (×1000))
-from fractional ones (e.g. <code>mm → m</code> (÷1000), <code>ft → m</code>, <code>deg → rad</code>).</p>
-<p>The default rules are:</p>
-<ul>
-<li><code>ToRep</code> is floating-point → always implicit (floating-point absorbs any ratio without truncation)</li>
-<li>Both are integer-like and the unit ratio is an integer multiplier → implicit
-  (exact, no information loss)</li>
-<li>Everything else (fractional or irrational ratio with an integer rep) → explicit
-  (truncation possible)</li>
-</ul>
-<p><strong>When to specialize:</strong> Consider two scenarios where the defaults are wrong for your type:</p>
-<p><strong>Scenario 1 — A decimal type that represents fractions exactly</strong></p>
-<p>Suppose you have a fixed-point decimal type <code>safe_decimal</code> that can represent any rational
-scaling factor (e.g. ×1/1000 for mm→m) without truncation. The default rejects this
-implicitly because the ratio is fractional and <code>safe_decimal</code> is not a floating-point type.
-You can opt in:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="c1">// safe_decimal handles fractional ratios exactly — allow all unit conversions implicitly.</span>
-</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">auto</span><span class="w"> </span><span class="n">FromUnit</span><span class="p">,</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">ToUnit</span><span class="o">&gt;</span>
-</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">implicitly_scalable</span><span class="o">&lt;</span><span class="n">FromUnit</span><span class="p">,</span><span class="w"> </span><span class="n">safe_decimal</span><span class="p">,</span><span class="w"> </span><span class="n">ToUnit</span><span class="p">,</span><span class="w"> </span><span class="n">safe_decimal</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span>
-</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">  </span><span class="nb">true</span><span class="p">;</span>
-</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>
-</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="c1">// Before specialization:</span>
-</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">millimetre</span><span class="p">,</span><span class="w"> </span><span class="n">safe_decimal</span><span class="o">&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">safe_decimal</span><span class="p">{</span><span class="mi">500</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mm</span><span class="p">;</span>
-</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="c1">// quantity&lt;si::metre, safe_decimal&gt; b = a;  // ❌ Error without specialization</span>
-</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">safe_decimal</span><span class="o">&gt;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">;</span><span class="w">     </span><span class="c1">// ✅ Implicit after specialization</span>
-</span></code></pre></div>
-<p><strong>Scenario 2 — Asymmetric precision between two types</strong></p>
-<p>Suppose <code>my_decimal</code> has higher precision than <code>double</code>, so a <code>double</code> value can always be
-represented in <code>my_decimal</code> without loss, but not vice versa:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="c1">// double → my_decimal is always lossless: allow it implicitly.</span>
-</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">auto</span><span class="w"> </span><span class="n">FromUnit</span><span class="p">,</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">ToUnit</span><span class="o">&gt;</span>
-</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">implicitly_scalable</span><span class="o">&lt;</span><span class="n">FromUnit</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="p">,</span><span class="w"> </span><span class="n">ToUnit</span><span class="p">,</span><span class="w"> </span><span class="n">my_decimal</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
-</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>
-</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="c1">// my_decimal → double may lose precision: keep it explicit (this is also the default,</span>
-</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="c1">// shown here for clarity).</span>
-</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">auto</span><span class="w"> </span><span class="n">FromUnit</span><span class="p">,</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">ToUnit</span><span class="o">&gt;</span>
-</span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">implicitly_scalable</span><span class="o">&lt;</span><span class="n">FromUnit</span><span class="p">,</span><span class="w"> </span><span class="n">my_decimal</span><span class="p">,</span><span class="w"> </span><span class="n">ToUnit</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
-</span><span id="__span-18-9"><a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a>
-</span><span id="__span-18-10"><a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a><span class="c1">// Usage:</span>
-</span><span id="__span-18-11"><a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="w">     </span><span class="n">qd</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mf">1.5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span>
-</span><span id="__span-18-12"><a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">my_decimal</span><span class="o">&gt;</span><span class="w"> </span><span class="n">qdm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">qd</span><span class="p">;</span><span class="w">       </span><span class="c1">// ✅ Implicit (double fits in my_decimal)</span>
-</span><span id="__span-18-13"><a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a>
-</span><span id="__span-18-14"><a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="n">my_decimal</span><span class="o">&gt;</span><span class="w"> </span><span class="n">qm</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">my_decimal</span><span class="p">{</span><span class="mf">1.5</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span>
-</span><span id="__span-18-15"><a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a><span class="c1">// quantity&lt;si::metre, double&gt; qdb = qm;        // ❌ Error — requires value_cast</span>
-</span><span id="__span-18-16"><a id="__codelineno-18-16" name="__codelineno-18-16" href="#__codelineno-18-16"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="w">     </span><span class="n">qdb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value_cast</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="n">qm</span><span class="p">);</span><span class="w">  </span><span class="c1">// ✅ Explicit</span>
-</span></code></pre></div>
-<p>You can also reuse the library's own predicate in your specialization:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="c1">// Permit implicit conversion only when the unit ratio is an integer multiplier.</span>
-</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="c1">// This mirrors the default for integer types but opts my_special_int in explicitly.</span>
-</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">auto</span><span class="w"> </span><span class="n">FromUnit</span><span class="p">,</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">ToUnit</span><span class="o">&gt;</span>
-</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">implicitly_scalable</span><span class="o">&lt;</span><span class="n">FromUnit</span><span class="p">,</span><span class="w"> </span><span class="n">my_special_int</span><span class="p">,</span><span class="w"> </span><span class="n">ToUnit</span><span class="p">,</span><span class="w"> </span><span class="n">my_special_int</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span>
-</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="w">  </span><span class="n">mp_units</span><span class="o">::</span><span class="n">is_integral_scaling</span><span class="p">(</span><span class="n">FromUnit</span><span class="p">,</span><span class="w"> </span><span class="n">ToUnit</span><span class="p">);</span>
-</span></code></pre></div>
-<p><strong>Impact:</strong> Controls whether conversions between quantity types are implicit or require
-<code>value_cast</code>/<code>force_in</code>. See <a href="../value_conversions/">Value Conversions</a>
-for the full picture.</p>
-<hr />
-<h4 id="representation_values"><code>representation_values&lt;Rep&gt;</code><a class="headerlink" href="#representation_values" title="Permanent link">&para;</a></h4>
-<p>A specializable class template that provides special values for a representation type:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">Rep</span><span class="o">&gt;</span>
-</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="k">struct</span><span class="w"> </span><span class="nc">mp_units</span><span class="o">::</span><span class="n">representation_values</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">Rep</span><span class="w"> </span><span class="nf">zero</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span><span class="p">;</span><span class="w">  </span><span class="c1">// Required for quantity::zero()</span>
-</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">Rep</span><span class="w"> </span><span class="nf">one</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span><span class="p">;</span><span class="w">   </span><span class="c1">// Required for quantity operations</span>
-</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">Rep</span><span class="w"> </span><span class="nf">min</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span><span class="p">;</span><span class="w">   </span><span class="c1">// Required for quantity::min()</span>
-</span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">Rep</span><span class="w"> </span><span class="nf">max</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span><span class="p">;</span><span class="w">   </span><span class="c1">// Required for quantity::max()</span>
-</span><span id="__span-20-7"><a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="p">};</span>
-</span></code></pre></div>
-<p><strong>Default behavior:</strong></p>
-<ul>
-<li>In hosted environments: inherits from <code>std::chrono::duration_values&lt;Rep&gt;</code></li>
-<li><code>zero()</code>: returns <code>Rep(0)</code> if Rep is constructible from <code>int</code></li>
-<li><code>one()</code>: returns <code>Rep(1)</code> if Rep is constructible from <code>int</code></li>
-<li><code>min()</code>: returns <code>std::numeric_limits&lt;Rep&gt;::lowest()</code> if available</li>
-<li><code>max()</code>: returns <code>std::numeric_limits&lt;Rep&gt;::max()</code> if available</li>
-</ul>
-<p><strong>When to specialize:</strong> If your type needs custom special values:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
-</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="k">struct</span><span class="w"> </span><span class="nc">mp_units</span><span class="o">::</span><span class="n">representation_values</span><span class="o">&lt;</span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">zero</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span>
-</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="w">  </span><span class="p">{</span>
-</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">{</span><span class="n">T</span><span class="p">{</span><span class="mi">0</span><span class="p">}};</span>
-</span><span id="__span-21-6"><a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-21-7"><a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a>
-</span><span id="__span-21-8"><a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">one</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span>
-</span><span id="__span-21-9"><a id="__codelineno-21-9" name="__codelineno-21-9" href="#__codelineno-21-9"></a><span class="w">  </span><span class="p">{</span>
-</span><span id="__span-21-10"><a id="__codelineno-21-10" name="__codelineno-21-10" href="#__codelineno-21-10"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">{</span><span class="n">T</span><span class="p">{</span><span class="mi">1</span><span class="p">}};</span>
-</span><span id="__span-21-11"><a id="__codelineno-21-11" name="__codelineno-21-11" href="#__codelineno-21-11"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-21-12"><a id="__codelineno-21-12" name="__codelineno-21-12" href="#__codelineno-21-12"></a>
-</span><span id="__span-21-13"><a id="__codelineno-21-13" name="__codelineno-21-13" href="#__codelineno-21-13"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">min</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span>
-</span><span id="__span-21-14"><a id="__codelineno-21-14" name="__codelineno-21-14" href="#__codelineno-21-14"></a><span class="w">  </span><span class="p">{</span>
-</span><span id="__span-21-15"><a id="__codelineno-21-15" name="__codelineno-21-15" href="#__codelineno-21-15"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">{</span><span class="n">std</span><span class="o">::</span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">lowest</span><span class="p">()};</span>
-</span><span id="__span-21-16"><a id="__codelineno-21-16" name="__codelineno-21-16" href="#__codelineno-21-16"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-21-17"><a id="__codelineno-21-17" name="__codelineno-21-17" href="#__codelineno-21-17"></a>
-</span><span id="__span-21-18"><a id="__codelineno-21-18" name="__codelineno-21-18" href="#__codelineno-21-18"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">max</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span>
-</span><span id="__span-21-19"><a id="__codelineno-21-19" name="__codelineno-21-19" href="#__codelineno-21-19"></a><span class="w">  </span><span class="p">{</span>
-</span><span id="__span-21-20"><a id="__codelineno-21-20" name="__codelineno-21-20" href="#__codelineno-21-20"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">{</span><span class="n">std</span><span class="o">::</span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">max</span><span class="p">()};</span>
-</span><span id="__span-21-21"><a id="__codelineno-21-21" name="__codelineno-21-21" href="#__codelineno-21-21"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-21-22"><a id="__codelineno-21-22" name="__codelineno-21-22" href="#__codelineno-21-22"></a><span class="p">};</span>
-</span></code></pre></div>
-<p><strong>Usage:</strong> These values are used by:</p>
-<ul>
-<li><code>quantity::zero()</code>, <code>quantity::min()</code>, <code>quantity::max()</code> static member functions</li>
-<li>Mathematical operations like <code>floor()</code>, <code>ceil()</code>, <code>round()</code></li>
-<li>Division by zero checks</li>
-</ul>
-<hr />
-<h4 id="constraint-violation-handler"><code>constraint_violation_handler&lt;Rep&gt;</code><a class="headerlink" href="#constraint-violation-handler" title="Permanent link">&para;</a></h4>
-<p>A specializable class template that defines how constraint violations are reported for
-a representation type. For usage and code examples, see
-<a href="../../../how_to_guides/advanced_usage/ultimate_safety/">Ensure Ultimate Safety</a>.</p>
-<h2 id="character-specific-operations">Character-Specific Operations<a class="headerlink" href="#character-specific-operations" title="Permanent link">&para;</a></h2>
-<p>The library enforces character at compile-time: vector quantities require <code>scalar_product()</code> or
-<code>vector_product()</code> instead of <code>*</code>; complex quantities restrict <code>real()</code>, <code>imag()</code>, and <code>modulus()</code>
-to quantities of the correct character. See
-<a href="../character_of_a_quantity/#character-specific-operations">Character of a Quantity</a> for full
-details and examples.</p>
 <h2 id="built-in-support">Built-in Support<a class="headerlink" href="#built-in-support" title="Permanent link">&para;</a></h2>
 <p>All fundamental arithmetic types except <code>bool</code> satisfy the real scalar and 1-D vector
 representation requirements:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">length1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">42</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span>
-</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">length2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3.14</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span>
-</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">length3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.718L</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">length1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">42</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span>
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">length2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3.14</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span>
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">length3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.718L</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span>
 </span></code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Why is <code>bool</code> excluded?</p>
@@ -12524,10 +12506,10 @@ because using boolean values as physical quantities rarely makes sense and can l
 confusing code.</p>
 </div>
 <p>The library also supports <code>std::complex</code> for complex-valued quantities:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;complex&gt;</span>
-</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>
-</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="n">std</span><span class="o">::</span><span class="n">complex</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">impedance</span><span class="p">{</span><span class="mf">50.0</span><span class="p">,</span><span class="w"> </span><span class="mf">30.0</span><span class="p">};</span>
-</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="n">quantity</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">impedance</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">ohm</span><span class="p">;</span><span class="w">  </span><span class="c1">// Complex impedance</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;complex&gt;</span>
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="n">std</span><span class="o">::</span><span class="n">complex</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">impedance</span><span class="p">{</span><span class="mf">50.0</span><span class="p">,</span><span class="w"> </span><span class="mf">30.0</span><span class="p">};</span>
+</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="n">quantity</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">impedance</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">ohm</span><span class="p">;</span><span class="w">  </span><span class="c1">// Complex impedance</span>
 </span></code></pre></div>
 <p>Beyond these built-in types, <strong>any custom type</strong> works as a representation as long as it
 satisfies the <a href="../concepts/#RepresentationOf"><code>RepresentationOf</code></a> concept for the desired
