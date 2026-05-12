@@ -88,6 +88,25 @@ concept ExplicitlyCastable = UnitConvertibleTo<MP_UNITS_REMOVE_CONST(decltype(Fr
 }
 
 /**
+ * @brief Controls whether conversion from `quantity<FromUnit, FromRep>` to
+ *        `quantity<ToUnit, ToRep>` is implicit or explicit.
+ *
+ * The default is `true` iff the scaling is non-truncating: either `ToRep` is floating-point,
+ * or both reps are non-floating-point and the unit magnitude ratio is an integral factor.
+ *
+ * Specialize this variable template to customize the implicit/explicit decision for
+ * your own representation types.
+ *
+ * @tparam FromUnit the source unit value (NTTP)
+ * @tparam FromRep  the source representation type
+ * @tparam ToUnit   the target unit value (NTTP)
+ * @tparam ToRep    the target representation type
+ */
+MP_UNITS_EXPORT template<Unit auto FromUnit, typename FromRep, Unit auto ToUnit, typename ToRep>
+constexpr bool implicitly_scalable =
+  treat_as_floating_point<ToRep> || (!treat_as_floating_point<FromRep> && is_integral_scaling(FromUnit, ToUnit));
+
+/**
  * @brief Explicit cast of a quantity's unit
  *
  * Implicit conversions between quantities of different types are allowed only for "safe"

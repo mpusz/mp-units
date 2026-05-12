@@ -169,31 +169,6 @@ constexpr bool treat_as_floating_point =
 #endif
 
 /**
- * @brief Controls whether conversion from `quantity<FromUnit, FromRep>` to
- *        `quantity<ToUnit, ToRep>` is implicit or explicit.
- *
- * The default is `true` iff `FromRep` is convertible to `ToRep` and the scaling is
- * non-truncating: either `ToRep` is floating-point, or both reps are non-floating-point
- * and the unit magnitude ratio is an integral factor.
- *
- * Specialize this variable template to customize the implicit/explicit decision for
- * your own representation types.
- *
- * @note The default initializer references `is_integral_scaling`, which is defined in
- *       `<mp-units/framework/value_cast.h>`. The unqualified call is found via ADL at
- *       instantiation time, so any translation unit that instantiates this template must
- *       have `value_cast.h` (or a header transitively including it) included.
- *
- * @tparam FromUnit the source unit value (NTTP)
- * @tparam FromRep  the source representation type
- * @tparam ToUnit   the target unit value (NTTP)
- * @tparam ToRep    the target representation type
- */
-template<auto FromUnit, typename FromRep, auto ToUnit, typename ToRep>
-constexpr bool implicitly_scalable =
-  treat_as_floating_point<ToRep> || (!treat_as_floating_point<FromRep> && is_integral_scaling(FromUnit, ToUnit));
-
-/**
  * @brief Specifies if a specific conversion between two types is representable without data loss
  *
  * @deprecated Use `mp_units::implicitly_scalable` instead.
