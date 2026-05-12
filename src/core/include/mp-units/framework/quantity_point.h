@@ -514,7 +514,7 @@ public:
   }
 
   [[nodiscard]] static constexpr quantity_point zero() noexcept
-    requires (PO == default_point_origin(R)) && requires { quantity_type::zero(); }
+    requires(PO == default_point_origin(R)) && requires { quantity_type::zero(); }
   {
     return {quantity_type::zero(), PO};
   }
