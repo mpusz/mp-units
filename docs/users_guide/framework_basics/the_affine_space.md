@@ -364,7 +364,7 @@ For this purpose, we can use either:
 - A converting constructor:
 
     ```cpp
-    quantity_point<si::metre, C> qp2C = qp2;
+    quantity_point<si::metre, C> qp2C = qp2;  // implicit — safe conversion within the same root
     assert(qp2C.quantity_ref_from(qp2C.point_origin) == 130 * m);
     ```
 
@@ -389,9 +389,16 @@ assert(qp2 == qp2A);
 
 !!! important
 
-    It is only allowed to convert between various origins defined in terms of the same
-    `absolute_point_origin`. To connect two distinct `absolute_point_origin` types, a
-    [frame projection](#frame-proj) must be registered — see the section below.
+    Between origins sharing the same `absolute_point_origin` root, the converting constructor
+    may be implicit (when the quantity types are safely convertible). To convert across two
+    **independent** `absolute_point_origin` types, a [frame projection](#frame-proj) must be
+    registered first. The constructor then works but is always `explicit`
+    (no runtime arguments; use `.point_for(origin, args...)` when extra data is needed):
+
+    ```cpp
+    // Requires mp_units::frame_projection<sea_level, ocean_surface> to be defined:
+    quantity_point<si::metre, ocean_surface> depth{altitude};  // always explicit
+    ```
 
 
 ### Frame projections between independent origins { #frame-proj }
@@ -468,6 +475,22 @@ inline constexpr struct shallow_water :
 quantity_point from_shallow = altitude.point_for(shallow_water);
 // Steps: sea_level → ocean_surface (depth 100 m), walk-down: 100 − 10 = 90 m from shallow_water
 ```
+
+#### Explicit constructor as an alternative
+
+When no runtime arguments are needed, the explicit `quantity_point` constructor is a compact
+alternative to `point_for` — useful when you are already spelling out the destination type:
+
+```cpp
+quantity_point<isq::altitude[m], ocean_surface> depth{altitude};
+// equivalent to: altitude.point_for(ocean_surface)
+```
+
+The constructor invokes the same registered `frame_projection` internally. It is always
+`explicit` — implicit conversion across independent origins is never permitted.
+
+Use `.point_for()` when extra runtime arguments must be forwarded to the projection functor
+(see below), or when you prefer to let the compiler deduce the destination type.
 
 #### Runtime arguments
 

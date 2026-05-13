@@ -567,6 +567,19 @@ public:
   {
   }
 
+  template<QuantityPoint QP>
+    requires(!QuantityPointOf<QP, absolute_point_origin>) && requires(const QP& src) {
+      { src.point_for(point_origin) } -> QuantityPointOf<point_origin>;
+      quantity_type{src.point_for(point_origin) - point_origin};
+    }
+  constexpr explicit quantity_point(const QP& qp) :
+      quantity_from_origin_is_an_implementation_detail_(detail::enforce_bounds<point_origin>([&] {
+        auto at_dest = qp.point_for(point_origin);
+        return quantity_type{at_dest - point_origin};
+      }()))
+  {
+  }
+
   template<QuantityPointLike QP>
     requires(quantity_point_like_traits<QP>::point_origin == point_origin) &&
             std::constructible_from<quantity_type, quantity<quantity_point_like_traits<QP>::reference,

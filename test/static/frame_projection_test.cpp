@@ -108,6 +108,9 @@ static_assert(detail::HasFrameProjection<sea_level, ocean_surface>);
 static_assert(detail::HasFrameProjection<ocean_surface, sea_level>);
 static_assert(detail::HasFrameProjection<shifted_origin, base_origin>);
 
+// No inverse projection
+static_assert(!detail::HasFrameProjection<base_origin, shifted_origin>);
+
 // No projection defined for these pairs — must evaluate to false.
 static_assert(!detail::HasFrameProjection<sea_level, sea_level>);
 static_assert(!detail::HasFrameProjection<sea_level, base_origin>);
@@ -198,5 +201,43 @@ static_assert(
 
 static_assert(
   is_of_type<(ocean_surface + 100. * m).point_for(sea_level), quantity_point<si::metre, sea_level, double>>);
+
+////////////////////////////////////////////////////////////////////////////////////
+// Converting constructor via frame_projection
+////////////////////////////////////////////////////////////////////////////////////
+
+// Explicit construction from a cross-origin quantity_point
+static_assert([] {
+  quantity_point<si::metre, ocean_surface, double> depth{sea_level + (-100. * m)};
+  return depth.quantity_from(ocean_surface) == 100. * m;
+}());
+
+static_assert([] {
+  quantity_point<si::metre, sea_level, double> alt{ocean_surface + 100. * m};
+  return alt.quantity_from(sea_level) == -100. * m;
+}());
+
+// Round-trip through the converting constructor
+static_assert([] {
+  quantity_point<si::metre, ocean_surface, double> depth{sea_level + 42. * m};
+  quantity_point<si::metre, sea_level, double> alt{depth};
+  return alt.quantity_from(sea_level) == 42. * m;
+}());
+
+// Walk-down via converting constructor: target is a relative_point_origin whose absolute
+// root is reachable via a frame_projection.
+// sea_level + (-100 m): project → ocean_surface (depth 100 m), walk down by 10 m → 90 m.
+static_assert([] {
+  quantity_point<si::metre, shallow_water, double> sw{sea_level + (-100. * m)};
+  return sw.quantity_from(shallow_water) == 90. * m;
+}());
+
+// Type check: converting constructor yields the correct specialization
+static_assert(is_of_type<quantity_point<si::metre, ocean_surface, double>{sea_level + 0. * m},
+                         quantity_point<si::metre, ocean_surface, double>>);
+
+// Explicit construction is allowed; implicit is not (frame projection is always explicit)
+static_assert(std::constructible_from<quantity_point<si::metre, ocean_surface, double>, decltype(sea_level + 0. * m)>);
+static_assert(!std::convertible_to<decltype(sea_level + 0. * m), quantity_point<si::metre, ocean_surface, double>>);
 
 }  // namespace
