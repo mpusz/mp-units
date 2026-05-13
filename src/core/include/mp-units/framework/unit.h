@@ -243,6 +243,15 @@ struct unit_interface {
     return kind_of<detail::get_associated_quantity(U{})>;
   }
 
+  template<Unit U>
+    requires std::is_final_v<decltype(detail::get_associated_quantity(U{}))>
+  [[deprecated(
+    "2.6.0: `quantity_spec` definition of `U` should not be marked "
+    "`final`")]] [[nodiscard]] friend consteval QuantitySpec auto get_quantity_spec(U)
+  {
+    return kind_of<detail::get_associated_quantity(U{})>;
+  }
+
   // Clang <= 18 does not support default template arguments in friend function templates.
   // The two overloads below are a workaround. The intended library API (and the one that
   // should be proposed for ISO standardization) is a single function template:

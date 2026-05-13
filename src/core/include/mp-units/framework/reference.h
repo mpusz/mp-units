@@ -71,6 +71,14 @@ MP_UNITS_EXPORT_BEGIN
 template<QuantitySpec Q, Unit U>
 struct reference {
   [[nodiscard]] friend consteval QuantitySpec auto get_quantity_spec(reference) { return Q{}; }
+
+  [[deprecated("2.6.0: `Q` definition should not be marked `final`")]] [[nodiscard]] friend consteval QuantitySpec auto
+  get_quantity_spec(reference)
+    requires std::is_final_v<Q>
+  {
+    return Q{};
+  }
+
   [[nodiscard]] friend consteval Unit auto get_unit(reference) { return U{}; }
 
   template<typename Q2, typename U2>
