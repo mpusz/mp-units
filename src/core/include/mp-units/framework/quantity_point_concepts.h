@@ -152,8 +152,11 @@ concept QuantityPointLike = !QuantityPoint<T> && detail::QuantityLikeImpl<T, qua
 
 namespace detail {
 
-template<AbsolutePointOrigin auto From, AbsolutePointOrigin auto To>
-concept HasFrameProjection = !std::is_same_v<MP_UNITS_REMOVE_CONST(decltype(frame_projection<From, To>)), undefined_t>;
+template<auto From, auto To>
+concept HasFrameProjection =
+  AbsolutePointOrigin<MP_UNITS_REMOVE_CONST(decltype(From))> &&
+  AbsolutePointOrigin<MP_UNITS_REMOVE_CONST(decltype(To))> &&
+  (!std::is_same_v<MP_UNITS_REMOVE_CONST(decltype(frame_projection<From, To>)), undefined_t>);
 
 }  // namespace detail
 

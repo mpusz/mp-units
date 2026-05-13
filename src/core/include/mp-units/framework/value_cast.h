@@ -33,7 +33,6 @@
 #include <mp-units/framework/representation_concepts.h>
 #include <mp-units/framework/unit_concepts.h>
 
-MP_UNITS_EXPORT
 namespace mp_units {
 
 namespace detail {
@@ -66,6 +65,8 @@ concept ExplicitlyCastable = UnitConvertibleTo<MP_UNITS_REMOVE_CONST(decltype(Fr
                                 FromU, ToU, type_name<Rep>()));
 
 }  // namespace detail
+
+MP_UNITS_EXPORT_BEGIN
 
 /**
  * @brief Returns `true` if the scaling factor from @p from to @p to is an exact positive integer.
@@ -102,7 +103,7 @@ concept ExplicitlyCastable = UnitConvertibleTo<MP_UNITS_REMOVE_CONST(decltype(Fr
  * @tparam ToUnit   the target unit value (NTTP)
  * @tparam ToRep    the target representation type
  */
-MP_UNITS_EXPORT template<Unit auto FromUnit, typename FromRep, Unit auto ToUnit, typename ToRep>
+template<Unit auto FromUnit, typename FromRep, Unit auto ToUnit, typename ToRep>
 constexpr bool implicitly_scalable =
   treat_as_floating_point<ToRep> || (!treat_as_floating_point<FromRep> && is_integral_scaling(FromUnit, ToUnit));
 
@@ -326,5 +327,7 @@ template<QuantityPoint ToQP, typename FwdQP, QuantityPoint QP = std::remove_cvre
 {
   return detail::sudo_cast<ToQP>(std::forward<FwdQP>(qp));
 }
+
+MP_UNITS_EXPORT_END
 
 }  // namespace mp_units

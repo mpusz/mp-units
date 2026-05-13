@@ -593,7 +593,7 @@ public:
              }
   [[nodiscard]] constexpr QuantityPointOf<(NewPO{})> auto point_for(NewPO new_origin, Args&&... args) const
   {
-    ::mp_units::quantity_point at_src = point_for(absolute_point_origin);
+    auto at_src = point_for(absolute_point_origin);
     constexpr PointOrigin auto abs_tgt = detail::get_absolute_point_origin(NewPO{});
     auto at_tgt = frame_projection<absolute_point_origin, abs_tgt>(at_src, std::forward<Args>(args)...);
     if constexpr (std::is_same_v<NewPO, MP_UNITS_NONCONST_TYPE(abs_tgt)>)
