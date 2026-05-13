@@ -566,7 +566,7 @@ class SystemsParser:
     def _parse_dimensions(self, content: str, system: SystemInfo, file: str):
         """Parse dimension definitions"""
         dim_pattern = (
-            r"inline\s+constexpr\s+struct\s+(dim_\w+)\s+final\s*:\s*"
+            r"inline\s+constexpr\s+struct\s+(dim_\w+)(?:\s+final)?\s*:\s*"
             r'base_dimension<(?:"([^"]+)"|symbol_text\{[^}]+\})>\s*\{\}\s+\1\s*;'
         )
 
@@ -754,17 +754,17 @@ class SystemsParser:
         if namespace_to_search == "auto":
             namespace_to_search = system.namespace
 
-        # Pattern 1a: inline constexpr struct NAME final : named_unit<"symbol", ...> {} NAME;
+        # Pattern 1a: inline constexpr struct NAME : named_unit<"symbol", ...> {} NAME;
         unit_pattern_simple = (
-            r"inline\s+constexpr\s+struct\s+(\w+)\s+final\s*:\s*"
+            r"inline\s+constexpr\s+struct\s+(\w+)(?:\s+final)?\s*:\s*"
             r'named_unit<"([^"]+)",\s*(.+?)>\s*\{\}\s*(\w+)\s*;'
         )
 
-        # Pattern 1b: inline constexpr struct NAME final :
+        # Pattern 1b: inline constexpr struct NAME :
         # named_unit<symbol_text{u8"unicode", "ascii"}, ...> {} NAME;
         # Handle optional comments inside symbol_text like /* U+2030 PER MILLE SIGN */
         unit_pattern_text = (
-            r"inline\s+constexpr\s+struct\s+(\w+)\s+final\s*:\s*"
+            r"inline\s+constexpr\s+struct\s+(\w+)(?:\s+final)?\s*:\s*"
             r'named_unit<symbol_text\{u8"([^"]+)"(?:\s*/\*[^*]*\*/)?\s*,\s*'
             r'"([^"]+)"\},\s*(.+?)>\s*\{\}\s*(\w+)\s*;'
         )
@@ -1052,11 +1052,11 @@ class SystemsParser:
     def _parse_point_origins(self, content: str, system: SystemInfo, file: str):
         """Parse point origin definitions"""
         # Pattern for absolute and relative point origins:
-        # inline constexpr struct NAME final : absolute_point_origin<...> {} NAME;
-        # inline constexpr struct NAME final : relative_point_origin<...> {} NAME;
+        # inline constexpr struct NAME : absolute_point_origin<...> {} NAME;
+        # inline constexpr struct NAME : relative_point_origin<...> {} NAME;
 
         origin_pattern = (
-            r"inline\s+constexpr\s+struct\s+(\w+)\s+final\s*:\s*"
+            r"inline\s+constexpr\s+struct\s+(\w+)(?:\s+final)?\s*:\s*"
             r"(absolute|relative)_point_origin<(.+?)>\s*\{\}\s*(\w+)\s*;"
         )
 
@@ -1090,13 +1090,13 @@ class SystemsParser:
 
     def _parse_prefixes(self, content: str, system: SystemInfo, file: str):
         """Parse prefix template definitions (two-line pattern: class template + variable template)"""
-        # Pattern for class template: template<PrefixableUnit U> struct NAME_ final :
+        # Pattern for class template: template<PrefixableUnit U> struct NAME_ :
         #   prefixed_unit<...> {};
         # Followed by: template<PrefixableUnit auto U> constexpr NAME_<...> NAME;
 
         # First, find all class template definitions
         class_pattern = (
-            r"template<PrefixableUnit U>\s+struct\s+(\w+)_\s+final\s*:\s*"
+            r"template<PrefixableUnit U>\s+struct\s+(\w+)_(?:\s+final)?\s*:\s*"
             r'prefixed_unit<(?:symbol_text\{u8"([^"]+)"\s*,\s*"([^"]+)"\}'
             r'|"([^"]+)"),\s*(.+?),\s*U\{\}>\s*\{\}\s*;'
         )
@@ -1146,13 +1146,13 @@ class SystemsParser:
                 system.prefixes.append(prefix)
 
         # Also handle chrono_point_origin template pattern:
-        # template<typename C> struct chrono_point_origin_ final :
+        # template<typename C> struct chrono_point_origin_ :
         #   absolute_point_origin<isq::time> { using clock = C; };
         # template<typename C> constexpr chrono_point_origin_<C> chrono_point_origin;
 
         # First, find the class template
         chrono_class_pattern = (
-            r"template<typename C>\s+struct\s+chrono_point_origin_\s+final\s*:\s*"
+            r"template<typename C>\s+struct\s+chrono_point_origin_(?:\s+final)?\s*:\s*"
             r"absolute_point_origin<(.+?)>\s*\{[^}]*\}\s*;"
         )
         chrono_class_match = re.search(chrono_class_pattern, content, re.DOTALL)
@@ -1182,18 +1182,18 @@ class SystemsParser:
 
     def _parse_constants(self, content: str, system: SystemInfo, file: str):
         """Parse named_constant definitions"""
-        # Pattern 1: (inline constexpr)? struct NAME final :
+        # Pattern 1: (inline constexpr)? struct NAME :
         # named_constant<symbol_text{u8"unicode", "ascii"}, ...> {} NAME;
         constant_pattern_text = (
-            r"(?:inline\s+constexpr\s+)?struct\s+(\w+)\s+final\s*:\s*"
+            r"(?:inline\s+constexpr\s+)?struct\s+(\w+)(?:\s+final)?\s*:\s*"
             r'named_constant<symbol_text\{u8"([^"]+)"'
             r'(?:\s*/\*[^*]*\*/)?\s*,\s*"([^"]+)"\},\s*(.+?)>\s*\{\}\s*'
             r"(\w+)\s*;"
         )
 
-        # Pattern 2: (inline constexpr)? struct NAME final : named_constant<"symbol", ...> {} NAME;
+        # Pattern 2: (inline constexpr)? struct NAME : named_constant<"symbol", ...> {} NAME;
         constant_pattern_simple = (
-            r"(?:inline\s+constexpr\s+)?struct\s+(\w+)\s+final\s*:\s*"
+            r"(?:inline\s+constexpr\s+)?struct\s+(\w+)(?:\s+final)?\s*:\s*"
             r'named_constant<"([^"]+)",\s*(.+?)>\s*\{\}\s*(\w+)\s*;'
         )
 
