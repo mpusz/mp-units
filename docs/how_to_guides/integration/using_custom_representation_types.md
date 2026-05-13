@@ -430,7 +430,7 @@ public:
 };
 ```
 
-See [`value_type` or `element_type`](../../users_guide/framework_basics/representation_types.md#value_type-or-element_type)
+See [`value_type` or `element_type`](../../users_guide/framework_basics/representation_types.md#representation_underlying_type)
 for complete details.
 
 ### Place Customization Point Functions in the Same Namespace (ADL)
@@ -515,9 +515,9 @@ custom types.
 **Implementation References:**
 
 - [`representation_concepts.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/representation_concepts.h) - Concept definitions and character-determination CPOs (`disable_real`, `real`, `imag`, `modulus`, `norm`, `magnitude`)
-- [`customization_points.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/customization_points.h) - User-specializable customization points (`representation_underlying_type`, `treat_as_floating_point`, `implicitly_scalable`, `representation_values`, `constraint_violation_handler`, `quantity_like_traits`, `quantity_point_like_traits`)
+- [`customization_points.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/customization_points.h) - User-specializable customization points (`representation_underlying_type`, `treat_as_floating_point`, `representation_values`, `constraint_violation_handler`, `quantity_like_traits`, `quantity_point_like_traits`)
 - [`quantity_traits.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/quantity_traits.h) - Public helpers (`unit_for`, `reference_for`, `rep_for`)
 - [`scaling.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/scaling.h) - Built-in scaling implementation
-- [`value_cast.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/value_cast.h) - `value_cast`, `force_in`, and `is_integral_scaling`
+- [`value_cast.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/value_cast.h) - `value_cast`, `force_in`, `is_integral_scaling`, and `implicitly_scalable`
 - [`cartesian_vector.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/cartesian_vector.h) - Vector implementation example
 <!-- markdownlint-enable MD013 -->
