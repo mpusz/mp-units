@@ -505,6 +505,11 @@ case of _displacement_ or vice versa. Those should not be convertible. We do not
 to compile when we accidentally pass a _position vector_ to the numerator of the equation for
 _velocity_, right? What does calculating the _velocity_ for a _position vector_ mean?
 
+The `point_for<displacement>` attribute introduced in the
+[section below](#defining-affine-space-abstractions-in-a-quantity_spec) resolves this
+limitation: once `position_vector` is annotated with `point_for<displacement>`, subtracting
+two _position vectors_ directly yields a _displacement_ without any explicit cast.
+
 ### Affine spaces within quantity trees
 
 Also, let's look at the type of variable `q7`. We know that subtracting two
@@ -601,22 +606,16 @@ arise:
    "regular" `quantity` types?
 2. Should `isq::height` apply only to `quantity`?
 
-I think that question #1 makes a lot of sense. If we realize that `quantity` always represents
-"delta" quantities, what would a `quantity` of `isq::altitude` mean? However, forcing the
-usage of `quantity_point` might be too strict here. Some users are not familiar
-or comfortable with this abstraction. Also, we can't multiply or divide
-quantity points.
+The [Introducing Absolute Quantities](introducing-absolute-quantities.md) article resolves
+both questions with a three-way split into _point_, _absolute_, and _delta_ categories.
+`isq::altitude` annotated with `point_for<height>` is a "point spec": it can appear in a
+plain `quantity` as an **absolute** (anchored at physical zero) or inside a
+`quantity<point<...>>` wrapper for full affine-space operations. It is _not_ restricted
+exclusively to `quantity_point`.
 
-!!! question
-
-    Does anyone know a derived quantity built with altitude or time instant? If so, please let me
-    know in the comments, as limiting "point" `quantity_spec` to `quantity_point` would prevent
-    forming such derived quantities.
-
-Question #2 is also interesting. However, in this case, I think that the answer should be "NO".
-I can imagine a series of _height_ measurements. Every physical measurement can
-be modeled as a `quantity_point`, so a `quantity_point` of _height_ might make
-sense.
+Question #2: `isq::height` is the **delta** counterpart of `isq::altitude` — it appears in
+both regular quantities (as a signed change in height) and as the delta type returned when
+subtracting two _altitude_ points. No restriction to `quantity` only is needed.
 
 ### Opening can of worms
 
