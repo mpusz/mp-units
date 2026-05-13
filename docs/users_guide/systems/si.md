@@ -44,13 +44,13 @@ The seven base units are defined in **mp-units** as:
 ```cpp
 namespace mp_units::si {
 
-inline constexpr struct second final : named_unit<"s", kind_of<isq::duration>> {} second;
-inline constexpr struct metre final : named_unit<"m", kind_of<isq::length>> {} metre;
-inline constexpr struct kilogram final : named_unit<"kg", kind_of<isq::mass>> {} kilogram;
-inline constexpr struct ampere final : named_unit<"A", kind_of<isq::electric_current>> {} ampere;
-inline constexpr struct kelvin final : named_unit<"K", kind_of<isq::thermodynamic_temperature>> {} kelvin;
-inline constexpr struct mole final : named_unit<"mol", kind_of<isq::amount_of_substance>> {} mole;
-inline constexpr struct candela final : named_unit<"cd", kind_of<isq::luminous_intensity>> {} candela;
+inline constexpr struct second : named_unit<"s", kind_of<isq::duration>> {} second;
+inline constexpr struct metre : named_unit<"m", kind_of<isq::length>> {} metre;
+inline constexpr struct kilogram : named_unit<"kg", kind_of<isq::mass>> {} kilogram;
+inline constexpr struct ampere : named_unit<"A", kind_of<isq::electric_current>> {} ampere;
+inline constexpr struct kelvin : named_unit<"K", kind_of<isq::thermodynamic_temperature>> {} kelvin;
+inline constexpr struct mole : named_unit<"mol", kind_of<isq::amount_of_substance>> {} mole;
+inline constexpr struct candela : named_unit<"cd", kind_of<isq::luminous_intensity>> {} candela;
 
 }
 ```
@@ -90,34 +90,34 @@ The SI provides special names for 22 coherent derived units. Here are some examp
 namespace mp_units::si {
 
 // Geometry
-inline constexpr struct radian final : named_unit<"rad", metre / metre, kind_of<isq::angular_measure>> {} radian;
-inline constexpr struct steradian final : named_unit<"sr", square(metre) / square(metre), kind_of<isq::solid_angular_measure>> {} steradian;
+inline constexpr struct radian : named_unit<"rad", metre / metre, kind_of<isq::angular_measure>> {} radian;
+inline constexpr struct steradian : named_unit<"sr", square(metre) / square(metre), kind_of<isq::solid_angular_measure>> {} steradian;
 
 // Mechanics
-inline constexpr struct newton final : named_unit<"N", kilogram * metre / square(second), kind_of<isq::force>> {} newton;
-inline constexpr struct pascal final : named_unit<"Pa", newton / square(metre), kind_of<isq::pressure>> {} pascal;
-inline constexpr struct joule final : named_unit<"J", newton * metre, kind_of<isq::energy>> {} joule;
-inline constexpr struct watt final : named_unit<"W", joule / second> {} watt;
+inline constexpr struct newton : named_unit<"N", kilogram * metre / square(second), kind_of<isq::force>> {} newton;
+inline constexpr struct pascal : named_unit<"Pa", newton / square(metre), kind_of<isq::pressure>> {} pascal;
+inline constexpr struct joule : named_unit<"J", newton * metre, kind_of<isq::energy>> {} joule;
+inline constexpr struct watt : named_unit<"W", joule / second> {} watt;
 
 // Electricity and magnetism
-inline constexpr struct coulomb final : named_unit<"C", ampere * second> {} coulomb;
-inline constexpr struct volt final : named_unit<"V", watt / ampere, kind_of<isq::electric_potential>> {} volt;
-inline constexpr struct farad final : named_unit<"F", coulomb / volt, kind_of<isq::capacitance>> {} farad;
-inline constexpr struct ohm final : named_unit<symbol_text{u8"Ω", "ohm"}, volt / ampere, kind_of<isq::impedance>> {} ohm;
-inline constexpr struct siemens final : named_unit<"S", one / ohm, kind_of<isq::admittance>> {} siemens;
-inline constexpr struct weber final : named_unit<"Wb", volt * second> {} weber;
-inline constexpr struct tesla final : named_unit<"T", weber / square(metre), kind_of<isq::magnetic_flux_density>> {} tesla;
-inline constexpr struct henry final : named_unit<"H", weber / ampere> {} henry;
+inline constexpr struct coulomb : named_unit<"C", ampere * second> {} coulomb;
+inline constexpr struct volt : named_unit<"V", watt / ampere, kind_of<isq::electric_potential>> {} volt;
+inline constexpr struct farad : named_unit<"F", coulomb / volt, kind_of<isq::capacitance>> {} farad;
+inline constexpr struct ohm : named_unit<symbol_text{u8"Ω", "ohm"}, volt / ampere, kind_of<isq::impedance>> {} ohm;
+inline constexpr struct siemens : named_unit<"S", one / ohm, kind_of<isq::admittance>> {} siemens;
+inline constexpr struct weber : named_unit<"Wb", volt * second> {} weber;
+inline constexpr struct tesla : named_unit<"T", weber / square(metre), kind_of<isq::magnetic_flux_density>> {} tesla;
+inline constexpr struct henry : named_unit<"H", weber / ampere> {} henry;
 
 // Photometry
-inline constexpr struct lumen final : named_unit<"lm", candela * steradian, kind_of<isq::luminous_flux>> {} lumen;
-inline constexpr struct lux final : named_unit<"lx", lumen / square(metre), kind_of<isq::illuminance>> {} lux;
+inline constexpr struct lumen : named_unit<"lm", candela * steradian, kind_of<isq::luminous_flux>> {} lumen;
+inline constexpr struct lux : named_unit<"lx", lumen / square(metre), kind_of<isq::illuminance>> {} lux;
 
 // Radioactivity
-inline constexpr struct becquerel final : named_unit<"Bq", one / second, kind_of<isq::activity>> {} becquerel;
-inline constexpr struct gray final : named_unit<"Gy", joule / kilogram, kind_of<isq::absorbed_dose>> {} gray;
-inline constexpr struct sievert final : named_unit<"Sv", joule / kilogram, kind_of<isq::dose_equivalent>> {} sievert;
-inline constexpr struct katal final : named_unit<"kat", mole / second, kind_of<isq::catalytic_activity>> {} katal;
+inline constexpr struct becquerel : named_unit<"Bq", one / second, kind_of<isq::activity>> {} becquerel;
+inline constexpr struct gray : named_unit<"Gy", joule / kilogram, kind_of<isq::absorbed_dose>> {} gray;
+inline constexpr struct sievert : named_unit<"Sv", joule / kilogram, kind_of<isq::dose_equivalent>> {} sievert;
+inline constexpr struct katal : named_unit<"kat", mole / second, kind_of<isq::catalytic_activity>> {} katal;
 
 // And more...
 }
@@ -128,12 +128,12 @@ inline constexpr struct katal final : named_unit<"kat", mole / second, kind_of<i
     Some SI named units are deliberately defined **without** a `kind_of<>` constraint
     because they are legitimately used by multiple unrelated ISQ quantity hierarchies:
 
-    | Unit | ISQ quantity hierarchies that use it |
-    |------|--------------------------------------|
-    | `watt (W)` | _power_, _heat flow rate_, _active power_, _radiant flux_, and more — spanning mechanics, thermodynamics, electromagnetism, and radiometry |
-    | `coulomb (C)` | _electric charge_ and _electric flux_ — distinct ISQ hierarchies sharing the same dimension |
-    | `weber (Wb)` | _magnetic flux_, _protoflux_, _linked magnetic flux_, _total magnetic flux_ — distinct electromagnetic ISQ quantities |
-    | `henry (H)` | _inductance_ and _permeance_ — unrelated ISQ quantities with the same dimension |
+    | Unit          | ISQ quantity hierarchies that use it                                                                                                       |
+    |---------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+    | `watt (W)`    | _power_, _heat flow rate_, _active power_, _radiant flux_, and more — spanning mechanics, thermodynamics, electromagnetism, and radiometry |
+    | `coulomb (C)` | _electric charge_ and _electric flux_ — distinct ISQ hierarchies sharing the same dimension                                                |
+    | `weber (Wb)`  | _magnetic flux_, _protoflux_, _linked magnetic flux_, _total magnetic flux_ — distinct electromagnetic ISQ quantities                      |
+    | `henry (H)`   | _inductance_ and _permeance_ — unrelated ISQ quantities with the same dimension                                                            |
 
     Adding `kind_of<>` to any of these units would incorrectly reject legitimate usages
     with one of the quantity hierarchies it is designed to serve.
@@ -164,30 +164,30 @@ to gram) to create scaled versions:
 ```cpp
 namespace mp_units::si {
 
-template<PrefixableUnit U> struct quecto_ final : prefixed_unit<"q", mag_power<10, -30>, U{}> {};
-template<PrefixableUnit U> struct ronto_  final : prefixed_unit<"r", mag_power<10, -27>, U{}> {};
-template<PrefixableUnit U> struct yocto_  final : prefixed_unit<"y", mag_power<10, -24>, U{}> {};
-template<PrefixableUnit U> struct zepto_  final : prefixed_unit<"z", mag_power<10, -21>, U{}> {};
-template<PrefixableUnit U> struct atto_   final : prefixed_unit<"a", mag_power<10, -18>, U{}> {};
-template<PrefixableUnit U> struct femto_  final : prefixed_unit<"f", mag_power<10, -15>, U{}> {};
-template<PrefixableUnit U> struct pico_   final : prefixed_unit<"p", mag_power<10, -12>, U{}> {};
-template<PrefixableUnit U> struct nano_   final : prefixed_unit<"n", mag_power<10, -9>, U{}> {};
-template<PrefixableUnit U> struct micro_  final : prefixed_unit<symbol_text{u8"µ", "u"}, mag_power<10, -6>, U{}> {};
-template<PrefixableUnit U> struct milli_  final : prefixed_unit<"m", mag_power<10, -3>, U{}> {};
-template<PrefixableUnit U> struct centi_  final : prefixed_unit<"c", mag_power<10, -2>, U{}> {};
-template<PrefixableUnit U> struct deci_   final : prefixed_unit<"d", mag_power<10, -1>, U{}> {};
-template<PrefixableUnit U> struct deca_   final : prefixed_unit<"da", mag_power<10, 1>, U{}> {};
-template<PrefixableUnit U> struct hecto_  final : prefixed_unit<"h", mag_power<10, 2>, U{}> {};
-template<PrefixableUnit U> struct kilo_   final : prefixed_unit<"k", mag_power<10, 3>, U{}> {};
-template<PrefixableUnit U> struct mega_   final : prefixed_unit<"M", mag_power<10, 6>, U{}> {};
-template<PrefixableUnit U> struct giga_   final : prefixed_unit<"G", mag_power<10, 9>, U{}> {};
-template<PrefixableUnit U> struct tera_   final : prefixed_unit<"T", mag_power<10, 12>, U{}> {};
-template<PrefixableUnit U> struct peta_   final : prefixed_unit<"P", mag_power<10, 15>, U{}> {};
-template<PrefixableUnit U> struct exa_    final : prefixed_unit<"E", mag_power<10, 18>, U{}> {};
-template<PrefixableUnit U> struct zetta_  final : prefixed_unit<"Z", mag_power<10, 21>, U{}> {};
-template<PrefixableUnit U> struct yotta_  final : prefixed_unit<"Y", mag_power<10, 24>, U{}> {};
-template<PrefixableUnit U> struct ronna_  final : prefixed_unit<"R", mag_power<10, 27>, U{}> {};
-template<PrefixableUnit U> struct quetta_ final : prefixed_unit<"Q", mag_power<10, 30>, U{}> {};
+template<PrefixableUnit U> struct quecto_ : prefixed_unit<"q", mag_power<10, -30>, U{}> {};
+template<PrefixableUnit U> struct ronto_  : prefixed_unit<"r", mag_power<10, -27>, U{}> {};
+template<PrefixableUnit U> struct yocto_  : prefixed_unit<"y", mag_power<10, -24>, U{}> {};
+template<PrefixableUnit U> struct zepto_  : prefixed_unit<"z", mag_power<10, -21>, U{}> {};
+template<PrefixableUnit U> struct atto_   : prefixed_unit<"a", mag_power<10, -18>, U{}> {};
+template<PrefixableUnit U> struct femto_  : prefixed_unit<"f", mag_power<10, -15>, U{}> {};
+template<PrefixableUnit U> struct pico_   : prefixed_unit<"p", mag_power<10, -12>, U{}> {};
+template<PrefixableUnit U> struct nano_   : prefixed_unit<"n", mag_power<10, -9>, U{}> {};
+template<PrefixableUnit U> struct micro_  : prefixed_unit<symbol_text{u8"µ", "u"}, mag_power<10, -6>, U{}> {};
+template<PrefixableUnit U> struct milli_  : prefixed_unit<"m", mag_power<10, -3>, U{}> {};
+template<PrefixableUnit U> struct centi_  : prefixed_unit<"c", mag_power<10, -2>, U{}> {};
+template<PrefixableUnit U> struct deci_   : prefixed_unit<"d", mag_power<10, -1>, U{}> {};
+template<PrefixableUnit U> struct deca_   : prefixed_unit<"da", mag_power<10, 1>, U{}> {};
+template<PrefixableUnit U> struct hecto_  : prefixed_unit<"h", mag_power<10, 2>, U{}> {};
+template<PrefixableUnit U> struct kilo_   : prefixed_unit<"k", mag_power<10, 3>, U{}> {};
+template<PrefixableUnit U> struct mega_   : prefixed_unit<"M", mag_power<10, 6>, U{}> {};
+template<PrefixableUnit U> struct giga_   : prefixed_unit<"G", mag_power<10, 9>, U{}> {};
+template<PrefixableUnit U> struct tera_   : prefixed_unit<"T", mag_power<10, 12>, U{}> {};
+template<PrefixableUnit U> struct peta_   : prefixed_unit<"P", mag_power<10, 15>, U{}> {};
+template<PrefixableUnit U> struct exa_    : prefixed_unit<"E", mag_power<10, 18>, U{}> {};
+template<PrefixableUnit U> struct zetta_  : prefixed_unit<"Z", mag_power<10, 21>, U{}> {};
+template<PrefixableUnit U> struct yotta_  : prefixed_unit<"Y", mag_power<10, 24>, U{}> {};
+template<PrefixableUnit U> struct ronna_  : prefixed_unit<"R", mag_power<10, 27>, U{}> {};
+template<PrefixableUnit U> struct quetta_ : prefixed_unit<"Q", mag_power<10, 30>, U{}> {};
 
 }
 ```
@@ -228,23 +228,23 @@ namespace mp_units {
 namespace non_si {
 
 // Time
-inline constexpr struct minute final : named_unit<"min", mag<60> * second> {} minute;
-inline constexpr struct hour final : named_unit<"h", mag<60> * minute> {} hour;
-inline constexpr struct day final : named_unit<"d", mag<24> * hour> {} day;
+inline constexpr struct minute : named_unit<"min", mag<60> * second> {} minute;
+inline constexpr struct hour : named_unit<"h", mag<60> * minute> {} hour;
+inline constexpr struct day : named_unit<"d", mag<24> * hour> {} day;
 
 // Plane angle
-inline constexpr struct degree final : named_unit<"°", mag<ratio{1, 180}> * mag<pi> * radian> {} degree;
-inline constexpr struct arcminute final : named_unit<"'", mag_ratio<1, 60> * degree> {} arcminute;
-inline constexpr struct arcsecond final : named_unit<"\"", mag_ratio<1, 60> * arcminute> {} arcsecond;
+inline constexpr struct degree : named_unit<"°", mag<ratio{1, 180}> * mag<pi> * radian> {} degree;
+inline constexpr struct arcminute : named_unit<"'", mag_ratio<1, 60> * degree> {} arcminute;
+inline constexpr struct arcsecond : named_unit<"\"", mag_ratio<1, 60> * arcminute> {} arcsecond;
 
 // Volume
-inline constexpr struct litre final : named_unit<"l", cubic(decimetre)> {} litre;
+inline constexpr struct litre : named_unit<"l", cubic(decimetre)> {} litre;
 
 // Mass
-inline constexpr struct tonne final : named_unit<"t", mag<1000> * kilogram> {} tonne;
+inline constexpr struct tonne : named_unit<"t", mag<1000> * kilogram> {} tonne;
 
 // Energy
-inline constexpr struct electronvolt final : named_unit<"eV", mag_ratio<1'602'176'634, 10'000'000'000> * mag_power<10, -19> * joule> {} electronvolt;
+inline constexpr struct electronvolt : named_unit<"eV", mag_ratio<1'602'176'634, 10'000'000'000> * mag_power<10, -19> * joule> {} electronvolt;
 
 // And more...
 }
@@ -267,31 +267,31 @@ constants. These are provided in **mp-units**:
 ```cpp
 namespace mp_units::si::inline si2019 {
 
-inline constexpr struct hyperfine_structure_transition_frequency_of_cs final :
+inline constexpr struct hyperfine_structure_transition_frequency_of_cs :
   named_constant<symbol_text{u8"Δν_Cs", "dv_Cs"}, mag<9'192'631'770> * hertz> {}
   hyperfine_structure_transition_frequency_of_cs;
 
-inline constexpr struct speed_of_light_in_vacuum final :
+inline constexpr struct speed_of_light_in_vacuum :
   named_constant<"c", mag<299'792'458> * metre / second> {}
   speed_of_light_in_vacuum;
 
-inline constexpr struct planck_constant final :
+inline constexpr struct planck_constant :
   named_constant<"h", mag_ratio<662'607'015, 1'000'000'000> * mag_power<10, -34> * joule * second> {}
   planck_constant;
 
-inline constexpr struct elementary_charge final :
+inline constexpr struct elementary_charge :
   named_constant<"e", mag_ratio<1'602'176'634, 1'000'000'000> * mag_power<10, -19> * coulomb> {}
   elementary_charge;
 
-inline constexpr struct boltzmann_constant final :
+inline constexpr struct boltzmann_constant :
   named_constant<"k", mag_ratio<1'380'649, 1'000'000> * mag_power<10, -23> * joule / kelvin> {}
   boltzmann_constant;
 
-inline constexpr struct avogadro_constant final :
+inline constexpr struct avogadro_constant :
   named_constant<symbol_text{u8"N_A", "N_A"}, mag_ratio<602'214'076, 100'000'000> * mag_power<10, 23> / mole> {}
   avogadro_constant;
 
-inline constexpr struct luminous_efficacy final :
+inline constexpr struct luminous_efficacy :
   named_constant<symbol_text{u8"K_cd", "K_cd"}, mag<683> * lumen / watt> {}
   luminous_efficacy;
 

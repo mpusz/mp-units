@@ -36,7 +36,13 @@ namespace detail {
 
 struct unit_interface;
 
+template<typename T>
+constexpr bool is_specialization_of_prefixed_unit = false;
+
 }  // namespace detail
+
+MP_UNITS_EXPORT template<symbol_text Symbol, auto...>
+struct named_unit;
 
 /**
  * @brief A concept matching all unit types in the library
@@ -44,10 +50,8 @@ struct unit_interface;
  * Satisfied by all unit types provided by the library.
  */
 MP_UNITS_EXPORT template<typename T>
-concept Unit = std::derived_from<T, detail::unit_interface> && detail::SymbolicConstant<T>;
-
-MP_UNITS_EXPORT template<symbol_text Symbol, auto...>
-struct named_unit;
+concept Unit = std::derived_from<T, detail::unit_interface> && detail::SymbolicConstant<T> &&
+               (!is_specialization_of_v<T, named_unit>) && (!detail::is_specialization_of_prefixed_unit<T>);
 
 /**
  * @brief A concept to be used to define prefixes for a unit

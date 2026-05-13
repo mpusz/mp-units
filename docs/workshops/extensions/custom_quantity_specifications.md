@@ -203,14 +203,14 @@ int main()
 
     namespace qs {
 
-    inline constexpr struct cabin_mass final : quantity_spec<isq::mass> {} cabin_mass;
-    inline constexpr struct passenger_mass final : quantity_spec<isq::mass> {} passenger_mass;
-    inline constexpr struct total_mass final : quantity_spec<isq::mass> {} total_mass;
-    inline constexpr struct travel_height final : quantity_spec<isq::height> {} travel_height;
-    inline constexpr struct cruising_speed final : quantity_spec<isq::speed> {} cruising_speed;
-    inline constexpr struct motor_efficiency final : quantity_spec<isq::mechanical_efficiency> {} motor_efficiency;
-    inline constexpr struct motor_energy final : quantity_spec<isq::mechanical_energy, isq::mechanical_energy / motor_efficiency> {} motor_energy;
-    inline constexpr struct gravitational_potential_energy final : quantity_spec<isq::potential_energy, isq::mass * isq::acceleration_of_free_fall * isq::height> {} gravitational_potential_energy;
+    inline constexpr struct cabin_mass : quantity_spec<isq::mass> {} cabin_mass;
+    inline constexpr struct passenger_mass : quantity_spec<isq::mass> {} passenger_mass;
+    inline constexpr struct total_mass : quantity_spec<isq::mass> {} total_mass;
+    inline constexpr struct travel_height : quantity_spec<isq::height> {} travel_height;
+    inline constexpr struct cruising_speed : quantity_spec<isq::speed> {} cruising_speed;
+    inline constexpr struct motor_efficiency : quantity_spec<isq::mechanical_efficiency> {} motor_efficiency;
+    inline constexpr struct motor_energy : quantity_spec<isq::mechanical_energy, isq::mechanical_energy / motor_efficiency> {} motor_energy;
+    inline constexpr struct gravitational_potential_energy : quantity_spec<isq::potential_energy, isq::mass * isq::acceleration_of_free_fall * isq::height> {} gravitational_potential_energy;
 
     }
 
@@ -302,9 +302,9 @@ int main()
 
     ```cpp
     // All are masses (kg), but semantically different:
-    inline constexpr struct cabin_mass final : quantity_spec<isq::mass> {} cabin_mass;
-    inline constexpr struct passenger_mass final : quantity_spec<isq::mass> {} passenger_mass;
-    inline constexpr struct total_mass final : quantity_spec<isq::mass> {} total_mass;
+    inline constexpr struct cabin_mass : quantity_spec<isq::mass> {} cabin_mass;
+    inline constexpr struct passenger_mass : quantity_spec<isq::mass> {} passenger_mass;
+    inline constexpr struct total_mass : quantity_spec<isq::mass> {} total_mass;
 
     quantity cabin = cabin_mass(800 * kg);
     quantity passengers = passenger_mass(400 * kg);
@@ -321,7 +321,7 @@ int main()
 
     ```cpp
     // Gravitational potential energy: E_p = m * g * h
-    inline constexpr struct gravitational_potential_energy final :
+    inline constexpr struct gravitational_potential_energy :
       quantity_spec<isq::mass * isq::acceleration_of_free_fall * isq::height> {} gravitational_potential_energy;
 
     // Type-checked dimensional analysis!

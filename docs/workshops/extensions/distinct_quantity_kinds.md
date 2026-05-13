@@ -245,11 +245,11 @@ int main()
     using namespace mp_units;
 
     // 1. Define the distinct kinds (The Safety Layer)
-    inline constexpr struct fluid_head final : quantity_spec<isq::height, is_kind> {} fluid_head;
-    inline constexpr struct water_head final : quantity_spec<isq::height, is_kind> {} water_head;
+    inline constexpr struct fluid_head : quantity_spec<isq::height, is_kind> {} fluid_head;
+    inline constexpr struct water_head : quantity_spec<isq::height, is_kind> {} water_head;
 
     // 2. Define a type for Specific Gravity (Dimensionless)
-    inline constexpr struct specific_gravity final : quantity_spec<dimensionless> {} specific_gravity;
+    inline constexpr struct specific_gravity : quantity_spec<dimensionless> {} specific_gravity;
 
     // 3. Define Conversion Helpers
     // Formula: H_water = H_fluid * SG

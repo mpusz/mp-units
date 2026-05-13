@@ -88,12 +88,12 @@ namespace finance {
 
 // TODO: Define quantity specifications for shares and currency flows
 // Refinements for different currency flows
-inline constexpr struct dividend final : quantity_spec<currency> {} dividend;
-inline constexpr struct capital final : quantity_spec<currency> {} capital;
+inline constexpr struct dividend : quantity_spec<currency> {} dividend;
+inline constexpr struct capital : quantity_spec<currency> {} capital;
 
 // Derived quantities
-inline constexpr struct share_price final : quantity_spec<currency / shares> {} share_price;
-inline constexpr struct dividend_per_share final : quantity_spec<dividend / shares> {} dividend_per_share;
+inline constexpr struct share_price : quantity_spec<currency / shares> {} share_price;
+inline constexpr struct dividend_per_share : quantity_spec<dividend / shares> {} dividend_per_share;
 
 // TODO Define unit share for shares and USD for currency
 
@@ -192,24 +192,24 @@ int main()
     namespace finance {
 
     // Define custom base dimensions
-    inline constexpr struct dim_shares final : base_dimension<"N"> {} dim_shares;
-    inline constexpr struct dim_currency final : base_dimension<"$"> {} dim_currency;
+    inline constexpr struct dim_shares : base_dimension<"N"> {} dim_shares;
+    inline constexpr struct dim_currency : base_dimension<"$"> {} dim_currency;
 
     // Define quantity specifications
-    inline constexpr struct shares final : quantity_spec<dim_shares> {} shares;
-    inline constexpr struct currency final : quantity_spec<dim_currency> {} currency;
+    inline constexpr struct shares : quantity_spec<dim_shares> {} shares;
+    inline constexpr struct currency : quantity_spec<dim_currency> {} currency;
 
     // Refinements for different currency flows
-    inline constexpr struct dividend final : quantity_spec<currency> {} dividend;
-    inline constexpr struct capital final : quantity_spec<currency> {} capital;
+    inline constexpr struct dividend : quantity_spec<currency> {} dividend;
+    inline constexpr struct capital : quantity_spec<currency> {} capital;
 
     // Derived quantities
-    inline constexpr struct share_price final : quantity_spec<currency / shares> {} share_price;
-    inline constexpr struct dividend_per_share final : quantity_spec<dividend / shares> {} dividend_per_share;
+    inline constexpr struct share_price : quantity_spec<currency / shares> {} share_price;
+    inline constexpr struct dividend_per_share : quantity_spec<dividend / shares> {} dividend_per_share;
 
     // Define units
-    inline constexpr struct share final : named_unit<"share", kind_of<shares>> {} share;
-    inline constexpr struct USD final : named_unit<"USD", kind_of<currency>> {} USD;
+    inline constexpr struct share : named_unit<"share", kind_of<shares>> {} share;
+    inline constexpr struct USD : named_unit<"USD", kind_of<currency>> {} USD;
 
     [[nodiscard]] constexpr QuantityOf<currency> auto portfolio_value(QuantityOf<shares> auto num_shares,
                                                                       QuantityOf<share_price> auto price_per_share)
@@ -295,8 +295,8 @@ int main()
     Custom base dimensions create completely separate dimensional "universes":
 
     ```cpp
-    inline constexpr struct dim_shares final : base_dimension<"N"> {} dim_shares;
-    inline constexpr struct dim_currency final : base_dimension<"$"> {} dim_currency;
+    inline constexpr struct dim_shares : base_dimension<"N"> {} dim_shares;
+    inline constexpr struct dim_currency : base_dimension<"$"> {} dim_currency;
     ```
 
     - ✅ `shares` and `currency` cannot be added, subtracted, or compared
@@ -309,8 +309,8 @@ int main()
 
     ```cpp
     // Named derived quantity spec (like ISQ speed, force, etc.)
-    inline constexpr struct share_price final : quantity_spec<currency / shares> {} share_price;
-    inline constexpr struct dividend_per_share final : quantity_spec<dividend / shares> {} dividend_per_share;
+    inline constexpr struct share_price : quantity_spec<currency / shares> {} share_price;
+    inline constexpr struct dividend_per_share : quantity_spec<dividend / shares> {} dividend_per_share;
 
     quantity price = 150.0 * USD / share;           // Share price: currency/shares
     quantity num_shares = 100 * share;              // Number of shares
@@ -324,12 +324,12 @@ int main()
 
     ```cpp
     // Named derived quantity allows refinement
-    inline constexpr struct share_price final : quantity_spec<currency / shares> {} share_price;
+    inline constexpr struct share_price : quantity_spec<currency / shares> {} share_price;
 
     // Refinements for specific price types in order book
-    inline constexpr struct bid_price final : quantity_spec<share_price> {} bid_price;
-    inline constexpr struct ask_price final : quantity_spec<share_price> {} ask_price;
-    inline constexpr struct limit_price final : quantity_spec<share_price> {} limit_price;
+    inline constexpr struct bid_price : quantity_spec<share_price> {} bid_price;
+    inline constexpr struct ask_price : quantity_spec<share_price> {} ask_price;
+    inline constexpr struct limit_price : quantity_spec<share_price> {} limit_price;
 
     // Type-safe order book operations
     quantity best_bid = bid_price(149.95 * USD / share);

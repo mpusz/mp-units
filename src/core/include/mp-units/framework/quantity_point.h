@@ -181,6 +181,12 @@ struct relative_point_origin : detail::point_origin_interface {
 
 namespace detail {
 
+template<auto... Args>
+constexpr bool is_specialization_of_absolute_point_origin<absolute_point_origin<Args...>> = true;
+
+template<auto... Args>
+constexpr bool is_specialization_of_relative_point_origin<relative_point_origin<Args...>> = true;
+
 // Conditional base class for natural_point_origin_: applies check_non_negative bounds
 // when QS is tagged non_negative with real_scalar character, otherwise no bounds.
 template<QuantitySpec auto QS, bool = QS._is_non_negative_>

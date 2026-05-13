@@ -32,6 +32,12 @@ namespace detail {
 
 struct point_origin_interface;
 
+template<typename T>
+constexpr bool is_specialization_of_absolute_point_origin = false;
+
+template<typename T>
+constexpr bool is_specialization_of_relative_point_origin = false;
+
 }  // namespace detail
 
 /**
@@ -40,6 +46,8 @@ struct point_origin_interface;
  * Satisfied by either quantity points or by all types derived from `absolute_point_origin` class template.
  */
 MP_UNITS_EXPORT template<typename T>
-concept PointOrigin = std::derived_from<T, detail::point_origin_interface> && detail::SymbolicConstant<T>;
+concept PointOrigin =
+  std::derived_from<T, detail::point_origin_interface> && detail::SymbolicConstant<T> &&
+  (!detail::is_specialization_of_absolute_point_origin<T>) && (!detail::is_specialization_of_relative_point_origin<T>);
 
 }  // namespace mp_units

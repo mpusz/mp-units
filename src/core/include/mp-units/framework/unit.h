@@ -320,12 +320,12 @@ constexpr bool is_specialization_of_scaled_unit<scaled_unit<M, U>> = true;
  * For example:
  *
  * @code{.cpp}
- * inline constexpr struct second final : named_unit<"s", kind_of<time>> {} second;
- * inline constexpr struct metre final : named_unit<"m", kind_of<length> {} metre;
- * inline constexpr struct hertz final : named_unit<"Hz", inverse(second), kind_of<frequency>> {} hertz;
- * inline constexpr struct newton final : named_unit<"N", kilogram * metre / square(second)> {} newton;
- * inline constexpr struct degree_Celsius final : named_unit<{u8"℃", "`C"}, kelvin, zeroth_degree_Celsius> {}
- * degree_Celsius; inline constexpr struct minute final : named_unit<"min", mag<60> * second> {} minute;
+ * inline constexpr struct second : named_unit<"s", kind_of<time>> {} second;
+ * inline constexpr struct metre : named_unit<"m", kind_of<length> {} metre;
+ * inline constexpr struct hertz : named_unit<"Hz", inverse(second), kind_of<frequency>> {} hertz;
+ * inline constexpr struct newton : named_unit<"N", kilogram * metre / square(second)> {} newton;
+ * inline constexpr struct degree_Celsius : named_unit<{u8"℃", "`C"}, kelvin, zeroth_degree_Celsius> {}
+ * degree_Celsius; inline constexpr struct minute : named_unit<"min", mag<60> * second> {} minute;
  * @endcode
  *
  * @note A common convention in this library is to assign the same name for a type and an object of this type.
@@ -474,6 +474,9 @@ struct prefixed_unit : decltype(M * U)::_base_type_ {
 };
 
 namespace detail {
+
+template<auto... Args>
+constexpr bool is_specialization_of_prefixed_unit<prefixed_unit<Args...>> = true;
 
 template<Unit U1, UnitConvertibleTo<U1{}> U2>
 [[nodiscard]] consteval Unit auto get_common_scaled_unit(U1, U2)

@@ -169,8 +169,8 @@ Additionally, `quantity_point` provides public type aliases:
     With explicit origin:
 
     ```cpp
-    inline constexpr struct mean_sea_level final : absolute_point_origin<isq::height> {} mean_sea_level;
-    inline constexpr struct ground_level final : relative_point_origin<mean_sea_level + 42 * si::metre> {} ground_level;
+    inline constexpr struct mean_sea_level : absolute_point_origin<isq::altitude> {} mean_sea_level;
+    inline constexpr struct ground_level : relative_point_origin<mean_sea_level + 42 * si::metre> {} ground_level;
 
     using altitude = quantity_point<isq::height[si::metre], mean_sea_level>;
     using altitude_agl = quantity_point<isq::height[si::metre], ground_level>;

@@ -86,8 +86,8 @@ For guaranteed enforcement, use `check_in_range`:
 using namespace mp_units;
 using namespace mp_units::si::unit_symbols;
 
-inline constexpr struct geo_latitude final : quantity_spec<isq::angular_measure> {} geo_latitude;
-inline constexpr struct equator final :
+inline constexpr struct geo_latitude : quantity_spec<isq::angular_measure> {} geo_latitude;
+inline constexpr struct equator :
     absolute_point_origin<geo_latitude, check_in_range{-90 * deg, 90 * deg}> {} equator;
 ```
 

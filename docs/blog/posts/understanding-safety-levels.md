@@ -345,7 +345,7 @@ quantity<mm, std::int16_t> length_mm2 = length2;  // ✅ OK: 2000 fits in int16_
     // quantity overflow = distance * std::int16_t{1'000};  // throws std::overflow_error at runtime
 
     // Cyclic longitude points that wrap at the anti-meridian
-    inline constexpr struct prime_meridian final :
+    inline constexpr struct prime_meridian :
       absolute_point_origin<geo_longitude, wrap_to_range{-180 * deg, 180 * deg}> {} prime_meridian;
 
     using safe_double = mp_units::constrained<double, mp_units::throw_policy>;
@@ -515,7 +515,7 @@ by defining a custom origin with different bounds:
 
 ```cpp
 // Define a custom origin with clamp_non_negative instead of the automatic check_non_negative:
-inline constexpr struct clamped_length_origin final :
+inline constexpr struct clamped_length_origin :
     absolute_point_origin<isq::length, clamp_non_negative{}> {} clamped_length_origin;
 ```
 
@@ -530,8 +530,8 @@ any quantity point origin, so geographic coordinates, sensor ranges, and similar
 constrained domains are validated at construction and during arithmetic:
 
 ```cpp
-inline constexpr struct geo_longitude final : quantity_spec<isq::angular_measure> {} geo_longitude;
-inline constexpr struct prime_meridian final :
+inline constexpr struct geo_longitude : quantity_spec<isq::angular_measure> {} geo_longitude;
+inline constexpr struct prime_meridian :
   absolute_point_origin<geo_longitude, wrap_to_range{-180 * deg, 180 * deg}> {} prime_meridian;
 
 using longitude = quantity_point<geo_longitude[deg], prime_meridian>;
@@ -664,9 +664,9 @@ explicitly — the type system enforces that the conversion is intentional.
 === "With mp-units: Distinct kinds"
 
     ```cpp
-    inline constexpr struct fluid_head final : quantity_spec<isq::height, is_kind> {} fluid_head;
-    inline constexpr struct water_head final : quantity_spec<isq::height, is_kind> {} water_head;
-    inline constexpr struct specific_gravity final : quantity_spec<dimensionless> {} specific_gravity;
+    inline constexpr struct fluid_head : quantity_spec<isq::height, is_kind> {} fluid_head;
+    inline constexpr struct water_head : quantity_spec<isq::height, is_kind> {} water_head;
+    inline constexpr struct specific_gravity : quantity_spec<dimensionless> {} specific_gravity;
 
     constexpr QuantityOf<water_head> auto to_water_head(QuantityOf<fluid_head> auto h_fluid,
                                                         QuantityOf<specific_gravity> auto sg)
@@ -714,8 +714,8 @@ other numeric values that shouldn't be mixed:
 === "With mp-units: Distinct kinds"
 
     ```cpp
-    inline constexpr struct item_count final : quantity_spec<dimensionless, is_kind> {} item_count;
-    inline constexpr struct widget_count final : quantity_spec<dimensionless, is_kind> {} widget_count;
+    inline constexpr struct item_count : quantity_spec<dimensionless, is_kind> {} item_count;
+    inline constexpr struct widget_count : quantity_spec<dimensionless, is_kind> {} widget_count;
 
     quantity items = item_count(10);
     quantity widgets = widget_count(20);
@@ -849,7 +849,7 @@ Some quantities require specific inputs, not just dimensionally correct ones:
 === "With mp-units: Specific ingredient required"
 
     ```cpp
-    inline constexpr struct gravitational_potential_energy final :
+    inline constexpr struct gravitational_potential_energy :
         quantity_spec<isq::potential_energy,
                       isq::mass * isq::acceleration_of_free_fall * isq::height> {} gravitational_potential_energy;
 

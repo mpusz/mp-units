@@ -208,7 +208,7 @@ Different origins create incompatible types, preventing dangerous mistakes:
 
 ```cpp
 template<earth_gravity_model M>
-struct height_above_ellipsoid_t final : absolute_point_origin<isq::altitude> {
+struct height_above_ellipsoid_t : absolute_point_origin<isq::altitude> {
   static constexpr earth_gravity_model egm = M;
 };
 ```

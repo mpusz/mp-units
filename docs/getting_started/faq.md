@@ -188,7 +188,7 @@ provide custom symbol text that suits the project's requirements. For example, t
 could be addressed with:
 
 ```cpp
-inline constexpr struct kilowatt_hour final : named_unit<"kWh", kW * h> {} kilowatt_hour;
+inline constexpr struct kilowatt_hour : named_unit<"kWh", kW * h> {} kilowatt_hour;
 inline constexpr auto kWh = kilowatt_hour;
 ```
 

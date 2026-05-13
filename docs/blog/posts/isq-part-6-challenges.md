@@ -55,7 +55,7 @@ convertible to it.
 To implement our task correctly, we had to define and use a new quantity of kind _length_:
 
 ```cpp
-inline constexpr struct horizontal_length final : quantity_spec<isq::length> {} horizontal_length;
+inline constexpr struct horizontal_length : quantity_spec<isq::length> {} horizontal_length;
 ```
 
 We do not propose adding _horizontal length_ to ISO 80000-3. There are probably other similar

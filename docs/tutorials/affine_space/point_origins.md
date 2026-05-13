@@ -37,8 +37,8 @@ Different absolute origins create incompatible types - preventing accidental mix
 using namespace mp_units;
 
 // Define two unrelated absolute origins
-inline constexpr struct unix_epoch final : absolute_point_origin<isq::time> {} unix_epoch;
-inline constexpr struct system_boot final : absolute_point_origin<isq::time> {} system_boot;
+inline constexpr struct unix_epoch : absolute_point_origin<isq::time> {} unix_epoch;
+inline constexpr struct system_boot : absolute_point_origin<isq::time> {} system_boot;
 
 int main()
 {
@@ -86,11 +86,11 @@ can convert between each other (through that common base):
 using namespace mp_units;
 
 // Absolute origin: UTC midnight
-inline constexpr struct utc final : absolute_point_origin<isq::time> {} utc;
+inline constexpr struct utc : absolute_point_origin<isq::time> {} utc;
 
 // Multiple relative origins branching from UTC
-inline constexpr struct pst final : relative_point_origin<utc + 8 * si::hour> {} pst; // PST is UTC-8 (behind)
-inline constexpr struct jst final : relative_point_origin<utc - 9 * si::hour> {} jst; // JST is UTC+9 (ahead)
+inline constexpr struct pst : relative_point_origin<utc + 8 * si::hour> {} pst; // PST is UTC-8 (behind)
+inline constexpr struct jst : relative_point_origin<utc - 9 * si::hour> {} jst; // JST is UTC+9 (ahead)
 
 int main()
 {

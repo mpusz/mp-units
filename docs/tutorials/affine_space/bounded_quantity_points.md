@@ -28,7 +28,7 @@ to attach range validation:
 ```cpp
 #include <mp-units/core.h>
 
-inline constexpr struct your_origin final :
+inline constexpr struct your_origin :
     absolute_point_origin<your_quantity_spec, clamp_to_range{min_val, max_val}> {} your_origin;
 ```
 
@@ -71,9 +71,9 @@ those bounds instead of the representation type's own extremes.
 using namespace mp_units;
 using namespace mp_units::si::unit_symbols;
 
-inline constexpr struct sea_level final :
+inline constexpr struct sea_level :
     absolute_point_origin<isq::altitude, clamp_to_range{-500 * m, 12'000 * m}> {} sea_level;
-inline constexpr struct ground_level final :
+inline constexpr struct ground_level :
     absolute_point_origin<isq::altitude, clamp_to_range{0 * m, 500 * m}> {} ground_level;
 
 int main()
@@ -116,7 +116,7 @@ nest strictly inside the parent's range:
 
 ```cpp
 // Relative origin — no own bounds; inherits clamping from sea_level.
-inline constexpr struct airport_elevation final : relative_point_origin<sea_level + 200 * m> {} airport_elevation;
+inline constexpr struct airport_elevation : relative_point_origin<sea_level + 200 * m> {} airport_elevation;
 
 // Value 12100 m MSL would exceed the sea_level cap of 12000 m → clamped.
 quantity_point takeoff = airport_elevation + 11'900.0 * m;
@@ -150,7 +150,7 @@ definition is required:
 using namespace mp_units;
 using namespace mp_units::si::unit_symbols;
 
-inline constexpr struct distance_traveled final : quantity_spec<isq::length> {} distance_traveled;
+inline constexpr struct distance_traveled : quantity_spec<isq::length> {} distance_traveled;
 
 int main()
 {
@@ -171,7 +171,7 @@ You can override the default by defining a custom origin with different bounds. 
 to silently clamp rounding-noise negatives in a computed result rather than failing:
 
 ```cpp
-inline constexpr struct clamped_distance_origin final :
+inline constexpr struct clamped_distance_origin :
     absolute_point_origin<distance_traveled, clamp_non_negative{}> {} clamped_distance_origin;
 ```
 
@@ -183,11 +183,11 @@ floor may hold negative values — as long as the absolute position stays ≥ 0:
 
 ```cpp
 // inherits non_negative from ISQ
-inline constexpr struct height_spec final : quantity_spec<isq::height> {} height_spec;
+inline constexpr struct height_spec : quantity_spec<isq::height> {} height_spec;
 
 // natural_point_origin<height_spec> auto-gets check_non_negative — no explicit bounds needed.
 // The relative origin at +1700 m inherits that constraint.
-inline constexpr struct average_height_origin final :
+inline constexpr struct average_height_origin :
     relative_point_origin<natural_point_origin<height_spec> + 1700.0 * m> {} average_height_origin;
 
 // −1500 m relative = 200 m absolute (≥ 0) → valid.

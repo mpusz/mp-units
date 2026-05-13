@@ -191,21 +191,21 @@ int main()
     using namespace mp_units;
 
     // Define distinct dimensionless quantity types using is_kind
-    inline constexpr struct pixel_x final : quantity_spec<dimensionless, is_kind> {} pixel_x;
-    inline constexpr struct pixel_y final : quantity_spec<dimensionless, is_kind> {} pixel_y;
-    inline constexpr struct sprite_count final : quantity_spec<dimensionless, is_kind> {} sprite_count;
-    inline constexpr struct frame_count final : quantity_spec<dimensionless, is_kind> {} frame_count;
-    inline constexpr struct buffer_index final : quantity_spec<dimensionless, is_kind> {} buffer_index;
+    inline constexpr struct pixel_x : quantity_spec<dimensionless, is_kind> {} pixel_x;
+    inline constexpr struct pixel_y : quantity_spec<dimensionless, is_kind> {} pixel_y;
+    inline constexpr struct sprite_count : quantity_spec<dimensionless, is_kind> {} sprite_count;
+    inline constexpr struct frame_count : quantity_spec<dimensionless, is_kind> {} frame_count;
+    inline constexpr struct buffer_index : quantity_spec<dimensionless, is_kind> {} buffer_index;
 
     // Define specialized quantities (children of the distinct kinds)
-    inline constexpr struct resolution_width final : quantity_spec<pixel_x> {} resolution_width;
-    inline constexpr struct resolution_height final : quantity_spec<pixel_y> {} resolution_height;
+    inline constexpr struct resolution_width : quantity_spec<pixel_x> {} resolution_width;
+    inline constexpr struct resolution_height : quantity_spec<pixel_y> {} resolution_height;
 
     // Define derived quantity for render rate
-    inline constexpr struct render_rate final : quantity_spec<sprite_count / isq::time> {} render_rate;
+    inline constexpr struct render_rate : quantity_spec<sprite_count / isq::time> {} render_rate;
 
     // Define derived quantity for frame rate
-    inline constexpr struct frame_rate final : quantity_spec<frame_count / isq::time> {} frame_rate;
+    inline constexpr struct frame_rate : quantity_spec<frame_count / isq::time> {} frame_rate;
 
     [[nodiscard]] constexpr bool is_within_bounds(QuantityOf<pixel_x> auto x,
                                                   QuantityOf<pixel_y> auto y,
@@ -282,8 +282,8 @@ int main()
     hierarchy:
 
     ```cpp
-    inline constexpr struct pixel_x final : quantity_spec<dimensionless, is_kind> {} pixel_x;
-    inline constexpr struct pixel_y final : quantity_spec<dimensionless, is_kind> {} pixel_y;
+    inline constexpr struct pixel_x : quantity_spec<dimensionless, is_kind> {} pixel_x;
+    inline constexpr struct pixel_y : quantity_spec<dimensionless, is_kind> {} pixel_y;
     ```
 
     This means:
@@ -299,8 +299,8 @@ int main()
     You can create hierarchies within your custom kinds:
 
     ```cpp
-    inline constexpr struct pixel_x final : quantity_spec<dimensionless, is_kind> {} pixel_x;
-    inline constexpr struct resolution_width final : quantity_spec<pixel_x> {} resolution_width;
+    inline constexpr struct pixel_x : quantity_spec<dimensionless, is_kind> {} pixel_x;
+    inline constexpr struct resolution_width : quantity_spec<pixel_x> {} resolution_width;
     ```
 
     - `resolution_width` **is a** `pixel_x` (implicitly convertible)
@@ -314,8 +314,8 @@ int main()
     You can create derived quantities from your custom types:
 
     ```cpp
-    inline constexpr struct render_rate final : quantity_spec<sprite_count / isq::time> {} render_rate;
-    inline constexpr struct frame_rate final : quantity_spec<frame_count / isq::time> {} frame_rate;
+    inline constexpr struct render_rate : quantity_spec<sprite_count / isq::time> {} render_rate;
+    inline constexpr struct frame_rate : quantity_spec<frame_count / isq::time> {} frame_rate;
     ```
 
     This automatically works with dimensional analysis:
@@ -360,12 +360,12 @@ int main()
     define units with `kind_of`:
 
     ```cpp
-    inline constexpr struct pixel_x_unit final : named_unit<"px_x", one, kind_of<pixel_x>> {} pixel_x_unit;
+    inline constexpr struct pixel_x_unit : named_unit<"px_x", one, kind_of<pixel_x>> {} pixel_x_unit;
     inline constexpr auto px_x = pixel_x_unit;
-    inline constexpr struct pixel_y_unit final : named_unit<"px_y", one, kind_of<pixel_y>> {} pixel_y_unit;
+    inline constexpr struct pixel_y_unit : named_unit<"px_y", one, kind_of<pixel_y>> {} pixel_y_unit;
     inline constexpr auto px_y = pixel_y_unit;
-    inline constexpr struct sprite final : named_unit<"sprite", one, kind_of<sprite_count>> {} sprite;
-    inline constexpr struct frame final : named_unit<"frame", one, kind_of<frame_count>> {} frame;
+    inline constexpr struct sprite : named_unit<"sprite", one, kind_of<sprite_count>> {} sprite;
+    inline constexpr struct frame : named_unit<"frame", one, kind_of<frame_count>> {} frame;
 
     quantity x = 100 * px_x;                 // pixel_x[px_x]
     quantity y = 50 * px_y;                  // pixel_y[px_y]

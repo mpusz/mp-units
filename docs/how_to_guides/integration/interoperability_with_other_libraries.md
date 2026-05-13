@@ -338,10 +338,10 @@ or indirectly) can be converted to `std::chrono` types:
 ```cpp
 using namespace std::chrono;
 
-inline constexpr struct ts_origin final :
+inline constexpr struct ts_origin :
   relative_point_origin<chrono_point_origin<system_clock> + 1 * non_si::hour> {} ts_origin;
 
-inline constexpr struct my_origin final :
+inline constexpr struct my_origin :
   absolute_point_origin<isq::time> {} my_origin;
 
 // ✅ OK: directly uses chrono_point_origin

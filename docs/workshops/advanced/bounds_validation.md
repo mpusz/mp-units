@@ -226,13 +226,13 @@ int main()
     using safe_double = constrained<double, weather_policy>;
 
     // Define point origins with bounds as template parameters
-    inline constexpr struct qnh_zero final :
+    inline constexpr struct qnh_zero :
         absolute_point_origin<isq::pressure, check_in_range{870 * hPa, 1085 * hPa}> {} qnh_zero;
 
-    inline constexpr struct calm_air final :
+    inline constexpr struct calm_air :
         absolute_point_origin<isq::speed, check_in_range{0 * kt, 150 * kt}> {} calm_air;
 
-    inline constexpr struct mean_sea_level final :
+    inline constexpr struct mean_sea_level :
         absolute_point_origin<isq::altitude, check_in_range{-500 * m, 9'000 * m}> {} mean_sea_level;
 
     // Type aliases with safe representation

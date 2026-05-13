@@ -29,14 +29,37 @@
 
 namespace mp_units {
 
+#if MP_UNITS_API_NO_CRTP
+MP_UNITS_EXPORT template<auto...>
+#else
+MP_UNITS_EXPORT template<typename, auto...>
+#endif
+struct quantity_spec;
+
 namespace detail {
 
 struct quantity_spec_interface_base;
 
-}
+#if MP_UNITS_API_NO_CRTP
+
+template<typename T>
+constexpr bool is_specialization_of_quantity_spec = is_specialization_of_v<T, quantity_spec>;
+
+#else
+
+template<typename T>
+constexpr bool is_specialization_of_quantity_spec = false;
+
+template<typename Derived, typename... Params>
+constexpr bool is_specialization_of_quantity_spec<quantity_spec<Derived, Params...> > = true;
+
+#endif
+
+}  // namespace detail
 
 MP_UNITS_EXPORT template<typename T>
-concept QuantitySpec = std::derived_from<T, detail::quantity_spec_interface_base> && detail::SymbolicConstant<T>;
+concept QuantitySpec = std::derived_from<T, detail::quantity_spec_interface_base> && detail::SymbolicConstant<T> &&
+                       (!detail::is_specialization_of_quantity_spec<T>);
 
 template<typename Q>
 struct kind_of_;

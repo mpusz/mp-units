@@ -206,11 +206,11 @@ Create your own quantity types to extend ISQ hierarchies:
 
 ```cpp
 // Define a custom quantity in the length hierarchy
-inline constexpr struct horizontal_length final :
+inline constexpr struct horizontal_length :
     quantity_spec<isq::length> {} horizontal_length;
 
 // Define a derived quantity with a constrained equation
-inline constexpr struct horizontal_area final :
+inline constexpr struct horizontal_area :
     quantity_spec<isq::area, horizontal_length * isq::width> {} horizontal_area;
 
 // Use custom quantities for stronger type safety
@@ -224,7 +224,7 @@ quantity<horizontal_area[m2]> base_area = base_length * base_width;        // âœ
 
 ```cpp
 // Time points (absolute time)
-inline constexpr struct epoch final : absolute_point_origin<kind_of<isq::duration>> {} epoch;
+inline constexpr struct epoch : absolute_point_origin<kind_of<isq::duration>> {} epoch;
 quantity_point later = epoch + 3600 * s;                 // 1 hour later
 quantity duration = later - epoch;                       // 3600 s
 
@@ -258,14 +258,14 @@ quantity sin_value = si::sin(angle_rad);                 // 1.0
 ### Defining Units
 
 ```cpp
-inline constexpr struct second final : named_unit<"s", kind_of<isq::duration>> {} second;
-inline constexpr struct metre final : named_unit<"m", kind_of<isq::length>> {} metre;
-inline constexpr struct gram final : named_unit<"g", kind_of<isq::mass>> {} gram;
+inline constexpr struct second : named_unit<"s", kind_of<isq::duration>> {} second;
+inline constexpr struct metre : named_unit<"m", kind_of<isq::length>> {} metre;
+inline constexpr struct gram : named_unit<"g", kind_of<isq::mass>> {} gram;
 inline constexpr auto kilogram = si::kilo<gram>;
-inline constexpr struct newton final : named_unit<"N", kilogram * metre / square(second)> {} newton;
-inline constexpr struct bar final : named_unit<"bar", mag<100> * kPa> {} bar;
-inline constexpr struct yard final : named_unit<"yd", mag_ratio<9'144, 10'000> * si::metre> {} yard;
-inline constexpr struct dalton final :
+inline constexpr struct newton : named_unit<"N", kilogram * metre / square(second)> {} newton;
+inline constexpr struct bar : named_unit<"bar", mag<100> * kPa> {} bar;
+inline constexpr struct yard : named_unit<"yd", mag_ratio<9'144, 10'000> * si::metre> {} yard;
+inline constexpr struct dalton :
     named_unit<"Da", mag_ratio<16'605'390'666'050, 10'000'000'000'000> * mag_power<10, -27> * kg> {} dalton;
 ```
 

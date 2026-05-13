@@ -36,16 +36,17 @@ struct dimension_interface;
 
 }
 
+MP_UNITS_EXPORT template<symbol_text Symbol>
+struct base_dimension;
+
 /**
  * @brief A concept matching all dimensions in the library.
  *
  * Satisfied by all dimension types in the library.
  */
 MP_UNITS_EXPORT template<typename T>
-concept Dimension = std::derived_from<T, detail::dimension_interface> && detail::SymbolicConstant<T>;
-
-MP_UNITS_EXPORT template<symbol_text Symbol>
-struct base_dimension;
+concept Dimension = std::derived_from<T, detail::dimension_interface> && detail::SymbolicConstant<T> &&
+                    (!is_specialization_of_v<T, base_dimension>);
 
 namespace detail {
 

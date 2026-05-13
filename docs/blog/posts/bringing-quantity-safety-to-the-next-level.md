@@ -45,7 +45,7 @@ various characters. By default, all quantity types are scalars, but we can set
 any other quantity character in a `quantity_spec` definition. For example:
 
 ```cpp
-inline constexpr struct displacement final : quantity_spec<length, quantity_character::vector> {} displacement;
+inline constexpr struct displacement : quantity_spec<length, quantity_character::vector> {} displacement;
 ```
 
 Character of derived quantities is inherited from the quantity equation taking
@@ -54,13 +54,13 @@ _velocity_ quantity will automatically get a vector character without the need
 to explicitly state it in the definition:
 
 ```cpp
-inline constexpr struct velocity final : quantity_spec<displacement / duration> {} velocity;
+inline constexpr struct velocity : quantity_spec<displacement / duration> {} velocity;
 ```
 
 Similarly, the below will yield a _speed_ quantity of a scalar character:
 
 ```cpp
-inline constexpr struct speed final : quantity_spec<magnitude(velocity)> {} speed;
+inline constexpr struct speed : quantity_spec<magnitude(velocity)> {} speed;
 ```
 
 
@@ -300,8 +300,8 @@ Let's look at the definitions of _work_ and _moment of force_ quantities to
 understand how and why the above works:
 
 ```cpp
-inline constexpr struct work final : quantity_spec<scalar_product(force, displacement)> {} work;
-inline constexpr struct moment_of_force final : quantity_spec<vector_product(position_vector, force)> {} moment_of_force;
+inline constexpr struct work : quantity_spec<scalar_product(force, displacement)> {} work;
+inline constexpr struct moment_of_force : quantity_spec<vector_product(position_vector, force)> {} moment_of_force;
 ```
 
 `scalar_product()` and `vector_product()` functions are overloaded not only for
@@ -437,8 +437,8 @@ Change of a _position vector_ is nothing else than a _displacement_. This means 
 and _speed_ can be defined as follows:
 
 ```cpp
-inline constexpr struct velocity final : quantity_spec<displacement / duration> {} velocity;
-inline constexpr struct speed final : quantity_spec<magnitude(velocity)> {} speed;
+inline constexpr struct velocity : quantity_spec<displacement / duration> {} velocity;
+inline constexpr struct speed : quantity_spec<magnitude(velocity)> {} speed;
 ```
 
 This is compatible with the ISQ definitions. However, we should check what it means from the
@@ -579,10 +579,10 @@ We can add support for the above by adding `point_for<QuantitySpec>` attribute t
 `quantity_spec` definition:
 
 ```cpp
-inline constexpr struct height final : quantity_spec<length> {} height;
-inline constexpr struct altitude final : quantity_spec<length, point_for<height>> {} altitude;
-inline constexpr struct displacement final : quantity_spec<distance, quantity_character::vector> {} displacement;
-inline constexpr struct position_vector final : quantity_spec<radial_distance, point_for<displacement>, quantity_character::vector> {} position_vector;
+inline constexpr struct height : quantity_spec<length> {} height;
+inline constexpr struct altitude : quantity_spec<length, point_for<height>> {} altitude;
+inline constexpr struct displacement : quantity_spec<distance, quantity_character::vector> {} displacement;
+inline constexpr struct position_vector : quantity_spec<radial_distance, point_for<displacement>, quantity_character::vector> {} position_vector;
 ```
 
 Thanks to the above, the library always knows a "delta" quantity for a "point" type. I've

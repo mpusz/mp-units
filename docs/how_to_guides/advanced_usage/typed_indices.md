@@ -61,10 +61,10 @@ using namespace mp_units;
 
 namespace seq {
 
-inline constexpr struct offset final : quantity_spec<dimensionless, is_kind> {} offset;
+inline constexpr struct offset : quantity_spec<dimensionless, is_kind> {} offset;
 
 // "element" is the base unit of the offset kind
-inline constexpr struct element final : named_unit<"el", one, kind_of<offset>> {} element;
+inline constexpr struct element : named_unit<"el", one, kind_of<offset>> {} element;
 inline constexpr auto el   = element;
 inline constexpr auto kel  = si::kilo<element>;   // 1 kel  = 1000 el  (SI kilo)
 inline constexpr auto Kiel = iec::kibi<element>;  // 1 Kiel = 1024 el  (IEC kibi)
@@ -93,7 +93,7 @@ namespace seq {
 inline constexpr auto index = offset;
 
 // 0-based origin: the natural zero of the sequence.
-inline constexpr struct index0_origin final : absolute_point_origin<index> {} index0_origin;
+inline constexpr struct index0_origin : absolute_point_origin<index> {} index0_origin;
 
 // 1-based origin: sits one position *before* index0_origin so that the
 // displacement arithmetic resolves correctly:
@@ -103,7 +103,7 @@ inline constexpr struct index0_origin final : absolute_point_origin<index> {} in
 // WARNING: index1_origin itself is NOT a valid index — it represents
 // a non-existent "element zero" in a 1-based scheme.
 // Always use idx1() to construct 1-based index points.
-inline constexpr struct index1_origin final : relative_point_origin<index0_origin - 1 * el> {} index1_origin;
+inline constexpr struct index1_origin : relative_point_origin<index0_origin - 1 * el> {} index1_origin;
 
 }  // namespace seq
 ```
@@ -244,7 +244,7 @@ cannot be accidentally swapped with a plain offset or raw count:
 ```cpp
 namespace seq {
 
-inline constexpr struct stride final : quantity_spec<offset> {} stride;
+inline constexpr struct stride : quantity_spec<offset> {} stride;
 
 }  // namespace seq
 ```
@@ -277,8 +277,8 @@ each dimension:
 ```cpp
 namespace seq {
 
-inline constexpr struct row_offset final : quantity_spec<offset> {} row_offset;
-inline constexpr struct col_offset final : quantity_spec<offset> {} col_offset;
+inline constexpr struct row_offset : quantity_spec<offset> {} row_offset;
+inline constexpr struct col_offset : quantity_spec<offset> {} col_offset;
 inline constexpr auto row_index = row_offset;
 inline constexpr auto col_index = col_offset;
 
@@ -331,11 +331,11 @@ kind, then express a typed element as a multiple of bytes:
 ```cpp
 namespace seq {
 
-inline constexpr struct byte final : named_unit<"B", one, kind_of<offset>> {} byte;
+inline constexpr struct byte : named_unit<"B", one, kind_of<offset>> {} byte;
 inline constexpr auto B = byte;
 
 // 1 float element = sizeof(float) bytes
-inline constexpr struct float_element final : named_unit<"float", mag<sizeof(float)> * byte> {} float_element;
+inline constexpr struct float_element : named_unit<"float", mag<sizeof(float)> * byte> {} float_element;
 inline constexpr auto fl = float_element;
 
 }  // namespace seq
@@ -370,8 +370,8 @@ cross-container access bugs), define each as a plain named subtype of `seq::offs
 — without `is_kind`:
 
 ```cpp
-inline constexpr struct vertex_index final : quantity_spec<seq::offset> {} vertex_index;
-inline constexpr struct texcoord_index final : quantity_spec<seq::offset> {} texcoord_index;
+inline constexpr struct vertex_index : quantity_spec<seq::offset> {} vertex_index;
+inline constexpr struct texcoord_index : quantity_spec<seq::offset> {} texcoord_index;
 ```
 
 Omitting `is_kind` is intentional and important: because they still derive from

@@ -419,9 +419,9 @@ using namespace mp_units::iau::unit_symbols;
 using namespace mp_units::si::unit_symbols;
 
 // Sub-specs that identify the characteristic scale quantities
-inline constexpr struct characteristic_position final : quantity_spec<isq::position_vector> {} characteristic_position;
-inline constexpr struct characteristic_velocity final : quantity_spec<isq::velocity> {} characteristic_velocity;
-inline constexpr struct characteristic_duration final : quantity_spec<isq::duration> {} characteristic_duration;
+inline constexpr struct characteristic_position : quantity_spec<isq::position_vector> {} characteristic_position;
+inline constexpr struct characteristic_velocity : quantity_spec<isq::velocity> {} characteristic_velocity;
+inline constexpr struct characteristic_duration : quantity_spec<isq::duration> {} characteristic_duration;
 
 // Dimensionless specs derived from ISQ ratios
 inline constexpr struct nd_position final

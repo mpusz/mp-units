@@ -128,9 +128,9 @@ struct dimension_interface {
  * For example:
  *
  * @code{.cpp}
- * inline constexpr struct dim_length final : base_dimension<"L"> {} dim_length;
- * inline constexpr struct dim_time final : base_dimension<"T"> {} dim_time;
- * inline constexpr struct dim_mass final : base_dimension<"M"> {} dim_mass;
+ * inline constexpr struct dim_length : base_dimension<"L"> {} dim_length;
+ * inline constexpr struct dim_time : base_dimension<"T"> {} dim_time;
+ * inline constexpr struct dim_mass : base_dimension<"M"> {} dim_mass;
  * @endcode
  *
  * @note A common convention in this library is to assign the same name for a type and an object of this type.

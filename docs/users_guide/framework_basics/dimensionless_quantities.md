@@ -113,7 +113,7 @@ that uses a unit that is proportional to the ratio of kilometers per megaparsecs
 both units of _length_:
 
 ```cpp
-inline constexpr struct hubble_constant final :
+inline constexpr struct hubble_constant :
     named_constant<{u8"H₀", "H_0"}, mag_ratio<701, 10> * si::kilo<si::metre> / si::second / si::mega<parsec>> {} hubble_constant;
 ```
 
@@ -158,9 +158,9 @@ Besides the unit `one`, there are a few other scaled units predefined in the lib
 with dimensionless quantities:
 
 ```cpp
-inline constexpr struct percent final : named_unit<"%", mag_ratio<1, 100> * one> {} percent;
-inline constexpr struct per_mille final : named_unit<{u8"‰", "%o"}, mag_ratio<1, 1000> * one> {} per_mille;
-inline constexpr struct parts_per_million final : named_unit<"ppm", mag_ratio<1, 1'000'000> * one> {} parts_per_million;
+inline constexpr struct percent : named_unit<"%", mag_ratio<1, 100> * one> {} percent;
+inline constexpr struct per_mille : named_unit<{u8"‰", "%o"}, mag_ratio<1, 1000> * one> {} per_mille;
+inline constexpr struct parts_per_million : named_unit<"ppm", mag_ratio<1, 1'000'000> * one> {} parts_per_million;
 inline constexpr auto ppm = parts_per_million;
 ```
 
@@ -301,17 +301,17 @@ For dimensionless quantities specifically, the `is_kind` specifier is applied as
 === "C++23"
 
     ```cpp
-    inline constexpr struct angular_measure final : quantity_spec<dimensionless, arc_length / radius, is_kind> {} angular_measure;
-    inline constexpr struct solid_angular_measure final : quantity_spec<dimensionless, area / pow<2>(radius), is_kind> {} solid_angular_measure;
-    inline constexpr struct storage_capacity final : quantity_spec<dimensionless, is_kind> {} storage_capacity;
+    inline constexpr struct angular_measure : quantity_spec<dimensionless, arc_length / radius, is_kind> {} angular_measure;
+    inline constexpr struct solid_angular_measure : quantity_spec<dimensionless, area / pow<2>(radius), is_kind> {} solid_angular_measure;
+    inline constexpr struct storage_capacity : quantity_spec<dimensionless, is_kind> {} storage_capacity;
     ```
 
 === "C++20"
 
     ```cpp
-    inline constexpr struct angular_measure final : quantity_spec<angular_measure, dimensionless, arc_length / radius, is_kind> {} angular_measure;
-    inline constexpr struct solid_angular_measure final : quantity_spec<solid_angular_measure, dimensionless, area / pow<2>(radius), is_kind> {} solid_angular_measure;
-    inline constexpr struct storage_capacity final : quantity_spec<storage_capacity, dimensionless, is_kind> {} storage_capacity;
+    inline constexpr struct angular_measure : quantity_spec<angular_measure, dimensionless, arc_length / radius, is_kind> {} angular_measure;
+    inline constexpr struct solid_angular_measure : quantity_spec<solid_angular_measure, dimensionless, area / pow<2>(radius), is_kind> {} solid_angular_measure;
+    inline constexpr struct storage_capacity : quantity_spec<storage_capacity, dimensionless, is_kind> {} storage_capacity;
     ```
 
 === "Portable"
@@ -326,9 +326,9 @@ With the above, we can constrain `radian`, `steradian`, and `bit` to be allowed 
 specific quantity kinds only:
 
 ```cpp
-inline constexpr struct radian final : named_unit<"rad", metre / metre, kind_of<isq::angular_measure>> {} radian;
-inline constexpr struct steradian final : named_unit<"sr", square(metre) / square(metre), kind_of<isq::solid_angular_measure>> {} steradian;
-inline constexpr struct bit final : named_unit<"bit", one, kind_of<storage_capacity>> {} bit;
+inline constexpr struct radian : named_unit<"rad", metre / metre, kind_of<isq::angular_measure>> {} radian;
+inline constexpr struct steradian : named_unit<"sr", square(metre) / square(metre), kind_of<isq::solid_angular_measure>> {} steradian;
+inline constexpr struct bit : named_unit<"bit", one, kind_of<storage_capacity>> {} bit;
 ```
 
 but still allow the usage of `one` and its scaled versions for such quantities.
@@ -395,8 +395,8 @@ values when it comes to type safety**.
 Consider the following example:
 
 ```cpp
-inline constexpr struct item_count final : quantity_spec<dimensionless> {} item_count;
-inline constexpr struct widget_count final : quantity_spec<dimensionless> {} widget_count;
+inline constexpr struct item_count : quantity_spec<dimensionless> {} item_count;
+inline constexpr struct widget_count : quantity_spec<dimensionless> {} widget_count;
 
 void process(quantity<item_count[one]> items, quantity<widget_count[one]> widgets)
 {
@@ -451,8 +451,8 @@ This however, creates an important trade-off:
 === "Without `is_kind` (implicit conversion)"
 
     ```cpp
-    inline constexpr struct item_count final : quantity_spec<dimensionless> {} item_count;
-    inline constexpr struct widget_count final : quantity_spec<dimensionless> {} widget_count;
+    inline constexpr struct item_count : quantity_spec<dimensionless> {} item_count;
+    inline constexpr struct widget_count : quantity_spec<dimensionless> {} widget_count;
 
     void process(quantity<item_count[one]> items, quantity<widget_count[one]> widgets)
     {
@@ -494,8 +494,8 @@ This however, creates an important trade-off:
 === "With `is_kind` (explicit construction)"
 
     ```cpp
-    inline constexpr struct item_count final : quantity_spec<dimensionless, is_kind> {} item_count;
-    inline constexpr struct widget_count final : quantity_spec<dimensionless, is_kind> {} widget_count;
+    inline constexpr struct item_count : quantity_spec<dimensionless, is_kind> {} item_count;
+    inline constexpr struct widget_count : quantity_spec<dimensionless, is_kind> {} widget_count;
 
     void process(quantity<item_count[one]> items, quantity<widget_count[one]> widgets)
     {
@@ -651,12 +651,12 @@ Traditional approaches to creating strong numeric types each face different trad
 === "mp-units (specialized for numeric types)"
 
     ```cpp
-    inline constexpr struct pixel_x final : quantity_spec<dimensionless, is_kind> {} pixel_x;
-    inline constexpr struct pixel_y final : quantity_spec<dimensionless, is_kind> {} pixel_y;
-    inline constexpr struct pixel_area final : quantity_spec<dimensionless, pixel_x * pixel_y, is_kind> {} pixel_area;
+    inline constexpr struct pixel_x : quantity_spec<dimensionless, is_kind> {} pixel_x;
+    inline constexpr struct pixel_y : quantity_spec<dimensionless, is_kind> {} pixel_y;
+    inline constexpr struct pixel_area : quantity_spec<dimensionless, pixel_x * pixel_y, is_kind> {} pixel_area;
 
-    inline constexpr struct fhd final : named_unit<"FHD", mag<1920 * 1080> * one, kind_of<pixel_area>> {} fhd;
-    inline constexpr struct uhd_4k final : named_unit<"4K", mag<3840 * 2160> * one, kind_of<pixel_area>> {} uhd_4k;
+    inline constexpr struct fhd : named_unit<"FHD", mag<1920 * 1080> * one, kind_of<pixel_area>> {} fhd;
+    inline constexpr struct uhd_4k : named_unit<"4K", mag<3840 * 2160> * one, kind_of<pixel_area>> {} uhd_4k;
 
     void draw_point(quantity<pixel_x[one], int> x>, quantity<pixel_y[one], int> y>) { /* ... */ }
 

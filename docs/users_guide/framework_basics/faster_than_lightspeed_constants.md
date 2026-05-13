@@ -39,12 +39,12 @@ namespace si {
 
 namespace si2019 {
 
-inline constexpr struct speed_of_light_in_vacuum final :
+inline constexpr struct speed_of_light_in_vacuum :
   named_constant<"c", mag<299'792'458> * metre / second> {} speed_of_light_in_vacuum;
 
 }  // namespace si2019
 
-inline constexpr struct magnetic_constant final :
+inline constexpr struct magnetic_constant :
   named_constant<{u8"μ₀", "u_0"}, mag<4> * mag_power<10, -7> * π * henry / metre> {} magnetic_constant;
 
 }  // namespace mp_units::si

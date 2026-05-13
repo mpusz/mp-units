@@ -82,8 +82,8 @@ int main()
     using namespace mp_units;
     using namespace mp_units::si::unit_symbols;
 
-    inline constexpr struct nhn_sea_level final : absolute_point_origin<isq::altitude> {} nhn_sea_level;
-    inline constexpr struct swiss_sea_level final : relative_point_origin<nhn_sea_level - 27*cm> {} swiss_sea_level;
+    inline constexpr struct nhn_sea_level : absolute_point_origin<isq::altitude> {} nhn_sea_level;
+    inline constexpr struct swiss_sea_level : relative_point_origin<nhn_sea_level - 27*cm> {} swiss_sea_level;
 
     int main()
     {
@@ -117,8 +117,8 @@ int main()
     Different measurements may use different reference points:
 
     ```cpp
-    inline constexpr struct nhn_sea_level final : absolute_point_origin<isq::altitude> {} nhn_sea_level;
-    inline constexpr struct swiss_sea_level final : relative_point_origin<nhn_sea_level - 27*cm> {} swiss_sea_level;
+    inline constexpr struct nhn_sea_level : absolute_point_origin<isq::altitude> {} nhn_sea_level;
+    inline constexpr struct swiss_sea_level : relative_point_origin<nhn_sea_level - 27*cm> {} swiss_sea_level;
     ```
 
     - **Absolute origins**: Primary reference point (e.g., sea level)

@@ -32,13 +32,13 @@ The **mp-units** library defines these base dimensions as follows:
 ```cpp
 namespace mp_units::isq {
 
-inline constexpr struct dim_length final : base_dimension<"L"> {} dim_length;
-inline constexpr struct dim_mass final : base_dimension<"M"> {} dim_mass;
-inline constexpr struct dim_time final : base_dimension<"T"> {} dim_time;
-inline constexpr struct dim_electric_current final : base_dimension<"I"> {} dim_electric_current;
-inline constexpr struct dim_thermodynamic_temperature final : base_dimension<symbol_text{u8"Θ", "O"}> {} dim_thermodynamic_temperature;
-inline constexpr struct dim_amount_of_substance final : base_dimension<"N"> {} dim_amount_of_substance;
-inline constexpr struct dim_luminous_intensity final : base_dimension<"J"> {} dim_luminous_intensity;
+inline constexpr struct dim_length : base_dimension<"L"> {} dim_length;
+inline constexpr struct dim_mass : base_dimension<"M"> {} dim_mass;
+inline constexpr struct dim_time : base_dimension<"T"> {} dim_time;
+inline constexpr struct dim_electric_current : base_dimension<"I"> {} dim_electric_current;
+inline constexpr struct dim_thermodynamic_temperature : base_dimension<symbol_text{u8"Θ", "O"}> {} dim_thermodynamic_temperature;
+inline constexpr struct dim_amount_of_substance : base_dimension<"N"> {} dim_amount_of_substance;
+inline constexpr struct dim_luminous_intensity : base_dimension<"J"> {} dim_luminous_intensity;
 
 }
 ```
@@ -63,13 +63,13 @@ For each base dimension, the ISQ defines corresponding base quantities:
 ```cpp
 namespace mp_units::isq {
 
-inline constexpr struct length final : quantity_spec<dim_length, non_negative> {} length;
-inline constexpr struct mass final : quantity_spec<dim_mass, non_negative> {} mass;
-inline constexpr struct time final : quantity_spec<dim_time, non_negative> {} time;
-inline constexpr struct electric_current final : quantity_spec<dim_electric_current> {} electric_current;
-inline constexpr struct thermodynamic_temperature final : quantity_spec<dim_thermodynamic_temperature, non_negative> {} thermodynamic_temperature;
-inline constexpr struct amount_of_substance final : quantity_spec<dim_amount_of_substance, non_negative> {} amount_of_substance;
-inline constexpr struct luminous_intensity final : quantity_spec<dim_luminous_intensity, non_negative> {} luminous_intensity;
+inline constexpr struct length : quantity_spec<dim_length, non_negative> {} length;
+inline constexpr struct mass : quantity_spec<dim_mass, non_negative> {} mass;
+inline constexpr struct time : quantity_spec<dim_time, non_negative> {} time;
+inline constexpr struct electric_current : quantity_spec<dim_electric_current> {} electric_current;
+inline constexpr struct thermodynamic_temperature : quantity_spec<dim_thermodynamic_temperature, non_negative> {} thermodynamic_temperature;
+inline constexpr struct amount_of_substance : quantity_spec<dim_amount_of_substance, non_negative> {} amount_of_substance;
+inline constexpr struct luminous_intensity : quantity_spec<dim_luminous_intensity, non_negative> {} luminous_intensity;
 
 }
 ```
@@ -107,15 +107,15 @@ the ISO/IEC 80000 series, organized by part:
 namespace mp_units::isq {
 
 // Kinematics
-inline constexpr struct speed final : quantity_spec<length / duration> {} speed;
-inline constexpr struct velocity final : quantity_spec<speed, displacement / duration> {} velocity;
-inline constexpr struct acceleration final : quantity_spec<velocity / duration> {} acceleration;
+inline constexpr struct speed : quantity_spec<length / duration> {} speed;
+inline constexpr struct velocity : quantity_spec<speed, displacement / duration> {} velocity;
+inline constexpr struct acceleration : quantity_spec<velocity / duration> {} acceleration;
 
 // Dynamics
-inline constexpr struct force final : quantity_spec<mass * acceleration> {} force;
-inline constexpr struct pressure final : quantity_spec<force / area, quantity_character::real_scalar> {} pressure;
-inline constexpr struct energy final : quantity_spec<mass* pow<2>(length) / pow<2>(time)> {} energy;
-inline constexpr struct power final : quantity_spec<mass* pow<2>(length) / pow<3>(time)> {} power;
+inline constexpr struct force : quantity_spec<mass * acceleration> {} force;
+inline constexpr struct pressure : quantity_spec<force / area, quantity_character::real_scalar> {} pressure;
+inline constexpr struct energy : quantity_spec<mass* pow<2>(length) / pow<2>(time)> {} energy;
+inline constexpr struct power : quantity_spec<mass* pow<2>(length) / pow<3>(time)> {} power;
 
 // Many more...
 
@@ -149,23 +149,23 @@ flowchart TD
 In code:
 
 ```cpp
-inline constexpr struct length final : quantity_spec<dim_length, non_negative> {} length;
-inline constexpr struct width final : quantity_spec<length> {} width;
+inline constexpr struct length : quantity_spec<dim_length, non_negative> {} length;
+inline constexpr struct width : quantity_spec<length> {} width;
 inline constexpr auto breadth = width;
-inline constexpr struct height final : quantity_spec<length> {} height;
+inline constexpr struct height : quantity_spec<length> {} height;
 inline constexpr auto depth = height;
 inline constexpr auto altitude = height;
-inline constexpr struct thickness final : quantity_spec<width> {} thickness;
-inline constexpr struct diameter final : quantity_spec<width> {} diameter;
-inline constexpr struct radius final : quantity_spec<width> {} radius;
-inline constexpr struct radius_of_curvature final : quantity_spec<radius> {} radius_of_curvature;
-inline constexpr struct path_length final : quantity_spec<length> {} path_length;
+inline constexpr struct thickness : quantity_spec<width> {} thickness;
+inline constexpr struct diameter : quantity_spec<width> {} diameter;
+inline constexpr struct radius : quantity_spec<width> {} radius;
+inline constexpr struct radius_of_curvature : quantity_spec<radius> {} radius_of_curvature;
+inline constexpr struct path_length : quantity_spec<length> {} path_length;
 inline constexpr auto arc_length = path_length;
-inline constexpr struct distance final : quantity_spec<path_length> {} distance;
-inline constexpr struct radial_distance final : quantity_spec<distance> {} radial_distance;
-inline constexpr struct wavelength final : quantity_spec<length> {} wavelength;
-inline constexpr struct displacement final : quantity_spec<length, quantity_character::vector> {} displacement;
-inline constexpr struct position_vector final : quantity_spec<displacement> {} position_vector;
+inline constexpr struct distance : quantity_spec<path_length> {} distance;
+inline constexpr struct radial_distance : quantity_spec<distance> {} radial_distance;
+inline constexpr struct wavelength : quantity_spec<length> {} wavelength;
+inline constexpr struct displacement : quantity_spec<length, quantity_character::vector> {} displacement;
+inline constexpr struct position_vector : quantity_spec<displacement> {} position_vector;
 ```
 
 This hierarchy enables strong type safety:

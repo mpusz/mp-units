@@ -121,7 +121,7 @@ frame, not by the choice of unit or representation.
 Concretely, bounds are passed as a **template parameter** to the origin:
 
 ```cpp
-inline constexpr struct horizon final :
+inline constexpr struct horizon :
     absolute_point_origin<geo_elevation, reflect_in_range{-90 * deg, 90 * deg}> {} horizon;
 ```
 
@@ -219,7 +219,7 @@ struct clamp_bottom {
 };
 
 // Hydraulic circuit: minimum operating pressure 50 bar above ambient; no upper cap here.
-inline constexpr struct ambient_pressure final :
+inline constexpr struct ambient_pressure :
     absolute_point_origin<isq::pressure, clamp_bottom{50 * bar}> {} ambient_pressure;
 ```
 
@@ -253,12 +253,12 @@ the enforcement from its nearest ancestor that has bounds:
 
 ```cpp
 // Absolute origin with physical bounds:
-inline constexpr struct prime_meridian final :
+inline constexpr struct prime_meridian :
     absolute_point_origin<geo_longitude, wrap_to_range{-180.0 * deg, 180.0 * deg}> {} prime_meridian;
 
 // Relative origin — no own bounds; inherits from prime_meridian.
 // The +21° offset is transparent to the enforcement.
-inline constexpr struct warsaw_meridian final : mp_units::relative_point_origin<prime_meridian + 21.0 * deg> {
+inline constexpr struct warsaw_meridian : mp_units::relative_point_origin<prime_meridian + 21.0 * deg> {
 } warsaw_meridian;
 
 // A value of +200° east of Warsaw = +221° from prime → wraps to -139° from prime → -160° from Warsaw.
@@ -273,7 +273,7 @@ parent's bounds:
 
 ```cpp
 // static_assert fires at compile time if relative bounds exceed parent bounds
-inline constexpr struct ac_setpoint final :
+inline constexpr struct ac_setpoint :
     relative_point_origin<reference_temp + 0 * deg_C,
                           clamp_to_range{delta<deg_C>(-3), delta<deg_C>(+3)}> {} ac_setpoint;
     // ❌ compile error if this would violate the parent origin's physical bounds
@@ -301,12 +301,12 @@ origin definition regardless of how many `quantity_point` variables are construc
 using namespace mp_units;
 using namespace mp_units::si::unit_symbols;
 
-inline constexpr struct geo_latitude final : quantity_spec<isq::angular_measure> {} geo_latitude;
-inline constexpr struct geo_longitude final : quantity_spec<isq::angular_measure> {} geo_longitude;
+inline constexpr struct geo_latitude : quantity_spec<isq::angular_measure> {} geo_latitude;
+inline constexpr struct geo_longitude : quantity_spec<isq::angular_measure> {} geo_longitude;
 
 // Absolute origins
-inline constexpr struct equator final : absolute_point_origin<geo_latitude>  {} equator;
-inline constexpr struct prime_meridian final : absolute_point_origin<geo_longitude> {} prime_meridian;
+inline constexpr struct equator : absolute_point_origin<geo_latitude>  {} equator;
+inline constexpr struct prime_meridian : absolute_point_origin<geo_longitude> {} prime_meridian;
 ```
 
 Outside the anonymous namespace (so the specializations have external linkage):
@@ -346,11 +346,11 @@ static_assert(lon.quantity_from(prime_meridian) == -160.0 * deg);
 
 ```cpp
 // MSL: physical world — flight level corridor.
-inline constexpr struct sea_level final :
+inline constexpr struct sea_level :
     absolute_point_origin<isq::altitude, clamp_to_range{-500 * m, 12'000 * m}> {} sea_level;
 
 // AGL: operational drone envelope (non-negative).
-inline constexpr struct ground_level final :
+inline constexpr struct ground_level :
     absolute_point_origin<isq::altitude, clamp_to_range{0 * m, 500 * m}> {} ground_level;
 ```
 
@@ -446,11 +446,11 @@ the type says so.
 using namespace mp_units;
 using namespace mp_units::si::unit_symbols;
 
-inline constexpr struct body_temp final : quantity_spec<isq::thermodynamic_temperature> {} body_temp;
+inline constexpr struct body_temp : quantity_spec<isq::thermodynamic_temperature> {} body_temp;
 
 // Anchored to ice_point at 0 °C — shares the Celsius/Kelvin hierarchy,
 // so unit conversion to K or deg_F still works.
-inline constexpr struct clinical_zero final :
+inline constexpr struct clinical_zero :
             relative_point_origin<point<body_temp[deg_C]>(0),
                                   check_in_range{delta<deg_C>(35.), delta<deg_C>(42.0)}> {} clinical_zero;
 
@@ -521,7 +521,7 @@ default can always be overridden by defining a custom origin with different boun
 
 ```cpp
 // Define a custom origin with clamp_non_negative instead of the automatic check_non_negative:
-inline constexpr struct clamped_length_origin final :
+inline constexpr struct clamped_length_origin :
     absolute_point_origin<isq::length, clamp_non_negative{}> {} clamped_length_origin;
 ```
 

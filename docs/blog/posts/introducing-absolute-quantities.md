@@ -326,7 +326,7 @@ an implicit point origin — no explicit origin).
 If the user provided an explicit origin, then such a quantity can only be used as a delta:
 
 ```cpp
-inline constexpr struct nhn_sea_level final : absolute_point_origin<isq::altitude> {} nhn_sea_level;
+inline constexpr struct nhn_sea_level : absolute_point_origin<isq::altitude> {} nhn_sea_level;
 
 quantity<m> alt1 = 42 * m;
 quantity<point<m>> alt2(alt1);                     // OK
@@ -494,7 +494,7 @@ Non-negativity of absolute quantities is meant to be an opt-in feature in the qu
 specification. For example, we can pass a `non_negative` tag type in quantity definition:
 
 ```cpp
-inline constexpr struct mass final : quantity_spec<dim_length, non_negative> {} mass;
+inline constexpr struct mass : quantity_spec<dim_length, non_negative> {} mass;
 ```
 
 With that, we will be able to mark any quantity as non-negative and this property will be

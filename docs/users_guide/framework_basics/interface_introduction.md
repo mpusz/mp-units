@@ -6,8 +6,8 @@ The library uses an unusual but purposeful pattern to define entities. Here is h
 and `second` [SI](../../reference/glossary.md#si) base units are defined:
 
 ```cpp
-inline constexpr struct metre final : named_unit<"m", kind_of<isq::length>> {} metre;
-inline constexpr struct second final : named_unit<"s", kind_of<isq::duration>> {} second;
+inline constexpr struct metre : named_unit<"m", kind_of<isq::length>> {} metre;
+inline constexpr struct second : named_unit<"s", kind_of<isq::duration>> {} second;
 ```
 
 The above reuses the same identifier for a type and its value. Rationale:
@@ -19,9 +19,6 @@ The above reuses the same identifier for a type and its value. Rationale:
 
     To improve error readability and make correlation with user code easier, the library
     adopts the idiom of reusing the same identifier for a type and its instance.
-
-    To prevent issues in compile-time logic all entities are `final`. This avoids users
-    deriving from them and preserves simplification of equivalent symbolic expressions.
 
 ## Strong types instead of aliases
 
@@ -83,9 +80,9 @@ the value-based [unit equation](../../reference/glossary.md#unit-equation) to a 
 definition:
 
 ```cpp
-inline constexpr struct newton final : named_unit<"N", kilogram * metre / square(second), kind_of<isq::force>> {} newton;
-inline constexpr struct pascal final : named_unit<"Pa", newton / square(metre), kind_of<isq::pressure>> {} pascal;
-inline constexpr struct joule  final : named_unit<"J", newton * metre, kind_of<isq::energy>> {} joule;
+inline constexpr struct newton : named_unit<"N", kilogram * metre / square(second), kind_of<isq::force>> {} newton;
+inline constexpr struct pascal : named_unit<"Pa", newton / square(metre), kind_of<isq::pressure>> {} pascal;
+inline constexpr struct joule  : named_unit<"J", newton * metre, kind_of<isq::energy>> {} joule;
 ```
 
 
@@ -219,10 +216,6 @@ To keep generated types short and readable, the library applies several simplifi
     magnitude. This allows us to properly print symbols of some units or constants that require
     such behavior. For example, the Hubble constant is expressed in `km⋅s⁻¹⋅Mpc⁻¹`, where both
     `km` and `Mpc` are units of _length_.
-
-    Also, to prevent possible issues in compile-time logic, all of the library's entities
-    must be marked `final`. This prevents the users to derive own strong types from them,
-    which would prevent symbolic expression simplification of equivalent entities.
 
 4. **Repacking**
 

@@ -373,7 +373,7 @@ seven base units, one for each base quantity of ISQ. In the library, this is
 expressed by associating a quantity kind to a unit being defined:
 
 ```cpp
-inline constexpr struct metre final : named_unit<"m", kind_of<isq::length>> {} metre;
+inline constexpr struct metre : named_unit<"m", kind_of<isq::length>> {} metre;
 ```
 
 The `kind_of<isq::length>` above states explicitly that this unit has an
@@ -395,8 +395,8 @@ This is why it is important for the library to allow constraining such units to
 be used only with a specific quantity kind:
 
 ```cpp
-inline constexpr struct hertz final : named_unit<"Hz", one / second, kind_of<isq::frequency>> {} hertz;
-inline constexpr struct becquerel final : named_unit<"Bq", one / second, kind_of<isq::activity>> {} becquerel;
+inline constexpr struct hertz : named_unit<"Hz", one / second, kind_of<isq::frequency>> {} hertz;
+inline constexpr struct becquerel : named_unit<"Bq", one / second, kind_of<isq::activity>> {} becquerel;
 ```
 
 With the above, `hertz` can only be used for _frequencies_, while `becquerel`

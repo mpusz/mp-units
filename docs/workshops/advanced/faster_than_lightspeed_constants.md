@@ -107,7 +107,7 @@ With these definitions in place, observe how:
 
 using namespace mp_units;
 
-inline constexpr struct specific_impulse final :
+inline constexpr struct specific_impulse :
     quantity_spec<isq::duration, isq::force / (isq::mass_flow_rate * isq::acceleration)> {} specific_impulse;
 
 // TODO: Define standard gravity (g₀) as a unit (9.80665 m/s² = 980'665/100'000 m/s²)
@@ -197,12 +197,12 @@ int main()
 
     using namespace mp_units;
 
-    inline constexpr struct specific_impulse final :
+    inline constexpr struct specific_impulse :
         quantity_spec<isq::duration, isq::force / (isq::mass_flow_rate * isq::acceleration)> {} specific_impulse;
 
-    inline constexpr struct standard_gravity final :
+    inline constexpr struct standard_gravity :
         named_constant<symbol_text{u8"g₀", "g_0"}, mag_ratio<980'665, 100'000> * si::metre / square(si::second)> {} standard_gravity;
-    inline constexpr struct kilogram_force final :
+    inline constexpr struct kilogram_force :
         named_unit<"kgf", si::kilogram * standard_gravity> {} kilogram_force;
 
     inline constexpr Unit auto kgf = kilogram_force;

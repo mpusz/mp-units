@@ -198,7 +198,7 @@ an absolute point origin.
 ![affine_space_2](affine_space_2.svg){style="width:80%;display: block;margin: 0 auto;"}
 
 ```cpp
-inline constexpr struct origin final : absolute_point_origin<isq::distance> {} origin;
+inline constexpr struct origin : absolute_point_origin<isq::distance> {} origin;
 
 // quantity_point<si::metre, origin> qp1{100 * m};        // Compile-time error
 // quantity_point<si::metre, origin> qp2{delta<m>(120)};  // Compile-time error
@@ -267,8 +267,8 @@ same quantity type and unit is being used:
 ![affine_space_3](affine_space_3.svg){style="width:80%;display: block;margin: 0 auto;"}
 
 ```cpp
-inline constexpr struct origin1 final : absolute_point_origin<isq::distance> {} origin1;
-inline constexpr struct origin2 final : absolute_point_origin<isq::distance> {} origin2;
+inline constexpr struct origin1 : absolute_point_origin<isq::distance> {} origin1;
+inline constexpr struct origin2 : absolute_point_origin<isq::distance> {} origin2;
 
 quantity_point qp1 = origin1 + 100 * m;
 quantity_point qp2 = origin2 + 120 * m;
@@ -302,10 +302,10 @@ For such cases, relative point origins should be used:
 ![affine_space_4](affine_space_4.svg){style="width:80%;display: block;margin: 0 auto;"}
 
 ```cpp
-inline constexpr struct A final : absolute_point_origin<isq::distance> {} A;
-inline constexpr struct B final : relative_point_origin<A + 10 * m> {} B;
-inline constexpr struct C final : relative_point_origin<B + 10 * m> {} C;
-inline constexpr struct D final : relative_point_origin<A + 30 * m> {} D;
+inline constexpr struct A : absolute_point_origin<isq::distance> {} A;
+inline constexpr struct B : relative_point_origin<A + 10 * m> {} B;
+inline constexpr struct C : relative_point_origin<B + 10 * m> {} C;
+inline constexpr struct D : relative_point_origin<A + 30 * m> {} D;
 
 quantity_point qp1 = C + 100 * m;
 quantity_point qp2 = D + 120 * m;
@@ -429,19 +429,19 @@ frame_projection<From, To>(quantity_point_at_From, extra_args...) -> quantity_po
 ```
 
 ```cpp
-inline constexpr struct sea_level final : absolute_point_origin<isq::height> {} sea_level;
-inline constexpr struct ocean_surface final : absolute_point_origin<isq::height> {} ocean_surface;
+inline constexpr struct sea_level : absolute_point_origin<isq::altitude> {} sea_level;
+inline constexpr struct ocean_surface : absolute_point_origin<isq::altitude> {} ocean_surface;
 
 template<>
 inline constexpr auto mp_units::frame_projection<sea_level, ocean_surface> =
-    [](QuantityPointOf<isq::height> auto qp) {
+    [](QuantityPointOf<isq::altitude> auto qp) {
         return ocean_surface - qp.quantity_from(sea_level);
     };
 
 // The inverse must be provided explicitly — the library never derives it automatically:
 template<>
 inline constexpr auto mp_units::frame_projection<ocean_surface, sea_level> =
-    [](QuantityPointOf<isq::height> auto qp) {
+    [](QuantityPointOf<isq::altitude> auto qp) {
         return sea_level - qp.quantity_from(ocean_surface);
     };
 ```
@@ -462,7 +462,7 @@ the origin tree automatically:
 
 ```cpp
 // shallow_water is defined 10 m "below" ocean_surface in the depth frame
-inline constexpr struct shallow_water final :
+inline constexpr struct shallow_water :
     relative_point_origin<ocean_surface + 10. * isq::height[m]> {} shallow_water;
 
 quantity_point from_shallow = altitude.point_for(shallow_water);
@@ -600,12 +600,12 @@ arithmetic operations.
 
 ```cpp
 // Define quantity specifications and origins
-inline constexpr struct geo_latitude final : quantity_spec<isq::angular_measure> {} geo_latitude;
-inline constexpr struct geo_longitude final : quantity_spec<isq::angular_measure> {} geo_longitude;
+inline constexpr struct geo_latitude : quantity_spec<isq::angular_measure> {} geo_latitude;
+inline constexpr struct geo_longitude : quantity_spec<isq::angular_measure> {} geo_longitude;
 
-inline constexpr struct equator final :
+inline constexpr struct equator :
     absolute_point_origin<geo_latitude, reflect_in_range{-90 * si::degree, 90 * si::degree}> {} equator;
-inline constexpr struct prime_meridian final :
+inline constexpr struct prime_meridian :
     absolute_point_origin<geo_longitude, wrap_to_range{-180 * si::degree, 180 * si::degree}> {} prime_meridian;
 
 // Define bounded quantity point types
@@ -647,11 +647,11 @@ value is translated to the owning ancestor's frame, the policy is applied there,
 result is translated back:
 
 ```cpp
-inline constexpr struct sea_level final :
+inline constexpr struct sea_level :
     absolute_point_origin<isq::altitude, clamp_to_range{-500 * m, 12'000 * m}> {} sea_level;
 
 // Relative origin — no own bounds; inherits clamping from sea_level.
-inline constexpr struct airport_elevation final :
+inline constexpr struct airport_elevation :
     relative_point_origin<sea_level + 200 * m> {} airport_elevation;
 
 // 11'900 m above airport = 12'100 m MSL → exceeds 12'000 m cap → clamped to 11'800 m from airport.
@@ -664,10 +664,10 @@ origin *above* the ground floor may therefore hold negative values, as long as t
 position stays ≥ 0:
 
 ```cpp
-inline constexpr struct height_spec final : quantity_spec<isq::height> {} height_spec;
+inline constexpr struct height_spec : quantity_spec<isq::height> {} height_spec;
 
 // natural_point_origin<height_spec> auto-gets check_non_negative (isq::height is non_negative).
-inline constexpr struct average_height_origin final :
+inline constexpr struct average_height_origin :
     relative_point_origin<natural_point_origin<height_spec> + 1700.0 * m> {} average_height_origin;
 
 // −1500 m relative = 200 m absolute (≥ 0) → valid, unchanged.
@@ -718,7 +718,7 @@ struct clamp_bottom {
 };
 
 // Usage: hydraulic system with minimum operating pressure
-inline constexpr struct atmospheric_pressure final :
+inline constexpr struct atmospheric_pressure :
     absolute_point_origin<isq::pressure, clamp_bottom{1000 * si::kilo<si::pascal>}> {} atmospheric_pressure;
 
 using hydraulic_pressure = quantity_point<si::kilo<si::pascal>, atmospheric_pressure>;
@@ -764,15 +764,15 @@ predefined point origins for this purpose:
 ```cpp
 namespace si {
 
-inline constexpr struct absolute_zero final : absolute_point_origin<isq::thermodynamic_temperature> {} absolute_zero;
+inline constexpr struct absolute_zero : absolute_point_origin<isq::thermodynamic_temperature> {} absolute_zero;
 
-inline constexpr struct ice_point final : relative_point_origin<point<milli<kelvin>>(273'150)}> {} ice_point;
+inline constexpr struct ice_point : relative_point_origin<point<milli<kelvin>>(273'150)}> {} ice_point;
 
 }
 
 namespace usc {
 
-inline constexpr struct fahrenheit_zero final :
+inline constexpr struct fahrenheit_zero :
   relative_point_origin<point<mag_ratio<5, 9> * si::degree_Celsius>(-32)> {} fahrenheit_zero;
 
 }
@@ -796,16 +796,16 @@ definitions:
 ```cpp
 namespace si {
 
-inline constexpr struct kelvin final :
+inline constexpr struct kelvin :
     named_unit<"K", kind_of<isq::thermodynamic_temperature>, absolute_zero> {} kelvin;
-inline constexpr struct degree_Celsius final :
+inline constexpr struct degree_Celsius :
     named_unit<{u8"℃", "`C"}, kelvin, ice_point> {} degree_Celsius;
 
 }
 
 namespace usc {
 
-inline constexpr struct degree_Fahrenheit final :
+inline constexpr struct degree_Fahrenheit :
     named_unit<{u8"℉", "`F"}, mag_ratio<5, 9> * si::degree_Celsius,
                fahrenheit_zero> {} degree_Fahrenheit;
 
@@ -857,7 +857,7 @@ Now that the `Range-Validated Quantity Points` infrastructure is available, we c
 a `clamp_to_range` policy so the controller silently enforces the comfort band:
 
 ```cpp
-constexpr struct room_reference_temp final :
+constexpr struct room_reference_temp :
     relative_point_origin<point<deg_C>(21), clamp_to_range{delta<deg_C>(-3), delta<deg_C>(3)}> {} room_reference_temp;
 using room_temp = quantity_point<deg_C, room_reference_temp>;
 

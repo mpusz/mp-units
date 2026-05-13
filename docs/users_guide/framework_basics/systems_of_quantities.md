@@ -156,47 +156,47 @@ For example, here is how the above quantity kind tree can be modeled in the libr
 === "C++23"
 
     ```cpp
-    inline constexpr struct length final : quantity_spec<dim_length, non_negative> {} length;
-    inline constexpr struct width final : quantity_spec<length> {} width;
+    inline constexpr struct length : quantity_spec<dim_length, non_negative> {} length;
+    inline constexpr struct width : quantity_spec<length> {} width;
     inline constexpr auto breadth = width;
     // V2 workaround: altitude/depth as children of length, height as child of altitude
-    inline constexpr struct altitude final : quantity_spec<length> {} altitude;
+    inline constexpr struct altitude : quantity_spec<length> {} altitude;
     inline constexpr auto depth = altitude;
-    inline constexpr struct height final : quantity_spec<altitude, non_negative> {} height;
-    inline constexpr struct thickness final : quantity_spec<width> {} thickness;
-    inline constexpr struct diameter final : quantity_spec<width> {} diameter;
-    inline constexpr struct radius final : quantity_spec<width> {} radius;
-    inline constexpr struct radius_of_curvature final : quantity_spec<radius> {} radius_of_curvature;
-    inline constexpr struct path_length final : quantity_spec<length> {} path_length;
+    inline constexpr struct height : quantity_spec<altitude, non_negative> {} height;
+    inline constexpr struct thickness : quantity_spec<width> {} thickness;
+    inline constexpr struct diameter : quantity_spec<width> {} diameter;
+    inline constexpr struct radius : quantity_spec<width> {} radius;
+    inline constexpr struct radius_of_curvature : quantity_spec<radius> {} radius_of_curvature;
+    inline constexpr struct path_length : quantity_spec<length> {} path_length;
     inline constexpr auto arc_length = path_length;
-    inline constexpr struct distance final : quantity_spec<path_length> {} distance;
-    inline constexpr struct radial_distance final : quantity_spec<distance> {} radial_distance;
-    inline constexpr struct wavelength final : quantity_spec<length> {} wavelength;
-    inline constexpr struct displacement final : quantity_spec<length, quantity_character::vector> {} displacement;
-    inline constexpr struct position_vector final : quantity_spec<displacement> {} position_vector;
+    inline constexpr struct distance : quantity_spec<path_length> {} distance;
+    inline constexpr struct radial_distance : quantity_spec<distance> {} radial_distance;
+    inline constexpr struct wavelength : quantity_spec<length> {} wavelength;
+    inline constexpr struct displacement : quantity_spec<length, quantity_character::vector> {} displacement;
+    inline constexpr struct position_vector : quantity_spec<displacement> {} position_vector;
     ```
 
 === "C++20"
 
     ```cpp
-    inline constexpr struct length final : quantity_spec<length, dim_length, non_negative> {} length;
-    inline constexpr struct width final : quantity_spec<width, length> {} width;
+    inline constexpr struct length : quantity_spec<length, dim_length, non_negative> {} length;
+    inline constexpr struct width : quantity_spec<width, length> {} width;
     inline constexpr auto breadth = width;
     // V2 workaround: altitude/depth as children of length, height as child of altitude
-    inline constexpr struct altitude final : quantity_spec<altitude, length> {} altitude;
+    inline constexpr struct altitude : quantity_spec<altitude, length> {} altitude;
     inline constexpr auto depth = altitude;
-    inline constexpr struct height final : quantity_spec<height, altitude, non_negative> {} height;
-    inline constexpr struct thickness final : quantity_spec<thickness, width> {} thickness;
-    inline constexpr struct diameter final : quantity_spec<diameter, width> {} diameter;
-    inline constexpr struct radius final : quantity_spec<radius, width> {} radius;
-    inline constexpr struct radius_of_curvature final : quantity_spec<radius_of_curvature, radius> {} radius_of_curvature;
-    inline constexpr struct path_length final : quantity_spec<path_length, length> {} path_length;
+    inline constexpr struct height : quantity_spec<height, altitude, non_negative> {} height;
+    inline constexpr struct thickness : quantity_spec<thickness, width> {} thickness;
+    inline constexpr struct diameter : quantity_spec<diameter, width> {} diameter;
+    inline constexpr struct radius : quantity_spec<radius, width> {} radius;
+    inline constexpr struct radius_of_curvature : quantity_spec<radius_of_curvature, radius> {} radius_of_curvature;
+    inline constexpr struct path_length : quantity_spec<path_length, length> {} path_length;
     inline constexpr auto arc_length = path_length;
-    inline constexpr struct distance final : quantity_spec<distance, path_length> {} distance;
-    inline constexpr struct radial_distance final : quantity_spec<radial_distance, distance> {} radial_distance;
-    inline constexpr struct wavelength final : quantity_spec<wavelength, length> {} wavelength;
-    inline constexpr struct displacement final : quantity_spec<displacement, length, quantity_character::vector> {} displacement;
-    inline constexpr struct position_vector final : quantity_spec<position_vector, displacement> {} position_vector;
+    inline constexpr struct distance : quantity_spec<distance, path_length> {} distance;
+    inline constexpr struct radial_distance : quantity_spec<radial_distance, distance> {} radial_distance;
+    inline constexpr struct wavelength : quantity_spec<wavelength, length> {} wavelength;
+    inline constexpr struct displacement : quantity_spec<displacement, length, quantity_character::vector> {} displacement;
+    inline constexpr struct position_vector : quantity_spec<position_vector, displacement> {} position_vector;
     ```
 
 === "Portable"
@@ -527,16 +527,16 @@ To create a distinct quantity kind as a subkind, add the `is_kind` specifier to 
 === "C++23"
 
     ```cpp
-    inline constexpr struct fluid_head final : quantity_spec<isq::height, is_kind> {} fluid_head;
-    inline constexpr struct water_head final : quantity_spec<isq::height, is_kind> {} water_head;
+    inline constexpr struct fluid_head : quantity_spec<isq::height, is_kind> {} fluid_head;
+    inline constexpr struct water_head : quantity_spec<isq::height, is_kind> {} water_head;
     // Both inherit metre as unit and length as dimension from isq::height
     ```
 
 === "C++20"
 
     ```cpp
-    inline constexpr struct fluid_head final : quantity_spec<fluid_head, isq::height, is_kind> {} fluid_head;
-    inline constexpr struct water_head final : quantity_spec<water_head, isq::height, is_kind> {} water_head;
+    inline constexpr struct fluid_head : quantity_spec<fluid_head, isq::height, is_kind> {} fluid_head;
+    inline constexpr struct water_head : quantity_spec<water_head, isq::height, is_kind> {} water_head;
     // Both inherit metre as unit and length as dimension from isq::height
     ```
 
@@ -620,7 +620,7 @@ to perform the correct physics-based transformations (if applicable):
 
 ```cpp
 // Define specific gravity as dimensionless
-inline constexpr struct specific_gravity final : quantity_spec<dimensionless> {} specific_gravity;
+inline constexpr struct specific_gravity : quantity_spec<dimensionless> {} specific_gravity;
 
 // Physics: H_water = H_fluid * SG
 constexpr QuantityOf<water_head> auto to_water_head(QuantityOf<fluid_head> auto h_fluid,
@@ -684,21 +684,21 @@ models this with the `non_negative` property tag:
 === "C++23"
 
     ```cpp
-    inline constexpr struct length final : quantity_spec<dim_length, non_negative> {} length;
-    inline constexpr struct mass final : quantity_spec<dim_mass, non_negative> {} mass;
-    inline constexpr struct duration final : quantity_spec<dim_time, non_negative> {} duration;
+    inline constexpr struct length : quantity_spec<dim_length, non_negative> {} length;
+    inline constexpr struct mass : quantity_spec<dim_mass, non_negative> {} mass;
+    inline constexpr struct duration : quantity_spec<dim_time, non_negative> {} duration;
     // electric_current is NOT non_negative (current can flow in either direction)
-    inline constexpr struct electric_current final : quantity_spec<dim_electric_current> {} electric_current;
+    inline constexpr struct electric_current : quantity_spec<dim_electric_current> {} electric_current;
     ```
 
 === "C++20"
 
     ```cpp
-    inline constexpr struct length final : quantity_spec<length, dim_length, non_negative> {} length;
-    inline constexpr struct mass final : quantity_spec<mass, dim_mass, non_negative> {} mass;
-    inline constexpr struct duration final : quantity_spec<duration, dim_time, non_negative> {} duration;
+    inline constexpr struct length : quantity_spec<length, dim_length, non_negative> {} length;
+    inline constexpr struct mass : quantity_spec<mass, dim_mass, non_negative> {} mass;
+    inline constexpr struct duration : quantity_spec<duration, dim_time, non_negative> {} duration;
     // electric_current is NOT non_negative (current can flow in either direction)
-    inline constexpr struct electric_current final : quantity_spec<electric_current, dim_electric_current> {} electric_current;
+    inline constexpr struct electric_current : quantity_spec<electric_current, dim_electric_current> {} electric_current;
     ```
 
 === "Portable"
@@ -746,9 +746,9 @@ a `length`, so if `length` is non-negative then every specific type of _length_ 
 === "C++23"
 
     ```cpp
-    inline constexpr struct width final : quantity_spec<length> {} width;
-    inline constexpr struct height final : quantity_spec<length> {} height;
-    inline constexpr struct radius final : quantity_spec<width> {} radius;
+    inline constexpr struct width : quantity_spec<length> {} width;
+    inline constexpr struct height : quantity_spec<length> {} height;
+    inline constexpr struct radius : quantity_spec<width> {} radius;
     static_assert(is_non_negative(width));
     static_assert(is_non_negative(height));
     static_assert(is_non_negative(radius));
@@ -757,9 +757,9 @@ a `length`, so if `length` is non-negative then every specific type of _length_ 
 === "C++20"
 
     ```cpp
-    inline constexpr struct width final : quantity_spec<width, length> {} width;
-    inline constexpr struct height final : quantity_spec<height, length> {} height;
-    inline constexpr struct radius final : quantity_spec<radius, width> {} radius;
+    inline constexpr struct width : quantity_spec<width, length> {} width;
+    inline constexpr struct height : quantity_spec<height, length> {} height;
+    inline constexpr struct radius : quantity_spec<radius, width> {} radius;
     static_assert(is_non_negative(width));
     static_assert(is_non_negative(height));
     static_assert(is_non_negative(radius));
@@ -793,22 +793,22 @@ a quantity produces a **compile-time error**:
 
     ```cpp
     // displacement is a child of length with vector character — correctly NOT non_negative
-    inline constexpr struct displacement final : quantity_spec<length, quantity_character::vector> {} displacement;
+    inline constexpr struct displacement : quantity_spec<length, quantity_character::vector> {} displacement;
     static_assert(!is_non_negative(displacement));
 
     // compile-time error — non_negative is incompatible with vector character:
-    // inline constexpr struct bad final : quantity_spec<length, quantity_character::vector, non_negative> {} bad;  // ← error
+    // inline constexpr struct bad : quantity_spec<length, quantity_character::vector, non_negative> {} bad;  // ← error
     ```
 
 === "C++20"
 
     ```cpp
     // displacement is a child of length with vector character — correctly NOT non_negative
-    inline constexpr struct displacement final : quantity_spec<displacement, length, quantity_character::vector> {} displacement;
+    inline constexpr struct displacement : quantity_spec<displacement, length, quantity_character::vector> {} displacement;
     static_assert(!is_non_negative(displacement));
 
     // compile-time error — non_negative is incompatible with vector character:
-    // inline constexpr struct bad final : quantity_spec<bad, length, quantity_character::vector, non_negative> {} bad;  // ← error
+    // inline constexpr struct bad : quantity_spec<bad, length, quantity_character::vector, non_negative> {} bad;  // ← error
     ```
 
 === "Portable"

@@ -16,8 +16,6 @@ base or derived [quantity](../../reference/glossary.md#quantity):
   by the library's framework based on the [quantity equation](../../reference/glossary.md#quantity-equation)
   provided in the [quantity specification](../../reference/glossary.md#quantity_spec).
 
-All of the above dimensions have to be marked as `final`.
-
 
 ### `DimensionOf<T, V>` { #DimensionOf }
 
@@ -46,8 +44,6 @@ concept and when they compare equal.
 - Intermediate [derived quantity](../../reference/glossary.md#derived-quantity) specifications
   being a result of a [quantity equations](../../reference/glossary.md#quantity-equation) on
   other specifications.
-
-All of the above quantity specifications have to be marked as `final`.
 
 
 ### `QuantitySpecOf<T, V>` { #QuantitySpecOf }
@@ -87,7 +83,6 @@ All of the above quantity specifications have to be marked as `final`.
   instantiated with a unique symbol identifier and a product of multiplying another unit with
   some magnitude.
 
-All of the above units have to be marked as `final`.
 
 ### `PrefixableUnit<T>` { #PrefixableUnit }
 
@@ -239,7 +234,7 @@ is `true`.
     However, if we define `mean_sea_level` in the following way:
 
     ```cpp
-    inline constexpr struct mean_sea_level final : absolute_point_origin<isq::altitude> {} mean_sea_level;
+    inline constexpr struct mean_sea_level : absolute_point_origin<isq::altitude> {} mean_sea_level;
     ```
 
     then it can't be used as a point origin for _points_ of `isq::length` or `isq::width` as none of them
@@ -294,7 +289,7 @@ is `true`.
     template<typename C>
     struct mp_units::quantity_point_like_traits<std::chrono::time_point<C, std::chrono::seconds>> {
       static constexpr auto reference = si::second;
-      static constexpr struct point_origin_ final : absolute_point_origin<isq::time> {} point_origin{};
+      static constexpr struct point_origin_ : absolute_point_origin<isq::time> {} point_origin{};
       static constexpr bool explicit_import = false;
       static constexpr bool explicit_export = false;
       using rep = std::chrono::seconds::rep;

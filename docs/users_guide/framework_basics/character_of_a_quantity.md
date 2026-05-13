@@ -99,15 +99,15 @@ enumeration can be appended to the `quantity_spec` describing such a quantity ty
 === "C++23"
 
     ```cpp
-    inline constexpr struct displacement final : quantity_spec<length, quantity_character::vector> {} displacement;
-    inline constexpr struct position_vector final : quantity_spec<displacement> {} position_vector;
+    inline constexpr struct displacement : quantity_spec<length, quantity_character::vector> {} displacement;
+    inline constexpr struct position_vector : quantity_spec<displacement> {} position_vector;
     ```
 
 === "C++20"
 
     ```cpp
-    inline constexpr struct displacement final : quantity_spec<displacement, length, quantity_character::vector> {} displacement;
-    inline constexpr struct position_vector final : quantity_spec<position_vector, displacement> {} position_vector;
+    inline constexpr struct displacement : quantity_spec<displacement, length, quantity_character::vector> {} displacement;
+    inline constexpr struct position_vector : quantity_spec<position_vector, displacement> {} position_vector;
     ```
 
 === "Portable"
@@ -128,13 +128,13 @@ No explicit character override is needed:
 === "C++23"
 
     ```cpp
-    inline constexpr struct velocity final : quantity_spec<speed, displacement / duration> {} velocity;
+    inline constexpr struct velocity : quantity_spec<speed, displacement / duration> {} velocity;
     ```
 
 === "C++20"
 
     ```cpp
-    inline constexpr struct velocity final : quantity_spec<velocity, speed, displacement / duration> {} velocity;
+    inline constexpr struct velocity : quantity_spec<velocity, speed, displacement / duration> {} velocity;
     ```
 
 === "Portable"

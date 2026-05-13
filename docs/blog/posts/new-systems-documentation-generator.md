@@ -41,7 +41,7 @@ functions, it falls short for our specific needs:
 
 **Limited semantic understanding**: Doxygen treats C++ code as text to parse for structure,
 but doesn't understand the *meaning* of our domain-specific definitions. It can't recognize
-that `speed final : quantity_spec<length / time>` represents a physical quantity defined
+that `speed : quantity_spec<length / time>` represents a physical quantity defined
 as the ratio of _length_ to _time_.
 
 **No cross-correlation**: Doxygen can't automatically discover and document the relationships
@@ -82,11 +82,11 @@ non-type template parameters (NTTPs), the library's definitions are remarkably t
 and parse-friendly. Most entities are defined in single, declarative lines:
 
 ```cpp
-inline constexpr struct metre final : named_unit<"m", kind_of<isq::length>> {} metre;
-inline constexpr struct second final : named_unit<"s", kind_of<isq::duration>> {} second;
+inline constexpr struct metre : named_unit<"m", kind_of<isq::length>> {} metre;
+inline constexpr struct second : named_unit<"s", kind_of<isq::duration>> {} second;
 
-inline constexpr struct speed final : quantity_spec<length / time> {} speed;
-inline constexpr struct acceleration final : quantity_spec<speed / time> {} acceleration;
+inline constexpr struct speed : quantity_spec<length / time> {} speed;
+inline constexpr struct acceleration : quantity_spec<speed / time> {} acceleration;
 ```
 
 For units with special symbols, the library separates the unit definition from its symbol
@@ -94,7 +94,7 @@ object:
 
 ```cpp
 // Unit definition
-inline constexpr struct ohm final : named_unit<{u8"Ω", "ohm"}, volt / ampere> {} ohm;
+inline constexpr struct ohm : named_unit<{u8"Ω", "ohm"}, volt / ampere> {} ohm;
 
 // Symbol object in unit_symbol namespace
 namespace unit_symbols {

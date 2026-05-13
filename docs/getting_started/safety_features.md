@@ -195,7 +195,7 @@ static_assert(!is_non_negative(isq::velocity));   // ❌ Vector character — ex
 
         ```cpp
         // Replace error-on-negative with silent clamp-to-zero (e.g., for FP noise):
-        inline constexpr struct clamped_length_origin final :
+        inline constexpr struct clamped_length_origin :
             absolute_point_origin<isq::length, clamp_non_negative{}> {} clamped_length_origin;
         ```
 

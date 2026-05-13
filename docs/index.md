@@ -24,7 +24,7 @@ permissive [MIT license](https://github.com/mpusz/mp-units/blob/master/LICENSE.m
 
     using namespace mp_units;
 
-    inline constexpr struct smoot final : named_unit<"smoot", mag<67> * usc::inch> {} smoot;
+    inline constexpr struct smoot : named_unit<"smoot", mag<67> * usc::inch> {} smoot;
 
     int main()
     {
@@ -43,7 +43,7 @@ permissive [MIT license](https://github.com/mpusz/mp-units/blob/master/LICENSE.m
 
     using namespace mp_units;
 
-    inline constexpr struct smoot final : named_unit<"smoot", mag<67> * usc::inch> {} smoot;
+    inline constexpr struct smoot : named_unit<"smoot", mag<67> * usc::inch> {} smoot;
 
     int main()
     {

@@ -117,9 +117,9 @@ int main()
 
     namespace electronics {
 
-    inline constexpr struct unit final : mp_units::named_unit<"unit", mp_units::kind_of<mp_units::dimensionless>> {} unit;
-    inline constexpr struct carton final : mp_units::named_unit<"carton", mp_units::mag<12> * unit> {} carton;
-    inline constexpr struct truck final : mp_units::named_unit<"truck", mp_units::kind_of<mp_units::dimensionless>> {} truck;
+    inline constexpr struct unit : mp_units::named_unit<"unit", mp_units::kind_of<mp_units::dimensionless>> {} unit;
+    inline constexpr struct carton : mp_units::named_unit<"carton", mp_units::mag<12> * unit> {} carton;
+    inline constexpr struct truck : mp_units::named_unit<"truck", mp_units::kind_of<mp_units::dimensionless>> {} truck;
 
     }
 
@@ -172,8 +172,8 @@ int main()
 
     ```cpp
     // ✅ Type-safe approach
-    inline constexpr struct unit final : named_unit<"unit", kind_of<dimensionless>> {} unit;
-    inline constexpr struct carton final : named_unit<"carton", mag<12> * unit> {} carton;
+    inline constexpr struct unit : named_unit<"unit", kind_of<dimensionless>> {} unit;
+    inline constexpr struct carton : named_unit<"carton", mag<12> * unit> {} carton;
 
     quantity weekly_production = 3 * unit / min * 14 * h * 5;
     quantity in_cartons = weekly_production.in(carton);  // Automatic conversion!
@@ -229,17 +229,17 @@ int main()
 
     ```cpp
     // Inventory management:
-    inline constexpr struct crate final : named_unit<"crate", mag<24> * bottle> {} crate;
-    inline constexpr struct pallet final : named_unit<"pallet", mag<50> * crate> {} pallet;
+    inline constexpr struct crate : named_unit<"crate", mag<24> * bottle> {} crate;
+    inline constexpr struct pallet : named_unit<"pallet", mag<50> * crate> {} pallet;
 
     // Currency subdivisions:
-    inline constexpr struct dollar final : named_unit<"dollar", kind_of<dimensionless>> {} dollar;
-    inline constexpr struct dime final : named_unit<"dime", mag_ratio<1, 10> * dollar> {} dime;
-    inline constexpr struct cent final : named_unit<"cent", mag_ratio<1, 100> * dollar> {} cent;
+    inline constexpr struct dollar : named_unit<"dollar", kind_of<dimensionless>> {} dollar;
+    inline constexpr struct dime : named_unit<"dime", mag_ratio<1, 10> * dollar> {} dime;
+    inline constexpr struct cent : named_unit<"cent", mag_ratio<1, 100> * dollar> {} cent;
 
     // Order processing:
-    inline constexpr struct item final : named_unit<"item", kind_of<dimensionless>> {} item;
-    inline constexpr struct dozen final : named_unit<"dozen", mag<12> * item> {} dozen;
+    inline constexpr struct item : named_unit<"item", kind_of<dimensionless>> {} item;
+    inline constexpr struct dozen : named_unit<"dozen", mag<12> * item> {} dozen;
     ```
 
     **Benefits:**

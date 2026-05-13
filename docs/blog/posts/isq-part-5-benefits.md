@@ -70,11 +70,11 @@ First, we define:
 - set of disjoint units of _currency_ for its quantity kind.
 
 ```cpp
-inline constexpr struct dim_currency final : base_dimension<"$"> {} dim_currency;
-inline constexpr struct currency final : quantity_spec<dim_currency> {} currency;
+inline constexpr struct dim_currency : base_dimension<"$"> {} dim_currency;
+inline constexpr struct currency : quantity_spec<dim_currency> {} currency;
 
-inline constexpr struct euro final : named_unit<"EUR", kind_of<currency>> {} euro;
-inline constexpr struct us_dollar final : named_unit<"USD", kind_of<currency>> {} us_dollar;
+inline constexpr struct euro : named_unit<"EUR", kind_of<currency>> {} euro;
+inline constexpr struct us_dollar : named_unit<"USD", kind_of<currency>> {} us_dollar;
 
 namespace unit_symbols {
 
@@ -142,7 +142,7 @@ First, we define the quantity type and a handy identifier for a derived unit
 that we want to use:
 
 ```cpp
-inline constexpr struct fuel_consumption final : quantity_spec<isq::volume / isq::length> {} fuel_consumption;
+inline constexpr struct fuel_consumption : quantity_spec<isq::volume / isq::length> {} fuel_consumption;
 inline constexpr auto L_per_100km = si::litre / (mag<100> * si::kilo<si::metre>);
 
 static_assert(fuel_consumption != isq::area);
@@ -182,8 +182,8 @@ First, we need to extend our ISQ definitions by the _horizontal length_ quantity
 and a _horizontal area_ derived from it:
 
 ```cpp
-inline constexpr struct horizontal_length final : quantity_spec<isq::length> {} horizontal_length;
-inline constexpr struct horizontal_area final : quantity_spec<isq::area, horizontal_length * isq::width> {} horizontal_area;
+inline constexpr struct horizontal_length : quantity_spec<isq::length> {} horizontal_length;
+inline constexpr struct horizontal_area : quantity_spec<isq::area, horizontal_length * isq::width> {} horizontal_area;
 ```
 
 !!! note
@@ -272,10 +272,10 @@ and others should not be possible to be intermixed with each other:
 ```cpp
 namespace ni {
 
-inline constexpr struct SampleCount final : quantity_spec<dimensionless, is_kind> {} SampleCount;
-inline constexpr struct UnitSampleAmount final : quantity_spec<dimensionless, is_kind> {} UnitSampleAmount;
-inline constexpr struct MIDIClock final : quantity_spec<dimensionless, is_kind> {} MIDIClock;
-inline constexpr struct BeatCount final : quantity_spec<dimensionless, is_kind> {} BeatCount;
+inline constexpr struct SampleCount : quantity_spec<dimensionless, is_kind> {} SampleCount;
+inline constexpr struct UnitSampleAmount : quantity_spec<dimensionless, is_kind> {} UnitSampleAmount;
+inline constexpr struct MIDIClock : quantity_spec<dimensionless, is_kind> {} MIDIClock;
+inline constexpr struct BeatCount : quantity_spec<dimensionless, is_kind> {} BeatCount;
 ```
 
 We should also be able to create derived quantities from those. For example,
@@ -284,39 +284,39 @@ that can be measured in both a dedicated unit (e.g., `Smpl/s` for _sample
 rate_) and hertz:
 
 ```cpp
-inline constexpr struct SampleDuration final : quantity_spec<isq::period_duration> {} SampleDuration;
-inline constexpr struct SamplingRate final : quantity_spec<isq::frequency, SampleCount / SampleDuration> {} SamplingRate;
+inline constexpr struct SampleDuration : quantity_spec<isq::period_duration> {} SampleDuration;
+inline constexpr struct SamplingRate : quantity_spec<isq::frequency, SampleCount / SampleDuration> {} SamplingRate;
 
 inline constexpr auto Amplitude = UnitSampleAmount;
 inline constexpr auto Level = UnitSampleAmount;
-inline constexpr struct Power final : quantity_spec<Level * Level> {} Power;
+inline constexpr struct Power : quantity_spec<Level * Level> {} Power;
 
-inline constexpr struct BeatDuration final : quantity_spec<isq::period_duration> {} BeatDuration;
-inline constexpr struct Tempo final : quantity_spec<isq::frequency, BeatCount / BeatDuration> {} Tempo;
+inline constexpr struct BeatDuration : quantity_spec<isq::period_duration> {} BeatDuration;
+inline constexpr struct Tempo : quantity_spec<isq::frequency, BeatCount / BeatDuration> {} Tempo;
 ```
 
 We can also define a collection of units associated with specific quantity kinds
 and their symbols:
 
 ```cpp
-inline constexpr struct Sample final : named_unit<"Smpl", one, kind_of<SampleCount>> {} Sample;
-inline constexpr struct SampleValue final : named_unit<"PCM", one, kind_of<UnitSampleAmount>> {} SampleValue;
-inline constexpr struct MIDIPulse final : named_unit<"p", one, kind_of<MIDIClock>> {} MIDIPulse;
+inline constexpr struct Sample : named_unit<"Smpl", one, kind_of<SampleCount>> {} Sample;
+inline constexpr struct SampleValue : named_unit<"PCM", one, kind_of<UnitSampleAmount>> {} SampleValue;
+inline constexpr struct MIDIPulse : named_unit<"p", one, kind_of<MIDIClock>> {} MIDIPulse;
 
-inline constexpr struct QuarterNote final : named_unit<"q", one, kind_of<BeatCount>> {} QuarterNote;
-inline constexpr struct HalfNote final : named_unit<"h", mag<2> * QuarterNote> {} HalfNote;
-inline constexpr struct DottedHalfNote final : named_unit<"h.", mag<3> * QuarterNote> {} DottedHalfNote;
-inline constexpr struct WholeNote final : named_unit<"w", mag<4> * QuarterNote> {} WholeNote;
-inline constexpr struct EightNote final : named_unit<"8th", mag_ratio<1, 2> * QuarterNote> {} EightNote;
-inline constexpr struct DottedQuarterNote final : named_unit<"q.", mag<3> * EightNote> {} DottedQuarterNote;
-inline constexpr struct QuarterNoteTriplet final : named_unit<"qt", mag_ratio<1, 3> * HalfNote> {} QuarterNoteTriplet;
-inline constexpr struct SixteenthNote final : named_unit<"16th", mag_ratio<1, 2> * EightNote> {} SixteenthNote;
-inline constexpr struct DottedEightNote final : named_unit<"q.", mag<3> * SixteenthNote> {} DottedEightNote;
+inline constexpr struct QuarterNote : named_unit<"q", one, kind_of<BeatCount>> {} QuarterNote;
+inline constexpr struct HalfNote : named_unit<"h", mag<2> * QuarterNote> {} HalfNote;
+inline constexpr struct DottedHalfNote : named_unit<"h.", mag<3> * QuarterNote> {} DottedHalfNote;
+inline constexpr struct WholeNote : named_unit<"w", mag<4> * QuarterNote> {} WholeNote;
+inline constexpr struct EightNote : named_unit<"8th", mag_ratio<1, 2> * QuarterNote> {} EightNote;
+inline constexpr struct DottedQuarterNote : named_unit<"q.", mag<3> * EightNote> {} DottedQuarterNote;
+inline constexpr struct QuarterNoteTriplet : named_unit<"qt", mag_ratio<1, 3> * HalfNote> {} QuarterNoteTriplet;
+inline constexpr struct SixteenthNote : named_unit<"16th", mag_ratio<1, 2> * EightNote> {} SixteenthNote;
+inline constexpr struct DottedEightNote : named_unit<"q.", mag<3> * SixteenthNote> {} DottedEightNote;
 
 inline constexpr auto Beat = QuarterNote;
 
-inline constexpr struct BeatsPerMinute final : named_unit<"bpm", Beat / si::minute> {} BeatsPerMinute;
-inline constexpr struct MIDIPulsePerQuarter final : named_unit<"ppqn", MIDIPulse / QuarterNote> {} MIDIPulsePerQuarter;
+inline constexpr struct BeatsPerMinute : named_unit<"bpm", Beat / si::minute> {} BeatsPerMinute;
+inline constexpr struct MIDIPulsePerQuarter : named_unit<"ppqn", MIDIPulse / QuarterNote> {} MIDIPulsePerQuarter;
 
 namespace unit_symbols {
 

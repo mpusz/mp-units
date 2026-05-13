@@ -47,7 +47,7 @@ compatible:
     // ...
 
     // C++23 explicit object parameter syntax
-    inline constexpr struct horizontal_length final :
+    inline constexpr struct horizontal_length :
         quantity_spec<isq::length> {} horizontal_length;
 
     // ...
@@ -66,7 +66,7 @@ compatible:
     // ...
 
     // C++20 CRTP syntax (explicit type parameter)
-    inline constexpr struct horizontal_length final :
+    inline constexpr struct horizontal_length :
         quantity_spec<horizontal_length, isq::length> {} horizontal_length;
 
     // ...
@@ -86,7 +86,7 @@ compatible:
     // ...
 
     // C++20 CRTP syntax
-    inline constexpr struct horizontal_length final :
+    inline constexpr struct horizontal_length :
         quantity_spec<horizontal_length, isq::length> {} horizontal_length;
 
     // ...
@@ -106,7 +106,7 @@ compatible:
     // ...
 
     // C++20 CRTP syntax
-    inline constexpr struct horizontal_length final :
+    inline constexpr struct horizontal_length :
         quantity_spec<horizontal_length, isq::length> {} horizontal_length;
 
     // ...
@@ -183,8 +183,8 @@ avoid CRTP (Curiously Recurring Template Parameter), which significantly simplif
 QUANTITY_SPEC(horizontal_length, isq::length);
 
 // Expands to:
-//   C++23: struct horizontal_length final : quantity_spec<isq::length> {} horizontal_length;
-//   C++20: struct horizontal_length final : quantity_spec<horizontal_length, isq::length> {} horizontal_length;
+//   C++23: struct horizontal_length : quantity_spec<isq::length> {} horizontal_length;
+//   C++20: struct horizontal_length : quantity_spec<horizontal_length, isq::length> {} horizontal_length;
 ```
 
 !!! note "Configuration"

@@ -21,7 +21,7 @@ When using `check_in_range` or `check_non_negative` policies with plain represen
 ```cpp
 // Define sensor-specific origin (relative to ice_point with 0 offset)
 // Typical sensor operating range: -40°C to +85°C
-inline constexpr struct sensor_scale_origin final :
+inline constexpr struct sensor_scale_origin :
     relative_point_origin<si::ice_point + delta<deg_C>(0),
                           check_in_range{delta<deg_C>(-40), delta<deg_C>(85)}> {} sensor_scale_origin;
 
@@ -130,7 +130,7 @@ using safe_double = constrained<double, throw_policy>;
 
 // Attach sensor operating range bounds directly to our sensor origin
 // -40°C to +85°C absolute
-inline constexpr struct sensor_scale_origin final :
+inline constexpr struct sensor_scale_origin :
     relative_point_origin<si::ice_point + delta<deg_C>(0),
                           check_in_range{delta<deg_C>(-40), delta<deg_C>(85)}> {} sensor_scale_origin;
 
@@ -170,7 +170,7 @@ using safe_double = constrained<double, throw_policy>;
 
 // STEP 2: Define sensor-specific origin with bounds (relative to ice_point, 0°C offset)
 //         Bounds: -40°C to +85°C (typical sensor operating range)
-inline constexpr struct sensor_scale_origin final :
+inline constexpr struct sensor_scale_origin :
     relative_point_origin<si::ice_point + delta<deg_C>(0),
                           check_in_range{delta<deg_C>(-40), delta<deg_C>(85)}> {} sensor_scale_origin;
 

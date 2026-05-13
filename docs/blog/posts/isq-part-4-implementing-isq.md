@@ -72,7 +72,7 @@ inline constexpr auto altitude = height;
 inline constexpr struct thickness final           : quantity_spec<width> {} thickness;
 inline constexpr struct diameter final            : quantity_spec<width> {} diameter;
 inline constexpr struct radius final              : quantity_spec<width> {} radius;
-inline constexpr struct radius_of_curvature final : quantity_spec<radius> {} radius_of_curvature;
+inline constexpr struct radius_of_curvature : quantity_spec<radius> {} radius_of_curvature;
 inline constexpr struct path_length final         : quantity_spec<length> {} path_length;
 inline constexpr auto arc_length = path_length;
 inline constexpr struct distance final            : quantity_spec<path_length> {} distance;
@@ -183,7 +183,7 @@ And here is the C++ code for it:
 inline constexpr struct energy final                         : quantity_spec<mass* pow<2>(length) / pow<2>(time)> {} energy;
 inline constexpr struct mechanical_energy final              : quantity_spec<energy> {} mechanical_energy;                                                            // differs from ISO 80000
 inline constexpr struct potential_energy final               : quantity_spec<mechanical_energy> {} potential_energy;                                                  // differs from ISO 80000
-inline constexpr struct gravitational_potential_energy final : quantity_spec<potential_energy, mass * acceleration_of_free_fall * height> {} potential_energy;        // not in ISO 80000
+inline constexpr struct gravitational_potential_energy : quantity_spec<potential_energy, mass * acceleration_of_free_fall * height> {} potential_energy;        // not in ISO 80000
 inline constexpr struct elastic_potential_energy final       : quantity_spec<potential_energy, spring_constant * pow<2>(amount_of_compression)> {} potential_energy;  // not in ISO 80000
 inline constexpr struct kinetic_energy final                 : quantity_spec<mechanical_energy, mass* pow<2>(speed)> {} kinetic_energy;                               // differs from ISO 80000
 inline constexpr struct enthalpy final                       : quantity_spec<energy> {} enthalpy;                                                                     // differs from ISO 80000
@@ -232,7 +232,7 @@ can be appended to the quantity specification:
 ```cpp
 inline constexpr struct dimensionless final            : quantity_spec<detail::derived_quantity_spec<>{}> {} dimensionless;
 inline constexpr struct rotation final                 : quantity_spec<dimensionless> {} rotation;
-inline constexpr struct thermodynamic_efficiency final : quantity_spec<dimensionless, work / heat> {} efficiency;
+inline constexpr struct thermodynamic_efficiency : quantity_spec<dimensionless, work / heat> {} efficiency;
 inline constexpr struct angular_measure final          : quantity_spec<dimensionless, arc_length / radius, is_kind> {} angular_measure;
 inline constexpr struct rotational_displacement final  : quantity_spec<angular_measure, path_length / radius> {} rotational_displacement;
 inline constexpr struct phase_angle final              : quantity_spec<angular_measure> {} phase_angle;
@@ -246,7 +246,7 @@ specific quantity kinds only:
 
 ```cpp
 inline constexpr struct radian final    : named_unit<"rad", metre / metre, kind_of<isq::angular_measure>> {} radian;
-inline constexpr struct steradian final : named_unit<"sr", square(metre) / square(metre), kind_of<isq::solid_angular_measure>> {} steradian;
+inline constexpr struct steradian : named_unit<"sr", square(metre) / square(metre), kind_of<isq::solid_angular_measure>> {} steradian;
 inline constexpr struct bit final       : named_unit<"bit", one, kind_of<storage_capacity>> {} bit;
 ```
 

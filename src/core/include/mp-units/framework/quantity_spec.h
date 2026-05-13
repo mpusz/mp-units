@@ -369,13 +369,13 @@ MP_UNITS_EXPORT_END
  * For example:
  *
  * @code{.cpp}
- * inline constexpr struct dim_length final : base_dimension<"L"> {} dim_length;
- * inline constexpr struct dim_mass final : base_dimension<"M"> {} dim_mass;
- * inline constexpr struct dim_time final : base_dimension<"T"> {} dim_time;
+ * inline constexpr struct dim_length : base_dimension<"L"> {} dim_length;
+ * inline constexpr struct dim_mass : base_dimension<"M"> {} dim_mass;
+ * inline constexpr struct dim_time : base_dimension<"T"> {} dim_time;
  *
- * inline constexpr struct length final : quantity_spec<dim_length> {} length;
- * inline constexpr struct mass final : quantity_spec<dim_mass> {} mass;
- * inline constexpr struct time final : quantity_spec<dim_time> {} time;
+ * inline constexpr struct length : quantity_spec<dim_length> {} length;
+ * inline constexpr struct mass : quantity_spec<dim_mass> {} mass;
+ * inline constexpr struct time : quantity_spec<dim_time> {} time;
  * @endcode
  *
  * @note A common convention in this library is to assign the same name for a type and an object of this type.
@@ -416,10 +416,10 @@ struct quantity_spec<Self, Dim, Args...> : detail::quantity_spec_interface<Self>
  * For example:
  *
  * @code{.cpp}
- * inline constexpr struct area final : quantity_spec<pow<2>(length)> {} area;
- * inline constexpr struct volume final : quantity_spec<pow<3>(length)> {} volume;
- * inline constexpr struct velocity final : quantity_spec<displacement / duration> {} velocity;  // vector
- * inline constexpr struct force final : quantity_spec<mass * acceleration> {} force;  // vector
+ * inline constexpr struct area : quantity_spec<pow<2>(length)> {} area;
+ * inline constexpr struct volume : quantity_spec<pow<3>(length)> {} volume;
+ * inline constexpr struct velocity : quantity_spec<displacement / duration> {} velocity;  // vector
+ * inline constexpr struct force : quantity_spec<mass * acceleration> {} force;  // vector
  * @endcode
  *
  * @note A common convention in this library is to assign the same name for a type and an object of this type.
@@ -472,11 +472,11 @@ struct propagate_equation<Q, true> {
  * For example:
  *
  * @code{.cpp}
- * inline constexpr struct width final : quantity_spec<length> {} width;
- * inline constexpr struct height final : quantity_spec<length> {} height;
- * inline constexpr struct diameter final : quantity_spec<width> {} diameter;
- * inline constexpr struct displacement final : quantity_spec<length, quantity_character::vector> {} displacement;
- * inline constexpr struct voltage_phasor final : quantity_spec<voltage, quantity_character::complex_scalar) {}
+ * inline constexpr struct width : quantity_spec<length> {} width;
+ * inline constexpr struct height : quantity_spec<length> {} height;
+ * inline constexpr struct diameter : quantity_spec<width> {} diameter;
+ * inline constexpr struct displacement : quantity_spec<length, quantity_character::vector> {} displacement;
+ * inline constexpr struct voltage_phasor : quantity_spec<voltage, quantity_character::complex_scalar) {}
  * voltage_phasor;
  * @endcode
  *
@@ -520,10 +520,10 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
  * For example:
  *
  * @code{.cpp}
- * inline constexpr struct angular_measure final : quantity_spec<dimensionless, arc_length / radius, is_kind> {} angular_measure;
- * inline constexpr struct velocity final : quantity_spec<speed, displacement / duration> {} velocity;
- * inline constexpr struct weight final : quantity_spec<force, mass * acceleration_of_free_fall> {} weight;
- * inline constexpr struct kinetic_energy final : quantity_spec<mechanical_energy, mass * pow<2>(speed)> {} kinetic_energy;
+ * inline constexpr struct angular_measure : quantity_spec<dimensionless, arc_length / radius, is_kind> {} angular_measure;
+ * inline constexpr struct velocity : quantity_spec<speed, displacement / duration> {} velocity;
+ * inline constexpr struct weight : quantity_spec<force, mass * acceleration_of_free_fall> {} weight;
+ * inline constexpr struct kinetic_energy : quantity_spec<mechanical_energy, mass * pow<2>(speed)> {} kinetic_energy;
  * @endcode
  *
  * @note A common convention in this library is to assign the same name for a type and an object of this type.
@@ -628,7 +628,8 @@ struct derived_quantity_spec_impl :
  *       instantiate this type automatically based on the dimensional arithmetic equation provided by the user.
  */
 template<detail::SymbolicConstant... Expr>
-struct derived_quantity_spec final : detail::derived_quantity_spec_impl<Expr...> {};
+// TODO Restore `final` in V3
+struct derived_quantity_spec : detail::derived_quantity_spec_impl<Expr...> {};
 
 /**
  * @brief Quantity of dimension one
@@ -653,9 +654,10 @@ template<QuantitySpec Q>
 template<QuantitySpec Q>
   requires(!detail::QuantityKindSpec<Q>) && (detail::get_kind_tree_root(Q{}) == Q{})
 #if MP_UNITS_API_NO_CRTP
-struct kind_of_<Q> final : Q::_base_type_ {
+// TODO Restore `final` in V3
+struct kind_of_<Q> : Q::_base_type_ {
 #else
-struct kind_of_<Q> final : quantity_spec<kind_of_<Q>, Q{}>::_base_type_ {
+struct kind_of_<Q> : quantity_spec<kind_of_<Q>, Q{}>::_base_type_ {
 #endif
   using _base_type_ = kind_of_;
   static constexpr auto _quantity_spec_ = Q{};

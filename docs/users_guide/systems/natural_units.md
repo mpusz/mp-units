@@ -143,7 +143,7 @@ The system uses electronvolt as the base unit:
 namespace mp_units::natural {
 
 // Base unit for energy
-inline constexpr struct electronvolt final : named_unit<"eV", kind_of<energy>> {} electronvolt;
+inline constexpr struct electronvolt : named_unit<"eV", kind_of<energy>> {} electronvolt;
 
 // Scaled to GeV for particle physics
 inline constexpr auto gigaelectronvolt = si::giga<electronvolt>;
@@ -157,7 +157,7 @@ inline constexpr auto gigaelectronvolt = si::giga<electronvolt>;
 namespace mp_units::natural {
 
 // Speed of light is dimensionless 1 in natural units (c = 1)
-inline constexpr struct speed_of_light_in_vacuum final : named_constant<"c", one> {} speed_of_light_in_vacuum;
+inline constexpr struct speed_of_light_in_vacuum : named_constant<"c", one> {} speed_of_light_in_vacuum;
 
 }
 ```
