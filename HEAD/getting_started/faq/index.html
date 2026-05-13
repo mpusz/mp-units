@@ -1614,6 +1614,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -1812,6 +1814,34 @@ You're not viewing the latest version.
     
   
     Custom Contract Handlers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/affine_space/frame_projections/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Frame Projections
   
 
     
@@ -11796,7 +11826,7 @@ ordering of derived unit components.</p>
 <p>However, there is a workaround. A user can define their own named unit for a derived unit and
 provide custom symbol text that suits the project's requirements. For example, the above case
 could be addressed with:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">kilowatt_hour</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">named_unit</span><span class="o">&lt;</span><span class="s">&quot;kWh&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">kW</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">h</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">kilowatt_hour</span><span class="p">;</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">kilowatt_hour</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">named_unit</span><span class="o">&lt;</span><span class="s">&quot;kWh&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">kW</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">h</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">kilowatt_hour</span><span class="p">;</span>
 </span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">kWh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kilowatt_hour</span><span class="p">;</span>
 </span></code></pre></div>
 <p>With the above, we can refactor the above code to:</p>

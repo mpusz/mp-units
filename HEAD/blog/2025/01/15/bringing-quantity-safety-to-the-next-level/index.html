@@ -1476,6 +1476,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -1674,6 +1676,34 @@ You're not viewing the latest version.
     
   
     Custom Contract Handlers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../tutorials/affine_space/frame_projections/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Frame Projections
   
 
     
@@ -11824,16 +11854,16 @@ extensions in our free time. In this post, I will describe:</p>
 <p>From the beginning, <strong>mp-units</strong> V2 was meant to properly support quantities of
 various characters. By default, all quantity types are scalars, but we can set
 any other quantity character in a <code>quantity_spec</code> definition. For example:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">displacement</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="n">quantity_character</span><span class="o">::</span><span class="n">vector</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">displacement</span><span class="p">;</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">displacement</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="n">quantity_character</span><span class="o">::</span><span class="n">vector</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">displacement</span><span class="p">;</span>
 </span></code></pre></div>
 <p>Character of derived quantities is inherited from the quantity equation taking
 into account the operations and their ingredients. For example the below
 <em>velocity</em> quantity will automatically get a vector character without the need
 to explicitly state it in the definition:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">velocity</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">displacement</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">duration</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">velocity</span><span class="p">;</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">velocity</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">displacement</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">duration</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">velocity</span><span class="p">;</span>
 </span></code></pre></div>
 <p>Similarly, the below will yield a <em>speed</em> quantity of a scalar character:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">speed</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">magnitude</span><span class="p">(</span><span class="n">velocity</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">speed</span><span class="p">;</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">speed</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">magnitude</span><span class="p">(</span><span class="n">velocity</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">speed</span><span class="p">;</span>
 </span></code></pre></div>
 <h2 id="representation-types">Representation types<a class="headerlink" href="#representation-types" title="Permanent link">&para;</a></h2>
 <p><strong>mp-units</strong> V2 requires providing representation types compatible with a
@@ -12004,8 +12034,8 @@ parameters. This will be enough to guarantee quantity-safety.</p>
 <h3 id="peeking-under-the-hood">Peeking under the hood<a class="headerlink" href="#peeking-under-the-hood" title="Permanent link">&para;</a></h3>
 <p>Let's look at the definitions of <em>work</em> and <em>moment of force</em> quantities to
 understand how and why the above works:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">work</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">scalar_product</span><span class="p">(</span><span class="n">force</span><span class="p">,</span><span class="w"> </span><span class="n">displacement</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">work</span><span class="p">;</span>
-</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">moment_of_force</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">vector_product</span><span class="p">(</span><span class="n">position_vector</span><span class="p">,</span><span class="w"> </span><span class="n">force</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">moment_of_force</span><span class="p">;</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">work</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">scalar_product</span><span class="p">(</span><span class="n">force</span><span class="p">,</span><span class="w"> </span><span class="n">displacement</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">work</span><span class="p">;</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">moment_of_force</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">vector_product</span><span class="p">(</span><span class="n">position_vector</span><span class="p">,</span><span class="w"> </span><span class="n">force</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">moment_of_force</span><span class="p">;</span>
 </span></code></pre></div>
 <p><code>scalar_product()</code> and <code>vector_product()</code> functions are overloaded not only for
 <code>quantity</code> but also for <code>quantity_spec</code> types. The results of such operations
@@ -12115,8 +12145,8 @@ defined in the ISQ:</p>
 </div>
 <p>Change of a <em>position vector</em> is nothing else than a <em>displacement</em>. This means that <em>velocity</em>
 and <em>speed</em> can be defined as follows:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">velocity</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">displacement</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">duration</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">velocity</span><span class="p">;</span>
-</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">speed</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">magnitude</span><span class="p">(</span><span class="n">velocity</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">speed</span><span class="p">;</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">velocity</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">displacement</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">duration</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">velocity</span><span class="p">;</span>
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">speed</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">magnitude</span><span class="p">(</span><span class="n">velocity</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">speed</span><span class="p">;</span>
 </span></code></pre></div>
 <p>This is compatible with the ISQ definitions. However, we should check what it means from the
 engineering point of view. Let's assume that we want to calculate <em>speed</em> directly from
@@ -12165,6 +12195,10 @@ between those. The only one allowed to force such a conversion is an explicit ca
 case of <em>displacement</em> or vice versa. Those should not be convertible. We do not want the code
 to compile when we accidentally pass a <em>position vector</em> to the numerator of the equation for
 <em>velocity</em>, right? What does calculating the <em>velocity</em> for a <em>position vector</em> mean?</p>
+<p>The <code>point_for&lt;displacement&gt;</code> attribute introduced in the
+<a href="#defining-affine-space-abstractions-in-a-quantity_spec">section below</a> resolves this
+limitation: once <code>position_vector</code> is annotated with <code>point_for&lt;displacement&gt;</code>, subtracting
+two <em>position vectors</em> directly yields a <em>displacement</em> without any explicit cast.</p>
 <h3 id="affine-spaces-within-quantity-trees">Affine spaces within quantity trees<a class="headerlink" href="#affine-spaces-within-quantity-trees" title="Permanent link">&para;</a></h3>
 <p>Also, let's look at the type of variable <code>q7</code>. We know that subtracting two
 quantities of the same type results in a quantity of the same type. This is also the case
@@ -12217,10 +12251,10 @@ for addition and subtraction, which may yield different results.</p>
 <h3 id="defining-affine-space-abstractions-in-a-quantity_spec">Defining affine space abstractions in a <code>quantity_spec</code><a class="headerlink" href="#defining-affine-space-abstractions-in-a-quantity_spec" title="Permanent link">&para;</a></h3>
 <p>We can add support for the above by adding <code>point_for&lt;QuantitySpec&gt;</code> attribute to the
 <code>quantity_spec</code> definition:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">height</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">length</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">height</span><span class="p">;</span>
-</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">altitude</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="n">point_for</span><span class="o">&lt;</span><span class="n">height</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">altitude</span><span class="p">;</span>
-</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">displacement</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">distance</span><span class="p">,</span><span class="w"> </span><span class="n">quantity_character</span><span class="o">::</span><span class="n">vector</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">displacement</span><span class="p">;</span>
-</span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">position_vector</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">radial_distance</span><span class="p">,</span><span class="w"> </span><span class="n">point_for</span><span class="o">&lt;</span><span class="n">displacement</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">quantity_character</span><span class="o">::</span><span class="n">vector</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">position_vector</span><span class="p">;</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">height</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">length</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">height</span><span class="p">;</span>
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">altitude</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="n">point_for</span><span class="o">&lt;</span><span class="n">height</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">altitude</span><span class="p">;</span>
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">displacement</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">distance</span><span class="p">,</span><span class="w"> </span><span class="n">quantity_character</span><span class="o">::</span><span class="n">vector</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">displacement</span><span class="p">;</span>
+</span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">position_vector</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">radial_distance</span><span class="p">,</span><span class="w"> </span><span class="n">point_for</span><span class="o">&lt;</span><span class="n">displacement</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">quantity_character</span><span class="o">::</span><span class="n">vector</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">position_vector</span><span class="p">;</span>
 </span></code></pre></div>
 <p>Thanks to the above, the library always knows a "delta" quantity for a "point" type. I've
 implemented this logic, got great results, and thought I was done. But next, I realized that
@@ -12236,21 +12270,15 @@ arise:</p>
    "regular" <code>quantity</code> types?</li>
 <li>Should <code>isq::height</code> apply only to <code>quantity</code>?</li>
 </ol>
-<p>I think that question #1 makes a lot of sense. If we realize that <code>quantity</code> always represents
-"delta" quantities, what would a <code>quantity</code> of <code>isq::altitude</code> mean? However, forcing the
-usage of <code>quantity_point</code> might be too strict here. Some users are not familiar
-or comfortable with this abstraction. Also, we can't multiply or divide
-quantity points.</p>
-<div class="admonition question">
-<p class="admonition-title">Question</p>
-<p>Does anyone know a derived quantity built with altitude or time instant? If so, please let me
-know in the comments, as limiting "point" <code>quantity_spec</code> to <code>quantity_point</code> would prevent
-forming such derived quantities.</p>
-</div>
-<p>Question #2 is also interesting. However, in this case, I think that the answer should be "NO".
-I can imagine a series of <em>height</em> measurements. Every physical measurement can
-be modeled as a <code>quantity_point</code>, so a <code>quantity_point</code> of <em>height</em> might make
-sense.</p>
+<p>The <a href="../../../06/16/introducing-absolute-quantities/">Introducing Absolute Quantities</a> article resolves
+both questions with a three-way split into <em>point</em>, <em>absolute</em>, and <em>delta</em> categories.
+<code>isq::altitude</code> annotated with <code>point_for&lt;height&gt;</code> is a "point spec": it can appear in a
+plain <code>quantity</code> as an <strong>absolute</strong> (anchored at physical zero) or inside a
+<code>quantity&lt;point&lt;...&gt;&gt;</code> wrapper for full affine-space operations. It is <em>not</em> restricted
+exclusively to <code>quantity_point</code>.</p>
+<p>Question #2: <code>isq::height</code> is the <strong>delta</strong> counterpart of <code>isq::altitude</code> — it appears in
+both regular quantities (as a signed change in height) and as the delta type returned when
+subtracting two <em>altitude</em> points. No restriction to <code>quantity</code> only is needed.</p>
 <h3 id="opening-can-of-worms">Opening can of worms<a class="headerlink" href="#opening-can-of-worms" title="Permanent link">&para;</a></h3>
 <p>So far, so good. I thought I was done here and could continue my work on symbolic expressions
 for vector and complex quantities. However, I've realized that I've opened a can of worms.

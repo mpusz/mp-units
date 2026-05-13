@@ -18,7 +18,7 @@
         <link rel="prev" href="../bounded_quantity_points/">
       
       
-        <link rel="next" href="../../../users_guide/">
+        <link rel="next" href="../frame_projections/">
       
       
         
@@ -1481,6 +1481,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -1917,6 +1919,34 @@ You're not viewing the latest version.
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../frame_projections/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Frame Projections
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -11735,7 +11765,7 @@ representation types with error policies.</p>
 (like <code>double</code>), the library detects invalid values:</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// Define sensor-specific origin (relative to ice_point with 0 offset)</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="c1">// Typical sensor operating range: -40°C to +85°C</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sensor_scale_origin</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sensor_scale_origin</span><span class="w"> </span><span class="o">:</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="n">relative_point_origin</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">ice_point</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">delta</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">                          </span><span class="n">check_in_range</span><span class="p">{</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">-40</span><span class="p">),</span><span class="w"> </span><span class="n">delta</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">85</span><span class="p">)}</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">sensor_scale_origin</span><span class="p">;</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
@@ -11838,7 +11868,7 @@ as your representation type:</p>
 </span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
 </span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="c1">// Attach sensor operating range bounds directly to our sensor origin</span>
 </span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="c1">// -40°C to +85°C absolute</span>
-</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sensor_scale_origin</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sensor_scale_origin</span><span class="w"> </span><span class="o">:</span>
 </span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">    </span><span class="n">relative_point_origin</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">ice_point</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">delta</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
 </span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">                          </span><span class="n">check_in_range</span><span class="p">{</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">-40</span><span class="p">),</span><span class="w"> </span><span class="n">delta</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">85</span><span class="p">)}</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">sensor_scale_origin</span><span class="p">;</span>
 </span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>
@@ -11870,7 +11900,7 @@ as your representation type:</p>
 </span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>
 </span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="c1">// STEP 2: Define sensor-specific origin with bounds (relative to ice_point, 0°C offset)</span>
 </span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="c1">//         Bounds: -40°C to +85°C (typical sensor operating range)</span>
-</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sensor_scale_origin</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span>
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sensor_scale_origin</span><span class="w"> </span><span class="o">:</span>
 </span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="w">    </span><span class="n">relative_point_origin</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">ice_point</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">delta</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
 </span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="w">                          </span><span class="n">check_in_range</span><span class="p">{</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">-40</span><span class="p">),</span><span class="w"> </span><span class="n">delta</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">85</span><span class="p">)}</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">sensor_scale_origin</span><span class="p">;</span>
 </span><span id="__span-5-19"><a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>
@@ -12098,13 +12128,13 @@ both safety and graceful error propagation.</p>
         
         
           
-          <a href="../../../users_guide/" class="md-footer__link md-footer__link--next" aria-label="Next: User&#39;s Guide">
+          <a href="../frame_projections/" class="md-footer__link md-footer__link--next" aria-label="Next: Frame Projections">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                User's Guide
+                Frame Projections
               </div>
             </div>
             <div class="md-footer__button md-icon">

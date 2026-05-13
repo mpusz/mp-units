@@ -1474,6 +1474,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -1672,6 +1674,34 @@ You're not viewing the latest version.
     
   
     Custom Contract Handlers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/affine_space/frame_projections/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Frame Projections
   
 
     
@@ -12109,7 +12139,7 @@ factor type:</p>
 </span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="w">  </span><span class="c1">// ...</span>
 </span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="p">};</span>
 </span></code></pre></div>
-<p>See <a href="../../../users_guide/framework_basics/representation_types/#value_type-or-element_type"><code>value_type</code> or <code>element_type</code></a>
+<p>See <a href="../../../users_guide/framework_basics/representation_types/#representation_underlying_type"><code>value_type</code> or <code>element_type</code></a>
 for complete details.</p>
 <h3 id="place-customization-point-functions-in-the-same-namespace-adl">Place Customization Point Functions in the Same Namespace (ADL)<a class="headerlink" href="#place-customization-point-functions-in-the-same-namespace-adl" title="Permanent link">&para;</a></h3>
 <p>When providing customization point functions (like <code>real()</code>, <code>imag()</code>, <code>norm()</code>),
@@ -12178,10 +12208,10 @@ custom types.</p>
 <p><strong>Implementation References:</strong></p>
 <ul>
 <li><a href="https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/representation_concepts.h"><code>representation_concepts.h</code></a> - Concept definitions and character-determination CPOs (<code>disable_real</code>, <code>real</code>, <code>imag</code>, <code>modulus</code>, <code>norm</code>, <code>magnitude</code>)</li>
-<li><a href="https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/customization_points.h"><code>customization_points.h</code></a> - User-specializable customization points (<code>representation_underlying_type</code>, <code>treat_as_floating_point</code>, <code>implicitly_scalable</code>, <code>representation_values</code>, <code>constraint_violation_handler</code>, <code>quantity_like_traits</code>, <code>quantity_point_like_traits</code>)</li>
+<li><a href="https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/customization_points.h"><code>customization_points.h</code></a> - User-specializable customization points (<code>representation_underlying_type</code>, <code>treat_as_floating_point</code>, <code>representation_values</code>, <code>constraint_violation_handler</code>, <code>quantity_like_traits</code>, <code>quantity_point_like_traits</code>)</li>
 <li><a href="https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/quantity_traits.h"><code>quantity_traits.h</code></a> - Public helpers (<code>unit_for</code>, <code>reference_for</code>, <code>rep_for</code>)</li>
 <li><a href="https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/scaling.h"><code>scaling.h</code></a> - Built-in scaling implementation</li>
-<li><a href="https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/value_cast.h"><code>value_cast.h</code></a> - <code>value_cast</code>, <code>force_in</code>, and <code>is_integral_scaling</code></li>
+<li><a href="https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/value_cast.h"><code>value_cast.h</code></a> - <code>value_cast</code>, <code>force_in</code>, <code>is_integral_scaling</code>, and <code>implicitly_scalable</code></li>
 <li><a href="https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/cartesian_vector.h"><code>cartesian_vector.h</code></a> - Vector implementation example</li>
 </ul>
 <!-- markdownlint-enable MD013 -->

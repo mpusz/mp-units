@@ -1474,6 +1474,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -1672,6 +1674,34 @@ You're not viewing the latest version.
     
   
     Custom Contract Handlers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/affine_space/frame_projections/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Frame Projections
   
 
     
@@ -11802,7 +11832,6 @@ base or derived <a href="../../../reference/glossary/#quantity">quantity</a>:</p
   by the library's framework based on the <a href="../../../reference/glossary/#quantity-equation">quantity equation</a>
   provided in the <a href="../../../reference/glossary/#quantity_spec">quantity specification</a>.</li>
 </ul>
-<p>All of the above dimensions have to be marked as <code>final</code>.</p>
 <h3 id="DimensionOf"><code>DimensionOf&lt;T, V&gt;</code><a class="headerlink" href="#DimensionOf" title="Permanent link">&para;</a></h3>
 <p><code>DimensionOf</code> concept is satisfied when both arguments satisfy a <a href="#Dimension"><code>Dimension</code></a>
 concept and when they compare equal.</p>
@@ -11827,7 +11856,6 @@ concept and when they compare equal.</p>
   being a result of a <a href="../../../reference/glossary/#quantity-equation">quantity equations</a> on
   other specifications.</li>
 </ul>
-<p>All of the above quantity specifications have to be marked as <code>final</code>.</p>
 <h3 id="QuantitySpecOf"><code>QuantitySpecOf&lt;T, V&gt;</code><a class="headerlink" href="#QuantitySpecOf" title="Permanent link">&para;</a></h3>
 <p><code>QuantitySpecOf</code> concept is satisfied when both arguments satisfy a
 <a href="#QuantitySpec"><code>QuantitySpec</code></a> concept and when <code>T</code> is implicitly convertible to <code>V</code>.</p>
@@ -11858,7 +11886,6 @@ concept and when they compare equal.</p>
   instantiated with a unique symbol identifier and a product of multiplying another unit with
   some magnitude.</li>
 </ul>
-<p>All of the above units have to be marked as <code>final</code>.</p>
 <h3 id="PrefixableUnit"><code>PrefixableUnit&lt;T&gt;</code><a class="headerlink" href="#PrefixableUnit" title="Permanent link">&para;</a></h3>
 <p><code>PrefixableUnit</code> concept is satisfied by all units derived from a <code>named_unit</code> class template.
 Such units can be passed as an argument to a <code>prefixed_unit</code> class template.</p>
@@ -11982,7 +12009,7 @@ is <code>true</code>.</p>
 <p><code>si::ice_point</code> can serve as a point origin for <em>points</em> of <code>isq::Celsius_temperature</code> because this
 quantity type implicitly converts to <code>isq::thermodynamic_temperature</code>.</p>
 <p>However, if we define <code>mean_sea_level</code> in the following way:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">mean_sea_level</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">absolute_point_origin</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">altitude</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">mean_sea_level</span><span class="p">;</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">mean_sea_level</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">absolute_point_origin</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">altitude</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">mean_sea_level</span><span class="p">;</span>
 </span></code></pre></div>
 <p>then it can't be used as a point origin for <em>points</em> of <code>isq::length</code> or <code>isq::width</code> as none of them
 is implicitly convertible to <code>isq::altitude</code>:</p>
@@ -12039,7 +12066,7 @@ is implicitly convertible to <code>isq::altitude</code>:</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">C</span><span class="o">&gt;</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">struct</span><span class="w"> </span><span class="nc">mp_units</span><span class="o">::</span><span class="n">quantity_point_like_traits</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">time_point</span><span class="o">&lt;</span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">reference</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">second</span><span class="p">;</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">point_origin_</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">absolute_point_origin</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">time</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">point_origin</span><span class="p">{};</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">point_origin_</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">absolute_point_origin</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">time</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">point_origin</span><span class="p">{};</span>
 </span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">explicit_import</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
 </span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">explicit_export</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
 </span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">rep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="o">::</span><span class="n">rep</span><span class="p">;</span>
