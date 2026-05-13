@@ -55,11 +55,12 @@ Understand points vs quantities:
 - [Temperature Applications](affine_space/temperature_applications.md) (~15 min) - Advanced temperature operations
 - [Bounded Quantity Points](affine_space/bounded_quantity_points.md) (~15 min) - Attaching domain constraints to origins
 - [Custom Contract Handlers](affine_space/custom_contract_handlers.md) (~20 min) - Exception handling for production systems
+- [Frame Projections](affine_space/frame_projections.md) (~20 min) - Converting between independent reference frames
 <!-- markdownlint-enable MD013 -->
 
 !!! success "Total time"
 
-    ~235 minutes to complete all tutorials.
+    ~255 minutes to complete all tutorials.
 
 ## What's Next?
 

@@ -171,6 +171,7 @@ nav:
           - "Temperature Applications": tutorials/affine_space/temperature_applications.md
           - "Bounded Quantity Points": tutorials/affine_space/bounded_quantity_points.md
           - "Custom Contract Handlers": tutorials/affine_space/custom_contract_handlers.md
+          - "Frame Projections": tutorials/affine_space/frame_projections.md
   - User's Guide:
       - User's Guide: users_guide/index.md
       - Terms and Definitions: users_guide/terms_and_definitions.md
