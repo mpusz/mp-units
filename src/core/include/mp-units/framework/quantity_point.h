@@ -91,7 +91,8 @@ struct point_origin_interface {
   }
 
   template<PointOrigin PO1, detail::SameAbsolutePointOriginAs<PO1{}> PO2>
-    requires QuantitySpecOf<MP_UNITS_NONCONST_TYPE(PO1::_quantity_spec_), PO2::_quantity_spec_> &&
+    requires (QuantitySpecOf<MP_UNITS_NONCONST_TYPE(PO1::_quantity_spec_), PO2::_quantity_spec_> ||
+              QuantitySpecOf<MP_UNITS_NONCONST_TYPE(PO2::_quantity_spec_), PO1::_quantity_spec_>) &&
              (is_derived_from_specialization_of_v<PO1, relative_point_origin> ||
               is_derived_from_specialization_of_v<PO2, relative_point_origin>)
   [[nodiscard]] friend constexpr Quantity auto operator-(PO1 po1, PO2 po2)

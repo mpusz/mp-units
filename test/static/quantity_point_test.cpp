@@ -53,7 +53,7 @@ using sys_seconds = std::chrono::time_point<std::chrono::system_clock, std::chro
 inline constexpr struct zeroth_length final : absolute_point_origin<isq::length> {
 } zeroth_length;
 
-inline constexpr struct mean_sea_level final : absolute_point_origin<isq::height> {
+inline constexpr struct mean_sea_level final : absolute_point_origin<isq::altitude> {
 } mean_sea_level;
 
 inline constexpr auto my_mean_sea_level = mean_sea_level;
@@ -78,7 +78,7 @@ inline constexpr struct tower_peak final : relative_point_origin<ground_level + 
 inline constexpr struct other_ground_level final : relative_point_origin<mean_sea_level + 123 * isq::height[m]> {
 } other_ground_level;
 
-inline constexpr struct other_absolute_level final : absolute_point_origin<isq::height> {
+inline constexpr struct other_absolute_level final : absolute_point_origin<isq::altitude> {
 } other_absolute_level;
 
 inline constexpr struct zero final : absolute_point_origin<dimensionless> {

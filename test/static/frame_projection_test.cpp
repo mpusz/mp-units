@@ -46,10 +46,10 @@ using namespace mp_units::si::unit_symbols;
 //   ocean_surface: independent absolute origin for isq::height (positive = down)
 ////////////////////////////////////////////////////////////////////////////////////
 
-inline constexpr struct sea_level_t final : absolute_point_origin<isq::height> {
+inline constexpr struct sea_level_t final : absolute_point_origin<isq::altitude> {
 } sea_level;
 
-inline constexpr struct ocean_surface_t final : absolute_point_origin<isq::height> {
+inline constexpr struct ocean_surface_t final : absolute_point_origin<isq::altitude> {
 } ocean_surface;
 
 // A relative origin 10 m below ocean_surface (represents a fixed shallow-water depth).
@@ -63,10 +63,10 @@ inline constexpr struct shallow_water_t final : relative_point_origin<ocean_surf
 // The projection adds a caller-supplied offset.
 ////////////////////////////////////////////////////////////////////////////////////
 
-inline constexpr struct base_origin_t final : absolute_point_origin<isq::height> {
+inline constexpr struct base_origin_t final : absolute_point_origin<isq::altitude> {
 } base_origin;
 
-inline constexpr struct shifted_origin_t final : absolute_point_origin<isq::height> {
+inline constexpr struct shifted_origin_t final : absolute_point_origin<isq::altitude> {
 } shifted_origin;
 
 }  // namespace
