@@ -50,7 +50,7 @@ constexpr bool is_specialization_of_quantity_spec = is_specialization_of_v<T, qu
 template<typename T>
 constexpr bool is_specialization_of_quantity_spec = false;
 
-template<typename Derived, typename... Params>
+template<typename Derived, auto... Params>
 constexpr bool is_specialization_of_quantity_spec<quantity_spec<Derived, Params...> > = true;
 
 #endif
