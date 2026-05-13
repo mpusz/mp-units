@@ -112,8 +112,8 @@ All types use **`is_kind`** to prevent accidental mixing (e.g., `latitude + long
 
 ### Great Circle Distance
 
-```cpp title="geographic.h" linenums="335"
---8<-- "example/include/geographic.h:335:337"
+```cpp title="geographic.h" linenums="370"
+--8<-- "example/include/geographic.h:370:370"
 ```
 
 The `spherical_distance` function calculates the shortest _distance_ between two points
@@ -121,8 +121,8 @@ on Earth's surface using the great-circle formula. Since _latitude_ and _longitu
 `is_kind`, the function explicitly converts them to plain `angular_measure` for
 trigonometric operations:
 
-```cpp title="geographic.h" linenums="344"
---8<-- "example/include/geographic.h:344:347"
+```cpp title="geographic.h" linenums="377"
+--8<-- "example/include/geographic.h:377:380"
 ```
 
 This ensures type safety while allowing mathematical operations when explicitly intended.

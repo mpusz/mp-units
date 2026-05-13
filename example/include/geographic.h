@@ -127,7 +127,11 @@ inline constexpr struct east final :
 } east;
 
 // Bearing: 0° = North, clockwise positive
-// Note: bearing = 90° - geometric_azimuth (involves sign flip - cannot use relative_point_origin)
+// Axis inversion relative to geometric_azimuth: bearing = 90° − azimuth (sign flip, not a shift).
+// frame_projection<east, north_cw> and frame_projection<north_cw, east> connect the two frames,
+// so .point_for(north_cw) / .point_for(east) work across the inversion.
+// Because north_ccw is a relative_point_origin rooted at east, bearing ↔ heading also works
+// automatically: point_for(north_ccw) projects to east first, then walks down.
 inline constexpr struct north_cw final :
     mp_units::absolute_point_origin<geo_bearing,
                                     mp_units::wrap_to_range{-180 * mp_units::si::degree, 180 * mp_units::si::degree}> {
@@ -221,6 +225,24 @@ constexpr longitude<double> operator""_W(long double v)
 }  // namespace literals
 
 }  // namespace geographic
+
+// Axis-inversion projections between geometric_azimuth (east, E/CCW+) and bearing (north_cw, N/CW+).
+// bearing = 90° − azimuth  (self-inverse formula).
+// Explicit specializations must live outside namespace geographic (in namespace mp_units or at
+// global scope) because they specialize a template defined in namespace mp_units.
+template<>
+inline constexpr auto mp_units::frame_projection<geographic::east, geographic::north_cw> =
+  [](mp_units::QuantityPointOf<geographic::geometric_azimuth> auto qp) constexpr {
+    const auto az = mp_units::isq::angular_measure(qp.quantity_from(geographic::east));
+    return geographic::north_cw + geographic::geo_bearing(90.0 * mp_units::si::degree - az);
+  };
+
+template<>
+inline constexpr auto mp_units::frame_projection<geographic::north_cw, geographic::east> =
+  [](mp_units::QuantityPointOf<geographic::geo_bearing> auto qp) constexpr {
+    const auto brg = mp_units::isq::angular_measure(qp.quantity_from(geographic::north_cw));
+    return geographic::east + geographic::geometric_azimuth(90.0 * mp_units::si::degree - brg);
+  };
 
 // Note: No std::numeric_limits specializations needed!
 // The generic specialization in quantity_point.h automatically handles all bounded quantity_points
