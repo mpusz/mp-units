@@ -314,7 +314,7 @@ template<Quantity ToQ, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<Fw
  * is potentially undefined behaviour.
  * The implementation further attempts not to cause more than
  * rounding error than approximately the sum of the resolution of `qp` as represented in `FromQP`,
- * plust the resolution of `qp` as represented in `ToQP`.
+ * plus the resolution of `qp` as represented in `ToQP`.
  *
  * @tparam ToQP a target quantity point type to which to cast the representation of the point
  */
