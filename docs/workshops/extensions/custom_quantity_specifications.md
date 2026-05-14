@@ -150,7 +150,7 @@ constexpr quantity<isq::mechanical_energy[J]> mechanical_energy(quantity<qs::gra
 constexpr quantity<qs::motor_energy[J]> required_input_energy(quantity<isq::mechanical_energy[J]> e_mech,
                                                               quantity<qs::motor_efficiency[one]> efficiency)
 {
-  return qs::motor_energy(e_mech / efficiency);
+  return e_mech / efficiency;
 }
 
 int main()
@@ -250,7 +250,7 @@ int main()
     constexpr quantity<qs::motor_energy[J]> required_input_energy(quantity<isq::mechanical_energy[J]> e_mech,
                                                                   quantity<qs::motor_efficiency[one]> efficiency)
     {
-      return qs::motor_energy(e_mech / efficiency);
+      return e_mech / efficiency;
     }
 
     int main()
