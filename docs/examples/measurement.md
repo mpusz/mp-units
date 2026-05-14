@@ -12,7 +12,7 @@ tags:
 
 # Measurement with Uncertainty
 
-[Try it live on Compiler Explorer](https://godbolt.org/z/e8eEz56Mr){ .md-button }
+[Try it live on Compiler Explorer](https://godbolt.org/z/jcWbj1eKc){ .md-button }
 
 
 ## Overview
