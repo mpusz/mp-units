@@ -52,7 +52,8 @@ QUANTITY_SPEC_(width, length);
 QUANTITY_SPEC_(radius, width);
 QUANTITY_SPEC_(arc_length, length);
 
-QUANTITY_SPEC_(frequency, inverse(time));
+QUANTITY_SPEC_(period_duration, time);
+QUANTITY_SPEC_(frequency, inverse(period_duration));
 QUANTITY_SPEC_(activity, inverse(time));
 QUANTITY_SPEC_(area, length* length);
 QUANTITY_SPEC_(angular_measure, dimensionless, arc_length / radius, is_kind);
@@ -104,6 +105,14 @@ static_assert(is_of_type<42 * newton, quantity<newton, int>>);
 static_assert(quantity<newton, int>::quantity_spec == kind_of<mass * length / pow<2>(time)>);
 static_assert(is_of_type<42 * hertz, quantity<hertz, int>>);
 static_assert(quantity<hertz, int>::quantity_spec == kind_of<frequency>);
+
+static_assert(is_of_type<frequency(42 * hertz), quantity<frequency[hertz], int>>);
+static_assert(is_of_type<42 * frequency[hertz], quantity<frequency[hertz], int>>);
+static_assert(quantity<frequency[hertz], int>::quantity_spec == frequency);
+
+static_assert(is_of_type<frequency(42 * hertz), quantity<frequency[hertz], int>>);
+static_assert(is_of_type<42 * frequency[hertz], quantity<frequency[hertz], int>>);
+static_assert(quantity<inverse(period_duration)[hertz], int>::quantity_spec == inverse(period_duration));
 
 // Named quantity/dimension and unit
 static_assert(is_of_type<5 * power[watt], quantity<reference<power_, watt_>{}, int>>);
