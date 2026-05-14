@@ -105,6 +105,8 @@ QUANTITY_SPEC_(mechanical_work, energy, force* displacement, quantity_character:
 QUANTITY_SPEC_(mechanical_energy, mechanical_work, mass* pow<2>(length) / pow<2>(time));
 QUANTITY_SPEC_(potential_energy, mechanical_energy);
 QUANTITY_SPEC_(gravitational_potential_energy, potential_energy, mass * acceleration_of_free_fall * height);
+QUANTITY_SPEC_(gravitational_constant, force * pow<2>(length) / pow<2>(mass));
+QUANTITY_SPEC_(newtonian_gravitational_potential_energy, potential_energy, gravitational_constant * pow<2>(mass) / length);
 QUANTITY_SPEC_(kinetic_energy, mechanical_energy, mass* pow<2>(speed));
 QUANTITY_SPEC_(electric_charge, electric_current* time);
 QUANTITY_SPEC_(electric_field_strength, force / electric_charge);  // vector
@@ -483,6 +485,7 @@ static_assert(!defines_equation(special_rate_of_climb));
 static_assert(defines_equation(energy));
 static_assert(defines_equation(kinetic_energy));
 static_assert(defines_equation(gravitational_potential_energy));
+static_assert(defines_equation(newtonian_gravitational_potential_energy));
 static_assert(!defines_equation(potential_energy));
 
 // get_complexity
@@ -585,6 +588,9 @@ static_assert(convertible(get_kind(moment_of_force), get_kind(moment_of_force)) 
 static_assert(convertible(height, width) == cast);
 static_assert(convertible(potential_energy, kinetic_energy) == cast);
 static_assert(convertible(kinetic_energy, potential_energy) == cast);
+// two user-defined gravitational PE forms (different equations, same parent) require cast between each other
+static_assert(convertible(gravitational_potential_energy, newtonian_gravitational_potential_energy) == cast);
+static_assert(convertible(newtonian_gravitational_potential_energy, gravitational_potential_energy) == cast);
 static_assert(convertible(rate_of_climb, velocity) == cast);
 static_assert(convertible(rate_of_climb, horizontal_speed) == cast);
 
@@ -606,6 +612,8 @@ static_assert(convertible(special_rate_of_climb, speed) == yes);
 static_assert(convertible(velocity, speed) == yes);
 static_assert(convertible(potential_energy, energy) == yes);
 static_assert(convertible(kinetic_energy, energy) == yes);
+static_assert(convertible(newtonian_gravitational_potential_energy, potential_energy) == yes);
+static_assert(convertible(newtonian_gravitational_potential_energy, energy) == yes);
 
 // upcasting beyond the hierarchy/kind
 static_assert(convertible(angular_measure, dimensionless) == explicit_conversion_beyond_kind);
@@ -633,6 +641,8 @@ static_assert(convertible(speed, special_rate_of_climb) == explicit_conversion);
 static_assert(convertible(rate_of_climb, special_rate_of_climb) == explicit_conversion);
 static_assert(convertible(energy, potential_energy) == explicit_conversion);
 static_assert(convertible(energy, kinetic_energy) == explicit_conversion);
+static_assert(convertible(energy, newtonian_gravitational_potential_energy) == explicit_conversion);
+static_assert(convertible(potential_energy, newtonian_gravitational_potential_energy) == explicit_conversion);
 static_assert(convertible(dimensionless, rotation) == explicit_conversion);
 static_assert(convertible(dimensionless, rotational_displacement) == explicit_conversion);
 
@@ -669,6 +679,8 @@ static_assert(convertible(width * height, area) == yes);
 static_assert(convertible(pow<1, 2>(area), length) == yes);
 static_assert(convertible(length, pow<1, 2>(area)) == yes);
 static_assert(convertible(mass * acceleration_of_free_fall * height, gravitational_potential_energy) == yes);
+static_assert(convertible(gravitational_constant * pow<2>(mass) / length, newtonian_gravitational_potential_energy) ==
+              yes);
 static_assert(convertible(mass * pow<2>(length) / pow<2>(time), kinetic_energy) == yes);
 static_assert(convertible(arc_length / radius, angular_measure) == yes);
 static_assert(convertible(area / pow<2>(radius), solid_angular_measure) == yes);
@@ -684,6 +696,10 @@ static_assert(convertible(length / time, rate_of_climb) == explicit_conversion);
 static_assert(convertible(acceleration / velocity, frequency) == explicit_conversion);
 static_assert(convertible(force * length, torque) == explicit_conversion);
 static_assert(convertible(mass * acceleration * length, gravitational_potential_energy) == explicit_conversion);
+// force * length is the simplified form of the newtonian GPE equation
+// (gravitational_constant * mass²/length explodes to force * pow<2>(length)/pow<2>(mass) * mass²/length = force *
+// length)
+static_assert(convertible(force * length, newtonian_gravitational_potential_energy) == yes);
 static_assert(convertible(length / radius, angular_measure) == explicit_conversion);
 static_assert(convertible(length / length, angular_measure) == explicit_conversion);
 static_assert(convertible(arc_length / length, angular_measure) == explicit_conversion);
@@ -1075,6 +1091,12 @@ static_assert(get_common_quantity_spec(gravitational_potential_energy, mass * ac
               mass * acceleration * length);
 static_assert(get_common_quantity_spec(mass * acceleration * length, gravitational_potential_energy) ==
               mass * acceleration * length);
+
+// two GPE forms (siblings with different equations) share potential_energy as common ancestor
+static_assert(get_common_quantity_spec(gravitational_potential_energy, newtonian_gravitational_potential_energy) ==
+              potential_energy);
+static_assert(get_common_quantity_spec(newtonian_gravitational_potential_energy, gravitational_potential_energy) ==
+              potential_energy);
 
 template<auto T1, auto T2>
 concept no_common_quantity_spec = requires {
