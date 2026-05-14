@@ -69,20 +69,20 @@ QUANTITY_SPEC_(position_vector, length, quantity_character::vector);
 QUANTITY_SPEC_(displacement, length, quantity_character::vector);
 QUANTITY_SPEC_(period_duration, time);
 QUANTITY_SPEC_(rotation, dimensionless);
-QUANTITY_SPEC_(repetency, inverse(wavelength));
-QUANTITY_SPEC_(frequency, inverse(period_duration));
-QUANTITY_SPEC_(activity, inverse(time));
-QUANTITY_SPEC_(area, pow<2>(length));
-QUANTITY_SPEC_(volume, pow<3>(length));
+QUANTITY_SPEC_(repetency, inverse(wavelength), non_negative);
+QUANTITY_SPEC_(frequency, inverse(period_duration), non_negative);
+QUANTITY_SPEC_(activity, inverse(time), non_negative);
+QUANTITY_SPEC_(area, pow<2>(length), non_negative);
+QUANTITY_SPEC_(volume, pow<3>(length), non_negative);
 QUANTITY_SPEC_(angular_measure, dimensionless, arc_length / radius, is_kind);
 QUANTITY_SPEC_(special_angular_measure, angular_measure);
 QUANTITY_SPEC_(rotational_displacement, angular_measure, path_length / radius);
 QUANTITY_SPEC_(phase_angle, angular_measure);
-QUANTITY_SPEC_(solid_angular_measure, dimensionless, area / pow<2>(radius), is_kind);
+QUANTITY_SPEC_(solid_angular_measure, dimensionless, area / pow<2>(radius), is_kind, non_negative);
 QUANTITY_SPEC_(dimensionless_rate, dimensionless / time);
 QUANTITY_SPEC_(angular_measure_rate, angular_measure / time);
 QUANTITY_SPEC_(solid_angular_measure_rate, solid_angular_measure / time);
-QUANTITY_SPEC_(speed, length / time);
+QUANTITY_SPEC_(speed, length / time, non_negative);
 QUANTITY_SPEC_(velocity, speed, displacement / time);
 QUANTITY_SPEC_(special_speed, speed);
 QUANTITY_SPEC_(horizontal_speed, speed, horizontal_length / time);
@@ -90,7 +90,7 @@ QUANTITY_SPEC_(rate_of_climb, speed, height / time);
 QUANTITY_SPEC_(special_rate_of_climb, rate_of_climb);
 QUANTITY_SPEC_(acceleration, velocity / time);
 QUANTITY_SPEC_(acceleration_of_free_fall, acceleration);
-QUANTITY_SPEC_(mass_density, mass / volume);
+QUANTITY_SPEC_(mass_density, mass / volume, non_negative);
 QUANTITY_SPEC_(force, mass * acceleration);
 QUANTITY_SPEC_(weight, force, mass * acceleration_of_free_fall);
 QUANTITY_SPEC_(moment_of_force, position_vector* force);
@@ -100,13 +100,15 @@ QUANTITY_SPEC_(stress, pressure, quantity_character::tensor);
 QUANTITY_SPEC_(strain, dimensionless, quantity_character::tensor);
 QUANTITY_SPEC_(power, force* velocity, quantity_character::real_scalar);
 QUANTITY_SPEC_(efficiency, power / power);
-QUANTITY_SPEC_(energy, mass * pow<2>(length) / pow<2>(time));
+QUANTITY_SPEC_(energy, mass * pow<2>(length) / pow<2>(time), non_negative);
 QUANTITY_SPEC_(mechanical_work, energy, force* displacement, quantity_character::real_scalar);
 QUANTITY_SPEC_(mechanical_energy, mechanical_work, mass* pow<2>(length) / pow<2>(time));
 QUANTITY_SPEC_(potential_energy, mechanical_energy);
-QUANTITY_SPEC_(gravitational_potential_energy, potential_energy, mass * acceleration_of_free_fall * height);
+QUANTITY_SPEC_(gravitational_potential_energy, potential_energy, mass * acceleration_of_free_fall * height,
+               quantity_character::real_scalar);
 QUANTITY_SPEC_(gravitational_constant, force * pow<2>(length) / pow<2>(mass));
-QUANTITY_SPEC_(newtonian_gravitational_potential_energy, potential_energy, gravitational_constant * pow<2>(mass) / length);
+QUANTITY_SPEC_(newtonian_gravitational_potential_energy, potential_energy, gravitational_constant * pow<2>(mass) / length,
+               quantity_character::real_scalar);
 QUANTITY_SPEC_(kinetic_energy, mechanical_energy, mass* pow<2>(speed));
 QUANTITY_SPEC_(electric_charge, electric_current* time);
 QUANTITY_SPEC_(electric_field_strength, force / electric_charge);  // vector
@@ -1209,7 +1211,7 @@ static_assert(!is_non_negative(depth));     // overload returns false despite in
 static_assert(is_non_negative(tagged_speed));   // nn_length / nn_time, non_negative
 static_assert(is_non_negative(tagged_volume));  // pow<3>(nn_length), non_negative
 
-// Vector quantities are not non-negative (character != real_scalar)
+// Vector quantities are not non-negative (character != real_scalar), even when parent is non_negative
 static_assert(!is_non_negative(displacement));
 static_assert(!is_non_negative(velocity));
 
@@ -1222,5 +1224,54 @@ static_assert(!is_non_negative(kind_of<duration>));
 static_assert(!is_non_negative(get_kind(height)));
 static_assert(!is_non_negative(get_kind(altitude)));
 static_assert(!is_non_negative(get_kind(depth)));
+
+// speed with explicit non_negative tag
+static_assert(is_non_negative(speed));
+
+// Named child (no equation) inherits non_negative from speed
+static_assert(is_non_negative(special_speed));
+
+// Named child with equation inherits from parent (speed) when real_scalar character
+static_assert(is_non_negative(horizontal_speed));
+static_assert(is_non_negative(rate_of_climb));
+static_assert(is_non_negative(special_rate_of_climb));  // inherits via rate_of_climb
+
+// velocity has vector character → NOT non_negative, even though parent speed is non_negative
+static_assert(!is_non_negative(velocity));
+
+// area, volume, mass_density with explicit non_negative
+static_assert(is_non_negative(area));
+static_assert(is_non_negative(volume));
+static_assert(is_non_negative(mass_density));
+
+// frequency, activity, repetency with explicit non_negative
+static_assert(is_non_negative(frequency));
+static_assert(is_non_negative(activity));
+static_assert(is_non_negative(repetency));
+
+// solid_angular_measure: is_kind + non_negative coexist; kind_of<> is still NOT non_negative
+static_assert(is_non_negative(solid_angular_measure));
+static_assert(!is_non_negative(kind_of<solid_angular_measure>));
+
+// spec-2 expressions derived from non_negative quantities are NOT non_negative without explicit tag
+static_assert(!is_non_negative(solid_angular_measure_rate));  // solid_angular_measure / time
+
+// energy chain: non_negative propagates down through the named-child hierarchy
+static_assert(is_non_negative(energy));
+// mechanical_work: real_scalar named child of energy → inherits
+static_assert(is_non_negative(mechanical_work));
+// mechanical_energy: real_scalar named child of mechanical_work → inherits
+static_assert(is_non_negative(mechanical_energy));
+// potential_energy: named child (no equation) of mechanical_energy → inherits
+static_assert(is_non_negative(potential_energy));
+// kinetic_energy and both GPE siblings: named children of non_negative parent → inherit
+static_assert(is_non_negative(kinetic_energy));
+static_assert(is_non_negative(gravitational_potential_energy));
+static_assert(is_non_negative(newtonian_gravitational_potential_energy));
+
+// force is a spec-2 expression without an explicit non_negative tag → NOT non_negative,
+// so weight (named child of force) is also NOT non_negative
+static_assert(!is_non_negative(force));
+static_assert(!is_non_negative(weight));
 
 }  // namespace
