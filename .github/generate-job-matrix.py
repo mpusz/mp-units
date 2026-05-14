@@ -128,7 +128,7 @@ def make_msvc_config(release: str) -> Toolchain:
     match release:
         case "14.4":
             os = "windows-2025"
-            version = 194
+            version = 195
         case _:
             raise KeyError(f"Unsupported MSVC release {release!r}")
     return Toolchain(
