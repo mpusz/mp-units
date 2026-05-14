@@ -252,6 +252,7 @@ nav:
           - hw_voltage: examples/hw_voltage.md
           - measurement: examples/measurement.md
           - currency: examples/currency.md
+          - trade_execution: examples/trade_execution.md
           - strong_angular_quantities: examples/strong_angular_quantities.md
           - total_energy: examples/total_energy.md
       - Advanced:
