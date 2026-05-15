@@ -163,7 +163,8 @@ endif()
 # UTF-8 source and execution character set
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(
-        mp-units-core ${MP_UNITS_TARGET_SCOPE}
+        mp-units-core
+        ${MP_UNITS_TARGET_SCOPE}
         # Specifies both the source character set and the execution character set as UTF-8
         # forwarding to MSVC if using CUDA.
         "$<$<COMPILE_LANGUAGE:CUDA>:--compiler-options=>/utf-8"
@@ -179,8 +180,7 @@ if(MP_UNITS_API_FREESTANDING)
     if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
         # forwarding to MSVC if using CUDA.
         target_compile_options(
-            mp-units-core ${MP_UNITS_TARGET_SCOPE}
-            "$<$<COMPILE_LANGUAGE:CUDA>:--compiler-options=>/kernel"
+            mp-units-core ${MP_UNITS_TARGET_SCOPE} "$<$<COMPILE_LANGUAGE:CUDA>:--compiler-options=>/kernel"
         )
     else()
         target_compile_options(mp-units-core ${MP_UNITS_TARGET_SCOPE} -ffreestanding)
