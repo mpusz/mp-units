@@ -147,7 +147,8 @@ if(MP_UNITS_BUILD_CXX_MODULES)
 
     if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
         # '#include <filename>' in the purview of module 'module-name-1' appears erroneous
-        target_compile_options(mp-units-core PUBLIC /wd5244)
+        # forwarding to MSVC if using CUDA.
+        target_compile_options(mp-units-core PUBLIC "$<$<COMPILE_LANGUAGE:CUDA>:--compiler-options=>/wd5244")
     endif()
 endif()
 
@@ -163,7 +164,9 @@ endif()
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(
         mp-units-core ${MP_UNITS_TARGET_SCOPE}
-        /utf-8 # Specifies both the source character set and the execution character set as UTF-8
+        # Specifies both the source character set and the execution character set as UTF-8
+        # forwarding to MSVC if using CUDA.
+        "$<$<COMPILE_LANGUAGE:CUDA>:--compiler-options=>/utf-8"
     )
 endif()
 
@@ -174,7 +177,11 @@ target_compile_definitions(
 
 if(MP_UNITS_API_FREESTANDING)
     if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-        target_compile_options(mp-units-core ${MP_UNITS_TARGET_SCOPE} /kernel)
+        # forwarding to MSVC if using CUDA.
+        target_compile_options(
+            mp-units-core ${MP_UNITS_TARGET_SCOPE}
+            "$<$<COMPILE_LANGUAGE:CUDA>:--compiler-options=>/kernel"
+        )
     else()
         target_compile_options(mp-units-core ${MP_UNITS_TARGET_SCOPE} -ffreestanding)
     endif()
