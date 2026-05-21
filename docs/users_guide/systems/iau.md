@@ -71,9 +71,7 @@ std::println("Solar luminosity: {} = {::N[.3e]}", solar_power, solar_power.in(W)
 
 // Solar nominal effective temperature: Tₑff,☉ᴺ = 5772 K
 quantity_point sun_temp = point<T_EFF_SUN_N>(1.);
-std::println("Solar temperature: {} = {::N[.0f]}",
-             sun_temp.quantity_from_unit_zero(),
-             sun_temp.in(K).quantity_from_unit_zero());
+std::println("Solar temperature: {} = {::N[.0f]}", sun_temp, sun_temp.in(K));
 
 // Solar nominal gravitational parameter: (GM)☉ᴺ = 1.3271244 × 10²⁰ m³/s²
 quantity mu_sun = 1. * GM_SUN_N;

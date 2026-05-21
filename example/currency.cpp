@@ -90,7 +90,7 @@ QuantityOf<currency> auto exchange_to(From q, std::chrono::sys_seconds timestamp
 template<UnitOf<currency> auto To, QuantityPointOf<currency> From>
 QuantityPointOf<currency> auto exchange_to(From qp, std::chrono::sys_seconds timestamp)
 {
-  return quantity_point{exchange_to<To>(qp.quantity_from_unit_zero(), timestamp), From::point_origin};
+  return quantity_point{exchange_to<To>(qp.quantity_from_zero(), timestamp), From::point_origin};
 }
 
 int main()
@@ -106,8 +106,8 @@ int main()
   std::cout << price_usd << " -> " << price_eur << "\n";
 
   // the below don't compile
-  // std::cout << (price_usd + price_usd).quantity_from_unit_zero() << "\n";
-  // std::cout << price_usd.quantity_from_unit_zero() + price_eur.quantity_from_unit_zero() << "\n";
+  // std::cout << (price_usd + price_usd).quantity_from_zero() << "\n";
+  // std::cout << price_usd.quantity_from_zero() + price_eur.quantity_from_zero() << "\n";
 
   // Multi-currency portfolio: positions held in native currencies (quantities, not prices)
   const quantity pos_usd = 14'230 * USD;

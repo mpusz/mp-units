@@ -475,9 +475,9 @@ struct quantity_point_iface {
     requires(PO == default_point_origin(R))
   friend std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os,
                                                        const quantity_point<R, PO, Rep>& qp)
-    requires requires { os << qp.quantity_from_unit_zero(); }
+    requires requires { os << qp.quantity_from_zero(); }
   {
-    return os << qp.quantity_from_unit_zero();
+    return os << qp.quantity_from_zero();
   }
 
 #endif  // MP_UNITS_HOSTED
@@ -676,33 +676,31 @@ public:
     return *this - qp;
   }
 
-  [[nodiscard]] constexpr Quantity auto quantity_from_unit_zero() const
-    requires requires { unit._point_origin_; } || (PO == default_point_origin(R))
+  [[nodiscard]] constexpr const quantity_type& quantity_from_zero() const noexcept
+    requires(PO == default_point_origin(R))
   {
-    if constexpr (requires { unit._point_origin_; }) {
-      // original quantity point unit can be lost in the below operation
-      const auto q = quantity_from(unit._point_origin_);
-      if constexpr (requires { q.in(unit); })
-        // restore the unit if possible (non-truncating)
-        return q.in(unit);
-      else
-        return q;
-    } else
-      return quantity_from(absolute_point_origin);
+    return quantity_ref_from(PO);
   }
 
-  [[deprecated("2.6.0: Use `quantity_from_unit_zero` instead")]] [[nodiscard]] constexpr Quantity auto
-  quantity_from_zero() const
+private:
+  template<UnitOf<quantity_spec> ToU, std::invocable<quantity_type> ConvertFn>
+  [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto in_impl(ToU, ConvertFn convert) const
   {
-    return quantity_from_unit_zero();
+    if constexpr (requires { ToU{}._point_origin_; } && (PO == default_point_origin(R))) {
+      constexpr auto new_po = ToU{}._point_origin_;
+      return ::mp_units::quantity_point{convert(quantity_from(new_po)), new_po};
+    } else {
+      return ::mp_units::quantity_point{convert(quantity_ref_from(point_origin)), point_origin};
+    }
   }
 
+public:
   // unit conversions
   template<UnitOf<quantity_spec> ToU>
     requires detail::ImplicitScaling<unit, ToU{}, rep>
   [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto in(ToU) const
   {
-    return ::mp_units::quantity_point{quantity_ref_from(point_origin).in(ToU{}), point_origin};
+    return in_impl(ToU{}, [](const auto& q) { return q.in(ToU{}); });
   }
 
   template<RepresentationOf<quantity_spec> ToRep>
@@ -716,14 +714,14 @@ public:
     requires detail::RepConstructibleFrom<ToRep, rep> && detail::ImplicitConversion<unit, rep, ToU{}, ToRep>
   [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto in(ToU) const
   {
-    return ::mp_units::quantity_point{quantity_ref_from(point_origin).template in<ToRep>(ToU{}), point_origin};
+    return in_impl(ToU{}, [](const auto& q) { return q.template in<ToRep>(ToU{}); });
   }
 
   template<UnitOf<quantity_spec> ToU>
     requires detail::ExplicitlyCastable<unit, ToU{}, rep>
   [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto force_in(ToU) const
   {
-    return ::mp_units::quantity_point{quantity_ref_from(point_origin).force_in(ToU{}), point_origin};
+    return in_impl(ToU{}, [](const auto& q) { return q.force_in(ToU{}); });
   }
 
   template<RepresentationOf<quantity_spec> ToRep>
@@ -737,7 +735,7 @@ public:
     requires std::constructible_from<ToRep, rep> && detail::ExplicitlyCastable<unit, ToU{}, rep>
   [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto force_in(ToU) const
   {
-    return ::mp_units::quantity_point{quantity_ref_from(point_origin).template force_in<ToRep>(ToU{}), point_origin};
+    return in_impl(ToU{}, [](const auto& q) { return q.template force_in<ToRep>(ToU{}); });
   }
 
   // conversion operators
@@ -935,7 +933,7 @@ struct MP_UNITS_STD_FMT::formatter<mp_units::quantity_point<R, PO, Rep>, Char> :
   auto format(const mp_units::quantity_point<R, PO, Rep>& qp, FormatContext& ctx) const -> decltype(ctx.out())
   {
     return MP_UNITS_STD_FMT::formatter<typename mp_units::quantity_point<R, PO, Rep>::quantity_type>::format(
-      qp.quantity_from_unit_zero(), ctx);
+      qp.quantity_from_zero(), ctx);
   }
 };
 

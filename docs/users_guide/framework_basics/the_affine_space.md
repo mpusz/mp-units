@@ -153,8 +153,8 @@ for this domain.
 quantity_point<isq::distance[si::metre]> qp1(100 * m);
 quantity_point<isq::distance[si::metre]> qp2 = point<m>(120);
 
-assert(qp1.quantity_from_unit_zero() == 100 * m);
-assert(qp2.quantity_from_unit_zero() == 120 * m);
+assert(qp1.quantity_from_zero() == 100 * m);
+assert(qp2.quantity_from_zero() == 120 * m);
 assert(qp2.quantity_from(qp1) == 20 * m);
 assert(qp1.quantity_from(qp2) == -20 * m);
 
@@ -168,9 +168,9 @@ In the above code `100 * m` and `120 * m` still create two quantities that serve
 _displacement vectors_ here. Quantity point objects can be explicitly constructed from
 such quantities only when their origin is an instantiation of the `natural_point_origin<QuantitySpec>`.
 
-It is really important to understand that even though we can use `.quantity_from_unit_zero()`
-to obtain the _displacement vector_ of a point from the origin, the point by itself does
-not represent or have any associated physical value. It is just a point in some space.
+It is really important to understand that even though we can use `.quantity_from_zero()`
+to obtain the _displacement vector_ of a point from its default origin, the point by itself
+does not represent or have any associated physical value. It is just a point in some space.
 The same point can be expressed with different _displacement vectors_ from different origins.
 
 It is also worth mentioning that simplicity comes with a safety cost here. For some users,
@@ -205,8 +205,8 @@ inline constexpr struct origin : absolute_point_origin<isq::distance> {} origin;
 quantity_point<si::metre, origin> qp1 = origin + 100 * m;
 quantity_point<si::metre, origin> qp2 = 120 * m + origin;
 
-// assert(qp1.quantity_from_unit_zero() == 100 * m);   // Compile-time error
-// assert(qp2.quantity_from_unit_zero() == 120 * m);   // Compile-time error
+// assert(qp1.quantity_from_zero() == 100 * m);   // Compile-time error
+// assert(qp2.quantity_from_zero() == 120 * m);   // Compile-time error
 assert(qp1.quantity_from(origin) == 100 * m);
 assert(qp2.quantity_from(origin) == 120 * m);
 assert(qp2.quantity_from(qp1) == 20 * m);
@@ -248,7 +248,7 @@ quantity_point qp1{100 * m, origin};
 Again, CTAD always helps to use precisely the type we need in a current case.
 
 Additionally, if a quantity point is defined in terms of a custom, named origin, then we
-can't use a `quantity_from_unit_zero()` member function anymore. This is to prevent surprises,
+can't use a `quantity_from_zero()` member function anymore. This is to prevent surprises,
 as our origin may not necessarily be perceived as an absolute zero in the domain we model.
 Also, as we will learn soon, we can define several related origins in one space, and then
 it gets harder to understand which one is the zero one. This is why, to be specific and
@@ -895,9 +895,9 @@ room_temp room_high = room_ref + number_of_steps * step_delta;  // +3 °C: exact
 room_temp clamped = room_ref + delta<deg_C>(10.0);              // → auto-clamped to +3 °C from reference
 
 std::println("Room reference temperature: {} ({}, {::N[.2f]})\n",
-             room_ref.quantity_from_unit_zero(),
-             room_ref.in(usc::degree_Fahrenheit).quantity_from_unit_zero(),
-             room_ref.in(si::kelvin).quantity_from_unit_zero());
+             room_ref,
+             room_ref.in(usc::degree_Fahrenheit),
+             room_ref.in(si::kelvin));
 
 std::println("| {:<18} | {:^18} | {:^18} | {:^18} |",
              "Temperature delta", "Room reference", "Ice point", "Absolute zero");

@@ -86,7 +86,7 @@ struct Fill {
 
 [[nodiscard]] Notional notional(const Fill& f)
 {
-  const quantity price_in_usd8 = f.price.quantity_from_unit_zero().force_in<std::int64_t>(us_dollar_8);
+  const quantity price_in_usd8 = f.price.quantity_from_zero().force_in<std::int64_t>(us_dollar_8);
   return price_in_usd8 * f.qty;
 }
 
@@ -104,7 +104,7 @@ int main()
   };
 
   // Notional = price × shares; the derived 'notional_value' quantity spec enforces this
-  // Notional bad = fills[0].price.quantity_from_unit_zero() + fills[1].price.quantity_from_unit_zero();  // does not
+  // Notional bad = fills[0].price.quantity_from_zero() + fills[1].price.quantity_from_zero();  // does not
   // compile
 
   Notional total_notional = {};

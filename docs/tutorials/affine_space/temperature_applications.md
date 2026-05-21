@@ -27,25 +27,25 @@ int main()
   quantity_point temp1 = point<deg_C>(10);  // 283.15 K
   quantity_point temp2 = point<deg_C>(20);  // 293.15 K
 
-  std::cout << "Temperature 1: " << temp1.quantity_from_unit_zero() << "\n";
-  std::cout << "Temperature 2: " << temp2.quantity_from_unit_zero() << "\n\n";
+  std::cout << "Temperature 1: " << temp1 << "\n";
+  std::cout << "Temperature 2: " << temp2 << "\n\n";
 
   // Average using midpoint
   quantity_point avg_temp = midpoint(temp1, temp2);
-  std::cout << "Midpoint: " << avg_temp.quantity_from_unit_zero() << "\n";
+  std::cout << "Midpoint: " << avg_temp << "\n";
 
   // General interpolation with lerp
   quantity_point quarter = lerp(temp1, temp2, 0.25);        // 25% of the way
   quantity_point half = lerp(temp1, temp2, 0.5);            // Same as midpoint
   quantity_point three_quarter = lerp(temp1, temp2, 0.75);  // 75% of the way
 
-  std::cout << "25% interpolation: " << quarter.quantity_from_unit_zero() << "\n";
-  std::cout << "50% interpolation: " << half.quantity_from_unit_zero() << "\n";
-  std::cout << "75% interpolation: " << three_quarter.quantity_from_unit_zero() << "\n\n";
+  std::cout << "25% interpolation: " << quarter << "\n";
+  std::cout << "50% interpolation: " << half << "\n";
+  std::cout << "75% interpolation: " << three_quarter << "\n\n";
 
   // Extrapolate beyond the range (ratio > 1.0 or < 0.0)
   quantity_point extrapolated = lerp(temp1, temp2, 1.5);
-  std::cout << "150% extrapolation: " << extrapolated.quantity_from_unit_zero() << "\n";
+  std::cout << "150% extrapolation: " << extrapolated << "\n";
 
   std::cout << "\n✅ midpoint and lerp handle temperature point arithmetic correctly!\n";
 }
@@ -84,7 +84,7 @@ int main()
   quantity_point T_point{27 * deg_C};            // 27°C
 
   // Temperature MUST be absolute (Kelvin)
-  quantity T = T_point.in(K).quantity_from_unit_zero();
+  quantity T = T_point.in(K).quantity_from_zero();
 
   // Calculate pressure
   auto P = (n * R * T) / V;
@@ -99,7 +99,7 @@ int main()
 
 **Key insight**: In mp-units' absolute _temperatures_ are represented as affine space
 points, and points cannot be multiplied or divided with other quantities. Use
-`.quantity_from_unit_zero()` to convert the point to an equivalent quantity (delta from absolute
+`.quantity_from_zero()` to convert the point to an equivalent quantity (delta from absolute
 zero) that supports multiplication and division. This is a limitation of the affine space
 model—if absolute quantities were modeled differently, they could be used
 directly in formulas like $PV = nRT$.
@@ -110,7 +110,7 @@ directly in formulas like $PV = nRT$.
 2. **Heat capacity**: Implement the formula $\Delta Q = mc\Delta T$ where a 2 kg object with
    _specific heat capacity_ $c = 4.18 \, \text{kJ/(kg·K)}$ is heated from 20 °C to 80 °C.
    Calculate the _energy_ required. (Hint: subtract the _temperature_ points to get
-   $\Delta T$, which can be directly multiplied—no `quantity_from_unit_zero()` needed
+   $\Delta T$, which can be directly multiplied—no `quantity_from_zero()` needed
    for differences)
 
 ## What You Learned

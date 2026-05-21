@@ -159,11 +159,11 @@ int main()
   quantity_point start(distance_traveled(0.0 * m));    // fine: 0 m is the boundary
   quantity_point finish(distance_traveled(5.0 * km));  // fine: 5 km ≥ 0
 
-  std::cout << "Start:  " << start.quantity_from_unit_zero() << "\n";
-  std::cout << "Finish: " << finish.quantity_from_unit_zero() << "\n";
+  std::cout << "Start:  " << start << "\n";
+  std::cout << "Finish: " << finish << "\n";
 
   // quantity_point bad(distance_traveled(-1.0 * cm));  // ❌ contract violation
-  // std::cout << "Bad:    " << bad.quantity_from_unit_zero() << "\n";
+  // std::cout << "Bad:    " << bad << "\n";
 }
 ```
 

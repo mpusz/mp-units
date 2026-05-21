@@ -461,7 +461,7 @@ safe_temp reading = clinical_zero + delta<deg_C>(36.6);  // fine
 safe_temp fever   = clinical_zero + delta<deg_C>(44.0);  // throws std::domain_error
 ```
 
-Because `clinical_zero` is rooted in `ice_point`, `reading.quantity_from_unit_zero()`
+Because `clinical_zero` is rooted in `ice_point`, `reading.quantity_from_zero()`
 and `reading.in(deg_F)` both work — the conversion offsets are known. The bounds, however,
 only guard `safe_temp`; a plain `quantity_point<deg_C, si::ice_point>` used elsewhere in
 the codebase is unconstrained.

@@ -84,8 +84,8 @@ The example uses both types deliberately:
   const quantity_point price_usd{100 * USD};
   const quantity_point price_eur = exchange_to<euro>(price_usd, timestamp);
   // price_usd + price_eur                          // does not compile — points can't be added
-  // price_usd.quantity_from_unit_zero()
-  //   + price_eur.quantity_from_unit_zero()        // does not compile — different units (USD ≠ EUR)
+  // price_usd.quantity_from_zero()
+  //   + price_eur.quantity_from_zero()        // does not compile — different units (USD ≠ EUR)
   ```
 
 - **`quantity`** for _holdings_ — a portfolio position is a displacement from zero; amounts

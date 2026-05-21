@@ -84,6 +84,9 @@ inline constexpr struct other_absolute_level final : absolute_point_origin<isq::
 inline constexpr struct zero final : absolute_point_origin<dimensionless> {
 } zero;
 
+inline constexpr struct my_celsius_point final : relative_point_origin<point<si::degree_Celsius>(21)> {
+} my_celsius_point;
+
 QUANTITY_SPEC(special_height, isq::height);
 
 
@@ -376,13 +379,12 @@ static_assert(
   quantity_point<isq::height[m], ground_level, int>::max().quantity_from(ground_level).numerical_value_in(m) ==
   std::numeric_limits<int>::max());
 
-// zero() — only available when PO == default_point_origin(R)
-// quantity_from_unit_zero() — available for offset units (any PO) or when PO == default_point_origin(R)
-static_assert(quantity_point<isq::height[m]>::zero().quantity_from_unit_zero() == 0 * isq::height[m]);
+// zero() and quantity_from_zero() — only available when PO == default_point_origin(R)
+static_assert(quantity_point<isq::height[m]>::zero().quantity_from_zero() == 0 * isq::height[m]);
 static_assert(quantity_point<isq::height[m]>::zero() == quantity_point<isq::height[m]>{0 * isq::height[m]});
-static_assert(quantity_point<m>::zero().quantity_from_unit_zero() == 0 * m);
-static_assert(quantity_point<deg_C>::zero().quantity_from_unit_zero() == delta<deg_C>(0));
-static_assert(quantity_point<K>::zero().quantity_from_unit_zero() == delta<K>(0));
+static_assert(quantity_point<m>::zero().quantity_from_zero() == 0 * m);
+static_assert(quantity_point<deg_C>::zero().quantity_from_zero() == delta<deg_C>(0));
+static_assert(quantity_point<K>::zero().quantity_from_zero() == delta<K>(0));
 
 
 //////////////////////////////
@@ -824,12 +826,12 @@ static_assert(
 // obtaining a relative quantity
 //////////////////////////////////
 
-static_assert(quantity_point{42 * m}.quantity_from_unit_zero() == 42 * m);
-static_assert(quantity_point{isq::height(42 * m)}.quantity_from_unit_zero() == 42 * m);
-static_assert(quantity_point{delta<deg_C>(20)}.quantity_from_unit_zero() == delta<deg_C>(20));
-static_assert(quantity_point{delta<deg_C>(20.)}.in(deg_F).quantity_from_unit_zero() == delta<deg_F>(68));
-static_assert(point<deg_C>(20).quantity_from_unit_zero() == delta<deg_C>(20));
-static_assert(point<deg_C>(20.).in(deg_F).quantity_from_unit_zero() == delta<deg_F>(68));
+static_assert(quantity_point{42 * m}.quantity_from_zero() == 42 * m);
+static_assert(quantity_point{isq::height(42 * m)}.quantity_from_zero() == 42 * m);
+static_assert(quantity_point{delta<deg_C>(20)}.quantity_from_zero() == delta<deg_C>(20));
+static_assert(quantity_point{delta<deg_C>(20.)}.in(deg_F).quantity_from_zero() == delta<deg_F>(68));
+static_assert(point<deg_C>(20).quantity_from_zero() == delta<deg_C>(20));
+static_assert(point<deg_C>(20.).in(deg_F).quantity_from_zero() == delta<deg_F>(68));
 
 static_assert((mean_sea_level + 42 * m).quantity_from(mean_sea_level) == 42 * m);
 static_assert((ground_level + 42 * m).quantity_from(mean_sea_level) == 84 * m);
@@ -894,6 +896,19 @@ static_assert(is_of_type<(mean_sea_level + 2 * km).in<double>(m), quantity_point
 static_assert(is_of_type<(mean_sea_level + 2500. * m).force_in(km), quantity_point<km, mean_sea_level>>);
 static_assert(is_of_type<(mean_sea_level + 2500. * m).force_in<int>(), quantity_point<m, mean_sea_level, int>>);
 static_assert(is_of_type<(mean_sea_level + 2500. * m).force_in<int>(km), quantity_point<km, mean_sea_level, int>>);
+
+// in(unit) for offset units at default origin: switches to unit._point_origin_
+static_assert(is_of_type<point<deg_C>(20.).in(deg_F), quantity_point<deg_F, usc::fahrenheit_zero>>);
+static_assert(is_of_type<point<deg_C>(20.).in(K), quantity_point<K, si::absolute_zero>>);
+static_assert(is_of_type<point<K>(300.).in(deg_C), quantity_point<deg_C, si::ice_point>>);
+
+// consistency: same physical point, different representation
+static_assert(point<deg_C>(20.).in(K).quantity_from_zero() == point<deg_C>(20.).quantity_from(si::absolute_zero).in(K));
+static_assert(point<K>(300.).in(deg_C).quantity_from_zero() == point<K>(300.).quantity_from(si::ice_point).in(deg_C));
+
+// in(unit) for custom-origin points: preserves origin (no switching)
+static_assert(is_of_type<quantity_point<deg_C, my_celsius_point>{}.in(deg_F), quantity_point<deg_F, my_celsius_point>>);
+static_assert(is_of_type<quantity_point<deg_C, my_celsius_point>{}.in(K), quantity_point<K, my_celsius_point>>);
 
 template<template<auto, auto, typename> typename QP>
 concept invalid_unit_conversion = requires {
@@ -1597,25 +1612,25 @@ static_assert(is_of_type<(zero_m_per_s + 10 * isq::height[m] / (2 * isq::duratio
                          quantity_point<(isq::height / isq::duration)[m / s], zero_m_per_s, int>>);
 
 static_assert((quantity_point{5 * isq::speed[m / s]} + 10 * isq::length[m] / (2 * isq::duration[s]))
-                .quantity_from_unit_zero() == 10 * isq::speed[m / s]);
+                .quantity_from_zero() == 10 * isq::speed[m / s]);
 static_assert((10 * isq::length[m] / (2 * isq::duration[s]) + quantity_point{5 * isq::speed[m / s]})
-                .quantity_from_unit_zero() == 10 * isq::speed[m / s]);
+                .quantity_from_zero() == 10 * isq::speed[m / s]);
 static_assert((quantity_point{5 * isq::speed[m / s]} - 10 * isq::length[m] / (2 * isq::duration[s]))
-                .quantity_from_unit_zero() == 0 * isq::speed[m / s]);
+                .quantity_from_zero() == 0 * isq::speed[m / s]);
 
 static_assert((quantity_point{10 * isq::length[m] / (2 * isq::duration[s])} + 5 * isq::speed[m / s])
-                .quantity_from_unit_zero() == 10 * isq::speed[m / s]);
+                .quantity_from_zero() == 10 * isq::speed[m / s]);
 static_assert((5 * isq::speed[m / s] + quantity_point{10 * isq::length[m] / (2 * isq::duration[s])})
-                .quantity_from_unit_zero() == 10 * isq::speed[m / s]);
+                .quantity_from_zero() == 10 * isq::speed[m / s]);
 static_assert((quantity_point{10 * isq::length[m] / (2 * isq::duration[s])} - 5 * isq::speed[m / s])
-                .quantity_from_unit_zero() == 0 * isq::speed[m / s]);
+                .quantity_from_zero() == 0 * isq::speed[m / s]);
 
 static_assert((quantity_point{5 * isq::speed[m / s]} + 10 * isq::height[m] / (2 * isq::duration[s]))
-                .quantity_from_unit_zero() == 10 * isq::speed[m / s]);
+                .quantity_from_zero() == 10 * isq::speed[m / s]);
 static_assert((10 * isq::height[m] / (2 * isq::duration[s]) + quantity_point{5 * isq::speed[m / s]})
-                .quantity_from_unit_zero() == 10 * isq::speed[m / s]);
+                .quantity_from_zero() == 10 * isq::speed[m / s]);
 static_assert((quantity_point{5 * isq::speed[m / s]} - 10 * isq::height[m] / (2 * isq::duration[s]))
-                .quantity_from_unit_zero() == 0 * isq::speed[m / s]);
+                .quantity_from_zero() == 0 * isq::speed[m / s]);
 
 static_assert(is_of_type<quantity_point{10 * isq::length[m] / (2 * isq::duration[s])} + 5 * isq::speed[m / s],
                          quantity_point<isq::speed[m / s], natural_point_origin<isq::speed>, int>>);
@@ -1678,17 +1693,17 @@ static_assert(is_of_type<(zero_Hz + 10 / (2 * isq::period_duration[s])) - (zero_
 static_assert(is_of_type<(zero_Hz + 5 * isq::frequency[Hz]) - (zero_Hz + 10 / (2 * isq::period_duration[s])),
                          quantity<isq::frequency[Hz], int>>);
 
-static_assert((quantity_point{10 / (2 * isq::period_duration[s])} + 5 * isq::frequency[Hz]).quantity_from_unit_zero() ==
+static_assert((quantity_point{10 / (2 * isq::period_duration[s])} + 5 * isq::frequency[Hz]).quantity_from_zero() ==
               10 * isq::frequency[Hz]);
 static_assert((10 / (2 * isq::period_duration[s]) + quantity_point{zero_Hz + 5 * isq::frequency[Hz]})
                 .quantity_from(zero_Hz) == 10 * isq::frequency[Hz]);
-static_assert((quantity_point{5 * isq::frequency[Hz]} + 10 / (2 * isq::period_duration[s])).quantity_from_unit_zero() ==
+static_assert((quantity_point{5 * isq::frequency[Hz]} + 10 / (2 * isq::period_duration[s])).quantity_from_zero() ==
               10 * isq::frequency[Hz]);
-static_assert((5 * isq::frequency[Hz] + quantity_point{10 / (2 * isq::period_duration[s])}).quantity_from_unit_zero() ==
+static_assert((5 * isq::frequency[Hz] + quantity_point{10 / (2 * isq::period_duration[s])}).quantity_from_zero() ==
               10 * isq::frequency[Hz]);
-static_assert((quantity_point{10 / (2 * isq::period_duration[s])} - 5 * isq::frequency[Hz]).quantity_from_unit_zero() ==
+static_assert((quantity_point{10 / (2 * isq::period_duration[s])} - 5 * isq::frequency[Hz]).quantity_from_zero() ==
               0 * isq::frequency[Hz]);
-static_assert((quantity_point{5 * isq::frequency[Hz]} - 10 / (2 * isq::period_duration[s])).quantity_from_unit_zero() ==
+static_assert((quantity_point{5 * isq::frequency[Hz]} - 10 / (2 * isq::period_duration[s])).quantity_from_zero() ==
               0 * isq::frequency[Hz]);
 static_assert(quantity_point{10 / (2 * isq::period_duration[s])} - quantity_point{5 * isq::frequency[Hz]} ==
               0 * isq::frequency[Hz]);
@@ -1756,25 +1771,23 @@ static_assert(invalid_subtraction(quantity_point{5 * isq::activity[Bq]}, 10 / (2
 
 // value_cast
 
-static_assert(value_cast<m>(quantity_point{2 * km}).quantity_from_unit_zero().numerical_value_in(m) == 2000);
-static_assert(value_cast<km>(quantity_point{2000 * m}).quantity_from_unit_zero().numerical_value_in(km) == 2);
-static_assert(value_cast<int>(quantity_point{1.23 * m}).quantity_from_unit_zero().numerical_value_in(m) == 1);
+static_assert(value_cast<m>(quantity_point{2 * km}).quantity_from_zero().numerical_value_in(m) == 2000);
+static_assert(value_cast<km>(quantity_point{2000 * m}).quantity_from_zero().numerical_value_in(km) == 2);
+static_assert(value_cast<int>(quantity_point{1.23 * m}).quantity_from_zero().numerical_value_in(m) == 1);
 static_assert(
-  value_cast<km / h>(quantity_point{2000.0 * m / (3600.0 * s)}).quantity_from_unit_zero().numerical_value_in(km / h) ==
-  2);
+  value_cast<km / h>(quantity_point{2000.0 * m / (3600.0 * s)}).quantity_from_zero().numerical_value_in(km / h) == 2);
 // lvalue references in value_cast
 namespace lvalue_tests {
 constexpr quantity_point lvalue_qp{2 * km};
-static_assert(value_cast<m>(lvalue_qp).quantity_from_unit_zero().numerical_value_in(m) == 2000);
-static_assert(value_cast<float>(lvalue_qp).quantity_from_unit_zero().numerical_value_in(km) == 2.f);
-static_assert(value_cast<m, float>(lvalue_qp).quantity_from_unit_zero().numerical_value_in(m) == 2000.f);
-static_assert(value_cast<float, m>(lvalue_qp).quantity_from_unit_zero().numerical_value_in(m) == 2000.f);
+static_assert(value_cast<m>(lvalue_qp).quantity_from_zero().numerical_value_in(m) == 2000);
+static_assert(value_cast<float>(lvalue_qp).quantity_from_zero().numerical_value_in(km) == 2.f);
+static_assert(value_cast<m, float>(lvalue_qp).quantity_from_zero().numerical_value_in(m) == 2000.f);
+static_assert(value_cast<float, m>(lvalue_qp).quantity_from_zero().numerical_value_in(m) == 2000.f);
 }  // namespace lvalue_tests
 
-static_assert(
-  value_cast<quantity<km, int>>(quantity_point{2000 * m}).quantity_from_unit_zero().numerical_value_in(km) == 2);
-static_assert(
-  value_cast<quantity_point<km>>(quantity_point{2000 * m}).quantity_from_unit_zero().numerical_value_in(km) == 2);
+static_assert(value_cast<quantity<km, int>>(quantity_point{2000 * m}).quantity_from_zero().numerical_value_in(km) == 2);
+static_assert(value_cast<quantity_point<km>>(quantity_point{2000 * m}).quantity_from_zero().numerical_value_in(km) ==
+              2);
 
 template<typename ToQ, typename FromQ>
 constexpr bool value_cast_is_forbidden()

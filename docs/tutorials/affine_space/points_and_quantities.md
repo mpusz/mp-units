@@ -50,8 +50,7 @@ int main()
 
   // Calculate next week's meeting (same time, 7 days later)
   quantity_point next_meeting = meeting_start + 7 * non_si::day;
-  std::cout << "Next week's meeting: "
-            << next_meeting.quantity_from_unit_zero() << " from origin\n";
+  std::cout << "Next week's meeting: " << next_meeting << " from origin\n";
 
   // These would NOT compile (uncomment to see):
   // auto wrong = meeting_start + meeting_end;  // ❌ Can't add two points!

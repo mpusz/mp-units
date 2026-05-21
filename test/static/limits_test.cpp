@@ -139,60 +139,60 @@ static_assert(std::numeric_limits<qp_int>::has_infinity == false);
 static_assert(std::numeric_limits<qp_double>::min() == qp_double::min());
 static_assert(std::numeric_limits<qp_int>::min() == qp_int::min());
 
-static_assert(std::numeric_limits<qp_double>::min().quantity_from_unit_zero().numerical_value_in(mp_units::si::metre) ==
+static_assert(std::numeric_limits<qp_double>::min().quantity_from_zero().numerical_value_in(mp_units::si::metre) ==
               std::numeric_limits<double>::lowest());
-static_assert(std::numeric_limits<qp_int>::min().quantity_from_unit_zero().numerical_value_in(mp_units::si::metre) ==
+static_assert(std::numeric_limits<qp_int>::min().quantity_from_zero().numerical_value_in(mp_units::si::metre) ==
               std::numeric_limits<int>::lowest());
 
 // max
 static_assert(std::numeric_limits<qp_double>::max() == qp_double::max());
 static_assert(std::numeric_limits<qp_int>::max() == qp_int::max());
 
-static_assert(std::numeric_limits<qp_double>::max().quantity_from_unit_zero().numerical_value_in(mp_units::si::metre) ==
+static_assert(std::numeric_limits<qp_double>::max().quantity_from_zero().numerical_value_in(mp_units::si::metre) ==
               std::numeric_limits<double>::max());
-static_assert(std::numeric_limits<qp_int>::max().quantity_from_unit_zero().numerical_value_in(mp_units::si::metre) ==
+static_assert(std::numeric_limits<qp_int>::max().quantity_from_zero().numerical_value_in(mp_units::si::metre) ==
               std::numeric_limits<int>::max());
 
 // lowest — unbounded: falls back to the type's most-negative value
-static_assert(std::numeric_limits<qp_double>::lowest().quantity_from_unit_zero().numerical_value_in(
-                mp_units::si::metre) == std::numeric_limits<double>::lowest());
-static_assert(std::numeric_limits<qp_int>::lowest().quantity_from_unit_zero().numerical_value_in(mp_units::si::metre) ==
+static_assert(std::numeric_limits<qp_double>::lowest().quantity_from_zero().numerical_value_in(mp_units::si::metre) ==
+              std::numeric_limits<double>::lowest());
+static_assert(std::numeric_limits<qp_int>::lowest().quantity_from_zero().numerical_value_in(mp_units::si::metre) ==
               std::numeric_limits<int>::lowest());
 
 // epsilon
-static_assert(std::numeric_limits<qp_double>::epsilon().quantity_from_unit_zero().numerical_value_in(
-                mp_units::si::metre) == std::numeric_limits<double>::epsilon());
-static_assert(std::numeric_limits<qp_int>::epsilon().quantity_from_unit_zero().numerical_value_in(
-                mp_units::si::metre) == std::numeric_limits<int>::epsilon());
+static_assert(std::numeric_limits<qp_double>::epsilon().quantity_from_zero().numerical_value_in(mp_units::si::metre) ==
+              std::numeric_limits<double>::epsilon());
+static_assert(std::numeric_limits<qp_int>::epsilon().quantity_from_zero().numerical_value_in(mp_units::si::metre) ==
+              std::numeric_limits<int>::epsilon());
 
 // round_error
-static_assert(std::numeric_limits<qp_double>::round_error().quantity_from_unit_zero().numerical_value_in(
+static_assert(std::numeric_limits<qp_double>::round_error().quantity_from_zero().numerical_value_in(
                 mp_units::si::metre) == std::numeric_limits<double>::round_error());
-static_assert(std::numeric_limits<qp_int>::round_error().quantity_from_unit_zero().numerical_value_in(
-                mp_units::si::metre) == std::numeric_limits<int>::round_error());
+static_assert(std::numeric_limits<qp_int>::round_error().quantity_from_zero().numerical_value_in(mp_units::si::metre) ==
+              std::numeric_limits<int>::round_error());
 
 // infinity
-static_assert(std::numeric_limits<qp_double>::infinity().quantity_from_unit_zero().numerical_value_in(
-                mp_units::si::metre) == std::numeric_limits<double>::infinity());
-static_assert(std::numeric_limits<qp_int>::infinity().quantity_from_unit_zero().numerical_value_in(
-                mp_units::si::metre) == std::numeric_limits<int>::infinity());
+static_assert(std::numeric_limits<qp_double>::infinity().quantity_from_zero().numerical_value_in(mp_units::si::metre) ==
+              std::numeric_limits<double>::infinity());
+static_assert(std::numeric_limits<qp_int>::infinity().quantity_from_zero().numerical_value_in(mp_units::si::metre) ==
+              std::numeric_limits<int>::infinity());
 
 #if MP_UNITS_HOSTED && (__cpp_lib_constexpr_cmath || MP_UNITS_COMP_GCC)
 
 // quiet_NaN
-static_assert(std::isnan(
-  std::numeric_limits<qp_double>::quiet_NaN().quantity_from_unit_zero().numerical_value_in(mp_units::si::metre)));
+static_assert(
+  std::isnan(std::numeric_limits<qp_double>::quiet_NaN().quantity_from_zero().numerical_value_in(mp_units::si::metre)));
 
 // signaling_NaN
 static_assert(std::isnan(
-  std::numeric_limits<qp_double>::signaling_NaN().quantity_from_unit_zero().numerical_value_in(mp_units::si::metre)));
+  std::numeric_limits<qp_double>::signaling_NaN().quantity_from_zero().numerical_value_in(mp_units::si::metre)));
 
 #endif
 
 // denorm_min
-static_assert(std::numeric_limits<qp_double>::denorm_min().quantity_from_unit_zero().numerical_value_in(
+static_assert(std::numeric_limits<qp_double>::denorm_min().quantity_from_zero().numerical_value_in(
                 mp_units::si::metre) == std::numeric_limits<double>::denorm_min());
-static_assert(std::numeric_limits<qp_int>::denorm_min().quantity_from_unit_zero().numerical_value_in(
-                mp_units::si::metre) == std::numeric_limits<int>::denorm_min());
+static_assert(std::numeric_limits<qp_int>::denorm_min().quantity_from_zero().numerical_value_in(mp_units::si::metre) ==
+              std::numeric_limits<int>::denorm_min());
 
 }  // namespace

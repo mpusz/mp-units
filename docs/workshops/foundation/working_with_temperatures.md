@@ -85,7 +85,7 @@ int main()
 
     void print_temp(std::string_view title, QuantityPoint auto t)
     {
-      std::cout << title << ": " << t.quantity_from_unit_zero() << " (" << t.in(deg_F).quantity_from_unit_zero() << ")\n";
+      std::cout << title << ": " << t << " (" << t.in(deg_F) << ")\n";
     }
 
     int main()
@@ -144,21 +144,19 @@ int main()
     quantity_point + quantity_point → ERROR        // ❌ Can't add two absolute temps
     ```
 
-    ### Extracting deltas from the origin
+    ### Printing temperature points
 
-    The `.quantity_from_unit_zero()` method gives you the delta from the unit's point origin:
+    Temperature points at their unit's default origin can be printed directly:
 
     ```cpp
     quantity_point temp = point<deg_C>(20.);
-    quantity delta_from_origin = temp.quantity_from_unit_zero();  // 20 °C from 0 °C
+    std::cout << temp;           // "20 ℃"
+    std::cout << temp.in(K);     // "293.15 K"
+    std::cout << temp.in(deg_F); // "68 ℉"
     ```
 
-    - For units with defined point origins (like °C, °F, K), returns the delta from that
-      origin (0 °C, 0 °F, or 0 K)
-    - For quantities with explicitly defined absolute point origins (like _altitude_
-      from mean sea level), returns the delta from that absolute origin
-    - Useful when you need to express a temperature point as a difference from its scale's
-      reference
+    `.in(unit)` converts both the value and the origin to the target unit's built-in
+    reference point, making the printed value relative to that unit's scale origin.
 
 
 ## References
@@ -174,8 +172,9 @@ int main()
 - **Type safety**: **mp-units** prevents common temperature conversion errors at
   compile time
 - **Automatic conversions**: The `.in()` method handles proper unit conversions automatically
-- **Getting deltas from points**: `.quantity_from_unit_zero()` allows us to get a delta for a
-  temperature point from 0 degrees in the current temperature system
+- **Direct point printing**: Temperature points at their unit's default origin can be
+  printed directly; `.in(unit)` also switches the origin so the value is relative to that
+  unit's scale reference
 - **Overloaded functions**: Use function overloading to handle different quantity types
   elegantly
 - **Real-world safety**: Strong typing prevents bugs that could occur in critical

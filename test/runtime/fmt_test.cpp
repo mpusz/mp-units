@@ -45,6 +45,7 @@ import mp_units;
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>
+#include <mp-units/systems/usc.h>
 #endif
 
 using namespace mp_units;
@@ -1191,6 +1192,27 @@ TEST_CASE("default quantity_point formatting", "[quantity_point][ostream][fmt]")
       SECTION("iostream") { CHECK(os.str() == "300 K"); }
       SECTION("default format {}") { CHECK(MP_UNITS_STD_FMT::format("{}", qp) == os.str()); }
       SECTION("explicit {:%N%?%U}") { CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U}", qp) == os.str()); }
+    }
+  }
+
+  SECTION("in(unit) switches to new offset unit origin")
+  {
+    SECTION("degree Celsius to degree Fahrenheit")
+    {
+      const quantity_point qp = point<si::degree_Celsius>(20.);
+      os << qp.in(usc::degree_Fahrenheit);
+
+      SECTION("iostream") { CHECK(os.str() == "68 ℉"); }
+      SECTION("default format {}") { CHECK(MP_UNITS_STD_FMT::format("{}", qp.in(usc::degree_Fahrenheit)) == os.str()); }
+    }
+
+    SECTION("degree Celsius to kelvin")
+    {
+      const quantity_point qp = point<si::degree_Celsius>(0.);
+      os << qp.in(si::kelvin);
+
+      SECTION("iostream") { CHECK(os.str() == "273.15 K"); }
+      SECTION("default format {}") { CHECK(MP_UNITS_STD_FMT::format("{}", qp.in(si::kelvin)) == os.str()); }
     }
   }
 

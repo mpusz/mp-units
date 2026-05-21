@@ -267,9 +267,7 @@ quantities. This introduces an additional type-safety.
       using namespace mp_units::usc::unit_symbols;
 
       quantity_point temp = point<deg_C>(20.);
-      std::println("Temperature: {} ({})",
-                   temp.quantity_from_unit_zero(),
-                   temp.in(deg_F).quantity_from_unit_zero());
+      std::println("Temperature: {} ({})", temp, temp.in(deg_F));
     }
     ```
 
@@ -287,9 +285,7 @@ quantities. This introduces an additional type-safety.
       using namespace mp_units::usc::unit_symbols;
 
       quantity_point temp = point<deg_C>(20.);
-      std::println("Temperature: {} ({})",
-                   temp.quantity_from_unit_zero(),
-                   temp.in(deg_F).quantity_from_unit_zero());
+      std::println("Temperature: {} ({})", temp, temp.in(deg_F));
     }
     ```
 

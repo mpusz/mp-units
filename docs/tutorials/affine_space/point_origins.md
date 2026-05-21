@@ -113,7 +113,7 @@ int main()
 
   std::cout << "Both from UTC:\n";
   std::cout << "  PST: " << pst_event.quantity_from(utc) << "\n";
-  std::cout << "  JST: " << jst_event.quantity_from_unit_zero() << "\n\n";
+  std::cout << "  JST: " << jst_event.quantity_from(utc) << "\n\n";
 
   // Prove they're the same point: subtract them
   quantity time_diff = jst_event - pst_event;
@@ -147,7 +147,8 @@ All origins branching from the same absolute origin share the same affine space,
 
 3. **Practice arithmetic**: Create two _altitude_ points from different relative origins
    (both based on the same absolute origin). Subtract them to prove they can interoperate,
-   and use `.quantity_from_unit_zero()` to show they reference the same absolute origin.
+   and use `.quantity_from(sea_level)` to express both altitudes relative to the common
+   absolute origin.
 
 ## What You Learned
 

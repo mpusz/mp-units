@@ -296,7 +296,7 @@ int main()
   // ✅ Implicit conversion (import)
   quantity_point qp = ts;
 
-  std::cout << qp.quantity_from_unit_zero() << "\n";
+  std::cout << qp << "\n";
 
   // ✅ Explicit conversion (export)
   print(Timestamp(qp));
