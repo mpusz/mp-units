@@ -928,23 +928,50 @@ Room reference temperature: 21 ℃ (69.8 ℉, 294.15 K)
 ```
 
 
-## No text output for _Points_
+## Text output for _Points_
 
-The library does not provide a text output for quantity points. The quantity stored inside
-is just an implementation detail of this type. It is a vector from a specific origin.
-Without the knowledge of the origin, the vector by itself is useless as we can't determine
-which point it describes.
+Text output is supported for `quantity_point` when its point origin equals
+`default_point_origin(R)` — the library-chosen default for the given reference.
 
-In the current library design, point origin does not provide any text in its definition.
-Even if we could add such information to the point's definition, we would not
-know how to output it in the text. There may be many ways to do it. For example, should we
-prepend or append the origin part to the quantity text?
+- For references without an offset unit (e.g., `quantity_point<isq::length[m]>`),
+  `default_point_origin` is `natural_point_origin<QuantitySpec>`, which represents the
+  mathematical zero. The stored quantity is unambiguous:
 
-For example, the text output of $42\ \mathrm{m}$ for a quantity point may mean many
-things. It may be an offset from the mountain top, sea level, or maybe the center of Mars.
-Printing $42\ \mathrm{m}\ \mathrm{AMSL}$ for altitudes above mean sea level is a much
-better solution, but the library does not have enough information to print it that way
-by itself.
+    ```cpp
+    quantity_point qp{42 * m};
+    std::cout << qp;  // "42 m"
+    ```
+
+- For references whose unit carries a built-in origin (e.g., `quantity_point<deg_C>`),
+  `default_point_origin` is the unit's canonical reference point (`si::ice_point`). The
+  output matches the conventional notation:
+
+    ```cpp
+    quantity_point temp = point<deg_C>(20.);
+    std::cout << temp;  // "20 ℃"
+    ```
+
+Text output is **not** provided when a non-default origin is used, for example:
+
+```cpp
+inline constexpr struct sea_level : absolute_point_origin<isq::altitude> {} sea_level;
+quantity_point<isq::altitude[m], sea_level> altitude = sea_level + 42 * m;
+std::cout << altitude;  // ❌ — does not compile
+```
+
+The stored quantity is a displacement from a domain-specific reference whose name the
+library cannot know. The same numeric value can describe entirely different physical
+locations depending on the choice of origin — "42 m" above sea level, a mountain top, or
+the centre of Mars are all distinct points. Providing a meaningful text representation
+would require origin-aware formatting that is beyond what the library can infer from the
+type alone.
+
+To print such a point, extract the displacement from a known origin explicitly and add
+the appropriate label so the value is unambiguous:
+
+```cpp
+std::cout << altitude.quantity_ref_from(sea_level) << " AMSL";  // "42 m AMSL"
+```
 
 
 ## The affine space is about type-safety

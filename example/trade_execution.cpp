@@ -90,11 +90,6 @@ struct Fill {
   return price_in_usd8 * f.qty;
 }
 
-std::ostream& operator<<(std::ostream& os, const QuantityPointOf<currency> auto& qp)
-{
-  return os << qp.quantity_from_unit_zero();
-}
-
 std::ostream& operator<<(std::ostream& os, const Fill& f) { return os << f.qty << " @ " << f.price; }
 
 int main()

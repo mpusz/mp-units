@@ -1143,3 +1143,72 @@ TEST_CASE("check if `value_cast` properly changes the numerical value of a quant
     }
   }
 }
+
+TEST_CASE("default quantity_point formatting", "[quantity_point][ostream][fmt]")
+{
+  std::ostringstream os;
+
+  SECTION("natural origin (no offset unit)")
+  {
+    SECTION("integral representation")
+    {
+      const quantity_point qp{42 * isq::length[m]};
+      os << qp;
+
+      SECTION("iostream") { CHECK(os.str() == "42 m"); }
+      SECTION("default format {}") { CHECK(MP_UNITS_STD_FMT::format("{}", qp) == os.str()); }
+      SECTION("explicit {:%N%?%U}") { CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U}", qp) == os.str()); }
+    }
+
+    SECTION("floating-point representation")
+    {
+      const quantity_point qp{1.5 * isq::length[km]};
+      os << qp;
+
+      SECTION("iostream") { CHECK(os.str() == "1.5 km"); }
+      SECTION("default format {}") { CHECK(MP_UNITS_STD_FMT::format("{}", qp) == os.str()); }
+      SECTION("explicit {:%N%?%U}") { CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U}", qp) == os.str()); }
+    }
+  }
+
+  SECTION("offset unit with default (unit-carried) origin")
+  {
+    SECTION("degree Celsius")
+    {
+      const quantity_point qp = point<si::degree_Celsius>(20.);
+      os << qp;
+
+      SECTION("iostream") { CHECK(os.str() == "20 ℃"); }
+      SECTION("default format {}") { CHECK(MP_UNITS_STD_FMT::format("{}", qp) == os.str()); }
+      SECTION("explicit {:%N%?%U}") { CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U}", qp) == os.str()); }
+    }
+
+    SECTION("kelvin (absolute zero as default origin)")
+    {
+      const quantity_point qp = point<si::kelvin>(300.);
+      os << qp;
+
+      SECTION("iostream") { CHECK(os.str() == "300 K"); }
+      SECTION("default format {}") { CHECK(MP_UNITS_STD_FMT::format("{}", qp) == os.str()); }
+      SECTION("explicit {:%N%?%U}") { CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U}", qp) == os.str()); }
+    }
+  }
+
+  SECTION("subentity format specs are inherited from quantity formatter")
+  {
+    const quantity_point qp{42 * isq::length[m]};
+
+    SECTION("value only {:%N}") { CHECK(MP_UNITS_STD_FMT::format("{:%N}", qp) == "42"); }
+    SECTION("unit only {:%U}") { CHECK(MP_UNITS_STD_FMT::format("{:%U}", qp) == "m"); }
+    SECTION("reversed {:%U %N}") { CHECK(MP_UNITS_STD_FMT::format("{:%U %N}", qp) == "m 42"); }
+  }
+
+  SECTION("width, fill, and alignment")
+  {
+    const quantity_point qp{42 * isq::length[m]};
+
+    SECTION("width = 10") { CHECK(MP_UNITS_STD_FMT::format("{:10}", qp) == "      42 m"); }
+    SECTION("width = 10, align = left") { CHECK(MP_UNITS_STD_FMT::format("{:<10}", qp) == "42 m      "); }
+    SECTION("width = 10, fill = *") { CHECK(MP_UNITS_STD_FMT::format("{:*<10}", qp) == "42 m******"); }
+  }
+}

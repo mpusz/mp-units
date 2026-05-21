@@ -101,7 +101,7 @@ that is implicitly convertible to `notional_value`; the `return` converts it to
 ### Accumulating Fills
 
 ```cpp
---8<-- "example/trade_execution.cpp:104:120"
+--8<-- "example/trade_execution.cpp:99:115"
 ```
 
 Each fill is constructed with an explicit `Price{...}` (the constructor is explicit, so
@@ -115,7 +115,7 @@ _notional value_ — the `// does not compile` comment shows what the type syste
 ### Recovering the Average Fill Price
 
 ```cpp
---8<-- "example/trade_execution.cpp:122:129"
+--8<-- "example/trade_execution.cpp:117:124"
 ```
 
 `currency(total_notional / total_qty)` performs an explicit quantity cast to the
@@ -129,7 +129,7 @@ how much information is retained at each level.
 ## Example Usage
 
 ```cpp
---8<-- "example/trade_execution.cpp:100:140"
+--8<-- "example/trade_execution.cpp:95:135"
 ```
 
 **Sample Output:**

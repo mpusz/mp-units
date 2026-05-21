@@ -192,17 +192,6 @@ template<mp_units::Quantity Q1, mp_units::Quantity Q2>
 
 }  // namespace kalman
 
-template<auto R, auto PO, typename Rep, typename Char>
-struct MP_UNITS_STD_FMT::formatter<mp_units::quantity_point<R, PO, Rep>, Char> :
-    MP_UNITS_STD_FMT::formatter<typename mp_units::quantity_point<R, PO, Rep>::quantity_type> {
-  template<typename FormatContext>
-  auto format(const mp_units::quantity_point<R, PO, Rep>& qp, FormatContext& ctx) const -> decltype(ctx.out())
-  {
-    return MP_UNITS_STD_FMT::formatter<typename mp_units::quantity_point<R, PO, Rep>::quantity_type>::format(
-      qp.quantity_ref_from(qp.point_origin), ctx);
-  }
-};
-
 template<typename... QPs, typename Char>
 class MP_UNITS_STD_FMT::formatter<kalman::system_state<QPs...>, Char> {
   using format_specs = mp_units::detail::fill_align_width_format_specs<Char>;

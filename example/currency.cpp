@@ -103,7 +103,7 @@ int main()
   // FX conversion of a single price (quantity_point: $0 is a meaningful absolute reference)
   const quantity_point price_usd{100 * USD};
   const quantity_point price_eur = exchange_to<euro>(price_usd, timestamp);
-  std::cout << price_usd.quantity_from_unit_zero() << " -> " << price_eur.quantity_from_unit_zero() << "\n";
+  std::cout << price_usd << " -> " << price_eur << "\n";
 
   // the below don't compile
   // std::cout << (price_usd + price_usd).quantity_from_unit_zero() << "\n";

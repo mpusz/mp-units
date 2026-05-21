@@ -30,6 +30,10 @@
 #include <mp-units/framework/quantity.h>
 #include <mp-units/framework/quantity_point_concepts.h>
 #include <mp-units/overflow_policies.h>
+#if MP_UNITS_HOSTED
+#include <mp-units/bits/format.h>
+#include <mp-units/bits/ostream.h>
+#endif
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #ifdef MP_UNITS_IMPORT_STD
@@ -464,6 +468,19 @@ struct quantity_point_iface {
     else
       return lhs - lhs.absolute_point_origin <=> rhs - rhs.absolute_point_origin;
   }
+
+#if MP_UNITS_HOSTED
+
+  template<typename CharT, typename Traits, auto R, auto PO, typename Rep>
+    requires(PO == default_point_origin(R))
+  friend std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os,
+                                                       const quantity_point<R, PO, Rep>& qp)
+    requires requires { os << qp.quantity_from_unit_zero(); }
+  {
+    return os << qp.quantity_from_unit_zero();
+  }
+
+#endif  // MP_UNITS_HOSTED
 };
 
 }  // namespace detail
@@ -907,3 +924,19 @@ public:
     return {std::numeric_limits<mp_units::quantity<R, Rep>>::denorm_min(), PO};
   }
 };
+
+#if MP_UNITS_HOSTED
+
+template<auto R, auto PO, typename Rep, typename Char>
+  requires(PO == default_point_origin(R))
+struct MP_UNITS_STD_FMT::formatter<mp_units::quantity_point<R, PO, Rep>, Char> :
+    MP_UNITS_STD_FMT::formatter<typename mp_units::quantity_point<R, PO, Rep>::quantity_type> {
+  template<typename FormatContext>
+  auto format(const mp_units::quantity_point<R, PO, Rep>& qp, FormatContext& ctx) const -> decltype(ctx.out())
+  {
+    return MP_UNITS_STD_FMT::formatter<typename mp_units::quantity_point<R, PO, Rep>::quantity_type>::format(
+      qp.quantity_from_unit_zero(), ctx);
+  }
+};
+
+#endif  // MP_UNITS_HOSTED
