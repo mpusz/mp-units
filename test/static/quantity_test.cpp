@@ -257,6 +257,13 @@ static_assert(std::convertible_to<quantity<isq::distance[m]>, quantity<isq::leng
 static_assert(std::constructible_from<quantity<isq::length[m]>, quantity<isq::length[km]>>);
 static_assert(std::convertible_to<quantity<isq::length[km]>, quantity<isq::length[m]>>);
 
+static_assert(std::constructible_from<quantity<si::hertz>, quantity<isq::frequency[Hz]>>);
+static_assert(std::convertible_to<quantity<isq::frequency[Hz]>, quantity<si::hertz>>);
+static_assert(std::constructible_from<quantity<one / si::second>, quantity<isq::frequency[Hz]>>);
+static_assert(std::convertible_to<quantity<isq::frequency[Hz]>, quantity<one / si::second>>);
+static_assert(std::constructible_from<quantity<si::hertz>, quantity<isq::frequency[one / si::second]>>);
+static_assert(std::convertible_to<quantity<isq::frequency[one / si::second]>, quantity<si::hertz>>);
+
 #if MP_UNITS_HOSTED
 static_assert(std::constructible_from<quantity<si::volt, std::complex<double>>,
                                       quantity<isq::voltage_phasor[V], std::complex<double>>>);
