@@ -394,6 +394,25 @@ struct quantity_iface {
   {
     return lhs.numerical_value_ref_in(get_unit(R1)) <=> representation_values<Rep1>::zero();
   }
+
+#if MP_UNITS_HOSTED
+
+  template<typename CharT, typename Traits, auto R, typename Rep>
+  friend std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const quantity<R, Rep>& q)
+    requires requires { os << q.numerical_value_ref_in(q.unit); }
+  {
+    return detail::to_stream(os, [&](std::basic_ostream<CharT, Traits>& oss) {
+      if constexpr (is_same_v<Rep, std::uint8_t> || is_same_v<Rep, std::int8_t>)
+        // promote the value to int
+        oss << +q.numerical_value_ref_in(q.unit);
+      else
+        oss << q.numerical_value_ref_in(q.unit);
+      if constexpr (space_before_unit_symbol<get_unit(R)>) oss << " ";
+      oss << q.unit;
+    });
+  }
+
+#endif  // MP_UNITS_HOSTED
 };
 
 }  // namespace detail
@@ -773,25 +792,6 @@ quantity(Value) -> quantity<R, Value>;
 
 template<QuantityLike Q>
 quantity(Q) -> quantity<quantity_like_traits<Q>::reference, typename quantity_like_traits<Q>::rep>;
-
-#if MP_UNITS_HOSTED
-
-template<typename CharT, typename Traits, auto R, typename Rep>
-std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const quantity<R, Rep>& q)
-  requires requires { os << q.numerical_value_ref_in(q.unit); }
-{
-  return detail::to_stream(os, [&](std::basic_ostream<CharT, Traits>& oss) {
-    if constexpr (is_same_v<Rep, std::uint8_t> || is_same_v<Rep, std::int8_t>)
-      // promote the value to int
-      oss << +q.numerical_value_ref_in(q.unit);
-    else
-      oss << q.numerical_value_ref_in(q.unit);
-    if constexpr (space_before_unit_symbol<get_unit(R)>) oss << " ";
-    oss << q.unit;
-  });
-}
-
-#endif  // MP_UNITS_HOSTED
 
 MP_UNITS_EXPORT_END
 
