@@ -22,56 +22,23 @@
 
 #pragma once
 
-#include <mp-units/bits/hacks.h>       // IWYU pragma: keep
+#include <mp-units/bits/hacks.h>  // IWYU pragma: keep
+#include <mp-units/bits/int_power.h>
 #include <mp-units/ext/type_traits.h>  // IWYU pragma: keep
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
-#include <algorithm>
-#include <bit>
 #include <concepts>
+#include <cstddef>
 #include <cstdint>
-#include <cstdlib>
 #include <limits>
-#include <tuple>
 #include <type_traits>
-#include <version>
-// <cmath> becomes partially freestanding in C++26
-// before that, there is no guarantee about this header even existing
-// (GCC 14 has it, but actively #error's out)
-#if __STDC_HOSTED__
-#include <cmath>
-#endif
 #endif
 #endif
 
 namespace mp_units::detail {
-
-template<typename T>
-constexpr std::size_t integer_rep_width_v = std::numeric_limits<std::make_unsigned_t<T>>::digits;
-
-template<std::floating_point T>
-[[nodiscard]] consteval T int_power(T base, int exponent)
-{
-#if __STDC_HOSTED__ && defined(__cpp_lib_constexpr_cmath) && __cpp_lib_constexpr_cmath >= 202202L
-  return std::ldexp(base, exponent);
-#else
-  if (exponent < 0) {
-    base = T{1} / base;
-    exponent = -exponent;
-  }
-  T ret = 1;
-  while (exponent) {
-    if (exponent & 1) ret *= base;
-    exponent >>= 1;
-    base *= base;
-  }
-  return ret;
-
-#endif
-}
 
 // A double-width integer synthesized from two base-width integers.  On platforms without a
 // native `__int128` (notably MSVC), `int128_t` / `uint128_t` are aliases for this template

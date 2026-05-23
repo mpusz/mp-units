@@ -33,6 +33,7 @@ add_mp_units_module(
             include/mp-units/bits/core_gmf.h
             include/mp-units/bits/double_width_int.h
             include/mp-units/bits/fixed_point.h
+            include/mp-units/bits/int_power.h
             include/mp-units/bits/get_associated_quantity.h
             include/mp-units/bits/hacks.h
             include/mp-units/bits/module_macros.h

@@ -22,9 +22,15 @@
 
 #pragma once
 
-#include <mp-units/bits/double_width_int.h>
-#include <mp-units/bits/hacks.h>       // IWYU pragma: keep
+#include <mp-units/bits/hacks.h>  // IWYU pragma: keep
+#include <mp-units/bits/int_power.h>
 #include <mp-units/ext/type_traits.h>  // IWYU pragma: keep
+
+// `double_width_int` only emulates `int128_t` on platforms without native `__int128` (notably
+// MSVC).  On every other platform `int128_t` is the builtin and dwint is unused in library code
+#if !defined(__SIZEOF_INT128__)
+#include <mp-units/bits/double_width_int.h>
+#endif
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #ifdef MP_UNITS_IMPORT_STD
@@ -74,9 +80,6 @@ constexpr std::size_t max_native_width = 64;
 template<typename T>
 constexpr bool is_signed_v = std::is_signed_v<T>;
 
-template<typename T>
-constexpr bool is_signed_v<double_width_int<T>> = double_width_int<T>::is_signed;
-
 #if defined(__SIZEOF_INT128__)
 
 MP_UNITS_DIAGNOSTIC_PUSH
@@ -94,6 +97,13 @@ template<>
 inline constexpr bool is_signed_v<unsigned __int128> = false;
 
 MP_UNITS_DIAGNOSTIC_POP
+
+#else
+
+// Only needed when `double_width_int` doubles as `int128_t`; the dwint header was included
+// for that purpose above.
+template<typename T>
+constexpr bool is_signed_v<double_width_int<T>> = double_width_int<T>::is_signed;
 
 #endif
 
