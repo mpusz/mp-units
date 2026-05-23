@@ -43,6 +43,7 @@ add_library(
     custom_rep_test_min_impl.cpp
     dimension_test.cpp
     dimension_symbol_test.cpp
+    double_width_int_test.cpp
     fixed_point_test.cpp
     fixed_string_test.cpp
     hep_test.cpp
