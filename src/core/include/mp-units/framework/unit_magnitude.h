@@ -78,8 +78,11 @@ template<std::intmax_t N, std::intmax_t D>
   requires(N != 0)
 constexpr UnitMagnitude auto mag_ratio = []() consteval {
   constexpr auto abs_n = N < 0 ? -N : N;
-  constexpr auto abs_mag = detail::prime_factorization_v<abs_n> / detail::prime_factorization_v<D>;
-  if constexpr (N < 0)
+  constexpr auto abs_d = D < 0 ? -D : D;
+  // prime_factorization is only defined for positive N, so normalize both halves to be
+  // positive and reconstruct the overall sign from N and D independently.
+  constexpr auto abs_mag = detail::prime_factorization_v<abs_n> / detail::prime_factorization_v<abs_d>;
+  if constexpr ((N < 0) != (D < 0))
     return detail::unit_magnitude<detail::negative_tag{}>{} * abs_mag;
   else
     return abs_mag;

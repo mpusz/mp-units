@@ -110,7 +110,12 @@ template<typename CharT, std::size_t N, std::size_t M, std::output_iterator<Char
         // fallback to portable mode
         return ::mp_units::detail::copy(txt.portable().begin(), txt.portable().end(), out);
 #endif
+      MP_UNITS_DIAGNOSTIC_PUSH
+      // Short names like `ch` / `byte` shadow unit symbols (`imperial::ch`, `iec::byte`) when
+      // `using namespace …::unit_symbols` is in scope at the call site (MSVC C4459).
+      MP_UNITS_DIAGNOSTIC_IGNORE_SHADOW
       for (const char8_t ch : txt.utf8()) *out++ = static_cast<char>(ch);
+      MP_UNITS_DIAGNOSTIC_POP
       return out;
     } else
       MP_UNITS_THROW(std::invalid_argument("UTF-8 text can't be copied to CharT output"));

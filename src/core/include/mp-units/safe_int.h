@@ -171,16 +171,20 @@ template<integral T>
 [[nodiscard]] constexpr bool div_overflows(T lhs, T rhs) noexcept
 {
   if (rhs == 0) return true;
-  if constexpr (is_signed_v<T>) return lhs == std::numeric_limits<T>::min() && rhs == T{-1};
-  return false;
+  if constexpr (is_signed_v<T>)
+    return lhs == std::numeric_limits<T>::min() && rhs == T{-1};
+  else
+    return false;
 }
 
 // Returns true if -lhs overflows (only INT_MIN for signed).
 template<integral T>
 [[nodiscard]] constexpr bool neg_overflows(T v) noexcept
 {
-  if constexpr (is_signed_v<T>) return v == std::numeric_limits<T>::min();
-  return v != T{0};  // negation of any non-zero unsigned overflows
+  if constexpr (is_signed_v<T>)
+    return v == std::numeric_limits<T>::min();
+  else
+    return v != T{0};  // negation of any non-zero unsigned overflows
 }
 
 // Extracts the underlying integral type from an arithmetic wrapper:
@@ -233,8 +237,10 @@ template<integral To, integral From>
       return v <= static_cast<From>(std::numeric_limits<To>::max());
     } else {
       if (v < From{0}) {
-        if constexpr (!is_signed_v<To>) return false;  // negative -> unsigned: never
-        return v >= static_cast<From>(std::numeric_limits<To>::min());
+        if constexpr (!is_signed_v<To>)
+          return false;  // negative -> unsigned: never
+        else
+          return v >= static_cast<From>(std::numeric_limits<To>::min());
       }
       return v <= static_cast<From>(std::numeric_limits<To>::max());
     }
@@ -391,11 +397,17 @@ public:
 
   // -- Unary arithmetic --
   [[nodiscard]] constexpr auto operator+() const -> safe_int<decltype(+value_), ErrorPolicy> { return +value_; }
+  MP_UNITS_DIAGNOSTIC_PUSH
+  // Generic operator- is intentionally instantiated with unsigned T as well (where unary minus
+  // returns the same unsigned type by C++ rules; MSVC C4146 flags this even though it is the
+  // documented behavior).
+  MP_UNITS_DIAGNOSTIC_IGNORE_UNARY_MINUS_UNSIGNED
   [[nodiscard]] constexpr auto operator-() const -> safe_int<decltype(-value_), ErrorPolicy>
   {
     if (detail::neg_overflows(+value_)) handle_overflow("safe_int: negation overflow");
     return -value_;
   }
+  MP_UNITS_DIAGNOSTIC_POP
 
   // -- Increment / decrement (use add/sub overflow check when T is integral) --
   constexpr safe_int& operator++()

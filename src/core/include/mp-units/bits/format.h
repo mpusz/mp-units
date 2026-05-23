@@ -86,7 +86,13 @@ constexpr Out write_padded(Out out, std::basic_string_view<Char> s, int width, f
       for (std::size_t j = 0; j < fill.size(); ++j) *out++ = fill[j];
   };
   write_fill(lpad);
+  MP_UNITS_DIAGNOSTIC_PUSH
+  // Loop variable shadows a `si::unit_symbols` short name when `using namespace si::unit_symbols`
+  // is in scope at the call site (MSVC C4459); the local variable here is the documented
+  // canonical name for this trivial loop.
+  MP_UNITS_DIAGNOSTIC_IGNORE_SHADOW
   for (Char c : s) *out++ = c;
+  MP_UNITS_DIAGNOSTIC_POP
   write_fill(rpad);
   return out;
 }

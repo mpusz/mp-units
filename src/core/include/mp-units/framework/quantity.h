@@ -990,13 +990,14 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
     void on_text(const Char* begin, const Char* end) { mp_units::detail::copy(begin, end, out); }
 
     // Static trampolines for erased_handler — tiny, do not drag in parse_quantity_specs.
-    static void on_number_erased(void* p) { static_cast<quantity_formatter*>(p)->on_number(); }
-    static void on_maybe_space_erased(void* p) { static_cast<quantity_formatter*>(p)->on_maybe_space(); }
-    static void on_unit_erased(void* p) { static_cast<quantity_formatter*>(p)->on_unit(); }
-    static void on_dimension_erased(void* p) { static_cast<quantity_formatter*>(p)->on_dimension(); }
-    static void on_text_erased(void* p, const Char* b, const Char* e)
+    // (Param renamed from `p` so it doesn't shadow `si::unit_symbols::p` (pico) on MSVC C4459.)
+    static void on_number_erased(void* self) { static_cast<quantity_formatter*>(self)->on_number(); }
+    static void on_maybe_space_erased(void* self) { static_cast<quantity_formatter*>(self)->on_maybe_space(); }
+    static void on_unit_erased(void* self) { static_cast<quantity_formatter*>(self)->on_unit(); }
+    static void on_dimension_erased(void* self) { static_cast<quantity_formatter*>(self)->on_dimension(); }
+    static void on_text_erased(void* self, const Char* b, const Char* e)
     {
-      static_cast<quantity_formatter*>(p)->on_text(b, e);
+      static_cast<quantity_formatter*>(self)->on_text(b, e);
     }
 
     erased_handler erase()

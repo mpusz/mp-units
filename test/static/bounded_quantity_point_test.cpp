@@ -837,9 +837,9 @@ static_assert(time_of_day(-3600.0 * s, midnight).quantity_from(midnight) == 8280
 // Arithmetic: adding a duration that crosses midnight wraps correctly.
 consteval bool time_of_day_wrap_arithmetic()
 {
-  auto t = time_of_day(82800.0 * s, midnight);  // 23:00
-  t += 7200.0 * s;                              // +2 h -> 01:00 next day
-  return t.quantity_from(midnight) == 3600.0 * s;
+  auto tod = time_of_day(82800.0 * s, midnight);  // 23:00
+  tod += 7200.0 * s;                              // +2 h -> 01:00 next day
+  return tod.quantity_from(midnight) == 3600.0 * s;
 }
 static_assert(time_of_day_wrap_arithmetic());
 
@@ -894,17 +894,17 @@ static_assert(time_of_day(-3'600'000.0 * time_of_day_qs[ms], midnight).quantity_
 
 consteval bool time_of_day_hour_increment()
 {
-  auto t = time_of_day(23.0 * time_of_day_qs[h], midnight);  // 23:00 = 82800 s
-  t += 2.0 * time_of_day_qs[h];                              // +2 h → 25:00 = 90000 s → wraps to 3600 s
-  return t.quantity_from(midnight) == 3600.0 * s;
+  auto tod = time_of_day(23.0 * time_of_day_qs[h], midnight);  // 23:00 = 82800 s
+  tod += 2.0 * time_of_day_qs[h];                              // +2 h → 25:00 = 90000 s → wraps to 3600 s
+  return tod.quantity_from(midnight) == 3600.0 * s;
 }
 static_assert(time_of_day_hour_increment());
 
 consteval bool time_of_day_minute_increment()
 {
-  auto t = time_of_day(23.0 * time_of_day_qs[h] + 30.0 * time_of_day_qs[min], midnight);  // 23:30 = 84600 s
-  t += 45.0 * time_of_day_qs[min];  // +45 min → 24:15 = 87300 s → wraps to 900 s
-  return t.quantity_from(midnight) == 900.0 * s;
+  auto tod = time_of_day(23.0 * time_of_day_qs[h] + 30.0 * time_of_day_qs[min], midnight);  // 23:30 = 84600 s
+  tod += 45.0 * time_of_day_qs[min];  // +45 min → 24:15 = 87300 s → wraps to 900 s
+  return tod.quantity_from(midnight) == 900.0 * s;
 }
 static_assert(time_of_day_minute_increment());
 
@@ -1079,9 +1079,9 @@ static_assert(time_of_day(-3 * 86400.0 * s + 82800.0 * s, midnight).quantity_fro
 // operator+=: start at 23:00 (82800 s), add 3 days + 2 hours (= 266400 s) → lands at 01:00 (3600 s).
 consteval bool time_of_day_multiday_assign()
 {
-  auto t = time_of_day(82800.0 * s, midnight);  // 23:00
-  t += 3 * 86400.0 * s + 2 * 3600.0 * s;        // +3 days 2 hours
-  return t.quantity_from(midnight) == 3600.0 * s;
+  auto tod = time_of_day(82800.0 * s, midnight);  // 23:00
+  tod += 3 * 86400.0 * s + 2 * 3600.0 * s;        // +3 days 2 hours
+  return tod.quantity_from(midnight) == 3600.0 * s;
 }
 static_assert(time_of_day_multiday_assign());
 

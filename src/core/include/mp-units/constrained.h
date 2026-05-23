@@ -232,11 +232,17 @@ public:
     return +x.value_;
   }
 
+  MP_UNITS_DIAGNOSTIC_PUSH
+  // Generic operator- is intentionally instantiated with unsigned T as well (where unary minus
+  // returns the same unsigned type by C++ rules; MSVC C4146 flags this even though it is the
+  // documented behavior).
+  MP_UNITS_DIAGNOSTIC_IGNORE_UNARY_MINUS_UNSIGNED
   [[nodiscard]] friend constexpr auto operator-(const constrained& x)
     -> constrained<decltype(-std::declval<T>()), ErrorPolicy>
   {
     return -x.value_;
   }
+  MP_UNITS_DIAGNOSTIC_POP
 
   // -- Increment / decrement --
   constexpr constrained& operator++()

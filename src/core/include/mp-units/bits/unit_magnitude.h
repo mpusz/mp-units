@@ -790,7 +790,7 @@ template<std::intmax_t N>
 struct prime_factorization {
   [[nodiscard]] static consteval std::intmax_t get_or_compute_first_factor()
   {
-    return static_cast<std::intmax_t>(find_first_factor(N));
+    return static_cast<std::intmax_t>(find_first_factor(static_cast<std::uintmax_t>(N)));
   }
 
   static constexpr std::intmax_t first_base = get_or_compute_first_factor();
