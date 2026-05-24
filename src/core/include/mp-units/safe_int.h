@@ -140,7 +140,14 @@ template<integral T>
 template<integral T>
 [[nodiscard]] constexpr bool mul_overflows(T lhs, T rhs) noexcept
 {
-  if constexpr (integer_rep_width_v<T> < max_native_width) {
+  // Use a wider type for the overflow check whenever one exists.  On platforms without native
+  // `__int128`, `int128_t` is the synthetic `double_width_int<int64_t>` — still a usable
+  // 128-bit type — so `max_native_width` (which only counts builtin widths) is the wrong
+  // ceiling; check directly against `integer_rep_width_v<int128_t>` instead.  The else branch
+  // below assumes T is the widest available signed integer (i.e. (u)int128_t) and computes
+  // `max` by truncating uint128_t — that truncation is what produced the bug on MSVC for
+  // T == long long.
+  if constexpr (integer_rep_width_v<T> < integer_rep_width_v<int128_t>) {
     using wide = double_width_int_for_t<T>;
     const wide product = static_cast<wide>(lhs) * static_cast<wide>(rhs);
     return product > static_cast<wide>(std::numeric_limits<T>::max()) ||
@@ -335,6 +342,65 @@ struct safe_int_binary_ops {
     if (std::cmp_less(lhs.value_, rhs.value_)) return std::strong_ordering::less;
     if (std::cmp_greater(lhs.value_, rhs.value_)) return std::strong_ordering::greater;
     return std::strong_ordering::equal;
+  }
+
+  // Heterogeneous arithmetic: safe_int<T,EP> op safe_int<U,EP>, T != U, matching sign.
+  // Same idiom as the comparison operators above — ADL finds these via the base class,
+  // the homogeneous (T == U) inline-friend operators inside `safe_int<T>` win for same-T
+  // calls because non-template beats template in overload resolution, and the
+  // heterogeneous calls have no competition.  Resolves the MSVC C2666 ambiguity on
+  // `safe_int<int> + safe_int<long>` when `int` and `long` have equal width (Windows).
+  template<integral T, integral U, typename EP>
+    requires(!std::same_as<T, U> && same_sign_v<T, U>)
+  [[nodiscard]] friend constexpr auto operator+(safe_int<T, EP> lhs, safe_int<U, EP> rhs)
+    -> safe_int<integral_op_result_t<T, U>, EP>
+  {
+    using R = integral_op_result_t<T, U>;
+    if (add_overflows<R>(static_cast<R>(lhs.value_), static_cast<R>(rhs.value_)))
+      EP::on_overflow("safe_int: addition overflow");
+    return lhs.value_ + rhs.value_;
+  }
+
+  template<integral T, integral U, typename EP>
+    requires(!std::same_as<T, U> && same_sign_v<T, U>)
+  [[nodiscard]] friend constexpr auto operator-(safe_int<T, EP> lhs, safe_int<U, EP> rhs)
+    -> safe_int<integral_op_result_t<T, U>, EP>
+  {
+    using R = integral_op_result_t<T, U>;
+    if (sub_overflows<R>(static_cast<R>(lhs.value_), static_cast<R>(rhs.value_)))
+      EP::on_overflow("safe_int: subtraction overflow");
+    return lhs.value_ - rhs.value_;
+  }
+
+  template<integral T, integral U, typename EP>
+    requires(!std::same_as<T, U> && same_sign_v<T, U>)
+  [[nodiscard]] friend constexpr auto operator*(safe_int<T, EP> lhs, safe_int<U, EP> rhs)
+    -> safe_int<integral_op_result_t<T, U>, EP>
+  {
+    using R = integral_op_result_t<T, U>;
+    if (mul_overflows<R>(static_cast<R>(lhs.value_), static_cast<R>(rhs.value_)))
+      EP::on_overflow("safe_int: multiplication overflow");
+    return lhs.value_ * rhs.value_;
+  }
+
+  template<integral T, integral U, typename EP>
+    requires(!std::same_as<T, U> && same_sign_v<T, U>)
+  [[nodiscard]] friend constexpr auto operator/(safe_int<T, EP> lhs, safe_int<U, EP> rhs)
+    -> safe_int<integral_op_result_t<T, U>, EP>
+  {
+    using R = integral_op_result_t<T, U>;
+    if (div_overflows<R>(static_cast<R>(lhs.value_), static_cast<R>(rhs.value_)))
+      EP::on_overflow("safe_int: division overflow");
+    return lhs.value_ / rhs.value_;
+  }
+
+  template<integral T, integral U, typename EP>
+    requires(!std::same_as<T, U> && same_sign_v<T, U>)
+  [[nodiscard]] friend constexpr auto operator%(safe_int<T, EP> lhs, safe_int<U, EP> rhs)
+    -> safe_int<integral_op_result_t<T, U>, EP>
+  {
+    if (rhs.value_ == U{0}) EP::on_overflow("safe_int: modulo by zero");
+    return lhs.value_ % rhs.value_;
   }
 };
 

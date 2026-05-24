@@ -617,6 +617,41 @@ static_assert(safe_int<int>{6} * 2LL == safe_int<long long>{12});
 static_assert(2LL * safe_int<int>{6} == safe_int<long long>{12});
 static_assert(safe_int<int>{12} / 4LL == safe_int<long long>{3});
 
+// ============================================================================
+// Cross-type integral — additional convertibility coverage
+//
+// Exercises the `safe_int<T> op integral_U` overloads for combinations not covered above:
+//   - narrower raw RHS (promotes to T's rank, stays safe_int<T>)
+//   - `long` (whose width differs across platforms — 32-bit on Windows, 64-bit on POSIX),
+//     verifying that the safe_int op integral overload is chosen over implicit conversion
+//     of the raw integer to safe_int<T> via the converting ctor.
+// ============================================================================
+
+// Narrowing raw RHS: result keeps the wider wrapper type.
+// short → int by C++ promotion rules, so safe_int<int> + short → safe_int<int>.
+static_assert(std::is_same_v<decltype(safe_int<int>{} + short{1}), safe_int<int>>);
+static_assert(std::is_same_v<decltype(short{1} + safe_int<int>{}), safe_int<int>>);
+static_assert(safe_int<int>{3} + short{4} == safe_int<int>{7});
+static_assert(short{4} + safe_int<int>{3} == safe_int<int>{7});
+
+// safe_int<short> + int → safe_int<int> (raw RHS has higher rank).
+static_assert(std::is_same_v<decltype(safe_int<short>{} + 1), safe_int<int>>);
+static_assert(std::is_same_v<decltype(1 + safe_int<short>{}), safe_int<int>>);
+static_assert(safe_int<short>{3} + 4 == safe_int<int>{7});
+
+// safe_int<int> + 1L: result is safe_int<long>.  On Windows where `long` and `int` have
+// equal width this would otherwise be tempted by the converting ctor (raw long → safe_int<int>),
+// which would yield safe_int<int>; the safe_int op integral overload wins by exact match.
+static_assert(std::is_same_v<decltype(safe_int<int>{} + 1L), safe_int<long>>);
+static_assert(std::is_same_v<decltype(1L + safe_int<int>{}), safe_int<long>>);
+static_assert(safe_int<int>{3} + 4L == safe_int<long>{7L});
+static_assert(4L + safe_int<int>{3} == safe_int<long>{7L});
+
+// Unsigned widening: safe_int<unsigned> + uint8_t → safe_int<unsigned>.
+static_assert(std::is_same_v<decltype(safe_int<unsigned>{} + std::uint8_t{1}), safe_int<unsigned>>);
+static_assert(std::is_same_v<decltype(std::uint8_t{1} + safe_int<unsigned>{}), safe_int<unsigned>>);
+static_assert(safe_int<unsigned>{3u} + std::uint8_t{4} == safe_int<unsigned>{7u});
+
 // int × unsigned scalar arithmetic is intentionally ill-formed — same rationale as
 // safe_int<int> + safe_int<unsigned>: sign-mismatch conversions produce counterintuitive
 // results (e.g. safe_int<int>{-1} * 2u → UINT_MAX-1 via reinterpretation).
@@ -763,9 +798,12 @@ static_assert(safe_int<int>{3} * safe_int<long>{4L} == safe_int<long>{12L});
 static_assert(safe_int<int>{12} / safe_int<long>{4L} == safe_int<long>{3L});
 static_assert(safe_int<int>{10} % safe_int<long>{3L} == safe_int<long>{1L});
 
-// Widening prevents overflow: INT_MAX fits in long, so no overflow here
-static_assert(safe_int<int>{std::numeric_limits<int>::max()} + safe_int<long>{1L} ==
-              safe_int<long>{static_cast<long>(std::numeric_limits<int>::max()) + 1L});
+// Widening prevents overflow: INT_MAX + 1 fits in long long on every platform.
+// (`long long` rather than `long`: on Windows `long` is 32-bit and equal to `int`, so the
+// RHS `static_cast<long>(INT_MAX) + 1L` would itself be 32-bit signed overflow — UB at
+// constexpr — and the assertion would not be portable.)
+static_assert(safe_int<int>{std::numeric_limits<int>::max()} + safe_int<long long>{1LL} ==
+              safe_int<long long>{static_cast<long long>(std::numeric_limits<int>::max()) + 1LL});
 
 // Heterogeneous comparison (operator== and operator<=>)
 static_assert(safe_int<int>{3} == safe_int<long>{3L});
