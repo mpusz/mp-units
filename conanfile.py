@@ -92,7 +92,7 @@ class MPUnitsConan(ConanFile):
                     "gcc": "12",
                     "clang": "16",
                     "apple-clang": "15",
-                    "msvc": "194",
+                    "msvc": "195",
                 },
             },
             "std_format": {
@@ -101,7 +101,7 @@ class MPUnitsConan(ConanFile):
                     "gcc": "13",
                     "clang": "17",
                     "apple-clang": "16",
-                    "msvc": "194",
+                    "msvc": "195",
                 },
             },
             "cxx_modules": {
@@ -118,7 +118,7 @@ class MPUnitsConan(ConanFile):
                     "gcc": "14",
                     "clang": "18",
                     "apple-clang": "17",
-                    "msvc": "194",
+                    "msvc": "195",
                 },
             },
         }
