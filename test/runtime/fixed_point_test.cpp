@@ -22,6 +22,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers.hpp>
+#include <mp-units/bits/double_width_int.h>
 #include <mp-units/bits/fixed_point.h>
 #ifdef MP_UNITS_IMPORT_STD
 import std;

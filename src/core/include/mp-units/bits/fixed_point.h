@@ -122,6 +122,11 @@ template<typename T>
 using double_width_int_for_t = conditional<is_signed_v<T>, min_width_int_t<integer_rep_width_v<T> * 2>,
                                            min_width_uint_t<integer_rep_width_v<T> * 2>>;
 
+#if !defined(__SIZEOF_INT128__)
+// On platforms with native `__int128` the widest type needing a double-width product is
+// `int64_t`, whose double-width type is `__int128` — already handled by `double_width_int_for_t`.
+// The `else` branch below is only reachable when `Lhs`/`Rhs` are themselves 128-bit, which only
+// happens on MSVC where `int128_t == double_width_int<int64_t>` and `max_native_width == 64`.
 template<typename Lhs, typename Rhs>
 constexpr auto wide_product_of(Lhs lhs, Rhs rhs)
 {
@@ -133,6 +138,7 @@ constexpr auto wide_product_of(Lhs lhs, Rhs rhs)
     return T::wide_product_of(lhs, rhs);
   }
 }
+#endif
 
 // This class represents rational numbers using a fixed-point representation, with a symmetric number of digits (bits)
 // on either side of the decimal point. The template argument `T` specifies the range of the integral part,
