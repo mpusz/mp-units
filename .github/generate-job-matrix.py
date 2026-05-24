@@ -126,7 +126,7 @@ def make_apple_clang_config(
 
 def make_msvc_config(release: str) -> Toolchain:
     match release:
-        case "14.4":
+        case "14.5":
             os = "windows-2025"
             version = 195
         case _:
@@ -155,7 +155,7 @@ toolchains = {
         if ver == 18 or architecture != "arm64"
     ]
     + [make_apple_clang_config("macos-14", "16", xcode_version="16.1")]
-    + [make_msvc_config(release="14.4")]
+    + [make_msvc_config(release="14.5")]
 }
 
 full_matrix = dict(
