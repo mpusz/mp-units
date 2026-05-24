@@ -185,6 +185,19 @@ template<typename Q1, typename Q2, typename Cmp>
 {
   using ct = std::common_type_t<Q1, Q2>;
   using ct_rep = value_type_t<typename ct::rep>;
+  // Fallback path used when the wide-type integer optimization doesn't apply (floating-point
+  // ct_rep, already-widest integer, or unit ratio too large for wide_t).  Defined as a
+  // lambda so it can be invoked from either of the explicit branches below — a bare
+  // fallthrough `return` after the `if constexpr` chain would trip MSVC Debug C4702
+  // ("unreachable code") on instantiations where the optimization branch returns.
+  auto fallback_cmp = [&] {
+    const ct ct_lhs(lhs);
+    const ct ct_rhs(rhs);
+    MP_UNITS_DIAGNOSTIC_PUSH
+    MP_UNITS_DIAGNOSTIC_IGNORE_FLOAT_EQUAL
+    return cmp(ct_lhs.numerical_value_ref_in(ct::unit), ct_rhs.numerical_value_ref_in(ct::unit));
+    MP_UNITS_DIAGNOSTIC_POP
+  };
   // Integer path: scale into double-width type to avoid overflow.
   // The nested if constexpr is intentional: forming double_width_int_for_t<ct_rep> as a
   // template argument is itself part of type instantiation, so it must be guarded by a
@@ -197,15 +210,12 @@ template<typename Q1, typename Q2, typename Cmp>
       constexpr UnitMagnitude auto rhs_m = get_canonical_unit(Q2::unit).mag / get_canonical_unit(ct::unit).mag;
       return cmp(scale<wide_t>(lhs_m, lhs.numerical_value_is_an_implementation_detail_),
                  scale<wide_t>(rhs_m, rhs.numerical_value_is_an_implementation_detail_));
+    } else {
+      return fallback_cmp();
     }
+  } else {
+    return fallback_cmp();
   }
-  // Fallback: floating-point, already-widest integer, or unit ratio too large for wide_t.
-  const ct ct_lhs(lhs);
-  const ct ct_rhs(rhs);
-  MP_UNITS_DIAGNOSTIC_PUSH
-  MP_UNITS_DIAGNOSTIC_IGNORE_FLOAT_EQUAL
-  return cmp(ct_lhs.numerical_value_ref_in(ct::unit), ct_rhs.numerical_value_ref_in(ct::unit));
-  MP_UNITS_DIAGNOSTIC_POP
 }
 
 template<typename T>

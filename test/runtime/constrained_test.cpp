@@ -39,6 +39,11 @@ using namespace mp_units;
 // Error policies and violation handler
 // ============================================================================
 
+// CHECK_THROWS_AS expands to a try/catch where the catch body is unreachable on MSVC Debug
+// because `on_constraint_violation` is [[noreturn]] and the optimizer doesn't elide the
+// dead branch; suppress the resulting C4702 around these specific cases.
+MP_UNITS_DIAGNOSTIC_PUSH
+MP_UNITS_DIAGNOSTIC_IGNORE_UNREACHABLE
 TEST_CASE("constrained error policies", "[constrained]")
 {
   SECTION("throw_policy throws std::domain_error on violation")
@@ -52,6 +57,7 @@ TEST_CASE("constrained error policies", "[constrained]")
     CHECK_THROWS_AS(constraint_violation_handler<T>::on_violation("test"), std::domain_error);
   }
 }
+MP_UNITS_DIAGNOSTIC_POP
 
 // ============================================================================
 // constrained<double, throw_policy> as quantity_point rep with check_in_range.

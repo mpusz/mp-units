@@ -365,8 +365,14 @@ constexpr quantity<R, Rep> enforce_bounds(quantity<R, Rep> q)
     const auto typed_off = value_cast<Rep>(off);
     // Single flat: translate to owner's frame, apply policy, translate back.
     return bpo._bounds_(q + typed_off) - typed_off;
+  } else {
+    // No bounds anywhere in the chain — return q unchanged.  The explicit `else` is
+    // important: MSVC Debug doesn't dead-code-eliminate after the always-returning
+    // `if constexpr` branches above, so a bare fallthrough `return q;` here would trip
+    // C4702 "unreachable code" on instantiations where one of the branches above is
+    // taken.
+    return q;
   }
-  return q;
 }
 
 // Hidden-friend interface for `quantity_point`. Provides heterogeneous binary and comparison
