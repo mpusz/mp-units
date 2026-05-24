@@ -165,18 +165,10 @@ jobs:
           conan profile detect --force
           conan profile show -pr default
       - name: Install Conan dependencies
-        if: matrix.toolchain.compiler.type != 'MSVC'
         shell: bash
         run: |
           conan install . -b missing ${{ matrix.conan-settings }} \
                           -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -c user.mp-units.build:all=True \
-                          ${{ matrix.conan-args }}
-      - name: Install Conan dependencies
-        if: matrix.toolchain.compiler.type == 'MSVC'
-        shell: bash
-        run: |
-          conan install . -b missing ${{ matrix.conan-settings }} \
-                          -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -c user.mp-units.build:all=False \
                           ${{ matrix.conan-args }}
       - name: Print tool versions
         if: matrix.toolchain.compiler.type == 'MSVC'
@@ -199,20 +191,11 @@ jobs:
           conan --version
           python3 --version
       - name: Create Conan package
-        if: matrix.toolchain.compiler.type != 'MSVC'
         shell: bash
         run: |
           conan create . --user mpusz --channel ${CHANNEL} --lockfile-out=package.lock \
                          -b mp-units/* -b missing ${{ matrix.conan-settings }} \
                          -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -c user.mp-units.build:all=True \
-                         ${{ matrix.conan-args }}
-      - name: Create Conan package
-        if: matrix.toolchain.compiler.type == 'MSVC'
-        shell: bash
-        run: |
-          conan create . --user mpusz --channel ${CHANNEL} --lockfile-out=package.lock \
-                         -b mp-units/* -b missing ${{ matrix.conan-settings }} \
-                         -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -c user.mp-units.build:all=False \
                          ${{ matrix.conan-args }}
       - name: Obtain package reference
         id: get-package-ref
@@ -240,14 +223,12 @@ jobs:
         env:
           CONAN_SETTINGS: ${{ matrix.conan-settings }}
           CONAN_ARGS: ${{ matrix.conan-args }}
-          COMPILER_TYPE: ${{ matrix.toolchain.compiler.type }}
         run: |
           echo "## ❌ Build Failed: ${{ matrix.config-summary-str }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Local repro** (in the provided '.devcontainer' or GitHub CodeSpaces environment):" >> $GITHUB_STEP_SUMMARY
           echo '```sh' >> $GITHUB_STEP_SUMMARY
-          [ "${COMPILER_TYPE}" != "MSVC" ] && ALL="True" || ALL="False"
-          echo "conan create . -b 'mp-units/*' -b missing ${CONAN_SETTINGS} -c user.mp-units.build:all=${ALL} ${CONAN_ARGS}" >> $GITHUB_STEP_SUMMARY
+          echo "conan create . -b 'mp-units/*' -b missing ${CONAN_SETTINGS} -c user.mp-units.build:all=True ${CONAN_ARGS}" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
 
     outputs:
