@@ -107,7 +107,11 @@ class Configuration(ConanOptions):
         # constant expression") on heavily templated mp-units quantity arguments — the
         # `std::basic_format_string` consteval ctor can't evaluate them under Debug's stricter
         # constant evaluator.  Release works; {fmt} works; only this combination breaks.
-        if self.toolchain.compiler.type == "MSVC" and self.build_type == "Debug" and self.std_format:
+        if (
+            self.toolchain.compiler.type == "MSVC"
+            and self.build_type == "Debug"
+            and self.std_format
+        ):
             return False
         return True
 
