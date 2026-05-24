@@ -103,6 +103,12 @@ class Configuration(ConanOptions):
                 return False
             if self.contracts != "none":
                 return False
+        # MSVC Debug + std::format trips error C7595 ("call to immediate function is not a
+        # constant expression") on heavily templated mp-units quantity arguments — the
+        # `std::basic_format_string` consteval ctor can't evaluate them under Debug's stricter
+        # constant evaluator.  Release works; {fmt} works; only this combination breaks.
+        if self.toolchain.compiler.type == "MSVC" and self.build_type == "Debug" and self.std_format:
+            return False
         return True
 
     def for_github(self):

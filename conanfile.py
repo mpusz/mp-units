@@ -247,6 +247,21 @@ class MPUnitsConan(ConanFile):
                 raise ConanInvalidConfiguration(
                     "'std_format' should be enabled to use `import std;`"
                 )
+        # MSVC Debug + std::format triggers error C7595 ("call to immediate function is not
+        # a constant expression") on heavily templated quantity types — the
+        # std::basic_format_string consteval ctor can't be evaluated under Debug's stricter
+        # constant evaluator.  Release works; {fmt} works.  Mirror the CI matrix's
+        # exclusion of this combination here so a local repro fails fast at install time.
+        if (
+            compiler == "msvc"
+            and self.settings.build_type == "Debug"
+            and self.options.get_safe("std_format", default=True)
+        ):
+            raise ConanInvalidConfiguration(
+                "'std_format' is not supported on MSVC Debug builds (C7595: consteval "
+                "format-string ctor fails on deeply templated quantity arguments). "
+                "Use 'std_format=False' to build with {fmt} instead, or build Release."
+            )
 
     def layout(self):
         cmake_layout(self)

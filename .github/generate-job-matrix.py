@@ -249,9 +249,12 @@ def main():
                 std_format=True,
                 **config,
             )
-            # fmtlib for those toolchains where we don't support std_format
+            # fmtlib for toolchains/configs where std::format is not viable: either the
+            # toolchain doesn't support it at all, or it's MSVC + Debug (C7595 consteval
+            # bug; cf. Configuration.is_supported in job_matrix.py).
             collector.all_combinations(
-                filter=lambda me: not me.toolchain.feature_support.std_format,
+                filter=lambda me: not me.toolchain.feature_support.std_format
+                or (me.toolchain.compiler.type == "MSVC" and me.build_type == "Debug"),
                 std_format=False,
                 **config,
             )
