@@ -94,58 +94,42 @@ struct reference {
   }
 
   template<typename Q2, typename U2>
-  [[nodiscard]] friend consteval detail::reference_t<
-    MP_UNITS_EXPRESSION_WORKAROUND(Q{} * Q2{}), MP_UNITS_EXPRESSION_WORKAROUND(U{} * U2{})> operator*(reference,
-                                                                                                      reference<Q2, U2>)
+  [[nodiscard]] friend consteval detail::reference_t<Q{} * Q2{}, U{} * U2{}> operator*(reference, reference<Q2, U2>)
   {
     return {};
   }
 
   template<Unit U2>
-  [[nodiscard]] friend consteval detail::reference_t<(MP_UNITS_EXPRESSION_WORKAROUND(Q{} * get_quantity_spec(U2{}))),
-                                                     MP_UNITS_EXPRESSION_WORKAROUND(U{} * U2{})> operator*(reference,
-                                                                                                           U2)
+  [[nodiscard]] friend consteval detail::reference_t<Q{} * get_quantity_spec(U2{}), U{} * U2{}> operator*(reference, U2)
   {
     return {};
   }
 
   template<Unit U1>
-  [[nodiscard]] friend consteval detail::reference_t<MP_UNITS_EXPRESSION_WORKAROUND(get_quantity_spec(U1{}) * Q{}),
-                                                     MP_UNITS_EXPRESSION_WORKAROUND(U1{} * U{})> operator*(U1,
-                                                                                                           reference)
+  [[nodiscard]] friend consteval detail::reference_t<get_quantity_spec(U1{}) * Q{}, U1{} * U{}> operator*(U1, reference)
   {
     return {};
   }
 
   template<typename Q2, typename U2>
-  [[nodiscard]] friend consteval detail::reference_t<
-    MP_UNITS_EXPRESSION_WORKAROUND(Q{} / Q2{}), MP_UNITS_EXPRESSION_WORKAROUND(U{} / U2{})> operator/(reference,
-                                                                                                      reference<Q2, U2>)
+  [[nodiscard]] friend consteval detail::reference_t<Q{} / Q2{}, U{} / U2{}> operator/(reference, reference<Q2, U2>)
   {
     return {};
   }
 
   template<Unit U2>
-  [[nodiscard]] friend consteval detail::reference_t<MP_UNITS_EXPRESSION_WORKAROUND(Q{} / get_quantity_spec(U2{})),
-                                                     MP_UNITS_EXPRESSION_WORKAROUND(U{} / U2{})> operator/(reference,
-                                                                                                           U2)
+  [[nodiscard]] friend consteval detail::reference_t<Q{} / get_quantity_spec(U2{}), U{} / U2{}> operator/(reference, U2)
   {
     return {};
   }
 
   template<Unit U1>
-  [[nodiscard]] friend consteval detail::reference_t<MP_UNITS_EXPRESSION_WORKAROUND(get_quantity_spec(U1{}) / Q{}),
-                                                     MP_UNITS_EXPRESSION_WORKAROUND(U1{} / U{})> operator/(U1,
-                                                                                                           reference)
+  [[nodiscard]] friend consteval detail::reference_t<get_quantity_spec(U1{}) / Q{}, U1{} / U{}> operator/(U1, reference)
   {
     return {};
   }
 
-  [[nodiscard]] friend consteval detail::reference_t<MP_UNITS_EXPRESSION_WORKAROUND(inverse(Q{})),
-                                                     MP_UNITS_EXPRESSION_WORKAROUND(inverse(U{}))> inverse(reference)
-  {
-    return {};
-  }
+  [[nodiscard]] friend consteval detail::reference_t<inverse(Q{}), inverse(U{})> inverse(reference) { return {}; }
 
   /**
    * @brief Computes the value of a reference raised to the `Num/Den` power
@@ -158,9 +142,7 @@ struct reference {
    */
   template<std::intmax_t Num, std::intmax_t Den = 1>
     requires(Den != 0)
-  [[nodiscard]] friend consteval detail::reference_t<MP_UNITS_EXPRESSION_WORKAROUND((pow<Num, Den>(Q{}))),
-                                                     MP_UNITS_EXPRESSION_WORKAROUND((pow<Num, Den>(U{})))>
-    pow(reference)
+  [[nodiscard]] friend consteval detail::reference_t<pow<Num, Den>(Q{}), pow<Num, Den>(U{})> pow(reference)
   {
     return {};
   }
@@ -172,11 +154,7 @@ struct reference {
    *
    * @return The result of computation
    */
-  [[nodiscard]] friend consteval detail::reference_t<MP_UNITS_EXPRESSION_WORKAROUND(sqrt(Q{})),
-                                                     MP_UNITS_EXPRESSION_WORKAROUND(sqrt(U{}))> sqrt(reference)
-  {
-    return {};
-  }
+  [[nodiscard]] friend consteval detail::reference_t<sqrt(Q{}), sqrt(U{})> sqrt(reference) { return {}; }
 
   /**
    * @brief Computes the cubic root of a reference
@@ -185,11 +163,7 @@ struct reference {
    *
    * @return The result of computation
    */
-  [[nodiscard]] friend consteval detail::reference_t<MP_UNITS_EXPRESSION_WORKAROUND(cbrt(Q{})),
-                                                     MP_UNITS_EXPRESSION_WORKAROUND(cbrt(U{}))> cbrt(reference)
-  {
-    return {};
-  }
+  [[nodiscard]] friend consteval detail::reference_t<cbrt(Q{}), cbrt(U{})> cbrt(reference) { return {}; }
 };
 
 

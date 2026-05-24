@@ -40,9 +40,7 @@ import mp_units;
 
 using namespace mp_units;
 
-constexpr QuantityOf<MP_UNITS_IS_VALUE_WORKAROUND(isq::speed)> auto avg_speed(
-  QuantityOf<MP_UNITS_IS_VALUE_WORKAROUND(isq::distance)> auto d,
-  QuantityOf<MP_UNITS_IS_VALUE_WORKAROUND(isq::duration)> auto t)
+constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::distance> auto d, QuantityOf<isq::duration> auto t)
 {
   return d / t;
 }
