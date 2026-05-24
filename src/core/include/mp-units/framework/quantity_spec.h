@@ -795,12 +795,28 @@ explode_result(Q, specs_convertible_result) -> explode_result<Q>;
 
 #endif
 
+#if MP_UNITS_API_NO_CRTP
+template<NamedQuantitySpec auto QS, auto... Args>
+[[nodiscard]] consteval bool defined_as_kind_impl(quantity_spec<QS, Args...>)
+#else
+template<typename Self, NamedQuantitySpec auto QS, auto... Args>
+[[nodiscard]] consteval bool defined_as_kind_impl(quantity_spec<Self, QS, Args...>)
+#endif
+{
+  return mp_units::contains<struct is_kind, Args...>();
+}
+
 template<QuantitySpec Q>
   requires requires { Q::_equation_; }
 [[nodiscard]] consteval auto explode(Q q)
 {
-  return explode_result{Q::_equation_, detail::defines_equation(q) ? specs_convertible_result::yes
-                                                                   : specs_convertible_result::explicit_conversion};
+  if constexpr (defines_equation(q))
+    return explode_result{Q::_equation_, specs_convertible_result::yes};
+  else {
+    constexpr bool is_kind = requires { defined_as_kind_impl(Q{}); } && defined_as_kind_impl(Q{});
+    return explode_result{Q::_equation_, is_kind ? specs_convertible_result::explicit_conversion_beyond_kind
+                                                 : specs_convertible_result::explicit_conversion};
+  }
 }
 
 template<QuantitySpec Q, int... Ints>
@@ -808,9 +824,14 @@ template<QuantitySpec Q, int... Ints>
 [[nodiscard]] consteval auto explode(power<Q, Ints...>)
 {
   constexpr ratio exp = power<Q, Ints...>::_exponent_;
-  return explode_result{pow<exp.num, exp.den>(Q::_equation_), defines_equation(Q{})
-                                                                ? specs_convertible_result::yes
-                                                                : specs_convertible_result::explicit_conversion};
+  if constexpr (defines_equation(Q{}))
+    return explode_result{pow<exp.num, exp.den>(Q::_equation_), specs_convertible_result::yes};
+  else {
+    constexpr bool is_kind = requires { defined_as_kind_impl(Q{}); } && defined_as_kind_impl(Q{});
+    return explode_result{pow<exp.num, exp.den>(Q::_equation_),
+                          is_kind ? specs_convertible_result::explicit_conversion_beyond_kind
+                                  : specs_convertible_result::explicit_conversion};
+  }
 }
 
 template<TypeList NumFrom, TypeList DenFrom, TypeList NumTo, TypeList DenTo>
@@ -880,9 +901,11 @@ template<typename... ProcessedFrom, typename From, typename... RemainingFrom, ty
       // is not convertible.
       return std::optional(extract_common_base_result{specs_convertible_result::no});
     else if constexpr (res == specs_convertible_result::cast &&
-                       (detail::get_complexity(from_factor) > 0 || detail::get_complexity(to_factor) > 0))
-      // One or both factors have a defining equation. Defer to complexity-based explosion so that the equation
-      // is tried before accepting a cast-level match between siblings.
+                       (detail::get_complexity(from_factor) > 0 || detail::get_complexity(to_factor) > 0) &&
+                       (detail::get_complexity_impl(type_list<ProcessedFrom..., RemainingFrom...>{}) > 0 ||
+                        detail::get_complexity_impl(type_list<ProcessedTo..., RemainingTo...>{}) > 0))
+      // One or both factors have a defining equation and remaining elements have complexity — defer to
+      // the explosion path so higher-complexity elements can be tried first.
       return std::optional<extract_common_base_result<>>(std::nullopt);
     else {
       // We might deal with different powers of quantities. Let's find the biggest common exponent and extract it.
@@ -949,22 +972,26 @@ template<TypeList NumFrom, TypeList DenFrom, TypeList NumTo, TypeList DenTo>
 template<QuantitySpec Equation, TypeList Num, TypeList Den>
 [[nodiscard]] consteval auto merge_with_equation(Equation, Num, Den)
 {
-  constexpr QuantitySpec auto merged_qs = [&]() {
-    if constexpr (DerivedQuantitySpec<Equation>)
-      return detail::get_optimized_expression<
-        type_list_merge_sorted<typename Equation::_num_, Num, type_list_of_quantity_spec_less>,
-        type_list_merge_sorted<typename Equation::_den_, Den, type_list_of_quantity_spec_less>, struct dimensionless,
-        type_list_of_quantity_spec_less, derived_quantity_spec>();
+  if constexpr (Equation{} == dimensionless)
+    return std::pair(Num{}, Den{});
+  else {
+    constexpr QuantitySpec auto merged_qs = [&]() {
+      if constexpr (DerivedQuantitySpec<Equation>)
+        return detail::get_optimized_expression<
+          type_list_merge_sorted<typename Equation::_num_, Num, type_list_of_quantity_spec_less>,
+          type_list_merge_sorted<typename Equation::_den_, Den, type_list_of_quantity_spec_less>, struct dimensionless,
+          type_list_of_quantity_spec_less, derived_quantity_spec>();
+      else
+        return detail::get_optimized_expression<
+          type_list_merge_sorted<Num, type_list<Equation>, type_list_of_quantity_spec_less>, Den, struct dimensionless,
+          type_list_of_quantity_spec_less, derived_quantity_spec>();
+    }();
+    using qs_type = MP_UNITS_NONCONST_TYPE(merged_qs);
+    if constexpr (DerivedQuantitySpec<qs_type>)
+      return std::pair(typename qs_type::_num_{}, typename qs_type::_den_{});
     else
-      return detail::get_optimized_expression<
-        type_list_merge_sorted<Num, type_list<Equation>, type_list_of_quantity_spec_less>, Den, struct dimensionless,
-        type_list_of_quantity_spec_less, derived_quantity_spec>();
-  }();
-  using qs_type = MP_UNITS_NONCONST_TYPE(merged_qs);
-  if constexpr (DerivedQuantitySpec<qs_type>)
-    return std::pair(typename qs_type::_num_{}, typename qs_type::_den_{});
-  else
-    return std::pair(type_list<qs_type>{}, type_list<>{});
+      return std::pair(type_list<qs_type>{}, type_list<>{});
+  }
 }
 
 template<QuantitySpec From, QuantitySpec To>
@@ -1028,6 +1055,11 @@ template<TypeList NumFrom, TypeList DenFrom, TypeList NumTo, TypeList DenTo>
       if constexpr (max_compl_res.complexity > 0) {
         // explode the ingredient to the underlying equation
         constexpr auto explode_res = detail::explode(typename extracted::element{});
+        // kind-boundary cost is asymmetric: the FROM side pays explicit_conversion_beyond_kind,
+        // the TO side pays at most explicit_conversion (you are being asked to go INTO a kind).
+        constexpr auto to_side_result = explode_res.result == specs_convertible_result::explicit_conversion_beyond_kind
+                                          ? specs_convertible_result::explicit_conversion
+                                          : explode_res.result;
         if constexpr (max_compl_res.type == ingredient_type::numerator_from) {
           const auto [num, den] =
             detail::merge_with_equation(explode_res.equation, typename extracted::rest{}, den_from);
@@ -1038,11 +1070,11 @@ template<TypeList NumFrom, TypeList DenFrom, TypeList NumTo, TypeList DenTo>
           return detail::min(explode_res.result, detail::are_ingredients_convertible(num, den, num_to, den_to));
         } else if constexpr (max_compl_res.type == ingredient_type::numerator_to) {
           const auto [num, den] = detail::merge_with_equation(explode_res.equation, typename extracted::rest{}, den_to);
-          return detail::min(explode_res.result, detail::are_ingredients_convertible(num_from, den_from, num, den));
+          return detail::min(to_side_result, detail::are_ingredients_convertible(num_from, den_from, num, den));
         } else {
           const auto [num, den] =
             detail::merge_with_equation(dimensionless / explode_res.equation, num_to, typename extracted::rest{});
-          return detail::min(explode_res.result, detail::are_ingredients_convertible(num_from, den_from, num, den));
+          return detail::min(to_side_result, detail::are_ingredients_convertible(num_from, den_from, num, den));
         }
       } else
         // this should never happen
@@ -1105,8 +1137,16 @@ template<QuantitySpec From, QuantitySpec To>
     auto res = detail::convertible(from_root, to_root);
     // the below does not account for `explicit_conversion_beyond_kind`
     return (res == explicit_conversion) ? yes : res;
-  } else
-    return detail::convertible(from, to_root);
+  } else {
+    auto res = detail::convertible(from, to_root);
+    // Promote explicit_conversion → yes when kind_of<> wraps a named quantity and from is not an ancestor of to_root.
+    // Skip the promotion when to_root is derived (the explicit_conversion reflects a cross-kind distance that matters)
+    // or when from is a direct ancestor of to_root (parent→child downcast remains explicit_conversion).
+    if constexpr (NamedQuantitySpec<MP_UNITS_NONCONST_TYPE(to_root)> &&
+                  !detail::is_child_of(MP_UNITS_NONCONST_TYPE(to_root){}, From{}))
+      return (res == explicit_conversion) ? yes : res;
+    return res;
+  }
 }
 
 template<NamedQuantitySpec From, NamedQuantitySpec To>
@@ -1201,17 +1241,6 @@ namespace detail {
 template<QuantitySpec Q>
   requires requires(Q q) { detail::get_kind_tree_root(q); }
 using to_kind = decltype(detail::get_kind_tree_root(Q{}));
-
-#if MP_UNITS_API_NO_CRTP
-template<NamedQuantitySpec auto QS, auto... Args>
-[[nodiscard]] consteval bool defined_as_kind_impl(quantity_spec<QS, Args...>)
-#else
-template<typename Self, NamedQuantitySpec auto QS, auto... Args>
-[[nodiscard]] consteval bool defined_as_kind_impl(quantity_spec<Self, QS, Args...>)
-#endif
-{
-  return mp_units::contains<struct is_kind, Args...>();
-}
 
 template<QuantitySpec Q>
 [[nodiscard]] consteval QuantitySpec auto get_kind_tree_root_impl(Q q)
