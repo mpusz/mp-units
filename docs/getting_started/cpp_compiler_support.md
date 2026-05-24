@@ -13,13 +13,13 @@
 The table below provides the minimum compiler version required to compile the code using
 a specific C++ feature:
 
-| C++ Feature                   | C++ version | gcc  |   clang    |  apple-clang   |                    MSVC                    |
-|-------------------------------|:-----------:|:----:|:----------:|:--------------:|:------------------------------------------:|
-| **Minimum support**           |     20      | 12+  | 16+ && !19 | 15-16 && !17.0 | 194+ :bug:{ title="BEWARE of MSVC Bugs!" } |
-| **`std::format`**             |     20      | 13+  |    17+     |      16+       |                    194+                    |
-| **C++ modules**               |     20      | None |    17+     |      None      |                    None                    |
-| **`import std;`**             |     23      | None |    18+     |      None      |                    None                    |
-| **Explicit `this` parameter** |     23      | 14+  |    18+     |      17+       |                    194+                    |
+| C++ Feature                   | C++ version | gcc  |   clang    |  apple-clang   | MSVC |
+|-------------------------------|:-----------:|:----:|:----------:|:--------------:|:----:|
+| **Minimum support**           |     20      | 12+  | 16+ && !19 | 15-16 && !17.0 | 195+ |
+| **`std::format`**             |     20      | 13+  |    17+     |      16+       | 195+ |
+| **C++ modules**               |     20      | None |    17+     |      None      | None |
+| **`import std;`**             |     23      | None |    18+     |      None      | None |
+| **Explicit `this` parameter** |     23      | 14+  |    18+     |      17+       | 195+ |
 
 ??? note "Clang-19 unfixable bug"
 
@@ -31,21 +31,6 @@ a specific C++ feature:
     Unfortunately, Apple Clang-17.0 (Xcode 16.3, 16.4, 26.0, 26.0.1, 26.1, and 26.2-beta) does not
     build **mp-units** because it has the same
     [unfixable bug as Clang-19](https://github.com/llvm/llvm-project/pull/118288).
-
-??? note "MSVC bugs"
-
-    MSVC still has a poor C++20 conformance. We had to make many workarounds to our codebase
-    to make it compile on this compiler. Usage of such nasty preprocessor macros degrade the
-    readability and maintainability of our code. This is why we've applied those patches to
-    the main library code but not to unit tests and examples. Those still do not compile on
-    MSVC.
-
-    Here is a list of the most important MSVC bugs:
-
-    - [Syntax error when using non-type template parameters in templated class member function](https://developercommunity.visualstudio.com/t/Syntax-error-when-using-non-type-templat/10729428)
-    - [Type always preferred over value when using qualified identifiers](https://developercommunity.visualstudio.com/t/Type-always-prefered-over-value-when-usi/10729382)
-
-    Please upvote them so they get a higher fixing priority at Microsoft.
 
 !!! important
 
