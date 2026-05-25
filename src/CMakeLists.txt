@@ -153,7 +153,6 @@ if(MP_UNITS_BUILD_INSTALL)
 
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mp-unitsConfig.cmake
                   ${CMAKE_CURRENT_BINARY_DIR}/mp-unitsConfigVersion.cmake
-                  ${CMAKE_CURRENT_BINARY_DIR}/import-std-setup.cmake
-            DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units
+                  ${CMAKE_CURRENT_BINARY_DIR}/import-std-setup.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units
     )
 endif()
