@@ -96,6 +96,34 @@ If you obtain them differently you may need to adjust some CMake files.
 
     Enables `import std;` usage.
 
+    !!! note "Consumer-side build setup"
+
+        `import std;` requires the consumer's build to opt into CMake's experimental
+        support. Your toolchain has to set:
+
+        ```cmake
+        set(CMAKE_CXX_SCAN_FOR_MODULES ON)
+        set(CMAKE_CXX_MODULE_STD ON)
+        set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "<UUID for your CMake version>")
+        ```
+
+        The exact UUID changes between CMake releases — see
+        [Help/dev/experimental.rst](https://github.com/Kitware/CMake/blob/master/Help/dev/experimental.rst)
+        in the CMake repository for the current value. _test_package/conanfile.py_ in
+        the mp-units repository is a working reference for Conan consumers.
+
+        On the mp-units side, **mp-units ships an `import-std-setup.cmake` snippet** that
+        is automatically included by `find_package(mp-units)` (both Conan-generated and
+        bundled config paths). It applies the compiler-specific compile options the
+        implicit `std` module BMI needs to match consumer translation units — currently
+        `/utf-8` on MSVC and `-Wno-error=reserved-module-identifier` on Clang 21. You
+        don't add anything for that; `find_package` picks it up.
+
+        **Caveat for vendored builds:** if you embed mp-units via
+        `add_subdirectory(third_party/mp-units/src)` rather than `find_package`, the
+        snippet isn't included and you have to apply those flags in your own top-level
+        CMakeLists.txt (or include `src/cmake/import-std-setup.cmake` directly).
+
 #### `std_format`
 
 :   [:octicons-tag-24: 2.2.0][release-2-2-0] · :octicons-milestone-24: `True`/`False`

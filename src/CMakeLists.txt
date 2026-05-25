@@ -129,14 +129,8 @@ if(CMAKE_CXX_MODULE_STD)
     if(CMAKE_CXX_STANDARD LESS 23)
         message(FATAL_ERROR "`import std;` requires at least C++23")
     endif()
-    if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-        # Workaround for CMake 4.3 + Clang 21 incompatibility:
-        # Clang 21 reports `export module std;` in libc++'s std.cppm as
-        # -Wreserved-module-identifier (now a default-on warning), because CMake compiles
-        # the stdlib module with the project's compiler flags
-        add_compile_options(-Wno-error=reserved-module-identifier)
-    endif()
 endif()
+include(import-std-setup)
 
 # components/modules
 include(MPUnitsContracts)
@@ -158,6 +152,7 @@ if(MP_UNITS_BUILD_INSTALL)
 
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mp-unitsConfig.cmake
                   ${CMAKE_CURRENT_BINARY_DIR}/mp-unitsConfigVersion.cmake
+                  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/import-std-setup.cmake
             DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units
     )
 endif()

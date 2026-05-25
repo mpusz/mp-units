@@ -37,6 +37,7 @@ elseif(MP_UNITS_API_CONTRACTS STREQUAL "MS-GSL")
 endif()
 
 include("${CMAKE_CURRENT_LIST_DIR}/mp-unitsTargets.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/import-std-setup.cmake")
 
 unset(MP_UNITS_API_FREESTANDING)
 unset(MP_UNITS_API_STD_FORMAT)

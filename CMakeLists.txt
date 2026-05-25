@@ -26,6 +26,11 @@ project(mp-units-dev LANGUAGES CXX)
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/src/cmake")
 include(CheckCacheVarValues)
+# Compiler-specific setup needed when consuming `import std;`. Must be at this
+# (top) scope so that CMake's implicit `__cmake_cxx_std_NN` BMI target, which is
+# materialized in the first consumer directory it sees (typically `example/`),
+# picks the flags up. See the file for details.
+include(import-std-setup)
 
 option(MP_UNITS_DEV_IWYU "Enables include-what-you-use" OFF)
 option(MP_UNITS_DEV_CLANG_TIDY "Enables clang-tidy" OFF)

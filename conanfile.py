@@ -110,7 +110,12 @@ class MPUnitsConan(ConanFile):
             },
             "import_std": {
                 "min_cppstd": "23",
-                "compiler": {"gcc": "", "clang": "18", "apple-clang": "", "msvc": ""},
+                "compiler": {
+                    "gcc": "",
+                    "clang": "18",
+                    "apple-clang": "",
+                    "msvc": "195",
+                },
             },
             "explicit_this": {
                 "min_cppstd": "23",
@@ -279,7 +284,7 @@ class MPUnitsConan(ConanFile):
             if self._run_clang_tidy:
                 tc.cache_variables["MP_UNITS_DEV_CLANG_TIDY"] = True
         tc.cache_variables["MP_UNITS_BUILD_CXX_MODULES"] = opt.cxx_modules
-        if opt.cxx_modules:
+        if opt.cxx_modules or opt.import_std:
             tc.cache_variables["CMAKE_CXX_SCAN_FOR_MODULES"] = True
         if opt.import_std:
             tc.cache_variables["CMAKE_CXX_MODULE_STD"] = True
@@ -382,6 +387,21 @@ class MPUnitsConan(ConanFile):
                     self.cpp_info.components["core"].cxxflags.append(
                         "-Wno-deprecated-declarations"
                     )
+                # Ship the import-std-setup.cmake snippet that escalates the
+                # compiler-specific flags needed for `import std;` to project-wide
+                # compile options, so CMake's implicit std module BMI is built
+                # with matching preprocessor / warning state (MSVC C5050, Clang 21
+                # reserved-module-identifier). `cmake_find_mode = "none"` consumers
+                # (cxx_modules=True) get the same snippet through the bundled
+                # mp-unitsConfig.cmake instead.
+                self.cpp_info.components["core"].set_property(
+                    "cmake_build_modules",
+                    [
+                        os.path.join(
+                            "lib", "cmake", "mp-units", "import-std-setup.cmake"
+                        )
+                    ],
+                )
 
             if compiler == "msvc":
                 self.cpp_info.components["core"].cxxflags.append("/utf-8")
