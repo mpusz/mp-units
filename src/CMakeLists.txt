@@ -146,13 +146,14 @@ if(MP_UNITS_BUILD_INSTALL)
     configure_file(mp-unitsConfig.cmake.in mp-unitsConfig.cmake @ONLY)
     include(CMakePackageConfigHelpers)
     write_basic_package_version_file(mp-unitsConfigVersion.cmake COMPATIBILITY SameMajorVersion)
+    configure_file(cmake/import-std-setup.cmake import-std-setup.cmake COPYONLY)
 
     # installation
     install(EXPORT mp-unitsTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units NAMESPACE mp-units::)
 
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mp-unitsConfig.cmake
                   ${CMAKE_CURRENT_BINARY_DIR}/mp-unitsConfigVersion.cmake
-                  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/import-std-setup.cmake
+                  ${CMAKE_CURRENT_BINARY_DIR}/import-std-setup.cmake
             DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units
     )
 endif()

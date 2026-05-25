@@ -27,7 +27,7 @@ from conan import ConanFile
 from conan.errors import ConanInvalidConfiguration
 from conan.tools.build import can_run, default_cppstd, valid_min_cppstd
 from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain, cmake_layout
-from conan.tools.files import copy, load, rmdir
+from conan.tools.files import copy, load, rm
 from conan.tools.scm import Version
 
 required_conan_version = ">=2.0.15"
@@ -330,9 +330,15 @@ class MPUnitsConan(ConanFile):
         cmake.install()
         # TODO remove the below when Conan will learn to handle C++ modules
         if not self.options.cxx_modules:
-            # We have to preserve those files for C++ modules build as Conan
-            # can't generate such CMake targets for now
-            rmdir(self, os.path.join(self.package_folder, "lib", "cmake"))
+            # CMakeDeps regenerates the package config from cpp_info when
+            # cxx_modules is off, so the bundled `mp-unitsConfig.cmake` /
+            # `mp-unitsTargets*.cmake` exports would conflict. Remove only
+            # those — keep helper scripts like `import-std-setup.cmake`,
+            # which `cmake_build_modules` points at for import_std consumers.
+            cmake_dir = os.path.join(self.package_folder, "lib", "cmake", "mp-units")
+            rm(self, "mp-unitsConfig.cmake", cmake_dir)
+            rm(self, "mp-unitsConfigVersion.cmake", cmake_dir)
+            rm(self, "mp-unitsTargets*.cmake", cmake_dir)
 
     def package_info(self):
         compiler = self.settings.compiler
