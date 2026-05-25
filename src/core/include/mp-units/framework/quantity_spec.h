@@ -808,14 +808,14 @@ template<typename Self, NamedQuantitySpec auto QS, auto... Args>
 
 template<QuantitySpec Q>
   requires requires { Q::_equation_; }
-[[nodiscard]] consteval auto explode(Q q)
+[[nodiscard]] consteval auto explode(Q)
 {
-  if constexpr (defines_equation(q))
+  if constexpr (defines_equation(Q{}))
     return explode_result{Q::_equation_, specs_convertible_result::yes};
   else {
-    constexpr bool is_kind = requires { defined_as_kind_impl(Q{}); } && defined_as_kind_impl(Q{});
-    return explode_result{Q::_equation_, is_kind ? specs_convertible_result::explicit_conversion_beyond_kind
-                                                 : specs_convertible_result::explicit_conversion};
+    constexpr bool q_is_kind = requires { defined_as_kind_impl(Q{}); } && defined_as_kind_impl(Q{});
+    return explode_result{Q::_equation_, q_is_kind ? specs_convertible_result::explicit_conversion_beyond_kind
+                                                   : specs_convertible_result::explicit_conversion};
   }
 }
 
@@ -827,10 +827,10 @@ template<QuantitySpec Q, int... Ints>
   if constexpr (defines_equation(Q{}))
     return explode_result{pow<exp.num, exp.den>(Q::_equation_), specs_convertible_result::yes};
   else {
-    constexpr bool is_kind = requires { defined_as_kind_impl(Q{}); } && defined_as_kind_impl(Q{});
+    constexpr bool q_is_kind = requires { defined_as_kind_impl(Q{}); } && defined_as_kind_impl(Q{});
     return explode_result{pow<exp.num, exp.den>(Q::_equation_),
-                          is_kind ? specs_convertible_result::explicit_conversion_beyond_kind
-                                  : specs_convertible_result::explicit_conversion};
+                          q_is_kind ? specs_convertible_result::explicit_conversion_beyond_kind
+                                    : specs_convertible_result::explicit_conversion};
   }
 }
 
