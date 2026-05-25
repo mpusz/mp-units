@@ -207,7 +207,7 @@ MP_UNITS_EXPORT_BEGIN
 [[nodiscard]] consteval Dimension auto inverse(Dimension auto d) { return dimension_one / d; }
 
 struct dimension_symbol_formatting {
-#if MP_UNITS_COMP_CLANG || MP_UNITS_COMP_MSVC
+#if MP_UNITS_COMP_CLANG
   // TODO prevents the deprecated usage in implicit copy constructor warning
   character_set char_set = character_set::default_character_set;
 #else
