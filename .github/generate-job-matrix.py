@@ -127,7 +127,7 @@ def make_apple_clang_config(
 def make_msvc_config(release: str) -> Toolchain:
     match release:
         case "14.5":
-            os = "windows-2025"
+            os = "windows-2025-vs2026"
             version = 195
         case _:
             raise KeyError(f"Unsupported MSVC release {release!r}")
