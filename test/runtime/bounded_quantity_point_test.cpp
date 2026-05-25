@@ -142,7 +142,7 @@ TEST_CASE("check_non_negative propagates through relative_point_origin", "[bound
   CHECK_THROWS_AS(qp_avg_safe(-2000.0 * avg_height_qs[m], average_height_origin), std::domain_error);
 }
 
-TEST_CASE("check_non_negative propagates through relative_point_origin — mutating operators", "[bounded][non_negative]")
+TEST_CASE("check_non_negative propagates through relative_point_origin - mutating operators", "[bounded][non_negative]")
 {
   SECTION("operator-= crosses absolute zero")
   {

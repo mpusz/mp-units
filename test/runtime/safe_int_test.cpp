@@ -303,7 +303,7 @@ TEST_CASE("safe_int as quantity representation", "[safe_int][quantity]")
 // Scalar op overflow: safe_int<T> op U and U op safe_int<T>
 // ============================================================================
 
-TEST_CASE("safe_int × scalar operations", "[safe_int][scalar][throw]")
+TEST_CASE("safe_int * scalar operations", "[safe_int][scalar][throw]")
 {
   using T = safe_int<int>;
   const auto int_max = std::numeric_limits<int>::max();
@@ -351,7 +351,7 @@ TEST_CASE("safe_int × scalar operations", "[safe_int][scalar][throw]")
 // The integral-winner overloads delegate to safe_int ops, so overflow is detected.
 // ============================================================================
 
-TEST_CASE("safe_int × constrained operations", "[safe_int][cross-wrapper][throw]")
+TEST_CASE("safe_int * constrained operations", "[safe_int][cross-wrapper][throw]")
 {
   using C = constrained<int>;
   using S = safe_int<int>;
