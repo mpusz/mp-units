@@ -290,7 +290,7 @@ struct propagate_point_origin<U, true> {
 };
 
 template<UnitMagnitude auto M, Unit U>
-struct MP_UNITS_EMPTY_BASES_WORKAROUND scaled_unit_impl : detail::unit_interface, detail::propagate_point_origin<U> {
+struct scaled_unit_impl : detail::unit_interface, detail::propagate_point_origin<U> {
   using _base_type_ = scaled_unit_impl;  // exposition only
   static constexpr UnitMagnitude auto _mag_ = M;
   static constexpr U _reference_unit_{};
@@ -533,9 +533,7 @@ struct common_unit final : decltype(detail::common_unit_scaled_result<U1, U2, Re
 namespace detail {
 
 template<typename... Expr>
-struct MP_UNITS_EMPTY_BASES_WORKAROUND derived_unit_impl :
-    detail::unit_interface,
-    detail::expr_fractions<one, Expr...> {
+struct derived_unit_impl : detail::unit_interface, detail::expr_fractions<one, Expr...> {
   using _base_type_ = derived_unit_impl;  // exposition only
 };
 
@@ -820,7 +818,7 @@ template<typename CharT, std::output_iterator<CharT> Out, auto M, typename U>
 }
 
 template<typename... Us, Unit U>
-[[nodiscard]] consteval Unit auto get_common_unit_in(common_unit<Us...>, U u)
+[[nodiscard]] consteval Unit auto get_common_unit_in(common_unit<Us...>, U)
 {
   auto get_magnitude = [&]() {
     if constexpr (requires { common_unit<Us...>::_mag_; })
@@ -828,10 +826,10 @@ template<typename... Us, Unit U>
     else
       return mag<1>;
   };
-  constexpr auto canonical_u = mp_units::get_canonical_unit(u);
+  constexpr auto canonical_u = mp_units::get_canonical_unit(U{});
   constexpr UnitMagnitude auto cmag = get_magnitude() / canonical_u.mag;
   if constexpr (cmag == mag<1>)
-    return u;
+    return U{};
   else
     return scaled_unit<cmag, U>{};
 }
