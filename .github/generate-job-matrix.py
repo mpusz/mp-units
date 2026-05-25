@@ -180,17 +180,18 @@ def _guarantee_api_coverage(
         # import_std is incompatible with freestanding: the pre-built std.pcm
         # is compiled without -ffreestanding and cannot be reused.
         if tc.feature_support.import_std and not freestanding:
-            collector.sample_combinations(
-                rgen=rgen,
-                min_samples=1,
-                toolchain=tc,
-                import_std=True,
-                cxx_modules=True,
-                std_format=True,
-                contracts="none",
-                std=23,
-                freestanding=freestanding,
-            )
+            for cxx_modules in [True, False]:
+                collector.sample_combinations(
+                    rgen=rgen,
+                    min_samples=1,
+                    toolchain=tc,
+                    import_std=True,
+                    cxx_modules=cxx_modules,
+                    std_format=True,
+                    contracts="none",
+                    std=23,
+                    freestanding=freestanding,
+                )
         if tc.feature_support.explicit_this:
             # import_std is incompatible with freestanding; pin it off.
             import_std_extra = {"import_std": False} if freestanding else {}

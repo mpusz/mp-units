@@ -97,8 +97,6 @@ class Configuration(ConanOptions):
             return False
         # additional checks for import_std
         if self.import_std:
-            if not self.cxx_modules:
-                return False
             if not self.std_format:
                 return False
             if self.contracts != "none":
