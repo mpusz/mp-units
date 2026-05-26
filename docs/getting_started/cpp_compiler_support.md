@@ -13,13 +13,13 @@
 The table below provides the minimum compiler version required to compile the code using
 a specific C++ feature:
 
-| C++ Feature                   | C++ version | gcc  |   clang    |  apple-clang   | MSVC |
-|-------------------------------|:-----------:|:----:|:----------:|:--------------:|:----:|
-| **Minimum support**           |     20      | 12+  | 16+ && !19 | 15-16 && !17.0 | 195+ |
-| **`std::format`**             |     20      | 13+  |    17+     |      16+       | 195+ |
-| **C++ modules**               |     20      | None |    17+     |      None      | None |
-| **`import std;`**             |     23      | None |    18+     |      None      | 195+ |
-| **Explicit `this` parameter** |     23      | 14+  |    18+     |      17+       | 195+ |
+| C++ Feature                   | C++ version | gcc  |   clang    |  apple-clang   | MSVC  |
+|-------------------------------|:-----------:|:----:|:----------:|:--------------:|:-----:|
+| **Minimum support**           |     20      | 12+  | 16+ && !19 | 15-16 && !17.0 | 19.5+ |
+| **`std::format`**             |     20      | 13+  |    17+     |      16+       | 19.5+ |
+| **C++ modules**               |     20      | None |    17+     |      None      | None  |
+| **`import std;`**             |     23      | None |    18+     |      None      | 19.5+ |
+| **Explicit `this` parameter** |     23      | 14+  |    18+     |      17+       | 19.5+ |
 
 ??? note "Clang-19 unfixable bug"
 
