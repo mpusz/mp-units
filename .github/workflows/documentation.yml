@@ -40,9 +40,14 @@ permissions:
   pages: write
   id-token: write
 
+# Serialize all documentation publishes into a single queue. The publish step
+# force-pushes a rewritten (squashed) gh-pages branch, so concurrent runs for
+# different refs (e.g. a tag release and a master push) must not overlap or they
+# would clobber each other. Do not cancel in-progress runs: every deploy must
+# complete so its version is recorded.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-publish
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -94,11 +99,23 @@ jobs:
       - name: Building docs for a released version
         if: startsWith(github.event.ref, 'refs/tags/v')
         run: |
-          mike deploy --push --update-aliases `conan inspect .  | sed -n -r 's/version: ([0-9]+.[0-9]+).[0-9]+/\1/p'`
+          mike deploy --update-aliases `conan inspect .  | sed -n -r 's/version: ([0-9]+.[0-9]+).[0-9]+/\1/p'`
       - name: Building docs for a development version
         if: ${{!startsWith(github.event.ref, 'refs/tags/v')}}
         run: |
-          mike deploy --push --update-aliases HEAD latest
+          mike deploy --update-aliases HEAD latest
+      - name: Squash history and publish gh-pages
+        run: |
+          # `mike deploy` (above, without --push) updated the local gh-pages branch
+          # with the new build. GitHub Pages only ever serves the branch tip and the
+          # whole site is regenerable, so we collapse gh-pages to a single parentless
+          # commit before pushing. This keeps every versioned subtree and versions.json
+          # intact (they live in the tree, not in history) while preventing the branch
+          # from accumulating obsolete full-site snapshots that bloat the repo.
+          tree=$(git rev-parse 'refs/heads/gh-pages^{tree}')
+          commit=$(git commit-tree "$tree" -m "docs: published documentation site")
+          git update-ref refs/heads/gh-pages "$commit"
+          git push --force origin gh-pages
 
       - name: Generate documentation summary
         if: always()
