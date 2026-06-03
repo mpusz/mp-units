@@ -45,7 +45,7 @@ namespace detail {
 // `SymbolicArg` is provided because `SymbolicConstant` requires a complete type which is not the case
 // for `OneType` below.
 template<typename T>
-concept SymbolicArg = (!std::is_const_v<T>) && (!std::is_reference_v<T>);
+concept SymbolicArg = !std::is_const_v<T> && !std::is_reference_v<T>;
 
 template<typename T>
 concept SymbolicConstant = SymbolicArg<T> && std::is_empty_v<T> && std::is_trivially_default_constructible_v<T> &&

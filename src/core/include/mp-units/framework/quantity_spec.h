@@ -90,7 +90,7 @@ constexpr bool is_derived_from_specialization_of_quantity_spec =
  */
 template<typename T>
 concept NamedQuantitySpec =
-  QuantitySpec<T> && is_derived_from_specialization_of_quantity_spec<T> && (!QuantityKindSpec<T>);
+  QuantitySpec<T> && is_derived_from_specialization_of_quantity_spec<T> && !QuantityKindSpec<T>;
 
 /**
  * @brief Concept matching all derived quantity specification types
@@ -314,7 +314,7 @@ struct quantity_spec_interface : quantity_spec_interface_base {
 };
 
 template<typename T>
-concept QSProperty = (!QuantitySpec<T>);
+concept QSProperty = !QuantitySpec<T>;
 
 }  // namespace detail
 

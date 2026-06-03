@@ -107,7 +107,7 @@ concept QuantityConstructibleFrom =
 
 template<typename T, typename Rep>
 concept ScalarRepConvertible =
-  (!Quantity<T>) && Scalar<T> &&
+  !Quantity<T> && Scalar<T> &&
   (treat_as_floating_point<Rep> || !treat_as_floating_point<T> ||
    unsatisfied<"Scaling a non-floating-point '{}' quantity by a floating-point '{}' scalar is truncating">(
      type_name<Rep>(), type_name<T>()));
@@ -156,8 +156,7 @@ concept CommonlyInvocableQuantities =
   std::convertible_to<Q1, common_quantity_for<Func, Q1, Q2>> &&
   std::convertible_to<Q2, common_quantity_for<Func, Q1, Q2>> &&
   InvocableQuantities<Func, Q1, Q2, mp_units::get_common_quantity_spec(Q1::quantity_spec, Q2::quantity_spec)> &&
-  (!overflows_non_zero_common_values<std::invoke_result_t<Func, typename Q1::rep, typename Q2::rep>>(Q1::unit,
-                                                                                                     Q2::unit));
+  !overflows_non_zero_common_values<std::invoke_result_t<Func, typename Q1::rep, typename Q2::rep>>(Q1::unit, Q2::unit);
 
 // Returns true if the unit ratio between Q1 and Q2, when scaled to the common unit, fits within
 // the double-width integer type for ct_rep.  For floating-point or already-widest integer

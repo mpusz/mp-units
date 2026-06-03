@@ -111,7 +111,7 @@ MP_UNITS_INLINE constexpr bool disable_real<bool> = true;
 namespace detail {
 
 template<typename T>
-concept RealScalar = (!disable_real<T>) && BaseScalar<T> && std::totally_ordered<T>;
+concept RealScalar = !disable_real<T> && BaseScalar<T> && std::totally_ordered<T>;
 
 }
 
@@ -287,9 +287,9 @@ namespace detail {
 template<typename T>
 constexpr bool is_quantity_like = false;
 
-// TODO how can we use `(!Quantity<T>)` below?
+// TODO how can we use `!Quantity<T>` below?
 template<typename T>
-concept NotQuantity = (!is_quantity_like<T>);
+concept NotQuantity = !is_quantity_like<T>;
 
 // treat_as_floating_point (not std::floating_point) is intentional: it is the library's
 // extensibility point for user-defined floating-point-like types (e.g. a fixed-size float

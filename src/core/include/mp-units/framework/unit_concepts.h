@@ -51,7 +51,7 @@ struct named_unit;
  */
 MP_UNITS_EXPORT template<typename T>
 concept Unit = std::derived_from<T, detail::unit_interface> && detail::SymbolicConstant<T> &&
-               (!is_specialization_of_v<T, named_unit>) && (!detail::is_specialization_of_prefixed_unit<T>);
+               !is_specialization_of_v<T, named_unit> && !detail::is_specialization_of_prefixed_unit<T>;
 
 /**
  * @brief A concept to be used to define prefixes for a unit
