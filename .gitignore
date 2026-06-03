@@ -51,11 +51,12 @@ CMakeUserPresets.json
 /test_package/build/
 
 # cxxdraft-htmlgen
-docs/reference/api_reference/src/source/
-docs/reference/api_reference/gen
+/docs/reference/api_reference/src/source/
+/docs/reference/api_reference/gen
 
 # Generated website files
 site/
 
 # AI coding assistant context files (local, not shared)
-CLAUDE.md
+/CLAUDE.md
+/.claude
