@@ -111,7 +111,7 @@ class MPUnitsConan(ConanFile):
             "import_std": {
                 "min_cppstd": "23",
                 "compiler": {
-                    "gcc": "",
+                    "gcc": "15",
                     "clang": "18",
                     "apple-clang": "",
                     "msvc": "195",

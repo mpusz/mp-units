@@ -65,7 +65,7 @@ TEST_CASE("quantity operations", "[quantity]")
   // conversion requiring radical magnitudes
   SECTION("unit conversions support radical magnitudes")
   {
-    REQUIRE(within_4_ulps(sqrt((1.0 * m) * (1.0 * km)).numerical_value_in(m), sqrt(1000.0)));
+    REQUIRE(within_4_ulps(sqrt((1.0 * m) * (1.0 * km)).numerical_value_in(m), std::sqrt(1000.0)));
   }
 
   // Reproducing issue #474 exactly:
@@ -73,7 +73,7 @@ TEST_CASE("quantity operations", "[quantity]")
   {
     constexpr auto val_issue_474 = 8.0 * si::si2019::boltzmann_constant * 1000.0 * K / (std::numbers::pi * 10 * Da);
     REQUIRE(within_4_ulps(sqrt(val_issue_474).numerical_value_in(m / s),
-                          sqrt(val_issue_474.numerical_value_in(m * m / s / s))));
+                          std::sqrt(val_issue_474.numerical_value_in(m * m / s / s))));
   }
 
   SECTION("Volatile representation type")

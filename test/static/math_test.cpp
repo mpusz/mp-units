@@ -109,11 +109,11 @@ static_assert(compare(pow<1, 4>(4 * isq::area[square(km)] * (4 * isq::area[squar
                       2 * isq::length[km]));
 static_assert(compare(pow<1, 4>(4 * isq::area[square(ft)] * (4 * isq::area[square(ft)])), 2 * pow<1, 2>(isq::area)[ft],
                       2 * isq::length[ft]));
-static_assert(compare(pow<1, 4>(4. * isq::area[m2]), sqrt(2.) * pow<1, 4>(isq::area)[sqrt(m)],
+static_assert(compare(pow<1, 4>(4. * isq::area[m2]), std::sqrt(2.) * pow<1, 4>(isq::area)[sqrt(m)],
                       std::sqrt(2.) * sqrt(isq::length[m])));
-static_assert(compare(pow<1, 4>(4. * isq::area[square(km)]), sqrt(2.) * pow<1, 4>(isq::area)[sqrt(km)],
+static_assert(compare(pow<1, 4>(4. * isq::area[square(km)]), std::sqrt(2.) * pow<1, 4>(isq::area)[sqrt(km)],
                       std::sqrt(2.) * sqrt(isq::length[km])));
-static_assert(compare(pow<1, 4>(4. * isq::area[square(ft)]), sqrt(2.) * pow<1, 4>(isq::area)[sqrt(ft)],
+static_assert(compare(pow<1, 4>(4. * isq::area[square(ft)]), std::sqrt(2.) * pow<1, 4>(isq::area)[sqrt(ft)],
                       std::sqrt(2.) * sqrt(isq::length[ft])));
 
 // floor

@@ -159,6 +159,20 @@ if(CMAKE_CXX_MODULE_STD)
     if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 19)
         target_compile_options(mp-units-core ${MP_UNITS_TARGET_SCOPE} -Wno-deprecated-declarations)
     endif()
+
+    # GCC: mp-units headers include `<version>` (unconditionally, for library feature-test macros).
+    # On libstdc++ that pulls in <bits/c++config.h>, whose inline helpers (`std::__terminate`,
+    # `std::__is_constant_evaluated`, ...) also belong to `module std`. GCC merges them when
+    # `<version>` is seen *before* `import std;`, but rejects them as redefinitions when it is seen
+    # *after*. Consumer TUs typically write `import std;` before any mp-units header, so force
+    # `<version>` to the very top of every consumer TU to guarantee it precedes `import std;`.
+    # Header mode only: a forced include would otherwise land before the `module;`/`export module`
+    # of an interface unit, and module builds already order `<version>` first via the GMF.
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND NOT MP_UNITS_BUILD_CXX_MODULES AND CMAKE_CXX_COMPILER_VERSION
+                                                                                   VERSION_LESS 17
+    )
+        target_compile_options(mp-units-core ${MP_UNITS_TARGET_SCOPE} "SHELL:-include version")
+    endif()
 endif()
 
 # UTF-8 source and execution character set
