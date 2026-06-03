@@ -2,7 +2,7 @@
 <!-- markdownlint-disable-next-line MD033 -->
 <img align="right" height=135px src="docs/assets/images/mp-units-color.svg" alt="logo">
 
-[![License](https://img.shields.io/github/license/mpusz/mp-units?cacheSeconds=3600&color=informational&label=License)](./LICENSE.md)
+[![License](https://img.shields.io/github/license/mpusz/mp-units)](https://github.com/mpusz/mp-units/blob/master/LICENSE.md)
 [![C++ Standard](https://img.shields.io/badge/C%2B%2B-20%2F23-blue)](https://en.cppreference.com/w/cpp/compiler_support#cpp20)
 
 [![Conan CI](https://img.shields.io/github/actions/workflow/status/mpusz/mp-units/ci-conan.yml?branch=master&label=Conan%20CI)](https://github.com/mpusz/mp-units/actions/workflows/ci-conan.yml)
