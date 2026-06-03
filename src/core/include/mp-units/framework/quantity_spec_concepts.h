@@ -59,7 +59,7 @@ constexpr bool is_specialization_of_quantity_spec<quantity_spec<Derived, Params.
 
 MP_UNITS_EXPORT template<typename T>
 concept QuantitySpec = std::derived_from<T, detail::quantity_spec_interface_base> && detail::SymbolicConstant<T> &&
-                       (!detail::is_specialization_of_quantity_spec<T>);
+                       !detail::is_specialization_of_quantity_spec<T>;
 
 template<typename Q>
 struct kind_of_;

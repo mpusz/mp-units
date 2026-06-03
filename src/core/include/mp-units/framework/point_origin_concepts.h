@@ -48,6 +48,6 @@ constexpr bool is_specialization_of_relative_point_origin = false;
 MP_UNITS_EXPORT template<typename T>
 concept PointOrigin =
   std::derived_from<T, detail::point_origin_interface> && detail::SymbolicConstant<T> &&
-  (!detail::is_specialization_of_absolute_point_origin<T>) && (!detail::is_specialization_of_relative_point_origin<T>);
+  !detail::is_specialization_of_absolute_point_origin<T> && !detail::is_specialization_of_relative_point_origin<T>;
 
 }  // namespace mp_units
