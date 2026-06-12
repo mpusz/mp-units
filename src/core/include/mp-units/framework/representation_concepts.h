@@ -91,14 +91,14 @@ template<typename T>
 concept WeaklyRegular = std::copyable<T> && std::equality_comparable<T>;
 
 template<typename T>
-concept NumberLike = Addable<T>
+concept RegularAddable = Addable<T>
 #if MP_UNITS_COMP_GCC != 12 && !defined(MP_UNITS_XCODE15_HACKS)
                      && WeaklyRegular<T>
 #endif
   ;
 
 template<typename T>
-concept BaseScalar = NumberLike<T> && ScalableWith<T, T>;
+concept BaseScalar = RegularAddable<T> && ScalableWith<T, T>;
 
 }  // namespace detail
 
@@ -283,7 +283,7 @@ concept Vector = !disable_vector<T> && requires(const T v) {
   // ::mp_units::scalar_product(a, b);
   // ::mp_units::vector_product(a, b);
   // ::mp_units::tensor_product(a, b);
-} && NumberLike<T>;
+} && RegularAddable<T>;
 
 }  // namespace detail
 
