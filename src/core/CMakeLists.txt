@@ -160,14 +160,16 @@ if(CMAKE_CXX_MODULE_STD)
         target_compile_options(mp-units-core ${MP_UNITS_TARGET_SCOPE} -Wno-deprecated-declarations)
     endif()
 
-    # GCC: mp-units headers include `<version>` (unconditionally, for library feature-test macros).
-    # On libstdc++ that pulls in <bits/c++config.h>, whose inline helpers (`std::__terminate`,
-    # `std::__is_constant_evaluated`, ...) also belong to `module std`. GCC merges them when
-    # `<version>` is seen *before* `import std;`, but rejects them as redefinitions when it is seen
-    # *after*. Consumer TUs typically write `import std;` before any mp-units header, so force
-    # `<version>` to the very top of every consumer TU to guarantee it precedes `import std;`.
-    # Header mode only: a forced include would otherwise land before the `module;`/`export module`
-    # of an interface unit, and module builds already order `<version>` first via the GMF.
+    # GCC + libstdc++ `import std;` bug: textually including a libstdc++ header that defines entities
+    # also owned by `module std` *after* `import std;` is rejected as a redefinition (e.g.
+    # <cstddef>'s `std::__byte_operand`, <cmath>, and on GCC 16 even <version>'s `std::__terminate`,
+    # all pulled in transitively by mp-units headers). It only happens when `std` is built as a
+    # separate BMI (as CMake does), and only when the textual include comes *after* `import std;` --
+    # the reverse order is fine. Consumer TUs typically write `import std;` before any mp-units
+    # header, so force `<version>` (and thus <bits/c++config.h>) to the very top of every consumer TU
+    # so the libstdc++ headers are seen before `import std;`. Header mode only: a forced include would
+    # otherwise land before the `module;`/`export module` of an interface unit, and module builds
+    # already order things correctly via the GMF.
     if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND NOT MP_UNITS_BUILD_CXX_MODULES AND CMAKE_CXX_COMPILER_VERSION
                                                                                    VERSION_LESS 17
     )

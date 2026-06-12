@@ -588,6 +588,65 @@ In the above grammar:
   custom format string. Each override starts with a subentity identifier ('N', 'U', or 'D')
   followed by the format string enclosed in square brackets.
 
+#### Two levels of format specification
+
+The grammar above introduces a two-level design that may initially look unfamiliar, so it
+is worth describing in detail. A `quantity` is a wrapper over a numerical value tagged with
+a unit (and, indirectly, a dimension). When formatting it, there are two independent
+concerns, and each `:` delimiter opens the section that addresses one of them:
+
+- The first `:` (as in any `std::format` replacement field) starts the **quantity-level**
+  format specification. Here we provide `fill-and-align` and `width` that treat the entire
+  quantity output as one contiguous piece of text, and `quantity-specs` — a small layout
+  language built from the `%N`, `%U`, `%D`, `%?`, and `%%` placeholders — that decides
+  _which_ components (numerical value, unit, dimension) are printed and _how_ they are
+  arranged.
+- The second `:` starts the **component-level** format specifications (`defaults-specs`).
+  A `quantity` is only a numerical wrapper. It does not — and should not — assume any
+  knowledge about the format-spec grammar of the representation type it stores. This is why
+  the specs provided in `N[...]`, `U[...]`, and `D[...]` are not interpreted by the quantity
+  formatter at all. They are forwarded verbatim to the formatters of the respective
+  components and processed there.
+
+!!! question "Why `%N`, `%U`, and `%D`?"
+
+    Unlike `std::chrono::duration`, which uses quite confusing `%Q`/`%q` for its value and unit,
+    the library uses the self-explanatory `%N` (numerical value), `%U` (unit), and `%D` (dimension),
+    where each letter directly evokes the component it inserts.
+
+Separating the two concerns means that overriding how a single component is formatted does
+not force us to respell the default quantity layout. For example, to round the number to
+two decimal places while keeping the default arrangement of the components intact, it is
+enough to leave the quantity-level spec empty and provide only the component-level override:
+
+```cpp
+std::println("{::N[.2f]}", 100. * km / (3 * h));  // 33.33 km/h
+```
+
+We did not have to write out the default `%N%?%U` layout just to attach a precision to the
+number. Had numerical-value modifiers been embedded directly in the quantity format-spec
+(as is the case for `std::chrono::duration`), every such customization would have required
+repeating the entire default format string verbatim.
+
+??? info "This two-level shape is not novel"
+
+    The C++ standard library already uses it to format the elements of a range. For a range,
+    the first `:` opens the range's own format spec, and the optional second `:` introduces a
+    format spec that is forwarded to the formatter of each element:
+
+    ```cpp
+    std::vector v{1.2345, 2.3456, 3.4567};
+    std::println("{}", v);        // [1.2345, 2.3456, 3.4567]
+    std::println("{::.2f}", v);   // [1.23, 2.35, 3.46]
+    std::println("{:n:.2f}", v);  // 1.23, 2.35, 3.46
+    ```
+
+    Here `.2f` after the second `:` is not interpreted by the range formatter — it is handed
+    unchanged to the `double` formatter used for every element. The `quantity` formatter
+    follows exactly the same principle, so users already familiar with formatting the contents
+    of a container should find the `quantity` grammar consistent with their expectations.
+
+
 #### Default formatting
 
 To format `quantity` values, the formatting facility uses `quantity-format-spec`. If left empty,

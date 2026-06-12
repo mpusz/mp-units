@@ -66,7 +66,7 @@ set -x
 conan $1 . -pr gcc12   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=False' -o '&:contracts=gsl-lite' -s compiler.cppstd=20 -b "$build_policy"
 conan $1 . -pr gcc13   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=True'  -o '&:contracts=none'     -s compiler.cppstd=23 -b "$build_policy"
 conan $1 . -pr gcc14   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=False' -o '&:contracts=ms-gsl'   -s compiler.cppstd=23 -b "$build_policy"
-conan $1 . -pr gcc15   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=True'  -o '&:contracts=gsl-lite' -s compiler.cppstd=26 -b "$build_policy"
+conan $1 . -pr gcc15   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=True'  -o '&:std_format=True'  -o '&:contracts=none'     -s compiler.cppstd=26 -b "$build_policy"
 set +x
 
 echo "⚙️  Testing Clang configurations..."
@@ -86,7 +86,7 @@ if [[ $run_debug ]]; then
   conan $1 . -pr gcc12   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=False' -o '&:contracts=gsl-lite' -s compiler.cppstd=20 -b "$build_policy" -s build_type=Debug
   conan $1 . -pr gcc13   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=True'  -o '&:contracts=none'     -s compiler.cppstd=23 -b "$build_policy" -s build_type=Debug
   conan $1 . -pr gcc14   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=False' -o '&:contracts=ms-gsl'   -s compiler.cppstd=23 -b "$build_policy" -s build_type=Debug
-  conan $1 . -pr gcc15   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=True'  -o '&:contracts=gsl-lite' -s compiler.cppstd=26 -b "$build_policy" -s build_type=Debug
+  conan $1 . -pr gcc15   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=True'  -o '&:std_format=True'  -o '&:contracts=none'     -s compiler.cppstd=26 -b "$build_policy" -s build_type=Debug
   set +x
 
   echo "⚙️  Testing Clang debug configurations..."
