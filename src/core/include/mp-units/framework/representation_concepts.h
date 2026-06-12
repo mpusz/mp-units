@@ -93,7 +93,7 @@ concept WeaklyRegular = std::copyable<T> && std::equality_comparable<T>;
 template<typename T>
 concept RegularAddable = Addable<T>
 #if MP_UNITS_COMP_GCC != 12 && !defined(MP_UNITS_XCODE15_HACKS)
-                     && WeaklyRegular<T>
+                         && WeaklyRegular<T>
 #endif
   ;
 
