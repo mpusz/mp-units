@@ -34,6 +34,9 @@
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
+#if MP_UNITS_HOSTED
+#include <complex>
+#endif
 #include <concepts>
 #include <cstdint>
 #include <cstdlib>
@@ -216,23 +219,39 @@ concept Scalar = RealScalar<T> || ComplexScalar<T>;
 
 /////////////// VECTOR ///////////////
 
+MP_UNITS_EXPORT template<typename T>
+constexpr bool disable_vector = false;
+
+#if MP_UNITS_HOSTED
+template<typename T>
+MP_UNITS_INLINE constexpr bool disable_vector<std::complex<T>> = true;
+#endif
+
 namespace detail::magnitude_impl {
 
 void magnitude() = delete;  // poison pill
+void norm() = delete;       // poison pill
 void abs() = delete;        // poison pill
 
 struct magnitude_t {
   template<typename T>
   [[nodiscard]] constexpr Scalar auto operator()(const T& vec) const
     requires requires { vec.magnitude(); } || requires { magnitude(vec); } ||
+             (!Scalar<T> && (requires { vec.norm(); } || requires { norm(vec); })) ||
              (RealScalar<T> && (std::is_arithmetic_v<T> || requires { vec.abs(); } || requires { abs(vec); }))
   {
     if constexpr (requires { vec.magnitude(); })
       return vec.magnitude();
     else if constexpr (requires { magnitude(vec); })
       return magnitude(vec);
+    // fallback: linear algebra libraries use norm() for the L2 magnitude;
+    // guarded by !Scalar to exclude both real and complex types (std::norm(complex) returns |z|² not |z|)
+    else if constexpr (!Scalar<T> && requires { vec.norm(); })
+      return vec.norm();
+    else if constexpr (!Scalar<T> && requires { norm(vec); })
+      return norm(vec);
     // allow real types to represent one dimensional vector quantities
-    if constexpr (std::is_arithmetic_v<T>)
+    else if constexpr (std::is_arithmetic_v<T>)
 #if MP_UNITS_HOSTED || __cpp_lib_freestanding_cstdlib >= 202306L
       return std::abs(vec);
 #else
@@ -256,7 +275,7 @@ MP_UNITS_EXPORT inline constexpr ::mp_units::detail::magnitude_impl::magnitude_t
 namespace detail {
 
 template<typename T>
-concept Vector = requires(const T v) {
+concept Vector = !disable_vector<T> && requires(const T v) {
   ::mp_units::magnitude(v);
   requires ScalableWith<T, decltype(::mp_units::magnitude(v))>;
   // TODO should we also check for the below (e.g., when `size() > 1` or `2`)

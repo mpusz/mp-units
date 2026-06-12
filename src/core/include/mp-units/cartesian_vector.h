@@ -175,17 +175,17 @@ public:
     return *this;
   }
 
-  [[nodiscard]] constexpr auto norm() const
+  [[nodiscard]] constexpr auto magnitude() const
     requires requires(T t) { requires requires { hypot(t, t, t); } || requires { std::hypot(t, t, t); }; }
   {
     using std::hypot;
     return hypot(_coordinates_[0], _coordinates_[1], _coordinates_[2]);
   }
 
-  [[nodiscard]] constexpr auto magnitude() const
-    requires requires(const cartesian_vector& v) { v.norm(); }
+  [[nodiscard]] constexpr auto norm() const
+    requires requires(const cartesian_vector& v) { v.magnitude(); }
   {
-    return norm();
+    return magnitude();
   }
 
   [[nodiscard]] constexpr cartesian_vector unit() const

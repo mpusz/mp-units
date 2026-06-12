@@ -42,8 +42,8 @@ The following table summarizes the requirements for different representation cha
 | Totally ordered (`<`, `>`, `<=`, `>=`)                      |               ✅                |                               -                               |                               -                                |                            -                             |
 | Not a quantity type itself                                  |               ✅                |                               ✅                               |                               ✅                                |                            ✅                             |
 | **Construction**                                            |               -                |                        `T{real, imag}`                        |                               -                                |                            -                             |
-| **Required CPOs**                                           |               -                | `mp_units::real()`, `mp_units::imag()`, `mp_units::modulus()` |                       `mp_units::norm()`                       |                    `mp_units::norm()`                    |
-| **Opt-out mechanism**                                       |       `disable_real<T>`        |                               -                               |                               -                                |                            -                             |
+| **Required CPOs**                                           |               -                | `mp_units::real()`, `mp_units::imag()`, `mp_units::modulus()` |                    `mp_units::magnitude()`                     |                 `mp_units::magnitude()`                  |
+| **Opt-out mechanism**                                       |       `disable_real<T>`        |                               -                               |                      `disable_vector<T>`                       |                            -                             |
 | **Examples**                                                | `int`, `double`, `long double` |                    `std::complex<double>`                     | `Eigen::Vector3d`, `cartesian_vector<double>`, `int`, `double` | `Eigen::Matrix3d`, `int`, `double` (for scalar measures) |
 
 ??? note "Weakly Regular Types"
@@ -91,18 +91,19 @@ The following table summarizes the requirements for different representation cha
 
 ??? note "Why Different CPO Names?"
 
-    **Scalars use `modulus()`, Vectors and Tensors use `norm()`**
+    **Complex scalars use `modulus()`, Vectors and Tensors use `magnitude()`**
 
     While mathematically related, these represent different domain conventions:
 
-    - **`modulus()`**: Traditional complex analysis terminology for magnitude of complex numbers
-    - **`norm()`**: Standard linear algebra terminology used across industry (Eigen, NumPy, MATLAB, Armadillo)
+    - **`modulus()`**: Traditional complex analysis terminology for the magnitude of a complex number;
+      the library CPO for complex scalar types
+    - **`magnitude()`**: Physics education terminology for the magnitude of a vector;
+      the library CPO for vector types
 
-    The library follows established domain conventions rather than imposing a single unified terminology.
-    This makes it more intuitive for users with backgrounds in complex analysis (who expect `modulus()`)
-    or linear algebra (who expect `norm()`). Additionally, `magnitude()` is provided as an alias for
-    `norm()` when working with vectors, as "magnitude" is familiar terminology in physics education,
-    allowing users to choose the name that best fits their domain.
+    To integrate zero-friction with linear algebra libraries (Eigen, NumPy, MATLAB, Armadillo) that
+    conventionally name this operation `norm()`, the `magnitude()` CPO also recognizes `norm()` as a
+    fallback for genuine vector types (i.e. types that are neither real nor complex scalars). This means
+    existing types with a `norm()` member or free function work without any adaptation.
 
 ??? note "Arithmetic Types Satisfy Multiple Characters"
 
@@ -176,27 +177,30 @@ in the following priority order:
 3. `c.abs()` member function
 4. `abs(c)` free function found via ADL
 
-**`mp_units::norm(v)`** - Returns the norm (magnitude) of a vector or tensor as a scalar:
+**`mp_units::magnitude(v)`** - Returns the magnitude (norm) of a vector or tensor as a scalar:
 
-1. `v.norm()` member function
-2. `norm(v)` free function found via ADL
-3. For arithmetic types: `std::abs(v)`
-4. For real scalar types: `v.abs()` member function
-5. For real scalar types: `abs(v)` free function found via ADL
+1. `v.magnitude()` member function
+2. `magnitude(v)` free function found via ADL
+3. For non-scalar types: `v.norm()` member function
+4. For non-scalar types: `norm(v)` free function found via ADL
+5. For arithmetic types: `std::abs(v)`
+6. For real scalar types: `v.abs()` member function
+7. For real scalar types: `abs(v)` free function found via ADL
 
-**`mp_units::magnitude(v)`** - Returns the magnitude of a vector as a scalar:
+!!! info "Why `norm()` and `abs()` are also checked?"
 
-1. Delegates to `mp_units::norm(v)` (provided for compatibility with physics terminology)
+    **Vectors and Tensors: `norm()` fallback**
 
-!!! note "Why `abs()` is also checked?"
+    Linear algebra libraries (Eigen, NumPy, MATLAB, Armadillo) conventionally name the
+    Euclidean norm `norm()`. Recognizing `norm()` as a fallback (steps 3–4) means existing
+    vector types integrate without any adaptation. The fallback is guarded to non-scalar
+    types (neither real nor complex scalars) for two reasons: `std::norm(double)` (from
+    `<complex>`) returns `x²`, not `|x|`; and `std::norm(complex)` returns `|z|²`, not
+    `|z|`. Both would produce silently wrong magnitudes if `norm()` were called on scalar
+    types. If `norm` were ever promoted to a proper CPO, this guarding would make its
+    semantics unambiguous.
 
-    **Complex Scalars (`modulus()` CPO)**
-
-    Provides compatibility with `std::complex` and similar types that use `abs()` as the
-    function name for returning the modulus value. This is checked as a fallback if
-    `modulus()` is not provided.
-
-    **Vectors and Tensors (`norm()` CPO)**
+    **Vectors and Tensors: `abs()` fallback for arithmetic types**
 
     Allows real scalar types (like `int`, `double`) to represent:
 
@@ -206,6 +210,12 @@ in the following priority order:
     This enables seamless use of arithmetic types for scalar, vector, AND tensor quantities,
     which accurately reflects real engineering practice where most calculations use scalar
     values rather than full vector/tensor representations.
+
+    **Complex Scalars: `abs()` fallback**
+
+    Provides compatibility with `std::complex` and similar types that use `abs()` as the
+    function name for returning the modulus value. This is checked as a fallback if
+    `modulus()` is not provided.
 
 ---
 
@@ -233,6 +243,34 @@ constexpr bool mp_units::disable_real<my_type> = true;
 **Example use case:** The library uses this internally to prevent `bool` from being used
 as a scalar representation, even though `bool` is technically totally ordered and supports
 arithmetic operations.
+
+---
+
+#### `disable_vector<T>`
+
+A specializable variable template to opt out a type from being treated as a vector:
+
+```cpp
+template<typename T>
+constexpr bool mp_units::disable_vector = false;
+```
+
+**Purpose:** Controls the **character** of your representation type by preventing it from
+being classified as a vector, even if it satisfies the vector requirements (provides
+`mp_units::magnitude()` or a recognized fallback like `norm()`).
+
+**When to specialize:** If your type accidentally satisfies the vector requirements but
+shouldn't be used as one:
+
+```cpp
+template<>
+constexpr bool mp_units::disable_vector<my_type> = true;
+```
+
+**Example use case:** The library uses this internally to prevent `std::complex<T>` from
+being treated as a vector. `std::complex<T>` satisfies the `ComplexScalar` concept, and
+`std::norm(z)` exists but returns `|z|²` rather than `|z|`, which would give wrong results
+if `std::complex<T>` were admitted as a vector.
 
 ---
 

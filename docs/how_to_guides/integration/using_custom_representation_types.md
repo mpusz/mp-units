@@ -131,7 +131,7 @@ template<typename T>
 [[nodiscard]] constexpr T modulus(const my_complex_type<T>& c) { return c.get_magnitude(); }
 ```
 
-For **vectors**, provide the `norm()` customization point function:
+For **vectors**, provide the `magnitude()` customization point function, or a `norm()` fallback:
 
 ```cpp
 template<typename T>
@@ -140,22 +140,41 @@ class my_vector_type {
 public:
   using value_type = T;
 
-  constexpr auto norm() const { /* compute magnitude */ }
+  // Preferred: explicit name matching the library's CPO
+  constexpr auto magnitude() const { /* compute Euclidean norm */ }
   // ... other required operations
 };
 ```
 
-Or via a free function:
+Or via a free function found by ADL:
 
 ```cpp
 template<typename T>
-[[nodiscard]] constexpr auto norm(const my_vector_type<T>& v) { return v.compute_norm(); }
+[[nodiscard]] constexpr auto magnitude(const my_vector_type<T>& v) { return v.compute_norm(); }
 ```
 
-!!! tip "Use `norm()` for vectors"
+If your type already provides a `norm()` member or free function (e.g. because it follows
+Eigen/NumPy conventions), no adaptation is needed — the `magnitude()` CPO recognizes `norm()`
+as a fallback for vector types automatically:
 
-    While `magnitude()` is also supported for compatibility, prefer implementing `norm()` to match
-    industry standard libraries (Eigen, NumPy, MATLAB, Armadillo).
+```cpp
+template<typename T>
+class my_eigen_like_type {
+public:
+  using value_type = T;
+
+  // The magnitude() CPO will find this automatically
+  constexpr T norm() const { /* compute Euclidean norm */ }
+  // ... other required operations
+};
+```
+
+!!! tip "When to provide `norm()` vs `magnitude()`"
+
+    Prefer providing `magnitude()` explicitly — it matches the library's CPO name directly.
+    Use `norm()` when you are wrapping or adapting an existing type that already provides it
+    (e.g. Eigen, Armadillo), so you avoid redundant adapters. Both names produce identical
+    behavior; `norm()` is simply recognized as a zero-friction fallback.
 
 ### Step 3: Add Formatting Support (optional)
 
@@ -402,10 +421,11 @@ void example()
 }
 ```
 
-The `cartesian_vector` implementation demonstrates how to create a full-featured vector type with:
+The `cartesian_vector` implementation demonstrates how to create a full-featured vector
+type with:
 
 - Arithmetic operations (`+`, `-`, `*`, `/`)
-- `norm()` member function (and `magnitude()` alias)
+- `magnitude()` member function
 - Support for scalar and vector products
 - Integration with quantity characters
 
@@ -514,7 +534,7 @@ custom types.
 
 **Implementation References:**
 
-- [`representation_concepts.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/representation_concepts.h) - Concept definitions and character-determination CPOs (`disable_real`, `real`, `imag`, `modulus`, `norm`, `magnitude`)
+- [`representation_concepts.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/representation_concepts.h) - Concept definitions and character-determination CPOs (`disable_real`, `disable_vector`, `real`, `imag`, `modulus`, `magnitude`)
 - [`customization_points.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/customization_points.h) - User-specializable customization points (`representation_underlying_type`, `treat_as_floating_point`, `representation_values`, `constraint_violation_handler`, `quantity_like_traits`, `quantity_point_like_traits`)
 - [`quantity_traits.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/quantity_traits.h) - Public helpers (`unit_for`, `reference_for`, `rep_for`)
 - [`scaling.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/scaling.h) - Built-in scaling implementation
