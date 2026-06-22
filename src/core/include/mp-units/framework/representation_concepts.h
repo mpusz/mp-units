@@ -73,6 +73,34 @@ using wider_int_for =
                      std::conditional_t<(sizeof(element_t) <= sizeof(std::uint32_t)), std::uint64_t,
                                         conditional<(sizeof(element_t) < sizeof(uint128_t)), uint128_t, element_t>>>;
 
+// `ScalableWith` and `Addable` describe the representation type's *public algebra*, so each
+// operation's result is required to be `common_with<T>`. `common_with` is the right relation here
+// precisely because it is *symmetric*: it asserts the result and `T` share a common type without
+// privileging a lossy direction.
+//
+//  - `constructible_from<T, result>` (or `convertible_to<result, T>`) would instead bless
+//    truncation: for a widening operation (`int16_t + int16_t -> int`, or a fixed-point type that
+//    widens) it "validates" by checking the wide result narrows back into the narrow `T`.
+//  - the non-narrowing directional check `convertible_to<T, result>` ("T widens into the result")
+//    rejects expression-template results - e.g. `Eigen::Vector3d` is not convertible to its own
+//    `CwiseBinaryOp` sum.
+//
+// `common_with` accepts both promotion (common type = the wider type) and expression templates
+// (common type = the evaluated vector) while rejecting `void` / unrelated junk, and without
+// asserting any narrowing. It is deliberately a bit stronger than the bare mechanics of a single
+// operation (much as `std::totally_ordered` requires `equality_comparable`, and as mp-units requires
+// every representation to be `WeaklyRegular`): a promoting type satisfies it by providing the
+// matching `std::common_type` specialization - the type author's part of the contract.
+//
+// This is a representation-validity gate only; the quantity operators do NOT consume it. `operator+`
+// materializes results via `common_quantity_for` (`get_common_reference` +
+// `representation_canonical_type_t<invoke_result_t<...>>`), and the comparison operators enforce
+// their own `std::common_type<Rep1, Rep2>` requirement (`CommonlyComparableQuantities`).
+//
+// It is also distinct from the *internal* scaling concepts (`UsesFloatingPointScaling` /
+// `UsesIntegerScaling`): those use `constructible_from` because the integer path *deliberately*
+// widens to a transient and `static_cast`s back to `To` - there the narrowing is the intended
+// operation, not a silent truncation. See the note on those concepts.
 template<typename T, typename S>
 concept ScalableWith = requires(const T v, const S s) {
   { v * s / s } -> std::common_with<T>;
@@ -317,12 +345,25 @@ concept NotQuantity = !is_quantity_like<T>;
 // The concept also covers container types whose element type is floating-point (e.g.
 // cartesian_vector<double>): treat_as_floating_point<value_type_t<T>> is checked so that
 // the FP scaling path is taken even when T itself is not floating-point.
+//
+// The scaled result need not be `T` itself, nor even weakly-regular: expression-template
+// linear algebra libraries (e.g. Eigen, Blaze) return lazy proxy types from `operator*` /
+// `operator/` rather than a materialized vector/matrix.  `scale()` always materializes the
+// result via `static_cast<To>` (direct-initialization), so it is sufficient that `T` be
+// constructible from the scaled result.
+//
+// `constructible_from` (rather than the `common_with` used by `Addable` / `ScalableWith`) is
+// deliberate: it is the exact precondition of `static_cast<To>` and nothing more. In particular it
+// admits explicit-only conversions - e.g. the rational integer path widens `safe_int<int>` to
+// `safe_int<int64_t>` and narrows back, which is `constructible_from` but neither `convertible_to`
+// nor required to be `common_with`. `Addable` uses `common_with` because its results instead feed
+// the `common_type`-based quantity machinery, where a common-reference relationship is what matters.
 template<typename T>
 concept UsesFloatingPointScaling =
   (treat_as_floating_point<T> || treat_as_floating_point<value_type_t<T>>) &&
   std::constructible_from<value_type_t<T>, long double> && requires(T value, value_type_t<T> f) {
-    { value * f } -> WeaklyRegular;
-    { value / f } -> WeaklyRegular;
+    requires std::constructible_from<T, decltype(value * f)>;
+    requires std::constructible_from<T, decltype(value / f)>;
   };
 
 // detail::integral (not std::integral) is required so that int128_t / uint128_t are
@@ -343,10 +384,15 @@ concept UsesFloatingPointScaling =
 // wider_int_for<element_t> (e.g. int64_t for signed int16_t, uint64_t for uint16_t) to
 // avoid overflowing the intermediate. The concept therefore requires `value * WF` and
 // `value / WF` for the wider factor.
+//
+// As in UsesFloatingPointScaling, the result is materialized via `static_cast<To>`, so we require
+// `T` to be constructible from it rather than (implicitly) convertible.  This matters because the
+// integer path deliberately produces a *wider* result (e.g. safe_int<int> * int64_t yields
+// safe_int<int64_t>) that narrows back to `T` only explicitly.
 template<typename T>
 concept UsesIntegerScaling = integral<value_type_t<T>> && requires(T value, wider_int_for<value_type_t<T>> wf) {
-  { value * wf };
-  { value / wf };
+  requires std::constructible_from<T, decltype(value * wf)>;
+  requires std::constructible_from<T, decltype(value / wf)>;
 };
 
 // A type that provides its own magnitude-aware operator*(T, UnitMagnitude) customization

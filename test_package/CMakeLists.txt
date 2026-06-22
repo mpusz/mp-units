@@ -38,3 +38,35 @@ if(MP_UNITS_BUILD_CXX_MODULES)
     # target_compile_definitions(test_package PRIVATE MP_UNITS_MODULES)
     target_link_libraries(test_package PRIVATE mp-units::mp-units)
 endif()
+
+#
+# Linear algebra integration consumers
+#
+# For each backing library found, verify the integration can be consumed from the installed
+# package: the header always ships (header-mode consumer), and in a modules build the
+# `mp_units.integrations.<lib>` module is consumed too (module-mode consumer).
+find_package(Eigen3 QUIET)
+find_package(glm QUIET)
+find_package(blaze QUIET)
+
+# The integration is verified in header mode: the header always ships and is consumable from any
+# package (header-only or modules). Module-mode consumption (`import mp_units.integrations.<lib>`)
+# is NOT exercised here for the same reason the main `test_package` does not `import mp_units;` -
+# rebuilding C++ module BMIs from an installed package is a known unsupported scenario (see the
+# `MP_UNITS_MODULES` TODO above). Module-mode use is covered in-tree by the `linear_algebra` example.
+function(add_integration_test_package backend dependency)
+    if(NOT TARGET ${dependency})
+        return()
+    endif()
+    add_executable(test_package_integration-${backend}-headers test_package_integration.cpp)
+    target_compile_features(
+        test_package_integration-${backend}-headers PRIVATE $<IF:$<BOOL:${CMAKE_CXX_MODULE_STD}>,cxx_std_23,cxx_std_20>
+    )
+    target_link_libraries(
+        test_package_integration-${backend}-headers PRIVATE mp-units::integrations mp-units::systems ${dependency}
+    )
+endfunction()
+
+add_integration_test_package(eigen Eigen3::Eigen)
+add_integration_test_package(glm glm::glm)
+add_integration_test_package(blaze blaze::blaze)

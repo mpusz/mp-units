@@ -176,6 +176,22 @@ public:
     (e.g. Eigen, Armadillo), so you avoid redundant adapters. Both names produce identical
     behavior; `norm()` is simply recognized as a zero-friction fallback.
 
+Once your representation type provides `magnitude()` (or a `norm()` fallback), a **vector
+quantity** built on it supports `magnitude()` at the quantity level automatically — no extra
+code — returning the Euclidean magnitude as a scalar quantity:
+
+```cpp
+quantity v = my_vector_type<double>{3, 4, 0} * isq::velocity[m / s];
+quantity speed = magnitude(v);  // 5 m/s
+```
+
+!!! warning "V2 limitation: result type"
+
+    The magnitude result drops the precise _quantity spec_ down to the unit's kind, and
+    quantity-level `scalar_product()` / `vector_product()` (dot/cross) are **not** provided in
+    V2 — they would need to return a _different_ quantity kind, which V2 _references_ cannot
+    express. Compute those on the raw representation and re-attach the reference yourself.
+
 ### Step 3: Add Formatting Support (optional)
 
 Enable formatting with `std::format`:

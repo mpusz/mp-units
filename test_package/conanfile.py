@@ -31,8 +31,13 @@ class TestPackageConan(ConanFile):
     settings = "os", "arch", "compiler", "build_type"
     generators = "CMakeDeps"
 
+    # backing libraries exercised by the linear algebra integration consumers
+    _linear_algebra_libs = ["eigen/5.0.1", "glm/1.0.1", "blaze/3.8.2"]
+
     def requirements(self):
         self.requires(self.tested_reference_str)
+        for ref in self._linear_algebra_libs:
+            self.requires(ref)
 
     def build_requirements(self):
         self.tool_requires("cmake/[>=4.3.0 <5]")
@@ -60,9 +65,20 @@ class TestPackageConan(ConanFile):
         cmake.build()
 
     def test(self):
-        if can_run(self):
-            if self.dependencies["mp-units"].options.cxx_modules:
-                bin_path = os.path.join(self.cpp.build.bindirs[0], "test_package")
+        if not can_run(self):
+            return
+        bindir = self.cpp.build.bindirs[0]
+        modules = bool(self.dependencies["mp-units"].options.cxx_modules)
+
+        names = ["test_package-headers"]
+        if modules:
+            names.append("test_package")
+        # Linear algebra integrations are verified in header mode (the headers always ship and are
+        # consumable from any package). Run whichever backends were found at build time.
+        for backend in ("eigen", "glm", "blaze"):
+            names.append(f"test_package_integration-{backend}-headers")
+
+        for name in names:
+            bin_path = os.path.join(bindir, name)
+            if os.path.exists(bin_path) or os.path.exists(bin_path + ".exe"):
                 self.run(bin_path, env="conanrun")
-            bin_path = os.path.join(self.cpp.build.bindirs[0], "test_package-headers")
-            self.run(bin_path, env="conanrun")

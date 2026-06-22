@@ -15,6 +15,11 @@ This page documents the version history and changes for the **mp-units** library
 - feat: `hep` system refactored to be similar to leading projects in the HEP domain
 - feat: `hep` system extended with new constants and specialized quantities
 - feat: `unit_for`, `reference_for`, and `rep_for` added
+- feat: linear algebra integrations added (headers `mp-units/integrations/{eigen,glm,blaze}.h`
+        and modules `mp_units.integrations.{eigen,glm,blaze}`) so Eigen, GLM, and Blaze vectors
+        and matrices can be used directly as quantity representations
+- feat: `representation_canonical_type` customization point added (materializes
+        expression-template representations before storing them in a `quantity`)
 - feat: type conversions improved to raise compile-time warnings on truncation
 - feat: `natural_point_origin<QuantitySpec>` added (replaces `zeroth_point_origin<QuantitySpec>`)
 - feat: `is_natural_point_origin<T>` added (replaces `is_zeroth_point_origin<T>`)

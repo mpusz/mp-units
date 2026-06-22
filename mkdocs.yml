@@ -255,6 +255,7 @@ nav:
           - trade_execution: examples/trade_execution.md
           - strong_angular_quantities: examples/strong_angular_quantities.md
           - total_energy: examples/total_energy.md
+          - linear_algebra: examples/linear_algebra.md
       - Advanced:
           - unmanned_aerial_vehicle: examples/unmanned_aerial_vehicle.md
           - glide_computer: examples/glide_computer.md
