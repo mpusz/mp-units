@@ -24,12 +24,18 @@
 #include <mp-units/framework.h>
 #include <mp-units/math.h>  // IWYU pragma: keep
 #include <mp-units/systems/isq/electromagnetism.h>
+#include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/si_quantities.h>
+#include <mp-units/systems/isq/space_and_time.h>
+#include <mp-units/systems/si/prefixes.h>
 #include <mp-units/systems/si/units.h>
 
 namespace {
 
 using namespace mp_units;
+
+// ************************ exponent with denominator 2 (square root) ************************
+// amplitude/power spectral density (e.g. nV/√Hz): dimension carries T^(1/2)
 
 QUANTITY_SPEC(power_spectral_density, pow<2>(isq::voltage) / isq::frequency);
 QUANTITY_SPEC(amplitude_spectral_density, sqrt(power_spectral_density));
@@ -57,5 +63,32 @@ static_assert(sqrt(16 * power_spectral_density[square(si::volt) / si::hertz]) ==
 static_assert(16 * power_spectral_density[square(si::volt) / si::hertz] ==
               pow<2>(4 * amplitude_spectral_density[si::volt / sqrt(si::hertz)]));
 #endif
+
+// fracture toughness K = stress * sqrt(length) (e.g. MPa·√m): dimension M L^(-1/2) T^-2
+QUANTITY_SPEC(fracture_toughness, isq::pressure* sqrt(isq::length));
+
+static_assert(fracture_toughness.dimension == isq::pressure.dimension * sqrt(isq::length.dimension));
+static_assert(pow<2>(fracture_toughness).dimension == pow<2>(isq::pressure.dimension) * isq::length.dimension);
+static_assert(implicitly_convertible(sqrt(pow<2>(fracture_toughness)), fracture_toughness));
+static_assert(implicitly_convertible(pow<2>(fracture_toughness), pow<2>(isq::pressure) * isq::length));
+
+static_assert(dimension_symbol(fracture_toughness.dimension) == "ML^-(1/2)T⁻²");
+static_assert(pow<2>(si::mega<si::pascal> * sqrt(si::metre)) == pow<2>(si::mega<si::pascal>) * si::metre);
+static_assert(unit_symbol(si::mega<si::pascal> * sqrt(si::metre)) == "MPa m^(1/2)");
+
+// ************************ exponent with denominator 3 (cube root) ************************
+// Manning's roughness coefficient n = length^(2/3) / speed (e.g. s·m^(-1/3)): dimension T L^(-1/3).
+// The denominator is 3 (not 2), so this exercises code paths that must not assume square roots.
+
+QUANTITY_SPEC(manning_roughness_coefficient, pow<2, 3>(isq::length) / isq::speed);
+
+static_assert(manning_roughness_coefficient.dimension == pow<2, 3>(isq::length.dimension) / isq::speed.dimension);
+static_assert(pow<3>(manning_roughness_coefficient).dimension ==
+              pow<2>(isq::length.dimension) / pow<3>(isq::speed.dimension));
+static_assert(implicitly_convertible(cbrt(pow<3>(manning_roughness_coefficient)), manning_roughness_coefficient));
+
+static_assert(dimension_symbol(manning_roughness_coefficient.dimension) == "TL^-(1/3)");
+static_assert(pow<3>(si::second / cbrt(si::metre)) == pow<3>(si::second) / si::metre);
+static_assert(unit_symbol(si::second / cbrt(si::metre)) == "s/m^(1/3)");
 
 }  // namespace
