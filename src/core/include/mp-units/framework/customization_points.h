@@ -140,6 +140,38 @@ MP_UNITS_EXPORT template<typename T>
   requires requires { typename representation_underlying_type<T>::type; }
 using representation_underlying_type_t = typename representation_underlying_type<T>::type;
 
+/**
+ * @brief Maps a representation value type to the concrete type a quantity should store.
+ *
+ * Expression-template linear algebra libraries (e.g. Eigen, Blaze, Armadillo) return lazy proxy
+ * types from their arithmetic operators. Such a proxy keeps references to its operands and must
+ * be evaluated to a concrete type before being stored inside a `quantity`; otherwise the quantity
+ * would retain dangling references once the operands (often temporaries) go out of scope.
+ *
+ * The `quantity` deduction guides and the concepts that compute the representation type resulting
+ * from an arithmetic operation use this trait so that the stored representation is always a
+ * materialized concrete type. The primary template simply decays the type, which is correct for
+ * scalars and for vector/matrix types whose operators return a concrete value (e.g. `cartesian_vector`,
+ * GLM). Specialize it for an expression-template type to name its evaluated type (for example to
+ * `Eigen::Matrix`'s `PlainObject`, or Blaze's `ResultType`) — see the integration guide.
+ *
+ * @tparam T the representation value type (possibly an expression-template proxy)
+ */
+MP_UNITS_EXPORT template<typename T>
+struct representation_canonical_type {
+  using type = std::remove_cvref_t<T>;
+};
+
+// A top-level `const` is forwarded to the unqualified type (mirroring `representation_underlying_type`
+// above) so that library specializations only need to handle the unqualified type. This matters
+// because expression-template libraries return their proxies by `const` value (e.g.
+// `decltype(Eigen::Vector3d{} * 2.0)` is a `const Eigen::CwiseBinaryOp<...>`).
+template<typename T>
+struct representation_canonical_type<const T> : representation_canonical_type<T> {};
+
+MP_UNITS_EXPORT template<typename T>
+using representation_canonical_type_t = typename representation_canonical_type<T>::type;
+
 namespace detail {
 
 template<typename T>

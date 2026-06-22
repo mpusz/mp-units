@@ -50,3 +50,38 @@ endif()
 
 include(Catch)
 catch_discover_tests(unit_tests_runtime)
+
+#
+# Linear algebra integration tests
+#
+# The same `linear_algebra_test.cpp` source is compiled once per available third-party linear
+# algebra library (the source self-selects the backend via `__has_include`), as a separate
+# executable each. The `mp-units::integrations-<backend>` target carries the adapter header and the
+# third-party library, and is defined by `src/integrations` only when the library is found.
+#
+# Tests are header-mode only (consistent with the rest of the suite, which favors textual includes
+# for access to implementation details). Module-mode consumption is demonstrated by the example.
+function(add_linear_algebra_test backend)
+    if(NOT TARGET mp-units::integrations-${backend})
+        message(STATUS "Skipping the '${backend}' linear algebra test (integration not available)")
+        return()
+    endif()
+    add_executable(linear_algebra_test-${backend} linear_algebra_test.cpp)
+    target_link_libraries(
+        linear_algebra_test-${backend} PRIVATE mp-units::mp-units mp-units::integrations-${backend}
+                                               Catch2::Catch2WithMain
+    )
+    catch_discover_tests(linear_algebra_test-${backend})
+endfunction()
+
+add_linear_algebra_test(eigen)
+add_linear_algebra_test(glm)
+add_linear_algebra_test(blaze)
+
+# The built-in `cartesian_vector` backend ships with `mp-units::mp-units` (no third-party dependency
+# and no integration plugin), so it is always built and forced via `MP_UNITS_LA_USE_CARTESIAN`. It
+# additionally covers integral representations and `constexpr` evaluation.
+add_executable(linear_algebra_test-cartesian linear_algebra_test.cpp)
+target_compile_definitions(linear_algebra_test-cartesian PRIVATE MP_UNITS_LA_USE_CARTESIAN)
+target_link_libraries(linear_algebra_test-cartesian PRIVATE mp-units::mp-units Catch2::Catch2WithMain)
+catch_discover_tests(linear_algebra_test-cartesian)

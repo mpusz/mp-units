@@ -78,5 +78,46 @@ add_example(strong_angular_quantities)
 add_example(total_energy)
 add_example(unmanned_aerial_vehicle example_utils)
 
+#
+# Linear algebra integration examples
+#
+# The same `linear_algebra.cpp` source is compiled once per available third-party linear algebra
+# library (the source self-selects the backend via `__has_include`, and each target links exactly
+# one library). The `mp-units::integrations-<backend>` target carries both the adapter header/module
+# and the third-party library, so we link it and gate on it. It is defined by `src/integrations`
+# only when the corresponding library is found.
+function(add_linear_algebra_example backend)
+    if(NOT TARGET mp-units::integrations-${backend})
+        message(STATUS "Skipping the '${backend}' linear algebra example (integration not available)")
+        return()
+    endif()
+    # module-mode variant: `import mp_units.integrations.<backend>`
+    if(MP_UNITS_BUILD_CXX_MODULES)
+        add_executable(linear_algebra-${backend} linear_algebra.cpp)
+        target_compile_definitions(linear_algebra-${backend} PRIVATE MP_UNITS_MODULES)
+        target_link_libraries(linear_algebra-${backend} PRIVATE mp-units::mp-units mp-units::integrations-${backend})
+    endif()
+    # header-mode variant: `#include <mp-units/integrations/<backend>.h>`
+    add_executable(linear_algebra-${backend}-headers linear_algebra.cpp)
+    target_link_libraries(
+        linear_algebra-${backend}-headers PRIVATE mp-units::mp-units mp-units::integrations-${backend}
+    )
+endfunction()
+
+add_linear_algebra_example(eigen)
+add_linear_algebra_example(glm)
+add_linear_algebra_example(blaze)
+
+# The built-in `cartesian_vector` backend ships with `mp-units::mp-units` (no third-party dependency
+# and no integration plugin), so it is always built and forced via `MP_UNITS_LA_USE_CARTESIAN`.
+if(MP_UNITS_BUILD_CXX_MODULES)
+    add_executable(linear_algebra-cartesian linear_algebra.cpp)
+    target_compile_definitions(linear_algebra-cartesian PRIVATE MP_UNITS_MODULES MP_UNITS_LA_USE_CARTESIAN)
+    target_link_libraries(linear_algebra-cartesian PRIVATE mp-units::mp-units)
+endif()
+add_executable(linear_algebra-cartesian-headers linear_algebra.cpp)
+target_compile_definitions(linear_algebra-cartesian-headers PRIVATE MP_UNITS_LA_USE_CARTESIAN)
+target_link_libraries(linear_algebra-cartesian-headers PRIVATE mp-units::mp-units)
+
 add_subdirectory(glide_computer_lib)
 add_subdirectory(kalman_filter)

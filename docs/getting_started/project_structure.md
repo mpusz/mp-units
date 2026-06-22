@@ -77,6 +77,21 @@ flowchart TD
     - [`MP_UNITS_BUILD_CXX_MODULES`](installation_and_usage.md#MP_UNITS_BUILD_CXX_MODULES)
       CMake option is set to `ON`.
 
+In addition, `./src/integrations` hosts optional, self-contained **integrations with third-party
+libraries**. Each component owns its `mp-units/integrations/<lib>.h` header and, in a C++
+modules build, the matching `mp_units.integrations.<lib>` module:
+
+| C++ Module                    | CMake Target                   | Third-party library                            |
+|-------------------------------|--------------------------------|------------------------------------------------|
+| `mp_units.integrations.eigen` | `mp-units::integrations-eigen` | [Eigen](https://eigen.tuxfamily.org)           |
+| `mp_units.integrations.glm`   | `mp-units::integrations-glm`   | [GLM](https://github.com/g-truc/glm)           |
+| `mp_units.integrations.blaze` | `mp-units::integrations-blaze` | [Blaze](https://bitbucket.org/blaze-lib/blaze) |
+
+Each depends only on `mp_units.core` and is built solely when the matching third-party library
+is found (the module is added on top in a C++ modules build). A component is **exported separately**
+(`find_package(mp-units-integrations-<lib>)`), never through `mp-unitsTargets`, so that
+`find_package(mp-units)` never gains a dependency on a third-party library.
+
 ## Header files
 
 All of the project's header files can be found in the `mp-units/...` subdirectory.
@@ -101,6 +116,21 @@ All of the project's header files can be found in the `mp-units/...` subdirector
     - `mp-units/bits/...` provides private implementation details only (no public definitions),
     - `mp-units/ext/...` contains external dependencies that at some point in the future
       should be replaced with C++ standard library facilities.
+
+### Third-party library integrations
+
+Optional, opt-in headers under `mp-units/integrations/` that adapt a third-party library to
+**mp-units**. Each is guarded with `__has_include` (a harmless no-op when its library is unavailable)
+and has a [module counterpart](#modules) (`mp_units.integrations.<lib>`). Currently these adapt
+linear algebra libraries, letting their vector and matrix types be used directly as
+quantity representations:
+
+- `mp-units/integrations/eigen.h` integrates [Eigen](https://eigen.tuxfamily.org),
+- `mp-units/integrations/glm.h` integrates [GLM](https://github.com/g-truc/glm),
+- `mp-units/integrations/blaze.h` integrates [Blaze](https://bitbucket.org/blaze-lib/blaze).
+
+See [Representation Types](../users_guide/framework_basics/representation_types.md#third-party-library-integrations)
+for usage.
 
 ### Systems and associated utilities
 

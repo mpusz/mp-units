@@ -71,6 +71,11 @@ class MPUnitsConan(ConanFile):
         "contracts": "gsl-lite",
         "freestanding": False,
     }
+    # third-party libraries exercised by the linear algebra integration example and tests. These are
+    # never runtime requirements of mp-units: the integration headers are dependency-free (guarded
+    # by `__has_include`) and always ship; only the optional C++ modules are compiled against a
+    # library, and only when it happens to be available (e.g. in the `build_all` developer build).
+    _linear_algebra_libs = ["eigen/5.0.1", "glm/1.0.1", "blaze/3.8.2"]
     implements = ["auto_header_only"]
     exports = "LICENSE.md"
     exports_sources = (
@@ -218,9 +223,16 @@ class MPUnitsConan(ConanFile):
 
     def build_requirements(self):
         self.tool_requires("cmake/[>=4.3.0 <5]")
+        if self.options.freestanding:
+            return
         if self._build_all:
-            if not self.options.freestanding:
-                self.test_requires("catch2/3.11.0")
+            self.test_requires("catch2/3.11.0")
+        # Make the linear algebra libraries available in the BUILD context
+        # A consumer that later uses an integration pulls its library in via
+        # `find_package(mp-units-integrations-<lib>)`, not via mp-units itself.
+        if self._build_all or self.options.get_safe("cxx_modules"):
+            for ref in self._linear_algebra_libs:
+                self.test_requires(ref)
 
     def validate(self):
         compiler = self.settings.compiler
@@ -413,6 +425,21 @@ class MPUnitsConan(ConanFile):
                 self.cpp_info.components["core"].cxxflags.append("/utf-8")
 
             self.cpp_info.components["systems"].requires = ["core"]
+
+            # The dependency-free integration headers (`mp-units::integrations`). Mirrors the CMake
+            # target exported in `mp-unitsTargets`. The third-party backends stay out of the dependency
+            # graph: they are pulled in only by the separate `find_package(mp-units-integrations-<lib>)`
+            # packages, never by mp-units itself.
+            #
+            # The per-backend `mp-units::integrations-<lib>` targets are intentionally NOT surfaced as
+            # Conan components. They are a CMake-level feature for source consumers (`add_subdirectory`/
+            # FetchContent) and raw `cmake --install` users, where the backend is found at configure time
+            # and the module is built from source. Conan consumers instead link `mp-units::integrations`
+            # (always-shipped, dependency-free headers) plus their own copy of the linear algebra library
+            # (see `test_package`). Making them Conan components would force opt-in host dependencies on
+            # mp-units for a benefit that only fully lands once module consumption from an installed
+            # package is supported - revisit then.
+            self.cpp_info.components["integrations"].requires = ["core"]
 
             # https://github.com/llvm/llvm-project/issues/131410
             if (

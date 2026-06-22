@@ -20,472 +20,333 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// Exercises a third-party linear algebra library used as an mp-units `quantity` representation
+// type. The backend is selected automatically from whichever library is available on the include
+// path; the build system compiles this file once per library it finds (one executable each).
+
+// 1. The third-party library headers are always included textually: the libraries are not
+//    modularized, and we need their vector type directly. A backend is selected here. mp-units'
+//    own `cartesian_vector` is the built-in baseline: it ships with the library, needs no
+//    third-party dependency and no integration plugin, and is used when forced
+//    (`MP_UNITS_LA_USE_CARTESIAN`) or when no linear algebra library is found.
+#if defined(MP_UNITS_LA_USE_CARTESIAN)
+#define MP_UNITS_LA_CARTESIAN
+#elif __has_include(<Eigen/Core>)
+#include <Eigen/Core>
+#include <Eigen/Geometry>  // cross()
+#define MP_UNITS_LA_EIGEN
+#elif __has_include(<glm/vec3.hpp>)
+#include <glm/geometric.hpp>
+#include <glm/vec3.hpp>
+#define MP_UNITS_LA_GLM
+#elif __has_include(<blaze/math/StaticVector.h>)
+#include <blaze/math/StaticVector.h>
+#define MP_UNITS_LA_BLAZE
+#else
+#define MP_UNITS_LA_CARTESIAN
+#endif
+
 #include <catch2/catch_test_macros.hpp>
-#include <mp-units/compat_macros.h>
-#include <mp-units/ext/format.h>
+#include <catch2/matchers/catch_matchers_floating_point.hpp>
+
+// 2. When the build is configured with `import std;` the mp-units headers below consume the
+//    standard library as a module, so this TU must import it too (it is header-mode otherwise).
+//    All textual includes above stay before the import, which is the order libstdc++ requires.
 #ifdef MP_UNITS_IMPORT_STD
 import std;
-#else
-#include <matrix>
-#include <ostream>
 #endif
-#ifdef MP_UNITS_MODULES
-import mp_units;
-#else
+
+// 3. mp-units and the matching integration adapter. The test is header-mode only (module-mode
+//    consumption of the integration is demonstrated by the `linear_algebra` example).
 #include <mp-units/math.h>
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>
+#if defined(MP_UNITS_LA_EIGEN)
+#include <mp-units/integrations/eigen.h>
+#elif defined(MP_UNITS_LA_GLM)
+#include <mp-units/integrations/glm.h>
+#elif defined(MP_UNITS_LA_BLAZE)
+#include <mp-units/integrations/blaze.h>
+#elif defined(MP_UNITS_LA_CARTESIAN)
+#include <mp-units/cartesian_vector.h>
 #endif
-
-template<typename Rep = double>
-using vector = STD_LA::fixed_size_column_vector<Rep, 3>;
-
-template<typename Rep>
-std::ostream& operator<<(std::ostream& os, const vector<Rep>& v)
-{
-  os << "|";
-  for (auto i = 0U; i < v.size(); ++i) {
-    os << MP_UNITS_STD_FMT::format(" {:>9}", v(i));
-  }
-  os << " |";
-  return os;
-}
 
 namespace {
 
 using namespace mp_units;
 using namespace mp_units::si::unit_symbols;
 
-template<QuantitySpec auto QS, QuantityOf<QS> Q>
-  requires(Q::quantity_spec.character == quantity_character::vector) &&
-          (QS.character == quantity_character::real_scalar)
-[[nodiscard]] constexpr QuantityOf<QS> auto get_magnitude(const Q& q)
+#if defined(MP_UNITS_LA_EIGEN)
+inline constexpr const char* backend = "Eigen";
+using vec3 = Eigen::Vector3d;
+#elif defined(MP_UNITS_LA_GLM)
+inline constexpr const char* backend = "GLM";
+using vec3 = glm::dvec3;
+#elif defined(MP_UNITS_LA_BLAZE)
+inline constexpr const char* backend = "Blaze";
+using vec3 = blaze::StaticVector<double, 3>;
+#elif defined(MP_UNITS_LA_CARTESIAN)
+inline constexpr const char* backend = "cartesian_vector (built-in)";
+using vec3 = cartesian_vector<double>;
+#endif
+
+[[nodiscard]] vec3 make_vec3(double x, double y, double z) { return {x, y, z}; }
+
+// Only the built-in `cartesian_vector` backend offers `constexpr` arithmetic; the third-party
+// cross products are runtime-only (e.g. `blaze::cross` materializes via a non-constexpr ctor), so
+// marking their helper `constexpr` would be an ill-formed never-constant-expression function.
+#if defined(MP_UNITS_LA_CARTESIAN)
+#define MP_UNITS_LA_CONSTEXPR constexpr
+#else
+#define MP_UNITS_LA_CONSTEXPR
+#endif
+
+// Euclidean cross product on the bare vector type. Every backend spells it differently, so the
+// difference is confined to this one helper; the quantity-level overload below is backend-agnostic.
+[[nodiscard]] MP_UNITS_LA_CONSTEXPR vec3 cross(const vec3& lhs, const vec3& rhs)
 {
-  const auto& v = q.numerical_value_ref_in(q.unit);
-  return hypot(v(0) * QS[Q::unit], v(1) * QS[Q::unit], v(2) * QS[Q::unit]);
+#if defined(MP_UNITS_LA_EIGEN)
+  return lhs.cross(rhs);
+#elif defined(MP_UNITS_LA_GLM)
+  return glm::cross(lhs, rhs);
+#elif defined(MP_UNITS_LA_BLAZE)
+  return blaze::cross(lhs, rhs);
+#elif defined(MP_UNITS_LA_CARTESIAN)
+  return vector_product(lhs, rhs);
+#endif
 }
 
-template<QuantitySpec auto QS, QuantityOf<QS> T>
-  requires(T::quantity_spec.character == quantity_character::vector) &&
-          (QS.character == quantity_character::real_scalar)
-[[nodiscard]] constexpr QuantityOf<QS> auto get_magnitude(const vector<T>& v)
-{
-  return hypot(QS(v(0)), QS(v(1)), QS(v(2)));
-}
-
-template<typename T, typename U>
-[[nodiscard]] constexpr vector<decltype(T{} * U{})> cross_product(const vector<T>& a, const vector<U>& b)
-{
-  return {a(1) * b(2) - a(2) * b(1), a(2) * b(0) - a(0) * b(2), a(0) * b(1) - a(1) * b(0)};
-}
-
+// Cross product of two vector quantities: cross the numerical values, then combine the references.
 template<Quantity Q1, Quantity Q2>
-[[nodiscard]] constexpr QuantityOf<Q1::quantity_spec * Q2::quantity_spec> auto cross_product(const Q1& q1, const Q2& q2)
+[[nodiscard]] MP_UNITS_LA_CONSTEXPR QuantityOf<Q1::quantity_spec * Q2::quantity_spec> auto cross(const Q1& q1,
+                                                                                                 const Q2& q2)
 {
-  return cross_product(q1.numerical_value_ref_in(q1.unit), q2.numerical_value_ref_in(q2.unit)) *
-         (Q1::reference * Q2::reference);
+  return cross(q1.numerical_value_in(q1.unit), q2.numerical_value_in(q2.unit)) * (Q1::reference * Q2::reference);
 }
+
+// --- compile-time guarantees -------------------------------------------------------------------
+
+// The library vector type is accepted as a vector representation.
+static_assert(RepresentationOf<vec3, quantity_character::vector>);
+
+// A library scalar multiplication may yield a lazy expression template; the representation
+// machinery must canonicalize it back to the concrete vector type rather than store the proxy
+// (which would dangle). `decltype(vec3{} * 2.0)` is exactly such a proxy for Eigen/Blaze.
+static_assert(std::same_as<representation_canonical_type_t<decltype(std::declval<vec3>() * 2.0)>, vec3>);
+
+// Consequently, arithmetic on vector quantities stores the concrete vector type, not a proxy.
+static_assert(std::same_as<decltype(make_vec3(1, 2, 3) * isq::velocity[m / s] * (2. * isq::duration[s]))::rep, vec3>);
+
+// A vector quantity models the `Vector` concept (so `magnitude(q)` works on it directly) ...
+static_assert(detail::Vector<decltype(make_vec3(0, 0, 0) * isq::velocity[m / s])>);
+// ... but is NOT a representation type: a quantity can never be nested as another quantity's
+// representation (`value_type_t<quantity>` is the quantity itself, which `NotQuantity` rejects).
+static_assert(!detail::VectorRepresentation<decltype(make_vec3(0, 0, 0) * isq::velocity[m / s])>);
+static_assert(!RepresentationOf<decltype(make_vec3(0, 0, 0) * isq::velocity[m / s]), quantity_character::vector>);
+// `magnitude()` of a vector quantity is a scalar quantity in the same unit.
+static_assert(QuantityOf<decltype(magnitude(make_vec3(3, 4, 0) * isq::velocity[m / s])), isq::speed>);
 
 }  // namespace
 
-TEST_CASE("vector quantity", "[la]")
+TEST_CASE("linear algebra type as a quantity representation")
 {
-  SECTION("cast of unit")
-  {
-    SECTION("non-truncating")
-    {
-      const auto v = vector<int>{3, 2, 1} * isq::displacement[km];
-      CHECK(v.numerical_value_in(m) == vector<int>{3000, 2000, 1000});
-    }
+  INFO("backend: " << backend);
 
-    SECTION("truncating")
-    {
-      const auto v = vector<int>{1001, 1002, 1003} * isq::displacement[m];
-      CHECK(v.force_numerical_value_in(km) == vector<int>{1, 1, 1});
-    }
+  SECTION("construction preserves the numerical value")
+  {
+    const quantity v = make_vec3(1, 2, 3) * isq::displacement[m];
+    const auto& nv = v.numerical_value_in(m);
+    CHECK(nv[0] == 1);
+    CHECK(nv[1] == 2);
+    CHECK(nv[2] == 3);
   }
 
-  SECTION("to scalar magnitude")
+  SECTION("exact unit conversion (km -> m) of a vector quantity")
   {
-    const auto v = vector<int>{2, 3, 6} * isq::velocity[km / h];
-    const auto speed = get_magnitude<isq::speed>(v);
-    CHECK(speed.numerical_value_ref_in(km / h) == 7);
+    const quantity v = make_vec3(3, 2, 1) * isq::displacement[km];
+    const auto& nv = v.numerical_value_in(m);
+    CHECK(nv[0] == 3000);
+    CHECK(nv[1] == 2000);
+    CHECK(nv[2] == 1000);
   }
 
-  SECTION("multiply by scalar value")
+  SECTION("multiplication by a scalar number, on either side")
   {
-    const auto v = vector<int>{1, 2, 3} * isq::displacement[m];
-
-    SECTION("integral")
-    {
-      SECTION("scalar on LHS") { CHECK((2 * v).numerical_value_in(m) == vector<int>{2, 4, 6}); }
-      SECTION("scalar on RHS") { CHECK((v * 2).numerical_value_in(m) == vector<int>{2, 4, 6}); }
-    }
-
-    SECTION("floating-point")
-    {
-      SECTION("scalar on LHS") { CHECK((0.5 * v).numerical_value_in(m) == vector<double>{0.5, 1., 1.5}); }
-      SECTION("scalar on RHS") { CHECK((v * 0.5).numerical_value_in(m) == vector<double>{0.5, 1., 1.5}); }
-    }
+    const quantity v = make_vec3(1, 2, 3) * isq::displacement[m];
+    const auto& left = (2. * v).numerical_value_in(m);
+    const auto& right = (v * 2.).numerical_value_in(m);
+    CHECK(left[0] == 2);
+    CHECK(left[1] == 4);
+    CHECK(left[2] == 6);
+    CHECK(right[0] == 2);
+    CHECK(right[1] == 4);
+    CHECK(right[2] == 6);
   }
 
-  SECTION("divide by scalar value")
+  SECTION("division by a scalar number")
   {
-    const auto v = vector<int>{2, 4, 6} * isq::displacement[m];
-
-    SECTION("integral") { CHECK((v / 2).numerical_value_in(m) == vector<int>{1, 2, 3}); }
-    SECTION("floating-point") { CHECK((v / 0.5).numerical_value_in(m) == vector<double>{4., 8., 12.}); }
+    const quantity v = make_vec3(2, 4, 6) * isq::displacement[m];
+    const auto& nv = (v / 2.).numerical_value_in(m);
+    CHECK(nv[0] == 1);
+    CHECK(nv[1] == 2);
+    CHECK(nv[2] == 3);
   }
 
-  SECTION("add")
+  SECTION("unary negation")
   {
-    const auto v = vector<int>{1, 2, 3} * isq::displacement[m];
-
-    SECTION("same unit")
-    {
-      const auto u = vector<int>{3, 2, 1} * isq::displacement[m];
-      CHECK((v + u).numerical_value_in(m) == vector<int>{4, 4, 4});
-    }
-    SECTION("different units")
-    {
-      const auto u = vector<int>{3, 2, 1} * isq::displacement[km];
-      CHECK((v + u).numerical_value_in(m) == vector<int>{3001, 2002, 1003});
-    }
+    const quantity v = make_vec3(1, -2, 3) * isq::displacement[m];
+    const auto& nv = (-v).numerical_value_in(m);
+    CHECK(nv[0] == -1);
+    CHECK(nv[1] == 2);
+    CHECK(nv[2] == -3);
   }
 
-  SECTION("subtract")
+  SECTION("vector quantity times scalar quantity yields a vector quantity")
   {
-    const auto v = vector<int>{1, 2, 3} * isq::displacement[m];
-
-    SECTION("same unit")
-    {
-      const auto u = vector<int>{3, 2, 1} * isq::displacement[m];
-      CHECK((v - u).numerical_value_in(m) == vector<int>{-2, 0, 2});
-    }
-    SECTION("different units")
-    {
-      const auto u = vector<int>{3, 2, 1} * isq::displacement[km];
-      CHECK((v - u).numerical_value_in(m) == vector<int>{-2999, -1998, -997});
-    }
+    const quantity velocity = make_vec3(30, 40, 0) * isq::velocity[km / h];
+    const quantity displacement = velocity * (2. * isq::duration[h]);
+    const auto& nv = displacement.in(km).numerical_value_in(km);
+    CHECK(nv[0] == 60);
+    CHECK(nv[1] == 80);
+    CHECK(nv[2] == 0);
   }
 
-  SECTION("multiply by scalar quantity")
+  SECTION("scalar quantity multiplication is symmetric and combines the quantity specifications")
   {
-    const auto v = vector<int>{1, 2, 3} * isq::velocity[m / s];
+    const quantity v = make_vec3(1, 2, 3) * isq::velocity[m / s];
+    const quantity mass = 2. * isq::mass[kg];
 
-    SECTION("integral")
-    {
-      const auto mass = 2 * isq::mass[kg];
+    // the result is a derived quantity (mass * velocity), with the same value on either side
+    const auto& lhs = (mass * v).numerical_value_in(kg * m / s);
+    const auto& rhs = (v * mass).numerical_value_in(kg * m / s);
+    CHECK(lhs[0] == 2);
+    CHECK(lhs[1] == 4);
+    CHECK(lhs[2] == 6);
+    CHECK(rhs[0] == 2);
+    CHECK(rhs[1] == 4);
+    CHECK(rhs[2] == 6);
 
-      SECTION("derived_quantity_spec")
-      {
-        SECTION("scalar on LHS") { CHECK((mass * v).numerical_value_in(kg * m / s) == vector<int>{2, 4, 6}); }
-        SECTION("scalar on RHS") { CHECK((v * mass).numerical_value_in(kg * m / s) == vector<int>{2, 4, 6}); }
-      }
-      SECTION("quantity_cast to momentum")
-      {
-        SECTION("scalar on LHS")
-        {
-          CHECK(quantity_cast<isq::momentum>(mass * v).numerical_value_in(N * s) == vector<int>{2, 4, 6});
-        }
-        SECTION("scalar on RHS")
-        {
-          CHECK(quantity_cast<isq::momentum>(v * mass).numerical_value_in(N * s) == vector<int>{2, 4, 6});
-        }
-      }
-      SECTION("quantity of momentum")
-      {
-        SECTION("scalar on LHS")
-        {
-          const quantity<isq::momentum[N * s], vector<int>> momentum = mass * v;
-          CHECK(momentum.numerical_value_ref_in(N * s) == vector<int>{2, 4, 6});
-        }
-        SECTION("scalar on RHS")
-        {
-          const quantity<isq::momentum[N * s], vector<int>> momentum = v * mass;
-          CHECK(momentum.numerical_value_ref_in(N * s) == vector<int>{2, 4, 6});
-        }
-      }
-    }
-
-    SECTION("floating-point")
-    {
-      const auto mass = 0.5 * isq::mass[kg];
-
-      SECTION("derived_quantity_spec")
-      {
-        SECTION("scalar on LHS") { CHECK((mass * v).numerical_value_in(kg * m / s) == vector<double>{0.5, 1., 1.5}); }
-        SECTION("scalar on RHS") { CHECK((v * mass).numerical_value_in(kg * m / s) == vector<double>{0.5, 1., 1.5}); }
-      }
-      SECTION("quantity_cast to momentum")
-      {
-        SECTION("scalar on LHS")
-        {
-          CHECK(quantity_cast<isq::momentum>(mass * v).numerical_value_in(N * s) == vector<double>{0.5, 1., 1.5});
-        }
-        SECTION("scalar on RHS")
-        {
-          CHECK(quantity_cast<isq::momentum>(v * mass).numerical_value_in(N * s) == vector<double>{0.5, 1., 1.5});
-        }
-      }
-      SECTION("quantity of momentum")
-      {
-        SECTION("scalar on LHS")
-        {
-          const quantity<isq::momentum[N * s], vector<double>> momentum = mass * v;
-          CHECK(momentum.numerical_value_ref_in(N * s) == vector<double>{0.5, 1., 1.5});
-        }
-        SECTION("scalar on RHS")
-        {
-          const quantity<isq::momentum[N * s], vector<double>> momentum = v * mass;
-          CHECK(momentum.numerical_value_ref_in(N * s) == vector<double>{0.5, 1., 1.5});
-        }
-      }
-    }
+    // the derived quantity can be cast to the named quantity it represents
+    const quantity<isq::momentum[N * s], vec3> momentum = quantity_cast<isq::momentum>(mass * v);
+    const auto& nv = momentum.numerical_value_in(N * s);
+    CHECK(nv[0] == 2);
+    CHECK(nv[1] == 4);
+    CHECK(nv[2] == 6);
   }
 
-  SECTION("divide by scalar quantity")
+  SECTION("vector quantity divided by a scalar quantity")
   {
-    const auto pos = vector<int>{30, 20, 10} * isq::displacement[km];
+    const quantity displacement = make_vec3(60, 80, 0) * isq::displacement[km];
+    const quantity velocity = displacement / (2. * isq::duration[h]);
+    const auto& nv = velocity.numerical_value_in(km / h);
+    CHECK(nv[0] == 30);
+    CHECK(nv[1] == 40);
+    CHECK(nv[2] == 0);
 
-    SECTION("integral")
-    {
-      const auto dur = 2 * isq::duration[h];
-
-      SECTION("derived_quantity_spec") { CHECK((pos / dur).numerical_value_in(km / h) == vector<int>{15, 10, 5}); }
-      SECTION("quantity_cast to velocity")
-      {
-        CHECK(quantity_cast<isq::velocity>(pos / dur).numerical_value_in(km / h) == vector<int>{15, 10, 5});
-      }
-      SECTION("quantity of velocity")
-      {
-        const quantity<isq::velocity[km / h], vector<int>> v = pos / dur;
-        CHECK(v.numerical_value_ref_in(km / h) == vector<int>{15, 10, 5});
-      }
-    }
-
-    SECTION("floating-point")
-    {
-      const auto dur = 0.5 * isq::duration[h];
-
-      SECTION("derived_quantity_spec") { CHECK((pos / dur).numerical_value_in(km / h) == vector<double>{60, 40, 20}); }
-      SECTION("quantity_cast to velocity")
-      {
-        CHECK(quantity_cast<isq::velocity>(pos / dur).numerical_value_in(km / h) == vector<double>{60, 40, 20});
-      }
-      SECTION("quantity of velocity")
-      {
-        const quantity<isq::velocity[km / h], vector<double>> v = pos / dur;
-        CHECK(v.numerical_value_ref_in(km / h) == vector<double>{60, 40, 20});
-      }
-    }
+    // the derived quantity (displacement / duration) can be cast to the named velocity quantity
+    const quantity<isq::velocity[km / h], vec3> casted = quantity_cast<isq::velocity>(velocity);
+    const auto& cnv = casted.numerical_value_in(km / h);
+    CHECK(cnv[0] == 30);
+    CHECK(cnv[1] == 40);
+    CHECK(cnv[2] == 0);
   }
 
-  SECTION("cross product with a vector quantity")
+  SECTION("cross product of two vector quantities combines their quantity specifications")
   {
-    const auto r = vector<int>{3, 0, 0} * isq::displacement[m];
-    const auto f = vector<int>{0, 10, 0} * isq::force[N];
+    const quantity position = make_vec3(3, 0, 0) * isq::position_vector[m];
+    const quantity force = make_vec3(0, 10, 0) * isq::force[N];
+    const quantity moment = cross(position, force);
+    const auto& nv = moment.numerical_value_in(N * m);
+    CHECK(nv[0] == 0);
+    CHECK(nv[1] == 0);
+    CHECK(nv[2] == 30);
+    // r x F has the quantity specification of a moment of force
+    static_assert(implicitly_convertible(decltype(moment)::quantity_spec, isq::moment_of_force));
+  }
 
-    CHECK(cross_product(r, f) == vector<int>{0, 0, 30} * isq::moment_of_force[N * m]);
+  SECTION("vector addition with an automatic unit conversion of one operand")
+  {
+    const quantity lhs = make_vec3(1, 2, 3) * isq::displacement[km];
+    const quantity rhs = make_vec3(500, 0, 0) * isq::displacement[m];
+    const auto& nv = (lhs + rhs).numerical_value_in(m);
+    CHECK(nv[0] == 1500);
+    CHECK(nv[1] == 2000);
+    CHECK(nv[2] == 3000);
+  }
+
+  SECTION("vector subtraction with an automatic unit conversion of one operand")
+  {
+    const quantity lhs = make_vec3(1, 2, 3) * isq::displacement[km];
+    const quantity rhs = make_vec3(500, 0, 0) * isq::displacement[m];
+    const auto& nv = (lhs - rhs).numerical_value_in(m);
+    CHECK(nv[0] == 500);
+    CHECK(nv[1] == 2000);
+    CHECK(nv[2] == 3000);
+  }
+
+  SECTION("Euclidean magnitude as a scalar quantity (via the norm() the library provides)")
+  {
+    const quantity velocity = make_vec3(30, 40, 0) * isq::velocity[km / h];
+    const quantity speed = magnitude(velocity);
+    CHECK_THAT(speed.numerical_value_in(km / h), Catch::Matchers::WithinAbs(50.0, 1e-9));
+  }
+
+  SECTION("equality of vector quantities")
+  {
+    const quantity lhs = make_vec3(1, 2, 3) * isq::displacement[km];
+    const quantity rhs = make_vec3(1000, 2000, 3000) * isq::displacement[m];
+    CHECK(lhs == rhs);
+    CHECK(lhs != make_vec3(1, 2, 4) * isq::displacement[km]);
   }
 }
 
-TEST_CASE("vector of quantities", "[la]")
+#if defined(MP_UNITS_LA_CARTESIAN)
+
+// The built-in `cartesian_vector` supports integral representations and `constexpr` evaluation,
+// which the floating-point, runtime-only third-party backends above cannot exercise. These checks
+// are therefore specific to the built-in backend.
+
+namespace {
+using vec3i = cartesian_vector<int>;
+[[nodiscard]] constexpr vec3i make_vec3i(int x, int y, int z) { return {x, y, z}; }
+}  // namespace
+
+TEST_CASE("built-in cartesian_vector with an integral representation")
 {
-  SECTION("cast of unit")
+  SECTION("exact (non-truncating) unit conversion preserves all components")
   {
-    SECTION("non-truncating")
-    {
-      const vector<quantity<isq::displacement[km], int>> v = {3 * km, 2 * km, 1 * km};
-
-      CHECK(vector<quantity<isq::displacement[m], int>>(v) ==
-            vector<quantity<isq::displacement[m], int>>{3000 * m, 2000 * m, 1000 * m});
-    }
-
-    // truncating not possible (no way to apply quantity_cast to sub-components of a vector)
+    const quantity v = make_vec3i(3, 2, 1) * isq::displacement[km];
+    CHECK(v.numerical_value_in(m) == vec3i{3000, 2000, 1000});
   }
 
-  SECTION("to scalar magnitude")
+  SECTION("truncating unit conversion requires the forcing interface")
   {
-    const vector<quantity<isq::velocity[km / h], int>> v = {2 * km / h, 3 * km / h, 6 * km / h};
-    const auto speed = get_magnitude<isq::speed>(v);
-    CHECK(speed.numerical_value_ref_in(km / h) == 7);
+    const quantity v = make_vec3i(1500, 1500, 1500) * isq::displacement[m];
+    CHECK(v.force_numerical_value_in(km) == vec3i{1, 1, 1});
   }
 
-  SECTION("multiply by scalar value")
+  SECTION("integral multiplication and division by a scalar number")
   {
-    const vector<quantity<isq::displacement[m], int>> v = {1 * m, 2 * m, 3 * m};
-
-    SECTION("integral")
-    {
-      const vector<quantity<isq::displacement[m], int>> result = {2 * m, 4 * m, 6 * m};
-
-      SECTION("scalar on LHS") { CHECK(2 * v == result); }
-      SECTION("scalar on RHS") { CHECK(v * 2 == result); }
-    }
-
-    SECTION("floating-point")
-    {
-      const vector<quantity<isq::displacement[m], double>> result = {0.5 * m, 1. * m, 1.5 * m};
-
-      SECTION("scalar on LHS") { CHECK(0.5 * v == result); }
-      SECTION("scalar on RHS") { CHECK(v * 0.5 == result); }
-    }
+    const quantity v = make_vec3i(1, 2, 3) * isq::displacement[m];
+    CHECK((2 * v).numerical_value_in(m) == vec3i{2, 4, 6});
+    CHECK((v * 2).numerical_value_in(m) == vec3i{2, 4, 6});
+    CHECK((v / 2).numerical_value_in(m) == vec3i{0, 1, 1});
   }
 
-  SECTION("divide by scalar value")
+  SECTION("integral addition and subtraction")
   {
-    const vector<quantity<isq::displacement[m], int>> v = {2 * m, 4 * m, 6 * m};
-
-    SECTION("integral") { CHECK(v / 2 == vector<quantity<isq::displacement[m], int>>{1 * m, 2 * m, 3 * m}); }
-    SECTION("floating-point")
-    {
-      CHECK(v / 0.5 == vector<quantity<isq::displacement[m], double>>{4. * m, 8. * m, 12. * m});
-    }
-  }
-
-  SECTION("add")
-  {
-    const vector<quantity<isq::displacement[m], int>> v = {1 * m, 2 * m, 3 * m};
-
-    SECTION("same unit")
-    {
-      const vector<quantity<isq::displacement[m], int>> u = {3 * m, 2 * m, 1 * m};
-
-      CHECK(v + u == vector<quantity<isq::displacement[m], int>>{4 * m, 4 * m, 4 * m});
-    }
-    SECTION("different units")
-    {
-      const vector<quantity<isq::displacement[km], int>> u = {3 * km, 2 * km, 1 * km};
-
-      CHECK(v + u == vector<quantity<isq::displacement[m], int>>{3001 * m, 2002 * m, 1003 * m});
-    }
-  }
-
-  SECTION("subtract")
-  {
-    const vector<quantity<isq::displacement[m], int>> v = {1 * m, 2 * m, 3 * m};
-
-    SECTION("same unit")
-    {
-      const vector<quantity<isq::displacement[m], int>> u = {3 * m, 2 * m, 1 * m};
-      CHECK(v - u == vector<quantity<isq::displacement[m], int>>{-2 * m, 0 * m, 2 * m});
-    }
-    SECTION("different units")
-    {
-      const vector<quantity<isq::displacement[km], int>> u = {3 * km, 2 * km, 1 * km};
-      CHECK(v - u == vector<quantity<isq::displacement[m], int>>{-2999 * m, -1998 * m, -997 * m});
-    }
-  }
-
-  SECTION("multiply by scalar quantity")
-  {
-    const vector<quantity<isq::velocity[m / s], int>> v = {1 * m / s, 2 * m / s, 3 * m / s};
-
-    SECTION("integral")
-    {
-      const auto mass = 2 * isq::mass[kg];
-      const auto result = vector<quantity<isq::momentum[N * s], int>>{2 * N * s, 4 * N * s, 6 * N * s};
-
-      SECTION("derived_quantity_spec")
-      {
-        SECTION("scalar on LHS") { CHECK(mass * v == result); }
-        SECTION("scalar on RHS") { CHECK(v * mass == result); }
-      }
-
-      // no way to apply quantity_cast to sub-components
-
-      SECTION("quantity of momentum")
-      {
-        SECTION("scalar on LHS")
-        {
-          const vector<quantity<isq::momentum[N * s], int>> momentum = mass * v;
-          CHECK(momentum == result);
-        }
-        SECTION("scalar on RHS")
-        {
-          const vector<quantity<isq::momentum[N * s], int>> momentum = v * mass;
-          CHECK(momentum == result);
-        }
-      }
-    }
-
-    SECTION("floating-point")
-    {
-      const auto mass = 0.5 * isq::mass[kg];
-      const auto result = vector<quantity<isq::momentum[N * s], double>>{0.5 * N * s, 1. * N * s, 1.5 * N * s};
-
-      SECTION("derived_quantity_spec")
-      {
-        SECTION("scalar on LHS") { CHECK(mass * v == result); }
-        SECTION("scalar on RHS") { CHECK(v * mass == result); }
-      }
-
-      // no way to apply quantity_cast to sub-components
-
-      SECTION("quantity of momentum")
-      {
-        SECTION("scalar on LHS")
-        {
-          const vector<quantity<isq::momentum[N * s], double>> momentum = mass * v;
-          CHECK(momentum == result);
-        }
-        SECTION("scalar on RHS")
-        {
-          const vector<quantity<isq::momentum[N * s], double>> momentum = v * mass;
-          CHECK(momentum == result);
-        }
-      }
-    }
-  }
-
-  SECTION("divide by scalar quantity")
-  {
-    const vector<quantity<isq::displacement[km], int>> pos = {30 * km, 20 * km, 10 * km};
-
-    SECTION("integral")
-    {
-      const auto dur = 2 * isq::duration[h];
-
-      SECTION("derived_quantity_spec")
-      {
-        CHECK(pos / dur == vector<quantity<isq::velocity[km / h], int>>{15 * km / h, 10 * km / h, 5 * km / h});
-      }
-
-      // no way to apply quantity_cast to sub-components
-
-      SECTION("quantity of velocity")
-      {
-        const vector<quantity<isq::velocity[km / h], int>> v = pos / dur;
-        CHECK(v == vector<quantity<isq::velocity[km / h], int>>{15 * km / h, 10 * km / h, 5 * km / h});
-      }
-    }
-
-    SECTION("floating-point")
-    {
-      const auto dur = 0.5 * isq::duration[h];
-
-      SECTION("derived_quantity_spec")
-      {
-        CHECK(pos / dur == vector<quantity<isq::velocity[km / h], double>>{60. * km / h, 40. * km / h, 20. * km / h});
-      }
-
-      // no way to apply quantity_cast to sub-components
-
-      SECTION("quantity of velocity")
-      {
-        const vector<quantity<isq::velocity[km / h], double>> v = pos / dur;
-        CHECK(v == vector<quantity<isq::velocity[km / h], double>>{60. * km / h, 40. * km / h, 20. * km / h});
-      }
-    }
-  }
-
-  SECTION("cross product with a vector of quantities")
-  {
-    const vector<quantity<isq::displacement[m], int>> r = {3 * m, 0 * m, 0 * m};
-    const vector<quantity<isq::force[N], int>> f = {0 * N, 10 * N, 0 * N};
-
-    CHECK(cross_product(r, f) == vector<quantity<isq::moment_of_force[N * m], int>>{0 * N * m, 0 * N * m, 30 * N * m});
+    const quantity lhs = make_vec3i(1, 2, 3) * isq::displacement[m];
+    const quantity rhs = make_vec3i(3, 2, 1) * isq::displacement[m];
+    CHECK((lhs + rhs).numerical_value_in(m) == vec3i{4, 4, 4});
+    CHECK((lhs - rhs).numerical_value_in(m) == vec3i{-2, 0, 2});
   }
 }
+
+// the whole pipeline (construction, scaling, arithmetic) is usable in a constant expression
+static_assert((make_vec3i(1, 2, 3) * isq::displacement[m] + make_vec3i(3, 2, 1) * isq::displacement[m])
+                .numerical_value_in(m) == vec3i{4, 4, 4});
+static_assert(cross(make_vec3i(3, 0, 0) * isq::position_vector[m], make_vec3i(0, 10, 0) * isq::force[N])
+                .numerical_value_in(N * m) == vec3i{0, 0, 30});
+
+#endif  // MP_UNITS_LA_CARTESIAN

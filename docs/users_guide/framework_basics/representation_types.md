@@ -360,6 +360,38 @@ used in mixed conversions.
 
 ---
 
+#### `representation_canonical_type<T>` { #representation_canonical_type }
+
+A specializable class template that maps a representation **value type** to the
+concrete type a `quantity` should *store*. The primary template simply decays the type:
+
+```cpp
+template<typename T>
+struct mp_units::representation_canonical_type {
+  using type = std::remove_cvref_t<T>;
+};
+
+template<typename T>
+using mp_units::representation_canonical_type_t = /* ... decays a top-level const ... */;
+```
+
+**Why it exists:** expression-template linear algebra libraries (e.g. Eigen, Blaze)
+return lazy proxy types from their arithmetic operators. Such a proxy keeps references
+to its operands and must be evaluated to a concrete type before being stored inside a
+`quantity`; otherwise the `quantity` would retain dangling references once the operands
+(often temporaries) go out of scope. The `quantity` deduction guides and the concepts
+that compute the representation type resulting from an arithmetic operation consult this
+trait, so the stored representation is always a materialized concrete type.
+
+**When to specialize:** to teach the library how to evaluate a specific
+expression-template type. The ready-made
+[third-party integration plugins](#third-party-library-integrations) do this for you
+(e.g. mapping Eigen's `PlainObject` and Blaze's `ResultType`). For a type whose operators
+already return a concrete value (arithmetic types, `cartesian_vector`, GLM) the default
+is correct and no specialization is needed.
+
+---
+
 #### Scaling operators { #scaling-operators }
 
 The library scales a representation value by calling `value * factor` and `value / factor`,
@@ -875,6 +907,65 @@ character. At minimum this means:
 See [Using Custom Representation Types](../../how_to_guides/integration/using_custom_representation_types.md)
 for a step-by-step walkthrough, including the complete set of customization points and working
 examples.
+
+
+## Third-Party Library Integrations { #third-party-library-integrations }
+
+You usually do not need to wire up the customization points yourself for a mainstream
+third-party library. **mp-units** ships opt-in integration plugins, each available as a header
+(header mode) and as a named module (module mode). The currently available plugins adapt linear
+algebra libraries, so their vector and matrix types can be used **directly** as vector/tensor
+representations (the same mechanism can adapt other kinds of libraries — e.g. safe numeric
+types — in the future):
+
+| Header                            | Module                        | Library                                        |
+|-----------------------------------|-------------------------------|------------------------------------------------|
+| `<mp-units/integrations/eigen.h>` | `mp_units.integrations.eigen` | [Eigen](https://eigen.tuxfamily.org)           |
+| `<mp-units/integrations/glm.h>`   | `mp_units.integrations.glm`   | [GLM](https://github.com/g-truc/glm)           |
+| `<mp-units/integrations/blaze.h>` | `mp_units.integrations.blaze` | [Blaze](https://bitbucket.org/blaze-lib/blaze) |
+
+```cpp
+#include <Eigen/Core>
+#include <mp-units/integrations/eigen.h>  // header mode; or: import mp_units.integrations.eigen;
+#include <mp-units/systems/si.h>
+
+using namespace mp_units;
+using namespace mp_units::si::unit_symbols;
+
+quantity v = Eigen::Vector3d{30, 40, 0} * isq::velocity[km / h];
+quantity speed = magnitude(v);  // 50 km/h (a vector quantity supports magnitude() directly)
+```
+
+Each header is guarded with `__has_include`, so it is a harmless no-op when its library is not
+available — it is always safe to include. The matching module is built only when C++ modules and
+the library are both available. See the
+[linear algebra example](../../examples/linear_algebra.md) for the same scenario compiled against
+all three libraries in both modes.
+
+!!! note "Expression templates"
+
+    Eigen and Blaze evaluate lazily: their arithmetic operators return proxy expression types
+    that reference their operands. The plugin headers map each such proxy to its evaluated
+    concrete type (via [`representation_canonical_type`](#representation_canonical_type)) so a
+    `quantity` never stores a dangling proxy.
+
+!!! warning "Armadillo is not supported"
+
+    [Armadillo](https://arma.sourceforge.net)'s `operator==` returns an element-wise mask rather
+    than a `bool`, so its vector/matrix types are not `std::equality_comparable` and therefore do
+    not satisfy the [weakly-regular](#representation-requirements) requirement that every
+    representation must meet.
+
+!!! warning "V2 limitation: vector-operation result types"
+
+    A vector quantity supports `magnitude()` directly, but the result drops the precise quantity
+    spec down to the unit's kind — V2 cannot yet express a dedicated scalar-magnitude quantity
+    spec. As a result the magnitude keeps `vector` character whenever the unit is tied to a vector
+    quantity spec (e.g. `N` is `kind_of<isq::force>`), and only collapses to scalar character for
+    units built from scalar base units (e.g. `km/h`). For the same reason quantity-level
+    `scalar_product()` / `vector_product()` (dot/cross) are **not** provided in V2 — they must
+    return a *different* quantity kind, which V2 references cannot name. Compute those on the raw
+    representation and re-attach the reference yourself.
 
 
 ## See Also

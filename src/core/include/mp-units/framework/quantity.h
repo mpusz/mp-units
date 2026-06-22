@@ -126,9 +126,12 @@ concept ImplicitFromNumber =
 template<typename Q>
 concept ImplicitFromNumberQuantity = Quantity<Q> && ImplicitFromNumber<Q::reference>;
 
+// The invocation result is canonicalized (see `representation_canonical_type`) so that
+// expression-template results (e.g. Eigen, Blaze) are checked and stored as their evaluated
+// concrete type rather than the lazy proxy type.
 template<auto QS, typename Func, typename T, typename U>
 concept InvokeResultOf = QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> && std::regular_invocable<Func, T, U> &&
-                         RepresentationOf<std::invoke_result_t<Func, T, U>, QS>;
+                         RepresentationOf<representation_canonical_type_t<std::invoke_result_t<Func, T, U>>, QS>;
 
 template<typename Func, typename Q1, typename Q2,
          auto QS = std::invoke_result_t<Func, MP_UNITS_NONCONST_TYPE(Q1::quantity_spec),
@@ -140,8 +143,9 @@ template<auto R1, auto R2>
 concept HaveCommonReference = requires { mp_units::get_common_reference(R1, R2); };
 
 template<typename Func, Quantity Q1, Quantity Q2>
-using common_quantity_for = quantity<mp_units::get_common_reference(Q1::reference, Q2::reference),
-                                     std::invoke_result_t<Func, typename Q1::rep, typename Q2::rep>>;
+using common_quantity_for =
+  quantity<mp_units::get_common_reference(Q1::reference, Q2::reference),
+           representation_canonical_type_t<std::invoke_result_t<Func, typename Q1::rep, typename Q2::rep>>>;
 
 template<typename Rep, Unit U1, Unit U2>
 [[nodiscard]] consteval bool overflows_non_zero_common_values(U1 u1, U2 u2)
@@ -156,7 +160,9 @@ concept CommonlyInvocableQuantities =
   std::convertible_to<Q1, common_quantity_for<Func, Q1, Q2>> &&
   std::convertible_to<Q2, common_quantity_for<Func, Q1, Q2>> &&
   InvocableQuantities<Func, Q1, Q2, mp_units::get_common_quantity_spec(Q1::quantity_spec, Q2::quantity_spec)> &&
-  !overflows_non_zero_common_values<std::invoke_result_t<Func, typename Q1::rep, typename Q2::rep>>(Q1::unit, Q2::unit);
+  !overflows_non_zero_common_values<
+    representation_canonical_type_t<std::invoke_result_t<Func, typename Q1::rep, typename Q2::rep>>>(Q1::unit,
+                                                                                                     Q2::unit);
 
 // Returns true if the unit ratio between Q1 and Q2, when scaled to the common unit, fits within
 // the double-width integer type for ct_rep.  For floating-point or already-widest integer
@@ -597,6 +603,25 @@ public:
     return value_cast<ToU{}, ToRep>(*this);
   }
 
+  // magnitude (Euclidean norm) of a vector quantity, returned as a scalar quantity in the same unit.
+  // Returning `* unit` (rather than `* reference`) intentionally drops the precise `quantity_spec`
+  // down to the unit's kind. This is purely a convenience workaround so users do not have to write
+  // their own `magnitude_of` helper - V2 simply cannot express the correct result type. The right
+  // type is a scalar-magnitude quantity spec (a future V3 feature): `magnitude(quantity<isq::force[N]>)`
+  // should yield something like `vec_mag<isq::force>[N]` whose `quantity_spec` has `real_scalar`
+  // character.
+  //
+  // Dropping to the unit's kind does NOT fix the character in general. It collapses to `real_scalar`
+  // only when the unit derives purely from scalar base units (e.g. `km/h` -> length/time). For a unit
+  // associated with a vector quantity spec (e.g. `N` is `kind_of<isq::force>`) the result keeps
+  // `vector` character - and since `double`/`int` are valid 1D vector representations, one could even
+  // take the magnitude of a magnitude of a magnitude. That is a known V2 limitation, not a goal.
+  [[nodiscard]] constexpr Quantity auto magnitude() const
+    requires(quantity_spec.character == quantity_character::vector)
+  {
+    return ::mp_units::magnitude(numerical_value_is_an_implementation_detail_) * unit;
+  }
+
   // data access
   template<Unit U>
     requires(equivalent(U{}, unit))
@@ -793,11 +818,16 @@ public:
 };
 
 // CTAD
-template<Reference R, RepresentationOf<get_quantity_spec(R{})> Value>
-quantity(Value v, R) -> quantity<R{}, Value>;
+// The stored representation is canonicalized (see `representation_canonical_type`) so that an
+// expression-template value (e.g. the result of `Eigen::Vector3d * double`) is materialized to
+// its evaluated concrete type instead of being stored as a proxy holding dangling references.
+template<Reference R, typename Value>
+  requires RepresentationOf<representation_canonical_type_t<Value>, get_quantity_spec(R{})>
+quantity(Value v, R) -> quantity<R{}, representation_canonical_type_t<Value>>;
 
-template<Reference auto R = one, RepresentationOf<get_quantity_spec(R)> Value>
-quantity(Value) -> quantity<R, Value>;
+template<Reference auto R = one, typename Value>
+  requires RepresentationOf<representation_canonical_type_t<Value>, get_quantity_spec(R)>
+quantity(Value) -> quantity<R, representation_canonical_type_t<Value>>;
 
 template<QuantityLike Q>
 quantity(Q) -> quantity<quantity_like_traits<Q>::reference, typename quantity_like_traits<Q>::rep>;
