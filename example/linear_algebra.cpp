@@ -111,11 +111,20 @@ using vec3 = cartesian_vector<double>;
 
 [[nodiscard]] vec3 make_vec3(double x, double y, double z) { return {x, y, z}; }
 
+// A vector quantity is printed as bracketed components, a scalar quantity as a plain value.
 template<Quantity Q>
+  requires(Q::quantity_spec.character == quantity_character::vector)
 void print(std::string_view name, const Q& q)
 {
   const auto& v = q.numerical_value_in(q.unit);
   std::cout << name << " = [" << v[0] << ", " << v[1] << ", " << v[2] << "] " << unit_symbol(Q::unit) << "\n";
+}
+
+template<Quantity Q>
+  requires(Q::quantity_spec.character != quantity_character::vector)
+void print(std::string_view name, const Q& q)
+{
+  std::cout << name << " = " << q << "\n";
 }
 
 void drone_flight()
@@ -139,7 +148,7 @@ void drone_flight()
   print("with wind drift ", (displacement + wind_drift).in(km));
 
   // scalar magnitude of a vector quantity
-  std::cout << "speed            = " << magnitude(velocity).in(km / h) << "\n";
+  print("speed           ", magnitude(velocity));
 }
 
 }  // namespace
