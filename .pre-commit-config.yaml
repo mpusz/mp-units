@@ -11,6 +11,14 @@ repos:
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]
       - id: end-of-file-fixer
+      - id: check-yaml
+        args: [--unsafe] # mkdocs.yml uses !ENV and !!python/name: tags
+      - id: check-json
+        exclude: ^\.devcontainer/devcontainer\.json$ # JSONC (allows comments)
+      - id: check-merge-conflict
+      - id: check-added-large-files
+      - id: check-case-conflict
+      - id: detect-private-key
   - repo: https://github.com/pre-commit/mirrors-clang-format
     rev: v21.1.8
     hooks:
@@ -42,5 +50,13 @@ repos:
     hooks:
       - id: markdownlint-cli2
         exclude: ^docs/reference/systems_reference/
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.10.0.1
+    hooks:
+      - id: shellcheck
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.7
+    hooks:
+      - id: actionlint
 
 exclude: ^docs/javascripts/

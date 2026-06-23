@@ -38,7 +38,7 @@ on:
         default: 0
 
 env:
-  CHANNEL: ${{ fromJSON('["testing", "stable"]')[github.ref_type == 'tag' && startsWith(github.ref_name, 'v')] }}
+  CHANNEL: ${{ (github.ref_type == 'tag' && startsWith(github.ref_name, 'v')) && 'stable' || 'testing' }}
 
 permissions:
   contents: read

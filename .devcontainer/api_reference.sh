@@ -80,7 +80,8 @@ clone_if_missing() {
     local repo_url="$1"
     local branch="$2"
     local target_dir="$3"
-    local repo_name=$(basename "$repo_url" .git)
+    local repo_name
+    repo_name=$(basename "$repo_url" .git)
     local full_path="$target_dir/$repo_name"
 
     if [[ ! -d "$full_path" ]]; then

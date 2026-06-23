@@ -26,6 +26,11 @@ do
     n)
       build_policy="never"
       ;;
+    *)
+      echo "Invalid option: -$OPTARG" >&2
+      echo "Use -h for help." >&2
+      exit 1
+      ;;
   esac
 done
 
@@ -40,8 +45,8 @@ fi
 
 echo "🚀 Starting mp-units multi-compiler testing in Codespace environment..."
 echo "📋 Available compilers:"
-echo "  GCC: $(ls /usr/bin/gcc-* | grep -E "gcc-[0-9]+" | sort -V | tr '\n' ' ')"
-echo "  Clang: $(ls /usr/bin/clang++-* /usr/local/bin/clang++-* 2>/dev/null | grep -E "clang\+\+-[0-9]+" | sort -V | tr '\n' ' ')"
+echo "  GCC: $(for c in /usr/bin/gcc-[0-9]*; do [ -e "$c" ] && echo "$c"; done | sort -V | tr '\n' ' ')"
+echo "  Clang: $(for c in /usr/bin/clang++-[0-9]* /usr/local/bin/clang++-[0-9]*; do [ -e "$c" ] && echo "$c"; done | sort -V | tr '\n' ' ')"
 echo "🔧 Operation: $1"
 if [[ $run_debug ]]; then
   echo "🐛 Debug builds: enabled"
@@ -63,40 +68,40 @@ echo "🏗️  Starting compiler matrix testing..."
 echo "🚀 Starting release build configurations..."
 echo "⚙️  Testing GCC configurations..."
 set -x
-conan $1 . -pr gcc12   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=False' -o '&:contracts=gsl-lite' -s compiler.cppstd=20 -b "$build_policy"
-conan $1 . -pr gcc13   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=True'  -o '&:contracts=none'     -s compiler.cppstd=23 -b "$build_policy"
-conan $1 . -pr gcc14   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=False' -o '&:contracts=ms-gsl'   -s compiler.cppstd=23 -b "$build_policy"
-conan $1 . -pr gcc15   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=True'  -o '&:std_format=True'  -o '&:contracts=none'     -s compiler.cppstd=26 -b "$build_policy"
+conan "$1" . -pr gcc12   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=False' -o '&:contracts=gsl-lite' -s compiler.cppstd=20 -b "$build_policy"
+conan "$1" . -pr gcc13   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=True'  -o '&:contracts=none'     -s compiler.cppstd=23 -b "$build_policy"
+conan "$1" . -pr gcc14   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=False' -o '&:contracts=ms-gsl'   -s compiler.cppstd=23 -b "$build_policy"
+conan "$1" . -pr gcc15   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=True'  -o '&:std_format=True'  -o '&:contracts=none'     -s compiler.cppstd=26 -b "$build_policy"
 set +x
 
 echo "⚙️  Testing Clang configurations..."
 set -x
-conan $1 . -pr clang16 -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=False' -o '&:contracts=gsl-lite' -s compiler.cppstd=20 -b "$build_policy"
-conan $1 . -pr clang17 -c user.mp-units.build:all=True -o '&:cxx_modules=True'  -o '&:import_std=False' -o '&:std_format=True'  -o '&:contracts=ms-gsl'   -s compiler.cppstd=26 -b "$build_policy"
-conan $1 . -pr clang18 -c user.mp-units.build:all=True -o '&:cxx_modules=True'  -o '&:import_std=True'  -o '&:std_format=True'  -o '&:contracts=none'     -s compiler.cppstd=26 -b "$build_policy"
+conan "$1" . -pr clang16 -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=False' -o '&:contracts=gsl-lite' -s compiler.cppstd=20 -b "$build_policy"
+conan "$1" . -pr clang17 -c user.mp-units.build:all=True -o '&:cxx_modules=True'  -o '&:import_std=False' -o '&:std_format=True'  -o '&:contracts=ms-gsl'   -s compiler.cppstd=26 -b "$build_policy"
+conan "$1" . -pr clang18 -c user.mp-units.build:all=True -o '&:cxx_modules=True'  -o '&:import_std=True'  -o '&:std_format=True'  -o '&:contracts=none'     -s compiler.cppstd=26 -b "$build_policy"
 # clang-19 will never compile mp-units due to https://github.com/llvm/llvm-project/pull/118288
-conan $1 . -pr clang20 -c user.mp-units.build:all=True -o '&:cxx_modules=True'  -o '&:import_std=True'  -o '&:std_format=True'  -o '&:contracts=none'     -s compiler.cppstd=26 -b "$build_policy"
-conan $1 . -pr clang21 -c user.mp-units.build:all=True -o '&:cxx_modules=True'  -o '&:import_std=True'  -o '&:std_format=True'  -o '&:contracts=none'     -s compiler.cppstd=26 -b "$build_policy"
+conan "$1" . -pr clang20 -c user.mp-units.build:all=True -o '&:cxx_modules=True'  -o '&:import_std=True'  -o '&:std_format=True'  -o '&:contracts=none'     -s compiler.cppstd=26 -b "$build_policy"
+conan "$1" . -pr clang21 -c user.mp-units.build:all=True -o '&:cxx_modules=True'  -o '&:import_std=True'  -o '&:std_format=True'  -o '&:contracts=none'     -s compiler.cppstd=26 -b "$build_policy"
 set +x
 
 if [[ $run_debug ]]; then
   echo "🐛 Starting debug build configurations..."
   echo "⚙️  Testing GCC debug configurations..."
   set -x
-  conan $1 . -pr gcc12   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=False' -o '&:contracts=gsl-lite' -s compiler.cppstd=20 -b "$build_policy" -s build_type=Debug
-  conan $1 . -pr gcc13   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=True'  -o '&:contracts=none'     -s compiler.cppstd=23 -b "$build_policy" -s build_type=Debug
-  conan $1 . -pr gcc14   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=False' -o '&:contracts=ms-gsl'   -s compiler.cppstd=23 -b "$build_policy" -s build_type=Debug
-  conan $1 . -pr gcc15   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=True'  -o '&:std_format=True'  -o '&:contracts=none'     -s compiler.cppstd=26 -b "$build_policy" -s build_type=Debug
+  conan "$1" . -pr gcc12   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=False' -o '&:contracts=gsl-lite' -s compiler.cppstd=20 -b "$build_policy" -s build_type=Debug
+  conan "$1" . -pr gcc13   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=True'  -o '&:contracts=none'     -s compiler.cppstd=23 -b "$build_policy" -s build_type=Debug
+  conan "$1" . -pr gcc14   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=False' -o '&:contracts=ms-gsl'   -s compiler.cppstd=23 -b "$build_policy" -s build_type=Debug
+  conan "$1" . -pr gcc15   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=True'  -o '&:std_format=True'  -o '&:contracts=none'     -s compiler.cppstd=26 -b "$build_policy" -s build_type=Debug
   set +x
 
   echo "⚙️  Testing Clang debug configurations..."
   set -x
-  conan $1 . -pr clang16 -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=False' -o '&:contracts=gsl-lite' -s compiler.cppstd=20 -b "$build_policy" -s build_type=Debug
-  conan $1 . -pr clang17 -c user.mp-units.build:all=True -o '&:cxx_modules=True'  -o '&:import_std=False' -o '&:std_format=True'  -o '&:contracts=ms-gsl'   -s compiler.cppstd=26 -b "$build_policy" -s build_type=Debug
-  conan $1 . -pr clang18 -c user.mp-units.build:all=True -o '&:cxx_modules=True'  -o '&:import_std=True'  -o '&:std_format=True'  -o '&:contracts=none'     -s compiler.cppstd=26 -b "$build_policy" -s build_type=Debug
+  conan "$1" . -pr clang16 -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=False' -o '&:contracts=gsl-lite' -s compiler.cppstd=20 -b "$build_policy" -s build_type=Debug
+  conan "$1" . -pr clang17 -c user.mp-units.build:all=True -o '&:cxx_modules=True'  -o '&:import_std=False' -o '&:std_format=True'  -o '&:contracts=ms-gsl'   -s compiler.cppstd=26 -b "$build_policy" -s build_type=Debug
+  conan "$1" . -pr clang18 -c user.mp-units.build:all=True -o '&:cxx_modules=True'  -o '&:import_std=True'  -o '&:std_format=True'  -o '&:contracts=none'     -s compiler.cppstd=26 -b "$build_policy" -s build_type=Debug
   # clang-19 will never compile mp-units due to https://github.com/llvm/llvm-project/pull/118288
-  conan $1 . -pr clang20 -c user.mp-units.build:all=True -o '&:cxx_modules=True'  -o '&:import_std=True'  -o '&:std_format=True'  -o '&:contracts=none'     -s compiler.cppstd=26 -b "$build_policy" -s build_type=Debug
-  conan $1 . -pr clang21 -c user.mp-units.build:all=True -o '&:cxx_modules=True'  -o '&:import_std=True'  -o '&:std_format=True'  -o '&:contracts=none'     -s compiler.cppstd=26 -b "$build_policy" -s build_type=Debug
+  conan "$1" . -pr clang20 -c user.mp-units.build:all=True -o '&:cxx_modules=True'  -o '&:import_std=True'  -o '&:std_format=True'  -o '&:contracts=none'     -s compiler.cppstd=26 -b "$build_policy" -s build_type=Debug
+  conan "$1" . -pr clang21 -c user.mp-units.build:all=True -o '&:cxx_modules=True'  -o '&:import_std=True'  -o '&:std_format=True'  -o '&:contracts=none'     -s compiler.cppstd=26 -b "$build_policy" -s build_type=Debug
   set +x
   echo "✅ Debug builds completed!"
 fi

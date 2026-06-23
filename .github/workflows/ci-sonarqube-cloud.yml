@@ -138,7 +138,7 @@ jobs:
         run: |
           conan install . -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" \
                         -c user.mp-units.build:all=True -c user.mp-units.analyze:clang-tidy=False -c tools.build:skip_test=False \
-                        '-o &:cxx_modules=${{ matrix.config.cxx_modules }}' -o '&:import_std=${{ env.import_std }}' -o '&:std_format=${{ env.std_format }}' -o '&:contracts=${{ matrix.contracts }}' ${{ matrix.config.conan-config }} \
+                        '-o &:cxx_modules=${{ matrix.config.cxx_modules }}' -o '&:import_std=${{ env.import_std }}' -o '&:std_format=${{ env.std_format }}' -o '&:contracts=${{ matrix.contracts }}' ${{ matrix.config.conan_config }} \
                         -c 'tools.build:cxxflags=["-coverage"]'
       - name: Print tool versions
         shell: bash
@@ -156,7 +156,7 @@ jobs:
           build-wrapper-linux-x86-64 --out-dir ${{env.BUILD_WRAPPER_OUT_DIR}} \
                 conan build . -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" \
                         -c user.mp-units.build:all=True -c user.mp-units.analyze:clang-tidy=False -c tools.build:skip_test=False \
-                        '-o &:cxx_modules=${{ matrix.config.cxx_modules }}' -o '&:import_std=${{ env.import_std }}' -o '&:std_format=${{ env.std_format }}' -o '&:contracts=${{ matrix.contracts }}' ${{ matrix.config.conan-config }} \
+                        '-o &:cxx_modules=${{ matrix.config.cxx_modules }}' -o '&:import_std=${{ env.import_std }}' -o '&:std_format=${{ env.std_format }}' -o '&:contracts=${{ matrix.contracts }}' ${{ matrix.config.conan_config }} \
                         -c 'tools.build:cxxflags=["-coverage"]'
       - name: Collect coverage information
         run: |
