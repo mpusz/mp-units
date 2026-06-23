@@ -114,14 +114,10 @@ using vec3 = cartesian_vector<double>;
 // The drone's body-frame velocity is one physical vector whose axes have distinct meanings. Each
 // axis is its own kind (`is_kind`), so the type system keeps them from being mixed, while they all
 // share the `isq::velocity` hierarchy root. The whole is a plain child of `isq::velocity`.
-inline constexpr struct flight_velocity : quantity_spec<isq::velocity> {
-} flight_velocity;
-inline constexpr struct forward_velocity : quantity_spec<isq::velocity, is_kind> {
-} forward_velocity;
-inline constexpr struct lateral_velocity : quantity_spec<isq::velocity, is_kind> {
-} lateral_velocity;
-inline constexpr struct vertical_velocity : quantity_spec<isq::velocity, is_kind> {
-} vertical_velocity;
+QUANTITY_SPEC(flight_velocity, isq::velocity);
+QUANTITY_SPEC(forward_velocity, isq::velocity, is_kind);
+QUANTITY_SPEC(lateral_velocity, isq::velocity, is_kind);
+QUANTITY_SPEC(vertical_velocity, isq::velocity, is_kind);
 
 }  // namespace
 
