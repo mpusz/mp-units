@@ -342,6 +342,11 @@ TEST_CASE("cartesian_vector operations", "[vector]")
     cartesian_vector unit_v = v.unit();
     REQUIRE_THAT(unit_v.norm(), WithinULP(1.0, 1));
     REQUIRE_THAT(unit_v.magnitude(), WithinULP(1.0, 1));
+    REQUIRE_THAT(unit_v[0], WithinULP(3.0 / 5.0, 1));
+    REQUIRE_THAT(unit_v[1], WithinULP(4.0 / 5.0, 1));
+    REQUIRE_THAT(unit_v[2], WithinULP(0.0, 1));
+
+    REQUIRE(unit_vector(v) == unit_v);
   }
 
   SECTION("cartesian_vector equality")

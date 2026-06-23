@@ -56,7 +56,7 @@ namespace detail {
 
 struct cartesian_vector_iface {
   template<typename T, typename U>
-    requires requires(T t, U u) { t + u; }
+    requires requires(const T& t, const U& u) { t + u; }
   [[nodiscard]] friend constexpr auto operator+(const cartesian_vector<T>& lhs, const cartesian_vector<U>& rhs)
   {
     return ::mp_units::cartesian_vector{lhs._coordinates_[0] + rhs._coordinates_[0],
@@ -65,7 +65,7 @@ struct cartesian_vector_iface {
   }
 
   template<typename T, typename U>
-    requires requires(T t, U u) { t - u; }
+    requires requires(const T& t, const U& u) { t - u; }
   [[nodiscard]] friend constexpr auto operator-(const cartesian_vector<T>& lhs, const cartesian_vector<U>& rhs)
   {
     return ::mp_units::cartesian_vector{lhs._coordinates_[0] - rhs._coordinates_[0],
@@ -74,7 +74,7 @@ struct cartesian_vector_iface {
   }
 
   template<typename T, typename U>
-    requires requires(T t, U u) { t * u; }
+    requires requires(const T& t, const U& u) { t * u; }
   [[nodiscard]] friend constexpr auto operator*(const cartesian_vector<T>& lhs, const U& rhs)
   {
     return ::mp_units::cartesian_vector{lhs._coordinates_[0] * rhs, lhs._coordinates_[1] * rhs,
@@ -82,14 +82,14 @@ struct cartesian_vector_iface {
   }
 
   template<typename T, typename U>
-    requires requires(T t, U u) { t * u; }
+    requires requires(const T& t, const U& u) { t * u; }
   [[nodiscard]] friend constexpr auto operator*(const T& lhs, const cartesian_vector<U>& rhs)
   {
     return rhs * lhs;
   }
 
   template<typename T, typename U>
-    requires requires(T t, U u) { t / u; }
+    requires requires(const T& t, const U& u) { t / u; }
   [[nodiscard]] friend constexpr auto operator/(const cartesian_vector<T>& lhs, const U& rhs)
   {
     return ::mp_units::cartesian_vector{lhs._coordinates_[0] / rhs, lhs._coordinates_[1] / rhs,
@@ -104,7 +104,7 @@ struct cartesian_vector_iface {
   }
 
   template<typename T, typename U>
-    requires requires(T t, U u, decltype(t * u) v) {
+    requires requires(const T& t, const U& u, decltype(t * u) v) {
       t * u;
       v + v;
     }
@@ -115,7 +115,7 @@ struct cartesian_vector_iface {
   }
 
   template<typename T, typename U>
-    requires requires(T t, U u, decltype(t * u) v) {
+    requires requires(const T& t, const U& u, decltype(t * u) v) {
       t * u;
       v - v;
     }
@@ -231,7 +231,7 @@ public:
   }
 
   template<typename U>
-    requires requires(T t, U u) {
+    requires requires(T& t, const U& u) {
       { t += u } -> std::same_as<T&>;
     }
   constexpr cartesian_vector& operator+=(const cartesian_vector<U>& other)
@@ -243,7 +243,7 @@ public:
   }
 
   template<typename U>
-    requires requires(T t, U u) {
+    requires requires(T& t, const U& u) {
       { t -= u } -> std::same_as<T&>;
     }
   constexpr cartesian_vector& operator-=(const cartesian_vector<U>& other)
@@ -255,7 +255,7 @@ public:
   }
 
   template<typename U>
-    requires requires(T t, U u) {
+    requires requires(T& t, const U& u) {
       { t *= u } -> std::same_as<T&>;
     }
   constexpr cartesian_vector& operator*=(const U& value)
@@ -267,7 +267,7 @@ public:
   }
 
   template<typename U>
-    requires requires(T t, U u) {
+    requires requires(T& t, const U& u) {
       { t /= u } -> std::same_as<T&>;
     }
   constexpr cartesian_vector& operator/=(const U& value)
