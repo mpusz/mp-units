@@ -59,7 +59,7 @@ struct unsatisfied_constraints {
 
 #endif
 
-template<mp_units::fixed_string Fmt, typename... Args>
+template<mp_units::basic_fixed_string Fmt, typename... Args>
 [[nodiscard]] consteval bool unsatisfied([[maybe_unused]] Args&&... args)
 {
 #if MP_UNITS_API_THROWING_CONSTRAINTS
