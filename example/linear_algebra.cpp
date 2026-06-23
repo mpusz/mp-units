@@ -65,6 +65,7 @@ import std;
 // library's vector type into mp-units' representation customization points; user code then uses the
 // library's native types directly. The built-in `cartesian_vector` needs no adapter - it ships with
 // the library and is a representation type out of the box.
+#include <mp-units/compat_macros.h>
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #if defined(MP_UNITS_LA_EIGEN)
