@@ -97,6 +97,12 @@ function(add_mp_units_integration name)
 
     if(MP_UNITS_BUILD_CXX_MODULES)
         target_sources(${target} PUBLIC FILE_SET CXX_MODULES FILES mp-units-integrations-${name}.cpp)
+        # The module unit does `import mp_units.core;`. Link the module provider directly (not only
+        # transitively via the header-only `mp-units::integrations`) so the dependency is recorded in
+        # IMPORTED_CXX_MODULES_LINK_LIBRARIES and the BMI can be rebuilt from an installed package: an
+        # IMPORTED INTERFACE target does not forward module BMIs to consumers (CMake #27790), so the
+        # `mp_units.core` provider must be a direct module-link dependency of this module target.
+        target_link_libraries(${target} PUBLIC mp-units::core)
     endif()
 
     set_target_properties(${target} PROPERTIES EXPORT_NAME integrations-${name})

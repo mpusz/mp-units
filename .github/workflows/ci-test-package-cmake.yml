@@ -242,7 +242,7 @@ jobs:
         run: |
           call ..\build\${{ matrix.conan-build-folder }}\generators\conanbuild.bat
           call ..\build\${{ matrix.conan-build-folder }}\generators\conanvcvars.bat
-          cmake --preset conan-${{ matrix.conan-build-folder }} -Dmp-units_DIR=../build/${{ matrix.conan-build-folder }} -Bbuild/local
+          cmake --preset conan-${{ matrix.conan-build-folder }} -DCMAKE_CONFIGURATION_TYPES=${{ matrix.build_type }} -Dmp-units_DIR=../build/${{ matrix.conan-build-folder }} -Bbuild/local
           cmake --build build/local --config ${{ matrix.build_type }}
       - name: Build test_package CMake (local build)
         if: matrix.toolchain.compiler.type != 'MSVC'
@@ -250,7 +250,7 @@ jobs:
         working-directory: test_package
         run: |
           source ../build/${{ matrix.conan-build-folder }}/generators/conanbuild.sh
-          cmake --preset conan-${{ matrix.conan-build-folder }} -Dmp-units_DIR=../build/${{ matrix.conan-build-folder }} -Bbuild/local
+          cmake --preset conan-${{ matrix.conan-build-folder }} -DCMAKE_CONFIGURATION_TYPES=${{ matrix.build_type }} -Dmp-units_DIR=../build/${{ matrix.conan-build-folder }} -Bbuild/local
           cmake --build build/local --config ${{ matrix.build_type }}
       - name: Run test_package-headers (local build)
         shell: bash
@@ -270,7 +270,7 @@ jobs:
         run: |
           call ..\build\${{ matrix.conan-build-folder }}\generators\conanbuild.bat
           call ..\build\${{ matrix.conan-build-folder }}\generators\conanvcvars.bat
-          cmake --preset conan-${{ matrix.conan-build-folder }} -DCMAKE_INSTALL_PREFIX=../out -Bbuild/install
+          cmake --preset conan-${{ matrix.conan-build-folder }} -DCMAKE_CONFIGURATION_TYPES=${{ matrix.build_type }} -DCMAKE_INSTALL_PREFIX=../out -Bbuild/install
           cmake --build build/install --config ${{ matrix.build_type }}
       - name: Build test_package CMake (installation)
         if: matrix.toolchain.compiler.type != 'MSVC'
@@ -278,7 +278,7 @@ jobs:
         working-directory: test_package
         run: |
           source ../build/${{ matrix.conan-build-folder }}/generators/conanbuild.sh
-          cmake --preset conan-${{ matrix.conan-build-folder }} -DCMAKE_INSTALL_PREFIX=../out -Bbuild/install
+          cmake --preset conan-${{ matrix.conan-build-folder }} -DCMAKE_CONFIGURATION_TYPES=${{ matrix.build_type }} -DCMAKE_INSTALL_PREFIX=../out -Bbuild/install
           cmake --build build/install --config ${{ matrix.build_type }}
       - name: Run test_package-headers (installation)
         shell: bash
@@ -316,7 +316,7 @@ jobs:
             echo "echo '{\"version\":4,\"include\":[\"../CMakeUserPresets.json\"]}' > src/CMakeUserPresets.json" >> $GITHUB_STEP_SUMMARY
             echo "echo '{\"version\":4,\"include\":[\"../CMakeUserPresets.json\"]}' > test_package/CMakeUserPresets.json" >> $GITHUB_STEP_SUMMARY
             echo "(cd src && source ../build/${{ matrix.conan-build-folder }}/generators/conanbuild.sh && cmake --preset conan-${{ matrix.conan-build-folder }} -DCMAKE_INSTALL_PREFIX=../out && cmake --build --preset conan-${{ matrix.conan-build-folder }}-${BUILD_TYPE_LOWER} --target install)" >> $GITHUB_STEP_SUMMARY
-            echo "(cd test_package && source ../build/${{ matrix.conan-build-folder }}/generators/conanbuild.sh && cmake --preset conan-${{ matrix.conan-build-folder }} -Dmp-units_DIR=../build/${{ matrix.conan-build-folder }} -Bbuild/local && cmake --build build/local --config ${{ matrix.build_type }})" >> $GITHUB_STEP_SUMMARY
+            echo "(cd test_package && source ../build/${{ matrix.conan-build-folder }}/generators/conanbuild.sh && cmake --preset conan-${{ matrix.conan-build-folder }} -DCMAKE_CONFIGURATION_TYPES=${{ matrix.build_type }} -Dmp-units_DIR=../build/${{ matrix.conan-build-folder }} -Bbuild/local && cmake --build build/local --config ${{ matrix.build_type }})" >> $GITHUB_STEP_SUMMARY
             echo "./test_package/build/local/${{ matrix.build_type }}/test_package-headers" >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
           else
