@@ -192,6 +192,54 @@ quantity speed = magnitude(v);  // 5 m/s
     V2 — they would need to return a _different_ quantity kind, which V2 _references_ cannot
     express. Compute those on the raw representation and re-attach the reference yourself.
 
+!!! info "Enabling decomposition into named components"
+
+    To let a vector _quantity_ built on your type split into named component _quantities_, the type
+    must be **element-accessible at a compile-time index**, through either a tuple-like `get<Idx>`
+    (found by ADL) or a subscript `operator[]`. `cartesian_vector` and the supported third-party
+    vectors already qualify, so no extra code is needed there. See
+    [Decompose a Vector Quantity into Components](../advanced_usage/decompose_vector_quantity.md)
+    for the full recipe.
+
+#### Adapting an existing vector library
+
+Any _weakly-regular_ vector type (copyable, with `bool`-returning equality) that exposes a Euclidean
+norm can serve as a representation. The bundled integrations for
+[Eigen](https://eigen.tuxfamily.org), [GLM](https://github.com/g-truc/glm), and
+[Blaze](https://bitbucket.org/blaze-lib/blaze) wire up exactly the customization points above, and
+they are the template for adapting any other library. Three things vary between libraries:
+
+- **Underlying type.** Eigen and GLM expose a `value_type` member, so
+  `representation_underlying_type` detects it automatically. Blaze names it `ElementType` instead,
+  so its plugin specializes `representation_underlying_type` explicitly.
+- **Magnitude.** Eigen and Blaze provide `norm()`, which the `magnitude()` CPO uses directly. GLM
+  spells it `length()`, so its plugin adds a one-line `magnitude()` overload (found by ADL) that
+  forwards to it.
+- **Materializing expression templates.** Eigen and Blaze return lazy proxy types from their
+  arithmetic operators. A proxy holds references to its operands, so storing one inside a `quantity`
+  would leave dangling references once those operands expire. Their plugins specialize
+  [`representation_canonical_type`](../../users_guide/framework_basics/representation_types.md#representation_canonical_type)
+  to map each proxy to its evaluated concrete type (Eigen's `PlainObject`, Blaze's `ResultType`), so
+  a `quantity` always stores a materialized value. GLM evaluates eagerly, so it needs no such
+  specialization.
+
+```cpp
+// materialize an expression-template proxy before a quantity stores it
+template<typename T>
+  requires /* T is one of your library's lazy expression types */
+struct mp_units::representation_canonical_type<T> {
+  using type = std::remove_cvref_t<typename T::evaluated_type>;
+};
+```
+
+!!! warning "Element-wise `operator==` is disqualifying"
+
+    [Armadillo](https://arma.sourceforge.net) is the notable type that does **not** qualify: its
+    `operator==` returns an element-wise mask rather than a `bool`, so it is not
+    `std::equality_comparable` and cannot satisfy the representation requirements. See
+    [Third-Party Library Integrations](../../users_guide/framework_basics/representation_types.md#third-party-library-integrations)
+    for the complete picture.
+
 ### Step 3: Add Formatting Support (optional)
 
 Enable formatting with `std::format`:
@@ -444,6 +492,7 @@ type with:
 - `magnitude()` member function
 - Support for scalar and vector products
 - Integration with quantity characters
+- Element access for [decomposition into named components](../advanced_usage/decompose_vector_quantity.md)
 
 **Implementation reference:**
 [`cartesian_vector.h`](https://github.com/mpusz/mp-units/blob/1511c73d362649cca90191cdcfd3b369058c1dc1/src/core/include/mp-units/cartesian_vector.h)
@@ -514,7 +563,8 @@ To create a custom representation type:
 
 1. **Implement required operations** for your character (scalar/complex/vector/tensor)
 2. **Provide character-specific functions** (if needed): `real()`, `imag()`, `norm()`, etc.,
-   via member functions or ADL-findable free functions
+   via member functions or ADL-findable free functions; for an expression-template vector type,
+   specialize `representation_canonical_type` so lazy proxies are materialized before storage
 3. **Add formatting support** (optional) via `std::formatter`
 4. **Add `value_type`** to help the library determine the scaling factor type
 5. **Specialize `representation_values<Rep>`** (if needed) for custom special values;
@@ -547,6 +597,11 @@ custom types.
 **How-to Guides:**
 
 - [Ensure Ultimate Safety](../advanced_usage/ultimate_safety.md) - Combining `constrained` reps with `check_in_range` for guaranteed bounds enforcement
+- [Decompose a Vector Quantity into Components](../advanced_usage/decompose_vector_quantity.md) - Element-access requirement for splitting a vector quantity into named component quantities
+
+**Examples:**
+
+- [Using a Linear Algebra Library as the Representation](../../examples/linear_algebra.md) - Eigen, GLM, Blaze, and the built-in `cartesian_vector` driven through the same scenario
 
 **Implementation References:**
 

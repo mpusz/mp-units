@@ -25,6 +25,8 @@
 // IWYU pragma: private, include <mp-units/framework.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/ext/type_traits.h>
+#include <mp-units/framework/quantity_character.h>
+#include <mp-units/framework/quantity_spec_concepts.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #ifdef MP_UNITS_IMPORT_STD
@@ -348,6 +350,31 @@ struct quantity_like_traits;
  */
 template<typename T>
 struct quantity_point_like_traits;
+
+/**
+ * @brief Opts a vector quantity into decomposition into named 1D-vector components
+ *
+ * Specialize for a vector @c quantity_spec and inherit from @c vector_axes, listing the per-axis
+ * quantity specs in coordinate order (see @c mp-units/framework/vector_components.h):
+ *
+ * @code
+ * template<>
+ * struct mp_units::vector_components<flight_velocity> :
+ *     mp_units::vector_axes<forward_velocity, wind_drift, sink_rate> {};
+ * @endcode
+ *
+ * Left undefined (the quantity is not decomposable) unless specialized. Only a concrete vector
+ * quantity spec may be decomposed, so a specialization for a non-vector spec or for a `kind_of<>`
+ * quantity kind is ill-formed.
+ *
+ * @tparam QS the vector quantity spec being decomposed
+ */
+// TODO Once point and delta quantity specs are introduced, exclude those here as well: an absolute
+// point or a delta is not decomposable into plain vector components.
+template<QuantitySpec auto QS>
+  requires(QS.character == quantity_character::vector) &&
+          (!detail::QuantityKindSpec<MP_UNITS_REMOVE_CONST(decltype(QS))>)
+struct vector_components;
 
 MP_UNITS_EXPORT_END
 

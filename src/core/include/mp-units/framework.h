@@ -49,4 +49,5 @@
 #include <mp-units/framework/unit_magnitude_concepts.h>
 #include <mp-units/framework/unit_symbol_formatting.h>
 #include <mp-units/framework/value_cast.h>
+#include <mp-units/framework/vector_components.h>
 // IWYU pragma: end_exports

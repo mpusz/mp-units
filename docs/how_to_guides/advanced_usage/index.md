@@ -8,6 +8,7 @@ quantity calculations.
 <!-- markdownlint-disable MD013 -->
 - [Pure Dimensional Analysis](pure_dimensional_analysis.md) - Use dimensions without specific units for symbolic computation, compile-time validation, and custom arithmetic types
 - [Type-Safe Indices and Offsets](typed_indices.md) - Model container indices and offsets as quantities with point origins, covering 0-based vs 1-based indexing, SI vs IEC element prefixes, and stride arithmetic
+- [Decompose a Vector Quantity into Components](decompose_vector_quantity.md) - Split a vector quantity into named, strongly-typed 1D-vector component quantities, covering the quantity hierarchy, `get<Idx>`/`get<QS>`, structured bindings, and the representation requirements
 - [Ensure Ultimate Safety](ultimate_safety.md) - Combine `constrained` reps, `constraint_violation_handler`, and `check_in_range` for guaranteed bounds enforcement
 - [Working With Nondimensionalized Physics](nondimensionalization.md) - Use mp-units alongside natural units and dimensionless quantities, covering the complete scale-in/scale-out workflow and tradeoffs
 <!-- markdownlint-enable MD013 -->

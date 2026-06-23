@@ -38,7 +38,9 @@ import std;
 #else
 #include <cmath>
 #include <cstddef>
+#include <tuple>
 #include <type_traits>
+#include <utility>
 #if MP_UNITS_HOSTED
 #include <ostream>
 #endif
@@ -197,6 +199,31 @@ public:
   [[nodiscard]] constexpr T& operator[](std::size_t i) { return _coordinates_[i]; }
   [[nodiscard]] constexpr const T& operator[](std::size_t i) const { return _coordinates_[i]; }
 
+  // tuple-like element access (enables structured bindings and vector quantity decomposition)
+  template<std::size_t Idx>
+  [[nodiscard]] friend constexpr T& get(cartesian_vector& v) noexcept
+  {
+    return v._coordinates_[Idx];
+  }
+
+  template<std::size_t Idx>
+  [[nodiscard]] friend constexpr const T& get(const cartesian_vector& v) noexcept
+  {
+    return v._coordinates_[Idx];
+  }
+
+  template<std::size_t Idx>
+  [[nodiscard]] friend constexpr T&& get(cartesian_vector&& v) noexcept
+  {
+    return std::move(v._coordinates_[Idx]);
+  }
+
+  template<std::size_t Idx>
+  [[nodiscard]] friend constexpr const T&& get(const cartesian_vector&& v) noexcept
+  {
+    return std::move(v._coordinates_[Idx]);
+  }
+
   [[nodiscard]] constexpr cartesian_vector operator+() const { return *this; }
   [[nodiscard]] constexpr cartesian_vector operator-() const
   {
@@ -287,6 +314,14 @@ template<typename T, typename U>
   requires requires { typename std::common_type_t<T, U>; }
 struct std::common_type<mp_units::cartesian_vector<T>, mp_units::cartesian_vector<U>> {
   using type = mp_units::cartesian_vector<std::common_type_t<T, U>>;
+};
+
+template<typename T>
+struct std::tuple_size<mp_units::cartesian_vector<T>> : std::integral_constant<std::size_t, 3> {};
+
+template<std::size_t Idx, typename T>
+struct std::tuple_element<Idx, mp_units::cartesian_vector<T>> {
+  using type = T;
 };
 
 #if MP_UNITS_HOSTED

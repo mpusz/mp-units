@@ -152,6 +152,14 @@ These mechanisms fall into two categories: **Character determination** (what kin
 representation type you have) and **Behavior and values** (how the library interacts with
 your type).
 
+!!! note
+
+    Every customization point in this section is keyed on the **representation type**. One further
+    customization point, `vector_components`, is keyed on the **quantity spec** instead: it opts a
+    vector quantity into [decomposition into named components](#decomposing-a-vector-quantity).
+    Because it parameterizes on the quantity rather than its representation, it is documented in
+    [its own section below](#decomposing-a-vector-quantity) rather than listed here.
+
 ### Character Determination
 
 #### Customization Point Objects (CPOs)
@@ -642,6 +650,23 @@ The library enforces character at compile-time: vector quantities require `scala
 to quantities of the correct character. See
 [Character of a Quantity](character_of_a_quantity.md#character-specific-operations) for full
 details and examples.
+
+
+## Decomposing a Vector Quantity { #decomposing-a-vector-quantity }
+
+A vector _quantity_ can be split into named, strongly-typed 1D-vector component _quantities_,
+reachable by index (`get<Idx>`), by _quantity spec_ (`get<QS>`), and through structured bindings.
+The whole opts in by specializing the `vector_components` customization point.
+
+Decomposition adds one requirement on top of the vector representation requirements above: the
+representation must be **element-accessible at a compile-time index**, through either a tuple-like
+`get<Idx>(rep)` (found by argument-dependent lookup) or a subscript `rep[Idx]`. The built-in
+`cartesian_vector` and the supported third-party vectors all qualify. If the representation also
+models `std::tuple_size`, the library checks at compile time that the declared axis count does not
+exceed what the representation holds.
+
+See [Decompose a Vector Quantity into Components](../../how_to_guides/advanced_usage/decompose_vector_quantity.md)
+for the full recipe, including how the quantity hierarchy must be formed.
 
 
 ## How Scaling Works

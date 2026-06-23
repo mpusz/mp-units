@@ -71,7 +71,7 @@ add_library(
 )
 
 if(NOT MP_UNITS_API_FREESTANDING)
-    target_sources(unit_tests_static PRIVATE fractional_exponent_quantity.cpp math_test.cpp)
+    target_sources(unit_tests_static PRIVATE fractional_exponent_quantity.cpp math_test.cpp vector_components_test.cpp)
 endif()
 
 target_compile_options(unit_tests_static PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wno-subobject-linkage>)

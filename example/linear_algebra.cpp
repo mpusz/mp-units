@@ -111,6 +111,27 @@ using vec3 = cartesian_vector<double>;
 
 [[nodiscard]] vec3 make_vec3(double x, double y, double z) { return {x, y, z}; }
 
+// The drone's body-frame velocity is one physical vector whose axes have distinct meanings. Each
+// axis is its own kind (`is_kind`), so the type system keeps them from being mixed, while they all
+// share the `isq::velocity` hierarchy root. The whole is a plain child of `isq::velocity`.
+inline constexpr struct flight_velocity : quantity_spec<isq::velocity> {
+} flight_velocity;
+inline constexpr struct forward_velocity : quantity_spec<isq::velocity, is_kind> {
+} forward_velocity;
+inline constexpr struct lateral_velocity : quantity_spec<isq::velocity, is_kind> {
+} lateral_velocity;
+inline constexpr struct vertical_velocity : quantity_spec<isq::velocity, is_kind> {
+} vertical_velocity;
+
+}  // namespace
+
+// Opt the whole velocity into decomposition by listing its component axes in coordinate order.
+template<>
+struct mp_units::vector_components<flight_velocity> :
+    mp_units::vector_axes<forward_velocity, lateral_velocity, vertical_velocity> {};
+
+namespace {
+
 // A vector quantity is printed as bracketed components, a scalar quantity as a plain value.
 template<Quantity Q>
   requires(Q::quantity_spec.character == quantity_character::vector)
@@ -127,28 +148,45 @@ void print(std::string_view name, const Q& q)
   std::cout << name << " = " << q << "\n";
 }
 
+// A decomposed component is a 1D-vector quantity: it has vector character but stores a single value.
+template<Quantity Q>
+void print_component(std::string_view name, const Q& q)
+{
+  std::cout << "  " << name << " = " << q.numerical_value_in(q.unit) << " " << unit_symbol(Q::unit) << "\n";
+}
+
 void drone_flight()
 {
   std::cout << "*** Linear algebra backend: " << backend_name << " ***\n\n";
 
-  // a 3D velocity, stored as a vector quantity (vector representation x reference)
-  const quantity velocity = isq::velocity(make_vec3(30, 40, 0) * km / h);
-  print("velocity        ", velocity);
+  // a 3D velocity with named body-frame axes, stored as a vector quantity (vector representation x
+  // reference)
+  const quantity velocity = flight_velocity(make_vec3(30, 40, 0) * km / h);
+  print("velocity         ", velocity);
 
   // unit conversion of a vector quantity (exercises magnitude-ratio scaling of the rep)
-  print("velocity [m/s]  ", velocity.in(m / s));
+  print("velocity [m/s]   ", velocity.in(m / s));
 
   // vector quantity x scalar quantity -> vector quantity (the rep arithmetic is materialized)
   const quantity time = 2. * h;
   const quantity displacement = velocity * time;
-  print("displacement    ", displacement.in(km));
+  print("displacement     ", displacement.in(km));
 
   // vector + vector, with an automatic unit conversion of one of the operands
   const quantity wind_drift = make_vec3(500, 0, 0) * isq::displacement[m];
-  print("with wind drift ", (displacement + wind_drift).in(km));
+  print("with wind drift  ", (displacement + wind_drift).in(km));
 
   // scalar magnitude of a vector quantity
-  print("speed           ", magnitude(velocity));
+  print("speed            ", magnitude(velocity));
+
+  // decompose the same velocity into its named 1D-vector component quantities
+  const auto [forward, lateral, vertical] = velocity;
+  print_component("forward        ", forward);
+  print_component("lateral        ", lateral);
+  print_component("vertical       ", vertical);
+
+  // a single axis can also be pulled out by its quantity spec
+  print_component("lateral (by QS)", get<lateral_velocity>(velocity));
 }
 
 }  // namespace

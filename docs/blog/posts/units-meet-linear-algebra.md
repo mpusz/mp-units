@@ -1,11 +1,10 @@
 ---
-date: 2026-06-22
+date: 2026-06-23
 authors:
  - mpusz
 categories:
  - Feature
 comments: true
-draft: true
 ---
 
 # Units Meet Linear Algebra: Two Approaches, Two Problems
@@ -64,6 +63,41 @@ representations.
 
 This is the case most people mean by "units and linear algebra", and the integrations cover it
 today.
+
+### Naming the components
+
+A vector _quantity_ travels as one object, but you often need its axes by name: a drone's _forward
+speed_, its _lateral drift_, its _rate of climb_. Reaching into the representation for `v[2]` throws
+the types away and hands you a bare number with no unit and no idea which axis it came from.
+**mp-units** lets you decompose a vector _quantity_ into named, strongly-typed 1D-vector components
+instead. You give the whole a spec, declare each axis as its own kind, and list them in coordinate
+order:
+
+```cpp
+inline constexpr struct flight_velocity : quantity_spec<isq::velocity> {} flight_velocity;
+inline constexpr struct forward_velocity : quantity_spec<isq::velocity, is_kind> {} forward_velocity;
+inline constexpr struct lateral_velocity : quantity_spec<isq::velocity, is_kind> {} lateral_velocity;
+inline constexpr struct vertical_velocity : quantity_spec<isq::velocity, is_kind> {} vertical_velocity;
+
+template<>
+struct mp_units::vector_components<flight_velocity> :
+    mp_units::vector_axes<forward_velocity, lateral_velocity, vertical_velocity> {};
+```
+
+The components then come out as _quantities_, by index, by axis spec, or through structured
+bindings:
+
+```cpp
+quantity velocity = flight_velocity(Eigen::Vector3d{30, 10, -2} * km / h);
+
+const auto [forward, lateral, vertical] = velocity;   // three typed component quantities
+quantity climb = get<vertical_velocity>(velocity);    // or pull one axis out by its spec
+```
+
+Mixing axes (`forward + vertical`) is now a compile error, while same-axis arithmetic still works.
+The [Decompose a Vector Quantity into Components](../../how_to_guides/advanced_usage/decompose_vector_quantity.md)
+guide covers how to form the hierarchy, what the representation must provide, and the `tuple_size` /
+`tuple_element` protocol for compile-time code.
 
 ### A V2 limitation worth knowing
 

@@ -37,6 +37,7 @@
 #include <mp-units/framework/representation_concepts.h>
 #include <mp-units/framework/unit_concepts.h>
 #include <mp-units/framework/value_cast.h>
+#include <mp-units/framework/vector_components.h>
 #if MP_UNITS_HOSTED
 #include <mp-units/bits/format.h>
 #include <mp-units/bits/ostream.h>
@@ -50,6 +51,7 @@ import std;
 #include <compare>  // IWYU pragma: export
 #include <concepts>
 #include <limits>
+#include <tuple>
 #include <type_traits>
 #include <utility>
 #if MP_UNITS_HOSTED
@@ -622,6 +624,24 @@ public:
     return ::mp_units::magnitude(numerical_value_is_an_implementation_detail_) * unit;
   }
 
+  // tuple-like decomposition of a vector quantity into named 1D-vector components (see
+  // framework/vector_components.h). Hidden friends found via ADL; each returns a copy (a component
+  // is not stored as a quantity, so there is nothing to reference).
+  template<std::size_t Idx>
+    requires detail::DecomposableIndex<quantity_spec, Rep, Idx>
+  [[nodiscard]] friend constexpr Quantity auto get(const quantity& q)
+  {
+    constexpr auto comp = vector_components<quantity_spec>::template axis<Idx>;
+    return detail::component_access<Idx>(q.numerical_value_in(unit)) * comp[unit];
+  }
+
+  template<QuantitySpec auto QS>
+    requires detail::DecomposableAxis<quantity_spec, Rep, QS>
+  [[nodiscard]] friend constexpr Quantity auto get(const quantity& q)
+  {
+    return get<detail::axis_index_of<QS>(vector_components<quantity_spec>{})>(q);
+  }
+
   // data access
   template<Unit U>
     requires(equivalent(U{}, unit))
@@ -845,6 +865,18 @@ template<QuantitySpec auto QS, typename FwdValue>
 }  // namespace detail
 
 }  // namespace mp_units
+
+// Tuple-like protocol for a decomposable vector quantity, enabling structured bindings.
+template<auto R, typename Rep>
+  requires mp_units::detail::Decomposable<get_quantity_spec(R), Rep>
+struct std::tuple_size<mp_units::quantity<R, Rep>> :
+    std::integral_constant<std::size_t, mp_units::vector_components<get_quantity_spec(R)>::size> {};
+
+template<std::size_t Idx, auto R, typename Rep>
+  requires mp_units::detail::DecomposableIndex<get_quantity_spec(R), Rep, Idx>
+struct std::tuple_element<Idx, mp_units::quantity<R, Rep>> {
+  using type = std::remove_cvref_t<decltype(get<Idx>(std::declval<mp_units::quantity<R, Rep>>()))>;
+};
 
 template<auto R1, typename Rep1, auto R2, typename Rep2>
   requires requires {

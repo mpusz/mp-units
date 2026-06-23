@@ -229,6 +229,7 @@ nav:
           - Advanced Usage Guides: how_to_guides/advanced_usage/index.md
           - Pure Dimensional Analysis: how_to_guides/advanced_usage/pure_dimensional_analysis.md
           - Type-Safe Indices and Offsets: how_to_guides/advanced_usage/typed_indices.md
+          - Decompose a Vector Quantity into Components: how_to_guides/advanced_usage/decompose_vector_quantity.md
           - Ensure Ultimate Safety: how_to_guides/advanced_usage/ultimate_safety.md
           - Working With Nondimensionalized Physics: how_to_guides/advanced_usage/nondimensionalization.md
       - Integration:
