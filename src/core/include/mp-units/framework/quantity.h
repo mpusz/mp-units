@@ -628,15 +628,22 @@ public:
   // framework/vector_components.h). Hidden friends found via ADL; each returns a copy (a component
   // is not stored as a quantity, so there is nothing to reference).
   template<std::size_t Idx>
+#if !(defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17)
     requires detail::DecomposableIndex<quantity_spec, Rep, Idx>
+#endif
   [[nodiscard]] friend constexpr Quantity auto get(const quantity& q)
   {
     constexpr auto comp = vector_components<quantity_spec>::template axis<Idx>;
     return detail::component_access<Idx>(q.numerical_value_in(unit)) * comp[unit];
   }
 
+#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
+  template<auto QS>
+    requires(!std::integral<decltype(QS)>)
+#else
   template<QuantitySpec auto QS>
-    requires detail::DecomposableAxis<quantity_spec, Rep, QS>
+    requires detail::DecomposableAxis<get_quantity_spec(R), Rep, QS>
+#endif
   [[nodiscard]] friend constexpr Quantity auto get(const quantity& q)
   {
     return get<detail::axis_index_of<QS>(vector_components<quantity_spec>{})>(q);
