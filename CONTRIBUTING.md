@@ -450,8 +450,8 @@ This will run:
 - `cmake-format` to format the CMake files,
 - some other checks (e.g., python script checkers, whitespaces, etc.).
 
-The script will run on all the files in the repo and will apply the changes in place when needed.
-After it finishes review and stage all modified files.
+The script will run on all the files in the repo and will apply the changes in place when
+needed. After it finishes review and stage all modified files.
 
 ### Backward compatibility
 

@@ -93,8 +93,8 @@ Conversion from floating-point to integral representation types is
 [considered value-truncating](../users_guide/framework_basics/value_conversions.md#value-truncating-conversions)
 and that is why now, in the first case, we need an explicit call to `value_cast<int>`.
 
-In the text output, we can observe that, again, the resulting value gets truncated during conversions
-in the first cast:
+In the text output, we can observe that, again, the resulting value gets truncated during
+conversions in the first cast:
 
 ```text
 SI units with 'double' as representation

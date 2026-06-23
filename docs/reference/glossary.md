@@ -77,8 +77,8 @@
           $\textsf{dim }F = \mathsf{LMT}^{–2}$.
     - A power of a factor is the factor raised to an exponent. Each factor is the dimension
       of a [base quantity](#base-quantity).
-    - In deriving the dimension of a quantity, no account is taken of its scalar, vector, or
-      tensor character.
+    - In deriving the dimension of a quantity, no account is taken of its scalar, vector,
+      or tensor character.
     - In a given [system of quantities](#system-of-quantities):
         - [quantities](#quantity) of the same [kind](#kind) have the same quantity dimension,
         - [quantities](#quantity) of different quantity dimensions are always of different
@@ -105,7 +105,8 @@
 <!-- markdownlint-disable-next-line MD013 -->
 [`quantity of dimension one, dimensionless quantity`](#dimensionless-quantity){ #dimensionless-quantity }
 
-:     - [quantity](#quantity) for which all the exponents of the factors corresponding to the
+:     - [quantity](#quantity) for which all the exponents of the factors corresponding to
+the
         [base quantities](#base-quantity) in its [quantity dimension](#dimension) are zero.
       - The term “dimensionless quantity” is commonly used and is kept here for historical
         reasons. It stems from the fact that all exponents are zero in the symbolic
@@ -121,6 +122,7 @@
 
 [`measurement unit, unit of measurement, unit`](#unit){ #unit }
 
+<!-- markdownlint-disable MD013 -->
 :   - Real scalar [quantity](#quantity), defined and adopted by convention, with which any
       other [quantity of the same kind](#kind) can be compared to express the ratio of
       the two [quantities](#quantity) as a number.
@@ -135,13 +137,14 @@
       [quantities](#quantity) of specific [kind](#kind) only.
         - For example, the measurement unit ‘second to the power minus one’
           ($\mathsf{1/s}$) is called hertz ($\mathsf{Hz}$) when used for frequencies and
-          becquerel ($\mathsf{Bq}$) when used for activities of radionuclides. As another example,
-          the joule ($\mathsf{J}$) is used as a unit of energy, but never as a unit of
-          moment of force, e.g. the newton metre ($\mathsf{N·m}$).
+          becquerel ($\mathsf{Bq}$) when used for activities of radionuclides. As another
+          example, the joule ($\mathsf{J}$) is used as a unit of energy, but never as a
+          unit of moment of force, e.g. the newton metre ($\mathsf{N·m}$).
     - Measurement units of [quantities of dimension one](#dimensionless-quantity) are
       numbers. In some cases, these measurement units are given special names, e.g. radian,
       steradian, and decibel, or are expressed by quotients such as millimole per mole equal
       to $10^{−3}$ and microgram per kilogram equal to $10^{−9}$.
+<!-- markdownlint-enable MD013 -->
 
 [`base unit`](#base-unit){ #base-unit }
 
@@ -166,6 +169,7 @@
 
 [`coherent derived unit`](#coherent-derived-unit){ #coherent-derived-unit }
 
+<!-- markdownlint-disable MD013 -->
 :   - [Derived unit](#derived-unit) that, for a given [system of quantities](#system-of-quantities)
       and for a chosen set of [base units](#base-unit), is a product of powers of
       [base units](#base-unit) with no other proportionality factor than one.
@@ -187,6 +191,7 @@
     - The coherent derived unit for every [derived quantity of dimension one](#dimensionless-quantity)
       in a given [system of units](#system-of-units) is the number one, symbol $1$. The
       name and symbol of the [measurement unit](#unit) one are generally not indicated.
+<!-- markdownlint-enable MD013 -->
 
 [`system of units`](#system-of-units){ #system-of-units }
 
@@ -258,12 +263,14 @@
 <!-- markdownlint-disable-next-line MD013 -->
 [`numerical value equation, numerical quantity value equation`](#numerical-value-equation){ #numerical-value-equation }
 
+<!-- markdownlint-disable MD013 -->
 :   - Mathematical relation between numerical [quantity values](#quantity-value), based on
       a given [quantity equation](#quantity-equation) and specified [measurement units](#unit).
     - For example, in the [quantity equation](#quantity-equation) for kinetic energy of a particle,
       $T = (1/2) mv^2$, if $m = 2\;\mathsf{kg}$ and $v = 3\;\mathsf{m/s}$,
       then ${T} = (1/2)\:×\:2\:×\:3^2$ is a numerical value equation giving the numerical value
       $9$ of $T$ in joules.
+<!-- markdownlint-enable MD013 -->
 
 ## Other definitions
 
@@ -287,7 +294,8 @@
 :   - Mathematical relation between [dimensions](#dimension) in a given
       [system of quantities](#system-of-quantities), independent of [measure­ment units](#unit).
 
-[`quantity kind hierarchy, quantity hierarchy`](#quantity-hierarchy){ #quantity-hierarchy }
+[`quantity kind hierarchy, quantity hierarchy`](#quantity-hierarchy){ #quantity-hierarchy
+}
 
 :   - [Quantities of the same kind](#kind) form a hierarchy that determines their:
         - convertibility (e.g. every width is a length, but width should not be

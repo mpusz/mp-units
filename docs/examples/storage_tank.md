@@ -54,8 +54,9 @@ analysis:
 Notice how:
 
 - `filled_weight()` properly multiplies volume by density and gravitational acceleration
-- `fill_level()` inverts the calculation, and **dimensional analysis automatically cancels `g`**
-  from both numerator and denominator: `(measured_mass × g) / (density × volume × g)` → `measured_mass / (density × volume)`
+- `fill_level()` inverts the calculation, and **dimensional analysis automatically cancels
+  `g`** from both numerator and denominator: `(measured_mass × g) / (density × volume ×
+  g)` → `measured_mass / (density × volume)`
 - `spare_capacity()` computes remaining volume from geometric constraints
 
 ### Polymorphic Tank Shapes
@@ -90,9 +91,11 @@ tank full E.T.A. at current flow rate = 800 s
 
 ## Why This Matters
 
-- **Domain Modeling**: Custom quantity types encode domain knowledge (horizontal vs vertical measurements)
+- **Domain Modeling**: Custom quantity types encode domain knowledge (horizontal vs
+  vertical measurements)
 - **Compile-Time Safety**: Invalid quantity equations are caught at compile time
 - **Engineering Accuracy**: Complex formulas are automatically verified for dimensional correctness
 - **Practical Applications**: Tank monitoring, fluid management, industrial process control
 
-This pattern is valuable for any domain where specialized quantity types improve clarity and safety.
+This pattern is valuable for any domain where specialized quantity types improve clarity
+and safety.

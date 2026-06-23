@@ -33,8 +33,8 @@ type-safe and impossible to mix up.
 
 ## The Problem: Multiple Altitude Datums
 
-In aviation and UAV operations, _altitude_ can be expressed relative to several different reference
-points:
+In aviation and UAV operations, _altitude_ can be expressed relative to several different
+reference points:
 
 - **MSL** (Mean Sea Level) - _standard barometric altitude_
 - **AGL** (Above Ground Level) - _height above local terrain_

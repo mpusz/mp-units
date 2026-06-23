@@ -420,9 +420,10 @@ quantity<mm, std::int16_t> length_mm2 = length2;  // ✅ OK: 2000 fits in int16_
 
 ### Unit-Qualified Construction
 
-Beyond conversions, representation safety also governs construction itself. `std::chrono::duration`
-provides an `explicit` constructor from a raw integer, which prevents implicit conversions but
-does **not** protect against in-place construction via `emplace_back`:
+Beyond conversions, representation safety also governs construction itself.
+`std::chrono::duration` provides an `explicit` constructor from a raw integer, which
+prevents implicit conversions but does **not** protect against in-place construction via
+`emplace_back`:
 
 ```cpp
 std::vector<std::chrono::milliseconds> delays;
@@ -1341,7 +1342,8 @@ safety alone cannot catch. Consider these examples:
 - **Temperature control**: _Room temperature_ (point on °C scale) vs. _temperature change_
   (delta in K)
 - **GPS navigation**: _Position_ (point) vs. _displacement_ (delta/vector)
-- **Timestamps**: _Timestamp_ (point — specific instant relative to an epoch) vs. _duration_ (absolute — always non-negative elapsed time)
+- **Timestamps**: _Timestamp_ (point — specific instant relative to an epoch) vs.
+  _duration_ (absolute — always non-negative elapsed time)
 - **Absolute amounts vs. deltas**: In V2, `quantity<kg>` is used for both an absolute
   amount of _mass_ (e.g., total _mass_ of a sample — a ratio-scale value anchored at true
   zero) and a _mass_ delta (e.g., the change in _mass_ — a signed difference). The type
@@ -1460,10 +1462,10 @@ Each safety level prevents a different class of errors:
 
 ## Comprehensive Library Comparison
 
-Now that we've explored all six safety levels in detail, let's examine how **mp-units** compares
-to other units libraries—both within the C++ ecosystem and across programming languages. This
-comparison will help contextualize **mp-units**' capabilities and design choices relative to
-industry-leading alternatives.
+Now that we've explored all six safety levels in detail, let's examine how **mp-units**
+compares to other units libraries—both within the C++ ecosystem and across programming
+languages. This comparison will help contextualize **mp-units**' capabilities and design
+choices relative to industry-leading alternatives.
 
 ### C++ Libraries
 
@@ -1479,6 +1481,7 @@ library from Aurora Innovation).
 
 The following table compares safety features across major C++ units libraries:
 
+<!-- markdownlint-disable MD013 -->
 <div style="overflow: visible;">
 <table class="comparison-table">
 <thead>
@@ -1559,6 +1562,7 @@ The following table compares safety features across major C++ units libraries:
 </tbody>
 </table>
 </div>
+<!-- markdownlint-enable MD013 -->
 
 **Legend:**
 
@@ -1616,6 +1620,7 @@ unique case where dimensional analysis is a first-class language feature.
 The following table compares **mp-units** to leading units libraries from other programming
 languages:
 
+<!-- markdownlint-disable MD013 -->
 <div style="overflow: visible;">
 <table class="comparison-table">
 <thead>
@@ -1745,6 +1750,7 @@ languages:
 </tbody>
 </table>
 </div>
+<!-- markdownlint-enable MD013 -->
 
 **Key Observations:**
 
@@ -1752,11 +1758,11 @@ languages:
 - **Unit Safety**: mp-units, UOM, Unitful.jl, and F# Units provide the strongest compile-time
   guarantees; F# is unique as units are a built-in language feature with zero runtime cost;
   JSR-385 enforces dimension compatibility via Java generics but tracks units at runtime only
-- **Enforcement Timing**: This is a critical distinction often overlooked: C++, Rust, and F#
-  libraries enforce all safety levels at *compile time* — violations are build errors with zero
-  runtime cost; Python (Pint) and Java (JSR-385) enforce safety at *runtime* — violations are
-  exceptions or silent errors that only appear during execution; a `DimensionalityError` in Pint
-  is a crash, not a compiler diagnostic
+- **Enforcement Timing**: This is a critical distinction often overlooked: C++, Rust, and
+  F# libraries enforce all safety levels at *compile time* — violations are build errors
+  with zero runtime cost; Python (Pint) and Java (JSR-385) enforce safety at *runtime* —
+  violations are exceptions or silent errors that only appear during execution; a
+  `DimensionalityError` in Pint is a crash, not a compiler diagnostic
 - **Representation Safety**: mp-units provides strong compile-time overflow/truncation
   protection; UOM benefits from Rust's explicit integer handling; runtime libraries
   (Pint, JSR-385) provide no representation safety
@@ -1769,12 +1775,13 @@ languages:
   with systematic quantity hierarchies based on ISO 80000; JSR-385 (Java) provides some
   runtime quantity separation but with substantial heap overhead and no ISQ-grounded hierarchy;
   no other library in this comparison provides scalar/vector/tensor character support
-- **Mathematical Space Safety**: mp-units V3 will provide comprehensive abstraction for points,
-  absolute quantities (with optional runtime bounds checking for non-negativity), and deltas;
-  mp-units V2 already offers the most sophisticated point/delta system with multi-layered typed
-  origins + runtime bounds checking for point conversions; Pint, JSR-385, UOM, and Unitful.jl
-  each offer partial temperature-specific affine support with varying levels of generality and
-  compile-time enforcement; UnitsNet and F# Units provide no mathematical space abstractions
+- **Mathematical Space Safety**: mp-units V3 will provide comprehensive abstraction for
+  points, absolute quantities (with optional runtime bounds checking for non-negativity),
+  and deltas; mp-units V2 already offers the most sophisticated point/delta system with
+  multi-layered typed origins + runtime bounds checking for point conversions; Pint,
+  JSR-385, UOM, and Unitful.jl each offer partial temperature-specific affine support with
+  varying levels of generality and compile-time enforcement; UnitsNet and F# Units provide
+  no mathematical space abstractions
 - **Language Integration**: F# demonstrates what's possible when units are a first-class
   language feature
 - **Python's Zero-Overhead Path**: While Pint relies on runtime object wrapping,
@@ -1782,21 +1789,24 @@ languages:
   at function-definition time can achieve dimension-safety with zero runtime overhead — using
   Python's annotation syntax to check units statically rather than tracking them at runtime;
   `impunity` is limited to dimension-level checks and does not support quantity kinds, affine
-  spaces, or character safety, but it shows that Python's "runtime tax" on unit safety is not
-  inevitable
+  spaces, or character safety, but it shows that Python's "runtime tax" on unit safety is
+  not inevitable
 - **Performance Architecture**: The overhead spectrum divides into three categories:
-    - **Zero-cost compiled** (C++, Rust, F#): Units verified at compile-time, completely erased at runtime
-    - **Optimizable JIT** (Julia, C#): Type-stable code achieves zero/minimal cost; UnitsNet shows ~2.4× overhead for structs
-    - **Object-wrapped dynamic** (Python, Java): Object instantiation dominates; Pint shows 38-1460× overhead, JSR-385 ~650×
-- **Memory Trade-offs**: Heap-allocated objects incur massive overhead—Pint (~700 bytes) and JSR-385
-  (~500 bytes) vs zero overhead for compiled languages and type-erased implementations; UnitsNet's
-  struct approach adds only 4-8 bytes
+    - **Zero-cost compiled** (C++, Rust, F#): Units verified at compile-time, completely
+      erased at runtime
+    - **Optimizable JIT** (Julia, C#): Type-stable code achieves zero/minimal cost;
+      UnitsNet shows ~2.4× overhead for structs
+    - **Object-wrapped dynamic** (Python, Java): Object instantiation dominates; Pint
+      shows 38-1460× overhead, JSR-385 ~650×
+- **Memory Trade-offs**: Heap-allocated objects incur massive overhead—Pint (~700 bytes)
+  and JSR-385 (~500 bytes) vs zero overhead for compiled languages and type-erased
+  implementations; UnitsNet's struct approach adds only 4-8 bytes
 - **The "Type Stability Tax"**: Julia and managed runtimes demonstrate that zero-cost is achievable
   in JIT environments only when types are known at compile-time; dynamic dispatch reintroduces
   substantial overhead (Julia: 130× when type-unstable)
-- **Compilation Cost**: Compile-time type safety comes with build-time costs—mp-units and UOM
-  pay the highest price for their strong safety guarantees, while dynamic languages have
-  minimal compilation overhead but sacrifice compile-time error detection
+- **Compilation Cost**: Compile-time type safety comes with build-time costs—mp-units and
+  UOM pay the highest price for their strong safety guarantees, while dynamic languages
+  have minimal compilation overhead but sacrifice compile-time error detection
 - **Official Standards**: JSR-385 represents Java's official units API, demonstrating that
   even standardized approaches face fundamental runtime overhead in managed environments
 
@@ -1823,11 +1833,11 @@ languages:
 
 ## Conclusion
 
-Safety in quantities and units libraries exists on a spectrum, from basic dimensional analysis
-to sophisticated semantic correctness. **mp-units** is the only such library currently
-providing all six safety levels (with full quantity character support planned for V3), making it
-the most complete implementation of metrologically sound, strongly-typed numerics available
-in the world today.
+Safety in quantities and units libraries exists on a spectrum, from basic dimensional
+analysis to sophisticated semantic correctness. **mp-units** is the only such library
+currently providing all six safety levels (with full quantity character support planned
+for V3), making it the most complete implementation of metrologically sound,
+strongly-typed numerics available in the world today.
 
 !!! tip "Choosing a safety level in mp-units"
 

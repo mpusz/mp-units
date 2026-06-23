@@ -83,10 +83,10 @@ flowchart TD
     inverse_energy --- length["<b>length</b>"]
 ```
 
-`duration` and `length` are siblings under `inverse_energy` — neither is a subtype of the other.
-`duration` follows from $\tau = \hbar/\Gamma$ → with $\hbar = 1$: $\tau = 1/\Gamma$; `length`
-from $\bar{\lambda} = \hbar/(mc)$ → with $\hbar = c = 1$: $l = 1/E$. Converting between
-them requires `quantity_cast`, not an implicit conversion.
+`duration` and `length` are siblings under `inverse_energy` — neither is a subtype of the
+other. `duration` follows from $\tau = \hbar/\Gamma$ → with $\hbar = 1$: $\tau =
+1/\Gamma$; `length` from $\bar{\lambda} = \hbar/(mc)$ → with $\hbar = c = 1$: $l = 1/E$.
+Converting between them requires `quantity_cast`, not an implicit conversion.
 
 ### Energy Squared Dimension
 

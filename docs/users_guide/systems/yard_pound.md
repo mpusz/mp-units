@@ -14,10 +14,11 @@ variations and unit definitions that differ between countries.
 
 ## Historical Context: The 1959 Agreement
 
-Prior to 1959, the definitions of the yard and pound varied slightly between English-speaking
-countries. To address this inconsistency, the **International Yard and Pound Agreement** was
-signed in 1959 between the United States, United Kingdom, Canada, Australia, New Zealand, and
-South Africa. This agreement standardized the following base units:
+Prior to 1959, the definitions of the yard and pound varied slightly between
+English-speaking countries. To address this inconsistency, the **International Yard and
+Pound Agreement** was signed in 1959 between the United States, United Kingdom, Canada,
+Australia, New Zealand, and South Africa. This agreement standardized the following base
+units:
 
 - **1 international yard** = 0.9144 metres (exactly)
 - **1 international pound** = 0.45359237 kilograms (exactly)
@@ -352,8 +353,9 @@ quantity temperature = point<usc::degree_Fahrenheit>(72);
 
 ### Safe Unit Conversions
 
-Traditional approaches to unit conversions often rely on manual conversion factors, which can
-lead to errors when dealing with similar but different units (like imperial vs US gallons).
+Traditional approaches to unit conversions often rely on manual conversion factors, which
+can lead to errors when dealing with similar but different units (like imperial vs US
+gallons).
 
 === "Traditional Approach ❌"
 

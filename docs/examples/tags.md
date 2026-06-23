@@ -23,8 +23,9 @@ Find examples using specific unit systems (SI, CGS, Imperial, Natural, IAU, and 
 
 ### By Feature
 
-Discover examples demonstrating particular library capabilities (conversions, affine space,
-dimensionless quantities, custom units, generic programming, mathematical operations, and more).
+Discover examples demonstrating particular library capabilities (conversions, affine
+space, dimensionless quantities, custom units, generic programming, mathematical
+operations, and more).
 
 ### By Domain
 

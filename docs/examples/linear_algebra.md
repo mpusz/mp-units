@@ -84,9 +84,9 @@ quantity speed = magnitude(velocity);   // 50 km/h
 
 ### Decomposing into named components
 
-Declaring the whole as a named _quantity_, instead of the generic `isq::velocity` above, lets you
-split it into named component _quantities_, one per axis. Give each axis its own kind and list the
-axes in coordinate order:
+Declaring the whole as a named _quantity_, instead of the generic `isq::velocity` above,
+lets you split it into named component _quantities_, one per axis. Give each axis its own
+kind and list the axes in coordinate order:
 
 ```cpp
 inline constexpr struct flight_velocity : quantity_spec<isq::velocity> {} flight_velocity;
@@ -99,8 +99,8 @@ struct mp_units::vector_components<flight_velocity> :
     mp_units::vector_axes<forward_velocity, lateral_velocity, vertical_velocity> {};
 ```
 
-The `velocity`, now a `flight_velocity`, decomposes into 1D-vector _quantities_, through structured
-bindings or by axis spec:
+The `velocity`, now a `flight_velocity`, decomposes into 1D-vector _quantities_, through
+structured bindings or by axis spec:
 
 ```cpp
 const quantity velocity = flight_velocity(la::make_vec3(30, 40, 0) * km / h);
@@ -108,11 +108,11 @@ const auto [forward, lateral, vertical] = velocity;   // forward 30, lateral 40,
 quantity climb = get<vertical_velocity>(velocity);    // or pull one axis out by its spec
 ```
 
-This works against every backend in this example, because each vector type is element-accessible
-through `operator[]`. See
+This works against every backend in this example, because each vector type is
+element-accessible through `operator[]`. See
 [Decompose a Vector Quantity into Components](../how_to_guides/advanced_usage/decompose_vector_quantity.md)
-for the hierarchy rules, the representation requirements, and why access is `get<Idx>` rather than
-`operator[]`.
+for the hierarchy rules, the representation requirements, and why access is `get<Idx>`
+rather than `operator[]`.
 
 ## What About Other Libraries?
 
@@ -124,6 +124,7 @@ cannot satisfy the representation requirements.
 
 ## See Also
 
+<!-- markdownlint-disable MD013 -->
 - [Representation Types](../users_guide/framework_basics/representation_types.md) - the customization
   points used here
 - [Using Custom Representation Types](../how_to_guides/integration/using_custom_representation_types.md) -
@@ -132,3 +133,4 @@ cannot satisfy the representation requirements.
   splitting a vector quantity into named, strongly-typed component quantities
 - [Character of a Quantity](../users_guide/framework_basics/character_of_a_quantity.md) - scalars vs
   vectors vs tensors
+<!-- markdownlint-enable MD013 -->

@@ -72,7 +72,8 @@ Build a stock portfolio tracking system:
 4. **Constrain helper function signatures**:
     - The functions are already implemented, but use unconstrained `auto` parameters
     - Add `QuantityOf<T>` constraints to parameters and return types for type safety
-    - Example: `[[nodiscard]] constexpr QuantityOf<currency> auto portfolio_value(QuantityOf<shares> auto num_shares, ...)`
+    - Example: `[[nodiscard]] constexpr QuantityOf<currency> auto
+      portfolio_value(QuantityOf<shares> auto num_shares, ...)`
 
 ```cpp
 // ce-embed height=900 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk

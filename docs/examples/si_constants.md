@@ -58,11 +58,12 @@ The seven defining constants of the SI and the seven corresponding units they de
 
 ## Understanding the Output
 
-While analyzing the output above, we can easily notice that direct printing of the quantity
-provides just a value `1` with a proper constant symbol. This is the main power of the
+While analyzing the output above, we can easily notice that direct printing of the
+quantity provides just a value `1` with a proper constant symbol. This is the main power
+of the
 [Faster-than-lightspeed Constants](../users_guide/framework_basics/faster_than_lightspeed_constants.md)
-feature. Only after we explicitly convert the unit of a quantity to proper SI units do we get
-the actual numeric value of the constant.
+feature. Only after we explicitly convert the unit of a quantity to proper SI units do we
+get the actual numeric value of the constant.
 
 ### Why "Faster-than-lightspeed"?
 
@@ -89,6 +90,8 @@ This technique is particularly useful when:
 
 ## Related Concepts
 
+<!-- markdownlint-disable MD013 -->
 - [Faster-than-lightspeed Constants](../users_guide/framework_basics/faster_than_lightspeed_constants.md) -
   Detailed explanation of the feature
 - [Systems of Units](../users_guide/framework_basics/systems_of_units.md) - How SI units are defined
+<!-- markdownlint-enable MD013 -->

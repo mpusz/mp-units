@@ -47,7 +47,8 @@ traditions.
 
 ### Real-World Application
 
-The example models three WWII battleships, each defined in their historically appropriate units:
+The example models three WWII battleships, each defined in their historically appropriate
+units:
 
 ```cpp
 --8<-- "example/foot_pound_second.cpp:97:128"
@@ -56,12 +57,14 @@ The example models three WWII battleships, each defined in their historically ap
 Notice:
 
 - **KMS Bismarck**: Defined in SI/metric units (meters, kg, km/h) as used by Germany
-- **USS Iowa & HMS King George V**: Defined in FPS units (feet, inches, pounds, knots) as used by USA and UK
+- **USS Iowa & HMS King George V**: Defined in FPS units (feet, inches, pounds, knots) as
+  used by USA and UK
 - All mixed types work seamlessly without manual conversions
 
 ### Multi-Column Output
 
-The `print_details` function demonstrates displaying quantities in original, alternative imperial, and SI units:
+The `print_details` function demonstrates displaying quantities in original, alternative
+imperial, and SI units:
 
 ```cpp
 --8<-- "example/foot_pound_second.cpp:75:91"
@@ -86,9 +89,12 @@ volume underwater    :         1777123.68 ft³,         50322.54 m³,       5032
 ## Why This Matters
 
 - **Legacy Data**: Integrate historical or international data expressed in various unit systems
-- **Industry Standards**: Naval, aerospace, and construction industries often use imperial/FPS units
-- **International Collaboration**: Teams across different countries can work with their native units
-- **No Manual Conversions**: The library handles all conversions automatically with full type safety
+- **Industry Standards**: Naval, aerospace, and construction industries often use
+  imperial/FPS units
+- **International Collaboration**: Teams across different countries can work with their
+  native units
+- **No Manual Conversions**: The library handles all conversions automatically with full
+  type safety
 
 This capability is essential for applications that must bridge different engineering traditions
 or work with legacy specifications while maintaining modern safety standards.

@@ -8,6 +8,7 @@ handling of 0-based vs 1-based indexing conventions.
 
 For background on the concepts used here, see:
 
+<!-- markdownlint-disable MD013 -->
 - [Dimensionless Quantities](../../users_guide/framework_basics/dimensionless_quantities.md) —
   `is_kind` and its semantics
 - [The Affine Space](../../users_guide/framework_basics/the_affine_space.md) —
@@ -16,6 +17,7 @@ For background on the concepts used here, see:
   hands-on exercises with absolute and relative origins
 - [Workshop: Strongly-Typed Counts](../../workshops/advanced/strongly_typed_counts.md) —
   the same `is_kind` pattern for screen coordinates and counts
+<!-- markdownlint-enable MD013 -->
 
 
 ## The Core Insight: Points vs. Displacements
@@ -272,6 +274,7 @@ For a 2D array stored row-major, row and column indices are both `offset` quanti
 but should be incompatible — swapping them is a silent bug. Define named sub-kinds for
 each dimension:
 
+<!-- markdownlint-disable-next-line MD013 -->
 <!-- TODO: In V3 these will be expressible as point_for<row_offset> / point_for<col_offset> -->
 
 ```cpp
@@ -390,6 +393,7 @@ site.
 
 ## See Also
 
+<!-- markdownlint-disable MD013 -->
 - [The Affine Space](../../users_guide/framework_basics/the_affine_space.md) —
   detailed explanation of `quantity_point`, origins, and their algebra
 - [Dimensionless Quantities](../../users_guide/framework_basics/dimensionless_quantities.md) —
@@ -398,3 +402,4 @@ site.
   hands-on exercises with absolute and relative origins
 - [Workshop: Strongly-Typed Counts](../../workshops/advanced/strongly_typed_counts.md) —
   the `is_kind` pattern for coordinates and counts
+<!-- markdownlint-enable MD013 -->

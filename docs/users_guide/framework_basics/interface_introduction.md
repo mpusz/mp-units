@@ -91,14 +91,17 @@ inline constexpr struct joule  : named_unit<"J", newton * metre, kind_of<isq::en
 Not predefining every derived type can harm error readability in other libraries because
 framework-generated types become unwieldy.
 
-**mp-units** improves this by using symbolic expressions consistently to describe results of:
+**mp-units** improves this by using symbolic expressions consistently to describe results
+of:
 
+<!-- markdownlint-disable MD013 -->
 - [dimension equation](../../reference/glossary.md#dimension-equation) - the result is put into
   the `derived_dimension<>` class template
 - [quantity equation](../../reference/glossary.md#quantity-equation) - the result is put into
   the `derived_quantity_spec<>` class template
 - [unit equation](../../reference/glossary.md#unit-equation) - the result is put into the
   `derived_unit<>` class template
+<!-- markdownlint-enable MD013 -->
 
 For example, dividing base units inside a quantity definition:
 
@@ -176,8 +179,8 @@ To keep generated types short and readable, the library applies several simplifi
 
 1. **Ordering**
 
-    The resulting comma-separated arguments of multiplication are always sorted according to
-    a specific predicate. This is why:
+    The resulting comma-separated arguments of multiplication are always sorted according
+    to a specific predicate. This is why:
 
     ```cpp
     static_assert(A * B == B * A);
@@ -210,12 +213,12 @@ To keep generated types short and readable, the library applies several simplifi
     | `power<A, 3>, per<A>` |    `power<A, 2>`     |
     | `A, per<power<A, 2>>` | `{identity}, per<A>` |
 
-    It is important to notice here that only the elements with exactly the same type are being
-    simplified. This means that, for example, `m/m` results in `one`, but `km/m` will not be
-    simplified. The resulting derived unit will preserve both symbols and their relative
-    magnitude. This allows us to properly print symbols of some units or constants that require
-    such behavior. For example, the Hubble constant is expressed in `km⋅s⁻¹⋅Mpc⁻¹`, where both
-    `km` and `Mpc` are units of _length_.
+    It is important to notice here that only the elements with exactly the same type are
+    being simplified. This means that, for example, `m/m` results in `one`, but `km/m`
+    will not be simplified. The resulting derived unit will preserve both symbols and
+    their relative magnitude. This allows us to properly print symbols of some units or
+    constants that require such behavior. For example, the Hubble constant is expressed in
+    `km⋅s⁻¹⋅Mpc⁻¹`, where both `km` and `Mpc` are units of _length_.
 
 4. **Repacking**
 

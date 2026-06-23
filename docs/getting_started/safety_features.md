@@ -308,7 +308,8 @@ Key operations:
 
 Examples where mathematical space safety prevents errors:
 
-- **Temperature**: Cannot add 20 °C + 10 °C (meaningless), but can compute difference (10 K)
+- **Temperature**: Cannot add 20 °C + 10 °C (meaningless), but can compute difference (10
+  K)
 - **Time**: Cannot add two _timestamps_, but can subtract them to get _duration_
 - **Position**: Cannot add two GPS coordinates, but can compute displacement between them
 - **Altitude**: Cannot add two _altitudes_ above sea level, but can compute _height_ difference
@@ -347,6 +348,7 @@ no extra effort. From there, two independent opt-in choices extend coverage furt
 
 To dive deeper into **mp-units** safety features:
 
+<!-- markdownlint-disable MD013 -->
 - [Understanding Safety Levels (Blog)](../blog/posts/understanding-safety-levels.md) -
   In-depth analysis, library comparisons, and why safety matters for C++ standardization
 - [Simple and Typed Quantities](../users_guide/framework_basics/simple_and_typed_quantities.md) -
@@ -369,3 +371,4 @@ Choose your level of type safety
   V3 design for points, absolute quantities, and deltas
 - [Bringing Quantity-Safety To The Next Level (Blog)](../blog/posts/bringing-quantity-safety-to-the-next-level.md) -
   Future of quantity character correctness
+<!-- markdownlint-enable MD013 -->

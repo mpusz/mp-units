@@ -1,5 +1,9 @@
 # Working With Nondimensionalized Physics
 
+<!-- markdownlint-disable MD013 MD018 -->
+<!-- markdownlint parses this file's C++ code fences inconsistently and mis-reads `#include`
+     lines and long code/math lines as prose; disabled file-wide. Prose is wrapped to 90. -->
+
 This guide answers a common question from physicists and engineers who already
 nondimensionalize their equations:
 _"Do I still need **mp-units**?"_
@@ -656,6 +660,7 @@ solver, so you can focus on the physics.
 
 ## See Also
 
+<!-- markdownlint-disable MD013 -->
 - [Dimensionless Quantities](../../users_guide/framework_basics/dimensionless_quantities.md) —
   `is_kind`, `quantity_spec`, and the library's treatment of dimension one
 - [Faster-Than-Lightspeed Constants](../../users_guide/framework_basics/faster_than_lightspeed_constants.md) —
@@ -668,3 +673,4 @@ solver, so you can focus on the physics.
   using dimensions without numerical values for compile-time validation
 - [Prevent Integer Overflow](../../blog/posts/preventing-integer-overflow.md) —
   how the library protects the re-dimensionalization boundary
+<!-- markdownlint-enable MD013 -->

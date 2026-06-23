@@ -33,11 +33,13 @@ $$V(t) = V_0 \cdot e^{-\frac{t}{RC}}$$
 
 <div class="grid" markdown>
 
+<!-- markdownlint-disable MD013 -->
 <div style="text-align: center; margin: 1em 0;">
   <svg width="270" height="180" viewBox="0 0 270 180" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto;">
     <!-- Voltage source V₀ (left side) -->
     <circle cx="30" cy="90" r="25" fill="none" stroke="#666" stroke-width="2"/>
     <text x="30" y="95" font-size="16" text-anchor="middle" fill="#666">V₀</text>
+<!-- markdownlint-enable MD013 -->
 
     <!-- Top wire to resistor -->
     <line x1="30" y1="65" x2="30" y2="30" stroke="#666" stroke-width="2"/>
@@ -70,10 +72,12 @@ $$V(t) = V_0 \cdot e^{-\frac{t}{RC}}$$
     - **Resistance**: 4.7 kΩ
     - **Time constant**: τ = RC = 2.209 ms
 
+<!-- markdownlint-disable MD013 -->
 <div style="text-align: center; margin: 2em 0;">
   <svg width="500" height="300" viewBox="0 0 500 300" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto;">
     <!-- Graph background -->
     <rect x="60" y="20" width="420" height="240" fill="#f8f8f8" stroke="#ddd" stroke-width="1"/>
+<!-- markdownlint-enable MD013 -->
 
     <!-- Grid lines (horizontal) - evenly spaced every 48px (1V per 48px) -->
     <line x1="60" y1="68" x2="480" y2="68" stroke="#ddd" stroke-width="1"/>

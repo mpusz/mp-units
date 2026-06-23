@@ -207,10 +207,10 @@ integral part, making it easier to read.
 
 The function supports two prefix selection modes via the `prefix_range` parameter:
 
-- **`prefix_range::engineering`** (default): Selects only engineering prefixes (powers of 1000:
-  kilo, mega, milli, micro, etc.), resulting in values in the range [1.0, 1000)
-- **`prefix_range::full`**: Selects from all SI prefixes including intermediate ones (deca, hecto,
-  deci, centi), often resulting in values in the range [1.0, 10.0)
+- **`prefix_range::engineering`** (default): Selects only engineering prefixes (powers of
+  1000: kilo, mega, milli, micro, etc.), resulting in values in the range [1.0, 1000)
+- **`prefix_range::full`**: Selects from all SI prefixes including intermediate ones
+  (deca, hecto, deci, centi), often resulting in values in the range [1.0, 10.0)
 
 ```cpp
 quantity length = 456 * m;
@@ -263,8 +263,8 @@ auto str = si::invoke_with_prefixed([](auto q) { return std::format("{}", q); },
 
 ## Scaled units
 
-In the [SI](../../reference/glossary.md#si), all units are either base or derived units or prefixed
-versions of those. However, those are only some of the options possible.
+In the [SI](../../reference/glossary.md#si), all units are either base or derived units or
+prefixed versions of those. However, those are only some of the options possible.
 
 For example, there is a list of [off-system units](../../reference/glossary.md#off-system-unit)
 accepted for use with SI. Those are scaled versions of the SI units with ratios that can't
@@ -323,8 +323,9 @@ constexpr auto h = si::hour;
 }
 ```
 
-Unit symbols introduce a lot of short identifiers into the current namespace. This is why they
-are opt-in. A user has to explicitly "import" them from a dedicated `unit_symbols` namespace:
+Unit symbols introduce a lot of short identifiers into the current namespace. This is why
+they are opt-in. A user has to explicitly "import" them from a dedicated `unit_symbols`
+namespace:
 
 === "using-declaration"
 

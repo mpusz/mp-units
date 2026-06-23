@@ -219,9 +219,10 @@ This approach has two critical problems:
 2. **No intermediate widening**: The scaling multiplication `v * num` is computed directly
    in `int16_t`, causing immediate undefined behavior when it overflows
 
-In our example, what would actually happen if a units library followed `std::chrono::duration`'s
-interface? The intermediate arithmetic would overflow `int16_t` (undefined behavior), and even
-if you somehow got past that, the final narrowing conversion would produce garbage:
+In our example, what would actually happen if a units library followed
+`std::chrono::duration`'s interface? The intermediate arithmetic would overflow `int16_t`
+(undefined behavior), and even if you somehow got past that, the final narrowing
+conversion would produce garbage:
 
 ```cpp
 // Hypothetical std::common_type-based library behavior:
@@ -992,10 +993,11 @@ Different libraries handle this differently:
 - **mp-units 2.5.0**: Respect integral promotion and widen to `intmax_t` (typically `int64_t`)
   for intermediate arithmetic → prevents most UB, but vulnerable when using `int64_t` or huge
   scaling factors
-- **mp-units (current)**: Use widened intermediate arithmetic (`int64_t` for `int8_t`/`int16_t`/`int32_t`,
-  128-bit arithmetic for `int64_t`) for intermediate scaling → **greatly reduces UB risk**,
-  handling typical real-world cases safely, but extreme scenarios can still overflow (e.g., AU ↔ nm,
-  `pow<3>` quantities, or very large `int64_t` values with moderate scaling)
+- **mp-units (current)**: Use widened intermediate arithmetic (`int64_t` for
+  `int8_t`/`int16_t`/`int32_t`, 128-bit arithmetic for `int64_t`) for intermediate scaling
+  → **greatly reduces UB risk**, handling typical real-world cases safely, but extreme
+  scenarios can still overflow (e.g., AU ↔ nm, `pow<3>` quantities, or very large
+  `int64_t` values with moderate scaling)
 - **mp-units + `safe_int<T>`**: Detect **every** overflow — intermediate and final —
   with policy-based error handling
 
@@ -1016,11 +1018,12 @@ The combination of **mp-units**' layered approach gives you choices based on you
 | Values outside physical domain                 | No protection                                 | + origin bounds policy ✓                      |
 | Divide-before-convert truncation               | (open question; Au's approach is a reference) | (open question; Au's approach is a reference) |
 
-**Key insight**: mp-units' widened intermediate arithmetic (`int64_t` for types up to `int32_t`,
-128-bit for `int64_t`) **greatly reduces** the risk of undefined behavior during automatic scaling,
-handling typical real-world scenarios safely. However, extreme cases (huge scaling factors like AU↔nm,
-or `pow<3>` quantities with large values) can still overflow even 128-bit arithmetic. For **guaranteed**
-overflow detection in all cases, use `safe_int<T>`.
+**Key insight**: mp-units' widened intermediate arithmetic (`int64_t` for types up to
+`int32_t`, 128-bit for `int64_t`) **greatly reduces** the risk of undefined behavior
+during automatic scaling, handling typical real-world scenarios safely. However, extreme
+cases (huge scaling factors like AU↔nm, or `pow<3>` quantities with large values) can
+still overflow even 128-bit arithmetic. For **guaranteed** overflow detection in all
+cases, use `safe_int<T>`.
 
 For the full `safe_int<T>` reference, see the
 [User's Guide](../../users_guide/framework_basics/safe_int.md). For usage patterns

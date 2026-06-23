@@ -164,12 +164,15 @@ The implementation uses standard first-order uncertainty propagation:
 
 ## Why This Matters
 
-- **Automatic Error Propagation**: No manual uncertainty calculations needed—formulas are built into operators
+- **Automatic Error Propagation**: No manual uncertainty calculations needed—formulas are
+  built into operators
 - **Type Safety**: The dimensional analysis works with uncertainties seamlessly through **mp-units**
 - **Scientific Accuracy**: Properly tracks measurement precision through complex calculations
-- **Standard Compliant**: Follows ISO GUM (Guide to the Expression of Uncertainty in Measurement) principles
+- **Standard Compliant**: Follows ISO GUM (Guide to the Expression of Uncertainty in
+  Measurement) principles
 - **Extensibility**: Demonstrates how to integrate domain-specific numeric types with **mp-units**
-- **Real-World Applicability**: Suitable for IAU astronomical constants, NIST physical constants, and laboratory measurements
+- **Real-World Applicability**: Suitable for IAU astronomical constants, NIST physical
+  constants, and laboratory measurements
 
-This pattern is essential for scientific computing, metrology, laboratory measurements, and any application
-where measurement precision and traceability matter.
+This pattern is essential for scientific computing, metrology, laboratory measurements,
+and any application where measurement precision and traceability matter.

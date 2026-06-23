@@ -110,10 +110,12 @@ Ready to learn **mp-units**? Here's your roadmap:
 
 Already familiar with units libraries?
 
+<!-- markdownlint-disable MD013 -->
 1. Skim [Quick Start tutorials](../../tutorials/index.md#1-quick-start-30-minutes) (30 min)
 2. Focus on [Type Safety tutorials](../../tutorials/index.md#3-type-safety-65-minutes) (~1 hour)
 3. Jump to [Customization](../../workshops/index.md) and [Advanced Workshops](../../workshops/index.md)
 4. Reference the [Systems documentation](../../users_guide/systems/index.md) for your domain
+<!-- markdownlint-enable MD013 -->
 
 ### For Migration
 

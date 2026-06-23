@@ -2,7 +2,8 @@
 
 Convert `quantity_point` objects between independent reference frames.
 
-**Goal**: Define `frame_projection` specializations and use `point_for` across unrelated origins  
+**Goal**: Define `frame_projection` specializations and use `point_for` across unrelated
+origins  
 **Time**: ~20 minutes
 
 **Prerequisites**: Complete the [Point Origins](point_origins.md) tutorial first
@@ -219,7 +220,8 @@ runtime arguments must be forwarded to the functor.
 
 ## What You Learned
 
-✅ `frame_projection` connects independent `absolute_point_origin` types via user callables  
+✅ `frame_projection` connects independent `absolute_point_origin` types via user
+callables  
 ✅ Specialize `mp_units::frame_projection<From, To>` with a callable at global scope  
 ✅ Call `.point_for(target_origin)` the same way as for same-origin conversions  
 ✅ Walk-down through `relative_point_origin` chains is automatic after projection  

@@ -105,7 +105,8 @@ right now. We really need all the production feedback we can get before it is
 shipped in C++29. After that, we will not be able to change anything. The interface
 provided will need to stay stable for ages.
 
-[Download the slides from the Evening Session](https://github.com/train-it-eu/conf-slides/blob/master/2026.03%20-%20Croydon/P3045%20-%20Quantities%20and%20Units%20Library.pdf){ .md-button }
+[Download the slides from the Evening Session](https://github.com/train-it-eu/conf-slides/blob/master/2026.03%20-%20Croydon/P3045%20-%20Quantities%20and%20Units%20Library.pdf){
+.md-button }
 
 
 ## First LEWG Review: Unanimous Support

@@ -65,9 +65,9 @@ struct Meter {
 };
 ```
 
-You want conversions **to** `mp_units::quantity` to be implicit (since `Meter` is at least as
-safe), but conversions **from** `mp_units::quantity` to `Meter` to be explicit (since `quantity`
-provides more safety).
+You want conversions **to** `mp_units::quantity` to be implicit (since `Meter` is at least
+as safe), but conversions **from** `mp_units::quantity` to `Meter` to be explicit (since
+`quantity` provides more safety).
 
 ### Step 1: Define the Trait Specialization
 
@@ -307,8 +307,10 @@ int main()
 
 The C++ Standard Library provides two types for handling time in the affine space:
 
+<!-- markdownlint-disable MD013 -->
 - [`std::chrono::duration`](https://en.cppreference.com/w/cpp/chrono/duration) - quantities of time
 - [`std::chrono::time_point`](https://en.cppreference.com/w/cpp/chrono/time_point) - points in time
+<!-- markdownlint-enable MD013 -->
 
 **mp-units** comes with built-in interoperability for these types.
 
@@ -432,10 +434,13 @@ or to integrate with external libraries while maintaining strong dimensional saf
 
 **User's Guide:**
 
+<!-- markdownlint-disable MD013 -->
 - [The Affine Space](../../users_guide/framework_basics/the_affine_space.md) - Understanding quantity points
 - [Concepts](../../users_guide/framework_basics/concepts.md) - `QuantityLike` and `QuantityPointLike` concepts
 - [Value Conversions](../../users_guide/framework_basics/value_conversions.md) - Understanding conversion rules
+<!-- markdownlint-enable MD013 -->
 
 **Related How-to Guides:**
 
+<!-- markdownlint-disable-next-line MD013 -->
 - [Working with Legacy Interfaces](working_with_legacy_interfaces.md) - Extracting values for non-type-safe APIs

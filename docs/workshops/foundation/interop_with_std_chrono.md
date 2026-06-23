@@ -7,9 +7,9 @@ handles system timestamps while **mp-units** ensures type-safe calculations on q
 
 ## Problem statement
 
-An autonomous driving system records two time points using a `std::chrono` clock when the car
-passes two checkpoints. At each checkpoint, the odometer reading is also captured.
-The system needs to:
+An autonomous driving system records two time points using a `std::chrono` clock when the
+car passes two checkpoints. At each checkpoint, the odometer reading is also captured. The
+system needs to:
 
 - Calculate trip statistics (_duration_, _distance_, _average speed_)
 - Schedule a driver alert for an upcoming rest area

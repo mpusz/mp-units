@@ -56,8 +56,8 @@ The development environment is built on a layered Docker image stack:
 
 3. **Wait for setup**: The container will build automatically (usually 3-5 minutes)
 
-This option provides the same development environment as Codespaces while running locally on
-your machine. It offers:
+This option provides the same development environment as Codespaces while running locally
+on your machine. It offers:
 - **Full offline development** (after initial setup)
 - **Better performance** on powerful local machines
 - **Direct file system access** for easier integration with local tools

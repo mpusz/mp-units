@@ -29,12 +29,14 @@ reminders.
 
 Comprehensive listings of all available physical units systems:
 
+<!-- markdownlint-disable MD013 -->
 - **[Dimensions](systems_reference/dimensions_index.md)** - All base and derived dimensions
 - **[Quantities](systems_reference/quantities_index.md)** - All quantity types
 - **[Units](systems_reference/units_index.md)** - All unit definitions
 - **[Prefixes](systems_reference/prefixes_index.md)** - Unit prefixes (kilo, mega, etc.)
 - **[Point Origins](systems_reference/point_origins_index.md)** - Reference points for affine space
 - **[Quantity Hierarchies](systems_reference/hierarchies/index.md)** - Detailed quantity type relationships
+<!-- markdownlint-enable MD013 -->
 
 ### [API Reference](api_reference.md)
 

@@ -58,7 +58,8 @@ and translation:
 
 Here's what's happening:
 
-1. **`hw_voltage_origin`**: A custom point origin representing -10 V (the hardware's zero point)
+1. **`hw_voltage_origin`**: A custom point origin representing -10 V (the hardware's zero
+   point)
 2. **`hw_voltage_unit`**: An offset unit that:
     - Scales by the conversion factor (20 V / 65534 counts)
     - Uses `hw_voltage_origin` as its origin

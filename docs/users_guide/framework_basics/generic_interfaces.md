@@ -54,9 +54,9 @@ some issues start to be clearly visible:
 
 1. The arguments must be converted to units mandated by the function's parameters at each
    call. This involves potentially expensive multiplication/division operations at runtime.
-2. After the function returns the _speed_ in a unit of `km/h`, another potentially expensive
-   multiplication/division operations must be performed to convert the resulting quantity into
-   a unit being the derived unit of the initial function's arguments.
+2. After the function returns the _speed_ in a unit of `km/h`, another potentially
+   expensive multiplication/division operations must be performed to convert the resulting
+   quantity into a unit being the derived unit of the initial function's arguments.
 3. Besides the obvious runtime cost, some unit conversions may result in a value truncation,
    which means that the result will not be exactly equal to a direct division of the
    function's arguments.

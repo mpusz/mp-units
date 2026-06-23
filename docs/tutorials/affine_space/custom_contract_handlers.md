@@ -315,7 +315,8 @@ struct mp_units::constraint_violation_handler<my_safe_double> {
 };
 ```
 
-Now `check_in_range` will use your handler for any `quantity_point` with `my_safe_double` rep.
+Now `check_in_range` will use your handler for any `quantity_point` with `my_safe_double`
+rep.
 
 !!! info "See Also"
 

@@ -16,11 +16,13 @@ CMake-based projects:
     - in case this library becomes part of the C++ standard, it will have no external
       dependencies but until then, it depends on the following:
 
+        <!-- markdownlint-disable MD013 -->
         - [gsl-lite](https://github.com/gsl-lite/gsl-lite) or
           [ms-gsl](https://github.com/microsoft/GSL) to verify runtime contracts (if contract
           checking is enabled),
         - [{fmt}](https://github.com/fmtlib/fmt) to provide text formatting of quantities (if
           `std::format` is not supported yet on a specific compiler).
+        <!-- markdownlint-enable MD013 -->
 
 - **_._**
 
@@ -119,11 +121,11 @@ All of the project's header files can be found in the `mp-units/...` subdirector
 
 ### Third-party library integrations
 
-Optional, opt-in headers under `mp-units/integrations/` that adapt a third-party library to
-**mp-units**. Each is guarded with `__has_include` (a harmless no-op when its library is unavailable)
-and has a [module counterpart](#modules) (`mp_units.integrations.<lib>`). Currently these adapt
-linear algebra libraries, letting their vector and matrix types be used directly as
-quantity representations:
+Optional, opt-in headers under `mp-units/integrations/` that adapt a third-party library
+to **mp-units**. Each is guarded with `__has_include` (a harmless no-op when its library
+is unavailable) and has a [module counterpart](#modules) (`mp_units.integrations.<lib>`).
+Currently these adapt linear algebra libraries, letting their vector and matrix types be
+used directly as quantity representations:
 
 - `mp-units/integrations/eigen.h` integrates [Eigen](https://eigen.tuxfamily.org),
 - `mp-units/integrations/glm.h` integrates [GLM](https://github.com/g-truc/glm),

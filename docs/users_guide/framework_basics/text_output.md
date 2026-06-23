@@ -92,11 +92,12 @@ composes to express dimensions and units of derived quantities.
 
 ### `text_encoding`
 
-[ISQ](../../reference/glossary.md#isq) and [SI](../../reference/glossary.md#si) standards always
-specify symbols using UTF-8 encoding. This is why it is a default and primary target for
-text output. However, in some applications or environments, a standard portable text output
-using only the characters from the [basic literal character set](https://en.cppreference.com/w/cpp/language/charset)
-can be preferred by users.
+[ISQ](../../reference/glossary.md#isq) and [SI](../../reference/glossary.md#si) standards
+always specify symbols using UTF-8 encoding. This is why it is a default and primary
+target for text output. However, in some applications or environments, a standard portable
+text output using only the characters from the
+[basic literal character set](https://en.cppreference.com/w/cpp/language/charset) can be
+preferred by users.
 
 This is why the library provides an option to change the default encoding to the
 portable one with:
@@ -290,8 +291,8 @@ prints:
 183.142 [(1/π°), (1/180 rad)]
 ```
 
-Thanks to the above, it might be easier for the user to reason about the magnitude of the resulting
-unit and its impact on the value stored in the quantity.
+Thanks to the above, it might be easier for the user to reason about the magnitude of the
+resulting unit and its impact on the value stored in the quantity.
 
 !!! note
 
@@ -649,9 +650,9 @@ repeating the entire default format string verbatim.
 
 #### Default formatting
 
-To format `quantity` values, the formatting facility uses `quantity-format-spec`. If left empty,
-the default formatting is applied. The same default formatting is also applied to the
-output streams. This is why the following code lines produce the same output:
+To format `quantity` values, the formatting facility uses `quantity-format-spec`. If left
+empty, the default formatting is applied. The same default formatting is also applied to
+the output streams. This is why the following code lines produce the same output:
 
 ```cpp
 std::cout << "Distance: " << 123 * km << "\n";

@@ -27,7 +27,7 @@ The **mp-units** HEP system implements:
     hand-maintained unit constants across multiple HEP frameworks while maintaining compatibility
     during migration.
 
-### Historical Context
+## Historical Context
 
 The need for compile-time dimensional analysis in HEP was recognized early. Walter Brown
 presented ["SI Library of Unit-Based Computation"](https://digital.library.unt.edu/ark:/67531/metadc668099)
@@ -400,11 +400,13 @@ For complete API documentation including all available units, constants, and exa
 - **Particle Data Group**: [pdg.lbl.gov](https://pdg.lbl.gov) - Particle
   properties and fundamental constants used in Monte Carlo event generators
 
+<!-- markdownlint-disable MD013 -->
 - **[CERN Software](https://ep-dep-sft.web.cern.ch)**:
     - [CLHEP](https://lcginfo.cern.ch/pkg/clhep) [[git](https://gitlab.cern.ch/CLHEP/CLHEP)] - Class Library for High Energy Physics
     - [Gaudi](https://lcginfo.cern.ch/pkg/Gaudi) [[git](https://gitlab.cern.ch/gaudi/Gaudi)] - Event processing framework
     - [Geant4](https://lcginfo.cern.ch/pkg/Geant4) [[git](https://gitlab.cern.ch/geant4/geant4)] - Detector simulation toolkit
     - [ROOT](https://lcginfo.cern.ch/pkg/ROOT) [[git](https://github.com/root-project/root)] - Data analysis framework
+<!-- markdownlint-enable MD013 -->
 
 - **ATLAS Experiment**: [atlas.cern](https://atlas.cern) - Large Hadron Collider experiment
   at CERN

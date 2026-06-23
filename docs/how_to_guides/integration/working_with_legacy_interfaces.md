@@ -6,7 +6,8 @@ to use each one, and how to maintain as much type safety as possible at the boun
 type-safe and legacy code.
 
 For background on numerical values and value conversions, see
-[Value Conversions](../../users_guide/framework_basics/value_conversions.md) in the User's Guide.
+[Value Conversions](../../users_guide/framework_basics/value_conversions.md) in the User's
+Guide.
 
 ## The Challenge
 

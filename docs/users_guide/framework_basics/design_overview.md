@@ -37,9 +37,10 @@ flowchart TD
 
 ## Dimension
 
-[Dimension](../../reference/glossary.md#dimension) specifies the dependence of a quantity on
-the base quantities of a particular system of quantities. It is represented as a product of
-powers of factors corresponding to the base quantities, omitting any numerical factor.
+[Dimension](../../reference/glossary.md#dimension) specifies the dependence of a quantity
+on the base quantities of a particular system of quantities. It is represented as a
+product of powers of factors corresponding to the base quantities, omitting any numerical
+factor.
 
 In the **mp-units** library, we use the terms:
 
@@ -50,6 +51,7 @@ In the **mp-units** library, we use the terms:
 
 For example:
 
+<!-- markdownlint-disable MD013 -->
 - _length_ ($\mathsf{L}$), _mass_ ($\mathsf{M}$), _time_ ($\mathsf{T}$),
   _electric current_ ($\mathsf{I}$),
   _thermodynamic temperature_ ($\mathsf{Θ}$), _amount of substance_ ($\mathsf{N}$), and
@@ -58,6 +60,7 @@ For example:
   $\textsf{dim }F = \mathsf{LMT}^{–2}$.
 - The implementation of IEC 80000 in this library provides `iec::dim_traffic_intensity`
   base dimension to extend ISQ with strong information technology quantities.
+<!-- markdownlint-enable MD013 -->
 
 [Base dimensions](../../reference/glossary.md#base-dimension) can be defined by the user in
 the following way:
@@ -216,7 +219,8 @@ For example:
 - `si::radian`, `si::newton`, and `si::watt` are examples of named derived units within the
   [SI](../../reference/glossary.md#si).
 - `non_si::minute` is an example of a scaled unit of time.
-- `si::si2019::speed_of_light_in_vacuum` is a physical constant standardized by the SI in 2019.
+- `si::si2019::speed_of_light_in_vacuum` is a physical constant standardized by the SI in
+  2019.
 
 !!! note
 
@@ -237,8 +241,8 @@ inline constexpr struct newton : named_unit<"N", kilogram * metre / square(secon
 inline constexpr struct speed_of_light_in_vacuum : named_constant<"c", mag<299'792'458> * metre / second> {} speed_of_light_in_vacuum;
 ```
 
-The [unit equation](../../reference/glossary.md#unit-equation) of `si::metre / si::second` results
-in the `derived_unit<si::metre, per<si::second>>` type.
+The [unit equation](../../reference/glossary.md#unit-equation) of `si::metre / si::second`
+results in the `derived_unit<si::metre, per<si::second>>` type.
 
 
 ## Quantity reference

@@ -2,7 +2,8 @@
 
 Advanced _temperature_ operations including averaging, interpolation, and real-world calculations.
 
-**Goal**: Master advanced _temperature_ operations and understand their practical applications  
+**Goal**: Master advanced _temperature_ operations and understand their practical
+applications  
 **Time**: ~10 minutes
 
 **Prerequisites**: Complete the [Temperature Handling](temperature_handling.md) tutorial first

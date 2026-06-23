@@ -241,8 +241,8 @@ inline constexpr struct drag_factor final              : quantity_spec<dimension
 inline constexpr struct storage_capacity final         : quantity_spec<dimensionless, is_kind> {} storage_capacity;
 ```
 
-With the above, we can constrain `radian`, `steradian`, and `bit` to be allowed for usage with
-specific quantity kinds only:
+With the above, we can constrain `radian`, `steradian`, and `bit` to be allowed for usage
+with specific quantity kinds only:
 
 ```cpp
 inline constexpr struct radian final    : named_unit<"rad", metre / metre, kind_of<isq::angular_measure>> {} radian;

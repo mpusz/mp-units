@@ -216,7 +216,8 @@ The main program runs multiple scenarios:
 - **3 weather conditions** (good, medium, bad thermals)
 - **Multi-waypoint tasks** with varying distances
 
-For each combination, it calculates whether the flight is possible and estimates the time required.
+For each combination, it calculates whether the flight is possible and estimates the time
+required.
 
 ### Sample Output
 

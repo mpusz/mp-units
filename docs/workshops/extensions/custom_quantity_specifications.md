@@ -53,6 +53,7 @@ all masses, but each has specific semantics that should be enforced by the type 
 Complete the `qs` namespace by defining custom `quantity_spec` types following this
 hierarchy:
 
+<!-- markdownlint-disable-next-line MD013 -->
 <!-- TODO `total_mass` should be defined as `cabin_mass + passenger_mass` without the need for `quantity_cast` -->
 
 ```mermaid

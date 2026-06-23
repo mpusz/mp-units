@@ -455,8 +455,8 @@ definitions, and design rationale.
 
 #### `treat_as_floating_point<Rep>` { #treat_as_floating_point }
 
-A specializable variable template that tells the library whether a type should be treated as
-floating-point for the purpose of allowing implicit conversions:
+A specializable variable template that tells the library whether a type should be treated
+as floating-point for the purpose of allowing implicit conversions:
 
 ```cpp
 template<typename Rep>
@@ -478,9 +478,10 @@ template<>
 constexpr bool mp_units::treat_as_floating_point<my_fixed_point_type> = true;
 ```
 
-**Impact:** When `treat_as_floating_point<Rep>` is `true`, the type is treated as floating-point
-for conversion purposes. See [Value Conversions](value_conversions.md#value-conversions) for details
-on how this affects implicit conversions between quantities.
+**Impact:** When `treat_as_floating_point<Rep>` is `true`, the type is treated as
+floating-point for conversion purposes. See
+[Value Conversions](value_conversions.md#value-conversions) for details on how this
+affects implicit conversions between quantities.
 
 ---
 
@@ -645,11 +646,11 @@ a representation type. For usage and code examples, see
 
 ## Character-Specific Operations
 
-The library enforces character at compile-time: vector quantities require `scalar_product()` or
-`vector_product()` instead of `*`; complex quantities restrict `real()`, `imag()`, and `modulus()`
-to quantities of the correct character. See
-[Character of a Quantity](character_of_a_quantity.md#character-specific-operations) for full
-details and examples.
+The library enforces character at compile-time: vector quantities require
+`scalar_product()` or `vector_product()` instead of `*`; complex quantities restrict
+`real()`, `imag()`, and `modulus()` to quantities of the correct character. See
+[Character of a Quantity](character_of_a_quantity.md#character-specific-operations) for
+full details and examples.
 
 
 ## Decomposing a Vector Quantity { #decomposing-a-vector-quantity }
@@ -658,12 +659,12 @@ A vector _quantity_ can be split into named, strongly-typed 1D-vector component 
 reachable by index (`get<Idx>`), by _quantity spec_ (`get<QS>`), and through structured bindings.
 The whole opts in by specializing the `vector_components` customization point.
 
-Decomposition adds one requirement on top of the vector representation requirements above: the
-representation must be **element-accessible at a compile-time index**, through either a tuple-like
-`get<Idx>(rep)` (found by argument-dependent lookup) or a subscript `rep[Idx]`. The built-in
-`cartesian_vector` and the supported third-party vectors all qualify. If the representation also
-models `std::tuple_size`, the library checks at compile time that the declared axis count does not
-exceed what the representation holds.
+Decomposition adds one requirement on top of the vector representation requirements above:
+the representation must be **indexable by a compile-time constant index**, through either
+a tuple-like `get<Idx>(rep)` (found by argument-dependent lookup) or a subscript
+`rep[Idx]`. The built-in `cartesian_vector` and the supported third-party vectors all
+qualify. If the representation also models `std::tuple_size`, the library checks at
+compile time that the declared axis count does not exceed what the representation holds.
 
 See [Decompose a Vector Quantity into Components](../../how_to_guides/advanced_usage/decompose_vector_quantity.md)
 for the full recipe, including how the quantity hierarchy must be formed.
@@ -803,6 +804,7 @@ library respects that choice throughout unit conversion.
     The design preference order is therefore:
     **exact integer > exact rational > approximate irrational**.
 
+<!-- markdownlint-disable-next-line MD042 -->
 [](){ #why-widened-integers-for-the-rational-path }
 
 ??? question "Why widened integers for the rational path?"
@@ -924,8 +926,8 @@ character. At minimum this means:
 
 - providing `value_type` (or `element_type`) so the library knows the underlying scalar type,
 - providing `operator*` and `operator/` with `representation_underlying_type_t<T>` so the
-  library can scale it during unit conversions (and optionally `operator*(T, UnitMagnitude)` for
-  [magnitude-aware scaling](#magnitude-aware-scaling)),
+  library can scale it during unit conversions (and optionally `operator*(T,
+  UnitMagnitude)` for [magnitude-aware scaling](#magnitude-aware-scaling)),
 - satisfying the character-specific requirements from the table above (copyable, equality
   comparable, arithmetic operators, CPOs, etc.).
 
@@ -961,11 +963,11 @@ quantity v = Eigen::Vector3d{30, 40, 0} * isq::velocity[km / h];
 quantity speed = magnitude(v);  // 50 km/h (a vector quantity supports magnitude() directly)
 ```
 
-Each header is guarded with `__has_include`, so it is a harmless no-op when its library is not
-available — it is always safe to include. The matching module is built only when C++ modules and
-the library are both available. See the
-[linear algebra example](../../examples/linear_algebra.md) for the same scenario compiled against
-all three libraries in both modes.
+Each header is guarded with `__has_include`, so it is a harmless no-op when its library is
+not available — it is always safe to include. The matching module is built only when C++
+modules and the library are both available. See the
+[linear algebra example](../../examples/linear_algebra.md) for the same scenario compiled
+against all three libraries in both modes.
 
 !!! note "Expression templates"
 

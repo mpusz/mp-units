@@ -15,12 +15,14 @@ which axis it came from. Swap two indices and the compiler says nothing.
 
 For background on the concepts used here, see:
 
+<!-- markdownlint-disable MD013 -->
 - [Character of a Quantity](../../users_guide/framework_basics/character_of_a_quantity.md) -
   scalar, vector, and tensor characters
 - [Systems of Quantities](../../users_guide/framework_basics/systems_of_quantities.md) -
   the quantity hierarchy, `is_kind`, and quantity-kind safety
 - [Representation Types](../../users_guide/framework_basics/representation_types.md) -
   what a type must provide to act as a representation
+<!-- markdownlint-enable MD013 -->
 
 
 ## The Problem: Components Lose Their Types
@@ -224,8 +226,10 @@ const double climb_rate = get<vertical_velocity>(v).numerical_value_in(km / h);
 Decomposition reuses the same representation that already backs the vector _quantity_. On
 top of the normal
 [vector representation requirements](../../users_guide/framework_basics/representation_types.md)
-(copyable, `bool`-returning equality, a Euclidean norm, and a `value_type`), the type needs
-to be **element-accessible at a compile-time index**. The library accepts either form:
+(copyable, `bool`-returning equality, a Euclidean norm, and a `value_type`), the type must
+be **indexable by a compile-time constant index**: `Idx` is a template argument, not a
+runtime value, which is what lets each axis have its own return type. The access itself
+need not be `constexpr`. The library accepts either form:
 
 - a tuple-like `get<Idx>(rep)` found by argument-dependent lookup, or
 - a subscript `rep[Idx]`.
@@ -234,9 +238,9 @@ to be **element-accessible at a compile-time index**. The library accepts either
 all qualify through one or the other, so decomposition works against every backend the
 [linear algebra example](../../examples/linear_algebra.md) uses.
 
-The component _quantity's_ representation is the vector's element type, its `value_type`. A
-component of a `cartesian_vector<double>` is therefore a `quantity<…, double>`: a 1D-vector
-_quantity_ holding a single value.
+The component _quantity's_ representation is the vector's element type, its `value_type`.
+A component of a `cartesian_vector<double>` is therefore a `quantity<…, double>`: a
+1D-vector _quantity_ holding a single value.
 
 !!! info "Optional: a compile-time size check"
 
@@ -282,6 +286,7 @@ get<isq::acceleration>(v);  // error: not one of the declared axes
 
 ## See Also
 
+<!-- markdownlint-disable MD013 -->
 - [Character of a Quantity](../../users_guide/framework_basics/character_of_a_quantity.md) -
   scalar, vector, and tensor characters and their operations
 - [Systems of Quantities](../../users_guide/framework_basics/systems_of_quantities.md) -
@@ -290,3 +295,4 @@ get<isq::acceleration>(v);  // error: not one of the declared axes
   the requirements a representation must meet
 - [Using a Linear Algebra Library as the Representation](../../examples/linear_algebra.md) -
   a runnable example that decomposes a drone velocity against four backends
+<!-- markdownlint-enable MD013 -->

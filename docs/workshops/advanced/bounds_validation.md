@@ -358,6 +358,7 @@ int main()
 
 ## Next Steps
 
+<!-- markdownlint-disable MD013 -->
 - **[Tutorial: Custom Contract Handlers](../../tutorials/affine_space/custom_contract_handlers.md)** -
   Review the concepts
 - **[Ensure Ultimate Safety](../../how_to_guides/advanced_usage/ultimate_safety.md)** -
@@ -365,3 +366,4 @@ int main()
 - **[Bounded Quantity Points Tutorial](../../tutorials/affine_space/bounded_quantity_points.md)** -
   Learn about different bounds policies
 - **Production deployment** - Integrate with your logging/monitoring infrastructure
+<!-- markdownlint-enable MD013 -->

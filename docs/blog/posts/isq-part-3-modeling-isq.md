@@ -357,8 +357,9 @@ every physical units library. Thanks to that, the library can protect users
 from assigning, adding, subtracting, or comparing incompatible units and
 provide automated conversion factors between various compatible units.
 
-Probably all the libraries in the wild model the SI (or at least most of it), and many of them
-provide support for additional units belonging to various other systems (e.g., imperial).
+Probably all the libraries in the wild model the SI (or at least most of it), and many of
+them provide support for additional units belonging to various other systems (e.g.,
+imperial).
 
 ### Systems of units are based on systems of quantities
 

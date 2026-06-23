@@ -327,7 +327,8 @@ The following steps may be performed to obtain an official library release:
     target_link_libraries(<your_target> <PUBLIC|PRIVATE|INTERFACE> mp-units::mp-units)
     ```
 
-4. Download, build, and install Conan dependencies before running the CMake configuration step:
+4. Download, build, and install Conan dependencies before running the CMake configuration
+   step:
 
     === "_conanfile.txt_ or _conanfile.py_"
 
@@ -346,8 +347,8 @@ The following steps may be performed to obtain an official library release:
 
 ### Conan + CMake (Live At Head)
 
-This chapter describes the procedure to Live At Head, which means using the latest stable version
-of **mp-units** all the time.
+This chapter describes the procedure to Live At Head, which means using the latest stable
+version of **mp-units** all the time.
 
 !!! note
 

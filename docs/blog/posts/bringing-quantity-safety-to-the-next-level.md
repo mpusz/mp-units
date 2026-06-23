@@ -142,8 +142,9 @@ auto moment_of_force = force * length;
 Does it mean that _moment of force_ and _work_ are the same quantities? Of
 course not! It is just how naive most libraries are today.
 
-But first, to defend them, I must admit that the behavior above is partially OK. `force * length`
-could yield some specific quantity, but it is definitely not _work_ or _moment of force_.
+But first, to defend them, I must admit that the behavior above is partially OK. `force *
+length` could yield some specific quantity, but it is definitely not _work_ or _moment of
+force_.
 
 There are two problems here:
 
@@ -220,8 +221,8 @@ quantity q4 = vector_product(force, displacement);
 quantity q5 = vector_product(force, position_vector);
 ```
 
-All of the above compile and result in some quantities. After that, we can try to convert those
-results to our required quantities:
+All of the above compile and result in some quantities. After that, we can try to convert
+those results to our required quantities:
 
 ```cpp
 quantity work = isq::work(q2).in[J];
@@ -404,8 +405,8 @@ First, we have to think to which scalar quantities their magnitude should conver
 - a magnitude of a _position vector_ is equivalent to a _radial distance_ quantity,
 - a magnitude of a _displacement_ is a special case of a _distance_ quantity.
 
-Taking the above into account, we should refactor our tree of quantities of kind _length_ into
-the following:
+Taking the above into account, we should refactor our tree of quantities of kind _length_
+into the following:
 
 ```mermaid
 flowchart TD
@@ -501,9 +502,10 @@ _displacement_ are on different branches. This prevents implicit and explicit co
 between those. The only one allowed to force such a conversion is an explicit cast.
 
 If we think more about it, this makes a lot of sense. _Position vector_ is not a special
-case of _displacement_ or vice versa. Those should not be convertible. We do not want the code
-to compile when we accidentally pass a _position vector_ to the numerator of the equation for
-_velocity_, right? What does calculating the _velocity_ for a _position vector_ mean?
+case of _displacement_ or vice versa. Those should not be convertible. We do not want the
+code to compile when we accidentally pass a _position vector_ to the numerator of the
+equation for _velocity_, right? What does calculating the _velocity_ for a _position
+vector_ mean?
 
 The `point_for<displacement>` attribute introduced in the
 [section below](#defining-affine-space-abstractions-in-a-quantity_spec) resolves this
@@ -517,10 +519,10 @@ quantities of the same type results in a quantity of the same type. This is also
 when we do it for _position vectors_. We will see the same resulting type when we add two
 _position vectors_ as well. But wait... What does it actually mean to add two _position vectors_?
 
-Looks familiar? Yes, we can clearly see that we are dealing with yet another case of
-the [affine space](../../users_guide/framework_basics/the_affine_space.md). This time, it is
-hidden within the quantities hierarchy tree. This also means that adding a _position vector_
-and a _displacement_ should result in a _position vector_. Let's try to do it:
+Looks familiar? Yes, we can clearly see that we are dealing with yet another case of the
+[affine space](../../users_guide/framework_basics/the_affine_space.md). This time, it is
+hidden within the quantities hierarchy tree. This also means that adding a _position
+vector_ and a _displacement_ should result in a _position vector_. Let's try to do it:
 
 ```cpp
 quantity q8 = pos1 + displacement;                       // Often a compile-time error
@@ -542,8 +544,8 @@ axis). In this case, we will end up with:
 quantity<isq::position_vector[m], vector> pos3 = isq::position_vector(q8);
 ```
 
-We need to convert a _distance_ explicitly to a _position vector_ quantity to move "down" over
-a branch in a hierarchy tree.
+We need to convert a _distance_ explicitly to a _position vector_ quantity to move "down"
+over a branch in a hierarchy tree.
 
 It is important to note that there are more quantities that may behave the same. For example,
 _altitude_/_height_ and _time_/_duration_ may also form similar affine spaces. More similar
@@ -626,7 +628,8 @@ What about the convertibility of `quantity_spec`? How should `common_quantity_sp
 Let's start with conversions. It might seem easy. `isq::altitude` and
 `isq::height` should not be convertible to each other. But more questions arise:
 
-1. Should it be possible to `quantity_cast` from `isq::altitude` to `isq::height` or vice versa?
+1. Should it be possible to `quantity_cast` from `isq::altitude` to `isq::height` or vice
+   versa?
 2. Should `isq::height` be convertible to `isq::length`?
 3. Should `isq::length` be explicitly convertible to `isq::height`?
 4. Should `isq::altitude` be convertible to `isq::length`?

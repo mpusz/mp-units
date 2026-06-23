@@ -478,10 +478,10 @@ Let's see another example:
         }
         ```
 
-In the above example, the highlighted call doesn't look that safe anymore in the case
-of simple quantities, right? Suppose someone, either by mistake or due to some refactoring,
-will call the function with an invalid order of arguments. In that case, the program will compile
-fine but not work as expected.
+In the above example, the highlighted call doesn't look that safe anymore in the case of
+simple quantities, right? Suppose someone, either by mistake or due to some refactoring,
+will call the function with an invalid order of arguments. In that case, the program will
+compile fine but not work as expected.
 
 Let's see what will happen if we reorder the arguments in the case of typed quantities:
 

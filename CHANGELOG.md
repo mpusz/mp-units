@@ -624,7 +624,8 @@ This page documents the version history and changes for the **mp-units** library
 - (!) refactor: `ratio` hidden as an implementation detail behind `mag_ratio`
 - (!) refactor: `framework.h` introduced
 - (!) refactor: type list tools made an implementation detail of the library
-- (!) refactor: header files with the entire system definitions moved up in the directory tree
+- (!) refactor: header files with the entire system definitions moved up in the directory
+  tree
 - (!) refactor: `absolute_point_origin` does not use CRTP anymore
 - refactor: system's units do not inherit from one another anymore
 - refactor: all units made `final`
@@ -984,7 +985,8 @@ their support in drafting a new library design.
 - Support for derived dimensions in `exp` added
 - Added `pow()` and `sqrt()` operations on quantities
 - `units` removed from a `std::experimental` namespace
-- Downcasting facility refactored so the user does not have to write the boilerplate code anymore
+- Downcasting facility refactored so the user does not have to write the boilerplate code
+  anymore
 - From now on base dimensions should inherit from `base_dimension` class template
 - Added unit symbols definitions to `base_dimension` and derived units
 - Added support for `operator<<` on `quantity`

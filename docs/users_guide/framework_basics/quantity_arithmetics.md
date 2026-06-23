@@ -115,8 +115,8 @@ static_assert(isq::radius(1 * m) - 0.5 * m == isq::radius(0.5 * m));
 
 ## Multiplication and division
 
-Multiplying or dividing a quantity by a number does not change its quantity type or unit. However,
-its representation type may change. For example:
+Multiplying or dividing a quantity by a number does not change its quantity type or unit.
+However, its representation type may change. For example:
 
 ```cpp
 static_assert(isq::height(3 * m) * 0.5 == isq::height(1.5 * m));
@@ -269,8 +269,8 @@ For example, this is what Richard Smith said about this issue:
     that you get the `std::common_type` of the units of the operands.
 
 To summarize, the modulo operation on physical units has more in common with addition and
-division operators than with the quotient-remainder theorem. To avoid surprising results, the
-operation uses a common unit to do the calculation and provide its result:
+division operators than with the quotient-remainder theorem. To avoid surprising results,
+the operation uses a common unit to do the calculation and provide its result:
 
 ```cpp
 static_assert(5 * h / (120 * min) == 0 * one);

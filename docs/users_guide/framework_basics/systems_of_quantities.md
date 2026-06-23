@@ -548,9 +548,9 @@ To create a distinct quantity kind as a subkind, add the `is_kind` specifier to 
     // Both inherit metre as unit and length as dimension from isq::height
     ```
 
-Both `fluid_head` and `water_head` are subkinds of _height_ (inheriting its dimension of _length_
-and unit of metre), but marking them with `is_kind` makes them distinct incompatible kinds that
-require explicit conversion.
+Both `fluid_head` and `water_head` are subkinds of _height_ (inheriting its dimension of
+_length_ and unit of metre), but marking them with `is_kind` makes them distinct
+incompatible kinds that require explicit conversion.
 
 
 ### Behavior of `is_kind` quantities

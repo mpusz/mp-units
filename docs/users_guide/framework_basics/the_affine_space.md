@@ -102,9 +102,10 @@ template<Reference auto R,
 class quantity_point;
 ```
 
-As we can see above, the `quantity_point` class template exposes one additional parameter compared
-to `quantity`. The `PO` parameter satisfies a [`PointOriginFor` concept](concepts.md#PointOriginFor)
-and specifies the origin of our measurement scale.
+As we can see above, the `quantity_point` class template exposes one additional parameter
+compared to `quantity`. The `PO` parameter satisfies a
+[`PointOriginFor` concept](concepts.md#PointOriginFor) and specifies the origin of our
+measurement scale.
 
 Each `quantity_point` internally stores a `quantity` object, which represents a
 _displacement vector_ from the predefined origin. Thanks to this, an instantiation of
@@ -142,10 +143,10 @@ quantity_point qp9 = point<deg_C>(42);
 
 #### `natural_point_origin<QuantitySpec>`
 
-`natural_point_origin<QuantitySpec>` is meant to be used in cases where the specific domain
-has a well-established, non-controversial, and unique natural origin on the measurement scale.
-This saves the user from the need to write a boilerplate code that would predefine such a type
-for this domain.
+`natural_point_origin<QuantitySpec>` is meant to be used in cases where the specific
+domain has a well-established, non-controversial, and unique natural origin on the
+measurement scale. This saves the user from the need to write a boilerplate code that
+would predefine such a type for this domain.
 
 ![affine_space_1](affine_space_1.svg){style="width:80%;display: block;margin: 0 auto;"}
 
@@ -237,9 +238,9 @@ adding the origin and the _displacement vector_ measured from it to the point we
     [Why can't I create a quantity by passing a number to a constructor?](../../getting_started/faq.md#why-cant-i-create-a-quantity-by-passing-a-number-to-a-constructor)
     chapter.
 
-Similarly to [creation of a quantity](../../getting_started/quick_start.md#quantities),
-if someone does not like the operator-based syntax to create a `quantity_point`, the same results
-can be achieved with a two-parameter constructor:
+Similarly to [creation of a quantity](../../getting_started/quick_start.md#quantities), if
+someone does not like the operator-based syntax to create a `quantity_point`, the same
+results can be achieved with a two-parameter constructor:
 
 ```cpp
 quantity_point qp1{100 * m, origin};
@@ -293,9 +294,9 @@ assert(origin2 - qp2 == -120 * m);
 ### Relative _Point_ origin
 
 We often do not have only one ultimate "zero" point when we measure things. Often, we have
-one common scale, but we measure various quantities relative to different points and expect
-those points to be compatible. There are many examples here, but probably the most common are
-temperatures, timestamps, and altitudes.
+one common scale, but we measure various quantities relative to different points and
+expect those points to be compatible. There are many examples here, but probably the most
+common are temperatures, timestamps, and altitudes.
 
 For such cases, relative point origins should be used:
 
@@ -781,8 +782,8 @@ hydraulic_pressure p2 = atmospheric_pressure + 500 * kPa;   // Clamped to 1000 k
 Support for temperature quantity points is probably one of the most common examples of relative
 point origins in action that we use in daily life.
 
-The [SI](../../reference/bibliography.md#SIBrochure) definition in the library provides a few
-predefined point origins for this purpose:
+The [SI](../../reference/bibliography.md#SIBrochure) definition in the library provides a
+few predefined point origins for this purpose:
 
 ```cpp
 namespace si {

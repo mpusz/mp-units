@@ -26,9 +26,10 @@ challenges and issues with modeling of the ISQ in software.
 
 ## Ambiguity
 
-Some quantity names are ambiguous. It is not a problem of ISQ but of the English language and
-the way we communicate things. When I say: "Every _width_ is a _length_, but not every _length_
-is a _width_" most people understand this right away. However, the same people trying to model
+Some quantity names are ambiguous. It is not a problem of ISQ but of the English language
+and the way we communicate things. When I say: "Every _width_ is a _length_, but not every
+_length_ is a _width_" most people understand this right away. However, the same people
+trying to model
 [our 3D box problem](isq-part-2-problems-when-isq-is-not-used.md#various-quantities-of-the-same-dimension-and-kinds)
 try to do it as follows:
 
@@ -42,10 +43,10 @@ public:
 };
 ```
 
-This looks correct at first sight. Only when we think about the sentence mentioned above will
-we realize that this implementation has a problem. We intended to specify three orthogonal
-dimensions of the box, each of which will be a strong quantity that is not convertible to others.
-But we've failed.
+This looks correct at first sight. Only when we think about the sentence mentioned above
+will we realize that this implementation has a problem. We intended to specify three
+orthogonal dimensions of the box, each of which will be a strong quantity that is not
+convertible to others. But we've failed.
 
 When we look at the
 [tree of quantities of length](isq-part-4-implementing-isq.md#modeling-a-hierarchy-of-kind-length)
@@ -119,9 +120,9 @@ To be consistent, ISO/IEC should either:
 ISQ defines derived quantities in terms of other quantities provided in the series.
 However, some definitions mention quantities that are not defined in the ISQ at all.
 
-For example, _weight_ is defined as $F_\textsf{g} = m\;g$, where $m$ is the _mass_ of the body
-(item 4-1 of ISO 80000-4 "Mechanics"), and $g$ is the _local acceleration of free fall_
-(ISO 80000-3).
+For example, _weight_ is defined as $F_\textsf{g} = m\;g$, where $m$ is the _mass_ of the
+body (item 4-1 of ISO 80000-4 "Mechanics"), and $g$ is the _local acceleration of free
+fall_ (ISO 80000-3).
 
 The problem here is that ISO 80000-3 never defines a quantity with a symbol $g$ or named as
 a _local acceleration of free fall_. The closest one we have is _acceleration_
@@ -197,11 +198,12 @@ possible to:
 ISO/IEC series does not acknowledge this abstraction even though it would be really
 useful in some cases. Let's discuss the following two examples.
 
-What does it mean to add two _altitudes_? It is not meaningful. On the other hand, subtracting
-those should not result in an _altitude_, but in a quantity of _height_. Adding or
-subtracting _height_ to/from _altitude_ results in _altitude_. Subtracting _altitude_ from
-_height_ is meaningless again. Those quantities clearly model affine space. Maybe this is why
-ISQ defines them as one quantity type _height_/_depth_/_altitude_?
+What does it mean to add two _altitudes_? It is not meaningful. On the other hand,
+subtracting those should not result in an _altitude_, but in a quantity of _height_.
+Adding or subtracting _height_ to/from _altitude_ results in _altitude_. Subtracting
+_altitude_ from _height_ is meaningless again. Those quantities clearly model affine
+space. Maybe this is why ISQ defines them as one quantity type
+_height_/_depth_/_altitude_?
 
 What does it mean to add two _position vectors_? It is not meaningful again. However, subtracting
 those results in a _displacement_ as we noted in the previous chapter. Adding or subtracting
@@ -242,8 +244,9 @@ Again, we have to talk about the affine space abstractions. Every empirical
 measurement can be expressed as a point. Such points for some quantities may be
 non-negative indeed.
 
-Non-negative quantities do not end on the ones provided above. For example, _speed_ is a good
-example here as well. In general, all magnitudes of vector quantities will also have this property.
+Non-negative quantities do not end on the ones provided above. For example, _speed_ is a
+good example here as well. In general, all magnitudes of vector quantities will also have
+this property.
 
 When subtracting two points, we end up with a delta/displacement type, which may be negative
 even for quantities listed as non-negative in the ISQ. As stated in the previous chapter,
@@ -290,8 +293,8 @@ as a root for a quantity hierarchy tree.
 
 For example:
 
-- ISO 80000-4 "Mechanics" defines _power &lt;mechanics&gt;_ as $P = F\;v$ (scalar product of
-  force $F$ (item 4-9.1) acting to a body and its velocity $v$ (ISO 80000-3)),
+- ISO 80000-4 "Mechanics" defines _power &lt;mechanics&gt;_ as $P = F\;v$ (scalar product
+  of force $F$ (item 4-9.1) acting to a body and its velocity $v$ (ISO 80000-3)),
 - ISO 80000-6 "Electromagnetism" defines _power_ as $p = u\;i$ (scalar quantity given
     by the product of _instantaneous voltage_ $u$ (item 6-11.3) and _instantaneous
     electric current_ $i$ (item 6-1)).
@@ -353,8 +356,8 @@ Even more, it states:
 
 Because of this, it is unknown or ambiguous how to form a hierarchy tree for such quantities.
 
-To get some sense of the complexity here, let's look again at our tree of quantities of a kind
-_energy_:
+To get some sense of the complexity here, let's look again at our tree of quantities of a
+kind _energy_:
 
 ```mermaid
 flowchart TD
@@ -378,8 +381,8 @@ Not being exact means that every vendor may implement it differently. This will 
     static_assert(explicitly_convertible(isq::mechanical_energy, isq::potential_energy));
     ```
 
-- different common quantities resulting from the arithmetics on various quantities of the same
-  kind:
+- different common quantities resulting from the arithmetics on various quantities of the
+  same kind:
 
     ```cpp
     static_assert((isq::potential_energy(1 * J) + isq::kinetic_energy(1 * J)).quantity_spec == isq::mechanical_energy);
@@ -510,8 +513,8 @@ standards should be specified in such a way that there is no room for ambiguity
 in their interpretation by different parties trying to use them. As described
 above, this is not the case here.
 
-ISQ is not ready to be unambiguously modeled in software by various vendors. Here are the most
-important problems to solve to allow this:
+ISQ is not ready to be unambiguously modeled in software by various vendors. Here are the
+most important problems to solve to allow this:
 
 1. ISQ needs to define basic operations on quantities:
 
@@ -519,8 +522,8 @@ important problems to solve to allow this:
     - convertibility rules.
 
 2. The exact quantity equation recipe needs to be included for many derived quantities.
-3. Many ISQ quantities do not provide their exact relation versus other quantities of the same
-   kind (no strict hierarchy).
+3. Many ISQ quantities do not provide their exact relation versus other quantities of the
+   same kind (no strict hierarchy).
 4. Some missing quantities need to be included. Others would benefit from corrected names.
 
 Additionally:

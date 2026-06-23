@@ -194,34 +194,37 @@ quantity speed = magnitude(v);  // 5 m/s
 
 !!! info "Enabling decomposition into named components"
 
-    To let a vector _quantity_ built on your type split into named component _quantities_, the type
-    must be **element-accessible at a compile-time index**, through either a tuple-like `get<Idx>`
-    (found by ADL) or a subscript `operator[]`. `cartesian_vector` and the supported third-party
-    vectors already qualify, so no extra code is needed there. See
+    To let a vector _quantity_ built on your type split into named component
+    _quantities_, the type must be **indexable by a compile-time constant index** (the
+    index is a template argument, and the access need not be `constexpr`), through either
+    a tuple-like `get<Idx>` or a subscript `operator[]`. `cartesian_vector` and the
+    supported third-party vectors already qualify, so no extra code is needed there. See
     [Decompose a Vector Quantity into Components](../advanced_usage/decompose_vector_quantity.md)
     for the full recipe.
 
 #### Adapting an existing vector library
 
-Any _weakly-regular_ vector type (copyable, with `bool`-returning equality) that exposes a Euclidean
-norm can serve as a representation. The bundled integrations for
+Any _weakly-regular_ vector type (copyable, with `bool`-returning equality) that exposes a
+Euclidean norm can serve as a representation. The bundled integrations for
 [Eigen](https://eigen.tuxfamily.org), [GLM](https://github.com/g-truc/glm), and
-[Blaze](https://bitbucket.org/blaze-lib/blaze) wire up exactly the customization points above, and
-they are the template for adapting any other library. Three things vary between libraries:
+[Blaze](https://bitbucket.org/blaze-lib/blaze) wire up exactly the customization points
+above, and they are the template for adapting any other library. Three things vary between
+libraries:
 
 - **Underlying type.** Eigen and GLM expose a `value_type` member, so
-  `representation_underlying_type` detects it automatically. Blaze names it `ElementType` instead,
-  so its plugin specializes `representation_underlying_type` explicitly.
-- **Magnitude.** Eigen and Blaze provide `norm()`, which the `magnitude()` CPO uses directly. GLM
-  spells it `length()`, so its plugin adds a one-line `magnitude()` overload (found by ADL) that
-  forwards to it.
-- **Materializing expression templates.** Eigen and Blaze return lazy proxy types from their
-  arithmetic operators. A proxy holds references to its operands, so storing one inside a `quantity`
-  would leave dangling references once those operands expire. Their plugins specialize
+  `representation_underlying_type` detects it automatically. Blaze names it `ElementType`
+  instead, so its plugin specializes `representation_underlying_type` explicitly.
+- **Magnitude.** Eigen and Blaze provide `norm()`, which the `magnitude()` CPO uses
+  directly. GLM spells it `length()`, so its plugin adds a one-line `magnitude()` overload
+  (found by ADL) that forwards to it.
+- **Materializing expression templates.** Eigen and Blaze return lazy proxy types from
+  their arithmetic operators. A proxy holds references to its operands, so storing one
+  inside a `quantity` would leave dangling references once those operands expire. Their
+  plugins specialize
   [`representation_canonical_type`](../../users_guide/framework_basics/representation_types.md#representation_canonical_type)
-  to map each proxy to its evaluated concrete type (Eigen's `PlainObject`, Blaze's `ResultType`), so
-  a `quantity` always stores a materialized value. GLM evaluates eagerly, so it needs no such
-  specialization.
+  to map each proxy to its evaluated concrete type (Eigen's `PlainObject`, Blaze's
+  `ResultType`), so a `quantity` always stores a materialized value. GLM evaluates
+  eagerly, so it needs no such specialization.
 
 ```cpp
 // materialize an expression-template proxy before a quantity stores it
@@ -307,10 +310,9 @@ no further customization is needed.
 
 If your type is not automatically recognized (e.g., a third-party floating-point type with
 no `value_type` member), expose the underlying type via
-[`representation_underlying_type`](../../users_guide/framework_basics/representation_types.md#representation_underlying_type) —
-`treat_as_floating_point` will then default to `true` automatically, with no further
-specialization needed. The example below shows this typical case.
-Only specialize
+[`representation_underlying_type`](../../users_guide/framework_basics/representation_types.md#representation_underlying_type)
+— `treat_as_floating_point` will then default to `true` automatically, with no further
+specialization needed. The example below shows this typical case. Only specialize
 [`treat_as_floating_point`](../../users_guide/framework_basics/representation_types.md#treat_as_floating_point)
 directly when there is genuinely no meaningful underlying type to expose.
 
@@ -563,8 +565,9 @@ To create a custom representation type:
 
 1. **Implement required operations** for your character (scalar/complex/vector/tensor)
 2. **Provide character-specific functions** (if needed): `real()`, `imag()`, `norm()`, etc.,
-   via member functions or ADL-findable free functions; for an expression-template vector type,
-   specialize `representation_canonical_type` so lazy proxies are materialized before storage
+   via member functions or ADL-findable free functions. For an expression-template vector
+   type, specialize `representation_canonical_type` so lazy proxies are materialized
+   before storage
 3. **Add formatting support** (optional) via `std::formatter`
 4. **Add `value_type`** to help the library determine the scaling factor type
 5. **Specialize `representation_values<Rep>`** (if needed) for custom special values;

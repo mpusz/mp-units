@@ -24,6 +24,7 @@ during development, but some domains need **guaranteed enforcement**:
 
 The library provides building blocks that work together:
 
+<!-- markdownlint-disable MD013 -->
 1. [**Bounds on point origins**](../../users_guide/framework_basics/the_affine_space.md#range-validated-quantity-points) —
    a bounds policy passed as a template parameter to a point origin, enforcing validation
    on every construction and mutation
@@ -31,6 +32,7 @@ The library provides building blocks that work together:
    type with an error policy
 3. [**`constraint_violation_handler<Rep>`**](../../users_guide/framework_basics/representation_types.md#constraint-violation-handler) —
    a customization point that library features query to dispatch errors
+<!-- markdownlint-enable MD013 -->
 
 The library ships [several overflow policies](../../users_guide/framework_basics/the_affine_space.md#available-overflow-policies)
 to pass as bounds template parameters: `check_in_range`, `clamp_to_range`, `wrap_to_range`,
@@ -183,6 +185,7 @@ use its error policy for bounds violations.
 
 ## See Also
 
+<!-- markdownlint-disable MD013 -->
 - [`safe_int<T>`](../../users_guide/framework_basics/safe_int.md) —
   overflow-safe integer arithmetic reference
 - [Preventing Integer Overflow in Physical Computations](../../blog/posts/preventing-integer-overflow.md) —
@@ -193,3 +196,4 @@ use its error policy for bounds violations.
   overflow policies reference
 - [Using Custom Representation Types](../integration/using_custom_representation_types.md) —
   creating your own rep types
+<!-- markdownlint-enable MD013 -->

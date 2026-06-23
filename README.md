@@ -179,7 +179,8 @@ and help potential adopters decide. Whether you're using **mp-units** in **produ
 
 We appreciate **every contribution**, from code to documentation to community support!
 
-🌟 See our [**Contributors Page**](CONTRIBUTORS.md) for the complete list and recognition details.
+🌟 See our [**Contributors Page**](CONTRIBUTORS.md) for the complete list and recognition
+details.
 
 > **Ready to contribute?** Check out our
 > [**Contributing Guide**](https://mpusz.github.io/mp-units/latest/getting_started/contributing/)

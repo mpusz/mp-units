@@ -3,8 +3,8 @@
 One of the most important features of every unit library is to provide support for
 compile-time-enabled conversions of a [numerical value of a quantity](../../reference/glossary.md#numerical-value).
 
-A [numerical value of a quantity](../../reference/glossary.md#numerical-value) depends on two
-elements:
+A [numerical value of a quantity](../../reference/glossary.md#numerical-value) depends on
+two elements:
 
 - quantity representation type (e.g., `int`, `double`) that stores the number expressing
   the amount of quantity,

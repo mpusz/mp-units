@@ -441,5 +441,5 @@ Transport Time is: 8.997726 s
 
 ## To be continued
 
-In the next part of this series, we will discuss the challenges and issues related to the modeling
-of the ISQ with a programming language.
+In the next part of this series, we will discuss the challenges and issues related to the
+modeling of the ISQ with a programming language.

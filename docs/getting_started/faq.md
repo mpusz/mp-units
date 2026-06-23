@@ -40,10 +40,10 @@ Many reasons make UDLs a poor choice for a physical units library:
    prefix that would become `q_` after standardization (e.g., `42q_s`), which is not as nice
    anymore.
 
-4. UDLs with the same identifiers defined in different namespaces can't be disambiguated in
-   the C++ language. If both SI and CGS systems define `_q_s` UDL for a second unit, then it
-   would not be possible to specify which one to use if both namespaces are "imported" with
-   using directives.
+4. UDLs with the same identifiers defined in different namespaces can't be disambiguated
+   in the C++ language. If both SI and CGS systems define `_q_s` UDL for a second unit,
+   then it would not be possible to specify which one to use if both namespaces are
+   "imported" with using directives.
 
 5. Another drawback of UDLs is that they do not compose. A coherent unit of angular momentum
    would have a UDL specified as `_q_kg_m2_per_s`. Now imagine that we want to make every
@@ -128,11 +128,11 @@ for something that looks and feels like a regular number. Also, all of the mathe
 trigonometric functions worked fine out of the box with such representation types, so we did
 not have to rewrite `sin()`, `cos()`, `exp()`, and others.
 
-However, feedback from production usage showed that such an approach is really bad for generic
-programming. It is hard to handle the result of dividing (or multiplying) two quantities, as
-it might be either a quantity or a fundamental type. If we want to raise such a result to
-some power, we must use `units::pow` or `std::pow` depending on the resulting type. These
-are just a few issues related to such an approach.
+However, feedback from production usage showed that such an approach is really bad for
+generic programming. It is hard to handle the result of dividing (or multiplying) two
+quantities, as it might be either a quantity or a fundamental type. If we want to raise
+such a result to some power, we must use `units::pow` or `std::pow` depending on the
+resulting type. These are just a few issues related to such an approach.
 
 Moreover, suppose we divide quantities of the same dimension but with units of significantly
 different magnitudes. In that case, we may end up with a very small or a huge floating-point
@@ -164,12 +164,11 @@ The above prints:
 42 h kW
 ```
 
-Some users might expect to see `42 kWh` or `42 kW h` in the output. That is not the case, and
-for a very good reason. As stated in
-[Simplifying the resulting symbolic expressions]
+Some users might expect to see `42 kWh` or `42 kW h` in the output. That is not the case,
+and for a very good reason. As stated in [Simplifying the resulting symbolic expressions]
 (../users_guide/framework_basics/interface_introduction.md#simplifying-the-resulting-symbolic-expressions),
-to be able to reason about and simplify units, the library needs to order them in a consistent
-way.
+to be able to reason about and simplify units, the library needs to order them in a
+consistent way.
 
 Maybe this default order could be improved, but according to international standards,
 there is no generic ordering rule. Various quantities use different, often domain-specific,
@@ -183,9 +182,9 @@ Let's see what [SI](../reference/bibliography.md#SIBrochure) says here:
 | _electric charge density_  | C m⁻³  |                    A s m⁻³                    |
 | _exposure (x- and γ-rays)_ | C kg⁻¹ |                   A s kg⁻¹                    |
 
-However, there is a workaround. A user can define their own named unit for a derived unit and
-provide custom symbol text that suits the project's requirements. For example, the above case
-could be addressed with:
+However, there is a workaround. A user can define their own named unit for a derived unit
+and provide custom symbol text that suits the project's requirements. For example, the
+above case could be addressed with:
 
 ```cpp
 inline constexpr struct kilowatt_hour : named_unit<"kWh", kW * h> {} kilowatt_hour;
@@ -223,8 +222,8 @@ releasing C++20. Now, we are facing the predictable consequences of running out 
 While some concepts in the library could be easily named with a `standard_case`, there are
 some that are hard to distinguish from the corresponding type names, such as `Quantity`,
 `QuantityPoint`, `QuantitySpec`, or `Reference`. This is why we decided to use `CamelCase`
-consistently for all the concept identifiers to make it clear when we are talking about a type
-or a concept identifier.
+consistently for all the concept identifiers to make it clear when we are talking about a
+type or a concept identifier.
 
 However, we are aware that this might be a temporary solution. If the library gets
 standardized, we can expect the ISO C++ Committee to bikeshed/rename all of the concept
@@ -264,9 +263,10 @@ Here are a few examples:
 
 We admit this is a common practice in the industry, but we also believe this is a bad pattern.
 
-First, the only need for such options comes when a user wants to use `add_subdirectory()` in
-CMake to handle dependencies. Such an approach does not scale and should be discouraged. There
-is little need for such a practice in times when we have dedicated package managers like Conan.
+First, the only need for such options comes when a user wants to use `add_subdirectory()`
+in CMake to handle dependencies. Such an approach does not scale and should be
+discouraged. There is little need for such a practice in times when we have dedicated
+package managers like Conan.
 
 Secondly, we have observed that many people focus on disabling "unneeded" subdirectories from
 compilation, but they do not see or address the biggest issue, which is polluting the user's

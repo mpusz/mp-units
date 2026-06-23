@@ -5,9 +5,10 @@ This chapter enumerates all the user-facing concepts in the **mp-units** library
 
 ## `Dimension<T>` { #Dimension }
 
-`Dimension` concept matches a [dimension](../../reference/glossary.md#dimension) of either a
-base or derived [quantity](../../reference/glossary.md#quantity):
+`Dimension` concept matches a [dimension](../../reference/glossary.md#dimension) of either
+a base or derived [quantity](../../reference/glossary.md#quantity):
 
+<!-- markdownlint-disable MD013 -->
 - [Base dimensions](../../reference/glossary.md#base-dimension) are explicitly defined by the
   user by inheriting from the instantiation of a `base_dimension` class template. It should
   be instantiated with a unique symbol identifier describing this dimension in a specific
@@ -15,6 +16,7 @@ base or derived [quantity](../../reference/glossary.md#quantity):
 - [Derived dimensions](../../reference/glossary.md#derived-dimension) are implicitly created
   by the library's framework based on the [quantity equation](../../reference/glossary.md#quantity-equation)
   provided in the [quantity specification](../../reference/glossary.md#quantity_spec).
+<!-- markdownlint-enable MD013 -->
 
 
 ### `DimensionOf<T, V>` { #DimensionOf }
@@ -28,6 +30,7 @@ concept and when they compare equal.
 `QuantitySpec` concept matches all the
 [quantity specifications](../../reference/glossary.md#quantity_spec) including:
 
+<!-- markdownlint-disable MD013 -->
 - [Base quantities](../../reference/glossary.md#base-quantity) defined by a user by inheriting
   from the `quantity_spec` class template instantiated with a
   [base dimension](../../reference/glossary.md#base-dimension) argument.
@@ -44,6 +47,7 @@ concept and when they compare equal.
 - Intermediate [derived quantity](../../reference/glossary.md#derived-quantity) specifications
   being a result of a [quantity equations](../../reference/glossary.md#quantity-equation) on
   other specifications.
+<!-- markdownlint-enable MD013 -->
 
 
 ### `QuantitySpecOf<T, V>` { #QuantitySpecOf }
@@ -155,8 +159,8 @@ customization points.
 ## `Quantity<T>` { #Quantity }
 
 `Quantity` concept matches every
-  [quantity](../../reference/glossary.md#quantity) in the library and is satisfied by all types
-  being or deriving from an instantiation of a `quantity` class template.
+  [quantity](../../reference/glossary.md#quantity) in the library and is satisfied by all
+  types being or deriving from an instantiation of a `quantity` class template.
 
 
 ### `QuantityOf<T, V>` { #QuantityOf }
@@ -167,9 +171,10 @@ is `true`.
 
 ### `QuantityLike<T>` { #QuantityLike }
 
-`QuantityLike` concept provides interoperability with other libraries and is satisfied by a
-  type `T` for which an instantiation of `quantity_like_traits` type trait yields a valid type
-  that provides:
+`QuantityLike` concept provides interoperability with other libraries and is satisfied by
+a
+  type `T` for which an instantiation of `quantity_like_traits` type trait yields a valid
+  type that provides:
 
 - `reference` static data member that matches the [`Reference`](#Reference) concept,
 - `rep` type that matches

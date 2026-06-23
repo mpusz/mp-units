@@ -322,8 +322,8 @@ For dimensionless quantities specifically, the `is_kind` specifier is applied as
     QUANTITY_SPEC(storage_capacity, dimensionless, is_kind);
     ```
 
-With the above, we can constrain `radian`, `steradian`, and `bit` to be allowed for usage with
-specific quantity kinds only:
+With the above, we can constrain `radian`, `steradian`, and `bit` to be allowed for usage
+with specific quantity kinds only:
 
 ```cpp
 inline constexpr struct radian : named_unit<"rad", metre / metre, kind_of<isq::angular_measure>> {} radian;
@@ -542,8 +542,8 @@ This however, creates an important trade-off:
 - **Use `is_kind`** when type safety is paramount and you want to prevent any accidental mixing
   of semantically different counts or coordinates. Accept the verbosity of explicit construction.
 
-- **Skip `is_kind`** for convenience when the types rarely interact and the risk of mixing them
-  is low, or when you need to frequently pass raw values to functions.
+- **Skip `is_kind`** for convenience when the types rarely interact and the risk of mixing
+  them is low, or when you need to frequently pass raw values to functions.
 
 
 ### Comparison with traditional strong-type approaches
