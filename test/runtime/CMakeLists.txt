@@ -26,6 +26,7 @@ add_executable(
     unit_tests_runtime
     atomic_test.cpp
     bounded_quantity_point_test.cpp
+    cartesian_tensor_test.cpp
     cartesian_vector_test.cpp
     constrained_test.cpp
     safe_int_test.cpp

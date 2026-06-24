@@ -24,6 +24,7 @@
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
 #if MP_UNITS_HOSTED
+#include <mp-units/cartesian_tensor.h>
 #include <mp-units/cartesian_vector.h>
 #endif
 #ifdef MP_UNITS_IMPORT_STD
@@ -296,17 +297,19 @@ static_assert(!ReferenceOf<decltype(dimensionless[one]), isq::rotation>);
 static_assert(!ReferenceOf<decltype(dimensionless[one]), isq::angular_measure>);
 
 // RepresentationOf
-// int: real scalar and (as a degenerate 1D case) vector, but not complex/tensor
+// int: real scalar and, as degenerate lower-rank cases, also vector and tensor, but not complex.
+// A tensor of order zero is a scalar and a tensor of order one is a vector (ISO 80000-2:2019, 18),
+// so a lower-rank representation can stand in for a higher-rank quantity (never the reverse).
 static_assert(RepresentationOf<int, quantity_character::real_scalar>);
 static_assert(!RepresentationOf<int, quantity_character::complex_scalar>);
 static_assert(RepresentationOf<int, quantity_character::vector>);
-static_assert(!RepresentationOf<int, quantity_character::tensor>);
+static_assert(RepresentationOf<int, quantity_character::tensor>);
 
 // double: same as int
 static_assert(RepresentationOf<double, quantity_character::real_scalar>);
 static_assert(!RepresentationOf<double, quantity_character::complex_scalar>);
 static_assert(RepresentationOf<double, quantity_character::vector>);
-static_assert(!RepresentationOf<double, quantity_character::tensor>);
+static_assert(RepresentationOf<double, quantity_character::tensor>);
 
 // bool: disabled via disable_real<bool>
 static_assert(!RepresentationOf<bool, quantity_character::real_scalar>);
@@ -323,17 +326,18 @@ static_assert(RepresentationOf<std::complex<double>, quantity_character::complex
 static_assert(!RepresentationOf<std::complex<double>, quantity_character::vector>);
 static_assert(!RepresentationOf<std::complex<double>, quantity_character::tensor>);
 
-// cartesian_vector<double>: 3D vector, not scalar
+// cartesian_vector<double>: 3D vector, not scalar; also a degenerate tensor (a vector is a
+// tensor of the first order)
 static_assert(!RepresentationOf<cartesian_vector<double>, quantity_character::real_scalar>);
 static_assert(!RepresentationOf<cartesian_vector<double>, quantity_character::complex_scalar>);
 static_assert(RepresentationOf<cartesian_vector<double>, quantity_character::vector>);
-static_assert(!RepresentationOf<cartesian_vector<double>, quantity_character::tensor>);
+static_assert(RepresentationOf<cartesian_vector<double>, quantity_character::tensor>);
 
 // cartesian_vector<int>: integer element type is supported (norm() returns double via std::hypot)
 static_assert(!RepresentationOf<cartesian_vector<int>, quantity_character::real_scalar>);
 static_assert(!RepresentationOf<cartesian_vector<int>, quantity_character::complex_scalar>);
 static_assert(RepresentationOf<cartesian_vector<int>, quantity_character::vector>);
-static_assert(!RepresentationOf<cartesian_vector<int>, quantity_character::tensor>);
+static_assert(RepresentationOf<cartesian_vector<int>, quantity_character::tensor>);
 
 // cartesian_vector<complex<double>>: no hypot(complex,complex,complex) -> not a vector representation
 static_assert(!RepresentationOf<cartesian_vector<std::complex<double>>, quantity_character::real_scalar>);
@@ -344,6 +348,23 @@ static_assert(!RepresentationOf<cartesian_vector<std::complex<double>>, quantity
 // quantity types must never themselves be a representation (NotQuantity guard)
 static_assert(!RepresentationOf<quantity<si::metre>, quantity_character::real_scalar>);
 static_assert(!RepresentationOf<quantity<si::metre>, quantity_character::vector>);
+
+// cartesian_tensor<double>: second-order tensor; tensor-only - never a (lower-rank) vector or scalar
+static_assert(!RepresentationOf<cartesian_tensor<double>, quantity_character::real_scalar>);
+static_assert(!RepresentationOf<cartesian_tensor<double>, quantity_character::complex_scalar>);
+static_assert(!RepresentationOf<cartesian_tensor<double>, quantity_character::vector>);
+static_assert(RepresentationOf<cartesian_tensor<double>, quantity_character::tensor>);
+
+// cartesian_tensor<int>: integer element type is supported (Frobenius norm returns double)
+static_assert(!RepresentationOf<cartesian_tensor<int>, quantity_character::real_scalar>);
+static_assert(!RepresentationOf<cartesian_tensor<int>, quantity_character::vector>);
+static_assert(RepresentationOf<cartesian_tensor<int>, quantity_character::tensor>);
+
+// cartesian_tensor whose element is a quantity must not be a representation
+static_assert(!RepresentationOf<cartesian_tensor<quantity<si::metre>>, quantity_character::tensor>);
+
+// a tensor-character ISQ quantity accepts a second-order tensor representation
+static_assert(Quantity<quantity<isq::stress[si::pascal], cartesian_tensor<double>>>);
 
 // cartesian_vector whose element is a quantity must not be a representation
 static_assert(!RepresentationOf<cartesian_vector<quantity<si::metre>>, quantity_character::vector>);

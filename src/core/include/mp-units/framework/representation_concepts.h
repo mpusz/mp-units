@@ -317,16 +317,30 @@ concept Vector = !disable_vector<T> && requires(const T v) {
 
 /////////////// TENSOR ///////////////
 
-// MP_UNITS_EXPORT template<typename T>
-// constexpr bool disable_tensor = false;
+MP_UNITS_EXPORT template<typename T>
+constexpr bool disable_tensor = false;
 
-// TODO provide when some actual operations will be required
-// template<typename T>
-// concept Tensor = (!disable_tensor<T>) && WeaklyRegular<T> && requires(const T a, const T b) {
-//   ::mp_units::tensor_product(a, b);
-//   ::mp_units::inner_product(a, b);
-//   ::mp_units::scalar_product(a, b);
-// };
+#if MP_UNITS_HOSTED
+template<typename T>
+MP_UNITS_INLINE constexpr bool disable_tensor<std::complex<T>> = true;
+#endif
+
+namespace detail {
+
+// A tensor representation is a permissive superset of a vector one: any object that has a
+// magnitude, scales by it, and is regularly addable can represent a tensor-character quantity.
+// This intentionally mirrors `Vector` so that lower-rank representations (real scalars,
+// `cartesian_vector`) also qualify as degenerate tensor representations - a tensor of order
+// zero is a scalar and a tensor of order one is a vector (ISO 80000-2:2019, 18). Genuine
+// higher-rank types (e.g. `cartesian_tensor`) opt out of the lower-rank `Vector` concept via
+// `disable_vector` so that the reverse never holds.
+template<typename T>
+concept Tensor = !disable_tensor<T> && requires(const T v) {
+  ::mp_units::magnitude(v);
+  requires ScalableWith<T, decltype(::mp_units::magnitude(v))>;
+} && RegularAddable<T>;
+
+}  // namespace detail
 
 
 namespace detail {
@@ -427,18 +441,18 @@ concept ScalarRepresentation = RealScalarRepresentation<T> || ComplexScalarRepre
 template<typename T>
 concept VectorRepresentation = NotQuantity<value_type_t<T>> && Vector<T> && MagnitudeScalable<T>;
 
-// template<typename T>
-// concept TensorRepresentation = NotQuantity<T> && Tensor<T>;
+template<typename T>
+concept TensorRepresentation = NotQuantity<value_type_t<T>> && Tensor<T> && MagnitudeScalable<T>;
 
 template<typename T, quantity_character Ch>
 concept IsOfCharacter = (Ch == quantity_character::real_scalar && RealScalarRepresentation<T>) ||
                         (Ch == quantity_character::complex_scalar && ComplexScalarRepresentation<T>) ||
-                        (Ch == quantity_character::vector && VectorRepresentation<T>);
-// || (Ch == quantity_character::tensor && TensorRepresentation<T>);
+                        (Ch == quantity_character::vector && VectorRepresentation<T>) ||
+                        (Ch == quantity_character::tensor && TensorRepresentation<T>);
 
 template<typename T>
 concept SomeRepresentation =
-  detail::ScalarRepresentation<T> || detail::VectorRepresentation<T>;  // || detail::TensorRepresentation<T>;
+  detail::ScalarRepresentation<T> || detail::VectorRepresentation<T> || detail::TensorRepresentation<T>;
 
 }  // namespace detail
 
