@@ -44,7 +44,7 @@ QUANTITY_SPEC(rotational_displacement, angular::angle, cotes_angle_constant* isq
 inline constexpr auto angular_displacement = rotational_displacement;
 QUANTITY_SPEC(phase_angle, angular_measure);
 QUANTITY_SPEC(solid_angular_measure, pow<2>(cotes_angle_constant) * isq::area / pow<2>(isq::radius));
-QUANTITY_SPEC(angular_velocity, angular_displacement / isq::duration, quantity_character::vector);
+QUANTITY_SPEC(angular_velocity, angular_displacement / isq::duration, quantity_tensor_order::vector);
 QUANTITY_SPEC(angular_acceleration, angular_velocity / isq::duration);
 QUANTITY_SPEC(rotation, rotational_displacement);
 QUANTITY_SPEC(angular_frequency, phase_angle / isq::duration);
@@ -53,9 +53,9 @@ inline constexpr auto angular_wavenumber = angular_repetency;
 QUANTITY_SPEC(phase_coefficient, phase_angle / isq::path_length);
 QUANTITY_SPEC(propagation_coefficient, cotes_angle_constant / isq::length);
 QUANTITY_SPEC(angular_momentum, isq::position_vector* isq::momentum / cotes_angle_constant);  // vector
-QUANTITY_SPEC(moment_of_inertia, angular_momentum / angular_velocity, quantity_character::tensor);
+QUANTITY_SPEC(moment_of_inertia, angular_momentum / angular_velocity, quantity_tensor_order::tensor);
 QUANTITY_SPEC(moment_of_force, isq::position_vector* isq::force / cotes_angle_constant);  // vector
-QUANTITY_SPEC(torque, moment_of_force, quantity_character::real_scalar);
+QUANTITY_SPEC(torque, moment_of_force, quantity_tensor_order::scalar);
 QUANTITY_SPEC(angular_impulse, moment_of_force* isq::duration);  // vector
 QUANTITY_SPEC(loss_angle, angular_measure);
 

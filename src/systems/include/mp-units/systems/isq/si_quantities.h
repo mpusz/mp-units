@@ -50,15 +50,15 @@ QUANTITY_SPEC(frequency, inverse(period_duration), non_negative);
 
 // mechanics
 QUANTITY_SPEC(energy, mass* pow<2>(length) / pow<2>(time), non_negative);  // differs from ISO 80000
-QUANTITY_SPEC(force, mass* length / pow<2>(time), quantity_character::vector);
-QUANTITY_SPEC(pressure, force / area, quantity_character::real_scalar);
+QUANTITY_SPEC(force, mass* length / pow<2>(time), quantity_tensor_order::vector);
+QUANTITY_SPEC(pressure, force / area, quantity_tensor_order::scalar);
 
 // electromagnetism
-QUANTITY_SPEC(electric_potential, energy / (electric_current * time), quantity_character::real_scalar);
+QUANTITY_SPEC(electric_potential, energy / (electric_current * time), quantity_tensor_order::scalar);
 QUANTITY_SPEC(capacitance, electric_current* time / electric_potential, non_negative);
-QUANTITY_SPEC(impedance, electric_potential / electric_current, quantity_character::complex_scalar);  // complex
-QUANTITY_SPEC(admittance, inverse(impedance), quantity_character::complex_scalar);                    // complex
-QUANTITY_SPEC(magnetic_flux_density, mass / (electric_current * pow<2>(time)), quantity_character::vector);
+QUANTITY_SPEC(impedance, electric_potential / electric_current, quantity_field::complex);  // complex
+QUANTITY_SPEC(admittance, inverse(impedance), quantity_field::complex);                    // complex
+QUANTITY_SPEC(magnetic_flux_density, mass / (electric_current * pow<2>(time)), quantity_tensor_order::vector);
 
 // light_and_radiation
 QUANTITY_SPEC(luminous_flux, luminous_intensity* solid_angular_measure, non_negative);

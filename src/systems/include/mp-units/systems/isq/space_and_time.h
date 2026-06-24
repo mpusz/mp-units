@@ -70,7 +70,7 @@ QUANTITY_SPEC(thickness, width);
 QUANTITY_SPEC(diameter, width);
 QUANTITY_SPEC(distance, path_length);
 QUANTITY_SPEC(radial_distance, distance);
-QUANTITY_SPEC(displacement, length, quantity_character::vector);
+QUANTITY_SPEC(displacement, length, quantity_tensor_order::vector);
 QUANTITY_SPEC(position_vector, displacement);
 QUANTITY_SPEC(radius_of_curvature, radius);
 QUANTITY_SPEC(curvature, inverse(radius_of_curvature), non_negative);
@@ -82,7 +82,7 @@ QUANTITY_SPEC(speed, length / time, non_negative);        // differs from ISO 80
 QUANTITY_SPEC(velocity, speed, displacement / duration);  // vector  // differs from ISO 80000
 QUANTITY_SPEC(acceleration, velocity / duration);         // vector
 QUANTITY_SPEC(acceleration_of_free_fall, acceleration);   // not in ISO 80000
-QUANTITY_SPEC(angular_velocity, angular_displacement / duration, quantity_character::vector);
+QUANTITY_SPEC(angular_velocity, angular_displacement / duration, quantity_tensor_order::vector);
 QUANTITY_SPEC(angular_acceleration, angular_velocity / duration);
 QUANTITY_SPEC(time_constant, duration);
 QUANTITY_SPEC(rotation, dimensionless);
@@ -91,7 +91,7 @@ QUANTITY_SPEC(angular_frequency, phase_angle / duration);
 QUANTITY_SPEC(wavelength, length);
 QUANTITY_SPEC(repetency, inverse(wavelength), non_negative);
 inline constexpr auto wavenumber = repetency;
-QUANTITY_SPEC(wave_vector, repetency, quantity_character::vector);
+QUANTITY_SPEC(wave_vector, repetency, quantity_tensor_order::vector);
 QUANTITY_SPEC(angular_repetency, inverse(wavelength), non_negative);
 inline constexpr auto angular_wavenumber = angular_repetency;
 QUANTITY_SPEC(phase_speed, angular_frequency / angular_repetency);
