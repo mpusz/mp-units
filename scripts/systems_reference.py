@@ -671,7 +671,13 @@ class SystemsParser:
                     third_param
                     and third_param != "is_kind"
                     and third_param != "non_negative"
-                    and not third_param.startswith("quantity_character::")
+                    and not third_param.startswith(
+                        (
+                            "quantity_character::",
+                            "quantity_tensor_order::",
+                            "quantity_field::",
+                        )
+                    )
                 ):
                     equation = third_param
             elif has_operators or has_function_call:
@@ -685,7 +691,13 @@ class SystemsParser:
                     third_param
                     and third_param != "is_kind"
                     and third_param != "non_negative"
-                    and not third_param.startswith("quantity_character::")
+                    and not third_param.startswith(
+                        (
+                            "quantity_character::",
+                            "quantity_tensor_order::",
+                            "quantity_field::",
+                        )
+                    )
                 ):
                     equation = third_param
 
@@ -4055,18 +4067,11 @@ class CppMetadataExtractor:
                 "",
                 "constexpr std::string_view character_to_string(quantity_character ch)",
                 "{",
-                "  switch (ch) {",
-                "    case quantity_character::real_scalar:",
-                '      return "Real";',
-                "    case quantity_character::complex_scalar:",
-                '      return "Complex";',
-                "    case quantity_character::vector:",
-                '      return "Vector";',
-                "    case quantity_character::tensor:",
-                '      return "Tensor";',
-                "    default:",
-                '      return "Unknown";',
-                "  }",
+                '  if (ch == quantity_character{}) return "Real";',
+                '  if (ch == quantity_character{quantity_field::complex}) return "Complex";',
+                '  if (ch == quantity_character{quantity_tensor_order::vector}) return "Vector";',
+                '  if (ch == quantity_character{quantity_tensor_order::tensor}) return "Tensor";',
+                '  return "Unknown";',
                 "}",
                 "",
                 "template<QuantitySpec QS>",
