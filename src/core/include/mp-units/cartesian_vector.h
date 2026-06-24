@@ -54,6 +54,18 @@ class cartesian_vector;
 
 namespace detail {
 
+// Complex conjugate of a scalar element, derived from the `real`/`imag` CPOs. For a real scalar
+// this is the identity, so the generic vector/tensor code can use one Hermitian formula for both
+// real and complex representations without a partial specialization.
+template<typename T>
+[[nodiscard]] constexpr T conjugate(const T& v)
+{
+  if constexpr (ComplexScalar<T>)
+    return T(::mp_units::real(v), -::mp_units::imag(v));
+  else
+    return v;
+}
+
 struct cartesian_vector_iface {
   template<typename T, typename U>
     requires requires(const T& t, const U& u) { t + u; }
@@ -110,8 +122,12 @@ struct cartesian_vector_iface {
     }
   [[nodiscard]] friend constexpr auto scalar_product(const cartesian_vector<T>& lhs, const cartesian_vector<U>& rhs)
   {
-    return lhs._coordinates_[0] * rhs._coordinates_[0] + lhs._coordinates_[1] * rhs._coordinates_[1] +
-           lhs._coordinates_[2] * rhs._coordinates_[2];
+    // Hermitian (sesquilinear) for complex elements, conjugating the first argument (physics
+    // convention). `conjugate` is the identity for real elements, so this is the ordinary dot
+    // product there and reduces to a real result.
+    return ::mp_units::detail::conjugate(lhs._coordinates_[0]) * rhs._coordinates_[0] +
+           ::mp_units::detail::conjugate(lhs._coordinates_[1]) * rhs._coordinates_[1] +
+           ::mp_units::detail::conjugate(lhs._coordinates_[2]) * rhs._coordinates_[2];
   }
 
   template<typename T, typename U>
@@ -178,10 +194,22 @@ public:
   }
 
   [[nodiscard]] constexpr auto magnitude() const
-    requires requires(T t) { requires requires { hypot(t, t, t); } || requires { std::hypot(t, t, t); }; }
+    requires requires(T t) {
+      requires(
+                requires { hypot(t, t, t); } || requires { std::hypot(t, t, t); }) ||
+                requires { ::mp_units::modulus(t); };
+    }
   {
-    using std::hypot;
-    return hypot(_coordinates_[0], _coordinates_[1], _coordinates_[2]);
+    if constexpr (detail::ComplexScalar<T>) {
+      // Hermitian norm sqrt(sum |zᵢ|²); the real branch keeps hypot for its overflow behavior
+      using std::sqrt;
+      return sqrt(::mp_units::modulus(_coordinates_[0]) * ::mp_units::modulus(_coordinates_[0]) +
+                  ::mp_units::modulus(_coordinates_[1]) * ::mp_units::modulus(_coordinates_[1]) +
+                  ::mp_units::modulus(_coordinates_[2]) * ::mp_units::modulus(_coordinates_[2]));
+    } else {
+      using std::hypot;
+      return hypot(_coordinates_[0], _coordinates_[1], _coordinates_[2]);
+    }
   }
 
   [[nodiscard]] constexpr auto norm() const

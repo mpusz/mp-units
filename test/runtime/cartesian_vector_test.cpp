@@ -28,6 +28,7 @@
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
+#include <complex>
 #include <sstream>
 #endif
 #ifdef MP_UNITS_MODULES
@@ -38,6 +39,7 @@ import mp_units;
 
 using namespace mp_units;
 using namespace Catch::Matchers;
+using namespace std::complex_literals;
 
 TEST_CASE("cartesian_vector operations", "[vector]")
 {
@@ -457,5 +459,45 @@ TEST_CASE("cartesian_vector text output", "[vector][fmt][ostream]")
 
     SECTION("iostream") { CHECK(os.str() == "[1.2, 2.3, 3.4]"); }
     SECTION("fmt with default format {}") { CHECK(MP_UNITS_STD_FMT::format("{}", v) == os.str()); }
+  }
+}
+
+TEST_CASE("cartesian_vector with a complex representation", "[vector][complex]")
+{
+  using c = std::complex<double>;
+
+  SECTION("Hermitian magnitude is a real scalar")
+  {
+    // |(3+4i, 0, 0)| = |3+4i| = 5
+    cartesian_vector v{3. + 4.i, c{}, c{}};
+    STATIC_CHECK(std::is_same_v<decltype(v.magnitude()), double>);
+    REQUIRE_THAT(v.magnitude(), WithinRel(5.0, 1e-12));
+    // |(1+i, 1+i, 1+i)| = sqrt(3 * 2) = sqrt(6)
+    cartesian_vector w{1. + 1.i, 1. + 1.i, 1. + 1.i};
+    REQUIRE_THAT(w.magnitude(), WithinRel(std::sqrt(6.0), 1e-12));
+  }
+
+  SECTION("scalar_product is sesquilinear (conjugates the first argument)")
+  {
+    // <a, a> = |a|^2 is real and non-negative
+    cartesian_vector a{1. + 1.i, c{}, c{}};
+    REQUIRE(scalar_product(a, a) == c{2.0, 0.0});
+
+    // <(1,0,0), (i,0,0)> = conj(1) * i = i
+    cartesian_vector e1{c{1.0}, c{}, c{}};
+    cartesian_vector ei{1.i, c{}, c{}};
+    REQUIRE(scalar_product(e1, ei) == 1.i);
+    // anti-Hermitian symmetry: <b, a> = conj(<a, b>)
+    REQUIRE(scalar_product(ei, e1) == std::conj(scalar_product(e1, ei)));
+  }
+
+  SECTION("addition and scaling work componentwise")
+  {
+    cartesian_vector a{1. + 1.i, 2. + 0.i, 0. + 3.i};
+    cartesian_vector b{1. - 1.i, 0. + 2.i, 3. + 0.i};
+    auto s = a + b;
+    REQUIRE(s[0] == c{2.0, 0.0});
+    auto t = a * c{2.0, 0.0};
+    REQUIRE(t[0] == c{2.0, 2.0});
   }
 }

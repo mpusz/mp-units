@@ -28,6 +28,7 @@
 import std;
 #else
 #include <cmath>
+#include <complex>
 #include <sstream>
 #endif
 #ifdef MP_UNITS_MODULES
@@ -38,6 +39,7 @@ import mp_units;
 
 using namespace mp_units;
 using Catch::Matchers::WithinRel;
+using namespace std::complex_literals;
 
 // A second-order Cartesian tensor as defined by ISO 80000-2:2019, 18.
 TEST_CASE("cartesian_tensor operations", "[tensor]")
@@ -258,5 +260,46 @@ TEST_CASE("cartesian_tensor text output", "[tensor][fmt][ostream]")
     SECTION("iostream") { CHECK(os.str() == "[[1.5, 2, 3], [4, 5, 6], [7, 8, 9]]"); }
 
     SECTION("fmt with default format {}") { CHECK(MP_UNITS_STD_FMT::format("{}", t) == os.str()); }
+  }
+}
+
+TEST_CASE("cartesian_tensor with a complex representation", "[tensor][complex]")
+{
+  using c = std::complex<double>;
+
+  SECTION("Hermitian Frobenius norm is a real scalar")
+  {
+    // only the (0,0) entry is non-zero: |T| = |3+4i| = 5
+    cartesian_tensor t{3. + 4.i, c{}, c{}, c{}, c{}, c{}, c{}, c{}, c{}};
+    STATIC_CHECK(std::is_same_v<decltype(t.magnitude()), double>);
+    REQUIRE_THAT(t.magnitude(), WithinRel(5.0, 1e-12));
+    // sqrt(|1+i|^2 * 9) = sqrt(2 * 9) = sqrt(18)
+    cartesian_tensor u{1. + 1.i, 1. + 1.i, 1. + 1.i, 1. + 1.i, 1. + 1.i, 1. + 1.i, 1. + 1.i, 1. + 1.i, 1. + 1.i};
+    REQUIRE_THAT(u.magnitude(), WithinRel(std::sqrt(18.0), 1e-12));
+  }
+
+  SECTION("scalar_product (double-dot) is sesquilinear, T : T is real and non-negative")
+  {
+    cartesian_tensor a{1. + 1.i, c{}, c{}, c{}, c{}, c{}, c{}, c{}, c{}};
+    // a : a = sum |a_ij|^2 = |1+i|^2 = 2
+    REQUIRE(scalar_product(a, a) == c{2.0, 0.0});
+
+    // Hermitian symmetry of the double-dot: <b, a> = conj(<a, b>)
+    cartesian_tensor b{1.i, c{}, c{}, c{}, c{}, c{}, c{}, c{}, c{}};
+    REQUIRE(scalar_product(b, a) == std::conj(scalar_product(a, b)));
+  }
+
+  SECTION("inner product (matmul) uses plain complex arithmetic, no conjugation")
+  {
+    cartesian_tensor id{c{1}, c{}, c{}, c{}, c{1}, c{}, c{}, c{}, c{1}};
+    cartesian_tensor a{1. + 1.i, 2. + 0.i, c{}, c{}, 3. - 1.i, c{}, c{}, c{}, 0. + 2.i};
+    REQUIRE(inner_product(id, a) == a);  // I . A == A
+  }
+
+  SECTION("inner product with a complex vector -> complex vector")
+  {
+    cartesian_tensor id{c{1}, c{}, c{}, c{}, c{1}, c{}, c{}, c{}, c{1}};
+    cartesian_vector v{1. + 1.i, 2. + 0.i, 0. + 3.i};
+    REQUIRE(inner_product(id, v) == v);  // I . v == v
   }
 }

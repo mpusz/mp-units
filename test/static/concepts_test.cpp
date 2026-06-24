@@ -339,11 +339,20 @@ static_assert(!RepresentationOf<cartesian_vector<int>, quantity_character::compl
 static_assert(RepresentationOf<cartesian_vector<int>, quantity_character::vector>);
 static_assert(RepresentationOf<cartesian_vector<int>, quantity_character::tensor>);
 
-// cartesian_vector<complex<double>>: no hypot(complex,complex,complex) -> not a vector representation
+// cartesian_vector<complex<double>>: a complex 3-vector. Its Hermitian magnitude is a real scalar
+// (computed via the modulus CPO), so it is a valid vector (and degenerate tensor) representation,
+// but not a scalar of either field. NOTE: V2 has a single `vector` character with no real/complex
+// distinction, so a complex vector satisfies the plain `vector` character. The V3 (field, order)
+// split is what will let `vector` mean specifically `(real, order 1)`.
 static_assert(!RepresentationOf<cartesian_vector<std::complex<double>>, quantity_character::real_scalar>);
 static_assert(!RepresentationOf<cartesian_vector<std::complex<double>>, quantity_character::complex_scalar>);
-static_assert(!RepresentationOf<cartesian_vector<std::complex<double>>, quantity_character::vector>);
-static_assert(!RepresentationOf<cartesian_vector<std::complex<double>>, quantity_character::tensor>);
+static_assert(RepresentationOf<cartesian_vector<std::complex<double>>, quantity_character::vector>);
+static_assert(RepresentationOf<cartesian_vector<std::complex<double>>, quantity_character::tensor>);
+
+// cartesian_tensor<complex<double>>: a complex second-order tensor; tensor-only, never vector/scalar
+static_assert(!RepresentationOf<cartesian_tensor<std::complex<double>>, quantity_character::complex_scalar>);
+static_assert(!RepresentationOf<cartesian_tensor<std::complex<double>>, quantity_character::vector>);
+static_assert(RepresentationOf<cartesian_tensor<std::complex<double>>, quantity_character::tensor>);
 
 // quantity types must never themselves be a representation (NotQuantity guard)
 static_assert(!RepresentationOf<quantity<si::metre>, quantity_character::real_scalar>);
@@ -365,6 +374,25 @@ static_assert(!RepresentationOf<cartesian_tensor<quantity<si::metre>>, quantity_
 
 // a tensor-character ISQ quantity accepts a second-order tensor representation
 static_assert(Quantity<quantity<isq::stress[si::pascal], cartesian_tensor<double>>>);
+
+// `Vector` subsumes `Tensor` (a vector is a tensor of order one), so a Vector-constrained overload
+// is preferred over a Tensor-constrained one for vector representations, while a genuine tensor
+// matches only the Tensor overload. This locks the subsumption ordering used to rank overloads.
+namespace subsumption_check {
+template<detail::Tensor>
+consteval int grade()
+{
+  return 2;
+}
+template<detail::Vector>
+consteval int grade()
+{
+  return 1;
+}
+static_assert(grade<cartesian_vector<double>>() == 1);  // Vector wins (subsumes Tensor)
+static_assert(grade<cartesian_tensor<double>>() == 2);  // only Tensor matches
+static_assert(grade<double>() == 1);                    // arithmetic type is a degenerate vector
+}  // namespace subsumption_check
 
 // cartesian_vector whose element is a quantity must not be a representation
 static_assert(!RepresentationOf<cartesian_vector<quantity<si::metre>>, quantity_character::vector>);

@@ -110,7 +110,7 @@ struct cartesian_tensor_iface {
     return true;
   }
 
-  // inner product of two second-order tensors (ISO 80000-2:2019, 2-18.23): (T . S)_ik = sum_j T_ij S_jk
+  // inner product of two second-order tensors (ISO 80000-2:2019, 2-18.23): (T ⋅ S)_ik = sum_j T_ij S_jk
   template<typename T, typename U>
     requires requires(const T& t, const U& u, decltype(t * u) v) {
       t * u;
@@ -128,7 +128,7 @@ struct cartesian_tensor_iface {
     return res;
   }
 
-  // inner product of a second-order tensor and a vector (ISO 80000-2:2019, 2-18.24): (T . a)_i = sum_j T_ij a_j
+  // inner product of a second-order tensor and a vector (ISO 80000-2:2019, 2-18.24): (T ⋅ a)_i = sum_j T_ij a_j
   template<typename T, typename U>
     requires requires(const T& t, const U& u, decltype(t * u) v) {
       t * u;
@@ -150,8 +150,9 @@ struct cartesian_tensor_iface {
     }
   [[nodiscard]] friend constexpr auto scalar_product(const cartesian_tensor<T>& lhs, const cartesian_tensor<U>& rhs)
   {
-    auto acc = lhs._data_[0] * rhs._data_[0];
-    for (std::size_t i = 1; i < 9; ++i) acc = acc + lhs._data_[i] * rhs._data_[i];
+    // Hermitian for complex elements (conjugate the first argument); identity for real elements.
+    auto acc = ::mp_units::detail::conjugate(lhs._data_[0]) * rhs._data_[0];
+    for (std::size_t i = 1; i < 9; ++i) acc = acc + ::mp_units::detail::conjugate(lhs._data_[i]) * rhs._data_[i];
     return acc;
   }
 };
@@ -193,12 +194,21 @@ public:
   // Frobenius norm: sqrt(T : T). Not a distinct ISO 80000-2 item (2-18.4 magnitude is vector-only) but
   // the natural tensor norm; required for the type to model the `Tensor` representation concept.
   [[nodiscard]] constexpr auto magnitude() const
-    requires requires(T t) { requires requires { sqrt(t * t); } || requires { std::sqrt(t * t); }; }
+    requires requires(T t) {
+      requires(requires { sqrt(t * t); } || requires { std::sqrt(t * t); }) || requires { ::mp_units::modulus(t); };
+    }
   {
     using std::sqrt;
-    auto sum = _data_[0] * _data_[0];
-    for (std::size_t i = 1; i < 9; ++i) sum += _data_[i] * _data_[i];
-    return sqrt(sum);
+    if constexpr (detail::ComplexScalar<T>) {
+      // Frobenius norm sqrt(sum |T_ij|²) for complex elements
+      auto sum = ::mp_units::modulus(_data_[0]) * ::mp_units::modulus(_data_[0]);
+      for (std::size_t i = 1; i < 9; ++i) sum += ::mp_units::modulus(_data_[i]) * ::mp_units::modulus(_data_[i]);
+      return sqrt(sum);
+    } else {
+      auto sum = _data_[0] * _data_[0];
+      for (std::size_t i = 1; i < 9; ++i) sum += _data_[i] * _data_[i];
+      return sqrt(sum);
+    }
   }
 
   [[nodiscard]] constexpr auto norm() const
