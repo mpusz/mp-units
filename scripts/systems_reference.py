@@ -48,7 +48,9 @@ class Quantity:
     dimensional_formula: Optional[str] = (
         None  # Calculated dimensional formula (e.g., "L²MT⁻³")
     )
-    character: str = "Real"  # Quantity character: Real, Complex, Vector, Tensor
+    character: str = (
+        "scalar"  # Quantity character label: scalar, complex scalar, vector, tensor, complex vector, complex tensor
+    )
     kind_of: str = ""  # e.g., "isq::length" - from C++ get_kind()
     parent_from_cpp: str = ""  # e.g., "isq::length" or "<root>" - from C++ qs._parent_
     hierarchy_root: str = ""  # e.g., "isq::length" - from C++ get_hierarchy_root()
@@ -234,7 +236,7 @@ class SystemsParser:
             is_kind=True,
             alias_target="",
             dimensional_formula="1",
-            character="Real",
+            character="scalar",
             kind_of="dimensionless",
             parent_from_cpp="<root>",
             hierarchy_root="dimensionless",  # Root of its own hierarchy
@@ -1753,7 +1755,7 @@ class SystemsParser:
                         non_negative=qty.non_negative,
                         alias_target=f"{source_ns}::{qty.name}",
                         character=(
-                            qty.character if hasattr(qty, "character") else "Real"
+                            qty.character if hasattr(qty, "character") else "scalar"
                         ),
                     )
                     system.quantities.append(alias_qty)
@@ -2205,7 +2207,7 @@ class DocumentationGenerator:
                         is_kind=True,
                         alias_target="",
                         dimensional_formula="1",
-                        character="Real",
+                        character="scalar",
                         kind_of="dimensionless",
                         parent_from_cpp="<root>",
                     )
@@ -2782,16 +2784,16 @@ class DocumentationGenerator:
 
                     # Write table of quantities - reordered columns
                     f.write(
-                        "| Quantity | Character | Dimension | is_kind | non_negative | "
+                        "| Quantity | Character | Dimension | Traits | "
                         "Kind of | Parent | Equation | Hierarchy |\n"
                     )
                     f.write(
-                        "|----------|:---------:|:---------:|:-------:|:------------:"
+                        "|----------|:---------:|:---------:|:------:"
                         "|:-------:|:------:|----------|:---------:|\n"
                     )
                     for qty in sorted(system.quantities, key=lambda q: q.name):
                         character = (
-                            qty.character if hasattr(qty, "character") else "Real"
+                            qty.character if hasattr(qty, "character") else "scalar"
                         )
                         # Get dimensional formula
                         dim_formula = (
@@ -2837,7 +2839,7 @@ class DocumentationGenerator:
                                 character = (
                                     target_qty.character
                                     if hasattr(target_qty, "character")
-                                    else "Real"
+                                    else "scalar"
                                 )
                                 dim_formula = (
                                     target_qty.dimensional_formula
@@ -2870,15 +2872,20 @@ class DocumentationGenerator:
                                 parent_display = "—"
 
                             qty_name_display = add_word_breaks(qty.name)
-                            is_kind_marker = (
-                                "✓" if (target_qty and target_qty.is_kind) else "—"
-                            )
-                            non_negative_marker = (
-                                "✓" if (target_qty and target_qty.non_negative) else "—"
+                            traits = "<br>".join(
+                                t
+                                for t, on in (
+                                    ("kind", bool(target_qty and target_qty.is_kind)),
+                                    (
+                                        "≥ 0",
+                                        bool(target_qty and target_qty.non_negative),
+                                    ),
+                                )
+                                if on
                             )
                             f.write(
                                 f'| <span id="{qty.name}"></span><code>{qty_name_display}</code> | '
-                                f"{character} | {dim_formula} | {is_kind_marker} | {non_negative_marker} | {kind_of} | "
+                                f"{character} | {dim_formula} | {traits} | {kind_of} | "
                                 f"{parent_display} | alias to {self._linkify_definition(qty.alias_target, system)} | "
                                 f"{hierarchy_link} |\n"
                             )
@@ -2927,11 +2934,17 @@ class DocumentationGenerator:
                             else:
                                 equation = "—"
                             qty_name_display = add_word_breaks(qty.name)
-                            is_kind_marker = "✓" if qty.is_kind else "—"
-                            non_negative_marker = "✓" if qty.non_negative else "—"
+                            traits = "<br>".join(
+                                t
+                                for t, on in (
+                                    ("kind", qty.is_kind),
+                                    ("≥ 0", qty.non_negative),
+                                )
+                                if on
+                            )
                             f.write(
                                 f'| <span id="{qty.name}"></span><code>{qty_name_display}</code> | '
-                                f"{character} | {dim_formula} | {is_kind_marker} | {non_negative_marker} | {kind_of} | "
+                                f"{character} | {dim_formula} | {traits} | {kind_of} | "
                                 f"{parent_display} | {equation} | {hierarchy_link} |\n"
                             )
                     need_separator = True
@@ -4067,11 +4080,15 @@ class CppMetadataExtractor:
                 "",
                 "constexpr std::string_view character_to_string(quantity_character ch)",
                 "{",
-                '  if (ch == quantity_character{}) return "Real";',
-                '  if (ch == quantity_character{quantity_field::complex}) return "Complex";',
-                '  if (ch == quantity_character{quantity_tensor_order::vector}) return "Vector";',
-                '  if (ch == quantity_character{quantity_tensor_order::tensor}) return "Tensor";',
-                '  return "Unknown";',
+                '  if (ch == quantity_character{}) return "scalar";',
+                '  if (ch == quantity_character{quantity_field::complex}) return "complex scalar";',
+                '  if (ch == quantity_character{quantity_tensor_order::vector}) return "vector";',
+                "  if (ch == quantity_character{quantity_tensor_order::vector, quantity_field::complex}) "
+                'return "complex vector";',
+                '  if (ch == quantity_character{quantity_tensor_order::tensor}) return "tensor";',
+                "  if (ch == quantity_character{quantity_tensor_order::tensor, quantity_field::complex}) "
+                'return "complex tensor";',
+                '  return "unknown";',
                 "}",
                 "",
                 "template<QuantitySpec QS>",

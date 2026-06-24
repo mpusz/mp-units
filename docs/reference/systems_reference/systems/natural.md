@@ -17,21 +17,21 @@
 
 ## Quantities
 
-| Quantity | Character | Dimension | is_kind | non_negative | Kind of | Parent | Equation | Hierarchy |
-|----------|:---------:|:---------:|:-------:|:------------:|:-------:|:------:|----------|:---------:|
-| <span id="acceleration"></span><code>acceleration</code> | Real | E | — | ✓ | <code>[energy](#energy)</code> | <code>[energy](#energy)</code> | <code>[velocity](#velocity) / <wbr>[duration](#duration)</code> | [view](../hierarchies/energy_natural.md) |
-| <span id="angular_measure"></span><code>angular_<wbr>measure</code> | Real | — | ✓ | — | <code>[angular_<wbr>measure](#angular_measure)</code> | <code>[dimensionless](core.md#dimensionless)</code> | — | [view](../hierarchies/dimensionless.md) |
-| <span id="dimensionless"></span><code>dimensionless</code> | Real | 1 | ✓ | — | <code>[dimensionless](core.md#dimensionless)</code> | — | — | — |
-| <span id="duration"></span><code>duration</code> | Real | E⁻¹ | — | — | <code>[inverse_<wbr>energy](#inverse_energy)</code> | <code>[inverse_<wbr>energy](#inverse_energy)</code> | — | [view](../hierarchies/inverse_energy.md) |
-| <span id="energy"></span><code>energy</code> | Real | E | ✓ | ✓ | <code>[energy](#energy)</code> | — | — | [view](../hierarchies/energy_natural.md) |
-| <span id="energy_squared"></span><code>energy_<wbr>squared</code> | Real | E² | ✓ | — | <code>[energy_<wbr>squared](#energy_squared)</code> | — | <code>pow<2>([energy](#energy))</code> | [view](../hierarchies/energy_squared.md) |
-| <span id="force"></span><code>force</code> | Real | E² | — | — | <code>[energy_<wbr>squared](#energy_squared)</code> | <code>[energy_<wbr>squared](#energy_squared)</code> | <code>[energy_<wbr>squared](#energy_squared)</code> | [view](../hierarchies/energy_squared.md) |
-| <span id="inverse_energy"></span><code>inverse_<wbr>energy</code> | Real | E⁻¹ | ✓ | — | <code>[inverse_<wbr>energy](#inverse_energy)</code> | — | <code>inverse([energy](#energy))</code> | [view](../hierarchies/inverse_energy.md) |
-| <span id="length"></span><code>length</code> | Real | E⁻¹ | — | — | <code>[inverse_<wbr>energy](#inverse_energy)</code> | <code>[inverse_<wbr>energy](#inverse_energy)</code> | — | [view](../hierarchies/inverse_energy.md) |
-| <span id="mass"></span><code>mass</code> | Real | E | — | ✓ | <code>[energy](#energy)</code> | <code>[energy](#energy)</code> | — | [view](../hierarchies/energy_natural.md) |
-| <span id="momentum"></span><code>momentum</code> | Real | E | — | ✓ | <code>[energy](#energy)</code> | <code>[energy](#energy)</code> | <code>[mass](#mass) * <wbr>[velocity](#velocity)</code> | [view](../hierarchies/energy_natural.md) |
-| <span id="speed"></span><code>speed</code> | Real | — | ✓ | — | <code>[speed](#speed)</code> | <code>[dimensionless](core.md#dimensionless)</code> | <code>[length](#length) / <wbr>[duration](#duration)</code> | [view](../hierarchies/dimensionless.md) |
-| <span id="velocity"></span><code>velocity</code> | Real | — | — | — | <code>[speed](#speed)</code> | <code>[speed](#speed)</code> | — | [view](../hierarchies/dimensionless.md) |
+| Quantity | Character | Dimension | Traits | Kind of | Parent | Equation | Hierarchy |
+|----------|:---------:|:---------:|:------:|:-------:|:------:|----------|:---------:|
+| <span id="acceleration"></span><code>acceleration</code> | scalar | E | ≥ 0 | <code>[energy](#energy)</code> | <code>[energy](#energy)</code> | <code>[velocity](#velocity) / <wbr>[duration](#duration)</code> | [view](../hierarchies/energy_natural.md) |
+| <span id="angular_measure"></span><code>angular_<wbr>measure</code> | scalar | — | kind | <code>[angular_<wbr>measure](#angular_measure)</code> | <code>[dimensionless](core.md#dimensionless)</code> | — | [view](../hierarchies/dimensionless.md) |
+| <span id="dimensionless"></span><code>dimensionless</code> | scalar | 1 | kind | <code>[dimensionless](core.md#dimensionless)</code> | — | — | — |
+| <span id="duration"></span><code>duration</code> | scalar | E⁻¹ |  | <code>[inverse_<wbr>energy](#inverse_energy)</code> | <code>[inverse_<wbr>energy](#inverse_energy)</code> | — | [view](../hierarchies/inverse_energy.md) |
+| <span id="energy"></span><code>energy</code> | scalar | E | kind<br>≥ 0 | <code>[energy](#energy)</code> | — | — | [view](../hierarchies/energy_natural.md) |
+| <span id="energy_squared"></span><code>energy_<wbr>squared</code> | scalar | E² | kind | <code>[energy_<wbr>squared](#energy_squared)</code> | — | <code>pow<2>([energy](#energy))</code> | [view](../hierarchies/energy_squared.md) |
+| <span id="force"></span><code>force</code> | scalar | E² |  | <code>[energy_<wbr>squared](#energy_squared)</code> | <code>[energy_<wbr>squared](#energy_squared)</code> | <code>[energy_<wbr>squared](#energy_squared)</code> | [view](../hierarchies/energy_squared.md) |
+| <span id="inverse_energy"></span><code>inverse_<wbr>energy</code> | scalar | E⁻¹ | kind | <code>[inverse_<wbr>energy](#inverse_energy)</code> | — | <code>inverse([energy](#energy))</code> | [view](../hierarchies/inverse_energy.md) |
+| <span id="length"></span><code>length</code> | scalar | E⁻¹ |  | <code>[inverse_<wbr>energy](#inverse_energy)</code> | <code>[inverse_<wbr>energy](#inverse_energy)</code> | — | [view](../hierarchies/inverse_energy.md) |
+| <span id="mass"></span><code>mass</code> | scalar | E | ≥ 0 | <code>[energy](#energy)</code> | <code>[energy](#energy)</code> | — | [view](../hierarchies/energy_natural.md) |
+| <span id="momentum"></span><code>momentum</code> | scalar | E | ≥ 0 | <code>[energy](#energy)</code> | <code>[energy](#energy)</code> | <code>[mass](#mass) * <wbr>[velocity](#velocity)</code> | [view](../hierarchies/energy_natural.md) |
+| <span id="speed"></span><code>speed</code> | scalar | — | kind | <code>[speed](#speed)</code> | <code>[dimensionless](core.md#dimensionless)</code> | <code>[length](#length) / <wbr>[duration](#duration)</code> | [view](../hierarchies/dimensionless.md) |
+| <span id="velocity"></span><code>velocity</code> | scalar | — |  | <code>[speed](#speed)</code> | <code>[speed](#speed)</code> | — | [view](../hierarchies/dimensionless.md) |
 
 ## Units
 
