@@ -400,9 +400,8 @@ struct quantity_spec<Self, Dim, Args...> : detail::quantity_spec_interface<Self>
 #endif
   using _base_type_ = quantity_spec;
   static constexpr detail::BaseDimension auto dimension = Dim;
-  static constexpr quantity_character character =
-    detail::quantity_character_init<Args...>(quantity_character::real_scalar);
-  static_assert(!mp_units::contains<struct non_negative, Args...>() || character == quantity_character::real_scalar,
+  static constexpr quantity_character character = detail::quantity_character_init<Args...>(quantity_character{});
+  static_assert(!mp_units::contains<struct non_negative, Args...>() || character == quantity_character{},
                 "non_negative can only be applied to real scalar quantities");
   static constexpr bool _is_non_negative_ = mp_units::contains<struct non_negative, Args...>();
 };
@@ -447,7 +446,7 @@ struct quantity_spec<Self, Eq, Args...> : detail::quantity_spec_interface<Self> 
   static constexpr Dimension auto dimension = Eq.dimension;
 
   static constexpr quantity_character character = detail::quantity_character_init<Args...>(Eq.character);
-  static_assert(!mp_units::contains<struct non_negative, Args...>() || character == quantity_character::real_scalar,
+  static_assert(!mp_units::contains<struct non_negative, Args...>() || character == quantity_character{},
                 "non_negative can only be applied to real scalar quantities");
   static constexpr bool _is_non_negative_ = mp_units::contains<struct non_negative, Args...>();
 };
@@ -480,9 +479,8 @@ struct propagate_equation<Q, true> {
  * inline constexpr struct width : quantity_spec<length> {} width;
  * inline constexpr struct height : quantity_spec<length> {} height;
  * inline constexpr struct diameter : quantity_spec<width> {} diameter;
- * inline constexpr struct displacement : quantity_spec<length, quantity_character::vector> {} displacement;
- * inline constexpr struct voltage_phasor : quantity_spec<voltage, quantity_character::complex_scalar) {}
- * voltage_phasor;
+ * inline constexpr struct displacement : quantity_spec<length, quantity_tensor_order::vector> {} displacement;
+ * inline constexpr struct voltage_phasor : quantity_spec<voltage, quantity_field::complex> {} voltage_phasor;
  * @endcode
  *
  * @note A common convention in this library is to assign the same name for a type and an object of this type.
@@ -505,10 +503,10 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
   static constexpr auto _parent_ = QS;
   static constexpr Dimension auto dimension = _parent_.dimension;
   static constexpr quantity_character character = detail::quantity_character_init<Args...>(QS.character);
-  static_assert(!mp_units::contains<struct non_negative, Args...>() || character == quantity_character::real_scalar,
+  static_assert(!mp_units::contains<struct non_negative, Args...>() || character == quantity_character{},
                 "non_negative can only be applied to real scalar quantities");
-  static constexpr bool _is_non_negative_ = mp_units::contains<struct non_negative, Args...>() ||
-                                            (character == quantity_character::real_scalar && QS._is_non_negative_);
+  static constexpr bool _is_non_negative_ =
+    mp_units::contains<struct non_negative, Args...>() || (character == quantity_character{} && QS._is_non_negative_);
 };
 
 // clang-format off
@@ -557,10 +555,10 @@ struct quantity_spec<Self, QS, Eq, Args...> : detail::quantity_spec_interface<Se
   static constexpr Dimension auto dimension = _parent_.dimension;
 
   static constexpr quantity_character character = detail::quantity_character_init<Args...>(Eq.character);
-  static_assert(!mp_units::contains<struct non_negative, Args...>() || character == quantity_character::real_scalar,
+  static_assert(!mp_units::contains<struct non_negative, Args...>() || character == quantity_character{},
                 "non_negative can only be applied to real scalar quantities");
-  static constexpr bool _is_non_negative_ = mp_units::contains<struct non_negative, Args...>() ||
-                                            (character == quantity_character::real_scalar && QS._is_non_negative_);
+  static constexpr bool _is_non_negative_ =
+    mp_units::contains<struct non_negative, Args...>() || (character == quantity_character{} && QS._is_non_negative_);
 };
 
 namespace detail {

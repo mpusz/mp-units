@@ -436,10 +436,10 @@ template<typename T>
 concept TensorRepresentation = NotQuantity<value_type_t<T>> && Tensor<T> && MagnitudeScalable<T>;
 
 template<typename T, quantity_character Ch>
-concept IsOfCharacter = (Ch == quantity_character::real_scalar && RealScalarRepresentation<T>) ||
-                        (Ch == quantity_character::complex_scalar && ComplexScalarRepresentation<T>) ||
-                        (Ch == quantity_character::vector && VectorRepresentation<T>) ||
-                        (Ch == quantity_character::tensor && TensorRepresentation<T>);
+concept IsOfCharacter = (Ch == quantity_character{} && RealScalarRepresentation<T>) ||
+                        (Ch == quantity_character{quantity_field::complex} && ComplexScalarRepresentation<T>) ||
+                        (Ch == quantity_character{quantity_tensor_order::vector} && VectorRepresentation<T>) ||
+                        (Ch == quantity_character{quantity_tensor_order::tensor} && TensorRepresentation<T>);
 
 // Types usable as a character value in `RepresentationOf`: the two-axis `quantity_character`, the
 // legacy flat spelling, and either single axis on its own (each implicitly forms a character).

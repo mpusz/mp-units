@@ -69,7 +69,7 @@ enum class prefix_range : std::uint8_t { engineering, full };
  *       - engineering mode: values displayed in range [1.0, 999.999...]
  *       - full mode: values displayed in range [1.0, 9.999...]
  */
-template<Quantity Q, std::invocable<Q> Func, PrefixableUnit U, auto Character = quantity_character::real_scalar>
+template<Quantity Q, std::invocable<Q> Func, PrefixableUnit U, auto Character = quantity_character{}>
   requires RepresentationOf<typename Q::rep, Character> && treat_as_floating_point<typename Q::rep> &&
            requires(Q::rep v) {
              requires requires { abs(v); } || requires { std::abs(v); };

@@ -273,7 +273,7 @@ template<PointOrigin PO>
 // static_assert fires exactly once per (PO) rather than at each enforce_bounds call.
 template<PointOrigin PO>
 constexpr bool has_quantity_bounds_v = [] {
-  if constexpr (PO::_quantity_spec_.character == quantity_character::real_scalar) {
+  if constexpr (PO::_quantity_spec_.character == quantity_character{}) {
     if constexpr (requires { PO::_bounds_; } &&
                   !std::is_same_v<std::remove_cvref_t<decltype(PO::_bounds_)>, undefined_t>) {
       static_assert(

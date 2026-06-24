@@ -619,7 +619,7 @@ public:
   // `vector` character - and since `double`/`int` are valid 1D vector representations, one could even
   // take the magnitude of a magnitude of a magnitude. That is a known V2 limitation, not a goal.
   [[nodiscard]] constexpr Quantity auto magnitude() const
-    requires(quantity_spec.character == quantity_character::vector)
+    requires(quantity_spec.character == quantity_character{quantity_tensor_order::vector})
   {
     return ::mp_units::magnitude(numerical_value_is_an_implementation_detail_) * unit;
   }
