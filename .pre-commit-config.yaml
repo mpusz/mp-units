@@ -58,5 +58,10 @@ repos:
     rev: v1.7.7
     hooks:
       - id: actionlint
+        # Disable actionlint's embedded shellcheck on `run:` blocks: for our workflows it only
+        # reports GitHub Actions idioms (e.g. `>> $GITHUB_ENV` need not be quoted) and false
+        # positives on numeric `${{ matrix.* }}` values. The standalone shellcheck hook covers
+        # real shell scripts; actionlint still validates workflow syntax, expressions, and actions.
+        args: ["-shellcheck="]
 
 exclude: ^docs/javascripts/
