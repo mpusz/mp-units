@@ -31,7 +31,6 @@ namespace {
 using namespace mp_units;
 using namespace mp_units::iec::unit_symbols;
 using namespace mp_units::si::unit_symbols;
-using enum mp_units::quantity_character;
 
 // unit conversions
 static_assert(isq::storage_capacity(1 * B) == isq::storage_capacity(8 * bit));

@@ -30,7 +30,7 @@ using namespace mp_units::si::unit_symbols;
 using namespace mp_units::angular::unit_symbols;
 using mp_units::angular::unit_symbols::rad;
 using mp_units::angular::unit_symbols::sr;
-using enum mp_units::quantity_character;
+using enum mp_units::quantity_character_legacy;
 
 [[nodiscard]] consteval bool verify(QuantitySpec auto q, quantity_character ch, Unit auto... units)
 {

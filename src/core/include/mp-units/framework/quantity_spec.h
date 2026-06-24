@@ -127,9 +127,9 @@ template<typename... Qs1, typename... Qs2>
                                                                       const type_list<Qs2...>&)
 {
   constexpr quantity_character num =
-    detail::common_quantity_character(quantity_character::real_scalar, expr_type<Qs1>::character...);
+    detail::common_quantity_character(quantity_character{}, expr_type<Qs1>::character...);
   constexpr quantity_character den =
-    detail::common_quantity_character(quantity_character::real_scalar, expr_type<Qs2>::character...);
+    detail::common_quantity_character(quantity_character{}, expr_type<Qs2>::character...);
   return detail::max(num, den);
 }
 
@@ -140,12 +140,17 @@ template<typename... Qs1, typename... Qs2>
  * Otherwise, an inherited/derived value provided through the function argument is returned.
  */
 template<auto... Args>
-[[nodiscard]] consteval quantity_character quantity_character_init(quantity_character ch)
+[[nodiscard]] consteval quantity_character quantity_character_init(quantity_character inherited)
 {
-  if constexpr (mp_units::contains<quantity_character, Args...>())
-    return mp_units::get<quantity_character, Args...>();
-  else
-    return ch;
+  quantity_character ch = inherited;
+  // public compatibility spelling: `quantity_character::vector` etc. set both axes at once
+  if constexpr (mp_units::contains<quantity_character_legacy, Args...>())
+    ch = mp_units::get<quantity_character_legacy, Args...>();
+  // two-axis spelling: each axis may be overridden independently, inheriting the other
+  if constexpr (mp_units::contains<quantity_tensor_order, Args...>())
+    ch.order = mp_units::get<quantity_tensor_order, Args...>();
+  if constexpr (mp_units::contains<quantity_field, Args...>()) ch.field = mp_units::get<quantity_field, Args...>();
+  return ch;
 }
 
 template<QuantitySpec auto... From, QuantitySpec Q>

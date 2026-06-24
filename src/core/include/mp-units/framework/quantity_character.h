@@ -35,25 +35,75 @@ import std;
 
 namespace mp_units {
 
+// A quantity's character splits into two orthogonal axes: its *tensor order* (scalar, vector,
+// tensor) and its *numeric field* (real, complex). The enumerators are declared in increasing
+// rank so that the underlying comparison orders them (scalar < vector < tensor, real < complex).
+MP_UNITS_EXPORT enum class quantity_tensor_order : std::int8_t { scalar, vector, tensor };
+MP_UNITS_EXPORT enum class quantity_field : std::int8_t { real, complex };
+
+// The pre-2.6.0 flat character enumeration, kept as a user-facing compatibility spelling
+// (`quantity_character::real_scalar`, `::vector`, ...). The library itself uses the two-axis
+// form; this enum is provided only so existing user code keeps compiling.
+MP_UNITS_EXPORT enum class quantity_character_legacy : std::int8_t { real_scalar, complex_scalar, vector, tensor };
+
 /**
  * @brief Quantity character
  *
- * Scalars, vectors and tensors are mathematical objects that can be used to
- * denote certain physical quantities and their values. They are as such
- * independent of the particular choice of a coordinate system, whereas
- * each scalar component of a vector or a tensor and each component vector and
- * component tensor depend on that choice.
+ * A quantity character classifies a quantity along two orthogonal axes:
  *
- * A scalar is a physical quantity that has magnitude but no direction. It might
- * be a real or complex number which affects which operations are allowed on a quantity.
+ * - its *tensor order* (`quantity_tensor_order`): scalar (order 0), vector (order 1), or
+ *   tensor (order 2), and
+ * - its *numeric field* (`quantity_field`): real or complex.
  *
- * Vectors are physical quantities that possess both magnitude and direction
- * and whose operations obey the axioms of a vector space.
+ * Scalars, vectors, and tensors are mathematical objects independent of the choice of a
+ * coordinate system, whereas their components depend on it. A scalar has magnitude but no
+ * direction; a vector possesses both magnitude and direction; a tensor (for example the Cauchy
+ * stress tensor) additionally carries orientation. The numeric field separately distinguishes real
+ * quantities from complex ones (such as a voltage phasor or a complex permittivity), which affects
+ * the operations a quantity admits.
  *
- * Tensors can be used to describe more general physical quantities.
- * For example, the Cauchy stress tensor possess magnitude, direction,
- * and orientation qualities.
+ * The pre-2.6.0 flat spelling (`quantity_character::real_scalar`, `::complex_scalar`, `::vector`,
+ * `::tensor`) remains available for backward compatibility and maps onto the two axes.
  */
-MP_UNITS_EXPORT enum class quantity_character : std::int8_t { real_scalar, complex_scalar, vector, tensor };
+MP_UNITS_EXPORT struct quantity_character {
+  using enum quantity_character_legacy;
+
+  quantity_tensor_order order = quantity_tensor_order::scalar;
+  quantity_field field = quantity_field::real;
+
+  consteval quantity_character() = default;
+  consteval quantity_character(quantity_tensor_order tensor_order, quantity_field numeric_field) :
+      order(tensor_order), field(numeric_field)
+  {
+  }
+  consteval quantity_character(quantity_tensor_order tensor_order) : order(tensor_order) {}
+  consteval quantity_character(quantity_field numeric_field) : field(numeric_field) {}
+  consteval quantity_character(quantity_character_legacy legacy)
+  {
+    switch (legacy) {
+      case real_scalar:
+        order = quantity_tensor_order::scalar;
+        field = quantity_field::real;
+        break;
+      case complex_scalar:
+        order = quantity_tensor_order::scalar;
+        field = quantity_field::complex;
+        break;
+      case vector:
+        order = quantity_tensor_order::vector;
+        field = quantity_field::real;
+        break;
+      case tensor:
+        order = quantity_tensor_order::tensor;
+        field = quantity_field::real;
+        break;
+    }
+  }
+
+  // Lexicographic on (order, field). Matches the pre-2.6.0 enum ordering
+  // (real_scalar < complex_scalar < vector < tensor), so `max`-based character combination is
+  // unchanged. `operator==` also enables use as a non-type template argument.
+  [[nodiscard]] friend constexpr auto operator<=>(quantity_character, quantity_character) = default;
+};
 
 }  // namespace mp_units

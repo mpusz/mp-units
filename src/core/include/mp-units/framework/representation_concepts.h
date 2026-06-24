@@ -441,6 +441,12 @@ concept IsOfCharacter = (Ch == quantity_character::real_scalar && RealScalarRepr
                         (Ch == quantity_character::vector && VectorRepresentation<T>) ||
                         (Ch == quantity_character::tensor && TensorRepresentation<T>);
 
+// Types usable as a character value in `RepresentationOf`: the two-axis `quantity_character`, the
+// legacy flat spelling, and either single axis on its own (each implicitly forms a character).
+template<typename V>
+concept QuantityCharacter = std::same_as<V, quantity_character> || std::same_as<V, quantity_character_legacy> ||
+                            std::same_as<V, quantity_tensor_order> || std::same_as<V, quantity_field>;
+
 template<typename T>
 concept SomeRepresentation =
   detail::ScalarRepresentation<T> || detail::VectorRepresentation<T> || detail::TensorRepresentation<T>;
@@ -453,7 +459,7 @@ concept RepresentationOf =
   detail::SomeRepresentation<T> &&
   ((QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(V))> &&
     (detail::QuantityKindSpec<MP_UNITS_REMOVE_CONST(decltype(V))> || detail::IsOfCharacter<T, V.character>)) ||
-   (std::same_as<quantity_character, decltype(V)> && detail::IsOfCharacter<T, V>));
+   (detail::QuantityCharacter<MP_UNITS_REMOVE_CONST(decltype(V))> && detail::IsOfCharacter<T, V>));
 
 #else
 
@@ -462,7 +468,7 @@ concept RepresentationOf =
   (QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(V))> &&
    ((detail::QuantityKindSpec<MP_UNITS_REMOVE_CONST(decltype(V))> && detail::SomeRepresentation<T>) ||
     detail::IsOfCharacter<T, V.character>)) ||
-  (std::same_as<quantity_character, MP_UNITS_REMOVE_CONST(decltype(V))> && detail::IsOfCharacter<T, V>);
+  (detail::QuantityCharacter<MP_UNITS_REMOVE_CONST(decltype(V))> && detail::IsOfCharacter<T, V>);
 #endif
 
 }  // namespace mp_units

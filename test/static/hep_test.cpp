@@ -27,7 +27,7 @@ namespace {
 
 using namespace mp_units;
 using namespace mp_units::hep::unit_symbols;
-using enum mp_units::quantity_character;
+using enum mp_units::quantity_character_legacy;
 
 [[nodiscard]] consteval bool verify(QuantitySpec auto q, quantity_character ch, Unit auto... units)
 {
