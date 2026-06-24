@@ -43,8 +43,8 @@ The following table summarizes the requirements for different representation cha
 | Not a quantity type itself                                  |               ✅                |                               ✅                               |                               ✅                                |                            ✅                             |
 | **Construction**                                            |               -                |                        `T{real, imag}`                        |                               -                                |                            -                             |
 | **Required CPOs**                                           |               -                | `mp_units::real()`, `mp_units::imag()`, `mp_units::modulus()` |                    `mp_units::magnitude()`                     |                 `mp_units::magnitude()`                  |
-| **Opt-out mechanism**                                       |       `disable_real<T>`        |                               -                               |                      `disable_vector<T>`                       |                            -                             |
-| **Examples**                                                | `int`, `double`, `long double` |                    `std::complex<double>`                     | `Eigen::Vector3d`, `cartesian_vector<double>`, `int`, `double` | `Eigen::Matrix3d`, `int`, `double` (for scalar measures) |
+| **Opt-out mechanism**                                       |       `disable_real<T>`        |                               -                               |                      `disable_vector<T>`                       |                   `disable_tensor<T>`                    |
+| **Examples**                                                | `int`, `double`, `long double` |                    `std::complex<double>`                     | `Eigen::Vector3d`, `cartesian_vector<double>`, `int`, `double` | `cartesian_tensor<double>`, `Eigen::Matrix3d`, `int`, `double` (degenerate) |
 
 ??? note "Weakly Regular Types"
 
@@ -130,16 +130,19 @@ The following table summarizes the requirements for different representation cha
 
     **Engineering practice with tensors:**
 
-    Most engineering doesn't work with full tensor representations (like 3×3 matrices). Instead,
-    scalar measures are extracted and used for analysis:
+    For the full second-order tensor, the library provides the built-in `cartesian_tensor` (a fixed
+    3×3 representation). Most engineering, however, does not work with full 3×3 matrices. Instead,
+    scalar measures are extracted from the tensor field and used for analysis:
 
     - **_Von Mises stress_**: Single scalar derived from _stress tensor_ (used for failure prediction)
     - **_Principal stresses_**: Three eigenvalues from _stress tensor_
     - **_Shear stress_ components**: Individual tensor elements
     - **_Hydrostatic stress_**: Average of diagonal elements
 
-    This is why arithmetic types work for tensor quantities—they represent these scalar measures
-    commonly used in finite element analysis, structural engineering, and materials science.
+    This is why arithmetic types remain useful for tensor quantities. They represent these scalar
+    measures commonly used in finite element analysis, structural engineering, and materials science,
+    without paying for a full matrix. The rank-ordering also lets a `cartesian_vector` stand in for a
+    tensor quantity, since a vector is a tensor of the first order.
 
 
 ## Customization Points
@@ -264,21 +267,47 @@ constexpr bool mp_units::disable_vector = false;
 ```
 
 **Purpose:** Controls the **character** of your representation type by preventing it from
-being classified as a vector, even if it satisfies the vector requirements (provides
-`mp_units::magnitude()` or a recognized fallback like `norm()`).
+being classified as a vector. Because `Vector` refines `Tensor` (a vector is a tensor of order
+one), this opts the type out of the **vector** character only. The type remains a valid
+**tensor** representation.
 
-**When to specialize:** If your type accidentally satisfies the vector requirements but
-shouldn't be used as one:
+**When to specialize:** When a type genuinely **is** a tensor but must never serve as a
+lower-rank vector. The library uses it for exactly this, on the built-in `cartesian_tensor`:
 
 ```cpp
-template<>
-constexpr bool mp_units::disable_vector<my_type> = true;
+template<typename T>
+constexpr bool mp_units::disable_vector<cartesian_tensor<T>> = true;
 ```
 
-**Example use case:** The library uses this internally to prevent `std::complex<T>` from
-being treated as a vector. `std::complex<T>` satisfies the `ComplexScalar` concept, and
-`std::norm(z)` exists but returns `|z|²` rather than `|z|`, which would give wrong results
-if `std::complex<T>` were admitted as a vector.
+A scalar-like type that *accidentally* satisfies the vector requirements (for example via a
+`norm()` with the wrong semantics, as `std::complex` does, where `std::norm(z)` returns `|z|²`
+and not `|z|`) should instead opt out of `Tensor` with [`disable_tensor`](#disable_tensor),
+which removes it from `Vector` as well by subsumption.
+
+---
+
+#### `disable_tensor<T>`
+
+The tensor counterpart of `disable_vector<T>`, opting a type out of the tensor character:
+
+```cpp
+template<typename T>
+constexpr bool mp_units::disable_tensor = false;
+```
+
+**Purpose:** Like `disable_vector`, it guards against accidental satisfaction of the tensor
+requirements. The library opts out `std::complex<T>` for the same reason it does for the vector
+character (`std::norm` returns the squared modulus).
+
+```cpp
+template<typename T>
+constexpr bool mp_units::disable_tensor<std::complex<T>> = true;
+```
+
+**Note the asymmetry with the built-in `cartesian_tensor`.** A second-order tensor
+specializes `disable_vector` (not `disable_tensor`): it is a tensor representation, but must
+never be usable as a lower-rank vector. The rank-ordering only ever lets a lower grade serve
+a higher one, never the reverse.
 
 ---
 
@@ -918,6 +947,17 @@ The library also supports `std::complex` for complex-valued quantities:
 
 std::complex<double> impedance{50.0, 30.0};
 quantity z = impedance * si::ohm;  // Complex impedance
+```
+
+For vector and tensor quantities, the library ships two built-in representation types:
+`cartesian_vector<T>` (a 3-D Cartesian vector) and `cartesian_tensor<T>` (a fixed 3×3 second-order
+Cartesian tensor). Each provides the ISO 80000-2 operations for its character:
+
+```cpp
+#include <mp-units/cartesian_tensor.h>  // also pulls in cartesian_vector.h
+
+quantity v = cartesian_vector{1., 2., 3.} * isq::velocity[m / s];
+quantity sigma = cartesian_tensor{1., 0., 0., 0., 1., 0., 0., 0., 1.} * isq::stress[Pa];
 ```
 
 Beyond these built-in types, **any custom type** works as a representation as long as it

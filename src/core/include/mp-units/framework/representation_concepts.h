@@ -245,14 +245,21 @@ concept Scalar = RealScalar<T> || ComplexScalar<T>;
 }  // namespace detail
 
 
-/////////////// VECTOR ///////////////
+/////////////// VECTOR AND TENSOR ///////////////
 
 MP_UNITS_EXPORT template<typename T>
 constexpr bool disable_vector = false;
 
+MP_UNITS_EXPORT template<typename T>
+constexpr bool disable_tensor = false;
+
 #if MP_UNITS_HOSTED
+// `std::complex` is a scalar, not a linear-algebra quantity: `std::norm(z)` returns |z|² rather
+// than |z|, so admitting it as a vector or tensor would produce wrong magnitudes. Opting it out of
+// `Tensor` (the base concept) also removes it from `Vector` by subsumption, so a single opt-out
+// suffices.
 template<typename T>
-MP_UNITS_INLINE constexpr bool disable_vector<std::complex<T>> = true;
+MP_UNITS_INLINE constexpr bool disable_tensor<std::complex<T>> = true;
 #endif
 
 namespace detail::magnitude_impl {
@@ -302,43 +309,27 @@ MP_UNITS_EXPORT inline constexpr ::mp_units::detail::magnitude_impl::magnitude_t
 
 namespace detail {
 
-template<typename T>
-concept Vector = !disable_vector<T> && requires(const T v) {
-  ::mp_units::magnitude(v);
-  requires ScalableWith<T, decltype(::mp_units::magnitude(v))>;
-  // TODO should we also check for the below (e.g., when `size() > 1` or `2`)
-  // ::mp_units::zero_vector<T>();
-  // ::mp_units::scalar_product(a, b);
-  // ::mp_units::vector_product(a, b);
-  // ::mp_units::tensor_product(a, b);
-} && RegularAddable<T>;
-
-}  // namespace detail
-
-/////////////// TENSOR ///////////////
-
-MP_UNITS_EXPORT template<typename T>
-constexpr bool disable_tensor = false;
-
-#if MP_UNITS_HOSTED
-template<typename T>
-MP_UNITS_INLINE constexpr bool disable_tensor<std::complex<T>> = true;
-#endif
-
-namespace detail {
-
-// A tensor representation is a permissive superset of a vector one: any object that has a
-// magnitude, scales by it, and is regularly addable can represent a tensor-character quantity.
-// This intentionally mirrors `Vector` so that lower-rank representations (real scalars,
-// `cartesian_vector`) also qualify as degenerate tensor representations - a tensor of order
-// zero is a scalar and a tensor of order one is a vector (ISO 80000-2:2019, 18). Genuine
-// higher-rank types (e.g. `cartesian_tensor`) opt out of the lower-rank `Vector` concept via
-// `disable_vector` so that the reverse never holds.
+// `Tensor` is the base linear-algebra character: any object that has a magnitude, scales by it,
+// and is regularly addable can represent a tensor-character quantity. It is intentionally the most
+// permissive of the linear-algebra concepts, so that lower-rank representations also qualify as
+// degenerate tensor representations: a tensor of order zero is a scalar and a tensor of order one
+// is a vector (ISO 80000-2:2019, 18).
 template<typename T>
 concept Tensor = !disable_tensor<T> && requires(const T v) {
   ::mp_units::magnitude(v);
   requires ScalableWith<T, decltype(::mp_units::magnitude(v))>;
 } && RegularAddable<T>;
+
+// A `Vector` is a `Tensor` of order one. It subsumes `Tensor` and adds the `disable_vector`
+// opt-out. Defining it this way makes the rank-ordering structural (`Vector<T>` implies `Tensor<T>`,
+// so a "vector that is not a tensor" cannot exist) and establishes a subsumption ordering that can
+// rank overloads. A genuine higher-rank representation (e.g. `cartesian_tensor`) stays out of
+// `Vector` by specializing `disable_vector`, never the reverse.
+//
+// TODO should we also check for vector-specific operations (e.g. `scalar_product`,
+// `vector_product`, `tensor_product`) when `size() > 1`?
+template<typename T>
+concept Vector = Tensor<T> && !disable_vector<T>;
 
 }  // namespace detail
 

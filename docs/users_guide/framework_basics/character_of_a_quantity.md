@@ -155,10 +155,10 @@ how to use custom types.
 !!! note
 
     The current version of the C++ Standard Library does not provide any types that could be used as
-    a representation type for vector and tensor quantities. **mp-units** ships a built-in
-    `cartesian_vector<T>` type for 3-D Cartesian vectors. Any third-party linear algebra library
-    types can also be used via the customization points described in
-    [Representation Types](representation_types.md).
+    a representation type for vector and tensor quantities. **mp-units** ships two built-in types:
+    `cartesian_vector<T>` for 3-D Cartesian vectors and `cartesian_tensor<T>` for second-order
+    3×3 Cartesian tensors. Any third-party linear algebra library types can also be used via the
+    customization points described in [Representation Types](representation_types.md).
 
 For example, using the built-in `cartesian_vector`:
 
@@ -180,3 +180,21 @@ Quantity auto q = cartesian_vector{1., 2., 3.} * isq::velocity[m / s];
 
     In all the cases above, the SI unit `m / s` has an associated scalar quantity of `isq::length / isq::duration`.
     `cartesian_vector` is not a correct representation type for a scalar quantity so the construction fails.
+
+A _tensor quantity_ works the same way through the built-in `cartesian_tensor`, a fixed 3×3
+second-order Cartesian tensor:
+
+```cpp
+#include <mp-units/cartesian_tensor.h>
+
+Quantity auto stress = cartesian_tensor{1., 0., 0., 0., 1., 0., 0., 0., 1.} * isq::stress[Pa];
+```
+
+`cartesian_tensor` satisfies the tensor character and provides the ISO 80000-2 second-order
+operations (`tensor_product`, `inner_product`, `scalar_product`). It is kept out of the vector
+character on purpose, so it cannot be used where a vector representation is expected. Conversely,
+because a tensor of order zero is a scalar and of order one is a vector, the simpler
+representation types are still accepted for tensor quantities: a fundamental type models a
+scalar tensor measure (for example a _von Mises stress_), and a `cartesian_vector` is also
+a valid tensor representation. See [Representation Types](representation_types.md) for the
+full rules.

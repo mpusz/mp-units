@@ -500,6 +500,49 @@ type with:
 [`cartesian_vector.h`](https://github.com/mpusz/mp-units/blob/1511c73d362649cca90191cdcfd3b369058c1dc1/src/core/include/mp-units/cartesian_vector.h)
 
 
+### Tensor Representation
+
+The library also provides
+[`cartesian_tensor`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/cartesian_tensor.h),
+a fixed 3×3 second-order Cartesian tensor with the ISO 80000-2 second-order operations. The
+operations are shown here on the representation type directly, which is where the vector and
+tensor products live in the current release:
+
+```cpp
+#include <mp-units/cartesian_tensor.h>
+
+using namespace mp_units;
+
+void example()
+{
+  // a 3x3 second-order tensor, stored row-major
+  cartesian_tensor<double> t{1, 2, 3,
+                             4, 5, 6,
+                             7, 8, 9};
+
+  auto t12 = t(1, 2);       // element access by (row, column): 6
+
+  auto sum = t + t;         // elementwise addition
+  auto scaled = 2.0 * t;    // scalar multiplication
+
+  // dyadic (tensor) product of two vectors -> tensor (ISO 80000-2, 2-18.21)
+  auto outer = tensor_product(cartesian_vector{1., 2., 3.}, cartesian_vector{4., 5., 6.});
+
+  auto product = inner_product(t, t);                            // tensor ⋅ tensor -> tensor (2-18.23)
+  auto mapped = inner_product(t, cartesian_vector{1., 2., 3.});  // tensor ⋅ vector -> vector (2-18.24)
+  auto contraction = scalar_product(t, t);                       // double-dot t : t -> scalar (2-18.25)
+  auto frobenius = t.magnitude();                                // Frobenius norm -> scalar
+}
+```
+
+`cartesian_tensor` is kept out of the vector character (it specializes `disable_vector`),
+so it can never be used where a vector representation is expected. The fourth-order tensor
+product `T ⊗ S` (ISO 80000-2, 2-18.22) and `transpose`/`trace` are not part of this release.
+
+**Implementation reference:**
+[`cartesian_tensor.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/cartesian_tensor.h)
+
+
 ## Common Pitfalls
 
 ### Provide `value_type` for Wrapper Types
@@ -608,10 +651,11 @@ custom types.
 
 **Implementation References:**
 
-- [`representation_concepts.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/representation_concepts.h) - Concept definitions and character-determination CPOs (`disable_real`, `disable_vector`, `real`, `imag`, `modulus`, `magnitude`)
+- [`representation_concepts.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/representation_concepts.h) - Concept definitions and character-determination CPOs (`disable_real`, `disable_vector`, `disable_tensor`, `real`, `imag`, `modulus`, `magnitude`)
 - [`customization_points.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/customization_points.h) - User-specializable customization points (`representation_underlying_type`, `treat_as_floating_point`, `representation_values`, `constraint_violation_handler`, `quantity_like_traits`, `quantity_point_like_traits`)
 - [`quantity_traits.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/quantity_traits.h) - Public helpers (`unit_for`, `reference_for`, `rep_for`)
 - [`scaling.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/scaling.h) - Built-in scaling implementation
 - [`value_cast.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/value_cast.h) - `value_cast`, `force_in`, `is_integral_scaling`, and `implicitly_scalable`
 - [`cartesian_vector.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/cartesian_vector.h) - Vector implementation example
+- [`cartesian_tensor.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/cartesian_tensor.h) - Second-order tensor implementation example
 <!-- markdownlint-enable MD013 -->
