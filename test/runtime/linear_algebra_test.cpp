@@ -128,7 +128,7 @@ template<Quantity Q1, Quantity Q2>
 // --- compile-time guarantees -------------------------------------------------------------------
 
 // The library vector type is accepted as a vector representation.
-static_assert(RepresentationOf<vec3, quantity_character::vector>);
+static_assert(RepresentationOf<vec3, quantity_tensor_order::vector>);
 
 // A library scalar multiplication may yield a lazy expression template; the representation
 // machinery must canonicalize it back to the concrete vector type rather than store the proxy
@@ -143,7 +143,7 @@ static_assert(detail::Vector<decltype(make_vec3(0, 0, 0) * isq::velocity[m / s])
 // ... but is NOT a representation type: a quantity can never be nested as another quantity's
 // representation (`value_type_t<quantity>` is the quantity itself, which `NotQuantity` rejects).
 static_assert(!detail::VectorRepresentation<decltype(make_vec3(0, 0, 0) * isq::velocity[m / s])>);
-static_assert(!RepresentationOf<decltype(make_vec3(0, 0, 0) * isq::velocity[m / s]), quantity_character::vector>);
+static_assert(!RepresentationOf<decltype(make_vec3(0, 0, 0) * isq::velocity[m / s]), quantity_tensor_order::vector>);
 // `magnitude()` of a vector quantity is a scalar quantity in the same unit.
 static_assert(QuantityOf<decltype(magnitude(make_vec3(3, 4, 0) * isq::velocity[m / s])), isq::speed>);
 

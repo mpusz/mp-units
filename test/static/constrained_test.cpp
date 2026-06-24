@@ -71,7 +71,7 @@ static_assert(std::is_convertible_v<int, constrained<int, test_policy>>);
 static_assert(std::copyable<constrained<int, test_policy>>);
 static_assert(std::equality_comparable<constrained<int, test_policy>>);
 static_assert(std::totally_ordered<constrained<int, test_policy>>);
-static_assert(RepresentationOf<constrained<int, test_policy>, quantity_character::real_scalar>);
+static_assert(RepresentationOf<constrained<int, test_policy>, quantity_tensor_order::scalar>);
 
 // ============================================================================
 // Representation concepts (double)
@@ -82,7 +82,7 @@ static_assert(std::is_convertible_v<double, constrained<double, test_policy>>);
 static_assert(std::copyable<constrained<double, test_policy>>);
 static_assert(std::equality_comparable<constrained<double, test_policy>>);
 static_assert(std::totally_ordered<constrained<double, test_policy>>);
-static_assert(RepresentationOf<constrained<double, test_policy>, quantity_character::real_scalar>);
+static_assert(RepresentationOf<constrained<double, test_policy>, quantity_tensor_order::scalar>);
 
 // ============================================================================
 // std::numeric_limits

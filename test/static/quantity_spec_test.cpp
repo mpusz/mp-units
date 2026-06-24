@@ -65,8 +65,8 @@ QUANTITY_SPEC_(path_length, length);
 inline constexpr auto arc_length = path_length;
 QUANTITY_SPEC_(distance, path_length);
 QUANTITY_SPEC_(wavelength, length);
-QUANTITY_SPEC_(position_vector, length, quantity_character::vector);
-QUANTITY_SPEC_(displacement, length, quantity_character::vector);
+QUANTITY_SPEC_(position_vector, length, quantity_tensor_order::vector);
+QUANTITY_SPEC_(displacement, length, quantity_tensor_order::vector);
 QUANTITY_SPEC_(period_duration, time);
 QUANTITY_SPEC_(rotation, dimensionless);
 QUANTITY_SPEC_(repetency, inverse(wavelength), non_negative);
@@ -96,35 +96,35 @@ QUANTITY_SPEC_(mass_density, mass / volume, non_negative);
 QUANTITY_SPEC_(force, mass * acceleration);
 QUANTITY_SPEC_(weight, force, mass * acceleration_of_free_fall);
 QUANTITY_SPEC_(moment_of_force, position_vector* force);
-QUANTITY_SPEC_(torque, moment_of_force, quantity_character::real_scalar);
-QUANTITY_SPEC_(pressure, force / area, quantity_character::real_scalar);
-QUANTITY_SPEC_(stress, pressure, quantity_character::tensor);
-QUANTITY_SPEC_(normal_stress, stress, quantity_character::real_scalar);
-QUANTITY_SPEC_(strain, dimensionless, quantity_character::tensor);
+QUANTITY_SPEC_(torque, moment_of_force, quantity_tensor_order::scalar);
+QUANTITY_SPEC_(pressure, force / area, quantity_tensor_order::scalar);
+QUANTITY_SPEC_(stress, pressure, quantity_tensor_order::tensor);
+QUANTITY_SPEC_(normal_stress, stress, quantity_tensor_order::scalar);
+QUANTITY_SPEC_(strain, dimensionless, quantity_tensor_order::tensor);
 QUANTITY_SPEC_(relative_linear_strain, length / length);
 QUANTITY_SPEC_(modulus_of_elasticity, normal_stress / relative_linear_strain);
-QUANTITY_SPEC_(power, force* velocity, quantity_character::real_scalar);
+QUANTITY_SPEC_(power, force* velocity, quantity_tensor_order::scalar);
 QUANTITY_SPEC_(efficiency, power / power);
 QUANTITY_SPEC_(energy, mass * pow<2>(length) / pow<2>(time), non_negative);
-QUANTITY_SPEC_(mechanical_work, energy, force* displacement, quantity_character::real_scalar);
+QUANTITY_SPEC_(mechanical_work, energy, force* displacement, quantity_tensor_order::scalar);
 QUANTITY_SPEC_(mechanical_energy, mechanical_work, mass* pow<2>(length) / pow<2>(time));
 QUANTITY_SPEC_(potential_energy, mechanical_energy);
 QUANTITY_SPEC_(gravitational_potential_energy, potential_energy, mass * acceleration_of_free_fall * height,
-               quantity_character::real_scalar);
+               quantity_tensor_order::scalar);
 QUANTITY_SPEC_(gravitational_constant, force * pow<2>(length) / pow<2>(mass));
 QUANTITY_SPEC_(newtonian_gravitational_potential_energy, potential_energy, gravitational_constant * pow<2>(mass) / length,
-               quantity_character::real_scalar);
+               quantity_tensor_order::scalar);
 QUANTITY_SPEC_(kinetic_energy, mechanical_energy, mass* pow<2>(speed));
 QUANTITY_SPEC_(electric_charge, electric_current* time);
 QUANTITY_SPEC_(electric_field_strength, force / electric_charge);  // vector
-QUANTITY_SPEC_(electric_potential, electric_field_strength* length, quantity_character::real_scalar);
+QUANTITY_SPEC_(electric_potential, electric_field_strength* length, quantity_tensor_order::scalar);
 QUANTITY_SPEC_(voltage, electric_potential);
 QUANTITY_SPEC_(electromagnetism_power, power, voltage* electric_current);
-QUANTITY_SPEC_(electric_current_phasor, electric_current, quantity_character::complex_scalar);
-QUANTITY_SPEC_(voltage_phasor, voltage, quantity_character::complex_scalar);
+QUANTITY_SPEC_(electric_current_phasor, electric_current, quantity_field::complex);
+QUANTITY_SPEC_(voltage_phasor, voltage, quantity_field::complex);
 QUANTITY_SPEC_(active_power, power, inverse(period_duration) * (electromagnetism_power * time));
 QUANTITY_SPEC_(complex_power, voltage_phasor* electric_current_phasor);  // separate kind
-QUANTITY_SPEC_(apparent_power, complex_power, quantity_character::real_scalar);
+QUANTITY_SPEC_(apparent_power, complex_power, quantity_field::real);
 QUANTITY_SPEC_(capacitance, electric_charge / voltage);
 QUANTITY_SPEC_(impedance, voltage_phasor / electric_current_phasor);    // complex
 QUANTITY_SPEC_(resistance, impedance, voltage / electric_current);
@@ -1228,7 +1228,7 @@ QUANTITY_SPEC_(nn_child_no_tag, nn_length);
 QUANTITY_SPEC_(nn_child_tagged, nn_length, non_negative);
 
 // Vector child of nn_length: cannot be non_negative (direction-sensitive)
-QUANTITY_SPEC_(nn_displacement, nn_length, quantity_character::vector);
+QUANTITY_SPEC_(nn_displacement, nn_length, quantity_tensor_order::vector);
 
 // dimensionless is not non_negative (no explicit tag, empty equation)
 static_assert(!is_non_negative(dimensionless));

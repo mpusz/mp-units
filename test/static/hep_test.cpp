@@ -27,7 +27,8 @@ namespace {
 
 using namespace mp_units;
 using namespace mp_units::hep::unit_symbols;
-using enum mp_units::quantity_character_legacy;
+inline constexpr quantity_character scalar{quantity_tensor_order::scalar};
+inline constexpr quantity_character vector{quantity_tensor_order::vector};
 
 [[nodiscard]] consteval bool verify(QuantitySpec auto q, quantity_character ch, Unit auto... units)
 {
@@ -35,99 +36,99 @@ using enum mp_units::quantity_character_legacy;
 }
 
 // space and time
-static_assert(verify(hep::length, real_scalar, mm, cm));  // Gaudi: mm, ROOT: cm
-static_assert(verify(hep::area, real_scalar, mm2));
-static_assert(verify(hep::volume, real_scalar, mm3));
-static_assert(verify(hep::angle, real_scalar, hep::radian, hep::degree));  // Gaudi: radian, ROOT: degree
-static_assert(verify(hep::solid_angle, real_scalar, hep::steradian));
-static_assert(verify(hep::duration, real_scalar, ns, s));  // Gaudi: ns, ROOT: s
+static_assert(verify(hep::length, scalar, mm, cm));  // Gaudi: mm, ROOT: cm
+static_assert(verify(hep::area, scalar, mm2));
+static_assert(verify(hep::volume, scalar, mm3));
+static_assert(verify(hep::angle, scalar, hep::radian, hep::degree));  // Gaudi: radian, ROOT: degree
+static_assert(verify(hep::solid_angle, scalar, hep::steradian));
+static_assert(verify(hep::duration, scalar, ns, s));  // Gaudi: ns, ROOT: s
 
 // electric
-static_assert(verify(hep::electric_charge, real_scalar, hep::eplus));
-static_assert(verify(hep::electric_current, real_scalar, hep::ampere));
-static_assert(verify(hep::electric_potential, real_scalar, hep::volt));
-static_assert(verify(hep::electric_resistance, real_scalar, hep::ohm));
-static_assert(verify(hep::electric_capacitance, real_scalar, hep::farad));
+static_assert(verify(hep::electric_charge, scalar, hep::eplus));
+static_assert(verify(hep::electric_current, scalar, hep::ampere));
+static_assert(verify(hep::electric_potential, scalar, hep::volt));
+static_assert(verify(hep::electric_resistance, scalar, hep::ohm));
+static_assert(verify(hep::electric_capacitance, scalar, hep::farad));
 
 // magnetic
-static_assert(verify(hep::magnetic_flux, real_scalar, hep::weber));
-static_assert(verify(hep::magnetic_field, real_scalar, hep::tesla));
-static_assert(verify(hep::inductance, real_scalar, hep::henry));
+static_assert(verify(hep::magnetic_flux, scalar, hep::weber));
+static_assert(verify(hep::magnetic_field, scalar, hep::tesla));
+static_assert(verify(hep::inductance, scalar, hep::henry));
 
 // energy, power, force, pressure
-static_assert(verify(hep::energy, real_scalar, MeV, GeV));  // Gaudi: MeV, ROOT: GeV
-static_assert(verify(hep::power, real_scalar, hep::watt));
-static_assert(verify(hep::force, real_scalar, hep::newton));
-static_assert(verify(hep::pressure, real_scalar, hep::pascal));
+static_assert(verify(hep::energy, scalar, MeV, GeV));  // Gaudi: MeV, ROOT: GeV
+static_assert(verify(hep::power, scalar, hep::watt));
+static_assert(verify(hep::force, scalar, hep::newton));
+static_assert(verify(hep::pressure, scalar, hep::pascal));
 
 // mechanical
-static_assert(verify(hep::mass, real_scalar, hep::gram));
-static_assert(verify(hep::frequency, real_scalar, hep::hertz));
+static_assert(verify(hep::mass, scalar, hep::gram));
+static_assert(verify(hep::frequency, scalar, hep::hertz));
 
 // thermodynamic
-static_assert(verify(hep::temperature, real_scalar, hep::kelvin));
-static_assert(verify(hep::amount_of_substance, real_scalar, hep::mole));
+static_assert(verify(hep::temperature, scalar, hep::kelvin));
+static_assert(verify(hep::amount_of_substance, scalar, hep::mole));
 
 // radiometric
-static_assert(verify(hep::activity, real_scalar, hep::becquerel));
-static_assert(verify(hep::absorbed_dose, real_scalar, hep::gray));
+static_assert(verify(hep::activity, scalar, hep::becquerel));
+static_assert(verify(hep::absorbed_dose, scalar, hep::gray));
 
 // photometric
-static_assert(verify(hep::luminous_intensity, real_scalar, hep::candela));
-static_assert(verify(hep::luminous_flux, real_scalar, hep::lumen));
-static_assert(verify(hep::illuminance, real_scalar, hep::lux));
+static_assert(verify(hep::luminous_intensity, scalar, hep::candela));
+static_assert(verify(hep::luminous_flux, scalar, hep::lumen));
+static_assert(verify(hep::illuminance, scalar, hep::lux));
 
 // specialized length quantities
-static_assert(verify(hep::path_length, real_scalar, mm, cm));
+static_assert(verify(hep::path_length, scalar, mm, cm));
 static_assert(verify(hep::displacement, vector, mm, cm));
 static_assert(verify(hep::position_vector, vector, mm, cm));
-static_assert(verify(hep::interaction_length, real_scalar, cm, mm));
-static_assert(verify(hep::radiation_length, real_scalar, cm, mm));
-static_assert(verify(hep::nuclear_interaction_length, real_scalar, cm, mm));
-static_assert(verify(hep::mean_free_path, real_scalar, mm, cm));
-static_assert(verify(hep::impact_parameter, real_scalar, mm, cm));
-static_assert(verify(hep::decay_length, real_scalar, mm, cm));
-static_assert(verify(hep::vertex_position, real_scalar, mm, cm));
-static_assert(verify(hep::wavelength, real_scalar, mm, nm));
-static_assert(verify(hep::radius, real_scalar, mm, cm));
-static_assert(verify(hep::range, real_scalar, mm, cm));
+static_assert(verify(hep::interaction_length, scalar, cm, mm));
+static_assert(verify(hep::radiation_length, scalar, cm, mm));
+static_assert(verify(hep::nuclear_interaction_length, scalar, cm, mm));
+static_assert(verify(hep::mean_free_path, scalar, mm, cm));
+static_assert(verify(hep::impact_parameter, scalar, mm, cm));
+static_assert(verify(hep::decay_length, scalar, mm, cm));
+static_assert(verify(hep::vertex_position, scalar, mm, cm));
+static_assert(verify(hep::wavelength, scalar, mm, nm));
+static_assert(verify(hep::radius, scalar, mm, cm));
+static_assert(verify(hep::range, scalar, mm, cm));
 
 // specialized time quantities
-static_assert(verify(hep::proper_time, real_scalar, ns, s));
-static_assert(verify(hep::coordinate_time, real_scalar, ns, s));
-static_assert(verify(hep::lifetime, real_scalar, ns, s));
-static_assert(verify(hep::half_life, real_scalar, ns, s));
-static_assert(verify(hep::mean_lifetime, real_scalar, ns, s));
-static_assert(verify(hep::time_of_flight, real_scalar, ns, s));
+static_assert(verify(hep::proper_time, scalar, ns, s));
+static_assert(verify(hep::coordinate_time, scalar, ns, s));
+static_assert(verify(hep::lifetime, scalar, ns, s));
+static_assert(verify(hep::half_life, scalar, ns, s));
+static_assert(verify(hep::mean_lifetime, scalar, ns, s));
+static_assert(verify(hep::time_of_flight, scalar, ns, s));
 
 // specialized energy quantities
-static_assert(verify(hep::kinetic_energy, real_scalar, MeV, GeV));
-static_assert(verify(hep::rest_mass_energy, real_scalar, MeV, GeV));
-static_assert(verify(hep::total_energy, real_scalar, MeV, GeV));
-static_assert(verify(hep::center_of_mass_energy, real_scalar, MeV, GeV));
-static_assert(verify(hep::binding_energy, real_scalar, MeV, GeV));
-static_assert(verify(hep::separation_energy, real_scalar, MeV, GeV));
-static_assert(verify(hep::Q_value, real_scalar, MeV, GeV));
-static_assert(verify(hep::excitation_energy, real_scalar, MeV, GeV));
-static_assert(verify(hep::ionization_energy, real_scalar, MeV, eV));
-static_assert(verify(hep::threshold_energy, real_scalar, MeV, GeV));
-static_assert(verify(hep::missing_energy, real_scalar, MeV, GeV));
-static_assert(verify(hep::transverse_energy, real_scalar, MeV, GeV));
+static_assert(verify(hep::kinetic_energy, scalar, MeV, GeV));
+static_assert(verify(hep::rest_mass_energy, scalar, MeV, GeV));
+static_assert(verify(hep::total_energy, scalar, MeV, GeV));
+static_assert(verify(hep::center_of_mass_energy, scalar, MeV, GeV));
+static_assert(verify(hep::binding_energy, scalar, MeV, GeV));
+static_assert(verify(hep::separation_energy, scalar, MeV, GeV));
+static_assert(verify(hep::Q_value, scalar, MeV, GeV));
+static_assert(verify(hep::excitation_energy, scalar, MeV, GeV));
+static_assert(verify(hep::ionization_energy, scalar, MeV, eV));
+static_assert(verify(hep::threshold_energy, scalar, MeV, GeV));
+static_assert(verify(hep::missing_energy, scalar, MeV, GeV));
+static_assert(verify(hep::transverse_energy, scalar, MeV, GeV));
 
 // specialized mass and momentum quantities
-static_assert(verify(hep::rest_mass, real_scalar, hep::gram, si::kilo<hep::gram>));
-static_assert(verify(hep::invariant_mass, real_scalar, hep::gram, si::kilo<hep::gram>));
-static_assert(verify(hep::effective_mass, real_scalar, hep::gram, si::kilo<hep::gram>));
-static_assert(verify(hep::reduced_mass, real_scalar, hep::gram, si::kilo<hep::gram>));
-static_assert(verify(hep::momentum, real_scalar, GeV / c));
-static_assert(verify(hep::transverse_momentum, real_scalar, GeV / c));
+static_assert(verify(hep::rest_mass, scalar, hep::gram, si::kilo<hep::gram>));
+static_assert(verify(hep::invariant_mass, scalar, hep::gram, si::kilo<hep::gram>));
+static_assert(verify(hep::effective_mass, scalar, hep::gram, si::kilo<hep::gram>));
+static_assert(verify(hep::reduced_mass, scalar, hep::gram, si::kilo<hep::gram>));
+static_assert(verify(hep::momentum, scalar, GeV / c));
+static_assert(verify(hep::transverse_momentum, scalar, GeV / c));
 
 // specialized angular quantities
-static_assert(verify(hep::scattering_angle, real_scalar, hep::radian, hep::degree));
-static_assert(verify(hep::opening_angle, real_scalar, hep::radian, hep::degree));
-static_assert(verify(hep::azimuthal_angle, real_scalar, hep::radian, hep::degree));
-static_assert(verify(hep::polar_angle, real_scalar, hep::radian, hep::degree));
-static_assert(verify(hep::phase, real_scalar, one));  // phase is dimensionless (cyclic, not an angle)
+static_assert(verify(hep::scattering_angle, scalar, hep::radian, hep::degree));
+static_assert(verify(hep::opening_angle, scalar, hep::radian, hep::degree));
+static_assert(verify(hep::azimuthal_angle, scalar, hep::radian, hep::degree));
+static_assert(verify(hep::polar_angle, scalar, hep::radian, hep::degree));
+static_assert(verify(hep::phase, scalar, one));  // phase is dimensionless (cyclic, not an angle)
 
 // Test quantity hierarchy conversions
 // All specialized lengths can be implicitly converted up the hierarchy to generic length
@@ -202,18 +203,18 @@ static_assert(!implicitly_convertible(hep::kinetic_energy, hep::rest_mass_energy
 static_assert(!implicitly_convertible(hep::proper_time, hep::coordinate_time));
 
 // Derived quantities using specialized quantities
-static_assert(verify(hep::speed, real_scalar, m / s, cm / ns));
+static_assert(verify(hep::speed, scalar, m / s, cm / ns));
 static_assert(verify(hep::velocity, vector, m / s, cm / ns));
-static_assert(verify(hep::decay_constant, real_scalar, hep::hertz));
+static_assert(verify(hep::decay_constant, scalar, hep::hertz));
 static_assert(verify(hep::proper_velocity, vector, m / s));
 
 // Specialized dimensionless derived quantities with physical meaning
-static_assert(verify(hep::lorentz_factor, real_scalar, one));     // γ = E/E₀
-static_assert(verify(hep::relativistic_beta, real_scalar, one));  // β = v/c
+static_assert(verify(hep::lorentz_factor, scalar, one));     // γ = E/E₀
+static_assert(verify(hep::relativistic_beta, scalar, one));  // β = v/c
 
 // Interaction and scattering quantities
-static_assert(verify(hep::cross_section, real_scalar, hep::barn, mb, pb));
-static_assert(verify(hep::number_density, real_scalar, inverse(cm3)));
+static_assert(verify(hep::cross_section, scalar, hep::barn, mb, pb));
+static_assert(verify(hep::number_density, scalar, inverse(cm3)));
 
 // Test that derived quantity expressions using specialized quantities implicitly convert properly
 // speed is defined as path_length / duration
