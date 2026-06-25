@@ -30,6 +30,7 @@
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
+#include <compare>
 #include <cstdint>
 #endif  // MP_UNITS_IMPORT_STD
 #endif  // MP_UNITS_IN_MODULE_INTERFACE
