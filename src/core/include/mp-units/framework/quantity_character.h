@@ -23,6 +23,7 @@
 #pragma once
 
 // IWYU pragma: private, include <mp-units/framework.h>
+#include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
@@ -43,8 +44,17 @@ MP_UNITS_EXPORT enum class quantity_field : std::int8_t { real, complex };
 
 // The pre-2.6.0 flat character enumeration, kept as a user-facing compatibility spelling
 // (`quantity_character::real_scalar`, `::vector`, ...). The library itself uses the two-axis
-// form; this enum is provided only so existing user code keeps compiling.
-MP_UNITS_EXPORT enum class quantity_character_legacy : std::int8_t { real_scalar, complex_scalar, vector, tensor };
+// form; this enum is provided only so existing user code keeps compiling. It is deprecated to
+// steer new code toward the `quantity_tensor_order` and `quantity_field` axes.
+#define MP_UNITS_QCL_DEPRECATED \
+  [[deprecated("2.6.0: use the 'quantity_tensor_order' and 'quantity_field' axes instead")]]
+MP_UNITS_EXPORT enum class MP_UNITS_QCL_DEPRECATED quantity_character_legacy : std::int8_t {
+  real_scalar MP_UNITS_QCL_DEPRECATED,
+  complex_scalar MP_UNITS_QCL_DEPRECATED,
+  vector MP_UNITS_QCL_DEPRECATED,
+  tensor MP_UNITS_QCL_DEPRECATED
+};
+#undef MP_UNITS_QCL_DEPRECATED
 
 /**
  * @brief Quantity character
@@ -66,7 +76,10 @@ MP_UNITS_EXPORT enum class quantity_character_legacy : std::int8_t { real_scalar
  * `::tensor`) remains available for backward compatibility and maps onto the two axes.
  */
 MP_UNITS_EXPORT struct quantity_character {
+  MP_UNITS_DIAGNOSTIC_PUSH
+  MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
   using enum quantity_character_legacy;
+  MP_UNITS_DIAGNOSTIC_POP
 
   quantity_tensor_order order = quantity_tensor_order::scalar;
   quantity_field field = quantity_field::real;
@@ -78,6 +91,8 @@ MP_UNITS_EXPORT struct quantity_character {
   }
   consteval quantity_character(quantity_tensor_order tensor_order) : order(tensor_order) {}
   consteval quantity_character(quantity_field numeric_field) : field(numeric_field) {}
+  MP_UNITS_DIAGNOSTIC_PUSH
+  MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
   consteval quantity_character(quantity_character_legacy legacy)
   {
     switch (legacy) {
@@ -99,6 +114,7 @@ MP_UNITS_EXPORT struct quantity_character {
         break;
     }
   }
+  MP_UNITS_DIAGNOSTIC_POP
 
   // Lexicographic on (order, field). Matches the pre-2.6.0 enum ordering
   // (real_scalar < complex_scalar < vector < tensor), so `max`-based character combination is

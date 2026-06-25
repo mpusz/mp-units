@@ -443,9 +443,12 @@ concept IsOfCharacter = (Ch == quantity_character{} && RealScalarRepresentation<
 
 // Types usable as a character value in `RepresentationOf`: the two-axis `quantity_character`, the
 // legacy flat spelling, and either single axis on its own (each implicitly forms a character).
+MP_UNITS_DIAGNOSTIC_PUSH
+MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
 template<typename V>
 concept QuantityCharacter = std::same_as<V, quantity_character> || std::same_as<V, quantity_character_legacy> ||
                             std::same_as<V, quantity_tensor_order> || std::same_as<V, quantity_field>;
+MP_UNITS_DIAGNOSTIC_POP
 
 template<typename T>
 concept SomeRepresentation =

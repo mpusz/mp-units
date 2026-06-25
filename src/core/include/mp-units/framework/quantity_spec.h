@@ -144,8 +144,11 @@ template<auto... Args>
 {
   quantity_character ch = inherited;
   // public compatibility spelling: `quantity_character::vector` etc. set both axes at once
+  MP_UNITS_DIAGNOSTIC_PUSH
+  MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
   if constexpr (mp_units::contains<quantity_character_legacy, Args...>())
     ch = mp_units::get<quantity_character_legacy, Args...>();
+  MP_UNITS_DIAGNOSTIC_POP
   // two-axis spelling: each axis may be overridden independently, inheriting the other
   if constexpr (mp_units::contains<quantity_tensor_order, Args...>())
     ch.order = mp_units::get<quantity_tensor_order, Args...>();
