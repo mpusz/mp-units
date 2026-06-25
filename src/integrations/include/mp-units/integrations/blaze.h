@@ -91,6 +91,13 @@ struct representation_canonical_type<T> {
   using type = std::remove_cvref_t<typename T::ResultType>;
 };
 
+// Blaze provides free `real()`/`imag()` for its vectors and matrices even when the element type is
+// real, so the API-based default would misread a real Blaze tensor as complex. Declare the field
+// from Blaze's `ElementType` instead - mirroring the Eigen adapter.
+template<typename T>
+  requires detail::blaze_tensor<T> && requires { typename T::ElementType; }
+constexpr quantity_field numeric_field<T> = numeric_field<typename T::ElementType>;
+
 }  // namespace mp_units
 
 namespace blaze {

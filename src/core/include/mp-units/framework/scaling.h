@@ -142,7 +142,7 @@ template<auto M, typename T>
  * library's built-in scaling logic instead of duplicating it.
  */
 MP_UNITS_EXPORT template<typename To, UnitMagnitude M, typename From>
-  requires detail::MagnitudeScalable<From>
+  requires detail::UnitMagnitudeScalable<From>
 [[nodiscard]] constexpr auto scale(M m, const From& value)
 {
   if constexpr (requires { value * m; }) {

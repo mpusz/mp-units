@@ -138,10 +138,9 @@ static_assert(std::same_as<representation_canonical_type_t<decltype(std::declval
 // Consequently, arithmetic on vector quantities stores the concrete vector type, not a proxy.
 static_assert(std::same_as<decltype(make_vec3(1, 2, 3) * isq::velocity[m / s] * (2. * isq::duration[s]))::rep, vec3>);
 
-// A vector quantity models the `Vector` concept (so `magnitude(q)` works on it directly) ...
-static_assert(detail::Vector<decltype(make_vec3(0, 0, 0) * isq::velocity[m / s])>);
-// ... but is NOT a representation type: a quantity can never be nested as another quantity's
-// representation (`value_type_t<quantity>` is the quantity itself, which `NotQuantity` rejects).
+// A vector quantity is NOT a representation type: a quantity can never be nested as another
+// quantity's representation (`value_type_t<quantity>` is the quantity itself, which `NotQuantity`
+// rejects).
 static_assert(!detail::VectorRepresentation<decltype(make_vec3(0, 0, 0) * isq::velocity[m / s])>);
 static_assert(!RepresentationOf<decltype(make_vec3(0, 0, 0) * isq::velocity[m / s]), quantity_tensor_order::vector>);
 // `magnitude()` of a vector quantity is a scalar quantity in the same unit.

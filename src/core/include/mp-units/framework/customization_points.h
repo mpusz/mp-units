@@ -33,6 +33,7 @@
 import std;
 #else
 #include <concepts>
+#include <cstddef>
 #include <limits>
 #include <string_view>
 #include <type_traits>
@@ -192,6 +193,136 @@ template<typename T>
 using value_type_t = value_type_impl<T>::type;
 
 }  // namespace detail
+
+
+/////////////// real / imag / modulus CUSTOMIZATION POINTS ///////////////
+
+// `real`, `imag`, and `modulus` are general numeric customization points: a representation type
+// exposes them either as members or as ADL free functions. They underlie the `numeric_field` field
+// detection below and the framework's complex-scalar handling.
+
+namespace detail::real_impl {
+
+void real() = delete;  // poison pill
+
+struct real_t {
+  // TODO how to constrain the return with RealScalar?
+  [[nodiscard]] constexpr auto operator()(const auto& clx) const
+    requires requires { clx.real(); } || requires { real(clx); }
+  {
+    if constexpr (requires { clx.real(); })
+      return clx.real();
+    else if constexpr (requires { real(clx); })
+      return real(clx);
+  }
+};
+
+}  // namespace detail::real_impl
+
+inline namespace cpo {
+
+MP_UNITS_EXPORT inline constexpr ::mp_units::detail::real_impl::real_t real;
+
+}
+
+namespace detail::imag_impl {
+
+void imag() = delete;  // poison pill
+
+struct imag_t {
+  // TODO how to constrain the return with RealScalar?
+  [[nodiscard]] constexpr auto operator()(const auto& clx) const
+    requires requires { clx.imag(); } || requires { imag(clx); }
+  {
+    if constexpr (requires { clx.imag(); })
+      return clx.imag();
+    else if constexpr (requires { imag(clx); })
+      return imag(clx);
+  }
+};
+
+}  // namespace detail::imag_impl
+
+inline namespace cpo {
+
+MP_UNITS_EXPORT inline constexpr ::mp_units::detail::imag_impl::imag_t imag;
+
+}
+
+namespace detail::modulus_impl {
+
+void modulus() = delete;  // poison pill
+void abs() = delete;      // poison pill
+
+struct modulus_t {
+  // TODO how to constrain the return with RealScalar?
+  [[nodiscard]] constexpr auto operator()(const auto& clx) const
+    requires requires { clx.modulus(); } || requires { modulus(clx); } || requires { clx.abs(); } ||
+             requires { abs(clx); }
+  {
+    if constexpr (requires { clx.modulus(); })
+      return clx.modulus();
+    else if constexpr (requires { modulus(clx); })
+      return modulus(clx);
+    // `std` made a precedence of using `abs` for modulus on `std::complex`
+    else if constexpr (requires { clx.abs(); })
+      return clx.abs();
+    else if constexpr (requires { abs(clx); })
+      return abs(clx);
+  }
+};
+
+}  // namespace detail::modulus_impl
+
+inline namespace cpo {
+
+MP_UNITS_EXPORT inline constexpr ::mp_units::detail::modulus_impl::modulus_t modulus;
+
+}
+
+
+/////////////// numeric_field ///////////////
+
+// The numeric field of a type: real or complex. The single source of truth for the field axis. The
+// default detects it from the `real()`/`imag()` API; a type whose API does not follow the "expose
+// `real()`/`imag()` iff complex" convention (e.g. an Eigen/Blaze matrix, which exposes them on real
+// types too) declares its field by specializing this trait in its integration adapter - mirroring
+// `tensor_order` for the order axis. It is order-agnostic: it answers "real or complex?" for
+// scalars, vectors, and tensors alike, and a quantity's character field can be wired the same way.
+MP_UNITS_EXPORT template<typename T>
+constexpr quantity_field numeric_field = requires(const T& v) {
+  ::mp_units::real(v);
+  ::mp_units::imag(v);
+} ? quantity_field::complex : quantity_field::real;
+
+
+/////////////// tensor_order ///////////////
+
+namespace detail {
+template<typename T>
+[[nodiscard]] consteval std::size_t detect_tensor_order()
+{
+  // two-index access (the call operator or the C++23 multidimensional subscript) is order 2
+  if constexpr (requires(const T& t) { t(std::size_t{}, std::size_t{}); }) return 2;
+#if __cpp_multidimensional_subscript
+  else if constexpr (requires(const T& t) { t[std::size_t{}, std::size_t{}]; })
+    return 2;
+#endif
+  // one-index access is order 1; everything else is a scalar (order 0)
+  else if constexpr (requires(const T& t) { t[std::size_t{}]; })
+    return 1;
+  else
+    return 0;
+}
+}  // namespace detail
+
+// The intrinsic tensor order of a representation: 0 scalar, 1 vector, 2 tensor. It is detected from
+// the type's structure (two-index access is order 2, one-index access is order 1, otherwise order
+// 0) and may be specialized for a third-party representation (e.g. an Eigen adapter reading
+// `RowsAtCompileTime` / `ColsAtCompileTime`). This is what replaces the old `disable_vector` /
+// `disable_tensor` opt-outs: "a tensor is not a vector" is simply `order 2`, and `2 <= 1` is false.
+MP_UNITS_EXPORT template<typename T>
+constexpr std::size_t tensor_order = detail::detect_tensor_order<T>();
 
 MP_UNITS_EXPORT_BEGIN
 

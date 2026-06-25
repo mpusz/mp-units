@@ -227,7 +227,7 @@ static_assert(requires(constrained<double, test_policy> v, double f) {
 });
 
 // ============================================================================
-// MagnitudeScalable / RepresentationOf — must hold for quantity_point use
+// UnitMagnitudeScalable / RepresentationOf — must hold for quantity_point use
 // ============================================================================
 
 // These are the exact concept prerequisites checked when constrained<double> is
@@ -235,8 +235,9 @@ static_assert(requires(constrained<double, test_policy> v, double f) {
 // hello_units.cpp will fail to compile.
 static_assert(treat_as_floating_point<constrained<double, test_policy>>);
 static_assert(UsesFloatingPointScaling<constrained<double, test_policy>>);
-static_assert(MagnitudeScalable<constrained<double, test_policy>>);
-static_assert(RealScalarRepresentation<constrained<double, test_policy>>);
+static_assert(UnitMagnitudeScalable<constrained<double, test_policy>>);
+static_assert(RealScalar<constrained<double, test_policy>>);
+static_assert(ScalarRepresentation<constrained<double, test_policy>>);
 static_assert(RepresentationOf<constrained<double, test_policy>, isq::angular_measure>);
 
 // ============================================================================

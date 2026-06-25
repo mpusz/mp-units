@@ -195,14 +195,14 @@ static_assert(RealScalar<safe_int<int>>);
 static_assert(RealScalar<safe_int<std::int8_t>>);
 static_assert(RealScalar<safe_int<std::uint64_t>>);
 
-// MagnitudeScalable
-static_assert(MagnitudeScalable<safe_int<int>>);
-static_assert(MagnitudeScalable<safe_int<unsigned>>);
+// UnitMagnitudeScalable
+static_assert(UnitMagnitudeScalable<safe_int<int>>);
+static_assert(UnitMagnitudeScalable<safe_int<unsigned>>);
 
-// RealScalarRepresentation
-static_assert(RealScalarRepresentation<safe_int<int>>);
-static_assert(RealScalarRepresentation<safe_int<long>>);
-static_assert(RealScalarRepresentation<safe_int<unsigned short>>);
+// ScalarRepresentation (real-field coverage is the RealScalar checks above)
+static_assert(ScalarRepresentation<safe_int<int>>);
+static_assert(ScalarRepresentation<safe_int<long>>);
+static_assert(ScalarRepresentation<safe_int<unsigned short>>);
 
 // floating-point types must NOT be accepted
 static_assert(!requires { requires(!treat_as_floating_point<double>) && detail::RealScalar<double>; });

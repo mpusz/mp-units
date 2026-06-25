@@ -227,6 +227,23 @@ public:
   [[nodiscard]] constexpr T& operator[](std::size_t i) { return _coordinates_[i]; }
   [[nodiscard]] constexpr const T& operator[](std::size_t i) const { return _coordinates_[i]; }
 
+  // Component-wise real and imaginary parts, present only for complex elements. Their existence is
+  // what marks this type as a complex (rather than real) representation through the `real`/`imag`
+  // customization points.
+  [[nodiscard]] constexpr auto real() const
+    requires detail::ComplexScalar<T>
+  {
+    return ::mp_units::cartesian_vector{::mp_units::real(_coordinates_[0]), ::mp_units::real(_coordinates_[1]),
+                                        ::mp_units::real(_coordinates_[2])};
+  }
+
+  [[nodiscard]] constexpr auto imag() const
+    requires detail::ComplexScalar<T>
+  {
+    return ::mp_units::cartesian_vector{::mp_units::imag(_coordinates_[0]), ::mp_units::imag(_coordinates_[1]),
+                                        ::mp_units::imag(_coordinates_[2])};
+  }
+
   // tuple-like element access (enables structured bindings and vector quantity decomposition)
   template<std::size_t Idx>
   [[nodiscard]] friend constexpr T& get(cartesian_vector& v) noexcept

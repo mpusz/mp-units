@@ -191,6 +191,25 @@ public:
   [[nodiscard]] constexpr T& operator()(std::size_t row, std::size_t col) { return _data_[row * 3 + col]; }
   [[nodiscard]] constexpr const T& operator()(std::size_t row, std::size_t col) const { return _data_[row * 3 + col]; }
 
+  // Element-wise real and imaginary parts, present only for complex elements. Their existence is
+  // what marks this type as a complex (rather than real) representation through the `real`/`imag`
+  // customization points.
+  [[nodiscard]] constexpr auto real() const
+    requires detail::ComplexScalar<T>
+  {
+    ::mp_units::cartesian_tensor<decltype(::mp_units::real(_data_[0]))> res;
+    for (std::size_t i = 0; i < 9; ++i) res._data_[i] = ::mp_units::real(_data_[i]);
+    return res;
+  }
+
+  [[nodiscard]] constexpr auto imag() const
+    requires detail::ComplexScalar<T>
+  {
+    ::mp_units::cartesian_tensor<decltype(::mp_units::imag(_data_[0]))> res;
+    for (std::size_t i = 0; i < 9; ++i) res._data_[i] = ::mp_units::imag(_data_[i]);
+    return res;
+  }
+
   // Frobenius norm: sqrt(T : T). Not a distinct ISO 80000-2 item (2-18.4 magnitude is vector-only) but
   // the natural tensor norm; required for the type to model the `Tensor` representation concept.
   [[nodiscard]] constexpr auto magnitude() const
@@ -305,10 +324,6 @@ MP_UNITS_EXPORT template<typename T, typename U>
                                       lhs[1] * rhs[0], lhs[1] * rhs[1], lhs[1] * rhs[2],
                                       lhs[2] * rhs[0], lhs[2] * rhs[1], lhs[2] * rhs[2]};
 }
-
-// a second-order tensor is not a vector; opt out of the (lower-rank) vector representation concept
-template<typename T>
-MP_UNITS_INLINE constexpr bool disable_vector<cartesian_tensor<T>> = true;
 
 }  // namespace mp_units
 

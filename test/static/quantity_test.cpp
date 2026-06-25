@@ -29,6 +29,7 @@
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>
 #if MP_UNITS_HOSTED
+#include <mp-units/cartesian_tensor.h>
 #include <mp-units/cartesian_vector.h>
 #include <mp-units/math.h>
 #endif
@@ -73,13 +74,14 @@ concept invalid_types = requires {
   requires !requires { typename Q<isq::length[m], quantity<isq::length[m]>>; };  // quantity used as Rep
 #if MP_UNITS_HOSTED
   requires !requires {
-    typename Q<isq::position_vector[si::metre], std::complex<double>>;
-  };  // vector representation expected
+    typename Q<isq::position_vector[si::metre], cartesian_tensor<double>>;
+  };  // a tensor representation cannot fill a (lower-order) vector quantity
   requires !requires {
     typename Q<isq::length[si::metre], cartesian_vector<double>>;
-  };  // scalar representation expected
-  requires !requires { typename Q<isq::voltage[V], std::complex<double>>; };  // incompatible character
-  requires !requires { typename Q<isq::voltage_phasor[V], double>; };         // incompatible character
+  };  // a vector representation cannot fill a scalar quantity (order rank)
+  // field is exact: a real quantity rejects a complex representation, and vice versa
+  requires !requires { typename Q<isq::voltage[V], std::complex<double>>; };
+  requires !requires { typename Q<isq::voltage_phasor[V], double>; };
 #endif
 };
 static_assert(invalid_types<quantity>);

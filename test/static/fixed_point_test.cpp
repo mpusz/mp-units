@@ -66,11 +66,11 @@ static_assert(scale<int>(mag<1>, 42) == 42);
 static_assert(scale<double>(mag_ratio<1, 2>, 1.0) == 0.5);
 static_assert(scale<float>(mag<3>, 1.0f) == 3.0f);
 
-// MagnitudeScalable concept
-static_assert(detail::MagnitudeScalable<int>);
-static_assert(detail::MagnitudeScalable<long>);
-static_assert(detail::MagnitudeScalable<double>);
-static_assert(detail::MagnitudeScalable<float>);
+// UnitMagnitudeScalable concept
+static_assert(detail::UnitMagnitudeScalable<int>);
+static_assert(detail::UnitMagnitudeScalable<long>);
+static_assert(detail::UnitMagnitudeScalable<double>);
+static_assert(detail::UnitMagnitudeScalable<float>);
 
 // Irrational magnitude conversions with integer representation require explicit value_cast.
 // deg = (π/180) rad — the conversion factor is irrational, so every integer result is approximate.

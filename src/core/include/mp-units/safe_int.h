@@ -414,7 +414,7 @@ struct safe_int_binary_ops {
  * @brief Wraps an integral type with overflow detection.
  *
  * This class wraps any integral type and models all requirements for mp-units
- * representation types (RealScalar, MagnitudeScalable, etc.). Every arithmetic
+ * representation types (RealScalar, UnitMagnitudeScalable, etc.). Every arithmetic
  * operation checks for overflow and delegates to the ErrorPolicy::on_overflow()
  * handler on detection.
  *

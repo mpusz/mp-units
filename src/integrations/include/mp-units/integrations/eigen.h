@@ -50,6 +50,7 @@
 import std;
 #else
 #include <concepts>
+#include <cstddef>
 #include <type_traits>
 #endif
 #endif
@@ -68,6 +69,21 @@ template<typename T>
 struct representation_canonical_type<T> {
   using type = std::remove_cvref_t<typename T::PlainObject>;
 };
+
+// Eigen reports its shape at compile time, so the tensor order is read from `RowsAtCompileTime` /
+// `ColsAtCompileTime` rather than from structural detection: an Eigen column vector is an N×1 matrix
+// whose two-index `operator()` would otherwise make it look like an order-2 tensor. A row or column
+// (one dimension fixed to 1) is order 1; anything else is an order-2 matrix.
+template<typename T>
+  requires requires { typename T::PlainObject; } && std::derived_from<T, Eigen::EigenBase<T>>
+constexpr std::size_t tensor_order<T> = (T::RowsAtCompileTime == 1 || T::ColsAtCompileTime == 1) ? 1 : 2;
+
+// Eigen exposes `real()`/`imag()` on its real types too, so the API-based default would misread a
+// real Eigen matrix as complex. Declare the field from Eigen's `Scalar` instead: a matrix of a
+// complex scalar is complex, otherwise real.
+template<typename T>
+  requires requires { typename T::PlainObject; } && std::derived_from<T, Eigen::EigenBase<T>>
+constexpr quantity_field numeric_field<T> = numeric_field<typename T::Scalar>;
 
 }  // namespace mp_units
 

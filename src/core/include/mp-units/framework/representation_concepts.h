@@ -38,6 +38,7 @@ import std;
 #include <complex>
 #endif
 #include <concepts>
+#include <cstddef>
 #include <cstdint>
 #include <cstdlib>
 #include <functional>
@@ -46,6 +47,8 @@ import std;
 #endif  // MP_UNITS_IN_MODULE_INTERFACE
 
 namespace mp_units {
+
+/////////////// ALGEBRA PRIMITIVES ///////////////
 
 namespace detail {
 
@@ -131,7 +134,7 @@ concept BaseScalar = RegularAddable<T> && ScalableWith<T, T>;
 }  // namespace detail
 
 
-/////////////// REAL SCALAR ///////////////
+/////////////// SCALAR ///////////////
 
 MP_UNITS_EXPORT template<typename T>
 constexpr bool disable_real = false;
@@ -141,126 +144,41 @@ MP_UNITS_INLINE constexpr bool disable_real<bool> = true;
 
 namespace detail {
 
+// The field axis as character concepts, derived from the `numeric_field` trait so they honor adapter
+// declarations (a real Eigen vector exposes `real()`/`imag()` yet its adapter declares its field
+// real). They are order-agnostic: `Real` / `Complex` classify scalars, vectors, and tensors alike.
 template<typename T>
-concept RealScalar = !disable_real<T> && BaseScalar<T> && std::totally_ordered<T>;
-
-}
-
-
-/////////////// COMPLEX SCALAR ///////////////
-
-namespace detail::real_impl {
-
-void real() = delete;  // poison pill
-
-struct real_t {
-  // TODO how to constrain the return with RealScalar?
-  [[nodiscard]] constexpr auto operator()(const auto& clx) const
-    requires requires { clx.real(); } || requires { real(clx); }
-  {
-    if constexpr (requires { clx.real(); })
-      return clx.real();
-    else if constexpr (requires { real(clx); })
-      return real(clx);
-  }
-};
-
-}  // namespace detail::real_impl
-
-inline namespace cpo {
-
-MP_UNITS_EXPORT inline constexpr ::mp_units::detail::real_impl::real_t real;
-
-}
-
-namespace detail::imag_impl {
-
-void imag() = delete;  // poison pill
-
-struct imag_t {
-  // TODO how to constrain the return with RealScalar?
-  [[nodiscard]] constexpr auto operator()(const auto& clx) const
-    requires requires { clx.imag(); } || requires { imag(clx); }
-  {
-    if constexpr (requires { clx.imag(); })
-      return clx.imag();
-    else if constexpr (requires { imag(clx); })
-      return imag(clx);
-  }
-};
-
-}  // namespace detail::imag_impl
-
-inline namespace cpo {
-
-MP_UNITS_EXPORT inline constexpr ::mp_units::detail::imag_impl::imag_t imag;
-
-}
-
-namespace detail::modulus_impl {
-
-void modulus() = delete;  // poison pill
-void abs() = delete;      // poison pill
-
-struct modulus_t {
-  // TODO how to constrain the return with RealScalar?
-  [[nodiscard]] constexpr auto operator()(const auto& clx) const
-    requires requires { clx.modulus(); } || requires { modulus(clx); } || requires { clx.abs(); } ||
-             requires { abs(clx); }
-  {
-    if constexpr (requires { clx.modulus(); })
-      return clx.modulus();
-    else if constexpr (requires { modulus(clx); })
-      return modulus(clx);
-    // `std` made a precedence of using `abs` for modulus on `std::complex`
-    else if constexpr (requires { clx.abs(); })
-      return clx.abs();
-    else if constexpr (requires { abs(clx); })
-      return abs(clx);
-  }
-};
-
-}  // namespace detail::modulus_impl
-
-inline namespace cpo {
-
-MP_UNITS_EXPORT inline constexpr ::mp_units::detail::modulus_impl::modulus_t modulus;
-
-}
-
-namespace detail {
+concept Real = (numeric_field<T> == quantity_field::real);
 
 template<typename T>
-concept ComplexScalar = requires(const T v, const T& ref) {
+concept Complex = (numeric_field<T> == quantity_field::complex);
+
+// A real scalar is a real, totally ordered scalar: its field is real (no `real()`/`imag()` API), and
+// it is totally ordered, since the framework and its users rely on `<`/`==` to compare, clamp, and
+// sort scalar quantities. Both clauses exclude `std::complex`.
+template<typename T>
+concept RealScalar = !disable_real<T> && Real<T> && BaseScalar<T> && std::totally_ordered<T>;
+
+// A complex scalar is `Complex` (so `real`/`imag` work) and, on top of the shared scalar algebra,
+// supports `modulus` and reconstruction from its parts. Construction from `(real, imag)` is what
+// lets users (and the framework's complex paths) build and round-trip a value efficiently.
+template<typename T>
+concept ComplexScalar = Complex<T> && BaseScalar<T> && requires(const T v, const T& ref) {
   requires std::constructible_from<T, decltype(::mp_units::real(ref)), decltype(::mp_units::imag(ref))>;
-  ::mp_units::real(v);
-  ::mp_units::imag(v);
   ::mp_units::modulus(v);
   requires ScalableWith<T, decltype(::mp_units::modulus(v))>;
-} && BaseScalar<T>;
+};
 
+// A scalar is an order-0 representation of either field. The `tensor_order == 0` gate keeps a type
+// that has scalar algebra but also exposes indexing out of the scalar slot, so the order axis
+// partitions cleanly (`Vector` / `Tensor` below state their own order).
 template<typename T>
-concept Scalar = RealScalar<T> || ComplexScalar<T>;
+concept Scalar = (RealScalar<T> || ComplexScalar<T>) && tensor_order<T> == 0;
 
 }  // namespace detail
 
 
-/////////////// VECTOR AND TENSOR ///////////////
-
-MP_UNITS_EXPORT template<typename T>
-constexpr bool disable_vector = false;
-
-MP_UNITS_EXPORT template<typename T>
-constexpr bool disable_tensor = false;
-
-#if MP_UNITS_HOSTED
-// `std::complex` is a scalar, not a linear-algebra quantity: `std::norm(z)` returns |z|² rather
-// than |z|, so admitting it as a vector or tensor would produce wrong magnitudes. Opting it out of
-// `Tensor` (the base concept) also removes it from `Vector` by subsumption, so a single opt-out
-// suffices.
-template<typename T>
-MP_UNITS_INLINE constexpr bool disable_tensor<std::complex<T>> = true;
-#endif
+/////////////// MAGNITUDE ///////////////
 
 namespace detail::magnitude_impl {
 
@@ -307,32 +225,8 @@ MP_UNITS_EXPORT inline constexpr ::mp_units::detail::magnitude_impl::magnitude_t
 
 }
 
-namespace detail {
 
-// `Tensor` is the base linear-algebra character: any object that has a magnitude, scales by it,
-// and is regularly addable can represent a tensor-character quantity. It is intentionally the most
-// permissive of the linear-algebra concepts, so that lower-rank representations also qualify as
-// degenerate tensor representations: a tensor of order zero is a scalar and a tensor of order one
-// is a vector (ISO 80000-2:2019, 18).
-template<typename T>
-concept Tensor = !disable_tensor<T> && requires(const T v) {
-  ::mp_units::magnitude(v);
-  requires ScalableWith<T, decltype(::mp_units::magnitude(v))>;
-} && RegularAddable<T>;
-
-// A `Vector` is a `Tensor` of order one. It subsumes `Tensor` and adds the `disable_vector`
-// opt-out. Defining it this way makes the rank-ordering structural (`Vector<T>` implies `Tensor<T>`,
-// so a "vector that is not a tensor" cannot exist) and establishes a subsumption ordering that can
-// rank overloads. A genuine higher-rank representation (e.g. `cartesian_tensor`) stays out of
-// `Vector` by specializing `disable_vector`, never the reverse.
-//
-// TODO should we also check for vector-specific operations (e.g. `scalar_product`,
-// `vector_product`, `tensor_product`) when `size() > 1`?
-template<typename T>
-concept Vector = Tensor<T> && !disable_vector<T>;
-
-}  // namespace detail
-
+/////////////// REPRESENTATION ///////////////
 
 namespace detail {
 
@@ -404,65 +298,102 @@ concept UsesIntegerScaling = integral<value_type_t<T>> && requires(T value, wide
 // point.  scale() will prefer this path when available, and the return type may differ
 // from the input (e.g. a wrapper with scaled bounds).
 template<typename T>
-concept UsesMagnitudeAwareScaling = requires(const T& v) { v * mag<1>; };
+concept UsesUnitMagnitudeAwareScaling = requires(const T& v) { v * mag<1>; };
 
 /**
- * @brief MagnitudeScalable
+ * @brief UnitMagnitudeScalable
  *
- * A type is `MagnitudeScalable` if the library's `scale()` can apply a unit
+ * A type is `UnitMagnitudeScalable` if the library's `scale()` can apply a unit
  * magnitude ratio to it.  The three sub-concepts map to the scaling paths:
  *
- *  - `UsesMagnitudeAwareScaling<T>` — type provides `operator*(T, UnitMagnitude)` (preferred)
+ *  - `UsesUnitMagnitudeAwareScaling<T>` — type provides `operator*(T, UnitMagnitude)` (preferred)
  *  - `UsesFloatingPointScaling<T>`  — floating-point type or container thereof
  *  - `UsesIntegerScaling<T>`        — integer type, wrapper, or container thereof
  */
 template<typename T>
-concept MagnitudeScalable =
-  WeaklyRegular<T> && (UsesMagnitudeAwareScaling<T> || UsesFloatingPointScaling<T> || UsesIntegerScaling<T>);
+concept UnitMagnitudeScalable =
+  WeaklyRegular<T> && (UsesUnitMagnitudeAwareScaling<T> || UsesFloatingPointScaling<T> || UsesIntegerScaling<T>);
+
+// A type that exposes an L2 magnitude (the `magnitude` CPO) and is scalable by it. This is the
+// container algebra a vector or tensor needs on top of being regularly addable; for an order-0
+// scalar the analogous contracts live in `RealScalar` / `ComplexScalar`.
+template<typename T>
+concept HasMagnitude = requires(const T& v) {
+  ::mp_units::magnitude(v);
+  requires ScalableWith<T, decltype(::mp_units::magnitude(v))>;
+};
+
+// The order axis as rank-ordered character concepts: a `Scalar` is also a degenerate `Vector` and
+// `Tensor`, and a `Vector` a degenerate `Tensor` (ISO 80000-2:2019, 18). `Scalar` carries the
+// per-field element algebra; an order >= 1 representation adds regular addition and an L2 magnitude
+// (its element contracts are then enforced by the container type itself, e.g.
+// `cartesian_vector<detail::Scalar T>`). These deliberately omit the representation-validity checks
+// (`NotQuantity`, `UnitMagnitudeScalable`) so that in V3 they also classify a quantity by its character.
+template<typename T>
+concept Vector = Scalar<T> || (tensor_order<T> == 1 && RegularAddable<T> && HasMagnitude<T>);
 
 template<typename T>
-concept RealScalarRepresentation = NotQuantity<value_type_t<T>> && RealScalar<T> && MagnitudeScalable<T>;
+concept Tensor = Vector<T> || (tensor_order<T> == 2 && RegularAddable<T> && HasMagnitude<T>);
+
+// A representation is a character that is also a valid `quantity` representation: its element is not
+// itself a quantity and it is scalable by a unit magnitude. The order axis is rank-ordered through
+// the character concepts above, so a lower-order representation fills a higher-order slot.
+//
+// `NotQuantity<value_type_t<T>>` leads each conjunction deliberately: the character concepts carry no
+// validity guard (so that in V3 they can also classify a *quantity* by its character), so for a
+// `quantity` argument `Scalar`/`Vector`/`Tensor` would instantiate the quantity's own `operator+` /
+// `operator==` whose constraints recurse back into `RepresentationOf` - a satisfaction cycle. Since
+// `value_type_t<quantity>` is the quantity itself, the leading `NotQuantity` rejects a quantity up
+// front and short-circuits before any character (and thus any operator) is evaluated.
+template<typename T>
+concept ScalarRepresentation = NotQuantity<value_type_t<T>> && Scalar<T> && UnitMagnitudeScalable<T>;
 
 template<typename T>
-concept ComplexScalarRepresentation = NotQuantity<value_type_t<T>> && ComplexScalar<T> && MagnitudeScalable<T>;
+concept VectorRepresentation = NotQuantity<value_type_t<T>> && Vector<T> && UnitMagnitudeScalable<T>;
 
 template<typename T>
-concept ScalarRepresentation = RealScalarRepresentation<T> || ComplexScalarRepresentation<T>;
+concept TensorRepresentation = NotQuantity<value_type_t<T>> && Tensor<T> && UnitMagnitudeScalable<T>;
 
 template<typename T>
-concept VectorRepresentation = NotQuantity<value_type_t<T>> && Vector<T> && MagnitudeScalable<T>;
+concept SomeRepresentation = TensorRepresentation<T>;
 
-template<typename T>
-concept TensorRepresentation = NotQuantity<value_type_t<T>> && Tensor<T> && MagnitudeScalable<T>;
+// The two matching axes. Order is rank-ordered: `T` fills a slot of equal-or-higher order. Field is
+// disjoint and matched exactly: a real quantity needs a real representation and a complex one a
+// complex representation.
+template<typename T, quantity_tensor_order Order>
+concept RepresentationOfOrder = (Order == quantity_tensor_order::scalar && ScalarRepresentation<T>) ||
+                                (Order == quantity_tensor_order::vector && VectorRepresentation<T>) ||
+                                (Order == quantity_tensor_order::tensor && TensorRepresentation<T>);
 
-template<typename T, quantity_character Ch>
-concept IsOfCharacter = (Ch == quantity_character{} && RealScalarRepresentation<T>) ||
-                        (Ch == quantity_character{quantity_field::complex} && ComplexScalarRepresentation<T>) ||
-                        (Ch == quantity_character{quantity_tensor_order::vector} && VectorRepresentation<T>) ||
-                        (Ch == quantity_character{quantity_tensor_order::tensor} && TensorRepresentation<T>);
+template<typename T, quantity_field Field>
+concept RepresentationOfField = SomeRepresentation<T> && (numeric_field<T> == Field);
 
-// Types usable as a character value in `RepresentationOf`: the two-axis `quantity_character`, the
-// legacy flat spelling, and either single axis on its own (each implicitly forms a character).
+[[nodiscard]] consteval quantity_tensor_order order_of(quantity_character ch) { return ch.order; }
+[[nodiscard]] consteval quantity_field field_of(quantity_character ch) { return ch.field; }
+
+// Match a representation `T` against a character `V`: a bare axis constrains only its own
+// axis (the other is free), a full `quantity_character` (or the legacy flat enum) constrains both.
 MP_UNITS_DIAGNOSTIC_PUSH
 MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
-template<typename V>
-concept QuantityCharacter = std::same_as<V, quantity_character> || std::same_as<V, quantity_character_legacy> ||
-                            std::same_as<V, quantity_tensor_order> || std::same_as<V, quantity_field>;
+template<typename T, auto V>
+concept RepresentationOfCharacter =
+  (std::same_as<MP_UNITS_REMOVE_CONST(decltype(V)), quantity_tensor_order> && RepresentationOfOrder<T, V>) ||
+  (std::same_as<MP_UNITS_REMOVE_CONST(decltype(V)), quantity_field> && RepresentationOfField<T, V>) ||
+  ((std::same_as<MP_UNITS_REMOVE_CONST(decltype(V)), quantity_character> ||
+    std::same_as<MP_UNITS_REMOVE_CONST(decltype(V)), quantity_character_legacy>) &&
+   RepresentationOfOrder<T, order_of(V)> && RepresentationOfField<T, field_of(V)>);
 MP_UNITS_DIAGNOSTIC_POP
-
-template<typename T>
-concept SomeRepresentation =
-  detail::ScalarRepresentation<T> || detail::VectorRepresentation<T> || detail::TensorRepresentation<T>;
 
 }  // namespace detail
 
 #ifdef MP_UNITS_XCODE15_HACKS
 MP_UNITS_EXPORT template<typename T, auto V>
 concept RepresentationOf =
-  detail::SomeRepresentation<T> &&
-  ((QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(V))> &&
-    (detail::QuantityKindSpec<MP_UNITS_REMOVE_CONST(decltype(V))> || detail::IsOfCharacter<T, V.character>)) ||
-   (detail::QuantityCharacter<MP_UNITS_REMOVE_CONST(decltype(V))> && detail::IsOfCharacter<T, V>));
+  detail::SomeRepresentation<T> && ((QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(V))> &&
+                                     (detail::QuantityKindSpec<MP_UNITS_REMOVE_CONST(decltype(V))> ||
+                                      (detail::RepresentationOfOrder<T, detail::order_of(V.character)> &&
+                                       detail::RepresentationOfField<T, detail::field_of(V.character)>))) ||
+                                    detail::RepresentationOfCharacter<T, V>);
 
 #else
 
@@ -470,8 +401,9 @@ MP_UNITS_EXPORT template<typename T, auto V>
 concept RepresentationOf =
   (QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(V))> &&
    ((detail::QuantityKindSpec<MP_UNITS_REMOVE_CONST(decltype(V))> && detail::SomeRepresentation<T>) ||
-    detail::IsOfCharacter<T, V.character>)) ||
-  (detail::QuantityCharacter<MP_UNITS_REMOVE_CONST(decltype(V))> && detail::IsOfCharacter<T, V>);
+    (detail::RepresentationOfOrder<T, detail::order_of(V.character)> &&
+     detail::RepresentationOfField<T, detail::field_of(V.character)>))) ||
+  detail::RepresentationOfCharacter<T, V>;
 #endif
 
 }  // namespace mp_units
