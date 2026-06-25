@@ -279,10 +279,10 @@ template<typename T>
 constexpr bool mp_units::disable_vector<cartesian_tensor<T>> = true;
 ```
 
-A scalar-like type that *accidentally* satisfies the vector requirements (for example via a
-`norm()` with the wrong semantics, as `std::complex` does, where `std::norm(z)` returns `|z|²`
-and not `|z|`) should instead opt out of `Tensor` with [`disable_tensor`](#disable_tensor),
-which removes it from `Vector` as well by subsumption.
+A scalar-like type that *accidentally* satisfies the vector requirements (for example via
+a `norm()` with the wrong semantics, as `std::complex` does, where `std::norm(z)` returns
+`|z|²` and not `|z|`) should instead opt out of `Tensor` with
+[`disable_tensor`](#disable_tensor), which removes it from `Vector` as well by subsumption.
 
 ---
 
