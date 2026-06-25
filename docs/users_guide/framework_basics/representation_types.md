@@ -30,21 +30,54 @@ handle the operations?). This dual approach provides **compile-time type safety*
 mathematical nature of physical quantities—preventing, for example, using a scalar type where
 vector operations like cross product are needed.
 
-The following table summarizes the requirements for different representation characters:
+The requirements split along the two independent axes of a quantity's
+[character](character_of_a_quantity.md): the **field** (real or complex) and the **order**
+(scalar, vector, or tensor). A representation type must satisfy a common baseline, then the
+requirements of its field and of its order.
 
-| Requirement                                                 |          Real Scalar           |                        Complex Scalar                         |                             Vector                             |                          Tensor                          |
-|-------------------------------------------------------------|:------------------------------:|:-------------------------------------------------------------:|:--------------------------------------------------------------:|:--------------------------------------------------------:|
-| Copyable                                                    |               ✅                |                               ✅                               |                               ✅                                |                            ✅                             |
-| Addition/subtraction (`+`, `-`, unary `-`)                  |               ✅                |                               ✅                               |                               ✅                                |                            ✅                             |
-| [`MagnitudeScalable`](#how-scaling-works) (unit-conversion) |               ✅                |                               ✅                               |                               ✅                                |                            ✅                             |
-| Self-scalable (`T * T`, `T / T`)                            |               ✅                |                               ✅                               |                               -                                |                            -                             |
-| Equality comparable (`==`)                                  |               ✅                |                               ✅                               |                               ✅                                |                            ✅                             |
-| Totally ordered (`<`, `>`, `<=`, `>=`)                      |               ✅                |                               -                               |                               -                                |                            -                             |
-| Not a quantity type itself                                  |               ✅                |                               ✅                               |                               ✅                                |                            ✅                             |
-| **Construction**                                            |               -                |                        `T{real, imag}`                        |                               -                                |                            -                             |
-| **Required CPOs**                                           |               -                | `mp_units::real()`, `mp_units::imag()`, `mp_units::modulus()` |                    `mp_units::magnitude()`                     |                 `mp_units::magnitude()`                  |
-| **Opt-out mechanism**                                       |       `disable_real<T>`        |                               -                               |                      `disable_vector<T>`                       |                   `disable_tensor<T>`                    |
-| **Examples**                                                | `int`, `double`, `long double` |                    `std::complex<double>`                     | `Eigen::Vector3d`, `cartesian_vector<double>`, `int`, `double` | `cartesian_tensor<double>`, `Eigen::Matrix3d`, `int`, `double` (degenerate) |
+### Common baseline (every representation type)
+
+Independent of character, a representation type must be:
+
+- **copyable** (`std::copyable`) and **equality comparable** (`==`),
+- support **addition and subtraction** (`+`, `-`, unary `-`),
+- **[`UnitMagnitudeScalable`](#how-scaling-works)**, so the library can apply a unit magnitude
+  ratio to it during unit conversion,
+- **not opted out** through [`disable_representation<T>`](#disable_representation) (a quantity
+  or [quantity-like](concepts.md#QuantityLike) type, a container of either, and `bool` are
+  opted out by default).
+
+On top of that baseline, the type's two character axes each add their own requirements. The
+field is reported by [`numeric_field<T>`](#numeric_field) and the order by
+[`tensor_order<T>`](#tensor_order).
+
+### Order axis — [`tensor_order<T>`](#tensor_order)
+
+The orders are ranked: a lower-order representation also fills a higher-order slot, so
+a scalar backs a vector or tensor quantity and a vector backs a tensor quantity. Override
+the detected order by specializing `tensor_order<T>`.
+
+| Requirement                                                                 |               Scalar (0)                |              Vector (1)               |              Tensor (2)               |
+|-----------------------------------------------------------------------------|:---------------------------------------:|:-------------------------------------:|:-------------------------------------:|
+| Element access (drives default `tensor_order` detection)                    |                    -                    |                `t[i]`                 |        `t(i, j)` or `t[i, j]`         |
+| Self-scalable (`T * T`, `T / T`)                                            |                    ✅                    |                   -                   |                   -                   |
+| [`mp_units::magnitude()`](#character-determination) CPO (`norm()` fallback) |                    -                    |                   ✅                   |                   ✅                   |
+| Examples                                                                    | `int`, `double`, `std::complex<double>` | `cartesian_vector`, `Eigen::Vector3d` | `cartesian_tensor`, `Eigen::Matrix3d` |
+
+### Field axis — [`numeric_field<T>`](#numeric_field)
+
+The field is matched exactly: a real quantity needs a real representation and a complex one
+a complex representation. It is reported by [`numeric_field<T>`](#numeric_field) of the
+representation type itself, never by inspecting a vector's or tensor's elements. The
+requirements below are what a *scalar* representation provides for each field.
+Override the detected field by specializing `numeric_field<T>`.
+
+| Requirement (on a scalar representation)                           |                    Real                     |                             Complex                              |
+|--------------------------------------------------------------------|:-------------------------------------------:|:----------------------------------------------------------------:|
+| Totally ordered (`<`, `>`, `<=`, `>=`)                             |                      ✅                      |                                -                                 |
+| Construction from parts (`T{real, imag}`)                          |                      -                      |                                ✅                                 |
+| `mp_units::real()`, `mp_units::imag()`, `mp_units::modulus()` CPOs |                      -                      |                                ✅                                 |
+| Examples                                                           | `int`, `double`, `cartesian_vector<double>` | `std::complex<double>`, `cartesian_vector<std::complex<double>>` |
 
 ??? note "Weakly Regular Types"
 
@@ -59,9 +92,7 @@ The following table summarizes the requirements for different representation cha
     Default construction is not required, allowing types like range-validated representations
     that may not have a meaningful default value.
 
-??? note "Complex Types Construction and Total Ordering"
-
-    **Construction**
+??? note "Constructing Complex Scalars"
 
     Complex scalars **must** be constructible from real and imaginary parts: `T{real_value, imag_value}`.
     This requirement is essential for operations that combine real-valued quantities into complex results.
@@ -72,22 +103,6 @@ The following table summarizes the requirements for different representation cha
     quantity reactive = isq::reactive_power(50.0 * W);
     // Library needs to construct: std::complex<double>{active.numerical_value(), reactive.numerical_value()}
     ```
-
-    **Total Ordering**
-
-    The library assumes that well-designed complex-like types do not provide total ordering
-    (`operator<`, etc.) since there is no natural ordering for complex numbers. If you have
-    a complex-like type that does provide ordering operators (e.g., lexicographical comparison
-    for use in containers), use the `disable_real` opt-out mechanism:
-
-    ```cpp
-    template<>
-    constexpr bool mp_units::disable_real<my_complex_type> = true;
-    ```
-
-    Alternatively, the library could explicitly check for the absence of `mp_units::real()` and
-    `mp_units::imag()` operations to distinguish real from complex scalars. This is a design
-    choice that may be refined based on standardization discussions.
 
 ??? note "Why Different CPO Names?"
 
@@ -230,84 +245,103 @@ in the following priority order:
 
 ---
 
-#### `disable_real<T>`
+#### `disable_representation<T>` { #disable_representation }
 
-A specializable variable template to opt out a type from being treated as a real scalar:
+A specializable variable template to opt a type out of being a quantity representation, regardless
+of character:
 
 ```cpp
 template<typename T>
-constexpr bool mp_units::disable_real = false;
+constexpr bool mp_units::disable_representation = /* true if T is, or its elements are, a quantity or quantity-like type */;
 ```
 
-**Purpose:** Controls the **character** of your representation type by preventing it from
-being classified as a real scalar, even if it satisfies the real scalar requirements
-(copyable, totally ordered, supports arithmetic operations).
+**Purpose:** Bars `T` from satisfying any of the representation concepts, even when it
+structurally looks like a valid scalar, vector, or tensor. This is the single,
+character-agnostic escape hatch: the field and order are answered by the `numeric_field` and
+`tensor_order` traits, and this trait answers the orthogonal question "should `T` be a
+representation at all?".
 
-**When to specialize:** If your type accidentally satisfies the real scalar requirements
-but shouldn't be used as one:
+**Default:** A type is opted out when it is, or its elements are, a quantity or a
+[quantity-like](concepts.md#QuantityLike) type. So a bare `quantity`, a `std::chrono::duration`,
+and a container of either are all rejected. The library also opts out `bool`,
+which is totally ordered and supports arithmetic yet is not a meaningful representation.
+
+**When to specialize:** When a type accidentally satisfies a representation concept but must
+never store a quantity:
 
 ```cpp
 template<>
-constexpr bool mp_units::disable_real<my_type> = true;
+constexpr bool mp_units::disable_representation<my_type> = true;
 ```
-
-**Example use case:** The library uses this internally to prevent `bool` from being used
-as a scalar representation, even though `bool` is technically totally ordered and supports
-arithmetic operations.
 
 ---
 
-#### `disable_vector<T>`
+#### `numeric_field<T>` { #numeric_field }
 
-A specializable variable template to opt out a type from being treated as a vector:
-
-```cpp
-template<typename T>
-constexpr bool mp_units::disable_vector = false;
-```
-
-**Purpose:** Controls the **character** of your representation type by preventing it from
-being classified as a vector. Because `Vector` refines `Tensor` (a vector is a tensor of order
-one), this opts the type out of the **vector** character only. The type remains a valid
-**tensor** representation.
-
-**When to specialize:** When a type genuinely **is** a tensor but must never serve as a
-lower-rank vector. The library uses it for exactly this, on the built-in `cartesian_tensor`:
+A specializable variable template that reports the **field** of a representation type,
+real or complex. It is the single source of truth for the field axis:
 
 ```cpp
 template<typename T>
-constexpr bool mp_units::disable_vector<cartesian_tensor<T>> = true;
+constexpr quantity_field mp_units::numeric_field =
+  /* complex if the mp_units::real()/imag() CPOs are valid for T, real otherwise */;
 ```
 
-A scalar-like type that *accidentally* satisfies the vector requirements (for example via
-a `norm()` with the wrong semantics, as `std::complex` does, where `std::norm(z)` returns
-`|z|²` and not `|z|`) should instead opt out of `Tensor` with
-[`disable_tensor`](#disable_tensor), which removes it from `Vector` as well by subsumption.
+**Default:** A type is complex exactly when it satisfies the `mp_units::real()` and
+`mp_units::imag()` CPOs (by providing them as member or ADL free functions), and real
+otherwise. This is why `std::complex<double>` is treated as a complex scalar and `double`
+as a real one, with no extra wiring.
+
+**When to specialize:** When a type's API does not follow the "expose `real()`/`imag()`
+if and only if complex" convention. The prominent example is a linear algebra library.
+Eigen and Blaze expose `real()` and `imag()` on their **real** matrices and vectors
+(a real value is a degenerate complex one), so the default would misread a real Eigen
+matrix as complex. The integration adapter declares the field from the element type instead:
+
+```cpp
+template<typename T>
+  requires /* T is an Eigen type */
+constexpr quantity_field mp_units::numeric_field<T> = numeric_field<typename T::Scalar>;
+```
+
+Field matching is **exact**: a real quantity requires a real representation and a complex
+quantity a complex one. A `double` does not satisfy a complex slot, and a
+`std::complex<double>` does not satisfy a real one. This prevents silently dropping the
+imaginary part when a complex value is assigned where a real one is expected.
 
 ---
 
-#### `disable_tensor<T>`
+#### `tensor_order<T>` { #tensor_order }
 
-The tensor counterpart of `disable_vector<T>`, opting a type out of the tensor character:
-
-```cpp
-template<typename T>
-constexpr bool mp_units::disable_tensor = false;
-```
-
-**Purpose:** Like `disable_vector`, it guards against accidental satisfaction of the tensor
-requirements. The library opts out `std::complex<T>` for the same reason it does for the vector
-character (`std::norm` returns the squared modulus).
+A specializable variable template that reports the intrinsic **order** of a representation
+type: `0` for a scalar, `1` for a vector, `2` for a second-order tensor.
 
 ```cpp
 template<typename T>
-constexpr bool mp_units::disable_tensor<std::complex<T>> = true;
+constexpr std::size_t mp_units::tensor_order = /* detected from the type's structure */;
 ```
 
-**Note the asymmetry with the built-in `cartesian_tensor`.** A second-order tensor
-specializes `disable_vector` (not `disable_tensor`): it is a tensor representation, but must
-never be usable as a lower-rank vector. The rank-ordering only ever lets a lower grade serve
-a higher one, never the reverse.
+**Default:** The order is detected structurally from the type's element access. Two-index
+access (the call operator `t(i, j)` or the C++23 multidimensional subscript `t[i, j]`) is
+order `2`, one-index access (`t[i]`) is order `1`, and anything else is order `0`.
+
+**When to specialize:** When the structural default reads the wrong order. The prominent
+example is again Eigen. An Eigen column vector is an `N×1` matrix, so it exposes a two-index
+`operator()(i, j)` that would otherwise make it look like an order-2 tensor. The adapter
+reads Eigen's compile-time shape instead:
+
+```cpp
+template<typename T>
+  requires /* T is an Eigen type */
+constexpr std::size_t mp_units::tensor_order<T> =
+  (T::RowsAtCompileTime == 1 || T::ColsAtCompileTime == 1) ? 1 : 2;
+```
+
+Order matching is **rank-ordered**: a representation fills a slot of equal or higher order.
+A scalar can back a vector or a tensor quantity (very common in engineering, where `double`
+models a one-dimensional vector or a scalar tensor measure), and a `cartesian_vector` can
+back a tensor quantity. The reverse never holds, so a `cartesian_tensor` (order `2`) does
+not satisfy a vector or scalar quantity.
 
 ---
 
@@ -440,8 +474,8 @@ magnitude ratio during unit conversions.
 Alternatively (or additionally), a type may provide `operator*(T, UnitMagnitude)` to
 receive the full compile-time unit magnitude instead of a numeric factor. When present,
 this operator is called **first** and the underlying-type-based operators serve as a
-fallback. The magnitude-aware operator may return a **different type** — see
-[Magnitude-aware scaling](#magnitude-aware-scaling) for the full pattern.
+fallback. The unit-magnitude-aware operator may return a **different type** — see
+[Unit-magnitude-aware scaling](#unit-magnitude-aware-scaling) for the full pattern.
 
 **For your own types**, provide these as hidden friends (defined inside the class
 body, found only via ADL):
@@ -457,7 +491,7 @@ public:
   friend constexpr my_wrapper operator*(my_wrapper v, T factor) { return my_wrapper{v.value_ * factor}; }
   friend constexpr my_wrapper operator/(my_wrapper v, T factor) { return my_wrapper{v.value_ / factor}; }
 
-  // Optional: magnitude-aware scaling (return type may differ from my_wrapper)
+  // Optional: unit-magnitude-aware scaling (return type may differ from my_wrapper)
   // template<mp_units::UnitMagnitude M>
   // friend constexpr auto operator*(const my_wrapper& v, M m) { /* ... */ }
 };
@@ -702,22 +736,22 @@ for the full recipe, including how the quantity hierarchy must be formed.
 ## How Scaling Works
 
 Every representation type must be **unit-conversion scalable** — the library must be able
-to apply a unit magnitude ratio to it internally. This is captured by the `MagnitudeScalable`
+to apply a unit magnitude ratio to it internally. This is captured by the `UnitMagnitudeScalable`
 concept, which directly names the three built-in scaling paths:
 
 ```cpp
-concept MagnitudeScalable =
-  WeaklyRegular<T> && (UsesMagnitudeAwareScaling<T> || UsesFloatingPointScaling<T> || UsesIntegerScaling<T>);
+concept UnitMagnitudeScalable =
+  WeaklyRegular<T> && (UsesUnitMagnitudeAwareScaling<T> || UsesFloatingPointScaling<T> || UsesIntegerScaling<T>);
 ```
 
-!!! tip "Magnitude-aware scaling"
+!!! tip "Unit-magnitude-aware scaling"
 
-    A representation type may additionally (or instead of `MagnitudeScalable`) provide an
+    A representation type may additionally (or instead of `UnitMagnitudeScalable`) provide an
     `operator*(T, UnitMagnitude)` hidden friend. When present, this operator is used **first**
     and the built-in paths act as a fallback. The return type may differ from the input type —
     for example, a range-validated representation can return a new type with scaled bounds,
     so that a conversion from degrees to radians adjusts the valid range from
-    [-180, 180] to [-π, π]. See [Magnitude-aware scaling](#magnitude-aware-scaling) for details.
+    [-180, 180] to [-π, π]. See [Unit-magnitude-aware scaling](#unit-magnitude-aware-scaling) for details.
 
 `UsesFloatingPointScaling` matches any type — or container thereof — whose underlying
 type satisfies `treat_as_floating_point`, is constructible from `long double` (the
@@ -774,7 +808,7 @@ concept UsesIntegerScaling =
     specialized for `int128_t` / `uint128_t`, so the full integer scaling pipeline
     works correctly for 128-bit element types on all supported compilers.
 
-Most standard types satisfy `MagnitudeScalable` automatically. See
+Most standard types satisfy `UnitMagnitudeScalable` automatically. See
 [Scaling operators](#scaling-operators) in the Customization Points section for how to
 provide `operator*` and `operator/` for your own types.
 
@@ -787,7 +821,7 @@ built-in decision tree is:
 ```mermaid
 flowchart TD
     A["scale(M, value)"] --> MA{"provides<br>op*(T, UnitMagnitude)?"}
-    MA -- "Yes" --> MAR["<b>Magnitude-aware scaling</b><br>calls value * M{}<br>return type may differ from input<br><br>e.g. custom type<br>with scaled bounds"]
+    MA -- "Yes" --> MAR["<b>Unit-magnitude-aware scaling</b><br>calls value * M{}<br>return type may differ from input<br><br>e.g. custom type<br>with scaled bounds"]
     MA -- "No (fallback)" --> B{"treat_as_floating_point&lt;T&gt;<br>or treat_as_floating_point&lt;representation_underlying_type_t&lt;T&gt;&gt;<br>?"}
     B -- True --> FP["<b>UsesFloatingPointScaling</b><br>ratio at source's representation_underlying_type_t precision<br><br>e.g. double, cartesian_vector&lt;double&gt;"]
     B -- False --> INT["<b>UsesIntegerScaling</b><br>e.g. int, safe_int&lt;int&gt;, cartesian_vector&lt;int&gt;"]
@@ -797,8 +831,8 @@ flowchart TD
     G -- "irrational (e.g. deg→rad, ×π/180)" --> IR["long double fixed-point approximation"]
 ```
 
-The magnitude-aware path (`operator*(T, UnitMagnitude)`) is checked first—before any of
-the built-in paths. If a representation type provides this operator, it has full control
+The unit-magnitude-aware path (`operator*(T, UnitMagnitude)`) is checked first—before any
+of the built-in paths. If a representation type provides this operator, it has full control
 over how scaling is performed and what type is returned. The built-in paths are only used
 as a fallback when this operator is not available.
 
@@ -873,7 +907,7 @@ type, see the
 [`MyFloat` example](../../how_to_guides/integration/using_custom_representation_types.md#scale)
 in the how-to guide.
 
-### Magnitude-aware scaling { #magnitude-aware-scaling }
+### Unit-magnitude-aware scaling { #unit-magnitude-aware-scaling }
 
 Some representation types need to transform not just their **value** but also their
 **type** during unit conversion. For example, a range-validated representation that
@@ -935,10 +969,10 @@ quantity<si::metre, long double> length3 = 2.718L * m;
 
 !!! note "Why is `bool` excluded?"
 
-    Although `bool` technically satisfies the syntactic requirements (it's copyable, totally
-    ordered, and supports arithmetic operations), it's excluded via `disable_real<bool> = true`
-    because using boolean values as physical quantities rarely makes sense and can lead to
-    confusing code.
+    Although `bool` technically satisfies the syntactic requirements (it is copyable, totally
+    ordered, and supports arithmetic operations), it is excluded via
+    `disable_representation<bool> = true` because using boolean values as physical quantities
+    rarely makes sense and can lead to confusing code.
 
 The library also supports `std::complex` for complex-valued quantities:
 
@@ -967,7 +1001,7 @@ character. At minimum this means:
 - providing `value_type` (or `element_type`) so the library knows the underlying scalar type,
 - providing `operator*` and `operator/` with `representation_underlying_type_t<T>` so the
   library can scale it during unit conversions (and optionally `operator*(T,
-  UnitMagnitude)` for [magnitude-aware scaling](#magnitude-aware-scaling)),
+  UnitMagnitude)` for [unit-magnitude-aware scaling](#unit-magnitude-aware-scaling)),
 - satisfying the character-specific requirements from the table above (copyable, equality
   comparable, arithmetic operators, CPOs, etc.).
 

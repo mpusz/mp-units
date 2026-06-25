@@ -217,6 +217,14 @@ libraries:
 - **Magnitude.** Eigen and Blaze provide `norm()`, which the `magnitude()` CPO uses
   directly. GLM spells it `length()`, so its plugin adds a one-line `magnitude()` overload
   (found by ADL) that forwards to it.
+- **Order and field.** A library whose structural shape or API misreports its character
+  declares it explicitly. An Eigen column vector is an `N×1` matrix, so it exposes a
+  two-index `operator()` that the default reads as order `2`. Its plugin specializes
+  [`tensor_order`](../../users_guide/framework_basics/representation_types.md#tensor_order)
+  from the compile-time shape. Eigen and Blaze also expose `real()`/`imag()` on real types,
+  so their plugins specialize
+  [`numeric_field`](../../users_guide/framework_basics/representation_types.md#numeric_field)
+  from the element type to keep a real matrix classified as real. GLM needs neither.
 - **Materializing expression templates.** Eigen and Blaze return lazy proxy types from
   their arithmetic operators. A proxy holds references to its operands, so storing one
   inside a `quantity` would leave dangling references once those operands expire. Their
@@ -316,7 +324,7 @@ specialization needed. The example below shows this typical case. Only specializ
 [`treat_as_floating_point`](../../users_guide/framework_basics/representation_types.md#treat_as_floating_point)
 directly when there is genuinely no meaningful underlying type to expose.
 
-#### Magnitude-aware scaling (optional) { #magnitude-aware-scaling }
+#### Unit-magnitude-aware scaling (optional) { #unit-magnitude-aware-scaling }
 
 If your representation type needs to transform its **type** during unit
 conversion — not just its value — provide an `operator*(T, UnitMagnitude)` hidden friend.
@@ -349,7 +357,7 @@ public:
 };
 ```
 
-See [Magnitude-aware scaling](../../users_guide/framework_basics/representation_types.md#magnitude-aware-scaling)
+See [Unit-magnitude-aware scaling](../../users_guide/framework_basics/representation_types.md#unit-magnitude-aware-scaling)
 in the User's Guide for the complete pattern and design rationale.
 
 ??? example "`MyFloat` — integrating a third-party floating-point type"
@@ -378,7 +386,7 @@ in the User's Guide for the complete pattern and design rationale.
     - It has no `value_type` member, so `representation_underlying_type<MyFloat>` is empty
       and `MyFloat` is treated as a leaf (its own underlying type).
     - `treat_as_floating_point<MyFloat>` defaults to `std::is_floating_point_v<MyFloat>` = `false`
-      (it is a class, not a fundamental type), so `MagnitudeScalable<MyFloat>` is not satisfied.
+      (it is a class, not a fundamental type), so `UnitMagnitudeScalable<MyFloat>` is not satisfied.
 
     One specialization fixes this:
 
@@ -397,7 +405,7 @@ in the User's Guide for the complete pattern and design rationale.
     integrates with the library without any further changes:
 
     ```cpp
-    static_assert(mp_units::MagnitudeScalable<MyFloat>);
+    static_assert(mp_units::UnitMagnitudeScalable<MyFloat>);
     static_assert(mp_units::RepresentationOf<MyFloat, mp_units::quantity_character::real_scalar>);
 
     const auto q = isq::length(MyFloat{1.0L} * m);
@@ -535,9 +543,10 @@ void example()
 }
 ```
 
-`cartesian_tensor` is kept out of the vector character (it specializes `disable_vector`),
-so it can never be used where a vector representation is expected. The fourth-order tensor
-product `T ⊗ S` (ISO 80000-2, 2-18.22) and `transpose`/`trace` are not part of this release.
+`cartesian_tensor` is kept out of the vector character by its intrinsic `tensor_order`
+of `2`, so it can never be used where a vector representation is expected. The fourth-order
+tensor product `T ⊗ S` (ISO 80000-2, 2-18.22) and `transpose`/`trace` are not part of this
+release.
 
 **Implementation reference:**
 [`cartesian_tensor.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/cartesian_tensor.h)
@@ -620,7 +629,7 @@ To create a custom representation type:
    that scaling correctly updates all internal fields (e.g. for `with_variance<T>` scale
    `value` by `k` and `variance` by `k²`)
 7. **Implement `operator*(T, UnitMagnitude)`** (optional) for
-   [magnitude-aware scaling](#magnitude-aware-scaling) when bounds or other type-level
+   [unit-magnitude-aware scaling](#unit-magnitude-aware-scaling) when bounds or other type-level
    properties must change during unit conversion
 8. **Specialize `implicitly_scalable`** (if needed) to control implicit vs. explicit
    conversion semantics
@@ -651,8 +660,8 @@ custom types.
 
 **Implementation References:**
 
-- [`representation_concepts.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/representation_concepts.h) - Concept definitions and character-determination CPOs (`disable_real`, `disable_vector`, `disable_tensor`, `real`, `imag`, `modulus`, `magnitude`)
-- [`customization_points.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/customization_points.h) - User-specializable customization points (`representation_underlying_type`, `treat_as_floating_point`, `representation_values`, `constraint_violation_handler`, `quantity_like_traits`, `quantity_point_like_traits`)
+- [`representation_concepts.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/representation_concepts.h) - The public `RepresentationOf` concept (built on internal, not-yet-public character concepts) and the `magnitude` CPO
+- [`customization_points.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/customization_points.h) - User-specializable customization points: the character traits (`numeric_field`, `tensor_order`, `disable_representation`) and CPOs (`real`, `imag`, `modulus`), plus `representation_underlying_type`, `representation_canonical_type`, `treat_as_floating_point`, `representation_values`, `constraint_violation_handler`, `quantity_like_traits`, `quantity_point_like_traits`
 - [`quantity_traits.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/quantity_traits.h) - Public helpers (`unit_for`, `reference_for`, `rep_for`)
 - [`scaling.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/scaling.h) - Built-in scaling implementation
 - [`value_cast.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/value_cast.h) - `value_cast`, `force_in`, `is_integral_scaling`, and `implicitly_scalable`

@@ -126,31 +126,37 @@ that satisfies [`QuantitySpecOf<V>`](#QuantitySpecOf) concept.
 Every representation type must satisfy a common baseline:
 
 - **Weakly regular**: copyable and equality comparable (default-constructibility is not required).
-- **`MagnitudeScalable`**: the library must be able to apply a unit magnitude ratio to it
-  internally. Most standard types satisfy this automatically via the built-in scaling paths;
-  custom types may additionally provide `operator*(T, UnitMagnitude)` for
-  [magnitude-aware scaling](representation_types.md#magnitude-aware-scaling) that can change
-  the representation type during unit conversion. See
+- **`UnitMagnitudeScalable`**: the library must be able to apply a unit magnitude ratio
+  to it internally. Most standard types satisfy this automatically via the built-in
+  scaling paths.
+  Custom types may additionally provide `operator*(T, UnitMagnitude)` for
+  [unit-magnitude-aware scaling](representation_types.md#unit-magnitude-aware-scaling) that
+  can change the representation type during unit conversion. See
   [Representation Types](representation_types.md#how-scaling-works) for details.
-- **Character-specific operations**: additional arithmetic operations required by the
-  [quantity character](../../reference/glossary.md#character) (e.g. total ordering for real
-  scalars, `real()`/`imag()`/`modulus()` CPOs for complex scalars, `norm()`/`magnitude()`
-  CPO for vectors).
+- **Character-specific operations**: additional operations required by the type's character
+  (e.g. total ordering for real scalars, `real()`/`imag()`/`modulus()` CPOs for complex
+  scalars, the `magnitude()` CPO for vectors and tensors).
 
-The second template argument `V` further constrains which characters are accepted:
+The second template argument `V` selects which characters are accepted. A representation is
+matched on two independent axes: the **field** (real or complex, reported by the
+[`numeric_field<T>`](representation_types.md#numeric_field) trait) and the **order** (scalar,
+vector, or tensor, reported by the [`tensor_order<T>`](representation_types.md#tensor_order)
+trait):
 
 - if the type of `V` satisfies [`QuantitySpec`](#QuantitySpec):
 
     - by all representation types when `V` describes
       a [quantity kind](../../reference/glossary.md#kind),
-    - otherwise, by representation types that are of
-      a [quantity character](../../reference/glossary.md#character) associated with a provided
-      quantity specification `V`.
+    - otherwise, by representation types whose field and order match the
+      [character](../../reference/glossary.md#character) of `V`.
 
-- if `V` is of `quantity_character` type:
+- if `V` is a `quantity_character`, or a bare `quantity_tensor_order` or `quantity_field`
+  axis: by representation types matching the stated axis (or both axes).
 
-    - by representation types that are of a provided
-      [quantity character](../../reference/glossary.md#character).
+Field matching is **exact**: a real quantity needs a real representation and a complex quantity
+a complex one. Order matching is **rank-ordered**: a lower-order representation fills a
+higher-order slot, so a scalar backs a vector or tensor quantity and a vector backs a tensor
+quantity.
 
 See [Representation Types](representation_types.md) for the full requirements and available
 customization points.

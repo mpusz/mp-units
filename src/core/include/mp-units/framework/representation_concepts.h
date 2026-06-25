@@ -136,12 +136,6 @@ concept BaseScalar = RegularAddable<T> && ScalableWith<T, T>;
 
 /////////////// SCALAR ///////////////
 
-MP_UNITS_EXPORT template<typename T>
-constexpr bool disable_real = false;
-
-template<>
-MP_UNITS_INLINE constexpr bool disable_real<bool> = true;
-
 namespace detail {
 
 // The field axis as character concepts, derived from the `numeric_field` trait so they honor adapter
@@ -157,7 +151,7 @@ concept Complex = (numeric_field<T> == quantity_field::complex);
 // it is totally ordered, since the framework and its users rely on `<`/`==` to compare, clamp, and
 // sort scalar quantities. Both clauses exclude `std::complex`.
 template<typename T>
-concept RealScalar = !disable_real<T> && Real<T> && BaseScalar<T> && std::totally_ordered<T>;
+concept RealScalar = Real<T> && BaseScalar<T> && std::totally_ordered<T>;
 
 // A complex scalar is `Complex` (so `real`/`imag` work) and, on top of the shared scalar algebra,
 // supports `modulus` and reconstruction from its parts. Construction from `(real, imag)` is what
@@ -229,13 +223,6 @@ MP_UNITS_EXPORT inline constexpr ::mp_units::detail::magnitude_impl::magnitude_t
 /////////////// REPRESENTATION ///////////////
 
 namespace detail {
-
-template<typename T>
-constexpr bool is_quantity_like = false;
-
-// TODO how can we use `!Quantity<T>` below?
-template<typename T>
-concept NotQuantity = !is_quantity_like<T>;
 
 // treat_as_floating_point (not std::floating_point) is intentional: it is the library's
 // extensibility point for user-defined floating-point-like types (e.g. a fixed-size float
@@ -328,31 +315,38 @@ concept HasMagnitude = requires(const T& v) {
 // per-field element algebra; an order >= 1 representation adds regular addition and an L2 magnitude
 // (its element contracts are then enforced by the container type itself, e.g.
 // `cartesian_vector<detail::Scalar T>`). These deliberately omit the representation-validity checks
-// (`NotQuantity`, `UnitMagnitudeScalable`) so that in V3 they also classify a quantity by its character.
+// (`disable_representation`, `UnitMagnitudeScalable`) so that in V3 they also classify a quantity by
+// its character.
 template<typename T>
 concept Vector = Scalar<T> || (tensor_order<T> == 1 && RegularAddable<T> && HasMagnitude<T>);
 
 template<typename T>
 concept Tensor = Vector<T> || (tensor_order<T> == 2 && RegularAddable<T> && HasMagnitude<T>);
 
-// A representation is a character that is also a valid `quantity` representation: its element is not
-// itself a quantity and it is scalable by a unit magnitude. The order axis is rank-ordered through
-// the character concepts above, so a lower-order representation fills a higher-order slot.
+// A representation is a character that is also valid `quantity` storage: it is not opted out of
+// being a representation (`disable_representation`) and the library can scale it by a unit magnitude.
+// The order axis is rank-ordered through the character concepts above, so a lower-order
+// representation fills a higher-order slot.
 //
-// `NotQuantity<value_type_t<T>>` leads each conjunction deliberately: the character concepts carry no
-// validity guard (so that in V3 they can also classify a *quantity* by its character), so for a
-// `quantity` argument `Scalar`/`Vector`/`Tensor` would instantiate the quantity's own `operator+` /
-// `operator==` whose constraints recurse back into `RepresentationOf` - a satisfaction cycle. Since
-// `value_type_t<quantity>` is the quantity itself, the leading `NotQuantity` rejects a quantity up
-// front and short-circuits before any character (and thus any operator) is evaluated.
+// `RepresentationBaseline` is only a floor, not a verdict: it captures the character-independent
+// part shared by every representation, and a type satisfying it is still not a representation until
+// it also matches a character below. It leads each conjunction deliberately. The character concepts
+// carry no validity guard (so that in V3 they can also classify a *quantity* by its character), so
+// for a `quantity` argument `Scalar`/`Vector`/`Tensor` would instantiate the quantity's own
+// `operator+` / `operator==` whose constraints recurse back into `RepresentationOf` - a satisfaction
+// cycle. `disable_representation` is `true` for a quantity, so the leading guard rejects it before any
+// character (and thus any operator) is evaluated.
 template<typename T>
-concept ScalarRepresentation = NotQuantity<value_type_t<T>> && Scalar<T> && UnitMagnitudeScalable<T>;
+concept RepresentationBaseline = !disable_representation<T> && UnitMagnitudeScalable<T>;
 
 template<typename T>
-concept VectorRepresentation = NotQuantity<value_type_t<T>> && Vector<T> && UnitMagnitudeScalable<T>;
+concept ScalarRepresentation = RepresentationBaseline<T> && Scalar<T>;
 
 template<typename T>
-concept TensorRepresentation = NotQuantity<value_type_t<T>> && Tensor<T> && UnitMagnitudeScalable<T>;
+concept VectorRepresentation = RepresentationBaseline<T> && Vector<T>;
+
+template<typename T>
+concept TensorRepresentation = RepresentationBaseline<T> && Tensor<T>;
 
 template<typename T>
 concept SomeRepresentation = TensorRepresentation<T>;

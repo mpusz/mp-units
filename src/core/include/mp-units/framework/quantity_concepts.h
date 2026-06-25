@@ -91,7 +91,7 @@ namespace detail {
 
 template<typename T>
   requires Quantity<T> || QuantityLike<T>
-constexpr bool is_quantity_like<T> = true;
+constexpr bool is_quantity_abstraction<T> = true;
 
 }
 

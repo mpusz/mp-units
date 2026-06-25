@@ -313,7 +313,7 @@ static_assert(RepresentationOf<double, quantity_tensor_order::scalar>);
 static_assert(RepresentationOf<double, quantity_tensor_order::vector>);
 static_assert(RepresentationOf<double, quantity_tensor_order::tensor>);
 
-// bool: disabled via disable_real<bool>
+// bool: opted out via disable_representation<bool>
 static_assert(!RepresentationOf<bool, quantity_field::real>);
 static_assert(!RepresentationOf<bool, quantity_field::complex>);
 static_assert(!RepresentationOf<bool, quantity_tensor_order::scalar>);
@@ -378,7 +378,7 @@ static_assert(!RepresentationOf<cartesian_tensor<std::complex<double>>, quantity
 static_assert(!RepresentationOf<cartesian_tensor<std::complex<double>>, quantity_tensor_order::vector>);
 static_assert(RepresentationOf<cartesian_tensor<std::complex<double>>, quantity_tensor_order::tensor>);
 
-// quantity types must never themselves be a representation (NotQuantity guard)
+// quantity types must never themselves be a representation (disable_representation guard)
 static_assert(!RepresentationOf<quantity<si::metre>, quantity_field::real>);
 static_assert(!RepresentationOf<quantity<si::metre>, quantity_field::complex>);
 static_assert(!RepresentationOf<quantity<si::metre>, quantity_tensor_order::scalar>);
@@ -523,9 +523,11 @@ static_assert(!detail::Real<cartesian_tensor<std::complex<double>>> &&
 static_assert(!detail::Vector<cartesian_tensor<std::complex<double>>> &&
               detail::Tensor<cartesian_tensor<std::complex<double>>>);
 
-// `Real` / `Complex` are field-only: they do not imply a usable scalar. `bool` has a real field yet
-// is not a `Scalar` (it is disabled as a representation).
-static_assert(detail::Real<bool> && !detail::Scalar<bool>);
+// `Real` / `Complex` are field-only: they classify the field axis without implying a usable
+// representation. `bool` has a real field and is even a `Scalar` by its math, yet it is opted out of
+// being a representation by `disable_representation<bool>`, so no `*Representation` concept accepts it.
+static_assert(detail::Real<bool> && detail::Scalar<bool>);
+static_assert(disable_representation<bool> && !detail::ScalarRepresentation<bool>);
 #endif
 
 // Quantity

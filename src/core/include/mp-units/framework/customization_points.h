@@ -324,6 +324,29 @@ template<typename T>
 MP_UNITS_EXPORT template<typename T>
 constexpr std::size_t tensor_order = detail::detect_tensor_order<T>();
 
+
+/////////////// disable_representation ///////////////
+
+namespace detail {
+
+// True when `T` is itself a quantity or a quantity-like external type (e.g. a `std::chrono`
+// duration). Forward-declared here and specialized in `quantity_concepts.h`, because the `Quantity`
+// and `QuantityLike` concepts are not yet available at this point.
+template<typename T>
+constexpr bool is_quantity_abstraction = false;
+
+}  // namespace detail
+
+// A specializable opt-out: when `true`, `T` is not accepted as a quantity representation by any
+// character. The default rejects a type that is, or whose elements are, a quantity abstraction (so a
+// bare quantity and a container of quantities are both excluded), and `bool` is opted out as well. A
+// custom type bars itself from ever being a representation with a one-line specialization.
+MP_UNITS_EXPORT template<typename T>
+constexpr bool disable_representation = detail::is_quantity_abstraction<detail::value_type_t<T>>;
+
+template<>
+MP_UNITS_INLINE constexpr bool disable_representation<bool> = true;
+
 MP_UNITS_EXPORT_BEGIN
 
 /**
