@@ -439,7 +439,9 @@ struct vector_shaped {
 struct matrix_shaped {
   double operator()(std::size_t, std::size_t) const;
 };
-#if __cpp_multidimensional_subscript
+// GCC 12 prematurely defines `__cpp_multidimensional_subscript` without implementing `t[i, j]`, so
+// the library skips that probe there (see `detect_tensor_order`); keep this test in step.
+#if __cpp_multidimensional_subscript && MP_UNITS_COMP_GCC != 12
 struct multidim_subscript_shaped {
   double operator[](std::size_t, std::size_t) const;
 };
@@ -448,7 +450,7 @@ struct multidim_subscript_shaped {
 static_assert(tensor_order<order_detection::scalar_shaped> == 0);
 static_assert(tensor_order<order_detection::vector_shaped> == 1);
 static_assert(tensor_order<order_detection::matrix_shaped> == 2);
-#if __cpp_multidimensional_subscript
+#if __cpp_multidimensional_subscript && MP_UNITS_COMP_GCC != 12
 static_assert(tensor_order<order_detection::multidim_subscript_shaped> == 2);  // C++23 t[i, j]
 #endif
 
@@ -488,6 +490,7 @@ static_assert(detail::Scalar<int> && detail::Vector<int> && detail::Tensor<int>)
 static_assert(detail::ScalarRepresentation<int> && detail::VectorRepresentation<int> &&
               detail::TensorRepresentation<int>);
 
+#if MP_UNITS_HOSTED
 // real vector -> real field; not a scalar, is a vector and (degenerate) tensor
 static_assert(detail::Real<cartesian_vector<double>> && !detail::Complex<cartesian_vector<double>>);
 static_assert(!detail::Scalar<cartesian_vector<double>> && detail::Vector<cartesian_vector<double>> &&
@@ -504,7 +507,6 @@ static_assert(!detail::ScalarRepresentation<cartesian_tensor<double>> &&
               !detail::VectorRepresentation<cartesian_tensor<double>> &&
               detail::TensorRepresentation<cartesian_tensor<double>>);
 
-#if MP_UNITS_HOSTED
 // complex scalar -> complex field; scalar, and (degenerate) vector and tensor
 static_assert(!detail::Real<std::complex<double>> && detail::Complex<std::complex<double>>);
 static_assert(detail::Scalar<std::complex<double>> && detail::Vector<std::complex<double>> &&

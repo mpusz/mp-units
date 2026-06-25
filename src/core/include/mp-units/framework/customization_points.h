@@ -304,7 +304,10 @@ template<typename T>
 {
   // two-index access (the call operator or the C++23 multidimensional subscript) is order 2
   if constexpr (requires(const T& t) { t(std::size_t{}, std::size_t{}); }) return 2;
-#if __cpp_multidimensional_subscript
+// GCC 12 defines `__cpp_multidimensional_subscript` but does not implement it: `t[i, j]` is still
+// parsed as the deprecated comma-subscript, which fails under `-Werror=comma-subscript` even inside
+// this `requires`. Skip the multidimensional-subscript probe there (two-index `t(i, j)` still works).
+#if __cpp_multidimensional_subscript && MP_UNITS_COMP_GCC != 12
   else if constexpr (requires(const T& t) { t[std::size_t{}, std::size_t{}]; })
     return 2;
 #endif
