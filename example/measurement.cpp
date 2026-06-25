@@ -43,10 +43,10 @@ import mp_units;
 #endif
 
 
-static_assert(mp_units::RepresentationOf<measurement<int>, mp_units::quantity_character::real_scalar>);
-static_assert(mp_units::RepresentationOf<measurement<int>, mp_units::quantity_character::vector>);
-static_assert(mp_units::RepresentationOf<measurement<double>, mp_units::quantity_character::real_scalar>);
-static_assert(mp_units::RepresentationOf<measurement<double>, mp_units::quantity_character::vector>);
+static_assert(mp_units::RepresentationOf<measurement<int>, mp_units::quantity_tensor_order::scalar>);
+static_assert(mp_units::RepresentationOf<measurement<int>, mp_units::quantity_tensor_order::vector>);
+static_assert(mp_units::RepresentationOf<measurement<double>, mp_units::quantity_tensor_order::scalar>);
+static_assert(mp_units::RepresentationOf<measurement<double>, mp_units::quantity_tensor_order::vector>);
 
 void example()
 {
