@@ -25,38 +25,117 @@ He is right. And he is not alone.
 
 Dimension safety is powerful, and it already catches more than people expect. The _mass_
 versus _weight_ confusion is a good example. At a Croydon ISO C++ evening session someone
-told me, with full confidence, that the pound is a unit of force. It is a unit of mass (the
-pound-force is a separate thing), and the confusion is common enough to have its own
-footnotes in national standards. A dimension-safe library catches that one for free, because
-_mass_ (in kilograms) and a _weight_ force (in newtons) have different dimensions.
+told me, with full confidence, that the pound is a unit of _force_. It is a unit of _mass_,
+and the pound-force is the separate unit of _force_. It is an easy mistake to make, and a
+common one. A dimension-safe library catches that one for free, because _mass_ (in kilograms)
+and a _weight_ force (in newtons) have different dimensions.
 
 The hard cases are the ones that _share_ a dimension, where dimension safety goes blind:
 
 - _speed_ and _velocity_. _Speed_ is the magnitude of _velocity_, in the same unit. A
   one-dimensional motion model often stores both as a plain `double`, where a negative value
-  means "moving backwards." Take the magnitude of the wrong one, or assume the wrong sign
-  convention, and the bug is silent. Same dimension, different character: _speed_ is a scalar,
-  _velocity_ a vector.
+  means "moving backwards." Same dimension, different character: _speed_ is a scalar,
+  _velocity_ a vector. (That a _speed_ is also non-negative is a separate guarantee, one
+  that comes from [absolute quantities](introducing-absolute-quantities.md), not from
+  character.)
 - _active_, _reactive_, _apparent_, and _complex power_, from the opening. Same dimension,
   and for _complex power_ a different character as well.
 
 A library that is only unit-safe and dimension-safe cannot help with these. It happily
 accepts a _velocity_ where a _speed_ is expected, or a _reactive power_ where an _active
-power_ is expected, because the units and the dimensions match. The error is real, the types
-are not.
+power_ is expected, because the units and the dimensions match. A _speed_ is a _velocity_
+with its direction discarded, and a function written for _velocities_ cannot tell when it
+is handed a _speed_ instead:
 
-**mp-units** tells these quantities apart along two complementary axes: quantity _kind_ (the
-ISQ hierarchy, where _active_, _reactive_, _apparent_, and _complex power_ are separate,
-incompatible kinds living in different trees) and quantity _character_. Character does two
-jobs. First, it rejects a representation type that does not fit a strongly-typed quantity,
-a plain `double` for a complex quantity such as a voltage phasor (silently dropping the
-phase), or a second-order tensor where a vector is expected. That mismatch is easy to
-introduce in a large codebase, and character turns it into a compile-time error. Second, it
-governs which
-arithmetic is legal on a quantity and which derived quantity comes out, so a calculation
-cannot drift into nonsense: you do not multiply two vectors, you take their _scalar product_
-or their _vector product_, and each yields a different quantity. That second job is largely
-**V3**; what shipped now is the character model it stands on.
+=== "Plain `double`"
+
+    ```cpp
+    // one axis along the road lane, both readings backed by double
+    double car_velocity(car id);                                     // signed, +/- along the lane
+    double car_speed(car id) { return std::abs(car_velocity(id)); }  // speedometer: |velocity|
+
+    // expects two velocities in the same frame; returns how fast the cars' gap closes
+    double closing_speed(double v_a, double v_b)
+    {
+      return std::abs(v_a - v_b);
+    }
+
+    car a = ...;     // car A reverses at 12
+    car b = ...;     // car B approaching at 30
+    closing_speed(car_velocity(a), car_velocity(b));  // 42 m/s: correct, both are velocities
+    closing_speed(car_speed(a),    car_velocity(b));  // 18 m/s: wrong, car A's reverse gear is gone
+    closing_speed(car_speed(a),    car_speed(b));     // 18 m/s: wrong again, and nothing flags either slip
+    ```
+
+=== "Strong quantities with loose template parameters"
+
+    ```cpp
+    // one axis along the road lane, both readings backed by double
+    auto car_velocity(car id);                                      // signed, +/- along the lane
+    auto car_speed(car id) { return magnitude(car_velocity(id)); }  // speedometer: |velocity|
+
+    // accepts everything and return anything (like the `double` case)
+    auto closing_speed(auto v_a, auto v_b)
+    {
+      return magnitude(v_a - v_b);
+    }
+
+    car a = ...;     // car A reverses at 12
+    car b = ...;     // car B approaching at 30
+    closing_speed(car_velocity(a), car_velocity(b));  // ok: the magnitude of a velocity difference is a speed
+    closing_speed(car_speed(a),    car_velocity(b));  // error: can't subtract different characters (V3)
+    closing_speed(car_speed(a),    car_speed(b));     // error: can't take a magnitude of a scalar quantity
+    ```
+
+=== "Strong quantities with proper constraints"
+
+    ```cpp
+    // one axis along the road lane, both readings backed by double
+    QuantityOf<isq::velocity> auto car_velocity(car id);                                   // +/- along the lane
+    QuantityOf<isq::speed> auto car_speed(car id) { return magnitude(car_velocity(id)); }  // speedometer: |velocity|
+
+    // constrained to velocities, so the wrong argument is turned away at the call site
+    QuantityOf<isq::speed> auto closing_speed(QuantityOf<isq::velocity> auto v_a,
+                                              QuantityOf<isq::velocity> auto v_b)
+    {
+      return magnitude(v_a - v_b);
+    }
+
+    car a = ...;     // car A reverses at 12
+    car b = ...;     // car B approaching at 30
+    closing_speed(car_velocity(a), car_velocity(b));  // ok: the magnitude of a velocity difference is a speed
+    closing_speed(car_speed(a),    car_velocity(b));  // error: a speed is not a velocity
+    closing_speed(car_speed(a),    car_speed(b));     // error: a speed is not a velocity
+    ```
+
+In the plain-`double` world all three calls compile, and two are silently wrong: the moment
+a _speed_ stands in for a _velocity_, car A's reverse gear is gone and `closing_speed`
+returns 18 instead of 42, with nothing to flag it. Strong quantities close the gap from two
+directions. Even with loose `auto` parameters, character governs the arithmetic inside the
+function: you cannot take the `magnitude` of a scalar _speed_, so a pair of speeds never
+makes it past the norm, and in **V3** subtracting a scalar from a vector is rejected
+outright. Constrain the parameters to `QuantityOf<isq::velocity>` and the mistake is caught
+even earlier, at the call site, with a message that names the real problem: a _speed_ is not
+a _velocity_.
+
+**mp-units** tells these quantities apart through two complementary properties: quantity
+_kind_ (the ISQ hierarchy, where _active_, _reactive_, _apparent_, and _complex power_ are
+separate, incompatible kinds living in different trees) and quantity _character_. Character
+does two jobs:
+
+- **Rejecting a representation type that does not fit a strongly-typed quantity.** A plain
+  `double` for a complex quantity such as a voltage phasor (a real type has no room for its
+  phase), or a `cartesian_vector` where a scalar _speed_ is expected. That mismatch is easy
+  to introduce in a large codebase, and character turns it into a compile-time error.
+- **Governing which operations are legal, and which derived quantity comes out**, so a
+  calculation cannot drift into nonsense. You can take the `magnitude()` of a _velocity_
+  or a _stress_ tensor but not of a scalar _speed_, and you do not multiply two vectors,
+  you take their _scalar product_ or their _vector product_, each yielding a different
+  quantity.
+
+The simplest of these guards already ship: a scalar has no `magnitude()`. The operations that
+return a _different_ kind, like the products, are largely **V3**, built on the character model
+in place today.
 
 This post is about character: where the name came from, the design dead ends we hit on the
 way (some of them more than once), and why none of it is the scope creep it is sometimes
@@ -74,11 +153,11 @@ Before the history, the objection, because it is a good one. In issue
     tensor, and complex types. Why will it not work if the representation type is a
     vector, tensor, or complex value type?
 
-It is a fair question, and a tempting position: the representation type already knows what
+It is a fair question, and a tempting design: the representation type already knows what
 it is. `std::complex<double>` is complex. `Eigen::Vector3d` is a vector. So why does a
 quantity need to carry a separate _character_ at all? Why not just follow the type?
 
-The sharpest version of this is not a passing question but a careful argument. In discussion
+The objection has a sharper, more developed form. In discussion
 [#683](https://github.com/mpusz/mp-units/discussions/683), Chip Hogg set out a working
 hypothesis that vector character is a scope mistake, reasoning from "same program, only
 safer": users already choose the vector, matrix, or scalar types that suit them, so a units
@@ -87,10 +166,15 @@ mostly just forbids combinations, and for that to pay off, the real mistakes it 
 outweigh the legitimate uses it blocks. It is a good argument, and parts of it are simply
 right. I will come back to it once the design is on the table.
 
-The honest answer took us several years and a few wrong turns to pin down. The short
-version: **the representation type does not know, it cannot be trusted, and the character,
-both its field (real or complex) and its order (scalar, vector, or tensor), is a property
-of the quantity rather than of its storage.** The rest of this post earns that sentence.
+The honest answer took us several years and a few wrong turns to pin down.
+
+!!! important "The short version"
+
+    **The representation type does not know, it cannot be trusted, and the character, both
+    its field (real or complex) and its order (scalar, vector, or tensor), is a property of
+    the quantity rather than of its storage.**
+
+The rest of this post earns that claim.
 
 ## A short history of quantity character
 
@@ -107,9 +191,9 @@ class quantity {
 ```
 
 A quantity was a dimension, a unit, and a number. That is unit-safe and dimension-safe,
-and it already prevents a large class of bugs. It does nothing for the conflations above.
-_mass_ and _weight_ differ by character, not dimension. _speed_ and _velocity_ share
-everything the type system could see. There was simply no place to record the difference.
+and it already prevents a large class of bugs. It does nothing for the conflations that
+share a dimension: _speed_ and _velocity_, or the four _powers_ from the opening, were all
+identical to the type system. There was simply no place to record the difference.
 
 ### The name comes from ISO 80000
 
@@ -127,11 +211,11 @@ dimension deliberately ignores it. In other words, the standard itself says the 
 is not enough to describe a quantity. The character is a first-class property of the
 quantity in the ISQ, and the dimension throws it away on purpose. So when **mp-units** set
 out to be not only unit-safe and dimension-safe but _quantity-safe_, the character was the
-obvious missing axis, and ISO handed us both the concept and the name.
+obvious missing property, and ISO handed us both the concept and the name.
 
 We started with exactly those three: scalar, vector, tensor.
 
-### The CppCon pivot: complex enters
+### The CppCon pivot: complex enters the game
 
 Three characters were enough until the power-systems engineer from the opening. His domain
 needs a distinction that scalar, vector, and tensor do not capture. We need to be able to
@@ -196,8 +280,10 @@ the character was a flat enumeration of four values: `real_scalar`, `complex_sca
 
 A flat list of four hard-codes an assumption that turns out to be false: that "complex"
 only ever happens to scalars. It does not. A _complex vector_ and a _complex tensor_ are
-perfectly ordinary in electromagnetism and signal processing. The flat enumeration could
-not name them. We had quietly baked "real" into every vector and tensor.
+perfectly ordinary in electromagnetism and signal processing: the phasor _electric field
+strength_ of a time-harmonic wave is a complex vector, and the _permittivity_ of a lossy
+anisotropic medium is a complex second-order tensor. The flat enumeration could not name
+either. We had quietly baked "real" into every vector and tensor.
 
 That is what triggered the refactor this post accompanies, and the article itself. The fix
 was to stop treating the character as a flat list and recognize that it was two
@@ -235,13 +321,14 @@ It cannot, and here is why.
 The same storage type legitimately backs quantities of different characters. `double` is
 the clearest case. It is a real scalar for _mass_. It is a one-dimensional real _vector_
 for _velocity_ along a known axis, where the sign carries the direction. It is even a
-degenerate real _tensor_ for a scalar stress measure. All three are normal engineering
+degenerate real _tensor_ for a scalar _stress_ measure. All three are normal engineering
 practice, and they all store the value in the same `double`.
 
 ```cpp
 quantity m  = isq::mass(5.0 * kg);                 // real scalar
 quantity v  = isq::velocity(-3.0 * m / s);         // 1-D vector: sign is direction
 quantity sp = isq::speed(3.0 * m / s);             // real scalar, non-negative by meaning
+quantity st = isq::stress(100.0 * Pa);             // degenerate tensor: a scalar stress measure
 ```
 
 If the character came from the type, all three would be identical, and there would be no
@@ -258,9 +345,9 @@ a 3D vector into a _speed_, which is a scalar quantity. A library that follows t
 inspects that vector, sees that it offers `scalar_product`, `vector_product`, and
 `magnitude`, and happily accepts calling any of those on what was declared a _speed_. It is
 not fine. _Speed_ is a scalar, and a 3D vector is the wrong representation for it no matter
-how many vector operations it exposes. The type's rich API is exactly what lures a follow-the-type
-library into accepting it. Character rejects it, because the quantity says scalar and a scalar
-slot does not take an order-1 representation.
+how many vector operations it exposes. The representation type's rich API is exactly what
+lures a follow-the-type library into accepting it. Character rejects it, because the quantity
+says scalar and a scalar slot does not take an order-1 representation.
 
 ### The type lies
 
@@ -275,8 +362,7 @@ linear algebra libraries do.
   complex until we stopped trusting the API. And because real and complex are matched
   exactly, that is worse than a stray label: a vector marked complex is no longer real,
   so it can no longer back the real quantity it actually is, a real _velocity_ for
-  instance. The misread does not merely mislabel the type, it rejects a correct and
-  common use.
+  instance. A correct and common use simply stops compiling.
 - **An Eigen column vector is an `N x 1` matrix**, so it exposes a two-index
   `operator()(i, j)`. If you detect "tensor" by the presence of two-index access, every
   Eigen vector is misread as an order-2 tensor.
@@ -295,16 +381,23 @@ operations it happens to have? Because the operations a type exposes are a menu 
 _syntactically_ possible, not what is _physically_ legal, and the gap between those two is
 where the bugs live.
 
-A `double` offers `*` and `abs()` whether it holds a _velocity_ or a _speed_. Taking the
-magnitude of a _velocity_ yields a _speed_ and is meaningful; taking it of a value that is
-already a _speed_ is meaningless, and the `double` cannot tell the two apart. Multiplying
-two _velocity_ doubles with `*` compiles and produces a number that is neither a _scalar
-product_ nor a _vector product_, just nonsense with a unit attached. A real Eigen vector,
-as we just saw, even offers `real()` and `imag()` that it has no business offering. Let the
-available operations drive the calculation and you have built a machine for confidently
-computing the wrong thing. Only the quantity's character knows which operations make sense
-and what they produce, which is why, in V3, the operations are defined on the character
-rather than scavenged from the representation.
+A `double` offers `*` and `abs()` whether it holds a _velocity_ or a _speed_, and nothing
+stops you from reaching for them:
+
+```cpp
+double vx = 3.0, vy = 4.0;   // two velocity components, in m/s
+auto k = vx * vy;            // compiles: 12. a scalar product? a vector product? neither, just m²/s²
+auto s = std::abs(vx);       // a speed? only if vx was a velocity; on a value already a speed it does nothing
+```
+
+Both operations compile, and both are wrong or controversial. The product of two _velocity_
+components is neither a _scalar product_ nor a _vector product_, just a number with a unit.
+`abs()` is meaningful on a _velocity_ and meaningless on a _speed_, and the `double` cannot
+tell the two apart. A real Eigen vector, as we just saw, even offers `real()` and `imag()`
+it has no business offering. Let the available operations drive the calculation and you have
+built a machine for confidently computing the wrong thing. Only the quantity's character knows
+which operations make sense and what they produce, which is why, in V3, the operations are
+defined on the character rather than scavenged from the representation.
 
 This goes deeper than any single calculation. When you do
 [pure dimensional analysis](../../how_to_guides/advanced_usage/pure_dimensional_analysis.md),
@@ -314,8 +407,8 @@ _duration_, _work_ is the scalar product of _force_ and _displacement_, and _mom
 is the vector product of a _position vector_ and a _force_. Which of those equations is even
 well-formed, and which quantity each one produces, is decided by the character of the
 operands, with no number anywhere to consult. The correctness of the entire ISQ rests on
-character governing operations at the specification level. A representation type is not
-merely an unreliable place to look for this, it does not exist there at all.
+character governing operations at the specification level. Here the trouble with following
+the representation is not that it is unreliable. There is no representation to follow.
 
 ### The field is a domain fact, not a storage fact
 
@@ -328,13 +421,14 @@ about storage, and the storage is what must conform to it, not the other way aro
 This is why **mp-units** matches the field _exactly_: a real quantity requires a real
 representation, and a complex quantity requires a complex one, with no implicit lift
 between them. It is tempting to allow the real-to-complex direction, since the reals embed
-in the complex numbers. We tried it, and it is a trap (more on that below): silently
-storing a complex value where a real one is expected drops the imaginary part, which in a
-power-systems calculation is a fault, not a convenience.
+in the complex numbers: a `double` is a complex number with a zero imaginary part. We tried
+it, and it is a trap (more on that below). A real representation has nowhere to hold an
+imaginary part, so a quantity that starts in a `double` can never grow one, and the first
+power-systems calculation that needs the phase has nowhere to put it.
 
 ### So the character lives on the quantity, and the bridge is a customization point
 
-Put the three observations together and the design follows. The character cannot be read
+Put these observations together and the design follows. The character cannot be read
 off the type, so it lives on the `quantity_spec`, which is where the quantity's meaning
 already lives. It is declared once, with the quantity, and inherited through the equations
 that derive other quantities:
@@ -355,8 +449,21 @@ default _and_ an adapter override:
   reports the field. The default detects it from the `real()`/`imag()` API. Eigen and
   Blaze declare it from their element type instead.
 - [`tensor_order<T>`](../../users_guide/framework_basics/representation_types.md#tensor_order)
-  reports the order. The default detects it structurally. The Eigen adapter reads
-  `RowsAtCompileTime` / `ColsAtCompileTime` instead.
+  reports the order. The default detects it from a type's indexing operators (`t[i]` for a
+  vector, `t[i, j]` for a tensor). The Eigen adapter reads `RowsAtCompileTime` /
+  `ColsAtCompileTime` instead.
+
+The override is genuinely small. The entire Eigen adapter for the two character axes is this:
+
+```cpp
+template<typename T>
+  requires /* T is an Eigen type */
+constexpr quantity_field numeric_field<T> = numeric_field<typename T::Scalar>;  // a real matrix stays real
+
+template<typename T>
+  requires /* T is an Eigen type */
+constexpr std::size_t tensor_order<T> = (T::RowsAtCompileTime == 1 || T::ColsAtCompileTime == 1) ? 1 : 2;
+```
 
 This is the answer to [#648](https://github.com/mpusz/mp-units/issues/648). The
 character is not redundant with the type, because the type
@@ -364,24 +471,23 @@ is underdetermined, unreliable, and the wrong place for a domain fact. And this 
 answer to the scope-creep charge: we did not bloat the quantity with a speculative
 feature. We recorded a property the **ISO standard** says a quantity has, that a real
 engineer says he cannot work without, and we kept the type's role as small as possible, a
-structural default plus a two-line override. The Eigen and Blaze cases prove both halves
+reasonable default plus a two-line override. The Eigen and Blaze cases prove both halves
 are necessary.
 
 ## The dead ends (where the design, and the AI, kept slipping)
 
-Much of this design was worked out in conversation with an AI assistant, leaned on not to
-write the code but to reason about the physics and mathematics where my own footing is least
-sure: geometric algebra, complex analysis, the corners of ISO 80000. Even there it was a good
+Much of this design was worked out in conversation with an AI, leaned on not to write the
+code but to reason about the physics and mathematics where my own footing is least sure:
+geometric algebra, complex analysis, the corners of ISO 80000. Even there it was a good
 measure of how subtle the space is. The intuitive answer is reliably the wrong one, and the
-plausible-but-wrong model kept resurfacing, in the assistant's suggestions and in my own,
-until a concrete engineering scenario or an ISO clause settled it. The interesting part is
-not that a capable assistant stumbled. It is _where_ it stumbled, because those are exactly
-the places a human designer slips too. Each dead end taught a reusable principle.
+plausible-but-wrong model kept resurfacing, in its suggestions and in my own, until a
+concrete engineering scenario or an ISO clause settled it. The interesting part is not that
+a capable Artificial Intelligence stumbled. It is _where_ it stumbled, because those are
+exactly the places a human designer slips too. Each dead end taught a reusable principle.
 
 ### Trap 1: read the character off the type
 
-The tempting model is the one from [#648](https://github.com/mpusz/mp-units/issues/648):
-let the representation type answer everything. It
+The tempting model: let the representation type answer everything. It
 looks right for `std::complex` and `Eigen::Vector3d`. It is wrong because `double` backs
 three characters at once and because Eigen and Blaze misreport both axes. This one was the
 stickiest of all. It kept coming back every time the code needed the character, and only
@@ -391,13 +497,11 @@ not the storage's.**
 ### Trap 2: let real quietly satisfy complex
 
 Because the reals embed in the complex numbers, it seems harmless to let a real
-representation fill a complex slot. It is not. A complex quantity assigned a real
-representation, or the reverse, loses information silently. Start a quantity in a `double`
-and you can never grow an imaginary part into it: the first calculation that produces one
-has nowhere to put it, and the phase is gone before anyone notices. In the power-systems
-domain that is the exact bug we are trying to prevent. The fix is exact, disjoint field
-matching. **Principle: a safe conversion is one the domain expert would sign off on, and
-dropping the imaginary part is not one of them.**
+representation fill a complex slot. It is not. Start a quantity in a `double` and you can
+never grow an imaginary part into it: the first calculation that produces one has nowhere
+to put it. In the power-systems domain that is the exact bug we are trying to prevent. The
+fix is exact, disjoint field matching. **Principle: a representation is safe only when a
+domain expert would sign off on it, and real-only storage for a complex quantity is not.**
 
 ### Trap 3: flag the character, take 1 (opt in)
 
@@ -427,10 +531,14 @@ Even after the traits landed, a single narrow knob survived, `disable_real`, who
 real job was to keep `bool` out. But "should this type be a representation at all?" is a
 different and more general question than "is it a real scalar?", and there was no knob for
 it. We consolidated to one character-agnostic
-[`disable_representation<T>`](../../users_guide/framework_basics/representation_types.md#disable_representation),
-whose default already excludes quantities, quantity-like types, and `bool`. Fewer knobs,
+[`disable_representation<T>`](../../users_guide/framework_basics/representation_types.md#disable_representation).
+At first it defaulted to `false`, with a single explicit specialization for `bool`,
+taking over the one job `disable_real` had. `NotQuantity` was still a separate concept
+at that point, keeping quantities and quantity-like types out of a representation slot.
+It was exactly the same category of opt-out, so we folded it into `disable_representation`
+too, leaving one trait to answer for both `bool` and the quantity-like types. Fewer knobs,
 and the general question finally has an answer. **Principle: when you find yourself adding
-the third special-case opt-out, step back and look for the one general one.**
+the third special-case opt-out, step back and look for the general one.**
 
 ## Back to the scope question
 
@@ -439,10 +547,21 @@ Which brings us back to Chip's working hypothesis from
 heart, and the design is better for them. The vector / pseudovector / multivector
 sophistication really is a rabbit hole with no single right answer, so we do not model it:
 the order axis stops at scalar, vector, and tensor. And the implementation he called fraught,
-the scalar-as-vector workaround in particular, really was, which is much of why the model
-was rebuilt the way this post describes. The `disable_vector` knob he was reacting to is
-gone, replaced by the intrinsic `tensor_order` and rank-ordering. His critique did its job:
-it narrowed the scope and pushed the implementation toward something simpler.
+the scalar-as-vector workaround in particular, really was. Back then, character was
+opt-in: a type counted as a vector only if you declared it one. The Kalman-filter examples
+store their vector quantities in plain `double`s, so they had to opt those in by hand:
+
+```cpp
+template<class T>
+  requires mp_units::is_scalar<T>
+constexpr bool mp_units::is_vector<T> = true;
+```
+
+One line, but a sweeping one: it reclassifies every scalar in the program as a vector, just
+to let a few `double`s act as one-dimensional vectors. That is exactly the kind of hand-written
+flag the rank-ordering model removes. A scalar is now a degenerate vector on its own, because
+its order is below the vector's, with nothing for the user to declare. His critique did its
+job: it narrowed the scope and pushed the implementation toward something simpler.
 
 Where we landed differently is one empirical question, whether the mistakes actually happen.
 Chip's bet was that they would not, because few users sit down and pick a type with the
@@ -450,9 +569,10 @@ wrong character, and on that he is right. But the wrong character does not arriv
 deliberate choice. It arrives from ordinary code: one type serving two characters (a
 `double` that is a _speed_ in one function and a _velocity_ in the next), a return type
 refactored under its callers (`read_phasor()` quietly becoming a `double`), or a unit that
-names two quantities at once (`VA` for both apparent and complex power). None of those
-require anyone to choose badly, only to write a large program over time. And the ledger is
-not only "forbidden combinations": character also decides which operations are legal and how
+names two quantities at once (`VA` for both _apparent power_ and _complex power_). None of
+those require anyone to choose badly, only to write a large program over time. And the
+ledger is not only "forbidden combinations": character also decides which operations are
+legal and how
 derived quantities are formed, and at the specification level, in the ISQ's own defining
 equations, there is no representation to choose in the first place. That is the part of the
 cost/benefit the hypothesis did not weigh, and it is where most of the value turns out to
@@ -478,17 +598,17 @@ struct quantity_character {
 };
 ```
 
-That is what makes _mass_ and _weight_, or _speed_ and _velocity_, incompatible where they
-should be, and what lets a complex scalar back a complex quantity. Everything else, the
-concepts, the traits, the matching rules, is built on top of those two little enums.
+That is what makes _apparent power_ and _complex power_, or _speed_ and _velocity_
+incompatible where they should be. Everything else, the concepts, the traits, the matching
+rules, is built on top of those two little enums.
 
 The richer machinery from [Bringing Quantity-Safety To The Next
 Level](bringing-quantity-safety-to-the-next-level.md), the character-specific operations
 such as `scalar_product` and `vector_product`, the affine-like relationships inside a
 single quantity tree, and the full quantity-level complex story where _active power_ is
 the real part of _complex power_, all land properly in **V3**. The power-systems
-engineer's complete wish list is not in your package manager yet. The axis along which it
-becomes expressible is.
+engineer's complete wish list is not in your package manager yet. The abstraction along
+which it becomes expressible is.
 
 ## Open questions
 
