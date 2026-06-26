@@ -1,9 +1,10 @@
 # Character of a Quantity
 
-!!! warning
-
-    This chapter's features are experimental and subject to change or removal.
-    Please share your feedback if something seems wrong or could be improved.
+A quantity's _character_ has two orthogonal axes: its **tensor order** (scalar, vector, or
+tensor) and its **numeric field** (real or complex). The two are independent, so every
+combination is possible: a _velocity_ is a real vector, a _voltage phasor_ a complex scalar,
+and a complex field amplitude in electromagnetics a complex vector. This chapter covers both
+axes and how to declare them.
 
 
 ## Scalars, vectors, and tensors
@@ -77,6 +78,30 @@ In the above equations:
     impossible.
 
 
+## Real and complex quantities
+
+Order is only half of the character. The other axis is the **field**: whether a quantity's
+values are real or complex. Most quantities are real. Some are inherently complex, carrying
+a magnitude and a phase in a single value rather than two separate real numbers:
+
+| Quantity           |     Character      | Notes                             |
+|--------------------|:------------------:|-----------------------------------|
+| $voltage$          |    real scalar     | an instantaneous value            |
+| $voltage\; phasor$ | **complex** scalar | magnitude and phase of a sinusoid |
+| $impedance$        | **complex** scalar | $resistance + j\,reactance$       |
+| $admittance$       | **complex** scalar | $1 / impedance$                   |
+
+Like the order, the field is fixed by what a quantity _means_, before any C++ type is chosen.
+Operations such as `real()`, `imag()`, and `modulus()` are meaningful only on a complex
+quantity, and the library exposes them exactly where the field says complex. The field is
+then matched to the representation exactly: a complex quantity requires a complex representation
+(such as `std::complex`), and a real quantity a real one, with no implicit lift between them.
+
+The two axes are independent. Besides the familiar real scalars and real vectors, a quantity
+can be a complex scalar (a _voltage phasor_), or even a complex vector or tensor (a complex
+field amplitude or a complex _permittivity_ in electromagnetics).
+
+
 ## Characters don't apply to dimensions and units
 
 ISO 80000 explicitly states that dimensions are orthogonal to quantity characters:
@@ -91,33 +116,53 @@ Also, it explicitly states that:
 
     All units are scalars.
 
-## Defining vector and tensor quantities
+## Defining the character of a quantity
 
-To specify that a specific quantity has a vector or tensor character a value of `quantity_character`
-enumeration can be appended to the `quantity_spec` describing such a quantity type:
+A character is one value from each axis. The two axes are plain enumerations, and
+`quantity_character` pairs them:
+
+```cpp
+enum class quantity_tensor_order : std::int8_t { scalar, vector, tensor };  // rank-ordered: a lower order fills a higher
+enum class quantity_field : std::int8_t { real, complex };                  // matched exactly: never one for the other
+
+// a character is exactly one of each
+struct quantity_character {
+  quantity_tensor_order order = quantity_tensor_order::scalar;
+  quantity_field field = quantity_field::real;
+};
+```
+
+To set the character explicitly, append a `quantity_tensor_order` value (for a vector or
+tensor) or a `quantity_field` value (for a complex quantity) to the `quantity_spec` describing
+the quantity type:
 
 === "C++23"
 
     ```cpp
-    inline constexpr struct displacement : quantity_spec<length, quantity_character::vector> {} displacement;
+    inline constexpr struct displacement : quantity_spec<length, quantity_tensor_order::vector> {} displacement;
     inline constexpr struct position_vector : quantity_spec<displacement> {} position_vector;
+    inline constexpr struct moment_of_inertia
+      : quantity_spec<angular_momentum / angular_velocity, quantity_tensor_order::tensor> {} moment_of_inertia;
     ```
 
 === "C++20"
 
     ```cpp
-    inline constexpr struct displacement : quantity_spec<displacement, length, quantity_character::vector> {} displacement;
+    inline constexpr struct displacement : quantity_spec<displacement, length, quantity_tensor_order::vector> {} displacement;
     inline constexpr struct position_vector : quantity_spec<position_vector, displacement> {} position_vector;
+    inline constexpr struct moment_of_inertia
+      : quantity_spec<moment_of_inertia, angular_momentum / angular_velocity, quantity_tensor_order::tensor> {} moment_of_inertia;
     ```
 
 === "Portable"
 
     ```cpp
-    QUANTITY_SPEC(displacement, length, quantity_character::vector);
+    QUANTITY_SPEC(displacement, length, quantity_tensor_order::vector);
     QUANTITY_SPEC(position_vector, displacement);
+    QUANTITY_SPEC(moment_of_inertia, angular_momentum / angular_velocity, quantity_tensor_order::tensor);
     ```
 
-With the above, all the quantities derived from `position_vector` or `displacement`
+With the above, all the quantities derived from these
 will have a correct character determined according to the kind of operations included in the
 [quantity equation](../../reference/glossary.md#quantity-equation) defining a
 [derived quantity](../../reference/glossary.md#derived-quantity).
@@ -141,6 +186,27 @@ No explicit character override is needed:
 
     ```cpp
     QUANTITY_SPEC(velocity, speed, displacement / duration);
+    ```
+
+A complex quantity is declared the same way, with a `quantity_field` value. For example, a
+_voltage phasor_ shares everything with _voltage_ but is complex rather than real:
+
+=== "C++23"
+
+    ```cpp
+    inline constexpr struct voltage_phasor : quantity_spec<voltage, quantity_field::complex> {} voltage_phasor;
+    ```
+
+=== "C++20"
+
+    ```cpp
+    inline constexpr struct voltage_phasor : quantity_spec<voltage_phasor, voltage, quantity_field::complex> {} voltage_phasor;
+    ```
+
+=== "Portable"
+
+    ```cpp
+    QUANTITY_SPEC(voltage_phasor, voltage, quantity_field::complex);
     ```
 
 
@@ -192,9 +258,14 @@ Quantity auto stress = cartesian_tensor{1., 0., 0., 0., 1., 0., 0., 0., 1.} * is
 
 `cartesian_tensor` satisfies the tensor character and provides the ISO 80000-2 second-order
 operations (`tensor_product`, `inner_product`, `scalar_product`). It is kept out of the vector
-character on purpose, so it cannot be used where a vector representation is expected. Conversely,
-because a tensor of order zero is a scalar and of order one is a vector, the simpler
-representation types are still accepted for tensor quantities: a fundamental type models a
-scalar tensor measure (for example a _von Mises stress_), and a `cartesian_vector` is also
-a valid tensor representation. See [Representation Types](representation_types.md) for the
+character on purpose, so it cannot be used where a vector representation is expected.
+
+!!! quote "ISO 80000-2"
+
+    A vector is a tensor of the first order and a scalar is a tensor of order zero.
+
+By that same ordering, a lower-order representation fills a higher-order slot, so the
+simpler types are still accepted for a tensor quantity: a fundamental type models a scalar
+tensor measure (for example a _von Mises stress_), and a `cartesian_vector` is also a valid
+tensor representation. See [Representation Types](representation_types.md) for the
 full rules.

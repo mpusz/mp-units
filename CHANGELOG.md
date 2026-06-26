@@ -20,6 +20,13 @@ This page documents the version history and changes for the **mp-units** library
         and matrices can be used directly as quantity representations
 - feat: `representation_canonical_type` customization point added (materializes
         expression-template representations before storing them in a `quantity`)
+- feat: quantity character split into two orthogonal axes, `quantity_tensor_order` (scalar,
+        vector, tensor) and `quantity_field` (real, complex), so complex vectors and tensors
+        are now expressible
+- feat: `cartesian_tensor` built-in representation type added (fixed 3×3 second-order
+        Cartesian tensor with the ISO 80000-2 second-order operations)
+- feat: `numeric_field` and `tensor_order` customization points added (adapter-overridable
+        traits that report a representation's field and order)
 - feat: type conversions improved to raise compile-time warnings on truncation
 - feat: `natural_point_origin<QuantitySpec>` added (replaces `zeroth_point_origin<QuantitySpec>`)
 - feat: `is_natural_point_origin<T>` added (replaces `is_zeroth_point_origin<T>`)
@@ -49,6 +56,11 @@ This page documents the version history and changes for the **mp-units** library
 - refactor: `isq::time` swapped with `isq::duration`
 - refactor: deprecation warnings now include the release version
 - refactor: representation concepts cleanup
+- (!) refactor: the flat `quantity_character` enumeration (`real_scalar`, `complex_scalar`,
+  `vector`, `tensor`) deprecated; use the `quantity_tensor_order` and `quantity_field` axes
+- (!) refactor: representation character derived from intrinsic, adapter-overridable
+  `tensor_order` and `numeric_field` traits plus a single `disable_representation` opt-out
+  (replacing the previous `is_*` / `disable_*` flags and the `NotQuantity` concept)
 - refactor: `quantity_spec` call operator constraints improved
 - refactor: `quantity_cast` constraints improved
 - fix: fixed-point arithmetic for integer unit conversions
@@ -61,6 +73,8 @@ This page documents the version history and changes for the **mp-units** library
 - fix: `mechanical_energy` requires a very generic equation that overrides the one from `mechanical_work`
 - fix: `fathom` definition fixed and moved to `yard_pound` system
 - fix: `quantity_cast` support fixed for `quantity_point`
+- fix: `quantity::magnitude()` extended to tensor quantities and complex fields (Hermitian
+  and Frobenius norms); vector decomposition (`get`) now works for complex vectors
 - test: multiply syntax unit tests added
 - test: `gravitational_potential_energy` definition updated to match ISQ
 - test: `fathom` test moved to `yard_pound`
@@ -82,6 +96,7 @@ This page documents the version history and changes for the **mp-units** library
 - docs: IAU and astronomy systems documentation added
 - docs: ISQ, SI, and CGS systems documentation added
 - docs: "Using Custom Representation Types" chapter added
+- docs: "Character of a Quantity" chapter updated for the two-axis (order and field) model
 - docs: "Pure Dimensional Analysis" chapter added
 - docs: How-to Guides improved
 - docs: "Creating distinct quantity kinds with `is_kind`" chapter added
