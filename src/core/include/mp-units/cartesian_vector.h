@@ -175,6 +175,22 @@ struct cartesian_vector_iface {
   {
     return lhs[0] * rhs[1] - lhs[1] * rhs[0];
   }
+
+  // Explicit conversions between dimensions (no implicit cross-dimension conversion). `embed` is the
+  // canonical inclusion of the plane into space, zero-filling the new coordinate; `project` is the
+  // canonical projection onto the plane, dropping the last coordinate. The zero is the additive
+  // identity derived from a component (`x - x`), so no value-initialization of `T` is required.
+  template<typename T>
+  [[nodiscard]] friend constexpr ::mp_units::cartesian_vector<T, 3> embed(const cartesian_vector<T, 2>& v)
+  {
+    return ::mp_units::cartesian_vector<T, 3>{v[0], v[1], v[0] - v[0]};
+  }
+
+  template<typename T>
+  [[nodiscard]] friend constexpr ::mp_units::cartesian_vector<T, 2> project(const cartesian_vector<T, 3>& v)
+  {
+    return ::mp_units::cartesian_vector<T, 2>{v[0], v[1]};
+  }
 };
 
 }  // namespace detail
@@ -399,22 +415,6 @@ public:
 template<typename Arg, typename... Args>
   requires requires { typename std::common_type_t<Arg, Args...>; }
 cartesian_vector(Arg, Args...) -> cartesian_vector<std::common_type_t<Arg, Args...>, 1 + sizeof...(Args)>;
-
-// Explicit conversions between dimensions (there is no implicit cross-dimension conversion). `embed`
-// is the canonical inclusion of the plane into space, zero-filling the new coordinate; `project` is
-// the canonical projection onto the plane, dropping the last coordinate. The zero is the additive
-// identity derived from a component (`x - x`), so no value-initialization of `T` is required.
-MP_UNITS_EXPORT template<typename T>
-[[nodiscard]] constexpr cartesian_vector<T, 3> embed(const cartesian_vector<T, 2>& v)
-{
-  return cartesian_vector<T, 3>{v[0], v[1], v[0] - v[0]};
-}
-
-MP_UNITS_EXPORT template<typename T>
-[[nodiscard]] constexpr cartesian_vector<T, 2> project(const cartesian_vector<T, 3>& v)
-{
-  return cartesian_vector<T, 2>{v[0], v[1]};
-}
 
 }  // namespace mp_units
 

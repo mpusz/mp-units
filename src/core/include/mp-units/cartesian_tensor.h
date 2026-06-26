@@ -167,6 +167,23 @@ struct cartesian_tensor_iface {
     for (std::size_t i = 1; i < N * N; ++i) acc = acc + ::mp_units::detail::conjugate(lhs._data_[i]) * rhs._data_[i];
     return acc;
   }
+
+  // Explicit conversions between dimensions (no implicit cross-dimension conversion). `embed` places
+  // the 2×2 tensor in the top-left block of a 3×3, zero-filling the new row and column; `project`
+  // keeps that top-left 2×2 block. The zero is the additive identity from a component (`x - x`), so
+  // no value-initialization of `T` is required.
+  template<typename T>
+  [[nodiscard]] friend constexpr ::mp_units::cartesian_tensor<T, 3> embed(const cartesian_tensor<T, 2>& t)
+  {
+    const auto z = t(0, 0) - t(0, 0);
+    return ::mp_units::cartesian_tensor<T, 3>{t(0, 0), t(0, 1), z, t(1, 0), t(1, 1), z, z, z, z};
+  }
+
+  template<typename T>
+  [[nodiscard]] friend constexpr ::mp_units::cartesian_tensor<T, 2> project(const cartesian_tensor<T, 3>& t)
+  {
+    return ::mp_units::cartesian_tensor<T, 2>{t(0, 0), t(0, 1), t(1, 0), t(1, 1)};
+  }
 };
 
 }  // namespace detail
@@ -353,23 +370,6 @@ MP_UNITS_EXPORT template<typename T, std::size_t N, typename U>
 {
   return ::mp_units::detail::cartesian_tensor_from(std::make_index_sequence<N * N>{},
                                                    [&](std::size_t idx) { return lhs[idx / N] * rhs[idx % N]; });
-}
-
-// Explicit conversions between dimensions (there is no implicit cross-dimension conversion). `embed`
-// places the 2×2 tensor in the top-left block of a 3×3, zero-filling the new row and column;
-// `project` keeps that top-left 2×2 block. The zero is the additive identity derived from a component
-// (`x - x`), so no value-initialization of `T` is required.
-MP_UNITS_EXPORT template<typename T>
-[[nodiscard]] constexpr cartesian_tensor<T, 3> embed(const cartesian_tensor<T, 2>& t)
-{
-  const auto z = t(0, 0) - t(0, 0);
-  return cartesian_tensor<T, 3>{t(0, 0), t(0, 1), z, t(1, 0), t(1, 1), z, z, z, z};
-}
-
-MP_UNITS_EXPORT template<typename T>
-[[nodiscard]] constexpr cartesian_tensor<T, 2> project(const cartesian_tensor<T, 3>& t)
-{
-  return cartesian_tensor<T, 2>{t(0, 0), t(0, 1), t(1, 0), t(1, 1)};
 }
 
 }  // namespace mp_units
