@@ -41,6 +41,15 @@ using namespace mp_units;
 using Catch::Matchers::WithinRel;
 using namespace std::complex_literals;
 
+// element-type conversions follow the library's non-truncating rule (like a quantity rep), not the
+// language narrowing rule: a floating-point target or a widening is implicit, while a
+// floating-point -> integer element conversion is explicit (truncating).
+static_assert(std::convertible_to<cartesian_tensor<float>, cartesian_tensor<double>>);    // widen: implicit
+static_assert(std::convertible_to<cartesian_tensor<double>, cartesian_tensor<float>>);    // FP target: implicit
+static_assert(std::convertible_to<cartesian_tensor<int>, cartesian_tensor<double>>);      // int->FP: implicit
+static_assert(!std::convertible_to<cartesian_tensor<double>, cartesian_tensor<int>>);     // FP->int: explicit
+static_assert(std::constructible_from<cartesian_tensor<int>, cartesian_tensor<double>>);  // ...but constructible
+
 // A second-order Cartesian tensor as defined by ISO 80000-2:2019, 18.
 TEST_CASE("cartesian_tensor operations", "[tensor]")
 {

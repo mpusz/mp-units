@@ -168,19 +168,20 @@ public:
 
   template<typename... Args>
     requires(sizeof...(Args) <= 9) && (... && std::constructible_from<T, Args>)
-  constexpr explicit(!(... && std::convertible_to<Args, T>)) cartesian_tensor(Args&&... args) :
+  constexpr explicit(!(... && detail::ImplicitlyConvertibleScalar<Args, T>)) cartesian_tensor(Args&&... args) :
       _data_{static_cast<T>(std::forward<Args>(args))...}
   {
   }
 
   template<typename U>
     requires std::constructible_from<T, U>
-  constexpr explicit(!std::convertible_to<U, T>) cartesian_tensor(const cartesian_tensor<U>& other)
+  constexpr explicit(!detail::ImplicitlyConvertibleScalar<U, T>) cartesian_tensor(const cartesian_tensor<U>& other)
   {
     for (std::size_t i = 0; i < 9; ++i) _data_[i] = static_cast<T>(other._data_[i]);
   }
 
-  template<std::convertible_to<T> U>
+  template<typename U>
+    requires detail::ImplicitlyConvertibleScalar<U, T>
   constexpr cartesian_tensor& operator=(const cartesian_tensor<U>& other)
   {
     for (std::size_t i = 0; i < 9; ++i) _data_[i] = other._data_[i];

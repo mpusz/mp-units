@@ -27,6 +27,7 @@
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/representation_concepts.h>
+#include <mp-units/framework/value_cast.h>  // implicitly_scalable (+ `one` via unit.h)
 
 #if MP_UNITS_HOSTED
 #include <mp-units/bits/fmt.h>
@@ -65,6 +66,16 @@ template<typename T>
   else
     return v;
 }
+
+// A scalar element conversion `From` -> `To` is implicit only when it is also non-truncating. That
+// decision is deferred to `implicitly_scalable` - the very customization point a quantity's rep
+// conversion uses - so a user who specializes it gets consistent behavior here rather than a
+// hardcoded copy of its default. Identical (`one`) units degenerate it to the rep-only decision (a
+// bare vector has no unit scaling). `std::convertible_to` is retained because an element type need
+// not be fundamental and may define its own implicit-conversion rules.
+template<typename From, typename To>
+concept ImplicitlyConvertibleScalar =
+  std::convertible_to<From, To> && implicitly_scalable<one, std::remove_cvref_t<From>, one, To>;
 
 struct cartesian_vector_iface {
   template<typename T, typename U>
@@ -155,27 +166,28 @@ public:
 
   template<typename... Args>
     requires(... && std::constructible_from<T, Args>)
-  constexpr explicit(!(... && std::convertible_to<Args, T>)) cartesian_vector(Args&&... args) :
+  constexpr explicit(!(... && detail::ImplicitlyConvertibleScalar<Args, T>)) cartesian_vector(Args&&... args) :
       _coordinates_{static_cast<T>(std::forward<Args>(args))...}
   {
   }
 
   template<typename U>
     requires std::constructible_from<T, U>
-  constexpr explicit(!std::convertible_to<U, T>) cartesian_vector(const cartesian_vector<U>& other) :
+  constexpr explicit(!detail::ImplicitlyConvertibleScalar<U, T>) cartesian_vector(const cartesian_vector<U>& other) :
       _coordinates_{static_cast<T>(other[0]), static_cast<T>(other[1]), static_cast<T>(other[2])}
   {
   }
 
   template<typename U>
     requires std::constructible_from<T, U>
-  constexpr explicit(!std::convertible_to<U, T>) cartesian_vector(cartesian_vector<U>&& other) :
+  constexpr explicit(!detail::ImplicitlyConvertibleScalar<U, T>) cartesian_vector(cartesian_vector<U>&& other) :
       _coordinates_{static_cast<T>(std::move(other[0])), static_cast<T>(std::move(other[1])),
                     static_cast<T>(std::move(other[2]))}
   {
   }
 
-  template<std::convertible_to<T> U>
+  template<typename U>
+    requires detail::ImplicitlyConvertibleScalar<U, T>
   constexpr cartesian_vector& operator=(const cartesian_vector<U>& other)
   {
     _coordinates_[0] = other[0];
@@ -184,7 +196,8 @@ public:
     return *this;
   }
 
-  template<std::convertible_to<T> U>
+  template<typename U>
+    requires detail::ImplicitlyConvertibleScalar<U, T>
   constexpr cartesian_vector& operator=(cartesian_vector<U>&& other)
   {
     _coordinates_[0] = std::move(other[0]);

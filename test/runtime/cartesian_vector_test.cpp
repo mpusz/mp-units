@@ -41,6 +41,17 @@ using namespace mp_units;
 using namespace Catch::Matchers;
 using namespace std::complex_literals;
 
+// element-type conversions follow the library's non-truncating rule (like a quantity rep), not the
+// language narrowing rule: a floating-point target or a widening is implicit, while a
+// floating-point -> integer element conversion is explicit (truncating). Same-field conversions
+// (incl. integer narrowing) stay implicit, matching `implicitly_scalable` with no unit scaling.
+static_assert(std::convertible_to<cartesian_vector<float>, cartesian_vector<double>>);    // widen: implicit
+static_assert(std::convertible_to<cartesian_vector<double>, cartesian_vector<float>>);    // FP target: implicit
+static_assert(std::convertible_to<cartesian_vector<int>, cartesian_vector<double>>);      // int->FP: implicit
+static_assert(std::convertible_to<cartesian_vector<int>, cartesian_vector<long long>>);   // int->int: implicit
+static_assert(!std::convertible_to<cartesian_vector<double>, cartesian_vector<int>>);     // FP->int: explicit
+static_assert(std::constructible_from<cartesian_vector<int>, cartesian_vector<double>>);  // ...but constructible
+
 TEST_CASE("cartesian_vector operations", "[vector]")
 {
   SECTION("cartesian_vector initialization and access")
