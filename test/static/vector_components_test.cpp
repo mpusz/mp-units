@@ -29,6 +29,7 @@
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
+#include <complex>
 #include <type_traits>
 #endif
 
@@ -137,5 +138,41 @@ concept invalid_decompositions = requires {
   requires !detail::Decomposable<flight_velocity, double>;  // a non-indexable (scalar) representation
 };
 static_assert(invalid_decompositions<>);
+
+}  // namespace
+
+// ---- complex-field vector decomposition (the field pin was removed: any field, order must stay vector) ----
+namespace {
+
+QUANTITY_SPEC(cplx_flight_velocity, isq::velocity, quantity_field::complex);
+QUANTITY_SPEC(cplx_forward, isq::velocity, is_kind, quantity_field::complex);
+QUANTITY_SPEC(cplx_drift, isq::velocity, is_kind, quantity_field::complex);
+QUANTITY_SPEC(cplx_sink, isq::velocity, is_kind, quantity_field::complex);
+QUANTITY_SPEC(cplx_speed, isq::speed, quantity_field::complex);  // a complex *scalar*
+
+}  // namespace
+
+template<>
+struct mp_units::vector_components<cplx_flight_velocity> :
+    mp_units::vector_axes<cplx_forward, cplx_drift, cplx_sink> {};
+
+namespace {
+
+using cvec3 = cartesian_vector<std::complex<double>>;
+using CQ = quantity<cplx_flight_velocity[km / h], cvec3>;
+inline constexpr CQ cv =
+  cplx_flight_velocity(cvec3{std::complex{30.0, 1.0}, std::complex{-4.0, 0.0}, std::complex{-2.5, 2.0}} * (km / h));
+
+// a complex vector whole is decomposable, and complex vector axes are valid (field no longer pinned to real)
+static_assert(detail::Decomposable<cplx_flight_velocity, cvec3>);
+static_assert(detail::ValidVectorAxes<cplx_forward, cplx_drift, cplx_sink>);
+
+// order is still enforced regardless of field: a complex *scalar* axis is rejected
+static_assert(!detail::ValidVectorAxes<cplx_forward, cplx_speed, cplx_sink>);
+
+// get<Idx> yields the right complex 1D-vector axis quantity
+static_assert(QuantityOf<decltype(get<0>(cv)), cplx_forward>);
+static_assert(get<0>(cv).numerical_value_in(km / h) == std::complex{30.0, 1.0});
+static_assert(get<2>(cv).numerical_value_in(km / h) == std::complex{-2.5, 2.0});
 
 }  // namespace

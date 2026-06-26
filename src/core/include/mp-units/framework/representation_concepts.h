@@ -185,7 +185,8 @@ struct magnitude_t {
   [[nodiscard]] constexpr Scalar auto operator()(const T& vec) const
     requires requires { vec.magnitude(); } || requires { magnitude(vec); } ||
              (!Scalar<T> && (requires { vec.norm(); } || requires { norm(vec); })) ||
-             (RealScalar<T> && (std::is_arithmetic_v<T> || requires { vec.abs(); } || requires { abs(vec); }))
+             (RealScalar<T> && (std::is_arithmetic_v<T> || requires { vec.abs(); } || requires { abs(vec); })) ||
+             ComplexScalar<T>
   {
     if constexpr (requires { vec.magnitude(); })
       return vec.magnitude();
@@ -204,6 +205,10 @@ struct magnitude_t {
 #else
       return vec >= 0 ? vec : -vec;
 #endif
+    // allow complex scalars to represent one dimensional complex vector quantities: the L2 magnitude
+    // of a 1D complex vector is the modulus |z| of its single component
+    else if constexpr (ComplexScalar<T>)
+      return ::mp_units::modulus(vec);
     else if constexpr (requires { vec.abs(); })
       return vec.abs();
     else if constexpr (requires { abs(vec); })

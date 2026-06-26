@@ -86,6 +86,53 @@ concept invalid_types = requires {
 };
 static_assert(invalid_types<quantity>);
 
+///////////////////////////////
+// magnitude (vector/tensor norm)
+///////////////////////////////
+
+template<typename Q>
+concept has_magnitude = requires(const Q q) { q.magnitude(); };
+
+// a scalar quantity has no magnitude, even though the `magnitude` CPO would run std::abs on its double
+static_assert(!has_magnitude<quantity<isq::speed[m / s]>>);
+static_assert(!has_magnitude<quantity<isq::length[m]>>);
+
+// a vector quantity backed by a plain double is a valid (degenerate 1D) vector: it has a magnitude
+static_assert(has_magnitude<quantity<isq::velocity[m / s], double>>);
+static_assert(decltype(std::declval<quantity<isq::velocity[m / s], double>>().magnitude())::quantity_spec.character
+                .order == quantity_tensor_order::scalar);
+
+#if MP_UNITS_HOSTED
+QUANTITY_SPEC(complex_velocity, isq::velocity, quantity_field::complex);
+
+using vel_vec = quantity<isq::velocity[m / s], cartesian_vector<double>>;
+using vel_veci = quantity<isq::velocity[m / s], cartesian_vector<int>>;
+using cvel_vec = quantity<complex_velocity[m / s], cartesian_vector<std::complex<double>>>;
+using cvel_1d = quantity<complex_velocity[m / s], std::complex<double>>;
+using stress_tensor = quantity<isq::stress[si::pascal], cartesian_tensor<double>>;
+
+// vector and tensor quantities expose a magnitude, real and complex fields alike
+static_assert(has_magnitude<vel_vec>);
+static_assert(has_magnitude<vel_veci>);
+static_assert(has_magnitude<cvel_vec>);
+static_assert(has_magnitude<stress_tensor>);
+
+// a complex scalar (a phasor) is still a scalar: no magnitude
+static_assert(!has_magnitude<quantity<isq::voltage_phasor[V], std::complex<double>>>);
+
+// a complex scalar is a valid degenerate 1D complex vector, so it has a magnitude too: the modulus
+// |z| of its single component (symmetric with the real double case above)
+static_assert(has_magnitude<cvel_1d>);
+
+// the magnitude of a vector/tensor is a scalar quantity; a complex vector yields a real scalar
+static_assert(decltype(std::declval<vel_vec>().magnitude())::quantity_spec.character.order ==
+              quantity_tensor_order::scalar);
+static_assert(decltype(std::declval<stress_tensor>().magnitude())::quantity_spec.character.order ==
+              quantity_tensor_order::scalar);
+static_assert(decltype(std::declval<cvel_vec>().magnitude())::quantity_spec.character.field == quantity_field::real);
+static_assert(decltype(std::declval<cvel_1d>().magnitude())::quantity_spec.character.field == quantity_field::real);
+#endif
+
 static_assert(std::is_trivially_default_constructible_v<quantity<isq::length[m]>>);
 static_assert(std::is_trivially_copy_constructible_v<quantity<isq::length[m]>>);
 static_assert(std::is_trivially_move_constructible_v<quantity<isq::length[m]>>);

@@ -605,28 +605,24 @@ public:
     return value_cast<ToU{}, ToRep>(*this);
   }
 
-  // magnitude (Euclidean norm) of a vector quantity, returned as a scalar quantity in the same unit.
-  // Returning `* unit` (rather than `* reference`) intentionally drops the precise `quantity_spec`
-  // down to the unit's kind. This is purely a convenience workaround so users do not have to write
-  // their own `magnitude_of` helper - V2 simply cannot express the correct result type. The right
-  // type is a scalar-magnitude quantity spec (a future V3 feature): `magnitude(quantity<isq::force[N]>)`
-  // should yield something like `vec_mag<isq::force>[N]` whose `quantity_spec` has `real_scalar`
-  // character.
+  // Euclidean (or, for a complex field, Hermitian) norm of a vector or tensor quantity, as a scalar
+  // quantity in the same unit. The two-part constraint is deliberate: `order >= vector` is the
+  // character guard (a scalar such as `isq::speed` has no magnitude, though the `magnitude` CPO would
+  // gladly run `std::abs` on its `double`), and `HasMagnitude<rep>` ensures the storage can deliver one.
   //
-  // Dropping to the unit's kind does NOT fix the character in general. It collapses to `real_scalar`
-  // only when the unit derives purely from scalar base units (e.g. `km/h` -> length/time). For a unit
-  // associated with a vector quantity spec (e.g. `N` is `kind_of<isq::force>`) the result keeps
-  // `vector` character - and since `double`/`int` are valid 1D vector representations, one could even
-  // take the magnitude of a magnitude of a magnitude. That is a known V2 limitation, not a goal.
+  // Returning `* unit` drops the precise `quantity_spec` to the unit's kind: a V2 convenience, since V2
+  // cannot name the right result type (a scalar-magnitude spec like `vec_mag<isq::force>[N]` is a V3
+  // feature). This does not fix the character in general - it collapses to `real_scalar` only for units
+  // built from scalar base units (e.g. `km/h`); for one tied to a vector spec (e.g. `N`) the result
+  // keeps `vector` character, so one could even take the magnitude of a magnitude. A known V2 limitation.
   [[nodiscard]] constexpr Quantity auto magnitude() const
-    requires(quantity_spec.character == quantity_character{quantity_tensor_order::vector})
+    requires(quantity_spec.character.order >= quantity_tensor_order::vector) && detail::HasMagnitude<rep>
   {
     return ::mp_units::magnitude(numerical_value_is_an_implementation_detail_) * unit;
   }
 
   // tuple-like decomposition of a vector quantity into named 1D-vector components (see
-  // framework/vector_components.h). Hidden friends found via ADL; each returns a copy (a component
-  // is not stored as a quantity, so there is nothing to reference).
+  // framework/vector_components.h).
   template<std::size_t Idx>
 #if !(defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17)
     requires detail::DecomposableIndex<quantity_spec, Rep, Idx>

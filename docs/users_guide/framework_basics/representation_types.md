@@ -143,6 +143,10 @@ Override the detected field by specializing `numeric_field<T>`.
     not from mutually exclusive representation concepts. The `RepresentationOf` concept ensures
     your representation type has the capabilities needed for the quantity's character.
 
+    The same rank-ordering applies to a complex scalar (such as `std::complex`): it is a valid
+    1-dimensional *complex* vector, and its magnitude is the modulus `|z|` of its single component,
+    symmetric with `double` standing in as a real 1-D vector above.
+
     **Engineering practice with tensors:**
 
     For the full second-order tensor, the library provides the built-in `cartesian_tensor` (a fixed
@@ -210,8 +214,9 @@ in the following priority order:
 3. For non-scalar types: `v.norm()` member function
 4. For non-scalar types: `norm(v)` free function found via ADL
 5. For arithmetic types: `std::abs(v)`
-6. For real scalar types: `v.abs()` member function
-7. For real scalar types: `abs(v)` free function found via ADL
+6. For complex scalar types: `modulus(v)`
+7. For real scalar types: `v.abs()` member function
+8. For real scalar types: `abs(v)` free function found via ADL
 
 !!! info "Why `norm()` and `abs()` are also checked?"
 
@@ -236,6 +241,13 @@ in the following priority order:
     This enables seamless use of arithmetic types for scalar, vector, AND tensor quantities,
     which accurately reflects real engineering practice where most calculations use scalar
     values rather than full vector/tensor representations.
+
+    **Complex scalars as 1-D complex vectors: `modulus()` (step 6)**
+
+    Symmetrically, a complex scalar (such as `std::complex`) stands in for a 1-dimensional
+    *complex* vector, whose magnitude is the modulus `|z|` of its single component. So the
+    `magnitude()` CPO routes a complex scalar through `modulus()`, mirroring the arithmetic
+    `abs()` case above.
 
     **Complex Scalars: `abs()` fallback**
 
