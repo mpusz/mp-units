@@ -176,9 +176,10 @@ public:
     (e.g. Eigen, Armadillo), so you avoid redundant adapters. Both names produce identical
     behavior; `norm()` is simply recognized as a zero-friction fallback.
 
-Once your representation type provides `magnitude()` (or a `norm()` fallback), a **vector
-quantity** built on it supports `magnitude()` at the quantity level automatically — no extra
-code — returning the Euclidean magnitude as a scalar quantity:
+Once your representation type provides `magnitude()` (or a `norm()` fallback), a
+**vector or tensor quantity** built on it supports `magnitude()` automatically, returning
+the magnitude as a scalar quantity (Euclidean for a real vector, Frobenius for a tensor,
+Hermitian for a complex one):
 
 ```cpp
 quantity v = my_vector_type<double>{3, 4, 0} * isq::velocity[m / s];
