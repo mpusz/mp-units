@@ -322,7 +322,12 @@ The same storage type legitimately backs quantities of different characters. `do
 the clearest case. It is a real scalar for _mass_. It is a one-dimensional real _vector_
 for _velocity_ along a known axis, where the sign carries the direction. It is even a
 degenerate real _tensor_ for a scalar _stress_ measure. All three are normal engineering
-practice, and they all store the value in the same `double`.
+practice, and they all store the value in the same `double`. That a scalar may serve as a
+vector or a tensor at all is ISO 80000-2's own ordering:
+
+!!! quote "ISO 80000-2"
+
+    A vector is a tensor of the first order and a scalar is a tensor of order zero.
 
 ```cpp
 quantity m  = isq::mass(5.0 * kg);                 // real scalar
@@ -371,6 +376,14 @@ Neither of these is a bug in Eigen or Blaze. Both are mathematically defensible:
 embed in the complex numbers, and a vector is a one-column matrix. That is the whole
 point. The type's exposed surface is genuinely ambiguous about character, so a units
 library that simply "follows the type" will follow it straight into a misclassification.
+
+Underneath both is one fact: a representation type describes storage, not character. A
+matrix is a rectangular array of numbers. A tensor is a different kind of object, defined
+by how its components transform when the coordinate frame changes. Every second-order
+tensor can be written as a 3×3 matrix once a basis is fixed, but not every 3×3 matrix is a
+tensor. Whether an `Eigen::Matrix3d` is a _stress_ tensor or just a table of nine numbers
+is a fact about the quantity, not the type, and no amount of inspecting the matrix recovers
+it. That fact is the character, and it lives on the quantity.
 
 ### The operations a type offers are not the ones a quantity allows
 
