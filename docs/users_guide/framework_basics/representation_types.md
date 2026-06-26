@@ -996,14 +996,29 @@ quantity z = impedance * si::ohm;  // Complex impedance
 ```
 
 For vector and tensor quantities, the library ships two built-in representation types:
-`cartesian_vector<T>` (a 3-D Cartesian vector) and `cartesian_tensor<T>` (a fixed 3×3 second-order
-Cartesian tensor). Each provides the ISO 80000-2 operations for its character:
+`cartesian_vector<T, N>` (an `N`-dimensional Cartesian vector) and `cartesian_tensor<T, N>`
+(an `N`×`N` second-order Cartesian tensor). Both take a compile-time dimension `N`,
+either `2` or `3` and defaulting to `3`, so a planar model uses a 2-D vector or a 2×2
+tensor without paying for an unused third component. Each provides the ISO 80000-2
+operations for its character:
 
 ```cpp
 #include <mp-units/cartesian_tensor.h>  // also pulls in cartesian_vector.h
 
 quantity v = cartesian_vector{1., 2., 3.} * isq::velocity[m / s];
 quantity sigma = cartesian_tensor{1., 0., 0., 0., 1., 0., 0., 0., 1.} * isq::stress[Pa];
+```
+
+The dimension is deduced from the number of components, and operations close only at a
+matching `N`. `embed` and `project` convert explicitly between the plane and space,
+zero-filling or dropping the last coordinate:
+
+```cpp
+cartesian_vector v2{1., 2.};                       // a 2-D vector, N deduced as 2
+quantity planar = isq::velocity(v2 * m / s);       // usable as a 2-D vector quantity
+cartesian_vector v3 = embed(v2);                   // lift to 3-D: (x, y) -> (x, y, 0)
+quantity spatial = isq::velocity(v3 * m / s);      // a 3-D velocity quantity
+cartesian_vector back = project(v3);               // drop to 2-D: (x, y, z) -> (x, y); back == v2
 ```
 
 Beyond these built-in types, **any custom type** works as a representation as long as it

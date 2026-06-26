@@ -222,9 +222,11 @@ how to use custom types.
 
     The current version of the C++ Standard Library does not provide any types that could be used as
     a representation type for vector and tensor quantities. **mp-units** ships two built-in types:
-    `cartesian_vector<T>` for 3-D Cartesian vectors and `cartesian_tensor<T>` for second-order
-    3×3 Cartesian tensors. Any third-party linear algebra library types can also be used via the
-    customization points described in [Representation Types](representation_types.md).
+    `cartesian_vector<T, N>` for `N`-dimensional Cartesian vectors and
+    `cartesian_tensor<T, N>` for second-order `N`×`N` Cartesian tensors, where the
+    compile-time dimension `N` is `2` or `3` (default `3`). Any third-party linear
+    algebra library types can also be used via the customization points described in
+    [Representation Types](representation_types.md).
 
 For example, using the built-in `cartesian_vector`:
 
@@ -247,8 +249,8 @@ Quantity auto q = cartesian_vector{1., 2., 3.} * isq::velocity[m / s];
     In all the cases above, the SI unit `m / s` has an associated scalar quantity of `isq::length / isq::duration`.
     `cartesian_vector` is not a correct representation type for a scalar quantity so the construction fails.
 
-A _tensor quantity_ works the same way through the built-in `cartesian_tensor`, a fixed 3×3
-second-order Cartesian tensor:
+A _tensor quantity_ works the same way through the built-in `cartesian_tensor`, an
+`N`×`N` second-order Cartesian tensor:
 
 ```cpp
 #include <mp-units/cartesian_tensor.h>
