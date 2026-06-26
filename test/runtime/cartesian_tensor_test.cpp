@@ -50,6 +50,34 @@ static_assert(std::convertible_to<cartesian_tensor<int>, cartesian_tensor<double
 static_assert(!std::convertible_to<cartesian_tensor<double>, cartesian_tensor<int>>);     // FP->int: explicit
 static_assert(std::constructible_from<cartesian_tensor<int>, cartesian_tensor<double>>);  // ...but constructible
 
+// the per-axis dimension is queryable at compile time, both as a value and as a call (tensor is NxN)
+static_assert(cartesian_tensor<double>::extent == 3);  // default N (the tensor is 3x3)
+static_assert(cartesian_tensor<double, 2>::extent == 2);
+static_assert(cartesian_tensor<double, 3>::extent() == 3);
+
+// operations close at a single dimension N: mixing 2x2 and 3x3 (or a tensor and a mismatched vector)
+// is ill-formed. Negative tests via named helper concepts asserted with static_assert (the
+// `invalid_types` idiom).
+namespace {
+template<typename A, typename B>
+concept addable = requires(A a, B b) { a + b; };
+template<typename A, typename B>
+concept subtractable = requires(A a, B b) { a - b; };
+template<typename A, typename B>
+concept inner_producible = requires(A a, B b) { inner_product(a, b); };
+template<typename A, typename B>
+concept double_dot_producible = requires(A a, B b) { scalar_product(a, b); };
+template<typename A, typename B>
+concept tensor_producible = requires(A a, B b) { tensor_product(a, b); };
+}  // namespace
+static_assert(!addable<cartesian_tensor<double, 2>, cartesian_tensor<double, 3>>);
+static_assert(!subtractable<cartesian_tensor<double, 2>, cartesian_tensor<double, 3>>);
+static_assert(!inner_producible<cartesian_tensor<double, 2>, cartesian_tensor<double, 3>>);
+static_assert(!double_dot_producible<cartesian_tensor<double, 2>, cartesian_tensor<double, 3>>);
+static_assert(!inner_producible<cartesian_tensor<double, 2>, cartesian_vector<double, 3>>);  // tensor . vector
+static_assert(!tensor_producible<cartesian_vector<double, 2>, cartesian_vector<double, 3>>);
+static_assert(!std::constructible_from<cartesian_tensor<double, 3>, cartesian_tensor<double, 2>>);
+
 // A second-order Cartesian tensor as defined by ISO 80000-2:2019, 18.
 TEST_CASE("cartesian_tensor operations", "[tensor]")
 {
@@ -244,6 +272,69 @@ TEST_CASE("cartesian_tensor operations", "[tensor]")
     REQUIRE_THAT(a.norm(), WithinRel(std::sqrt(285.0), 1e-12));
     REQUIRE_THAT(magnitude(a), WithinRel(std::sqrt(285.0), 1e-12));
     REQUIRE_THAT(norm(a), WithinRel(std::sqrt(285.0), 1e-12));
+  }
+}
+
+// The dimension N is a compile-time parameter; a planar model uses a 2x2 tensor and pays nothing for
+// a third row/column. All second-order operations close at the matching dimension.
+TEST_CASE("cartesian_tensor in two dimensions (2x2)", "[tensor]")
+{
+  SECTION("deduces a 2x2 tensor from four components")
+  {
+    cartesian_tensor t{1.0, 2.0, 3.0, 4.0};
+    static_assert(std::is_same_v<decltype(t), cartesian_tensor<double, 2>>);
+    REQUIRE(t(0, 0) == 1.0);
+    REQUIRE(t(0, 1) == 2.0);
+    REQUIRE(t(1, 0) == 3.0);
+    REQUIRE(t(1, 1) == 4.0);
+  }
+
+  SECTION("tensor (dyadic) product of two 2D vectors -> 2x2 (2-18.21)")
+  {
+    cartesian_vector a{1, 2};
+    cartesian_vector b{3, 4};
+    auto t = tensor_product(a, b);  // (a (x) b)_ij = a_i b_j
+    static_assert(std::is_same_v<decltype(t), cartesian_tensor<int, 2>>);
+    REQUIRE(t(0, 0) == 3);
+    REQUIRE(t(0, 1) == 4);
+    REQUIRE(t(1, 0) == 6);
+    REQUIRE(t(1, 1) == 8);
+  }
+
+  SECTION("inner product of two 2x2 tensors (2-18.23)")
+  {
+    cartesian_tensor a{1, 2, 3, 4};  // [[1, 2], [3, 4]]
+    auto r = inner_product(a, a);
+    REQUIRE(r(0, 0) == 7);
+    REQUIRE(r(0, 1) == 10);
+    REQUIRE(r(1, 0) == 15);
+    REQUIRE(r(1, 1) == 22);
+  }
+
+  SECTION("inner product of a 2x2 tensor and a 2D vector (2-18.24)")
+  {
+    cartesian_tensor a{1, 2, 3, 4};
+    cartesian_vector v{1, 2};
+    auto r = inner_product(a, v);  // (T . a)_i = sum_j T_ij a_j
+    static_assert(std::is_same_v<decltype(r), cartesian_vector<int, 2>>);
+    REQUIRE(r[0] == 5);
+    REQUIRE(r[1] == 11);
+  }
+
+  SECTION("scalar (double-dot) product and Frobenius norm")
+  {
+    cartesian_tensor a{1.0, 2.0, 3.0, 4.0};
+    REQUIRE(scalar_product(a, a) == 30.0);  // sum of squares 1+4+9+16
+    REQUIRE_THAT(a.magnitude(), WithinRel(std::sqrt(30.0), 1e-12));
+  }
+
+  SECTION("text output")
+  {
+    std::ostringstream os;
+    cartesian_tensor t{1, 2, 3, 4};
+    os << t;
+    CHECK(os.str() == "[[1, 2], [3, 4]]");
+    CHECK(MP_UNITS_STD_FMT::format("{}", t) == os.str());
   }
 }
 

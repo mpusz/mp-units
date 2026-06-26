@@ -50,7 +50,8 @@ import std;
 
 namespace mp_units {
 
-MP_UNITS_EXPORT template<detail::Scalar T>
+MP_UNITS_EXPORT template<detail::Scalar T, std::size_t N>
+  requires(N == 2 || N == 3)
 class cartesian_vector;
 
 namespace detail {
@@ -77,132 +78,167 @@ template<typename From, typename To>
 concept ImplicitlyConvertibleScalar =
   std::convertible_to<From, To> && implicitly_scalable<one, std::remove_cvref_t<From>, one, To>;
 
+// Build a `cartesian_vector` by evaluating `f(i)` for each i in [0, N); the element type and the
+// dimension N are deduced from the produced components via the deduction guide.
+template<typename F, std::size_t... Is>
+[[nodiscard]] constexpr auto cartesian_vector_from(std::index_sequence<Is...>, F&& f)
+{
+  return cartesian_vector{f(Is)...};
+}
+
 struct cartesian_vector_iface {
-  template<typename T, typename U>
+  template<typename T, std::size_t N, typename U>
     requires requires(const T& t, const U& u) { t + u; }
-  [[nodiscard]] friend constexpr auto operator+(const cartesian_vector<T>& lhs, const cartesian_vector<U>& rhs)
+  [[nodiscard]] friend constexpr auto operator+(const cartesian_vector<T, N>& lhs, const cartesian_vector<U, N>& rhs)
   {
-    return ::mp_units::cartesian_vector{lhs._coordinates_[0] + rhs._coordinates_[0],
-                                        lhs._coordinates_[1] + rhs._coordinates_[1],
-                                        lhs._coordinates_[2] + rhs._coordinates_[2]};
+    return ::mp_units::detail::cartesian_vector_from(std::make_index_sequence<N>{},
+                                                     [&](std::size_t i) { return lhs[i] + rhs[i]; });
   }
 
-  template<typename T, typename U>
+  template<typename T, std::size_t N, typename U>
     requires requires(const T& t, const U& u) { t - u; }
-  [[nodiscard]] friend constexpr auto operator-(const cartesian_vector<T>& lhs, const cartesian_vector<U>& rhs)
+  [[nodiscard]] friend constexpr auto operator-(const cartesian_vector<T, N>& lhs, const cartesian_vector<U, N>& rhs)
   {
-    return ::mp_units::cartesian_vector{lhs._coordinates_[0] - rhs._coordinates_[0],
-                                        lhs._coordinates_[1] - rhs._coordinates_[1],
-                                        lhs._coordinates_[2] - rhs._coordinates_[2]};
+    return ::mp_units::detail::cartesian_vector_from(std::make_index_sequence<N>{},
+                                                     [&](std::size_t i) { return lhs[i] - rhs[i]; });
   }
 
-  template<typename T, typename U>
+  template<typename T, std::size_t N, typename U>
     requires requires(const T& t, const U& u) { t * u; }
-  [[nodiscard]] friend constexpr auto operator*(const cartesian_vector<T>& lhs, const U& rhs)
+  [[nodiscard]] friend constexpr auto operator*(const cartesian_vector<T, N>& lhs, const U& rhs)
   {
-    return ::mp_units::cartesian_vector{lhs._coordinates_[0] * rhs, lhs._coordinates_[1] * rhs,
-                                        lhs._coordinates_[2] * rhs};
+    return ::mp_units::detail::cartesian_vector_from(std::make_index_sequence<N>{},
+                                                     [&](std::size_t i) { return lhs[i] * rhs; });
   }
 
-  template<typename T, typename U>
+  template<typename T, std::size_t N, typename U>
     requires requires(const T& t, const U& u) { t * u; }
-  [[nodiscard]] friend constexpr auto operator*(const T& lhs, const cartesian_vector<U>& rhs)
+  [[nodiscard]] friend constexpr auto operator*(const T& lhs, const cartesian_vector<U, N>& rhs)
   {
     return rhs * lhs;
   }
 
-  template<typename T, typename U>
+  template<typename T, std::size_t N, typename U>
     requires requires(const T& t, const U& u) { t / u; }
-  [[nodiscard]] friend constexpr auto operator/(const cartesian_vector<T>& lhs, const U& rhs)
+  [[nodiscard]] friend constexpr auto operator/(const cartesian_vector<T, N>& lhs, const U& rhs)
   {
-    return ::mp_units::cartesian_vector{lhs._coordinates_[0] / rhs, lhs._coordinates_[1] / rhs,
-                                        lhs._coordinates_[2] / rhs};
+    return ::mp_units::detail::cartesian_vector_from(std::make_index_sequence<N>{},
+                                                     [&](std::size_t i) { return lhs[i] / rhs; });
   }
 
-  template<typename T, std::equality_comparable_with<T> U>
-  [[nodiscard]] friend constexpr bool operator==(const cartesian_vector<T>& lhs, const cartesian_vector<U>& rhs)
+  template<typename T, std::size_t N, std::equality_comparable_with<T> U>
+  [[nodiscard]] friend constexpr bool operator==(const cartesian_vector<T, N>& lhs, const cartesian_vector<U, N>& rhs)
   {
-    return lhs._coordinates_[0] == rhs._coordinates_[0] && lhs._coordinates_[1] == rhs._coordinates_[1] &&
-           lhs._coordinates_[2] == rhs._coordinates_[2];
+    return [&]<std::size_t... Is>(std::index_sequence<Is...>) {
+      return (... && (lhs[Is] == rhs[Is]));
+    }(std::make_index_sequence<N>{});
   }
 
-  template<typename T, typename U>
+  template<typename T, std::size_t N, typename U>
     requires requires(const T& t, const U& u, decltype(t * u) v) {
       t * u;
       v + v;
     }
-  [[nodiscard]] friend constexpr auto scalar_product(const cartesian_vector<T>& lhs, const cartesian_vector<U>& rhs)
+  [[nodiscard]] friend constexpr auto scalar_product(const cartesian_vector<T, N>& lhs,
+                                                     const cartesian_vector<U, N>& rhs)
   {
     // Hermitian (sesquilinear) for complex elements, conjugating the first argument (physics
     // convention). `conjugate` is the identity for real elements, so this is the ordinary dot
     // product there and reduces to a real result.
-    return ::mp_units::detail::conjugate(lhs._coordinates_[0]) * rhs._coordinates_[0] +
-           ::mp_units::detail::conjugate(lhs._coordinates_[1]) * rhs._coordinates_[1] +
-           ::mp_units::detail::conjugate(lhs._coordinates_[2]) * rhs._coordinates_[2];
+    return [&]<std::size_t... Is>(std::index_sequence<Is...>) {
+      return (... + (::mp_units::detail::conjugate(lhs[Is]) * rhs[Is]));
+    }(std::make_index_sequence<N>{});
   }
 
-  template<typename T, typename U>
-    requires requires(const T& t, const U& u, decltype(t * u) v) {
+  // The cross product yields an (axial) vector only in three dimensions (ISO 80000-2:2019, 2-18.11).
+  template<typename T, std::size_t N, typename U>
+    requires(N == 3) && requires(const T& t, const U& u, decltype(t * u) v) {
       t * u;
       v - v;
     }
-  [[nodiscard]] friend constexpr auto vector_product(const cartesian_vector<T>& lhs, const cartesian_vector<U>& rhs)
+  [[nodiscard]] friend constexpr auto vector_product(const cartesian_vector<T, N>& lhs,
+                                                     const cartesian_vector<U, N>& rhs)
   {
-    return ::mp_units::cartesian_vector{
-      lhs._coordinates_[1] * rhs._coordinates_[2] - lhs._coordinates_[2] * rhs._coordinates_[1],
-      lhs._coordinates_[2] * rhs._coordinates_[0] - lhs._coordinates_[0] * rhs._coordinates_[2],
-      lhs._coordinates_[0] * rhs._coordinates_[1] - lhs._coordinates_[1] * rhs._coordinates_[0]};
+    return ::mp_units::cartesian_vector{lhs[1] * rhs[2] - lhs[2] * rhs[1], lhs[2] * rhs[0] - lhs[0] * rhs[2],
+                                        lhs[0] * rhs[1] - lhs[1] * rhs[0]};
+  }
+
+  // In two dimensions the cross product degenerates to the perp-dot product: the (pseudo)scalar
+  // z-component of the cross of the vectors embedded in 3D space (the signed parallelogram area).
+  template<typename T, std::size_t N, typename U>
+    requires(N == 2) && requires(const T& t, const U& u, decltype(t * u) v) {
+      t * u;
+      v - v;
+    }
+  [[nodiscard]] friend constexpr auto vector_product(const cartesian_vector<T, N>& lhs,
+                                                     const cartesian_vector<U, N>& rhs)
+  {
+    return lhs[0] * rhs[1] - lhs[1] * rhs[0];
   }
 };
 
 }  // namespace detail
 
-MP_UNITS_EXPORT template<detail::Scalar T = double>
+MP_UNITS_EXPORT template<detail::Scalar T = double, std::size_t N = 3>
+  requires(N == 2 || N == 3)
 class cartesian_vector : public detail::cartesian_vector_iface {
 public:
   // public members required to satisfy structural type requirements :-(
-  T _coordinates_[3];
+  T _coordinates_[N];
   using value_type = T;
 
+  // The dimension N - the per-axis count (`std::extent`-style: count in one direction), which for a
+  // vector also equals its number of coordinates. Queryable at compile time and, like
+  // `basic_fixed_string::size`, usable both as `v.extent` and `v.extent()`.
+  static constexpr std::integral_constant<std::size_t, N> extent{};
+
   template<typename... Args>
-    requires(... && std::constructible_from<T, Args>)
+    requires(sizeof...(Args) <= N) && (... && std::constructible_from<T, Args>)
   constexpr explicit(!(... && detail::ImplicitlyConvertibleScalar<Args, T>)) cartesian_vector(Args&&... args) :
       _coordinates_{static_cast<T>(std::forward<Args>(args))...}
   {
   }
 
+private:
+  // Element-wise conversion from another vector of the same dimension. Delegating through an index
+  // sequence lets us build `_coordinates_` in the member initializer list (real initialization, not
+  // default-construct-then-assign), so `T` need not be default-constructible. Indexing the public
+  // `_coordinates_` member directly (rather than `operator[]`, which always yields an lvalue)
+  // forwards the value category, so one helper serves both the copy and the move constructor.
+  template<typename V, std::size_t... Is>
+  constexpr cartesian_vector(std::index_sequence<Is...>, V&& other) :
+      _coordinates_{static_cast<T>(std::forward<V>(other)._coordinates_[Is])...}
+  {
+  }
+
+public:
   template<typename U>
     requires std::constructible_from<T, U>
-  constexpr explicit(!detail::ImplicitlyConvertibleScalar<U, T>) cartesian_vector(const cartesian_vector<U>& other) :
-      _coordinates_{static_cast<T>(other[0]), static_cast<T>(other[1]), static_cast<T>(other[2])}
+  constexpr explicit(!detail::ImplicitlyConvertibleScalar<U, T>) cartesian_vector(const cartesian_vector<U, N>& other) :
+      cartesian_vector(std::make_index_sequence<N>{}, other)
   {
   }
 
   template<typename U>
     requires std::constructible_from<T, U>
-  constexpr explicit(!detail::ImplicitlyConvertibleScalar<U, T>) cartesian_vector(cartesian_vector<U>&& other) :
-      _coordinates_{static_cast<T>(std::move(other[0])), static_cast<T>(std::move(other[1])),
-                    static_cast<T>(std::move(other[2]))}
+  constexpr explicit(!detail::ImplicitlyConvertibleScalar<U, T>) cartesian_vector(cartesian_vector<U, N>&& other) :
+      cartesian_vector(std::make_index_sequence<N>{}, std::move(other))
   {
   }
 
   template<typename U>
     requires detail::ImplicitlyConvertibleScalar<U, T>
-  constexpr cartesian_vector& operator=(const cartesian_vector<U>& other)
+  constexpr cartesian_vector& operator=(const cartesian_vector<U, N>& other)
   {
-    _coordinates_[0] = other[0];
-    _coordinates_[1] = other[1];
-    _coordinates_[2] = other[2];
+    for (std::size_t i = 0; i < N; ++i) _coordinates_[i] = other[i];
     return *this;
   }
 
   template<typename U>
     requires detail::ImplicitlyConvertibleScalar<U, T>
-  constexpr cartesian_vector& operator=(cartesian_vector<U>&& other)
+  constexpr cartesian_vector& operator=(cartesian_vector<U, N>&& other)
   {
-    _coordinates_[0] = std::move(other[0]);
-    _coordinates_[1] = std::move(other[1]);
-    _coordinates_[2] = std::move(other[2]);
+    for (std::size_t i = 0; i < N; ++i) _coordinates_[i] = std::move(other[i]);
     return *this;
   }
 
@@ -216,12 +252,15 @@ public:
     if constexpr (detail::ComplexScalar<T>) {
       // Hermitian norm sqrt(sum |zᵢ|²); the real branch keeps hypot for its overflow behavior
       using std::sqrt;
-      return sqrt(::mp_units::modulus(_coordinates_[0]) * ::mp_units::modulus(_coordinates_[0]) +
-                  ::mp_units::modulus(_coordinates_[1]) * ::mp_units::modulus(_coordinates_[1]) +
-                  ::mp_units::modulus(_coordinates_[2]) * ::mp_units::modulus(_coordinates_[2]));
+      return [&]<std::size_t... Is>(std::index_sequence<Is...>) {
+        return sqrt((... + (::mp_units::modulus(_coordinates_[Is]) * ::mp_units::modulus(_coordinates_[Is]))));
+      }(std::make_index_sequence<N>{});
     } else {
       using std::hypot;
-      return hypot(_coordinates_[0], _coordinates_[1], _coordinates_[2]);
+      if constexpr (N == 2)
+        return hypot(_coordinates_[0], _coordinates_[1]);
+      else
+        return hypot(_coordinates_[0], _coordinates_[1], _coordinates_[2]);
     }
   }
 
@@ -246,15 +285,15 @@ public:
   [[nodiscard]] constexpr auto real() const
     requires detail::ComplexScalar<T>
   {
-    return ::mp_units::cartesian_vector{::mp_units::real(_coordinates_[0]), ::mp_units::real(_coordinates_[1]),
-                                        ::mp_units::real(_coordinates_[2])};
+    return detail::cartesian_vector_from(std::make_index_sequence<N>{},
+                                         [&](std::size_t i) { return ::mp_units::real(_coordinates_[i]); });
   }
 
   [[nodiscard]] constexpr auto imag() const
     requires detail::ComplexScalar<T>
   {
-    return ::mp_units::cartesian_vector{::mp_units::imag(_coordinates_[0]), ::mp_units::imag(_coordinates_[1]),
-                                        ::mp_units::imag(_coordinates_[2])};
+    return detail::cartesian_vector_from(std::make_index_sequence<N>{},
+                                         [&](std::size_t i) { return ::mp_units::imag(_coordinates_[i]); });
   }
 
   // tuple-like element access (enables structured bindings and vector quantity decomposition)
@@ -285,18 +324,17 @@ public:
   [[nodiscard]] constexpr cartesian_vector operator+() const { return *this; }
   [[nodiscard]] constexpr cartesian_vector operator-() const
   {
-    return {-_coordinates_[0], -_coordinates_[1], -_coordinates_[2]};
+    return detail::cartesian_vector_from(std::make_index_sequence<N>{},
+                                         [&](std::size_t i) { return -_coordinates_[i]; });
   }
 
   template<typename U>
     requires requires(T& t, const U& u) {
       { t += u } -> std::same_as<T&>;
     }
-  constexpr cartesian_vector& operator+=(const cartesian_vector<U>& other)
+  constexpr cartesian_vector& operator+=(const cartesian_vector<U, N>& other)
   {
-    _coordinates_[0] += other[0];
-    _coordinates_[1] += other[1];
-    _coordinates_[2] += other[2];
+    for (std::size_t i = 0; i < N; ++i) _coordinates_[i] += other[i];
     return *this;
   }
 
@@ -304,11 +342,9 @@ public:
     requires requires(T& t, const U& u) {
       { t -= u } -> std::same_as<T&>;
     }
-  constexpr cartesian_vector& operator-=(const cartesian_vector<U>& other)
+  constexpr cartesian_vector& operator-=(const cartesian_vector<U, N>& other)
   {
-    _coordinates_[0] -= other[0];
-    _coordinates_[1] -= other[1];
-    _coordinates_[2] -= other[2];
+    for (std::size_t i = 0; i < N; ++i) _coordinates_[i] -= other[i];
     return *this;
   }
 
@@ -318,9 +354,7 @@ public:
     }
   constexpr cartesian_vector& operator*=(const U& value)
   {
-    _coordinates_[0] *= value;
-    _coordinates_[1] *= value;
-    _coordinates_[2] *= value;
+    for (std::size_t i = 0; i < N; ++i) _coordinates_[i] *= value;
     return *this;
   }
 
@@ -330,9 +364,7 @@ public:
     }
   constexpr cartesian_vector& operator/=(const U& value)
   {
-    _coordinates_[0] /= value;
-    _coordinates_[1] /= value;
-    _coordinates_[2] /= value;
+    for (std::size_t i = 0; i < N; ++i) _coordinates_[i] /= value;
     return *this;
   }
 
@@ -357,40 +389,44 @@ public:
 #if MP_UNITS_HOSTED
   friend constexpr std::ostream& operator<<(std::ostream& os, const cartesian_vector& vec)
   {
-    return os << '[' << vec[0] << ", " << vec[1] << ", " << vec[2] << ']';
+    os << '[';
+    for (std::size_t i = 0; i < N; ++i) os << (i == 0 ? "" : ", ") << vec[i];
+    return os << ']';
   }
 #endif
 };
 
 template<typename Arg, typename... Args>
-  requires(sizeof...(Args) <= 2) && requires { typename std::common_type_t<Arg, Args...>; }
-cartesian_vector(Arg, Args...) -> cartesian_vector<std::common_type_t<Arg, Args...>>;
+  requires requires { typename std::common_type_t<Arg, Args...>; }
+cartesian_vector(Arg, Args...) -> cartesian_vector<std::common_type_t<Arg, Args...>, 1 + sizeof...(Args)>;
 
 }  // namespace mp_units
 
-template<typename T, typename U>
+template<typename T, std::size_t N, typename U>
   requires requires { typename std::common_type_t<T, U>; }
-struct std::common_type<mp_units::cartesian_vector<T>, mp_units::cartesian_vector<U>> {
-  using type = mp_units::cartesian_vector<std::common_type_t<T, U>>;
+struct std::common_type<mp_units::cartesian_vector<T, N>, mp_units::cartesian_vector<U, N>> {
+  using type = mp_units::cartesian_vector<std::common_type_t<T, U>, N>;
 };
 
-template<typename T>
-struct std::tuple_size<mp_units::cartesian_vector<T>> : std::integral_constant<std::size_t, 3> {};
+template<typename T, std::size_t N>
+struct std::tuple_size<mp_units::cartesian_vector<T, N>> : std::integral_constant<std::size_t, N> {};
 
-template<std::size_t Idx, typename T>
-struct std::tuple_element<Idx, mp_units::cartesian_vector<T>> {
+template<std::size_t Idx, typename T, std::size_t N>
+struct std::tuple_element<Idx, mp_units::cartesian_vector<T, N>> {
   using type = T;
 };
 
 #if MP_UNITS_HOSTED
 // TODO use parse and use formatter for the underlying type
-template<typename T, typename Char>
-struct MP_UNITS_STD_FMT::formatter<mp_units::cartesian_vector<T>, Char> :
+template<typename T, std::size_t N, typename Char>
+struct MP_UNITS_STD_FMT::formatter<mp_units::cartesian_vector<T, N>, Char> :
     formatter<std::basic_string_view<Char>, Char> {
   template<typename FormatContext>
-  auto format(const mp_units::cartesian_vector<T>& vec, FormatContext& ctx) const
+  auto format(const mp_units::cartesian_vector<T, N>& vec, FormatContext& ctx) const
   {
-    return format_to(ctx.out(), "[{}, {}, {}]", vec[0], vec[1], vec[2]);
+    auto out = format_to(ctx.out(), "[");
+    for (std::size_t i = 0; i < N; ++i) out = format_to(out, "{}{}", i == 0 ? "" : ", ", vec[i]);
+    return format_to(out, "]");
   }
 };
 #endif

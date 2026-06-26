@@ -52,6 +52,32 @@ static_assert(std::convertible_to<cartesian_vector<int>, cartesian_vector<long l
 static_assert(!std::convertible_to<cartesian_vector<double>, cartesian_vector<int>>);     // FP->int: explicit
 static_assert(std::constructible_from<cartesian_vector<int>, cartesian_vector<double>>);  // ...but constructible
 
+// the per-axis dimension is queryable at compile time, both as a value and as a call
+static_assert(cartesian_vector<double>::extent == 3);  // default N
+static_assert(cartesian_vector<double, 2>::extent == 2);
+static_assert(cartesian_vector<double, 3>::extent() == 3);
+
+// operations close at a single dimension N: mixing 2D and 3D is ill-formed (no implicit padding).
+// Negative tests via named helper concepts asserted with static_assert (the `invalid_types` idiom).
+namespace {
+template<typename A, typename B>
+concept addable = requires(A a, B b) { a + b; };
+template<typename A, typename B>
+concept subtractable = requires(A a, B b) { a - b; };
+template<typename A, typename B>
+concept equality_comparable = requires(A a, B b) { a == b; };
+template<typename A, typename B>
+concept scalar_producible = requires(A a, B b) { scalar_product(a, b); };
+template<typename A, typename B>
+concept vector_producible = requires(A a, B b) { vector_product(a, b); };
+}  // namespace
+static_assert(!addable<cartesian_vector<double, 2>, cartesian_vector<double, 3>>);
+static_assert(!subtractable<cartesian_vector<double, 2>, cartesian_vector<double, 3>>);
+static_assert(!equality_comparable<cartesian_vector<double, 2>, cartesian_vector<double, 3>>);
+static_assert(!scalar_producible<cartesian_vector<double, 2>, cartesian_vector<double, 3>>);
+static_assert(!vector_producible<cartesian_vector<double, 2>, cartesian_vector<double, 3>>);
+static_assert(!std::constructible_from<cartesian_vector<double, 3>, cartesian_vector<double, 2>>);
+
 TEST_CASE("cartesian_vector operations", "[vector]")
 {
   SECTION("cartesian_vector initialization and access")
@@ -74,7 +100,7 @@ TEST_CASE("cartesian_vector operations", "[vector]")
 
     SECTION("one argument")
     {
-      cartesian_vector v{1.0};
+      cartesian_vector<double> v{1.0};  // explicit 3D: a single component cannot deduce a vector
       REQUIRE(v[0] == 1.0);
       REQUIRE(v[1] == 0);
       REQUIRE(v[2] == 0);
@@ -82,10 +108,21 @@ TEST_CASE("cartesian_vector operations", "[vector]")
 
     SECTION("two arguments")
     {
-      cartesian_vector v{1.0, 2.0};
+      cartesian_vector<double> v{1.0, 2.0};  // explicit 3D, third component zero-padded
       REQUIRE(v[0] == 1.0);
       REQUIRE(v[1] == 2.0);
       REQUIRE(v[2] == 0);
+    }
+
+    SECTION("deduced dimension")
+    {
+      cartesian_vector v2{1.0, 2.0};  // two components -> 2D
+      static_assert(std::is_same_v<decltype(v2), cartesian_vector<double, 2>>);
+      REQUIRE(v2[0] == 1.0);
+      REQUIRE(v2[1] == 2.0);
+
+      cartesian_vector v3{1.0, 2.0, 3.0};  // three components -> 3D
+      static_assert(std::is_same_v<decltype(v3), cartesian_vector<double, 3>>);
     }
 
     SECTION("all arguments")
@@ -446,6 +483,15 @@ TEST_CASE("cartesian_vector operations", "[vector]")
       REQUIRE(result[0] == -3);
       REQUIRE(result[1] == 6);
       REQUIRE(result[2] == -3);
+    }
+
+    SECTION("two dimensions yields the perp-dot scalar")
+    {
+      cartesian_vector v1{1.0, 2.0};
+      cartesian_vector v2{4.0, 5.0};
+      auto result = vector_product(v1, v2);  // perp-dot: v1[0]*v2[1] - v1[1]*v2[0]
+      static_assert(std::is_same_v<decltype(result), double>);
+      REQUIRE(result == -3.0);
     }
   }
 }
