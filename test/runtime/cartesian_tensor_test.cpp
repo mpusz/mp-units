@@ -403,3 +403,45 @@ TEST_CASE("cartesian_tensor with a complex representation", "[tensor][complex]")
     REQUIRE(inner_product(id, v) == v);  // I . v == v
   }
 }
+
+namespace {
+template<typename T>
+concept tensor_embeddable = requires(T t) { embed(t); };
+template<typename T>
+concept tensor_projectable = requires(T t) { project(t); };
+}  // namespace
+// embed only lifts 2x2->3x3 and project only lowers 3x3->2x2 (each defined for one source dimension)
+static_assert(tensor_embeddable<cartesian_tensor<double, 2>> && !tensor_embeddable<cartesian_tensor<double, 3>>);
+static_assert(tensor_projectable<cartesian_tensor<double, 3>> && !tensor_projectable<cartesian_tensor<double, 2>>);
+
+TEST_CASE("cartesian_tensor embed/project between 2x2 and 3x3", "[tensor]")
+{
+  SECTION("embed places the 2x2 in the top-left block, zero elsewhere")
+  {
+    cartesian_tensor t3 = embed(cartesian_tensor{1.0, 2.0, 3.0, 4.0});  // [[1, 2], [3, 4]]
+    static_assert(std::is_same_v<decltype(t3), cartesian_tensor<double, 3>>);
+    REQUIRE(t3(0, 0) == 1.0);
+    REQUIRE(t3(0, 1) == 2.0);
+    REQUIRE(t3(1, 0) == 3.0);
+    REQUIRE(t3(1, 1) == 4.0);
+    REQUIRE(t3(0, 2) == 0.0);
+    REQUIRE(t3(2, 0) == 0.0);
+    REQUIRE(t3(2, 2) == 0.0);
+  }
+
+  SECTION("project keeps the top-left 2x2 block")
+  {
+    cartesian_tensor t2 = project(cartesian_tensor{1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0});
+    static_assert(std::is_same_v<decltype(t2), cartesian_tensor<double, 2>>);
+    REQUIRE(t2(0, 0) == 1.0);
+    REQUIRE(t2(0, 1) == 2.0);
+    REQUIRE(t2(1, 0) == 4.0);
+    REQUIRE(t2(1, 1) == 5.0);
+  }
+
+  SECTION("project . embed is the identity on 2x2")
+  {
+    cartesian_tensor t2{1.0, 2.0, 3.0, 4.0};
+    REQUIRE(project(embed(t2)) == t2);
+  }
+}

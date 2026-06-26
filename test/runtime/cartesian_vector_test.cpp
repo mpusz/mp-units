@@ -558,3 +558,38 @@ TEST_CASE("cartesian_vector with a complex representation", "[vector][complex]")
     REQUIRE(t[0] == c{2.0, 2.0});
   }
 }
+
+namespace {
+template<typename V>
+concept embeddable = requires(V v) { embed(v); };
+template<typename V>
+concept projectable = requires(V v) { project(v); };
+}  // namespace
+// embed only lifts 2D->3D and project only lowers 3D->2D (each defined for one source dimension)
+static_assert(embeddable<cartesian_vector<double, 2>> && !embeddable<cartesian_vector<double, 3>>);
+static_assert(projectable<cartesian_vector<double, 3>> && !projectable<cartesian_vector<double, 2>>);
+
+TEST_CASE("cartesian_vector embed/project between 2D and 3D", "[vector]")
+{
+  SECTION("embed zero-fills the new coordinate")
+  {
+    cartesian_vector v3 = embed(cartesian_vector{1.0, 2.0});
+    static_assert(std::is_same_v<decltype(v3), cartesian_vector<double, 3>>);
+    REQUIRE(v3[0] == 1.0);
+    REQUIRE(v3[1] == 2.0);
+    REQUIRE(v3[2] == 0.0);
+  }
+
+  SECTION("project drops the last coordinate")
+  {
+    cartesian_vector v2 = project(cartesian_vector{1.0, 2.0, 3.0});
+    static_assert(std::is_same_v<decltype(v2), cartesian_vector<double, 2>>);
+    REQUIRE(v2[0] == 1.0);
+    REQUIRE(v2[1] == 2.0);
+  }
+
+  SECTION("project . embed is the identity on 2D")
+  {
+    REQUIRE(project(embed(cartesian_vector{1.0, 2.0})) == cartesian_vector{1.0, 2.0});
+  }
+}

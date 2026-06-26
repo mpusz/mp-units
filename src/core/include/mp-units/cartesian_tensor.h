@@ -351,10 +351,25 @@ MP_UNITS_EXPORT template<typename T, std::size_t N, typename U>
   requires requires(const T& t, const U& u) { t * u; }
 [[nodiscard]] constexpr auto tensor_product(const cartesian_vector<T, N>& lhs, const cartesian_vector<U, N>& rhs)
 {
-  ::mp_units::cartesian_tensor<decltype(lhs[0] * rhs[0]), N> res;
-  for (std::size_t i = 0; i < N; ++i)
-    for (std::size_t j = 0; j < N; ++j) res._data_[i * N + j] = lhs[i] * rhs[j];
-  return res;
+  return ::mp_units::detail::cartesian_tensor_from(std::make_index_sequence<N * N>{},
+                                                   [&](std::size_t idx) { return lhs[idx / N] * rhs[idx % N]; });
+}
+
+// Explicit conversions between dimensions (there is no implicit cross-dimension conversion). `embed`
+// places the 2×2 tensor in the top-left block of a 3×3, zero-filling the new row and column;
+// `project` keeps that top-left 2×2 block. The zero is the additive identity derived from a component
+// (`x - x`), so no value-initialization of `T` is required.
+MP_UNITS_EXPORT template<typename T>
+[[nodiscard]] constexpr cartesian_tensor<T, 3> embed(const cartesian_tensor<T, 2>& t)
+{
+  const auto z = t(0, 0) - t(0, 0);
+  return cartesian_tensor<T, 3>{t(0, 0), t(0, 1), z, t(1, 0), t(1, 1), z, z, z, z};
+}
+
+MP_UNITS_EXPORT template<typename T>
+[[nodiscard]] constexpr cartesian_tensor<T, 2> project(const cartesian_tensor<T, 3>& t)
+{
+  return cartesian_tensor<T, 2>{t(0, 0), t(0, 1), t(1, 0), t(1, 1)};
 }
 
 }  // namespace mp_units
