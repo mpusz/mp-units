@@ -21,10 +21,10 @@
 ## 🎯 Overview
 
 **`mp-units`** is a Modern C++ (C++20 and later) library providing the full spectrum
-of compile‑time safety for domain-specific quantities and units — from dimensional
-analysis to quantity kind safety — built on the ISO 80000 International System of
+of compile-time safety for domain-specific quantities and units, from dimensional
+analysis to quantity kind safety, built on the ISO 80000 International System of
 Quantities (ISQ). It is a candidate for C++29 standardization
-([P3045](https://wg21.link/p3045)) — your chance to shape the future of C++.
+([P3045](https://wg21.link/p3045)), your chance to shape the future of C++.
 
 ```cpp
 #include <mp-units/systems/isq.h>
@@ -57,11 +57,11 @@ int main()
 Beyond standard dimensional analysis and automatic unit conversions, **mp-units** provides
 additional safety levels:
 
-- **Quantity Kind Safety** — **mp-units** pioneered this safety level: distinguishes
+- **Quantity Kind Safety** — **mp-units** pioneered this level: it distinguishes
   quantities that share the same dimension but represent fundamentally different physical
   concepts: _frequency_ (Hz) ≠ _radioactive activity_ (Bq), _absorbed dose_ (Gy) ≠
   _dose equivalent_ (Sv), _plane angle_ (rad) ≠ _solid angle_ (sr). Dimensional analysis
-  alone cannot catch these errors — **mp-units** prevents them at compile time.
+  alone cannot catch these errors, **mp-units** prevents them at compile time.
 
 - **ISO 80000 (ISQ) Support** — Built on the International System of Quantities, functions
   can require _specific_ quantities: `isq::height` (not just any `isq::length`),
@@ -81,7 +81,7 @@ additional safety levels:
 - Value-preserving conversions
 
 **Performance**
-- All dimensional analysis at compile time — zero runtime overhead
+- All dimensional analysis at compile time, zero runtime overhead
 - Performance on par with (sometimes even better than) fundamental types
 
 **User Experience**
@@ -125,33 +125,33 @@ Extensive project documentation covers everything from getting started to advanc
 
 ## 🔍 Try It Out
 
-For **advanced development** or **contributions**, we provide a fully configured cloud
+For **advanced development** or **contributions**, we provide a preconfigured cloud
 development environment with [GitHub Codespaces](https://docs.github.com/en/codespaces):
 
 [![Open in GitHub Codespaces](https://img.shields.io/badge/Open_in-GitHub_Codespaces-blue?style=for-the-badge&logo=github&labelColor=black&color=2088FF)](https://codespaces.new/mpusz/mp-units)
 
 **Alternatives:**
 1. Navigate to the repository → **"Code"** → **"Codespaces"** → **"Create codespace on master"**
-2. Use the pre‑configured devcontainer and Docker image manually in your IDE
+2. Use the preconfigured devcontainer and Docker image manually in your IDE
 
 For detailed environment documentation, see [`.devcontainer/README.md`](.devcontainer/README.md).
 
 
 ## 🚀 Help Shape the Future of C++
 
-**`mp-units` is a candidate for ISO standardization for C++29** — the future of dimensional
-analysis in C++! The technical case is documented in:
+**`mp-units` is a candidate for ISO standardization for C++29.** The technical case is
+documented in:
 
 - [P1935: A C++ Approach to Physical Units](https://wg21.link/p1935)
 - [P2980: A motivation, scope, and plan for a quantities and units library](https://wg21.link/p2980)
 - [P3045: Quantities and units library](https://wg21.link/p3045)
 - [P4185: Completing the Mathematical Model for C++ Quantities and Units](https://wg21.link/p4185)
 
-> 🤝 **We are actively seeking organizations and individuals interested in**
+> **We are actively seeking organizations and individuals interested in**
 > **field‑trialing the library!**
 
 **Your experience matters.** Real-world testimonials demonstrate value to the ISO C++ Committee
-and help potential adopters decide. Whether you're using **mp-units** in **production**,
+and help potential adopters decide. Whether you are using **mp-units** in **production**,
 **research**, or **education**:
 
 - **Organizations**: Share your production deployments and success stories
@@ -163,23 +163,23 @@ and help potential adopters decide. Whether you're using **mp-units** in **produ
 
 ## 🤝 Contributors
 
-**mp-units** is made possible by our community of contributors! 💪
+**mp-units** is made possible by our community of contributors!
 
 [![Contributors](https://img.shields.io/github/contributors/mpusz/mp-units?style=for-the-badge&logo=github&labelColor=black&color=blue)](https://github.com/mpusz/mp-units/graphs/contributors)
 [![Commits](https://img.shields.io/github/commit-activity/m/mpusz/mp-units?style=for-the-badge&logo=git&labelColor=black&color=green)](https://github.com/mpusz/mp-units/pulse)
 [![Stars](https://img.shields.io/github/stars/mpusz/mp-units?style=for-the-badge&label=⭐%20Stars&labelColor=black&color=gold)](https://github.com/mpusz/mp-units/stargazers)
 
-### 🏆 Core Team
+### Core Team
 
 - **[Mateusz Pusz](https://github.com/mpusz)** – Project founder and lead
 - **[Johel Ernesto Guerrero Peña](https://github.com/JohelEGP)** – Core maintainer
 - **[Chip Hogg](https://github.com/chiphogg)** – Core maintainer
 
-### 🙏 All Contributors
+### All Contributors
 
-We appreciate **every contribution**, from code to documentation to community support!
+We appreciate **every contribution**, from code to documentation to community support.
 
-🌟 See our [**Contributors Page**](CONTRIBUTORS.md) for the complete list and recognition
+See the [**Contributors Page**](CONTRIBUTORS.md) for the complete list and recognition
 details.
 
 > **Ready to contribute?** Check out our
@@ -189,8 +189,8 @@ details.
 
 ## 💝 Support the Project
 
-**mp-units** is developed as open source with the ambitious goal of C++29 standardization.
-Your support helps maintain development momentum and accelerate standardization efforts!
+**mp-units** is developed as open source, with the goal of C++29 standardization. Your
+support helps sustain development and the standardization work.
 
 **Ways to support:**
 - ⭐ **Star the repository** – Show your appreciation and help others discover **mp-units**
