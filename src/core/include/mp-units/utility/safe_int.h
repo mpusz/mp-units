@@ -25,7 +25,7 @@
 #include <mp-units/bits/fixed_point.h>
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
-#include <mp-units/constrained.h>
+#include <mp-units/utility/constrained.h>
 #if MP_UNITS_HOSTED
 #include <mp-units/bits/fmt.h>
 #endif
@@ -50,7 +50,7 @@ import std;
 #endif
 #endif
 
-namespace mp_units {
+namespace mp_units::utility {
 
 // ============================================================================
 // OverflowPolicy concept
@@ -94,6 +94,8 @@ MP_UNITS_EXPORT struct safe_int_throw_policy : throw_policy {
 // ============================================================================
 
 namespace detail {
+
+using namespace ::mp_units::detail;
 
 // Returns true if lhs + rhs overflows for signed/unsigned T.
 // Uses ~T{0} instead of std::numeric_limits<T>::max() for the unsigned case so that
@@ -1018,11 +1020,6 @@ public:
 template<detail::integral T>
 safe_int(T) -> safe_int<T>;
 
-template<typename T, typename ErrorPolicy>
-struct constraint_violation_handler<safe_int<T, ErrorPolicy>> {
-  static constexpr void on_violation(std::string_view msg) { ErrorPolicy::on_constraint_violation(msg); }
-};
-
 // ============================================================================
 // Convenience type aliases
 // ============================================================================
@@ -1037,14 +1034,23 @@ MP_UNITS_EXPORT using safe_u16 = safe_int<std::uint16_t>;
 MP_UNITS_EXPORT using safe_u32 = safe_int<std::uint32_t>;
 MP_UNITS_EXPORT using safe_u64 = safe_int<std::uint64_t>;
 
+}  // namespace mp_units::utility
+
+namespace mp_units {
+
+template<typename T, typename ErrorPolicy>
+struct constraint_violation_handler<utility::safe_int<T, ErrorPolicy>> {
+  static constexpr void on_violation(std::string_view msg) { ErrorPolicy::on_constraint_violation(msg); }
+};
+
 }  // namespace mp_units
 
 // std::numeric_limits specialization — required for representation_values<safe_int<T>>
 namespace std {
 
 template<typename T, typename ErrorPolicy>
-class numeric_limits<mp_units::safe_int<T, ErrorPolicy>> : public numeric_limits<T> {
-  using S = mp_units::safe_int<T, ErrorPolicy>;
+class numeric_limits<mp_units::utility::safe_int<T, ErrorPolicy>> : public numeric_limits<T> {
+  using S = mp_units::utility::safe_int<T, ErrorPolicy>;
 public:
   [[nodiscard]] static constexpr S lowest() noexcept { return numeric_limits<T>::lowest(); }
   [[nodiscard]] static constexpr S min() noexcept { return numeric_limits<T>::min(); }
@@ -1061,9 +1067,9 @@ public:
 
 #if MP_UNITS_HOSTED
 template<typename T, typename ErrorPolicy, typename Char>
-struct MP_UNITS_STD_FMT::formatter<mp_units::safe_int<T, ErrorPolicy>, Char> : formatter<T, Char> {
+struct MP_UNITS_STD_FMT::formatter<mp_units::utility::safe_int<T, ErrorPolicy>, Char> : formatter<T, Char> {
   template<typename FormatContext>
-  auto format(const mp_units::safe_int<T, ErrorPolicy>& v, FormatContext& ctx) const
+  auto format(const mp_units::utility::safe_int<T, ErrorPolicy>& v, FormatContext& ctx) const
   {
     return formatter<T, Char>::format(v.value(), ctx);
   }

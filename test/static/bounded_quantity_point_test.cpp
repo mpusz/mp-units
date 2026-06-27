@@ -21,15 +21,16 @@
 // SOFTWARE.
 
 #include <mp-units/compat_macros.h>
-#include <mp-units/constrained.h>
 #include <mp-units/framework.h>
 #include <mp-units/overflow_policies.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>
+#include <mp-units/utility/constrained.h>
 
 namespace {
 
 using namespace mp_units;
+using namespace mp_units::utility;
 using namespace mp_units::si::unit_symbols;
 
 // ============================================================================
@@ -1129,7 +1130,7 @@ static_assert(mp_units::natural_point_origin_<mp_units::isq::length>::_bounds_(0
 QUANTITY_SPEC(avg_height_qs, isq::height);
 
 // natural_point_origin gets check_non_negative automatically (isq::height is non_negative).
-static_assert(detail::HasQuantityBounds<natural_point_origin_<avg_height_qs>>);
+static_assert(mp_units::detail::HasQuantityBounds<natural_point_origin_<avg_height_qs>>);
 
 // Relative origin at +1700 m — no own bounds, inherits check_non_negative.
 inline constexpr struct average_height_origin final :
@@ -1137,8 +1138,8 @@ inline constexpr struct average_height_origin final :
 } average_height_origin;
 
 // Inherits bounds from ancestor but has none of its own.
-static_assert(!detail::HasQuantityBounds<decltype(average_height_origin)>);
-static_assert(detail::any_ancestor_has_bounds(average_height_origin));
+static_assert(!mp_units::detail::HasQuantityBounds<decltype(average_height_origin)>);
+static_assert(mp_units::detail::any_ancestor_has_bounds(average_height_origin));
 
 using qp_avg_height = quantity_point<avg_height_qs[m], average_height_origin, double>;
 

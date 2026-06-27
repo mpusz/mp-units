@@ -21,11 +21,11 @@
 // SOFTWARE.
 
 #include <mp-units/bits/hacks.h>
-#include <mp-units/constrained.h>
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/representation_concepts.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>
+#include <mp-units/utility/constrained.h>
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
@@ -38,6 +38,7 @@ import std;
 namespace {
 
 using namespace mp_units;
+using namespace mp_units::utility;
 using namespace mp_units::detail;
 
 // ============================================================================

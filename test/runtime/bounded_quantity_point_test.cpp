@@ -21,10 +21,10 @@
 // SOFTWARE.
 
 #include <catch2/catch_test_macros.hpp>
-#include <mp-units/constrained.h>
 #include <mp-units/framework.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>
+#include <mp-units/utility/constrained.h>
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
@@ -32,6 +32,7 @@ import std;
 #endif
 
 using namespace mp_units;
+using namespace mp_units::utility;
 using namespace mp_units::si::unit_symbols;
 
 #if MP_UNITS_HOSTED

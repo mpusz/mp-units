@@ -79,8 +79,8 @@ add_mp_units_module(
             include/mp-units/framework/unit_symbol_formatting.h
             include/mp-units/framework/value_cast.h
             include/mp-units/framework/vector_components.h
-            include/mp-units/constrained.h
-            include/mp-units/safe_int.h
+            include/mp-units/utility/constrained.h
+            include/mp-units/utility/safe_int.h
             include/mp-units/utility/representation.h
             include/mp-units/compat_macros.h
             include/mp-units/concepts.h

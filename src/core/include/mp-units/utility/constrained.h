@@ -46,7 +46,7 @@ import std;
 #endif
 #endif
 
-namespace mp_units {
+namespace mp_units::utility {
 
 // ============================================================================
 // Error policy concept
@@ -314,9 +314,12 @@ public:
   }
 };
 
-// constraint_violation_handler specialization — defined after class (no forward declaration needed)
+}  // namespace mp_units::utility
+
+namespace mp_units {
+
 template<typename T, typename ErrorPolicy>
-struct constraint_violation_handler<constrained<T, ErrorPolicy>> {
+struct constraint_violation_handler<utility::constrained<T, ErrorPolicy>> {
   static constexpr void on_violation(std::string_view msg) { ErrorPolicy::on_constraint_violation(msg); }
 };
 
@@ -326,8 +329,8 @@ struct constraint_violation_handler<constrained<T, ErrorPolicy>> {
 namespace std {
 
 template<typename T, typename ErrorPolicy>
-class numeric_limits<mp_units::constrained<T, ErrorPolicy>> : public numeric_limits<T> {
-  using C = mp_units::constrained<T, ErrorPolicy>;
+class numeric_limits<mp_units::utility::constrained<T, ErrorPolicy>> : public numeric_limits<T> {
+  using C = mp_units::utility::constrained<T, ErrorPolicy>;
 
 public:
   // Always meaningful — override unconditionally.
@@ -373,9 +376,9 @@ public:
 
 #if MP_UNITS_HOSTED
 template<typename T, typename ErrorPolicy, typename Char>
-struct MP_UNITS_STD_FMT::formatter<mp_units::constrained<T, ErrorPolicy>, Char> : formatter<T, Char> {
+struct MP_UNITS_STD_FMT::formatter<mp_units::utility::constrained<T, ErrorPolicy>, Char> : formatter<T, Char> {
   template<typename FormatContext>
-  auto format(const mp_units::constrained<T, ErrorPolicy>& v, FormatContext& ctx) const
+  auto format(const mp_units::utility::constrained<T, ErrorPolicy>& v, FormatContext& ctx) const
   {
     return formatter<T, Char>::format(v.value(), ctx);
   }

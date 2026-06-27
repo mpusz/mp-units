@@ -25,11 +25,11 @@
 // IWYU pragma: begin_exports
 #include <mp-units/compat_macros.h>
 #include <mp-units/concepts.h>
-#include <mp-units/constrained.h>
 #include <mp-units/framework.h>
 #include <mp-units/overflow_policies.h>
-#include <mp-units/safe_int.h>
+#include <mp-units/utility/constrained.h>
 #include <mp-units/utility/representation.h>
+#include <mp-units/utility/safe_int.h>
 
 #if MP_UNITS_HOSTED
 #include <mp-units/math.h>

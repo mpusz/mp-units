@@ -21,13 +21,13 @@
 // SOFTWARE.
 
 #include <mp-units/bits/hacks.h>
-#include <mp-units/constrained.h>
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/quantity.h>
 #include <mp-units/framework/representation_concepts.h>
-#include <mp-units/safe_int.h>
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
+#include <mp-units/utility/constrained.h>
+#include <mp-units/utility/safe_int.h>
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
@@ -43,7 +43,9 @@ import std;
 namespace {
 
 using namespace mp_units;
+using namespace mp_units::utility;
 using namespace mp_units::detail;
+using namespace mp_units::utility::detail;  // safe_int's own helpers (add_overflows, is_value_preserving_v, ...)
 
 // ============================================================================
 // A test error policy (mirrors constrained_test.cpp for cross-wrapper tests)
@@ -205,8 +207,8 @@ static_assert(ScalarRepresentation<safe_int<long>>);
 static_assert(ScalarRepresentation<safe_int<unsigned short>>);
 
 // floating-point types must NOT be accepted
-static_assert(!requires { requires(!treat_as_floating_point<double>) && detail::RealScalar<double>; });
-static_assert(!requires { requires(!treat_as_floating_point<float>) && detail::RealScalar<float>; });
+static_assert(!requires { requires(!treat_as_floating_point<double>) && mp_units::detail::RealScalar<double>; });
+static_assert(!requires { requires(!treat_as_floating_point<float>) && mp_units::detail::RealScalar<float>; });
 
 // ============================================================================
 // std::numeric_limits
@@ -508,43 +510,43 @@ static_assert([] {
 // ============================================================================
 
 // add_overflows
-static_assert(!detail::add_overflows<int>(1, 2));
-static_assert(!detail::add_overflows<int>(std::numeric_limits<int>::max() - 1, 1));
-static_assert(detail::add_overflows<int>(std::numeric_limits<int>::max(), 1));
-static_assert(detail::add_overflows<int>(std::numeric_limits<int>::min(), -1));
-static_assert(!detail::add_overflows<unsigned>(0u, 0u));
-static_assert(detail::add_overflows<unsigned>(std::numeric_limits<unsigned>::max(), 1u));
+static_assert(!utility::detail::add_overflows<int>(1, 2));
+static_assert(!utility::detail::add_overflows<int>(std::numeric_limits<int>::max() - 1, 1));
+static_assert(utility::detail::add_overflows<int>(std::numeric_limits<int>::max(), 1));
+static_assert(utility::detail::add_overflows<int>(std::numeric_limits<int>::min(), -1));
+static_assert(!utility::detail::add_overflows<unsigned>(0u, 0u));
+static_assert(utility::detail::add_overflows<unsigned>(std::numeric_limits<unsigned>::max(), 1u));
 
 // sub_overflows
-static_assert(!detail::sub_overflows<int>(5, 3));
-static_assert(detail::sub_overflows<int>(std::numeric_limits<int>::min(), 1));
-static_assert(detail::sub_overflows<int>(std::numeric_limits<int>::max(), -1));
-static_assert(!detail::sub_overflows<unsigned>(5u, 3u));
-static_assert(detail::sub_overflows<unsigned>(0u, 1u));
+static_assert(!utility::detail::sub_overflows<int>(5, 3));
+static_assert(utility::detail::sub_overflows<int>(std::numeric_limits<int>::min(), 1));
+static_assert(utility::detail::sub_overflows<int>(std::numeric_limits<int>::max(), -1));
+static_assert(!utility::detail::sub_overflows<unsigned>(5u, 3u));
+static_assert(utility::detail::sub_overflows<unsigned>(0u, 1u));
 
 // mul_overflows
-static_assert(!detail::mul_overflows<int>(2, 3));
-static_assert(!detail::mul_overflows<int>(std::numeric_limits<int>::max(), 1));
-static_assert(detail::mul_overflows<int>(std::numeric_limits<int>::max(), 2));
-static_assert(detail::mul_overflows<int>(std::numeric_limits<int>::min(), -1));
-static_assert(!detail::mul_overflows<unsigned>(0u, std::numeric_limits<unsigned>::max()));
-static_assert(detail::mul_overflows<unsigned>(std::numeric_limits<unsigned>::max(), 2u));
+static_assert(!utility::detail::mul_overflows<int>(2, 3));
+static_assert(!utility::detail::mul_overflows<int>(std::numeric_limits<int>::max(), 1));
+static_assert(utility::detail::mul_overflows<int>(std::numeric_limits<int>::max(), 2));
+static_assert(utility::detail::mul_overflows<int>(std::numeric_limits<int>::min(), -1));
+static_assert(!utility::detail::mul_overflows<unsigned>(0u, std::numeric_limits<unsigned>::max()));
+static_assert(utility::detail::mul_overflows<unsigned>(std::numeric_limits<unsigned>::max(), 2u));
 
 // div_overflows
-static_assert(!detail::div_overflows<int>(10, 2));
-static_assert(detail::div_overflows<int>(10, 0));
-static_assert(detail::div_overflows<int>(std::numeric_limits<int>::min(), -1));
-static_assert(!detail::div_overflows<int>(std::numeric_limits<int>::min(), 2));
-static_assert(detail::div_overflows<unsigned>(5u, 0u));
+static_assert(!utility::detail::div_overflows<int>(10, 2));
+static_assert(utility::detail::div_overflows<int>(10, 0));
+static_assert(utility::detail::div_overflows<int>(std::numeric_limits<int>::min(), -1));
+static_assert(!utility::detail::div_overflows<int>(std::numeric_limits<int>::min(), 2));
+static_assert(utility::detail::div_overflows<unsigned>(5u, 0u));
 
 // neg_overflows
-static_assert(!detail::neg_overflows<int>(5));
-static_assert(!detail::neg_overflows<int>(-5));
-static_assert(!detail::neg_overflows<int>(0));
-static_assert(detail::neg_overflows<int>(std::numeric_limits<int>::min()));
-static_assert(!detail::neg_overflows<unsigned>(0u));
-static_assert(detail::neg_overflows<unsigned>(1u));
-static_assert(detail::neg_overflows<unsigned>(std::numeric_limits<unsigned>::max()));
+static_assert(!utility::detail::neg_overflows<int>(5));
+static_assert(!utility::detail::neg_overflows<int>(-5));
+static_assert(!utility::detail::neg_overflows<int>(0));
+static_assert(utility::detail::neg_overflows<int>(std::numeric_limits<int>::min()));
+static_assert(!utility::detail::neg_overflows<unsigned>(0u));
+static_assert(utility::detail::neg_overflows<unsigned>(1u));
+static_assert(utility::detail::neg_overflows<unsigned>(std::numeric_limits<unsigned>::max()));
 
 // ============================================================================
 // Error policy types exist and have on_overflow
@@ -674,30 +676,30 @@ static_assert(12 / safe_int<int>{4} == safe_int<int>{3});
 static_assert(10LL / safe_int<int>{3} == safe_int<long long>{3});
 
 // ============================================================================
-// 128-bit integer scalar (detail::integral extension for __int128 / unsigned __int128)
+// 128-bit integer scalar (mp_units::detail::integral extension for __int128 / unsigned __int128)
 //
 // On GCC std::integral<__int128> = false, so these operators previously fell
 // through to the (now-removed) non-integral fallback and returned the raw type,
-// not safe_int.  After the detail::integral fix they are handled by the typed
+// not safe_int.  After the mp_units::detail::integral fix they are handled by the typed
 // integral operators and return safe_int<R> with overflow checking.
 // ============================================================================
 
 #if defined(__SIZEOF_INT128__)
-// detail::integral must recognise both 128-bit types
-static_assert(detail::integral<int128_t>);
-static_assert(detail::integral<uint128_t>);
+// mp_units::detail::integral must recognise both 128-bit types
+static_assert(mp_units::detail::integral<int128_t>);
+static_assert(mp_units::detail::integral<uint128_t>);
 
-// detail::is_signed_v must reflect the true signedness even on GCC strict mode
-static_assert(detail::is_signed_v<int128_t>);
-static_assert(!detail::is_signed_v<uint128_t>);
+// mp_units::detail::is_signed_v must reflect the true signedness even on GCC strict mode
+static_assert(mp_units::detail::is_signed_v<int128_t>);
+static_assert(!mp_units::detail::is_signed_v<uint128_t>);
 
 // same_sign_v must work for mixed width/128-bit pairings
-static_assert(detail::same_sign_v<long, int128_t>);
-static_assert(detail::same_sign_v<int128_t, long>);
-static_assert(detail::same_sign_v<unsigned long, uint128_t>);
-static_assert(detail::same_sign_v<uint128_t, unsigned long>);
-static_assert(!detail::same_sign_v<long, uint128_t>);
-static_assert(!detail::same_sign_v<unsigned long, int128_t>);
+static_assert(utility::detail::same_sign_v<long, int128_t>);
+static_assert(utility::detail::same_sign_v<int128_t, long>);
+static_assert(utility::detail::same_sign_v<unsigned long, uint128_t>);
+static_assert(utility::detail::same_sign_v<uint128_t, unsigned long>);
+static_assert(!utility::detail::same_sign_v<long, uint128_t>);
+static_assert(!utility::detail::same_sign_v<unsigned long, int128_t>);
 
 // safe_int<signed> × int128_t → safe_int<int128_t> (wrapper preserved)
 static_assert(std::is_same_v<decltype(safe_int<long>{} * int128_t{1}), safe_int<int128_t>>);

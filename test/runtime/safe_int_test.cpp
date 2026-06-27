@@ -22,11 +22,11 @@
 
 #include <catch2/catch_test_macros.hpp>
 #include <mp-units/bits/hacks.h>
-#include <mp-units/constrained.h>
-#include <mp-units/safe_int.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>
 #include <mp-units/systems/yard_pound.h>
+#include <mp-units/utility/constrained.h>
+#include <mp-units/utility/safe_int.h>
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
@@ -37,6 +37,7 @@ import std;
 #endif
 
 using namespace mp_units;
+using namespace mp_units::utility;
 using namespace mp_units::si::unit_symbols;
 using namespace mp_units::yard_pound::unit_symbols;
 
