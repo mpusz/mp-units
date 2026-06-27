@@ -18,4 +18,3 @@ If you cannot use that channel, email the maintainer at <mateusz.pusz@gmail.com>
 
 You can expect an initial response within a few days. Once a fix is ready, we will coordinate
 disclosure and credit you in the advisory, unless you prefer to remain anonymous.
-  
