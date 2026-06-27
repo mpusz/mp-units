@@ -26,14 +26,14 @@
 //
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/cartesian_vector.h>
+
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/representation_concepts.h>
-
+#include <mp-units/utility/representation.h>
 #if MP_UNITS_HOSTED
 #include <mp-units/bits/fmt.h>
 #endif
-
-#ifndef MP_UNITS_IN_MODULE_INTERFACE
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
@@ -47,9 +47,9 @@ import std;
 #endif
 #endif
 
-namespace mp_units {
+namespace mp_units::utility {
 
-MP_UNITS_EXPORT template<detail::Scalar T, std::size_t N>
+MP_UNITS_EXPORT template<Scalar T, std::size_t N>
   requires(N == 2 || N == 3)
 class cartesian_tensor;
 
@@ -76,24 +76,24 @@ struct cartesian_tensor_iface {
     requires requires(const T& t, const U& u) { t + u; }
   [[nodiscard]] friend constexpr auto operator+(const cartesian_tensor<T, N>& lhs, const cartesian_tensor<U, N>& rhs)
   {
-    return ::mp_units::detail::cartesian_tensor_from(std::make_index_sequence<N * N>{},
-                                                     [&](std::size_t i) { return lhs._data_[i] + rhs._data_[i]; });
+    return ::mp_units::utility::detail::cartesian_tensor_from(
+      std::make_index_sequence<N * N>{}, [&](std::size_t i) { return lhs._data_[i] + rhs._data_[i]; });
   }
 
   template<typename T, std::size_t N, typename U>
     requires requires(const T& t, const U& u) { t - u; }
   [[nodiscard]] friend constexpr auto operator-(const cartesian_tensor<T, N>& lhs, const cartesian_tensor<U, N>& rhs)
   {
-    return ::mp_units::detail::cartesian_tensor_from(std::make_index_sequence<N * N>{},
-                                                     [&](std::size_t i) { return lhs._data_[i] - rhs._data_[i]; });
+    return ::mp_units::utility::detail::cartesian_tensor_from(
+      std::make_index_sequence<N * N>{}, [&](std::size_t i) { return lhs._data_[i] - rhs._data_[i]; });
   }
 
   template<typename T, std::size_t N, typename U>
     requires requires(const T& t, const U& u) { t * u; }
   [[nodiscard]] friend constexpr auto operator*(const cartesian_tensor<T, N>& lhs, const U& rhs)
   {
-    return ::mp_units::detail::cartesian_tensor_from(std::make_index_sequence<N * N>{},
-                                                     [&](std::size_t i) { return lhs._data_[i] * rhs; });
+    return ::mp_units::utility::detail::cartesian_tensor_from(std::make_index_sequence<N * N>{},
+                                                              [&](std::size_t i) { return lhs._data_[i] * rhs; });
   }
 
   template<typename T, std::size_t N, typename U>
@@ -107,8 +107,8 @@ struct cartesian_tensor_iface {
     requires requires(const T& t, const U& u) { t / u; }
   [[nodiscard]] friend constexpr auto operator/(const cartesian_tensor<T, N>& lhs, const U& rhs)
   {
-    return ::mp_units::detail::cartesian_tensor_from(std::make_index_sequence<N * N>{},
-                                                     [&](std::size_t i) { return lhs._data_[i] / rhs; });
+    return ::mp_units::utility::detail::cartesian_tensor_from(std::make_index_sequence<N * N>{},
+                                                              [&](std::size_t i) { return lhs._data_[i] / rhs; });
   }
 
   template<typename T, std::size_t N, std::equality_comparable_with<T> U>
@@ -128,7 +128,7 @@ struct cartesian_tensor_iface {
   [[nodiscard]] friend constexpr auto inner_product(const cartesian_tensor<T, N>& lhs,
                                                     const cartesian_tensor<U, N>& rhs)
   {
-    return ::mp_units::detail::cartesian_tensor_from(std::make_index_sequence<N * N>{}, [&](std::size_t idx) {
+    return ::mp_units::utility::detail::cartesian_tensor_from(std::make_index_sequence<N * N>{}, [&](std::size_t idx) {
       const std::size_t i = idx / N, k = idx % N;
       auto acc = lhs._data_[i * N] * rhs._data_[k];
       for (std::size_t j = 1; j < N; ++j) acc = acc + lhs._data_[i * N + j] * rhs._data_[j * N + k];
@@ -145,7 +145,7 @@ struct cartesian_tensor_iface {
   [[nodiscard]] friend constexpr auto inner_product(const cartesian_tensor<T, N>& lhs,
                                                     const cartesian_vector<U, N>& rhs)
   {
-    return ::mp_units::detail::cartesian_vector_from(std::make_index_sequence<N>{}, [&](std::size_t i) {
+    return ::mp_units::utility::detail::cartesian_vector_from(std::make_index_sequence<N>{}, [&](std::size_t i) {
       auto acc = lhs._data_[i * N] * rhs[0];
       for (std::size_t j = 1; j < N; ++j) acc = acc + lhs._data_[i * N + j] * rhs[j];
       return acc;
@@ -163,8 +163,9 @@ struct cartesian_tensor_iface {
                                                      const cartesian_tensor<U, N>& rhs)
   {
     // Hermitian for complex elements (conjugate the first argument); identity for real elements.
-    auto acc = ::mp_units::detail::conjugate(lhs._data_[0]) * rhs._data_[0];
-    for (std::size_t i = 1; i < N * N; ++i) acc = acc + ::mp_units::detail::conjugate(lhs._data_[i]) * rhs._data_[i];
+    auto acc = ::mp_units::utility::detail::conjugate(lhs._data_[0]) * rhs._data_[0];
+    for (std::size_t i = 1; i < N * N; ++i)
+      acc = acc + ::mp_units::utility::detail::conjugate(lhs._data_[i]) * rhs._data_[i];
     return acc;
   }
 
@@ -173,22 +174,22 @@ struct cartesian_tensor_iface {
   // keeps that top-left 2×2 block. The zero is the additive identity from a component (`x - x`), so
   // no value-initialization of `T` is required.
   template<typename T>
-  [[nodiscard]] friend constexpr ::mp_units::cartesian_tensor<T, 3> embed(const cartesian_tensor<T, 2>& t)
+  [[nodiscard]] friend constexpr ::mp_units::utility::cartesian_tensor<T, 3> embed(const cartesian_tensor<T, 2>& t)
   {
     const auto z = t(0, 0) - t(0, 0);
-    return ::mp_units::cartesian_tensor<T, 3>{t(0, 0), t(0, 1), z, t(1, 0), t(1, 1), z, z, z, z};
+    return ::mp_units::utility::cartesian_tensor<T, 3>{t(0, 0), t(0, 1), z, t(1, 0), t(1, 1), z, z, z, z};
   }
 
   template<typename T>
-  [[nodiscard]] friend constexpr ::mp_units::cartesian_tensor<T, 2> project(const cartesian_tensor<T, 3>& t)
+  [[nodiscard]] friend constexpr ::mp_units::utility::cartesian_tensor<T, 2> project(const cartesian_tensor<T, 3>& t)
   {
-    return ::mp_units::cartesian_tensor<T, 2>{t(0, 0), t(0, 1), t(1, 0), t(1, 1)};
+    return ::mp_units::utility::cartesian_tensor<T, 2>{t(0, 0), t(0, 1), t(1, 0), t(1, 1)};
   }
 };
 
 }  // namespace detail
 
-MP_UNITS_EXPORT template<detail::Scalar T = double, std::size_t N = 3>
+MP_UNITS_EXPORT template<Scalar T = double, std::size_t N = 3>
   requires(N == 2 || N == 3)
 class cartesian_tensor : public detail::cartesian_tensor_iface {
 public:
@@ -243,17 +244,17 @@ public:
   // what marks this type as a complex (rather than real) representation through the `real`/`imag`
   // customization points.
   [[nodiscard]] constexpr auto real() const
-    requires detail::ComplexScalar<T>
+    requires ComplexScalar<T>
   {
-    return ::mp_units::detail::cartesian_tensor_from(std::make_index_sequence<N * N>{},
-                                                     [&](std::size_t i) { return ::mp_units::real(_data_[i]); });
+    return ::mp_units::utility::detail::cartesian_tensor_from(
+      std::make_index_sequence<N * N>{}, [&](std::size_t i) { return ::mp_units::real(_data_[i]); });
   }
 
   [[nodiscard]] constexpr auto imag() const
-    requires detail::ComplexScalar<T>
+    requires ComplexScalar<T>
   {
-    return ::mp_units::detail::cartesian_tensor_from(std::make_index_sequence<N * N>{},
-                                                     [&](std::size_t i) { return ::mp_units::imag(_data_[i]); });
+    return ::mp_units::utility::detail::cartesian_tensor_from(
+      std::make_index_sequence<N * N>{}, [&](std::size_t i) { return ::mp_units::imag(_data_[i]); });
   }
 
   // Frobenius norm: sqrt(T : T). Not a distinct ISO 80000-2 item (2-18.4 magnitude is vector-only) but
@@ -264,7 +265,7 @@ public:
     }
   {
     using std::sqrt;
-    if constexpr (detail::ComplexScalar<T>) {
+    if constexpr (ComplexScalar<T>) {
       // Frobenius norm sqrt(sum |T_ij|²) for complex elements
       auto sum = ::mp_units::modulus(_data_[0]) * ::mp_units::modulus(_data_[0]);
       for (std::size_t i = 1; i < N * N; ++i) sum += ::mp_units::modulus(_data_[i]) * ::mp_units::modulus(_data_[i]);
@@ -285,8 +286,8 @@ public:
   [[nodiscard]] constexpr cartesian_tensor operator+() const { return *this; }
   [[nodiscard]] constexpr cartesian_tensor operator-() const
   {
-    return ::mp_units::detail::cartesian_tensor_from(std::make_index_sequence<N * N>{},
-                                                     [&](std::size_t i) { return -_data_[i]; });
+    return ::mp_units::utility::detail::cartesian_tensor_from(std::make_index_sequence<N * N>{},
+                                                              [&](std::size_t i) { return -_data_[i]; });
   }
 
   template<typename U>
@@ -368,25 +369,36 @@ MP_UNITS_EXPORT template<typename T, std::size_t N, typename U>
   requires requires(const T& t, const U& u) { t * u; }
 [[nodiscard]] constexpr auto tensor_product(const cartesian_vector<T, N>& lhs, const cartesian_vector<U, N>& rhs)
 {
-  return ::mp_units::detail::cartesian_tensor_from(std::make_index_sequence<N * N>{},
-                                                   [&](std::size_t idx) { return lhs[idx / N] * rhs[idx % N]; });
+  return ::mp_units::utility::detail::cartesian_tensor_from(
+    std::make_index_sequence<N * N>{}, [&](std::size_t idx) { return lhs[idx / N] * rhs[idx % N]; });
 }
+
+}  // namespace mp_units::utility
+
+namespace mp_units {
+
+// Transition compatibility shim: `cartesian_tensor` now lives in `mp_units::utility`. TODO deprecate
+// (gcc-12 cannot deprecate this without breaking alias-template CTAD) and remove in a future release.
+MP_UNITS_EXPORT_BEGIN
+using utility::cartesian_tensor;
+using utility::tensor_product;
+MP_UNITS_EXPORT_END
 
 }  // namespace mp_units
 
 template<typename T, std::size_t N, typename U>
   requires requires { typename std::common_type_t<T, U>; }
-struct std::common_type<mp_units::cartesian_tensor<T, N>, mp_units::cartesian_tensor<U, N>> {
-  using type = mp_units::cartesian_tensor<std::common_type_t<T, U>, N>;
+struct std::common_type<mp_units::utility::cartesian_tensor<T, N>, mp_units::utility::cartesian_tensor<U, N>> {
+  using type = mp_units::utility::cartesian_tensor<std::common_type_t<T, U>, N>;
 };
 
 #if MP_UNITS_HOSTED
 // TODO use parse and use formatter for the underlying type
 template<typename T, std::size_t N, typename Char>
-struct MP_UNITS_STD_FMT::formatter<mp_units::cartesian_tensor<T, N>, Char> :
+struct MP_UNITS_STD_FMT::formatter<mp_units::utility::cartesian_tensor<T, N>, Char> :
     formatter<std::basic_string_view<Char>, Char> {
   template<typename FormatContext>
-  auto format(const mp_units::cartesian_tensor<T, N>& tensor, FormatContext& ctx) const
+  auto format(const mp_units::utility::cartesian_tensor<T, N>& tensor, FormatContext& ctx) const
   {
     auto out = format_to(ctx.out(), "[");
     for (std::size_t row = 0; row < N; ++row) {

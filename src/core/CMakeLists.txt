@@ -81,6 +81,7 @@ add_mp_units_module(
             include/mp-units/framework/vector_components.h
             include/mp-units/constrained.h
             include/mp-units/safe_int.h
+            include/mp-units/utility/representation.h
             include/mp-units/compat_macros.h
             include/mp-units/concepts.h
             include/mp-units/core.h
@@ -103,12 +104,9 @@ if(NOT MP_UNITS_API_FREESTANDING)
                include/mp-units/bits/ostream.h
                include/mp-units/bits/requires_hosted.h
                include/mp-units/ext/format.h
-               include/mp-units/cartesian_tensor.h
-               include/mp-units/cartesian_vector.h
                include/mp-units/format.h # deprecated
                include/mp-units/math.h
                include/mp-units/ostream.h # deprecated
-               include/mp-units/random.h
     )
 endif()
 

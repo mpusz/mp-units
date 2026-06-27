@@ -426,6 +426,10 @@ class MPUnitsConan(ConanFile):
 
             self.cpp_info.components["systems"].requires = ["core"]
 
+            # Add-on representation types and helpers (cartesian/polar vectors, tensors, constrained,
+            # safe_int, random) layered above systems; everything beyond the standardizable core.
+            self.cpp_info.components["utility"].requires = ["core", "systems"]
+
             # The dependency-free integration headers (`mp-units::integrations`). Mirrors the CMake
             # target exported in `mp-unitsTargets`. The third-party backends stay out of the dependency
             # graph: they are pulled in only by the separate `find_package(mp-units-integrations-<lib>)`

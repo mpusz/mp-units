@@ -29,11 +29,9 @@
 #include <mp-units/framework.h>
 #include <mp-units/overflow_policies.h>
 #include <mp-units/safe_int.h>
+#include <mp-units/utility/representation.h>
 
 #if MP_UNITS_HOSTED
-#include <mp-units/cartesian_tensor.h>
-#include <mp-units/cartesian_vector.h>
 #include <mp-units/math.h>
-#include <mp-units/random.h>
 #endif
 // IWYU pragma: end_exports

@@ -22,8 +22,20 @@
 
 module;
 
-export module mp_units;
+#include <mp-units/bits/core_gmf.h>
+
+export module mp_units.utility;
 
 export import mp_units.core;
 export import mp_units.systems;
-export import mp_units.utility;
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#endif
+
+#define MP_UNITS_IN_MODULE_INTERFACE
+
+#if MP_UNITS_HOSTED
+#include <mp-units/cartesian_tensor.h>
+#include <mp-units/cartesian_vector.h>
+#include <mp-units/random.h>
+#endif

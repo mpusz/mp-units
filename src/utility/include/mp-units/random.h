@@ -23,16 +23,16 @@
 #pragma once
 
 #include <mp-units/bits/module_macros.h>
-#include <mp-units/framework/quantity.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
+#include <mp-units/framework/quantity.h>
 #ifndef MP_UNITS_IMPORT_STD
 #include <functional>
 #include <random>
 #endif
 #endif
 
-namespace mp_units {
+namespace mp_units::utility {
 
 namespace detail {
 
@@ -581,4 +581,30 @@ public:
 
 MP_UNITS_EXPORT_END
 
+}  // namespace mp_units::utility
+
+namespace mp_units {
+// Transition compatibility shim: the random distributions now live in `mp_units::utility`.
+// TODO deprecate and remove in a future release.
+MP_UNITS_EXPORT_BEGIN
+using utility::binomial_distribution;
+using utility::cauchy_distribution;
+using utility::chi_squared_distribution;
+using utility::discrete_distribution;
+using utility::exponential_distribution;
+using utility::extreme_value_distribution;
+using utility::fisher_f_distribution;
+using utility::gamma_distribution;
+using utility::geometric_distribution;
+using utility::lognormal_distribution;
+using utility::negative_binomial_distribution;
+using utility::normal_distribution;
+using utility::piecewise_constant_distribution;
+using utility::piecewise_linear_distribution;
+using utility::poisson_distribution;
+using utility::student_t_distribution;
+using utility::uniform_int_distribution;
+using utility::uniform_real_distribution;
+using utility::weibull_distribution;
+MP_UNITS_EXPORT_END
 }  // namespace mp_units

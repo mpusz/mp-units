@@ -136,10 +136,14 @@ include(import-std-setup)
 include(MPUnitsContracts)
 add_subdirectory(core)
 add_subdirectory(systems)
+add_subdirectory(utility)
 add_subdirectory(integrations)
 
 # project-wide wrapper
-add_mp_units_module(mp-units mp-units DEPENDENCIES mp-units::core mp-units::systems MODULE_INTERFACE_UNIT mp-units.cpp)
+add_mp_units_module(
+    mp-units mp-units DEPENDENCIES mp-units::core mp-units::systems mp-units::utility
+    MODULE_INTERFACE_UNIT mp-units.cpp
+)
 
 if(MP_UNITS_BUILD_INSTALL)
     # local build
