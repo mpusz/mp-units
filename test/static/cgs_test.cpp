@@ -35,7 +35,7 @@ using namespace mp_units;
 using namespace mp_units::cgs;
 using namespace mp_units::cgs::unit_symbols;
 #if MP_UNITS_HOSTED
-using v = cartesian_vector<double>;
+using v = utility::cartesian_vector<double>;
 #endif
 
 // https://en.wikipedia.org/wiki/Centimetre%E2%80%93gram%E2%80%93second_system_of_units#Definitions_and_conversion_factors_of_CGS_units_in_mechanics

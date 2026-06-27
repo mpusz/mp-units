@@ -584,27 +584,34 @@ MP_UNITS_EXPORT_END
 }  // namespace mp_units::utility
 
 namespace mp_units {
-// Transition compatibility shim: the random distributions now live in `mp_units::utility`.
-// TODO deprecate and remove in a future release.
-MP_UNITS_EXPORT_BEGIN
-using utility::binomial_distribution;
-using utility::cauchy_distribution;
-using utility::chi_squared_distribution;
-using utility::discrete_distribution;
-using utility::exponential_distribution;
-using utility::extreme_value_distribution;
-using utility::fisher_f_distribution;
-using utility::gamma_distribution;
-using utility::geometric_distribution;
-using utility::lognormal_distribution;
-using utility::negative_binomial_distribution;
-using utility::normal_distribution;
-using utility::piecewise_constant_distribution;
-using utility::piecewise_linear_distribution;
-using utility::poisson_distribution;
-using utility::student_t_distribution;
-using utility::uniform_int_distribution;
-using utility::uniform_real_distribution;
-using utility::weibull_distribution;
-MP_UNITS_EXPORT_END
+// Transition compatibility shims: the random distributions now live in `mp_units::utility`;
+// deprecated to steer users to the new location, to be removed in a future release. gcc-12 cannot
+// deprecate the aliases without breaking their CTAD, so there they stay using-declarations.
+#if MP_UNITS_COMP_GCC == 12
+#define MP_UNITS_RANDOM_COMPAT(name) MP_UNITS_EXPORT using utility::name
+#else
+#define MP_UNITS_RANDOM_COMPAT(name)   \
+  MP_UNITS_EXPORT template<Quantity Q> \
+  using name [[deprecated("moved to mp_units::utility::" #name)]] = utility::name<Q>
+#endif
+MP_UNITS_RANDOM_COMPAT(binomial_distribution);
+MP_UNITS_RANDOM_COMPAT(cauchy_distribution);
+MP_UNITS_RANDOM_COMPAT(chi_squared_distribution);
+MP_UNITS_RANDOM_COMPAT(discrete_distribution);
+MP_UNITS_RANDOM_COMPAT(exponential_distribution);
+MP_UNITS_RANDOM_COMPAT(extreme_value_distribution);
+MP_UNITS_RANDOM_COMPAT(fisher_f_distribution);
+MP_UNITS_RANDOM_COMPAT(gamma_distribution);
+MP_UNITS_RANDOM_COMPAT(geometric_distribution);
+MP_UNITS_RANDOM_COMPAT(lognormal_distribution);
+MP_UNITS_RANDOM_COMPAT(negative_binomial_distribution);
+MP_UNITS_RANDOM_COMPAT(normal_distribution);
+MP_UNITS_RANDOM_COMPAT(piecewise_constant_distribution);
+MP_UNITS_RANDOM_COMPAT(piecewise_linear_distribution);
+MP_UNITS_RANDOM_COMPAT(poisson_distribution);
+MP_UNITS_RANDOM_COMPAT(student_t_distribution);
+MP_UNITS_RANDOM_COMPAT(uniform_int_distribution);
+MP_UNITS_RANDOM_COMPAT(uniform_real_distribution);
+MP_UNITS_RANDOM_COMPAT(weibull_distribution);
+#undef MP_UNITS_RANDOM_COMPAT
 }  // namespace mp_units

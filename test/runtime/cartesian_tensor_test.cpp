@@ -44,16 +44,21 @@ using namespace std::complex_literals;
 // element-type conversions follow the library's non-truncating rule (like a quantity rep), not the
 // language narrowing rule: a floating-point target or a widening is implicit, while a
 // floating-point -> integer element conversion is explicit (truncating).
-static_assert(std::convertible_to<cartesian_tensor<float>, cartesian_tensor<double>>);    // widen: implicit
-static_assert(std::convertible_to<cartesian_tensor<double>, cartesian_tensor<float>>);    // FP target: implicit
-static_assert(std::convertible_to<cartesian_tensor<int>, cartesian_tensor<double>>);      // int->FP: implicit
-static_assert(!std::convertible_to<cartesian_tensor<double>, cartesian_tensor<int>>);     // FP->int: explicit
-static_assert(std::constructible_from<cartesian_tensor<int>, cartesian_tensor<double>>);  // ...but constructible
+static_assert(
+  std::convertible_to<utility::cartesian_tensor<float>, utility::cartesian_tensor<double>>);  // widen: implicit
+static_assert(
+  std::convertible_to<utility::cartesian_tensor<double>, utility::cartesian_tensor<float>>);  // FP target: implicit
+static_assert(
+  std::convertible_to<utility::cartesian_tensor<int>, utility::cartesian_tensor<double>>);  // int->FP: implicit
+static_assert(
+  !std::convertible_to<utility::cartesian_tensor<double>, utility::cartesian_tensor<int>>);  // FP->int: explicit
+static_assert(
+  std::constructible_from<utility::cartesian_tensor<int>, utility::cartesian_tensor<double>>);  // ...but constructible
 
 // the per-axis dimension is queryable at compile time, both as a value and as a call (tensor is NxN)
-static_assert(cartesian_tensor<double>::extent == 3);  // default N (the tensor is 3x3)
-static_assert(cartesian_tensor<double, 2>::extent == 2);
-static_assert(cartesian_tensor<double, 3>::extent() == 3);
+static_assert(utility::cartesian_tensor<double>::extent == 3);  // default N (the tensor is 3x3)
+static_assert(utility::cartesian_tensor<double, 2>::extent == 2);
+static_assert(utility::cartesian_tensor<double, 3>::extent() == 3);
 
 // operations close at a single dimension N: mixing 2x2 and 3x3 (or a tensor and a mismatched vector)
 // is ill-formed. Negative tests via named helper concepts asserted with static_assert (the
@@ -70,13 +75,14 @@ concept double_dot_producible = requires(A a, B b) { scalar_product(a, b); };
 template<typename A, typename B>
 concept tensor_producible = requires(A a, B b) { tensor_product(a, b); };
 }  // namespace
-static_assert(!addable<cartesian_tensor<double, 2>, cartesian_tensor<double, 3>>);
-static_assert(!subtractable<cartesian_tensor<double, 2>, cartesian_tensor<double, 3>>);
-static_assert(!inner_producible<cartesian_tensor<double, 2>, cartesian_tensor<double, 3>>);
-static_assert(!double_dot_producible<cartesian_tensor<double, 2>, cartesian_tensor<double, 3>>);
-static_assert(!inner_producible<cartesian_tensor<double, 2>, cartesian_vector<double, 3>>);  // tensor . vector
-static_assert(!tensor_producible<cartesian_vector<double, 2>, cartesian_vector<double, 3>>);
-static_assert(!std::constructible_from<cartesian_tensor<double, 3>, cartesian_tensor<double, 2>>);
+static_assert(!addable<utility::cartesian_tensor<double, 2>, utility::cartesian_tensor<double, 3>>);
+static_assert(!subtractable<utility::cartesian_tensor<double, 2>, utility::cartesian_tensor<double, 3>>);
+static_assert(!inner_producible<utility::cartesian_tensor<double, 2>, utility::cartesian_tensor<double, 3>>);
+static_assert(!double_dot_producible<utility::cartesian_tensor<double, 2>, utility::cartesian_tensor<double, 3>>);
+static_assert(
+  !inner_producible<utility::cartesian_tensor<double, 2>, utility::cartesian_vector<double, 3>>);  // tensor . vector
+static_assert(!tensor_producible<utility::cartesian_vector<double, 2>, utility::cartesian_vector<double, 3>>);
+static_assert(!std::constructible_from<utility::cartesian_tensor<double, 3>, utility::cartesian_tensor<double, 2>>);
 
 // A second-order Cartesian tensor as defined by ISO 80000-2:2019, 18.
 TEST_CASE("cartesian_tensor operations", "[tensor]")
@@ -85,14 +91,14 @@ TEST_CASE("cartesian_tensor operations", "[tensor]")
   {
     SECTION("no arguments")
     {
-      cartesian_tensor<double> t{};
+      utility::cartesian_tensor<double> t{};
       for (std::size_t r = 0; r < 3; ++r)
         for (std::size_t c = 0; c < 3; ++c) REQUIRE(t(r, c) == 0);
     }
 
     SECTION("all arguments")
     {
-      cartesian_tensor t{1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0};
+      utility::cartesian_tensor t{1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0};
       REQUIRE(t(0, 0) == 1.0);
       REQUIRE(t(0, 2) == 3.0);
       REQUIRE(t(1, 1) == 5.0);
@@ -102,23 +108,23 @@ TEST_CASE("cartesian_tensor operations", "[tensor]")
 
     SECTION("convertible arguments")
     {
-      cartesian_tensor<double> t{1, 2, 3, 4, 5, 6, 7, 8, 9};
+      utility::cartesian_tensor<double> t{1, 2, 3, 4, 5, 6, 7, 8, 9};
       REQUIRE(t(0, 0) == 1.0);
       REQUIRE(t(2, 2) == 9.0);
     }
 
     SECTION("conversion from another representation")
     {
-      cartesian_tensor t1{1, 2, 3, 4, 5, 6, 7, 8, 9};
-      cartesian_tensor<double> t2 = t1;
+      utility::cartesian_tensor t1{1, 2, 3, 4, 5, 6, 7, 8, 9};
+      utility::cartesian_tensor<double> t2 = t1;
       REQUIRE(t2(1, 1) == 5.0);
     }
   }
 
   SECTION("addition and subtraction (2-18.2)")
   {
-    cartesian_tensor a{1, 2, 3, 4, 5, 6, 7, 8, 9};
-    cartesian_tensor b{9, 8, 7, 6, 5, 4, 3, 2, 1};
+    utility::cartesian_tensor a{1, 2, 3, 4, 5, 6, 7, 8, 9};
+    utility::cartesian_tensor b{9, 8, 7, 6, 5, 4, 3, 2, 1};
 
     SECTION("operator+")
     {
@@ -138,7 +144,7 @@ TEST_CASE("cartesian_tensor operations", "[tensor]")
 
     SECTION("mixed representation (int + double)")
     {
-      cartesian_tensor<double> c{0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5};
+      utility::cartesian_tensor<double> c{0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5};
       auto r = a + c;
       REQUIRE(r(0, 0) == 1.5);
     }
@@ -146,7 +152,7 @@ TEST_CASE("cartesian_tensor operations", "[tensor]")
 
   SECTION("scalar multiply/divide (2-18.3)")
   {
-    cartesian_tensor<double> t{1, 2, 3, 4, 5, 6, 7, 8, 9};
+    utility::cartesian_tensor<double> t{1, 2, 3, 4, 5, 6, 7, 8, 9};
 
     SECTION("t * s")
     {
@@ -172,18 +178,18 @@ TEST_CASE("cartesian_tensor operations", "[tensor]")
 
   SECTION("compound assignments")
   {
-    cartesian_tensor t{2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 16.0, 18.0};
+    utility::cartesian_tensor t{2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 16.0, 18.0};
 
     SECTION("operator+=")
     {
-      cartesian_tensor o{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
+      utility::cartesian_tensor o{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
       t += o;
       REQUIRE(t(0, 0) == 3.0);
     }
 
     SECTION("operator-=")
     {
-      cartesian_tensor o{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
+      utility::cartesian_tensor o{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
       t -= o;
       REQUIRE(t(0, 0) == 1.0);
     }
@@ -203,17 +209,17 @@ TEST_CASE("cartesian_tensor operations", "[tensor]")
 
   SECTION("equality")
   {
-    cartesian_tensor a{1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0};
-    cartesian_tensor b{1, 2, 3, 4, 5, 6, 7, 8, 9};
-    cartesian_tensor c{1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.1};
+    utility::cartesian_tensor a{1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0};
+    utility::cartesian_tensor b{1, 2, 3, 4, 5, 6, 7, 8, 9};
+    utility::cartesian_tensor c{1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.1};
     REQUIRE(a == b);
     REQUIRE(a != c);
   }
 
   SECTION("tensor (dyadic) product of two vectors (2-18.21)")
   {
-    cartesian_vector a{1, 2, 3};
-    cartesian_vector b{4, 5, 6};
+    utility::cartesian_vector a{1, 2, 3};
+    utility::cartesian_vector b{4, 5, 6};
     auto t = tensor_product(a, b);  // (a (x) b)_ij = a_i b_j
     REQUIRE(t(0, 0) == 4);
     REQUIRE(t(0, 1) == 5);
@@ -228,8 +234,8 @@ TEST_CASE("cartesian_tensor operations", "[tensor]")
 
   SECTION("inner product of two tensors (2-18.23)")
   {
-    cartesian_tensor a{1, 2, 3, 4, 5, 6, 7, 8, 9};
-    cartesian_tensor id{1, 0, 0, 0, 1, 0, 0, 0, 1};
+    utility::cartesian_tensor a{1, 2, 3, 4, 5, 6, 7, 8, 9};
+    utility::cartesian_tensor id{1, 0, 0, 0, 1, 0, 0, 0, 1};
 
     SECTION("T . I == T") { REQUIRE(inner_product(a, id) == a); }
 
@@ -251,8 +257,8 @@ TEST_CASE("cartesian_tensor operations", "[tensor]")
 
   SECTION("inner product of a tensor and a vector (2-18.24)")
   {
-    cartesian_tensor a{1, 2, 3, 4, 5, 6, 7, 8, 9};
-    cartesian_vector v{1, 2, 3};
+    utility::cartesian_tensor a{1, 2, 3, 4, 5, 6, 7, 8, 9};
+    utility::cartesian_vector v{1, 2, 3};
     auto r = inner_product(a, v);  // (T . a)_i = sum_j T_ij a_j
     REQUIRE(r[0] == 14);
     REQUIRE(r[1] == 32);
@@ -261,13 +267,13 @@ TEST_CASE("cartesian_tensor operations", "[tensor]")
 
   SECTION("scalar (double-dot) product of two tensors (2-18.25)")
   {
-    cartesian_tensor a{1, 2, 3, 4, 5, 6, 7, 8, 9};
+    utility::cartesian_tensor a{1, 2, 3, 4, 5, 6, 7, 8, 9};
     REQUIRE(scalar_product(a, a) == 285);  // sum of squares 1..9
   }
 
   SECTION("Frobenius norm/magnitude")
   {
-    cartesian_tensor<double> a{1, 2, 3, 4, 5, 6, 7, 8, 9};
+    utility::cartesian_tensor<double> a{1, 2, 3, 4, 5, 6, 7, 8, 9};
     REQUIRE_THAT(a.magnitude(), WithinRel(std::sqrt(285.0), 1e-12));
     REQUIRE_THAT(a.norm(), WithinRel(std::sqrt(285.0), 1e-12));
     REQUIRE_THAT(magnitude(a), WithinRel(std::sqrt(285.0), 1e-12));
@@ -281,8 +287,8 @@ TEST_CASE("cartesian_tensor in two dimensions (2x2)", "[tensor]")
 {
   SECTION("deduces a 2x2 tensor from four components")
   {
-    cartesian_tensor t{1.0, 2.0, 3.0, 4.0};
-    static_assert(std::is_same_v<decltype(t), cartesian_tensor<double, 2>>);
+    utility::cartesian_tensor t{1.0, 2.0, 3.0, 4.0};
+    static_assert(std::is_same_v<decltype(t), utility::cartesian_tensor<double, 2>>);
     REQUIRE(t(0, 0) == 1.0);
     REQUIRE(t(0, 1) == 2.0);
     REQUIRE(t(1, 0) == 3.0);
@@ -291,10 +297,10 @@ TEST_CASE("cartesian_tensor in two dimensions (2x2)", "[tensor]")
 
   SECTION("tensor (dyadic) product of two 2D vectors -> 2x2 (2-18.21)")
   {
-    cartesian_vector a{1, 2};
-    cartesian_vector b{3, 4};
+    utility::cartesian_vector a{1, 2};
+    utility::cartesian_vector b{3, 4};
     auto t = tensor_product(a, b);  // (a (x) b)_ij = a_i b_j
-    static_assert(std::is_same_v<decltype(t), cartesian_tensor<int, 2>>);
+    static_assert(std::is_same_v<decltype(t), utility::cartesian_tensor<int, 2>>);
     REQUIRE(t(0, 0) == 3);
     REQUIRE(t(0, 1) == 4);
     REQUIRE(t(1, 0) == 6);
@@ -303,7 +309,7 @@ TEST_CASE("cartesian_tensor in two dimensions (2x2)", "[tensor]")
 
   SECTION("inner product of two 2x2 tensors (2-18.23)")
   {
-    cartesian_tensor a{1, 2, 3, 4};  // [[1, 2], [3, 4]]
+    utility::cartesian_tensor a{1, 2, 3, 4};  // [[1, 2], [3, 4]]
     auto r = inner_product(a, a);
     REQUIRE(r(0, 0) == 7);
     REQUIRE(r(0, 1) == 10);
@@ -313,17 +319,17 @@ TEST_CASE("cartesian_tensor in two dimensions (2x2)", "[tensor]")
 
   SECTION("inner product of a 2x2 tensor and a 2D vector (2-18.24)")
   {
-    cartesian_tensor a{1, 2, 3, 4};
-    cartesian_vector v{1, 2};
+    utility::cartesian_tensor a{1, 2, 3, 4};
+    utility::cartesian_vector v{1, 2};
     auto r = inner_product(a, v);  // (T . a)_i = sum_j T_ij a_j
-    static_assert(std::is_same_v<decltype(r), cartesian_vector<int, 2>>);
+    static_assert(std::is_same_v<decltype(r), utility::cartesian_vector<int, 2>>);
     REQUIRE(r[0] == 5);
     REQUIRE(r[1] == 11);
   }
 
   SECTION("scalar (double-dot) product and Frobenius norm")
   {
-    cartesian_tensor a{1.0, 2.0, 3.0, 4.0};
+    utility::cartesian_tensor a{1.0, 2.0, 3.0, 4.0};
     REQUIRE(scalar_product(a, a) == 30.0);  // sum of squares 1+4+9+16
     REQUIRE_THAT(a.magnitude(), WithinRel(std::sqrt(30.0), 1e-12));
   }
@@ -331,7 +337,7 @@ TEST_CASE("cartesian_tensor in two dimensions (2x2)", "[tensor]")
   SECTION("text output")
   {
     std::ostringstream os;
-    cartesian_tensor t{1, 2, 3, 4};
+    utility::cartesian_tensor t{1, 2, 3, 4};
     os << t;
     CHECK(os.str() == "[[1, 2], [3, 4]]");
     CHECK(MP_UNITS_STD_FMT::format("{}", t) == os.str());
@@ -344,7 +350,7 @@ TEST_CASE("cartesian_tensor text output", "[tensor][fmt][ostream]")
 
   SECTION("integral representation")
   {
-    cartesian_tensor t{1, 2, 3, 4, 5, 6, 7, 8, 9};
+    utility::cartesian_tensor t{1, 2, 3, 4, 5, 6, 7, 8, 9};
     os << t;
 
     SECTION("iostream") { CHECK(os.str() == "[[1, 2, 3], [4, 5, 6], [7, 8, 9]]"); }
@@ -354,7 +360,7 @@ TEST_CASE("cartesian_tensor text output", "[tensor][fmt][ostream]")
 
   SECTION("floating-point representation")
   {
-    cartesian_tensor t{1.5, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0};
+    utility::cartesian_tensor t{1.5, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0};
     os << t;
 
     SECTION("iostream") { CHECK(os.str() == "[[1.5, 2, 3], [4, 5, 6], [7, 8, 9]]"); }
@@ -370,36 +376,37 @@ TEST_CASE("cartesian_tensor with a complex representation", "[tensor][complex]")
   SECTION("Hermitian Frobenius norm is a real scalar")
   {
     // only the (0,0) entry is non-zero: |T| = |3+4i| = 5
-    cartesian_tensor t{3. + 4.i, c{}, c{}, c{}, c{}, c{}, c{}, c{}, c{}};
+    utility::cartesian_tensor t{3. + 4.i, c{}, c{}, c{}, c{}, c{}, c{}, c{}, c{}};
     STATIC_CHECK(std::is_same_v<decltype(t.magnitude()), double>);
     REQUIRE_THAT(t.magnitude(), WithinRel(5.0, 1e-12));
     // sqrt(|1+i|^2 * 9) = sqrt(2 * 9) = sqrt(18)
-    cartesian_tensor u{1. + 1.i, 1. + 1.i, 1. + 1.i, 1. + 1.i, 1. + 1.i, 1. + 1.i, 1. + 1.i, 1. + 1.i, 1. + 1.i};
+    utility::cartesian_tensor u{1. + 1.i, 1. + 1.i, 1. + 1.i, 1. + 1.i, 1. + 1.i,
+                                1. + 1.i, 1. + 1.i, 1. + 1.i, 1. + 1.i};
     REQUIRE_THAT(u.magnitude(), WithinRel(std::sqrt(18.0), 1e-12));
   }
 
   SECTION("scalar_product (double-dot) is sesquilinear, T : T is real and non-negative")
   {
-    cartesian_tensor a{1. + 1.i, c{}, c{}, c{}, c{}, c{}, c{}, c{}, c{}};
+    utility::cartesian_tensor a{1. + 1.i, c{}, c{}, c{}, c{}, c{}, c{}, c{}, c{}};
     // a : a = sum |a_ij|^2 = |1+i|^2 = 2
     REQUIRE(scalar_product(a, a) == c{2.0, 0.0});
 
     // Hermitian symmetry of the double-dot: <b, a> = conj(<a, b>)
-    cartesian_tensor b{1.i, c{}, c{}, c{}, c{}, c{}, c{}, c{}, c{}};
+    utility::cartesian_tensor b{1.i, c{}, c{}, c{}, c{}, c{}, c{}, c{}, c{}};
     REQUIRE(scalar_product(b, a) == std::conj(scalar_product(a, b)));
   }
 
   SECTION("inner product (matmul) uses plain complex arithmetic, no conjugation")
   {
-    cartesian_tensor id{c{1}, c{}, c{}, c{}, c{1}, c{}, c{}, c{}, c{1}};
-    cartesian_tensor a{1. + 1.i, 2. + 0.i, c{}, c{}, 3. - 1.i, c{}, c{}, c{}, 0. + 2.i};
+    utility::cartesian_tensor id{c{1}, c{}, c{}, c{}, c{1}, c{}, c{}, c{}, c{1}};
+    utility::cartesian_tensor a{1. + 1.i, 2. + 0.i, c{}, c{}, 3. - 1.i, c{}, c{}, c{}, 0. + 2.i};
     REQUIRE(inner_product(id, a) == a);  // I . A == A
   }
 
   SECTION("inner product with a complex vector -> complex vector")
   {
-    cartesian_tensor id{c{1}, c{}, c{}, c{}, c{1}, c{}, c{}, c{}, c{1}};
-    cartesian_vector v{1. + 1.i, 2. + 0.i, 0. + 3.i};
+    utility::cartesian_tensor id{c{1}, c{}, c{}, c{}, c{1}, c{}, c{}, c{}, c{1}};
+    utility::cartesian_vector v{1. + 1.i, 2. + 0.i, 0. + 3.i};
     REQUIRE(inner_product(id, v) == v);  // I . v == v
   }
 }
@@ -411,15 +418,17 @@ template<typename T>
 concept tensor_projectable = requires(T t) { project(t); };
 }  // namespace
 // embed only lifts 2x2->3x3 and project only lowers 3x3->2x2 (each defined for one source dimension)
-static_assert(tensor_embeddable<cartesian_tensor<double, 2>> && !tensor_embeddable<cartesian_tensor<double, 3>>);
-static_assert(tensor_projectable<cartesian_tensor<double, 3>> && !tensor_projectable<cartesian_tensor<double, 2>>);
+static_assert(tensor_embeddable<utility::cartesian_tensor<double, 2>> &&
+              !tensor_embeddable<utility::cartesian_tensor<double, 3>>);
+static_assert(tensor_projectable<utility::cartesian_tensor<double, 3>> &&
+              !tensor_projectable<utility::cartesian_tensor<double, 2>>);
 
 TEST_CASE("cartesian_tensor embed/project between 2x2 and 3x3", "[tensor]")
 {
   SECTION("embed places the 2x2 in the top-left block, zero elsewhere")
   {
-    cartesian_tensor t3 = embed(cartesian_tensor{1.0, 2.0, 3.0, 4.0});  // [[1, 2], [3, 4]]
-    static_assert(std::is_same_v<decltype(t3), cartesian_tensor<double, 3>>);
+    utility::cartesian_tensor t3 = embed(utility::cartesian_tensor{1.0, 2.0, 3.0, 4.0});  // [[1, 2], [3, 4]]
+    static_assert(std::is_same_v<decltype(t3), utility::cartesian_tensor<double, 3>>);
     REQUIRE(t3(0, 0) == 1.0);
     REQUIRE(t3(0, 1) == 2.0);
     REQUIRE(t3(1, 0) == 3.0);
@@ -431,8 +440,8 @@ TEST_CASE("cartesian_tensor embed/project between 2x2 and 3x3", "[tensor]")
 
   SECTION("project keeps the top-left 2x2 block")
   {
-    cartesian_tensor t2 = project(cartesian_tensor{1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0});
-    static_assert(std::is_same_v<decltype(t2), cartesian_tensor<double, 2>>);
+    utility::cartesian_tensor t2 = project(utility::cartesian_tensor{1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0});
+    static_assert(std::is_same_v<decltype(t2), utility::cartesian_tensor<double, 2>>);
     REQUIRE(t2(0, 0) == 1.0);
     REQUIRE(t2(0, 1) == 2.0);
     REQUIRE(t2(1, 0) == 4.0);
@@ -441,7 +450,7 @@ TEST_CASE("cartesian_tensor embed/project between 2x2 and 3x3", "[tensor]")
 
   SECTION("project . embed is the identity on 2x2")
   {
-    cartesian_tensor t2{1.0, 2.0, 3.0, 4.0};
+    utility::cartesian_tensor t2{1.0, 2.0, 3.0, 4.0};
     REQUIRE(project(embed(t2)) == t2);
   }
 }

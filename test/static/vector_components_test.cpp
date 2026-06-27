@@ -38,7 +38,7 @@ using namespace mp_units::si::unit_symbols;
 
 namespace {
 
-using vec3 = cartesian_vector<double>;
+using vec3 = utility::cartesian_vector<double>;
 
 // the aviation hierarchy: a 3D whole plus 1D-vector component axes (each its own kind)
 QUANTITY_SPEC(flight_velocity, isq::velocity);
@@ -158,7 +158,7 @@ struct mp_units::vector_components<cplx_flight_velocity> :
 
 namespace {
 
-using cvec3 = cartesian_vector<std::complex<double>>;
+using cvec3 = utility::cartesian_vector<std::complex<double>>;
 using CQ = quantity<cplx_flight_velocity[km / h], cvec3>;
 inline constexpr CQ cv =
   cplx_flight_velocity(cvec3{std::complex{30.0, 1.0}, std::complex{-4.0, 0.0}, std::complex{-2.5, 2.0}} * (km / h));

@@ -50,7 +50,7 @@ import mp_units;
 
 using namespace mp_units;
 using namespace mp_units::si::unit_symbols;
-using v = cartesian_vector<double>;
+using v = utility::cartesian_vector<double>;
 
 TEST_CASE("dimension_symbol", "[dimension][symbol]")
 {

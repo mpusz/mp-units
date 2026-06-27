@@ -375,17 +375,6 @@ MP_UNITS_EXPORT template<typename T, std::size_t N, typename U>
 
 }  // namespace mp_units::utility
 
-namespace mp_units {
-
-// Transition compatibility shim: `cartesian_tensor` now lives in `mp_units::utility`. TODO deprecate
-// (gcc-12 cannot deprecate this without breaking alias-template CTAD) and remove in a future release.
-MP_UNITS_EXPORT_BEGIN
-using utility::cartesian_tensor;
-using utility::tensor_product;
-MP_UNITS_EXPORT_END
-
-}  // namespace mp_units
-
 template<typename T, std::size_t N, typename U>
   requires requires { typename std::common_type_t<T, U>; }
 struct std::common_type<mp_units::utility::cartesian_tensor<T, N>, mp_units::utility::cartesian_tensor<U, N>> {

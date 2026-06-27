@@ -88,7 +88,7 @@ inline constexpr const char* backend = "Blaze";
 using vec3 = blaze::StaticVector<double, 3>;
 #elif defined(MP_UNITS_LA_CARTESIAN)
 inline constexpr const char* backend = "cartesian_vector (built-in)";
-using vec3 = cartesian_vector<double>;
+using vec3 = utility::cartesian_vector<double>;
 #endif
 
 [[nodiscard]] vec3 make_vec3(double x, double y, double z) { return {x, y, z}; }
@@ -307,7 +307,7 @@ TEST_CASE("linear algebra type as a quantity representation")
 // are therefore specific to the built-in backend.
 
 namespace {
-using vec3i = cartesian_vector<int>;
+using vec3i = utility::cartesian_vector<int>;
 [[nodiscard]] constexpr vec3i make_vec3i(int x, int y, int z) { return {x, y, z}; }
 }  // namespace
 

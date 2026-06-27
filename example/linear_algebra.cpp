@@ -107,7 +107,7 @@ inline constexpr const char* backend_name = "Blaze";
 using vec3 = blaze::StaticVector<double, 3>;
 #elif defined(MP_UNITS_LA_CARTESIAN)
 inline constexpr const char* backend_name = "cartesian_vector (built-in)";
-using vec3 = cartesian_vector<double>;
+using vec3 = utility::cartesian_vector<double>;
 #endif
 
 [[nodiscard]] vec3 make_vec3(double x, double y, double z) { return {x, y, z}; }

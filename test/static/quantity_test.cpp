@@ -54,7 +54,7 @@ using namespace mp_units;
 using namespace mp_units::si::unit_symbols;
 #if MP_UNITS_HOSTED
 using namespace std::complex_literals;
-using v = cartesian_vector<double>;
+using v = utility::cartesian_vector<double>;
 #endif
 
 //////////////////////////////
@@ -74,10 +74,10 @@ concept invalid_types = requires {
   requires !requires { typename Q<isq::length[m], quantity<isq::length[m]>>; };  // quantity used as Rep
 #if MP_UNITS_HOSTED
   requires !requires {
-    typename Q<isq::position_vector[si::metre], cartesian_tensor<double>>;
+    typename Q<isq::position_vector[si::metre], utility::cartesian_tensor<double>>;
   };  // a tensor representation cannot fill a (lower-order) vector quantity
   requires !requires {
-    typename Q<isq::length[si::metre], cartesian_vector<double>>;
+    typename Q<isq::length[si::metre], utility::cartesian_vector<double>>;
   };  // a vector representation cannot fill a scalar quantity (order rank)
   // field is exact: a real quantity rejects a complex representation, and vice versa
   requires !requires { typename Q<isq::voltage[V], std::complex<double>>; };
@@ -105,11 +105,11 @@ static_assert(decltype(std::declval<quantity<isq::velocity[m / s], double>>().ma
 #if MP_UNITS_HOSTED
 QUANTITY_SPEC(complex_velocity, isq::velocity, quantity_field::complex);
 
-using vel_vec = quantity<isq::velocity[m / s], cartesian_vector<double>>;
-using vel_veci = quantity<isq::velocity[m / s], cartesian_vector<int>>;
-using cvel_vec = quantity<complex_velocity[m / s], cartesian_vector<std::complex<double>>>;
+using vel_vec = quantity<isq::velocity[m / s], utility::cartesian_vector<double>>;
+using vel_veci = quantity<isq::velocity[m / s], utility::cartesian_vector<int>>;
+using cvel_vec = quantity<complex_velocity[m / s], utility::cartesian_vector<std::complex<double>>>;
 using cvel_1d = quantity<complex_velocity[m / s], std::complex<double>>;
-using stress_tensor = quantity<isq::stress[si::pascal], cartesian_tensor<double>>;
+using stress_tensor = quantity<isq::stress[si::pascal], utility::cartesian_tensor<double>>;
 
 // vector and tensor quantities expose a magnitude, real and complex fields alike
 static_assert(has_magnitude<vel_vec>);
@@ -323,14 +323,14 @@ static_assert(std::constructible_from<quantity<isq::voltage_phasor[V], std::comp
 static_assert(std::convertible_to<quantity<si::volt, std::complex<double>>,
                                   quantity<isq::voltage_phasor[V], std::complex<double>>>);
 
-static_assert(std::constructible_from<quantity<si::metre, cartesian_vector<double>>,
-                                      quantity<isq::position_vector[m], cartesian_vector<double>>>);
-static_assert(std::convertible_to<quantity<isq::position_vector[m], cartesian_vector<double>>,
-                                  quantity<si::metre, cartesian_vector<double>>>);
-static_assert(std::constructible_from<quantity<isq::position_vector[m], cartesian_vector<double>>,
-                                      quantity<si::metre, cartesian_vector<double>>>);
-static_assert(std::convertible_to<quantity<si::metre, cartesian_vector<double>>,
-                                  quantity<isq::position_vector[m], cartesian_vector<double>>>);
+static_assert(std::constructible_from<quantity<si::metre, utility::cartesian_vector<double>>,
+                                      quantity<isq::position_vector[m], utility::cartesian_vector<double>>>);
+static_assert(std::convertible_to<quantity<isq::position_vector[m], utility::cartesian_vector<double>>,
+                                  quantity<si::metre, utility::cartesian_vector<double>>>);
+static_assert(std::constructible_from<quantity<isq::position_vector[m], utility::cartesian_vector<double>>,
+                                      quantity<si::metre, utility::cartesian_vector<double>>>);
+static_assert(std::convertible_to<quantity<si::metre, utility::cartesian_vector<double>>,
+                                  quantity<isq::position_vector[m], utility::cartesian_vector<double>>>);
 #endif
 
 
@@ -409,10 +409,12 @@ static_assert(!std::convertible_to<quantity<one, std::complex<double>>, std::com
 static_assert(std::constructible_from<std::complex<double>, quantity<one, std::complex<double>>>);
 static_assert(!std::convertible_to<quantity<one, double>, std::complex<double>>);
 static_assert(std::constructible_from<std::complex<double>, quantity<one, double>>);
-static_assert(!std::convertible_to<quantity<one, cartesian_vector<double>>, cartesian_vector<double>>);
-static_assert(std::constructible_from<cartesian_vector<double>, quantity<one, cartesian_vector<double>>>);
-static_assert(!std::convertible_to<quantity<one, double>, cartesian_vector<double>>);
-static_assert(std::constructible_from<cartesian_vector<double>, quantity<one, double>>);
+static_assert(
+  !std::convertible_to<quantity<one, utility::cartesian_vector<double>>, utility::cartesian_vector<double>>);
+static_assert(
+  std::constructible_from<utility::cartesian_vector<double>, quantity<one, utility::cartesian_vector<double>>>);
+static_assert(!std::convertible_to<quantity<one, double>, utility::cartesian_vector<double>>);
+static_assert(std::constructible_from<utility::cartesian_vector<double>, quantity<one, double>>);
 #endif
 
 static_assert(!std::convertible_to<quantity<rad>, double>);
@@ -442,23 +444,27 @@ static_assert(is_of_type<isq::height(42. * km), quantity<isq::height[km], double
 
 #if MP_UNITS_HOSTED
 
-static_assert(is_of_type<cartesian_vector{1., 2., 3.} * m, quantity<si::metre, cartesian_vector<double>>>);
-// self-referential constraint cycle when dividing cartesian_vector<Quantity> by a unit
-static_assert(requires { cartesian_vector{0, 0, -60} * km / h; });
+static_assert(
+  is_of_type<utility::cartesian_vector{1., 2., 3.} * m, quantity<si::metre, utility::cartesian_vector<double>>>);
+// self-referential constraint cycle when dividing utility::cartesian_vector<Quantity> by a unit
+static_assert(requires { utility::cartesian_vector{0, 0, -60} * km / h; });
 
-// cartesian_vector<double>: unit conversion via UsesFloatingPointScaling (FP element type)
+// utility::cartesian_vector<double>: unit conversion via UsesFloatingPointScaling (FP element type)
 // Use bare SI units (no quantity spec) since isq::length is real_scalar, not vector
-static_assert(quantity<si::kilo<si::metre>, cartesian_vector<double>>(cartesian_vector{1., 2., 3.} * km)
-                .numerical_value_in(m) == cartesian_vector{1000., 2000., 3000.});
-static_assert(quantity<si::metre, cartesian_vector<double>>(cartesian_vector{2000., 4000., 6000.} * m)
-                .numerical_value_in(km) == cartesian_vector{2., 4., 6.});
-// cartesian_vector<int>: unit conversion via UsesIntegerScaling (integer element type)
-static_assert(quantity<si::kilo<si::metre>, cartesian_vector<int>>(cartesian_vector{1, 2, 3} * km)
-                .numerical_value_in(m) == cartesian_vector{1000, 2000, 3000});
-static_assert(std::constructible_from<quantity<si::metre, cartesian_vector<int>>,
-                                      quantity<si::kilo<si::metre>, cartesian_vector<int>>>);  // km→m: ×1000, OK
-static_assert(!std::constructible_from<quantity<si::kilo<si::metre>, cartesian_vector<int>>,
-                                       quantity<si::metre, cartesian_vector<int>>>);  // m→km: ÷1000, truncating
+static_assert(quantity<si::kilo<si::metre>, utility::cartesian_vector<double>>(utility::cartesian_vector{1., 2., 3.} *
+                                                                               km)
+                .numerical_value_in(m) == utility::cartesian_vector{1000., 2000., 3000.});
+static_assert(quantity<si::metre, utility::cartesian_vector<double>>(utility::cartesian_vector{2000., 4000., 6000.} * m)
+                .numerical_value_in(km) == utility::cartesian_vector{2., 4., 6.});
+// utility::cartesian_vector<int>: unit conversion via UsesIntegerScaling (integer element type)
+static_assert(quantity<si::kilo<si::metre>, utility::cartesian_vector<int>>(utility::cartesian_vector{1, 2, 3} * km)
+                .numerical_value_in(m) == utility::cartesian_vector{1000, 2000, 3000});
+static_assert(
+  std::constructible_from<quantity<si::metre, utility::cartesian_vector<int>>,
+                          quantity<si::kilo<si::metre>, utility::cartesian_vector<int>>>);  // km→m: ×1000, OK
+static_assert(
+  !std::constructible_from<quantity<si::kilo<si::metre>, utility::cartesian_vector<int>>,
+                           quantity<si::metre, utility::cartesian_vector<int>>>);  // m→km: ÷1000, truncating
 
 #endif
 
@@ -814,19 +820,19 @@ concept invalid_compound_assignments = requires() {
   requires !requires(Q<si::volt, std::complex<double>> l) { l %= (2. + 2i) * V; };
 
   // modulo operations on a vector representation type not allowed
-  requires !requires(Q<si::metre, cartesian_vector<double>> l) { l %= v{2.} * m; };
+  requires !requires(Q<si::metre, utility::cartesian_vector<double>> l) { l %= v{2.} * m; };
 
   // arithmetics of vector and scalar quantities not allowed
-  requires !requires(Q<si::metre, cartesian_vector<double>> l) { l += 2. * m; };
-  requires !requires(Q<si::metre, cartesian_vector<double>> l) { l -= 2. * m; };
+  requires !requires(Q<si::metre, utility::cartesian_vector<double>> l) { l += 2. * m; };
+  requires !requires(Q<si::metre, utility::cartesian_vector<double>> l) { l -= 2. * m; };
 
   // multiplication and division of vector quantities not allowed
-  requires !requires(Q<si::metre, cartesian_vector<double>> l) { l *= v{1., 2., 3.}; };
-  requires !requires(Q<si::metre, cartesian_vector<double>> l) { l /= v{1., 2., 3.}; };
-  requires !requires(Q<si::metre, cartesian_vector<double>> l) { l *= v{1., 2., 3.} * one; };
-  requires !requires(Q<si::metre, cartesian_vector<double>> l) { l /= v{1., 2., 3.} * one; };
-  requires !requires(Q<si::metre, cartesian_vector<double>> l) { l *= v{1., 2., 3.} * m; };
-  requires !requires(Q<si::metre, cartesian_vector<double>> l) { l /= v{1., 2., 3.} * m; };
+  requires !requires(Q<si::metre, utility::cartesian_vector<double>> l) { l *= v{1., 2., 3.}; };
+  requires !requires(Q<si::metre, utility::cartesian_vector<double>> l) { l /= v{1., 2., 3.}; };
+  requires !requires(Q<si::metre, utility::cartesian_vector<double>> l) { l *= v{1., 2., 3.} * one; };
+  requires !requires(Q<si::metre, utility::cartesian_vector<double>> l) { l /= v{1., 2., 3.} * one; };
+  requires !requires(Q<si::metre, utility::cartesian_vector<double>> l) { l *= v{1., 2., 3.} * m; };
+  requires !requires(Q<si::metre, utility::cartesian_vector<double>> l) { l /= v{1., 2., 3.} * m; };
 #endif
 
   // no unit constants
@@ -861,7 +867,7 @@ concept invalid_binary_operations = requires {
   // no complex modulo
   requires !requires(Q<si::volt, std::complex<double>> a) { a % ((2. + 2i) * V); };
   // no vector modulo
-  requires !requires(Q<si::metre, cartesian_vector<double>> a) { a % (v{2.} * m); };
+  requires !requires(Q<si::metre, utility::cartesian_vector<double>> a) { a % (v{2.} * m); };
 #endif
 
   // unit constants
@@ -1637,8 +1643,8 @@ static_assert(
 #if MP_UNITS_HOSTED
 static_assert(std::equality_comparable_with<std::optional<quantity<si::volt, std::complex<double>>>,
                                             quantity<si::volt, std::complex<double>>>);
-static_assert(std::equality_comparable_with<std::optional<quantity<si::metre, cartesian_vector<double>>>,
-                                            quantity<si::metre, cartesian_vector<double>>>);
+static_assert(std::equality_comparable_with<std::optional<quantity<si::metre, utility::cartesian_vector<double>>>,
+                                            quantity<si::metre, utility::cartesian_vector<double>>>);
 #endif
 
 }  // namespace

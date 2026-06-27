@@ -332,51 +332,51 @@ static_assert(RepresentationOf<std::complex<double>, quantity_tensor_order::scal
 static_assert(RepresentationOf<std::complex<double>, quantity_tensor_order::vector>);
 static_assert(RepresentationOf<std::complex<double>, quantity_tensor_order::tensor>);
 
-// cartesian_vector<double>: 3D vector, not scalar; also a degenerate tensor (a vector is a
+// utility::cartesian_vector<double>: 3D vector, not scalar; also a degenerate tensor (a vector is a
 // tensor of the first order)
-static_assert(RepresentationOf<cartesian_vector<double>, quantity_field::real>);
-static_assert(!RepresentationOf<cartesian_vector<double>, quantity_field::complex>);
-static_assert(!RepresentationOf<cartesian_vector<double>, quantity_tensor_order::scalar>);
-static_assert(RepresentationOf<cartesian_vector<double>, quantity_tensor_order::vector>);
-static_assert(RepresentationOf<cartesian_vector<double>, quantity_tensor_order::tensor>);
+static_assert(RepresentationOf<utility::cartesian_vector<double>, quantity_field::real>);
+static_assert(!RepresentationOf<utility::cartesian_vector<double>, quantity_field::complex>);
+static_assert(!RepresentationOf<utility::cartesian_vector<double>, quantity_tensor_order::scalar>);
+static_assert(RepresentationOf<utility::cartesian_vector<double>, quantity_tensor_order::vector>);
+static_assert(RepresentationOf<utility::cartesian_vector<double>, quantity_tensor_order::tensor>);
 
-// cartesian_vector<int>: integer element type is supported (norm() returns double via std::hypot)
-static_assert(RepresentationOf<cartesian_vector<int>, quantity_field::real>);
-static_assert(!RepresentationOf<cartesian_vector<int>, quantity_field::complex>);
-static_assert(!RepresentationOf<cartesian_vector<int>, quantity_tensor_order::scalar>);
-static_assert(RepresentationOf<cartesian_vector<int>, quantity_tensor_order::vector>);
-static_assert(RepresentationOf<cartesian_vector<int>, quantity_tensor_order::tensor>);
+// utility::cartesian_vector<int>: integer element type is supported (norm() returns double via std::hypot)
+static_assert(RepresentationOf<utility::cartesian_vector<int>, quantity_field::real>);
+static_assert(!RepresentationOf<utility::cartesian_vector<int>, quantity_field::complex>);
+static_assert(!RepresentationOf<utility::cartesian_vector<int>, quantity_tensor_order::scalar>);
+static_assert(RepresentationOf<utility::cartesian_vector<int>, quantity_tensor_order::vector>);
+static_assert(RepresentationOf<utility::cartesian_vector<int>, quantity_tensor_order::tensor>);
 
-// cartesian_vector<complex<double>>: a complex 3-vector. It exposes real()/imag(), so its field is
+// utility::cartesian_vector<complex<double>>: a complex 3-vector. It exposes real()/imag(), so its field is
 // complex; it fills the vector order slot (and degenerately the tensor order slot) but not the
 // scalar one.
-static_assert(!RepresentationOf<cartesian_vector<std::complex<double>>, quantity_field::real>);
-static_assert(RepresentationOf<cartesian_vector<std::complex<double>>, quantity_field::complex>);
-static_assert(!RepresentationOf<cartesian_vector<std::complex<double>>, quantity_tensor_order::scalar>);
-static_assert(RepresentationOf<cartesian_vector<std::complex<double>>, quantity_tensor_order::vector>);
-static_assert(RepresentationOf<cartesian_vector<std::complex<double>>, quantity_tensor_order::tensor>);
+static_assert(!RepresentationOf<utility::cartesian_vector<std::complex<double>>, quantity_field::real>);
+static_assert(RepresentationOf<utility::cartesian_vector<std::complex<double>>, quantity_field::complex>);
+static_assert(!RepresentationOf<utility::cartesian_vector<std::complex<double>>, quantity_tensor_order::scalar>);
+static_assert(RepresentationOf<utility::cartesian_vector<std::complex<double>>, quantity_tensor_order::vector>);
+static_assert(RepresentationOf<utility::cartesian_vector<std::complex<double>>, quantity_tensor_order::tensor>);
 
-// cartesian_tensor<double>: second-order tensor; tensor-only - never a (lower-rank) vector or scalar
-static_assert(RepresentationOf<cartesian_tensor<double>, quantity_field::real>);
-static_assert(!RepresentationOf<cartesian_tensor<double>, quantity_field::complex>);
-static_assert(!RepresentationOf<cartesian_tensor<double>, quantity_tensor_order::scalar>);
-static_assert(!RepresentationOf<cartesian_tensor<double>, quantity_tensor_order::vector>);
-static_assert(RepresentationOf<cartesian_tensor<double>, quantity_tensor_order::tensor>);
+// utility::cartesian_tensor<double>: second-order tensor; tensor-only - never a (lower-rank) vector or scalar
+static_assert(RepresentationOf<utility::cartesian_tensor<double>, quantity_field::real>);
+static_assert(!RepresentationOf<utility::cartesian_tensor<double>, quantity_field::complex>);
+static_assert(!RepresentationOf<utility::cartesian_tensor<double>, quantity_tensor_order::scalar>);
+static_assert(!RepresentationOf<utility::cartesian_tensor<double>, quantity_tensor_order::vector>);
+static_assert(RepresentationOf<utility::cartesian_tensor<double>, quantity_tensor_order::tensor>);
 
-// cartesian_tensor<int>: integer element type is supported (Frobenius norm returns double)
-static_assert(RepresentationOf<cartesian_tensor<int>, quantity_field::real>);
-static_assert(!RepresentationOf<cartesian_tensor<int>, quantity_field::complex>);
-static_assert(!RepresentationOf<cartesian_tensor<int>, quantity_tensor_order::scalar>);
-static_assert(!RepresentationOf<cartesian_tensor<int>, quantity_tensor_order::vector>);
-static_assert(RepresentationOf<cartesian_tensor<int>, quantity_tensor_order::tensor>);
+// utility::cartesian_tensor<int>: integer element type is supported (Frobenius norm returns double)
+static_assert(RepresentationOf<utility::cartesian_tensor<int>, quantity_field::real>);
+static_assert(!RepresentationOf<utility::cartesian_tensor<int>, quantity_field::complex>);
+static_assert(!RepresentationOf<utility::cartesian_tensor<int>, quantity_tensor_order::scalar>);
+static_assert(!RepresentationOf<utility::cartesian_tensor<int>, quantity_tensor_order::vector>);
+static_assert(RepresentationOf<utility::cartesian_tensor<int>, quantity_tensor_order::tensor>);
 
-// cartesian_tensor<complex<double>>: a complex second-order tensor. Field complex (via real()/imag());
+// utility::cartesian_tensor<complex<double>>: a complex second-order tensor. Field complex (via real()/imag());
 // fills the tensor order slot only, never the vector or scalar one.
-static_assert(!RepresentationOf<cartesian_tensor<std::complex<double>>, quantity_field::real>);
-static_assert(RepresentationOf<cartesian_tensor<std::complex<double>>, quantity_field::complex>);
-static_assert(!RepresentationOf<cartesian_tensor<std::complex<double>>, quantity_tensor_order::scalar>);
-static_assert(!RepresentationOf<cartesian_tensor<std::complex<double>>, quantity_tensor_order::vector>);
-static_assert(RepresentationOf<cartesian_tensor<std::complex<double>>, quantity_tensor_order::tensor>);
+static_assert(!RepresentationOf<utility::cartesian_tensor<std::complex<double>>, quantity_field::real>);
+static_assert(RepresentationOf<utility::cartesian_tensor<std::complex<double>>, quantity_field::complex>);
+static_assert(!RepresentationOf<utility::cartesian_tensor<std::complex<double>>, quantity_tensor_order::scalar>);
+static_assert(!RepresentationOf<utility::cartesian_tensor<std::complex<double>>, quantity_tensor_order::vector>);
+static_assert(RepresentationOf<utility::cartesian_tensor<std::complex<double>>, quantity_tensor_order::tensor>);
 
 // quantity types must never themselves be a representation (disable_representation guard)
 static_assert(!RepresentationOf<quantity<si::metre>, quantity_field::real>);
@@ -386,14 +386,14 @@ static_assert(!RepresentationOf<quantity<si::metre>, quantity_tensor_order::vect
 static_assert(!RepresentationOf<quantity<si::metre>, quantity_tensor_order::tensor>);
 
 // cartesian_tensor whose element is a quantity must not be a representation
-static_assert(!RepresentationOf<cartesian_tensor<quantity<si::metre>>, quantity_field::real>);
-static_assert(!RepresentationOf<cartesian_tensor<quantity<si::metre>>, quantity_field::complex>);
-static_assert(!RepresentationOf<cartesian_tensor<quantity<si::metre>>, quantity_tensor_order::scalar>);
-static_assert(!RepresentationOf<cartesian_tensor<quantity<si::metre>>, quantity_tensor_order::vector>);
-static_assert(!RepresentationOf<cartesian_tensor<quantity<si::metre>>, quantity_tensor_order::tensor>);
+static_assert(!RepresentationOf<utility::cartesian_tensor<quantity<si::metre>>, quantity_field::real>);
+static_assert(!RepresentationOf<utility::cartesian_tensor<quantity<si::metre>>, quantity_field::complex>);
+static_assert(!RepresentationOf<utility::cartesian_tensor<quantity<si::metre>>, quantity_tensor_order::scalar>);
+static_assert(!RepresentationOf<utility::cartesian_tensor<quantity<si::metre>>, quantity_tensor_order::vector>);
+static_assert(!RepresentationOf<utility::cartesian_tensor<quantity<si::metre>>, quantity_tensor_order::tensor>);
 
 // a tensor-character ISQ quantity accepts a second-order tensor representation
-static_assert(Quantity<quantity<isq::stress[si::pascal], cartesian_tensor<double>>>);
+static_assert(Quantity<quantity<isq::stress[si::pascal], utility::cartesian_tensor<double>>>);
 
 // `VectorRepresentation` subsumes `TensorRepresentation` (the latter is defined as the former plus
 // the order-2 case), so a VectorRepresentation-constrained overload is preferred over a
@@ -415,14 +415,14 @@ consteval int grade()
 {
   return 0;
 }
-static_assert(grade<cartesian_tensor<double>>() == 2);  // only TensorRepresentation matches
-static_assert(grade<cartesian_vector<double>>() == 1);  // VectorRepresentation wins (subsumes Tensor)
-static_assert(grade<double>() == 0);                    // ScalarRepresentation wins (subsumes Vector)
-static_assert(grade<std::complex<double>>() == 0);      // a complex scalar is order 0 too
+static_assert(grade<utility::cartesian_tensor<double>>() == 2);  // only TensorRepresentation matches
+static_assert(grade<utility::cartesian_vector<double>>() == 1);  // VectorRepresentation wins (subsumes Tensor)
+static_assert(grade<double>() == 0);                             // ScalarRepresentation wins (subsumes Vector)
+static_assert(grade<std::complex<double>>() == 0);               // a complex scalar is order 0 too
 }  // namespace subsumption_check
 
 // cartesian_vector whose element is a quantity must not be a representation
-static_assert(!RepresentationOf<cartesian_vector<quantity<si::metre>>, quantity_tensor_order::vector>);
+static_assert(!RepresentationOf<utility::cartesian_vector<quantity<si::metre>>, quantity_tensor_order::vector>);
 
 static_assert(!RepresentationOf<std::chrono::seconds, quantity_tensor_order::scalar>);
 static_assert(!RepresentationOf<std::string, quantity_tensor_order::scalar>);
@@ -462,17 +462,17 @@ MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
 static_assert(RepresentationOf<double, quantity_character::real_scalar>);
 static_assert(RepresentationOf<std::complex<double>, quantity_character::complex_scalar>);
 static_assert(!RepresentationOf<double, quantity_character::complex_scalar>);
-static_assert(RepresentationOf<cartesian_vector<double>, quantity_character::vector>);
-static_assert(RepresentationOf<cartesian_tensor<double>, quantity_character::tensor>);
+static_assert(RepresentationOf<utility::cartesian_vector<double>, quantity_character::vector>);
+static_assert(RepresentationOf<utility::cartesian_tensor<double>, quantity_character::tensor>);
 MP_UNITS_DIAGNOSTIC_POP
 
 // Field is exact (disjoint) and detected from the values, not the `real()`/`imag()` API: a genuinely
 // complex representation does not satisfy a real character, and a real one does not satisfy a complex
 // character. The detection recurses through wrapped elements.
 static_assert(!RepresentationOf<std::complex<double>, quantity_field::real>);
-static_assert(!RepresentationOf<cartesian_vector<std::complex<double>>, quantity_field::real>);
+static_assert(!RepresentationOf<utility::cartesian_vector<std::complex<double>>, quantity_field::real>);
 static_assert(!RepresentationOf<double, quantity_field::complex>);
-static_assert(!RepresentationOf<cartesian_vector<double>, quantity_field::complex>);
+static_assert(!RepresentationOf<utility::cartesian_vector<double>, quantity_field::complex>);
 #endif
 
 // Character concepts (the `detail::` two-tier surface) classify representation types directly and
@@ -492,20 +492,20 @@ static_assert(detail::ScalarRepresentation<int> && detail::VectorRepresentation<
 
 #if MP_UNITS_HOSTED
 // real vector -> real field; not a scalar, is a vector and (degenerate) tensor
-static_assert(detail::Real<cartesian_vector<double>> && !detail::Complex<cartesian_vector<double>>);
-static_assert(!detail::Scalar<cartesian_vector<double>> && detail::Vector<cartesian_vector<double>> &&
-              detail::Tensor<cartesian_vector<double>>);
-static_assert(!detail::ScalarRepresentation<cartesian_vector<double>> &&
-              detail::VectorRepresentation<cartesian_vector<double>> &&
-              detail::TensorRepresentation<cartesian_vector<double>>);
+static_assert(detail::Real<utility::cartesian_vector<double>> && !detail::Complex<utility::cartesian_vector<double>>);
+static_assert(!detail::Scalar<utility::cartesian_vector<double>> && detail::Vector<utility::cartesian_vector<double>> &&
+              detail::Tensor<utility::cartesian_vector<double>>);
+static_assert(!detail::ScalarRepresentation<utility::cartesian_vector<double>> &&
+              detail::VectorRepresentation<utility::cartesian_vector<double>> &&
+              detail::TensorRepresentation<utility::cartesian_vector<double>>);
 
 // real tensor -> real field; only a tensor
-static_assert(detail::Real<cartesian_tensor<double>> && !detail::Complex<cartesian_tensor<double>>);
-static_assert(!detail::Scalar<cartesian_tensor<double>> && !detail::Vector<cartesian_tensor<double>> &&
-              detail::Tensor<cartesian_tensor<double>>);
-static_assert(!detail::ScalarRepresentation<cartesian_tensor<double>> &&
-              !detail::VectorRepresentation<cartesian_tensor<double>> &&
-              detail::TensorRepresentation<cartesian_tensor<double>>);
+static_assert(detail::Real<utility::cartesian_tensor<double>> && !detail::Complex<utility::cartesian_tensor<double>>);
+static_assert(!detail::Scalar<utility::cartesian_tensor<double>> &&
+              !detail::Vector<utility::cartesian_tensor<double>> && detail::Tensor<utility::cartesian_tensor<double>>);
+static_assert(!detail::ScalarRepresentation<utility::cartesian_tensor<double>> &&
+              !detail::VectorRepresentation<utility::cartesian_tensor<double>> &&
+              detail::TensorRepresentation<utility::cartesian_tensor<double>>);
 
 // complex scalar -> complex field; scalar, and (degenerate) vector and tensor
 static_assert(!detail::Real<std::complex<double>> && detail::Complex<std::complex<double>>);
@@ -515,15 +515,15 @@ static_assert(detail::ScalarRepresentation<std::complex<double>> &&
               detail::VectorRepresentation<std::complex<double>> && detail::TensorRepresentation<std::complex<double>>);
 
 // complex vector / complex tensor -> complex field; order unchanged from their real counterparts
-static_assert(!detail::Real<cartesian_vector<std::complex<double>>> &&
-              detail::Complex<cartesian_vector<std::complex<double>>>);
-static_assert(!detail::Scalar<cartesian_vector<std::complex<double>>> &&
-              detail::Vector<cartesian_vector<std::complex<double>>> &&
-              detail::Tensor<cartesian_vector<std::complex<double>>>);
-static_assert(!detail::Real<cartesian_tensor<std::complex<double>>> &&
-              detail::Complex<cartesian_tensor<std::complex<double>>>);
-static_assert(!detail::Vector<cartesian_tensor<std::complex<double>>> &&
-              detail::Tensor<cartesian_tensor<std::complex<double>>>);
+static_assert(!detail::Real<utility::cartesian_vector<std::complex<double>>> &&
+              detail::Complex<utility::cartesian_vector<std::complex<double>>>);
+static_assert(!detail::Scalar<utility::cartesian_vector<std::complex<double>>> &&
+              detail::Vector<utility::cartesian_vector<std::complex<double>>> &&
+              detail::Tensor<utility::cartesian_vector<std::complex<double>>>);
+static_assert(!detail::Real<utility::cartesian_tensor<std::complex<double>>> &&
+              detail::Complex<utility::cartesian_tensor<std::complex<double>>>);
+static_assert(!detail::Vector<utility::cartesian_tensor<std::complex<double>>> &&
+              detail::Tensor<utility::cartesian_tensor<std::complex<double>>>);
 
 // `Real` / `Complex` are field-only: they classify the field axis without implying a usable
 // representation. `bool` has a real field and is even a `Scalar` by its math, yet it is opted out of
@@ -674,9 +674,9 @@ static_assert(detail::Scalar<quantity<si::metre>>);
 static_assert(detail::Scalar<quantity<isq::speed[si::metre / si::second], int>>);
 // static_assert(detail::Scalar<quantity<isq::complex_power[si::volt * si::ampere], std::complex<double>>>);
 
-static_assert(!detail::Scalar<quantity<one, cartesian_vector<double>>>);
-static_assert(!detail::Scalar<quantity<si::metre, cartesian_vector<double>>>);
-static_assert(!detail::Scalar<quantity<isq::velocity[si::metre / si::second], cartesian_vector<double>>>);
+static_assert(!detail::Scalar<quantity<one, utility::cartesian_vector<double>>>);
+static_assert(!detail::Scalar<quantity<si::metre, utility::cartesian_vector<double>>>);
+static_assert(!detail::Scalar<quantity<isq::velocity[si::metre / si::second], utility::cartesian_vector<double>>>);
 static_assert(!detail::Scalar<quantity_point<one>>);
 static_assert(!detail::Scalar<quantity_point<si::metre>>);
 
@@ -700,10 +700,10 @@ static_assert(!detail::ComplexScalar<quantity<isq::velocity[si::metre / si::seco
 static_assert(!detail::VectorRepresentation<quantity<isq::speed[si::metre / si::second], int>>);
 // static_assert(detail::VectorRepresentation<quantity<isq::velocity[si::metre / si::second], int>>);
 static_assert(!detail::VectorRepresentation<quantity<isq::complex_power[si::volt * si::ampere], std::complex<double>>>);
-// static_assert(detail::Vector<quantity<one>, cartesian_vector<double>>);
-// static_assert(detail::Vector<quantity<one, cartesian_vector<int>>>);
-// static_assert(detail::Vector<quantity<si::metre>, cartesian_vector<double>>);
-// static_assert(detail::Vector<quantity<isq::velocity[si::metre / si::second], cartesian_vector<int>>>);
+// static_assert(detail::Vector<quantity<one>, utility::cartesian_vector<double>>);
+// static_assert(detail::Vector<quantity<one, utility::cartesian_vector<int>>>);
+// static_assert(detail::Vector<quantity<si::metre>, utility::cartesian_vector<double>>);
+// static_assert(detail::Vector<quantity<isq::velocity[si::metre / si::second], utility::cartesian_vector<int>>>);
 
 // Scaling concept classification
 // double: floating-point → UsesFloatingPointScaling only
@@ -712,12 +712,12 @@ static_assert(!detail::UsesIntegerScaling<double>);
 // int: integral scalar → UsesIntegerScaling only
 static_assert(!detail::UsesFloatingPointScaling<int>);
 static_assert(detail::UsesIntegerScaling<int>);
-// cartesian_vector<double>: FP element type → UsesFloatingPointScaling
-static_assert(detail::UsesFloatingPointScaling<cartesian_vector<double>>);
-static_assert(!detail::UsesIntegerScaling<cartesian_vector<double>>);
-// cartesian_vector<int>: integral element → UsesIntegerScaling
-static_assert(!detail::UsesFloatingPointScaling<cartesian_vector<int>>);
-static_assert(detail::UsesIntegerScaling<cartesian_vector<int>>);
+// utility::cartesian_vector<double>: FP element type → UsesFloatingPointScaling
+static_assert(detail::UsesFloatingPointScaling<utility::cartesian_vector<double>>);
+static_assert(!detail::UsesIntegerScaling<utility::cartesian_vector<double>>);
+// utility::cartesian_vector<int>: integral element → UsesIntegerScaling
+static_assert(!detail::UsesFloatingPointScaling<utility::cartesian_vector<int>>);
+static_assert(detail::UsesIntegerScaling<utility::cartesian_vector<int>>);
 
 #endif
 
