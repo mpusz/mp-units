@@ -92,9 +92,10 @@ as your representation type:
 The library provides two built-in policies in `<mp-units/constrained.h>`:
 
 ```cpp
-#include <mp-units/constrained.h>
+#include <mp-units/utility/constrained.h>
 
 using namespace mp_units;
+using namespace mp_units::utility;
 
 // Option 1: Throw exceptions (hosted environments)
 using safe_double = constrained<double, throw_policy>;
@@ -119,10 +120,11 @@ using logged_double = constrained<double, log_and_throw_policy>;
 ### Step 2: Use `constrained<T>` as Your Representation Type
 
 ```cpp
-#include <mp-units/constrained.h>
+#include <mp-units/utility/constrained.h>
 #include <mp-units/systems/si.h>
 
 using namespace mp_units;
+using namespace mp_units::utility;
 using namespace mp_units::si::unit_symbols;
 
 // Define representation type with exception policy
@@ -156,13 +158,14 @@ Here's a production-ready example with guaranteed exception handling for tempera
 
 ```cpp
 // ce-embed height=1300 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
-#include <mp-units/constrained.h>
+#include <mp-units/utility/constrained.h>
 #include <mp-units/framework.h>
 #include <mp-units/systems/si.h>
 #include <optional>
 #include <iostream>
 
 using namespace mp_units;
+using namespace mp_units::utility;
 using namespace mp_units::si::unit_symbols;
 
 // STEP 1: Define safe representation type

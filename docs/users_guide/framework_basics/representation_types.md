@@ -1000,7 +1000,10 @@ For vector and tensor quantities, the library ships two built-in representation 
 (an `N`×`N` second-order Cartesian tensor). Both take a compile-time dimension `N`,
 either `2` or `3` and defaulting to `3`, so a planar model uses a 2-D vector or a 2×2
 tensor without paying for an unused third component. Each provides the ISO 80000-2
-operations for its character:
+operations for its character.
+
+Both types live in the `mp_units::utility` namespace. The snippets below assume a
+`using namespace mp_units::utility;`.
 
 ```cpp
 #include <mp-units/cartesian_tensor.h>  // also pulls in cartesian_vector.h

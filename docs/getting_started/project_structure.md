@@ -62,14 +62,23 @@ The **mp-units** library provides the following C++ modules:
 
 ```mermaid
 flowchart TD
-    mp_units --- mp_units.systems --- mp_units.core
+    mp_units --- mp_units.utility --- mp_units.systems --- mp_units.core
 ```
 
-| C++ Module         | CMake Target         | Contents                                                 |
-|--------------------|----------------------|----------------------------------------------------------|
-| `mp_units.core`    | `mp-units::core`     | Core library framework and systems-independent utilities |
-| `mp_units.systems` | `mp-units::systems`  | All the systems of quantities and units                  |
-| `mp_units`         | `mp-units::mp-units` | Core + Systems                                           |
+| C++ Module         | CMake Target         | Contents                                                        |
+|--------------------|----------------------|-----------------------------------------------------------------|
+| `mp_units.core`    | `mp-units::core`     | Core library framework, math, and systems-independent utilities |
+| `mp_units.systems` | `mp-units::systems`  | All the systems of quantities and units                         |
+| `mp_units.utility` | `mp-units::utility`  | Built-in representation types and other non-framework add-ons   |
+| `mp_units`         | `mp-units::mp-units` | Core + Systems + Utility                                        |
+
+The `mp_units.utility` module is layered on top of both `mp_units.core` and `mp_units.systems`.
+It collects useful add-ons that are deliberately **not** part of the framework: the built-in
+[`cartesian_vector`/`cartesian_tensor`](../users_guide/framework_basics/representation_types.md)
+representation types and the random number generators.
+The framework (`mp_units.core`) is the slice intended for C++ standardization, so anything
+that will not be standardized lives in `mp_units.utility` instead. The umbrella `mp_units`
+module keeps re-exporting all of it, so `import mp_units;` continues to expose everything.
 
 !!! note
 
@@ -94,6 +103,24 @@ is found (the module is added on top in a C++ modules build). A component is **e
 (`find_package(mp-units-integrations-<lib>)`), never through `mp-unitsTargets`, so that
 `find_package(mp-units)` never gains a dependency on a third-party library.
 
+## Namespaces
+
+The library exposes three namespaces with distinct stability guarantees. The distinction is
+by **purpose**, not by which component or module a name ships from:
+
+- `mp_units` — the main public interface: the framework and math. This is the minimal, stable
+  surface intended for C++ standardization, so it is kept deliberately small.
+- `mp_units::utility` — a public extension and authoring tier for everything that is useful
+  but not part of the standardization target: the `Real`, `Complex`, `RealScalar`,
+  `ComplexScalar`, `Scalar`, `Vector`, `Tensor` representation concepts, the built-in
+  `cartesian_vector` / `cartesian_tensor` types, the random number generators, and the
+  `constrained` / `safe_int` wrappers. Keeping these in a separate namespace prevents the
+  standard surface from accidentally depending on them. Some of these names ship from the
+  `mp_units.utility` module and some (such as `constrained` / `safe_int`) ship from the core
+  component, but they share this one namespace.
+- `mp_units::detail` — private implementation details. Nothing here is part of the public
+  API and it is never exported from the modules. Do not rely on it.
+
 ## Header files
 
 All of the project's header files can be found in the `mp-units/...` subdirectory.
@@ -105,9 +132,21 @@ All of the project's header files can be found in the `mp-units/...` subdirector
 - `mp-units/format.h` provides text formatting support,
 - `mp-units/ostream.h` enables streaming of the library's objects to the text output,
 - `mp-units/math.h` provides overloads of common math functions for quantities,
-- `mp-units/random.h` provides C++ pseudo-random number generators for quantities,
+- `mp-units/overflow_policies.h` provides the range and overflow policies (`check_in_range`,
+  `clamp_to_range`, `wrap_to_range`, `reflect_in_range`, `check_non_negative`,
+  `clamp_non_negative`),
+- `mp-units/utility/constrained.h` provides the `constrained` range-validated value wrapper,
+- `mp-units/utility/safe_int.h` provides the `safe_int` overflow-checked integer wrapper,
 - `mp-units/compat_macros.h` provides macros for
   [wide compatibility](../how_to_guides/integration/wide_compatibility.md).
+
+!!! note
+
+    `constrained` and `safe_int` (and their error policies) are shipped from the core component
+    because they reuse core internals, but they are add-ons rather than framework, so their public
+    names live in the `mp_units::utility` namespace (see [Namespaces](#namespaces) below), not in
+    `mp_units` directly. `overflow_policies.h` is genuine framework (it backs bounded quantity point
+    origins) and stays in `mp_units`.
 
 ??? info "More details"
 
@@ -118,6 +157,20 @@ All of the project's header files can be found in the `mp-units/...` subdirector
     - `mp-units/bits/...` provides private implementation details only (no public definitions),
     - `mp-units/ext/...` contains external dependencies that at some point in the future
       should be replaced with C++ standard library facilities.
+
+### Utility types
+
+Add-ons that build on the framework but are deliberately **not** part of it, so they ship
+in the separate `mp_units.utility` [module](#modules). The include paths stay flat under
+`mp-units/...`, and the umbrella header/module keeps re-exporting them:
+
+- `mp-units/cartesian_vector.h` provides the built-in `cartesian_vector` type,
+- `mp-units/cartesian_tensor.h` provides the built-in `cartesian_tensor` type,
+- `mp-units/random.h` provides C++ pseudo-random number generators for quantities.
+
+These live in the `mp_units::utility` namespace. For a transition period the
+`cartesian_vector` and `random` names are also available from `mp_units` as `[[deprecated]]`
+aliases.
 
 ### Third-party library integrations
 

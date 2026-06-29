@@ -64,9 +64,9 @@ struct log_and_continue_policy {
 Wrap your numeric type with the desired policy:
 
 ```cpp
-#include <mp-units/constrained.h>
+#include <mp-units/utility/constrained.h>
 
-using safe_double = mp_units::constrained<double, mp_units::throw_policy>;
+using safe_double = mp_units::utility::constrained<double, mp_units::utility::throw_policy>;
 ```
 
 `constrained<T>` is transparent: it implicitly converts to/from `T` and forwards all
@@ -86,6 +86,7 @@ For guaranteed enforcement, use `check_in_range`:
 #include <mp-units/systems/si.h>
 
 using namespace mp_units;
+using namespace mp_units::utility;
 using namespace mp_units::si::unit_symbols;
 
 inline constexpr struct geo_latitude : quantity_spec<isq::angular_measure> {} geo_latitude;
@@ -168,7 +169,7 @@ For integer quantities, the library provides `safe_int<T>` in `<mp-units/safe_in
 which detects arithmetic overflow. You can use both together:
 
 ```cpp
-#include <mp-units/safe_int.h>
+#include <mp-units/utility/safe_int.h>
 
 // Overflow-detecting integer for arithmetic operations
 quantity distance = safe_int{42} * m;  // arithmetic overflow detected at runtime

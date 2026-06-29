@@ -328,17 +328,17 @@ quantity<mm, std::int16_t> length_mm2 = length2;  // ✅ OK: 2000 fits in int16_
     **mp-units** ships built-in tools for runtime overflow and bounds protection:
 
     - **`safe_int<T>`** — a drop-in integer wrapper that detects arithmetic overflow at runtime
-      (`#include <mp-units/safe_int.h>`)
+      (`#include <mp-units/utility/safe_int.h>`)
     - **`constrained<T, ErrorPolicy>`** — a transparent wrapper that tags a representation type
       with an error policy, enabling guaranteed bounds enforcement via `constraint_violation_handler`
-      (`#include <mp-units/constrained.h>`)
+      (`#include <mp-units/utility/constrained.h>`)
     - **Bounds policies on point origins** — a template parameter on the origin that attaches a validation policy
       (e.g. `check_in_range`, `clamp_to_range`, `wrap_to_range`, `reflect_in_range`) to a
       quantity point origin
 
     ```cpp
-    #include <mp-units/safe_int.h>
-    #include <mp-units/constrained.h>
+    #include <mp-units/utility/safe_int.h>
+    #include <mp-units/utility/constrained.h>
 
     // Built-in safe_int detects arithmetic overflow at runtime
     quantity distance = safe_int{std::int16_t{100}} * m;
@@ -348,7 +348,7 @@ quantity<mm, std::int16_t> length_mm2 = length2;  // ✅ OK: 2000 fits in int16_
     inline constexpr struct prime_meridian :
       absolute_point_origin<geo_longitude, wrap_to_range{-180 * deg, 180 * deg}> {} prime_meridian;
 
-    using safe_double = mp_units::constrained<double, mp_units::throw_policy>;
+    using safe_double = mp_units::utility::constrained<double, mp_units::utility::throw_policy>;
     using longitude = quantity_point<geo_longitude[deg], prime_meridian, safe_double>;
     longitude lon{190.0 * deg, prime_meridian};  // wraps to -170°
     ```

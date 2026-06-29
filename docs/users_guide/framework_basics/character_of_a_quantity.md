@@ -228,6 +228,9 @@ how to use custom types.
     algebra library types can also be used via the customization points described in
     [Representation Types](representation_types.md).
 
+    Both types live in the `mp_units::utility` namespace. The snippets below assume a
+    `using namespace mp_units::utility;` (or an `mp_units::utility::` qualification).
+
 For example, using the built-in `cartesian_vector`:
 
 ```cpp

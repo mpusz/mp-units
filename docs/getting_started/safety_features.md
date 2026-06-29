@@ -127,15 +127,15 @@ No library can prevent runtime arithmetic overflow at compile time (e.g., `quant
 **mp-units** provides built-in tools for domains that need guaranteed runtime enforcement:
 
 ```cpp
-#include <mp-units/safe_int.h>
-#include <mp-units/constrained.h>
+#include <mp-units/utility/safe_int.h>
+#include <mp-units/utility/constrained.h>
 
 // Built-in safe_int detects arithmetic overflow at runtime
-quantity distance = safe_int{std::int16_t{100}} * m;
+quantity distance = utility::safe_int{std::int16_t{100}} * m;
 // quantity overflow = distance * std::int16_t{1'000};  // throws std::overflow_error at runtime
 
 // constrained<T> tags a type with an error policy for bounds checking
-using safe_double = constrained<double, throw_policy>;
+using safe_double = utility::constrained<double, utility::throw_policy>;
 using latitude = quantity_point<geo_latitude[deg], equator, safe_double>;
 latitude lat{95.0 * deg, equator};  // throws std::domain_error (out of [-90, 90])
 ```

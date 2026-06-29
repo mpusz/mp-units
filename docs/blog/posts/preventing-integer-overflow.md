@@ -761,12 +761,12 @@ on freestanding platforms.
 Convenience aliases with the default policy are provided:
 
 ```cpp
-using safe_i16 = mp_units::safe_int<std::int16_t>;  // default policy (throw on hosted, terminate on freestanding)
-using safe_i32 = mp_units::safe_int<std::int32_t>;  // default policy (throw on hosted, terminate on freestanding)
+using safe_i16 = mp_units::utility::safe_int<std::int16_t>;  // default policy (throw on hosted, terminate on freestanding)
+using safe_i32 = mp_units::utility::safe_int<std::int32_t>;  // default policy (throw on hosted, terminate on freestanding)
 
 // For explicit policy control, use the full template:
-mp_units::safe_int<std::int32_t, mp_units::safe_int_throw_policy> explicit_throw;
-mp_units::safe_int<std::int32_t, mp_units::safe_int_terminate_policy> explicit_terminate;
+mp_units::utility::safe_int<std::int32_t, mp_units::utility::safe_int_throw_policy> explicit_throw;
+mp_units::utility::safe_int<std::int32_t, mp_units::utility::safe_int_terminate_policy> explicit_terminate;
 ```
 
 All standard fixed-width integer aliases are available: `safe_i8`, `safe_i16`, `safe_i32`,
@@ -777,7 +777,7 @@ All standard fixed-width integer aliases are available: `safe_i8`, `safe_i16`, `
     You can define your own error policy to integrate with custom logging or diagnostics systems:
 
     ```cpp
-    #include <mp-units/safe_int.h>
+    #include <mp-units/utility/safe_int.h>
 
     struct logging_policy {
       [[noreturn]] static void on_overflow(std::string_view msg)
@@ -795,7 +795,7 @@ All standard fixed-width integer aliases are available: `safe_i8`, `safe_i16`, `
       }
     };
 
-    using logged_int = mp_units::safe_int<std::int32_t, logging_policy>;
+    using logged_int = mp_units::utility::safe_int<std::int32_t, logging_policy>;
     ```
 
     The policy must provide a `static void on_overflow(std::string_view)` method for arithmetic
@@ -817,10 +817,10 @@ matching what happens with the underlying types:
 static_assert(std::is_same_v<decltype(std::int16_t{1} + std::int16_t{1}), int>);
 
 // safe_int preserves this: safe_int<int16_t> + safe_int<int16_t> → safe_int<int>
-static_assert(std::is_same_v<decltype(safe_i16{1} + safe_i16{1}), mp_units::safe_int<int>>);
+static_assert(std::is_same_v<decltype(safe_i16{1} + safe_i16{1}), mp_units::utility::safe_int<int>>);
 
 // This propagates through quantity arithmetic:
-static_assert(std::is_same_v<decltype(safe_i16{1} * m + safe_i16{1} * m), quantity<m, mp_units::safe_int<int>>>);
+static_assert(std::is_same_v<decltype(safe_i16{1} * m + safe_i16{1} * m), quantity<m, mp_units::utility::safe_int<int>>>);
 ```
 
 This design ensures that `safe_int` acts as a **transparent wrapper** — it adds overflow

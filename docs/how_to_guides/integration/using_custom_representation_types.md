@@ -470,6 +470,7 @@ as a vector representation type with full support for vector operations:
 #include <mp-units/systems/isq.h>
 
 using namespace mp_units;
+using namespace mp_units::utility;  // cartesian_vector lives here
 using namespace mp_units::si::unit_symbols;
 
 void example()
@@ -512,7 +513,7 @@ type with:
 ### Tensor Representation
 
 The library also provides
-[`cartesian_tensor`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/cartesian_tensor.h),
+[`cartesian_tensor`](https://github.com/mpusz/mp-units/blob/master/src/utility/include/mp-units/cartesian_tensor.h),
 a fixed 3×3 second-order Cartesian tensor with the ISO 80000-2 second-order operations. The
 operations are shown here on the representation type directly, which is where the vector and
 tensor products live in the current release:
@@ -521,6 +522,7 @@ tensor products live in the current release:
 #include <mp-units/cartesian_tensor.h>
 
 using namespace mp_units;
+using namespace mp_units::utility;  // cartesian_tensor / cartesian_vector live here
 
 void example()
 {
@@ -550,7 +552,7 @@ tensor product `T ⊗ S` (ISO 80000-2, 2-18.22) and `transpose`/`trace` are not 
 release.
 
 **Implementation reference:**
-[`cartesian_tensor.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/cartesian_tensor.h)
+[`cartesian_tensor.h`](https://github.com/mpusz/mp-units/blob/master/src/utility/include/mp-units/cartesian_tensor.h)
 
 
 ## Common Pitfalls
@@ -666,6 +668,6 @@ custom types.
 - [`quantity_traits.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/quantity_traits.h) - Public helpers (`unit_for`, `reference_for`, `rep_for`)
 - [`scaling.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/scaling.h) - Built-in scaling implementation
 - [`value_cast.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/value_cast.h) - `value_cast`, `force_in`, `is_integral_scaling`, and `implicitly_scalable`
-- [`cartesian_vector.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/cartesian_vector.h) - Vector implementation example
-- [`cartesian_tensor.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/cartesian_tensor.h) - Second-order tensor implementation example
+- [`cartesian_vector.h`](https://github.com/mpusz/mp-units/blob/master/src/utility/include/mp-units/cartesian_vector.h) - Vector implementation example
+- [`cartesian_tensor.h`](https://github.com/mpusz/mp-units/blob/master/src/utility/include/mp-units/cartesian_tensor.h) - Second-order tensor implementation example
 <!-- markdownlint-enable MD013 -->

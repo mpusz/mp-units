@@ -9,8 +9,9 @@ all the concepts that **mp-units** requires of a
 plain integers.
 
 ```cpp
-#include <mp-units/safe_int.h>
+#include <mp-units/utility/safe_int.h>
 using namespace mp_units;
+using namespace mp_units::utility;
 
 // Just change the representation type — everything else stays the same
 quantity<mm, safe_i32> distance{1'500 * km};
@@ -123,14 +124,14 @@ The default policy is `safe_int_throw_policy` on hosted platforms and
 All standard fixed-width integer aliases are provided with the default policy:
 
 ```cpp
-using safe_i8  = mp_units::safe_int<std::int8_t>;
-using safe_i16 = mp_units::safe_int<std::int16_t>;
-using safe_i32 = mp_units::safe_int<std::int32_t>;
-using safe_i64 = mp_units::safe_int<std::int64_t>;
-using safe_u8  = mp_units::safe_int<std::uint8_t>;
-using safe_u16 = mp_units::safe_int<std::uint16_t>;
-using safe_u32 = mp_units::safe_int<std::uint32_t>;
-using safe_u64 = mp_units::safe_int<std::uint64_t>;
+using safe_i8  = mp_units::utility::safe_int<std::int8_t>;
+using safe_i16 = mp_units::utility::safe_int<std::int16_t>;
+using safe_i32 = mp_units::utility::safe_int<std::int32_t>;
+using safe_i64 = mp_units::utility::safe_int<std::int64_t>;
+using safe_u8  = mp_units::utility::safe_int<std::uint8_t>;
+using safe_u16 = mp_units::utility::safe_int<std::uint16_t>;
+using safe_u32 = mp_units::utility::safe_int<std::uint32_t>;
+using safe_u64 = mp_units::utility::safe_int<std::uint64_t>;
 ```
 
 For explicit policy control, use the full template:
@@ -146,7 +147,7 @@ You can define your own error policy to integrate with custom logging or diagnos
 systems:
 
 ```cpp
-#include <mp-units/safe_int.h>
+#include <mp-units/utility/safe_int.h>
 
 struct logging_policy {
   [[noreturn]] static void on_overflow(std::string_view msg)
@@ -156,7 +157,7 @@ struct logging_policy {
   }
 };
 
-using logged_int = mp_units::safe_int<std::int32_t, logging_policy>;
+using logged_int = mp_units::utility::safe_int<std::int32_t, logging_policy>;
 ```
 
 The policy must provide a `static void on_overflow(std::string_view)` member function.
