@@ -1,11 +1,10 @@
 ---
-date: 2026-06-26
+date: 2026-06-29
 authors:
  - mpusz
 categories:
  - Metrology
 comments: true
-draft: true
 ---
 
 # Why a Quantity Has a Character
