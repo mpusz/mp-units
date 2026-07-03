@@ -145,9 +145,9 @@ QUANTITY_SPEC(phase, dimensionless, is_kind);  // quantum phase (cyclic, dimensi
 QUANTITY_SPEC(frequency, inverse(duration));
 
 // derived quantities using specialized quantities for enhanced type safety
-QUANTITY_SPEC(speed, path_length / duration);                                     // scalar speed along path
-QUANTITY_SPEC(velocity, displacement / duration, quantity_tensor_order::vector);  // velocity  vector
-QUANTITY_SPEC(decay_constant, frequency);  // λ = 1/τ (decay rate), a type of frequency
+QUANTITY_SPEC(speed, length / duration);                  // scalar speed along path
+QUANTITY_SPEC(velocity, speed, displacement / duration);  // velocity  vector
+QUANTITY_SPEC(decay_constant, frequency);                 // λ = 1/τ (decay rate), a type of frequency
 QUANTITY_SPEC(proper_velocity, displacement / proper_time,
               quantity_tensor_order::vector);  // four-velocity spatial part
 // Note: lorentz_factor and relativistic_beta are dimensionless but have specific physical meaning

@@ -100,14 +100,14 @@
 | <span id="scattering_angle"></span><code>scattering_<wbr>angle</code> | scalar | α |  | <code>[angular::angle](#angle)</code> | <code>[angular::angle](#angle)</code> | — | [view](../hierarchies/angle.md) |
 | <span id="separation_energy"></span><code>separation_<wbr>energy</code> | scalar | E | ≥ 0 | <code>[energy](#energy)</code> | <code>[binding_<wbr>energy](#binding_energy)</code> | — | [view](../hierarchies/energy_hep.md) |
 | <span id="solid_angle"></span><code>solid_<wbr>angle</code> | scalar | — |  | — | — | alias to [angular::solid_<wbr>angle](#solid_angle) | — |
-| <span id="speed"></span><code>speed</code> | scalar | LT⁻¹ | kind | <code>[speed](#speed)</code> | — | <code>[path_<wbr>length](#path_length) / <wbr>[duration](#duration)</code> | [view](../hierarchies/speed_hep.md) |
+| <span id="speed"></span><code>speed</code> | scalar | LT⁻¹ | kind | <code>[speed](#speed)</code> | — | <code>[length](#length) / <wbr>[duration](#duration)</code> | [view](../hierarchies/speed_hep.md) |
 | <span id="temperature"></span><code>temperature</code> | scalar | Θ | kind<br>≥ 0 | <code>[temperature](#temperature)</code> | — | — | [view](../hierarchies/temperature.md) |
 | <span id="threshold_energy"></span><code>threshold_<wbr>energy</code> | scalar | E | ≥ 0 | <code>[energy](#energy)</code> | <code>[energy](#energy)</code> | — | [view](../hierarchies/energy_hep.md) |
 | <span id="time_of_flight"></span><code>time_<wbr>of_<wbr>flight</code> | scalar | T | ≥ 0 | <code>[duration](#duration)</code> | <code>[duration](#duration)</code> | — | [view](../hierarchies/duration_hep.md) |
 | <span id="total_energy"></span><code>total_<wbr>energy</code> | scalar | E | ≥ 0 | <code>[energy](#energy)</code> | <code>[energy](#energy)</code> | — | [view](../hierarchies/energy_hep.md) |
 | <span id="transverse_energy"></span><code>transverse_<wbr>energy</code> | scalar | E | ≥ 0 | <code>[energy](#energy)</code> | <code>[energy](#energy)</code> | — | [view](../hierarchies/energy_hep.md) |
 | <span id="transverse_momentum"></span><code>transverse_<wbr>momentum</code> | scalar | ETL⁻¹ |  | <code>[momentum](#momentum)</code> | <code>[momentum](#momentum)</code> | — | [view](../hierarchies/momentum_hep.md) |
-| <span id="velocity"></span><code>velocity</code> | vector | LT⁻¹ | kind | <code>[velocity](#velocity)</code> | — | <code>[displacement](#displacement) / <wbr>[duration](#duration)</code> | [view](../hierarchies/velocity.md) |
+| <span id="velocity"></span><code>velocity</code> | vector | LT⁻¹ |  | <code>[speed](#speed)</code> | <code>[speed](#speed)</code> | <code>[displacement](#displacement) / <wbr>[duration](#duration)</code> | [view](../hierarchies/speed_hep.md) |
 | <span id="vertex_position"></span><code>vertex_<wbr>position</code> | scalar | L | ≥ 0 | <code>[length](#length)</code> | <code>[length](#length)</code> | — | [view](../hierarchies/length_hep.md) |
 | <span id="volume"></span><code>volume</code> | scalar | L³ | kind | <code>[volume](#volume)</code> | — | <code>pow<3>([length](#length))</code> | [view](../hierarchies/volume_hep.md) |
 | <span id="wavelength"></span><code>wavelength</code> | scalar | L | ≥ 0 | <code>[length](#length)</code> | <code>[length](#length)</code> | — | [view](../hierarchies/length_hep.md) |

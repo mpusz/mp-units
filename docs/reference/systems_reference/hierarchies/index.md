@@ -183,8 +183,7 @@ This section contains all quantity hierarchy trees across all systems, grouped b
 ## Dimension: LT⁻¹
 
 - [`hep::proper_velocity`](proper_velocity.md) (1 quantity)
-- [`hep::speed`](speed_hep.md) (1 quantity)
-- [`hep::velocity`](velocity.md) (1 quantity)
+- [`hep::speed`](speed_hep.md) (2 quantities)
 - [`isq::group_speed`](group_speed.md) (1 quantity)
 - [`isq::phase_speed`](phase_speed.md) (1 quantity)
 - [`isq::phase_speed_of_electromagnetic_waves`](phase_speed_of_electromagnetic_waves.md) (1 quantity)
@@ -489,4 +488,4 @@ This section contains all quantity hierarchy trees across all systems, grouped b
 
 - [`isq::pressure_coefficient`](pressure_coefficient.md) (1 quantity)
 
-**Total hierarchies:** 178
+**Total hierarchies:** 177
