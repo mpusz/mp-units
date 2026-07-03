@@ -343,7 +343,7 @@ template<Unit auto To, auto R, typename Rep>
     using std::floor;
     return {static_cast<Rep>(floor(res.numerical_value_ref_in(res.unit))), res.reference};
   } else {
-    if (res > q) return res - representation_values<Rep>::one() * res.reference;
+    if (res > q) return res - quantity{representation_values<Rep>::one(), res.reference};
     return res;
   }
 }
@@ -365,7 +365,7 @@ template<Unit auto To, auto R, typename Rep>
     using std::ceil;
     return {static_cast<Rep>(ceil(res.numerical_value_ref_in(res.unit))), res.reference};
   } else {
-    if (res < q) return res + representation_values<Rep>::one() * res.reference;
+    if (res < q) return res + quantity{representation_values<Rep>::one(), res.reference};
     return res;
   }
 }
@@ -388,7 +388,7 @@ template<Unit auto To, auto R, typename Rep>
   } && std::constructible_from<std::int64_t, Rep>
 {
   const auto res_low = mp_units::floor<To>(q);
-  const auto res_high = res_low + representation_values<Rep>::one() * res_low.reference;
+  const auto res_high = res_low + quantity{representation_values<Rep>::one(), res_low.reference};
   const auto diff0 = q - res_low;
   const auto diff1 = res_high - q;
   if (diff0 == diff1) {

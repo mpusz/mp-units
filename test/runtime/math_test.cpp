@@ -35,6 +35,7 @@ import mp_units;
 #include <mp-units/systems/angular.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>
+#include <mp-units/systems/usc.h>
 #endif
 
 using namespace mp_units;
@@ -338,6 +339,42 @@ TEST_CASE("math operations", "[math]")
     SECTION("round -1999. milliseconds with target unit second should be -2 seconds")
     {
       REQUIRE(round<si::second>(-1999. * isq::duration[ms]) == -2 * isq::duration[s]);
+    }
+  }
+
+  // Regression tests for https://github.com/mpusz/mp-units/issues/808
+  // `floor`/`ceil`/`round` with integer representation must not rely on the deprecated
+  // `Rep * reference` operator, which is ill-formed for offset units (e.g. temperatures).
+  SECTION("floor/ceil/round with offset units and integer representation")
+  {
+    constexpr auto ddeg_C = si::deci<si::degree_Celsius>;  // 0.1 °C steps
+
+    SECTION("floor with a degree Celsius target")
+    {
+      REQUIRE(floor<deg_C>(delta<ddeg_C>(15)) == delta<deg_C>(1));    // floor(1.5) == 1
+      REQUIRE(floor<deg_C>(delta<ddeg_C>(14)) == delta<deg_C>(1));    // floor(1.4) == 1
+      REQUIRE(floor<deg_C>(delta<ddeg_C>(-15)) == delta<deg_C>(-2));  // floor(-1.5) == -2
+      REQUIRE(floor<deg_C>(delta<ddeg_C>(-14)) == delta<deg_C>(-2));  // floor(-1.4) == -2
+    }
+    SECTION("ceil with a degree Celsius target")
+    {
+      REQUIRE(ceil<deg_C>(delta<ddeg_C>(15)) == delta<deg_C>(2));    // ceil(1.5) == 2
+      REQUIRE(ceil<deg_C>(delta<ddeg_C>(14)) == delta<deg_C>(2));    // ceil(1.4) == 2
+      REQUIRE(ceil<deg_C>(delta<ddeg_C>(-15)) == delta<deg_C>(-1));  // ceil(-1.5) == -1
+      REQUIRE(ceil<deg_C>(delta<ddeg_C>(-14)) == delta<deg_C>(-1));  // ceil(-1.4) == -1
+    }
+    SECTION("round with a degree Celsius target (round half to even)")
+    {
+      REQUIRE(round<deg_C>(delta<ddeg_C>(15)) == delta<deg_C>(2));    // round(1.5) == 2 (even)
+      REQUIRE(round<deg_C>(delta<ddeg_C>(14)) == delta<deg_C>(1));    // round(1.4) == 1
+      REQUIRE(round<deg_C>(delta<ddeg_C>(25)) == delta<deg_C>(2));    // round(2.5) == 2 (even)
+      REQUIRE(round<deg_C>(delta<ddeg_C>(-15)) == delta<deg_C>(-2));  // round(-1.5) == -2 (even)
+      REQUIRE(round<deg_C>(delta<ddeg_C>(-14)) == delta<deg_C>(-1));  // round(-1.4) == -1
+    }
+    SECTION("round across offset units (the originally reported case)")
+    {
+      REQUIRE(round<usc::degree_Fahrenheit>(delta<deg_C>(1)) ==
+              delta<usc::degree_Fahrenheit>(2));  // 1 Δ°C == 1.8 Δ°F -> 2 Δ°F
     }
   }
 

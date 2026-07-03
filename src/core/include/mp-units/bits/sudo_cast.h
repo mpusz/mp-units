@@ -150,7 +150,7 @@ template<QuantityPoint ToQP, typename FwdFromQP, QuantityPoint FromQP = std::rem
     // We go via quantity_point subtraction to handle all origin relationships correctly,
     // including cases where two natural_point_origins of different units exist.
     constexpr auto offset_as = [&]<typename Q>(std::type_identity<Q>) {
-      constexpr auto zero = typename Q::rep{0} * Q::reference;
+      constexpr auto zero = quantity{typename Q::rep{0}, Q::reference};
       return sudo_cast<Q>(quantity_point{zero, FromQP::point_origin} - quantity_point{zero, ToQP::point_origin});
     };
 
