@@ -174,6 +174,7 @@ Alphabetical list of all units.
 - [`pottle` (usc)](systems/usc.md#pottle)
 - [`pound` (yard_pound)](systems/yard_pound.md#pound)
 - [`pound_force` (yard_pound)](systems/yard_pound.md#pound_force)
+- [`pound_mass` (yard_pound)](systems/yard_pound.md#pound_mass)
 - [`poundal` (yard_pound)](systems/yard_pound.md#poundal)
 - [`ppm` (mp_units)](systems/core.md#ppm)
 - [`psi` (yard_pound)](systems/yard_pound.md#psi)
@@ -234,4 +235,4 @@ Alphabetical list of all units.
 - [`weber` (si)](systems/si.md#weber)
 - [`yard` (yard_pound)](systems/yard_pound.md#yard)
 
-**Total units:** 228
+**Total units:** 229

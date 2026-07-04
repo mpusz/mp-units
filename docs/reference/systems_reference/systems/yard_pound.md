@@ -34,6 +34,7 @@
 | <span id="point"></span><code>point</code> | p | `p` | <code>mag_ratio<1, 12> * <wbr>[pica](#pica)</code> |
 | <span id="pound"></span><code>pound</code> | lb | `lb` | <code>mag_ratio<45'359'237, 100'000'000> * <wbr>[si::kilogram](si.md#kilogram)</code> |
 | <span id="pound_force"></span><code>pound_<wbr>force</code> | lbf | `lbf` | <code>[pound](#pound) * <wbr>[si::standard_<wbr>gravity](si.md#standard_gravity)</code> |
+| <span id="pound_mass"></span><code>pound_<wbr>mass</code> | — | — | alias to [pound](#pound) |
 | <span id="poundal"></span><code>poundal</code> | pdl | `pdl` | <code>[pound](#pound) * <wbr>[foot](#foot) / <wbr>square([si::second](si.md#second))</code> |
 | <span id="psi"></span><code>psi</code> | psi | `psi` | <code>[pound_<wbr>force](#pound_force) / <wbr>square([inch](#inch))</code> |
 | <span id="twip"></span><code>twip</code> | twip | `twip` | <code>mag_ratio<1, 20> * <wbr>[point](#point)</code> |

@@ -33,4 +33,4 @@ Automatically generated reference documentation for all **mp-units** systems.
 | [SI](systems/si.md) | — | — | 24 | 43 | 10 | 5 |
 | [Typographic](systems/typographic.md) | — | — | — | 9 | — | — |
 | [USC](systems/usc.md) | — | — | — | 45 | — | 3 |
-| [Yard Pound](systems/yard_pound.md) | — | — | — | 21 | — | — |
+| [Yard Pound](systems/yard_pound.md) | — | — | — | 22 | — | — |
