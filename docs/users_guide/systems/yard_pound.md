@@ -102,8 +102,13 @@ quantity vehicle_speed = 65 * mph;
 | mile          | mi     | _length_ | 1760 yd                       |
 | nautical mile | nmi    | _length_ | 1852 m                        |
 | pound         | lb     | _mass_   | 0.45359237 kg (by definition) |
+| pound-force   | lbf    | _force_  | lb × standard gravity         |
 | poundal       | pdl    | _force_  | lb⋅ft/s²                      |
 | knot          | kn     | _speed_  | nmi/h                         |
+
+The `pound` (`lb`) is a unit of _mass_. The full name `pound_mass` is available as a
+clarifying alias for code that prefers to make the mass-versus-force distinction explicit
+in the name (see [The Pound: Mass or Force?](#the-pound-mass-or-force) below).
 
 ### `mp_units::imperial` - British Imperial System
 
@@ -166,6 +171,40 @@ quantity shipping = 3 * usc::short_ton;                       // Short ton (2000
 
 
 ## Critical Differences and Pitfalls
+
+### The Pound: Mass or Force?
+
+!!! warning "`lb` is mass, `lbf` is force"
+
+    **mp-units** follows the metrological convention: `pound` (`lb`) is a unit of _mass_ (the
+    1959 international pound), and the separate unit of _force_ is `pound_force` (`lbf`), with
+    `poundal` (`pdl`) as the absolute FPS force unit. This is a deliberate choice, because the
+    name "pound" is genuinely ambiguous across systems: US customary engineering practice
+    routinely uses "pound" to mean a _force_ (which is why pounds per square inch is a pressure
+    and foot-pounds a torque), while the avoirdupois system anchored to SI treats it as a _mass_.
+
+    If you work in a domain where "pound" means force, reach for `pound_force` explicitly. The
+    type system backs you up either way: `pound` and `pound_force` carry different dimensions, so
+    using one where the other is expected is a compile-time error, not a silent wrong result.
+
+```cpp
+#include <mp-units/systems/yard_pound.h>
+
+using namespace mp_units;
+using namespace mp_units::yard_pound::unit_symbols;
+
+quantity m = 10 * lb;         // mass: 10 pounds
+quantity f = 10 * lbf;        // force: 10 pounds-force
+// quantity bad = m + f;      // error: mass and force have different dimensions
+```
+
+For code that prefers to spell the distinction out, `pound_mass` is a clarifying alias of
+`pound` (it lives in the `yard_pound` namespace alongside the other full unit names, not in
+`unit_symbols`):
+
+```cpp
+quantity payload = 10 * yard_pound::pound_mass;   // exactly the same unit as `10 * lb`
+```
 
 ### The Gallon Problem
 

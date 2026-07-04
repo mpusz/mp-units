@@ -40,7 +40,12 @@ namespace mp_units::yard_pound {
 // https://en.wikipedia.org/wiki/International_yard_and_pound
 
 // mass
+// `pound` (symbol `lb`) is a unit of *mass*: the 1959 international pound, defined against the
+// kilogram. US customary engineering practice frequently uses "pound" to mean a *force*; that unit
+// is `pound_force` (`lbf`) in the force section below, with `poundal` as the absolute FPS force unit.
+// `pound_mass` is a clarifying alias of `pound` for code that prefers to spell the distinction out.
 inline constexpr struct pound final : named_unit<"lb", mag_ratio<45'359'237, 100'000'000> * si::kilogram> {} pound;
+inline constexpr auto pound_mass = pound;
 inline constexpr struct ounce final : named_unit<"oz", mag_ratio<1, 16> * pound> {} ounce;
 inline constexpr struct dram final : named_unit<"dr", mag_ratio<1, 16> * ounce> {} dram;
 inline constexpr struct grain final : named_unit<"gr", mag_ratio<1, 7'000> * pound> {} grain;
