@@ -240,6 +240,13 @@ public:
   [[nodiscard]] constexpr T& operator()(std::size_t row, std::size_t col) { return _data_[row * N + col]; }
   [[nodiscard]] constexpr const T& operator()(std::size_t row, std::size_t col) const { return _data_[row * N + col]; }
 
+#if __cpp_multidimensional_subscript && MP_UNITS_COMP_GCC != 12
+  // C++23 multidimensional subscript, equivalent to `operator()` above (GCC 12 defines the feature
+  // macro but does not implement it, so it is excluded)
+  [[nodiscard]] constexpr T& operator[](std::size_t row, std::size_t col) { return _data_[row * N + col]; }
+  [[nodiscard]] constexpr const T& operator[](std::size_t row, std::size_t col) const { return _data_[row * N + col]; }
+#endif
+
   // Element-wise real and imaginary parts, present only for complex elements. Their existence is
   // what marks this type as a complex (rather than real) representation through the `real`/`imag`
   // customization points.
