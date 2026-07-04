@@ -37,6 +37,7 @@ import std;
 #include <limits>
 #include <string_view>
 #include <type_traits>
+#include <utility>
 #if MP_UNITS_HOSTED
 #include <chrono>
 #endif
@@ -281,21 +282,6 @@ MP_UNITS_EXPORT inline constexpr ::mp_units::detail::modulus_impl::modulus_t mod
 }
 
 
-/////////////// numeric_field ///////////////
-
-// The numeric field of a type: real or complex. The single source of truth for the field axis. The
-// default detects it from the `real()`/`imag()` API; a type whose API does not follow the "expose
-// `real()`/`imag()` iff complex" convention (e.g. an Eigen/Blaze matrix, which exposes them on real
-// types too) declares its field by specializing this trait in its integration adapter - mirroring
-// `tensor_order` for the order axis. It is order-agnostic: it answers "real or complex?" for
-// scalars, vectors, and tensors alike, and a quantity's character field can be wired the same way.
-MP_UNITS_EXPORT template<typename T>
-constexpr quantity_field numeric_field = requires(const T& v) {
-  ::mp_units::real(v);
-  ::mp_units::imag(v);
-} ? quantity_field::complex : quantity_field::real;
-
-
 /////////////// tensor_order ///////////////
 
 namespace detail {
@@ -326,6 +312,60 @@ template<typename T>
 // `disable_tensor` opt-outs: "a tensor is not a vector" is simply `order 2`, and `2 <= 1` is false.
 MP_UNITS_EXPORT template<typename T>
 constexpr std::size_t tensor_order = detail::detect_tensor_order<T>();
+
+
+/////////////// numeric_field ///////////////
+
+namespace detail {
+
+template<typename T, std::size_t... Is>
+  requires(sizeof...(Is) >= 1)
+[[nodiscard]] consteval auto element_type_of(std::index_sequence<Is...>)
+{
+  if constexpr (sizeof...(Is) == 1) {
+    // single-index access uses a plain `t[i]` / `t(i)`: the C++23 pack subscript `t[Is...]` is a
+    // syntax error before C++23 even for a one-element pack, so it is confined to the branch below.
+    if constexpr (requires(const T& t) { t[std::size_t{}]; })
+      return std::type_identity<std::remove_cvref_t<decltype(std::declval<const T&>()[std::size_t{}])>>{};
+    else
+      return std::type_identity<std::remove_cvref_t<decltype(std::declval<const T&>()(std::size_t{}))>>{};
+  } else {
+#if __cpp_multidimensional_subscript && MP_UNITS_COMP_GCC != 12
+    if constexpr (requires(const T& t) { t[Is...]; })
+      return std::type_identity<std::remove_cvref_t<decltype(std::declval<const T&>()[Is...])>>{};
+    else
+#endif
+      return std::type_identity<std::remove_cvref_t<decltype(std::declval<const T&>()(Is...))>>{};
+  }
+}
+
+template<typename T>
+using element_type_of_t =
+  typename decltype(element_type_of<T>(std::make_index_sequence<detect_tensor_order<T>()>{}))::type;
+
+template<typename T>
+[[nodiscard]] consteval quantity_field detect_numeric_field()
+{
+  if constexpr (detect_tensor_order<T>() >= 1)
+    return detect_numeric_field<element_type_of_t<T>>();
+  else if constexpr (requires(const T& v) {
+                       ::mp_units::real(v);
+                       ::mp_units::imag(v);
+                     })
+    return quantity_field::complex;
+  else
+    return quantity_field::real;
+}
+
+}  // namespace detail
+
+// The numeric field of a type: real or complex.
+// Field detection reads the field off a scalar *element*, never off a container's surface, and that is
+// why it consults the order. A linear-algebra vector or matrix (Eigen, Blaze) exposes `real()`/`imag()`
+// even when it is real, so trusting that API at the container level would misclassify a real matrix as
+// complex.
+MP_UNITS_EXPORT template<typename T>
+constexpr quantity_field numeric_field = detail::detect_numeric_field<T>();
 
 
 /////////////// disable_representation ///////////////
