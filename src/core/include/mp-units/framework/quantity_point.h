@@ -148,7 +148,7 @@ template<auto... Args>
   requires(sizeof...(Args) == 0)
 consteval auto bounds_arg()
 {
-  return undefined;
+  return utility::undefined;
 }
 
 template<auto First, auto... Rest>
@@ -274,7 +274,7 @@ template<PointOrigin PO>
 template<PointOrigin PO>
 constexpr bool has_quantity_bounds_v = [] {
   if constexpr (PO::_quantity_spec_.character == quantity_character{}) {
-    if constexpr (requires { PO::_bounds_; } && specified<decltype(PO::_bounds_)>) {
+    if constexpr (requires { PO::_bounds_; } && utility::specified<decltype(PO::_bounds_)>) {
       static_assert(
         requires { PO::_bounds_.min; } || requires { PO::_bounds_.max; },
         "bounds policy must have at least a 'min' or 'max' member");

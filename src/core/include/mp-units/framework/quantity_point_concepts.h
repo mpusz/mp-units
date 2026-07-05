@@ -52,12 +52,12 @@ concept AbsolutePointOrigin = PointOrigin<T> && is_derived_from_specialization_o
  *   frame_projection<From, To>(quantity_point_at_From, extra_args...) -> quantity_point_at_To
  *
  * Both directions must be explicitly specialized — the library never derives an inverse.
- * The primary template defaults to `detail::undefined_t{}` so that `detail::HasFrameProjection`
+ * The primary template defaults to `utility::undefined_t{}` so that `detail::HasFrameProjection`
  * can detect whether a specialization exists.
  */
 MP_UNITS_EXPORT template<detail::AbsolutePointOrigin auto From, detail::AbsolutePointOrigin auto To>
   requires(From != To)
-inline constexpr detail::undefined_t frame_projection;
+inline constexpr utility::undefined_t frame_projection;
 
 namespace detail {
 
@@ -155,7 +155,7 @@ namespace detail {
 template<auto From, auto To>
 concept HasFrameProjection =
   AbsolutePointOrigin<MP_UNITS_REMOVE_CONST(decltype(From))> &&
-  AbsolutePointOrigin<MP_UNITS_REMOVE_CONST(decltype(To))> && specified<decltype(frame_projection<From, To>)>;
+  AbsolutePointOrigin<MP_UNITS_REMOVE_CONST(decltype(To))> && utility::specified<decltype(frame_projection<From, To>)>;
 
 }  // namespace detail
 
