@@ -161,16 +161,14 @@ All of the project's header files can be found in the `mp-units/...` subdirector
 ### Utility types
 
 Add-ons that build on the framework but are deliberately **not** part of it, so they ship
-in the separate `mp_units.utility` [module](#modules). The include paths stay flat under
-`mp-units/...`, and the umbrella header/module keeps re-exporting them:
+in the separate `mp_units.utility` [module](#modules). Their headers live under
+`mp-units/utility/...`, so the include path mirrors the `mp_units::utility` namespace:
 
-- `mp-units/cartesian_vector.h` provides the built-in `cartesian_vector` type,
-- `mp-units/cartesian_tensor.h` provides the built-in `cartesian_tensor` type,
-- `mp-units/random.h` provides C++ pseudo-random number generators for quantities.
+- `mp-units/utility/cartesian_vector.h` provides the built-in `cartesian_vector` type,
+- `mp-units/utility/cartesian_tensor.h` provides the built-in `cartesian_tensor` type,
+- `mp-units/utility/random.h` provides C++ pseudo-random number generators for quantities.
 
-These live in the `mp_units::utility` namespace. For a transition period the
-`cartesian_vector` and `random` names are also available from `mp_units` as `[[deprecated]]`
-aliases.
+These live in the `mp_units::utility` namespace.
 
 ### Third-party library integrations
 

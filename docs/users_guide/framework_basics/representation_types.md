@@ -1027,7 +1027,7 @@ Both types live in the `mp_units::utility` namespace. The snippets below assume 
 `using namespace mp_units::utility;`.
 
 ```cpp
-#include <mp-units/cartesian_tensor.h>  // also pulls in cartesian_vector.h
+#include <mp-units/utility/cartesian_tensor.h>  // also pulls in cartesian_vector.h
 
 quantity v = cartesian_vector{1., 2., 3.} * isq::velocity[m / s];
 quantity sigma = cartesian_tensor{1., 0., 0., 0., 1., 0., 0., 0., 1.} * isq::stress[Pa];

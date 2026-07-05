@@ -356,5 +356,5 @@ header file. Among others, we can find there the following:
 - `sin()`, `cos()`, `tan()`,
 - `asin()`, `acos()`, `atan()`, `atan2()`.
 
-In the library, we can also find _mp-units/random.h_ header file with all the pseudo-random
-number generators working on quantity types.
+In the library, we can also find _mp-units/utility/random.h_ header file with all the
+pseudo-random number generators working on quantity types.

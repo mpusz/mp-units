@@ -29,9 +29,9 @@
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>
 #if MP_UNITS_HOSTED
-#include <mp-units/cartesian_tensor.h>
-#include <mp-units/cartesian_vector.h>
 #include <mp-units/math.h>
+#include <mp-units/utility/cartesian_tensor.h>
+#include <mp-units/utility/cartesian_vector.h>
 #endif
 #ifdef MP_UNITS_IMPORT_STD
 import std;

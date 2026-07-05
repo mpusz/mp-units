@@ -39,13 +39,13 @@ import std;
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
-#include <mp-units/cartesian_vector.h>
 #include <mp-units/systems/cgs.h>
 #include <mp-units/systems/isq/electromagnetism.h>
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>
 #include <mp-units/systems/usc.h>
+#include <mp-units/utility/cartesian_vector.h>
 #endif
 
 using namespace mp_units;

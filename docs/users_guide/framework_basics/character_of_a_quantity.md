@@ -234,7 +234,7 @@ how to use custom types.
 For example, using the built-in `cartesian_vector`:
 
 ```cpp
-#include <mp-units/cartesian_vector.h>
+#include <mp-units/utility/cartesian_vector.h>
 
 Quantity auto q = cartesian_vector{1., 2., 3.} * isq::velocity[m / s];
 ```
@@ -256,7 +256,7 @@ A _tensor quantity_ works the same way through the built-in `cartesian_tensor`, 
 `N`×`N` second-order Cartesian tensor:
 
 ```cpp
-#include <mp-units/cartesian_tensor.h>
+#include <mp-units/utility/cartesian_tensor.h>
 
 Quantity auto stress = cartesian_tensor{1., 0., 0., 0., 1., 0., 0., 0., 1.} * isq::stress[Pa];
 ```

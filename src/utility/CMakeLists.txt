@@ -35,9 +35,11 @@ if(NOT MP_UNITS_API_FREESTANDING)
                BASE_DIRS
                ${CMAKE_CURRENT_SOURCE_DIR}/include
                FILES
-               include/mp-units/cartesian_tensor.h
                include/mp-units/cartesian_vector.h
                include/mp-units/random.h
+               include/mp-units/utility/cartesian_tensor.h
+               include/mp-units/utility/cartesian_vector.h
+               include/mp-units/utility/random.h
     )
 endif()
 

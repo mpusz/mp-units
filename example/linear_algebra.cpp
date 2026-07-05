@@ -87,7 +87,7 @@ import mp_units.integrations.blaze;
 #elif defined(MP_UNITS_LA_BLAZE)
 #include <mp-units/integrations/blaze.h>
 #elif defined(MP_UNITS_LA_CARTESIAN)
-#include <mp-units/cartesian_vector.h>
+#include <mp-units/utility/cartesian_vector.h>
 #endif
 #endif
 

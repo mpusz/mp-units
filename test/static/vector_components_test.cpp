@@ -20,12 +20,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <mp-units/cartesian_vector.h>
 #include <mp-units/compat_macros.h>
 #include <mp-units/framework.h>
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>
+#include <mp-units/utility/cartesian_vector.h>
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else

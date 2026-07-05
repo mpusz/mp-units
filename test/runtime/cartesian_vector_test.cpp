@@ -34,7 +34,7 @@ import std;
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
-#include <mp-units/cartesian_vector.h>
+#include <mp-units/utility/cartesian_vector.h>
 #endif
 
 using namespace mp_units;

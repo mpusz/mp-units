@@ -35,7 +35,7 @@ import std;
 #define MP_UNITS_IN_MODULE_INTERFACE
 
 #if MP_UNITS_HOSTED
-#include <mp-units/cartesian_tensor.h>
-#include <mp-units/cartesian_vector.h>
-#include <mp-units/random.h>
+#include <mp-units/utility/cartesian_tensor.h>
+#include <mp-units/utility/cartesian_vector.h>
+#include <mp-units/utility/random.h>
 #endif

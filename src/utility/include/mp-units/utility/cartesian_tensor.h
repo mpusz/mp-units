@@ -25,7 +25,7 @@
 #include <mp-units/bits/requires_hosted.h>
 //
 #include <mp-units/bits/module_macros.h>
-#include <mp-units/cartesian_vector.h>
+#include <mp-units/utility/cartesian_vector.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/framework/customization_points.h>
