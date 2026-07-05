@@ -22,17 +22,32 @@
 
 #pragma once
 
-// IWYU pragma: begin_exports
-#include <mp-units/compat_macros.h>
-#include <mp-units/concepts.h>
-#include <mp-units/framework.h>
-#include <mp-units/overflow_policies.h>
-#include <mp-units/utility/constrained.h>
-#include <mp-units/utility/representation.h>
-#include <mp-units/utility/safe_int.h>
-#include <mp-units/utility/unspecified.h>
+#include <mp-units/bits/module_macros.h>
 
-#if MP_UNITS_HOSTED
-#include <mp-units/math.h>
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
+#include <concepts>
+#include <type_traits>
 #endif
-// IWYU pragma: end_exports
+#endif
+
+namespace mp_units::utility {
+
+/// @brief Sentinel default for a specializable variable-template customization point with no usable
+/// default.
+///
+/// A variable template cannot be `= delete`d the way a function can, so a customization point that
+/// must be specialized before use defaults to `unspecified`, and a specialization replaces it with a
+/// real value. `specified` reports whether that has happened. This is public authoring vocabulary
+/// shared by the library's own customization points and by higher-level tools, hence it lives in the
+/// `mp_units::utility` namespace.
+MP_UNITS_EXPORT struct unspecified_t {};
+MP_UNITS_EXPORT inline constexpr unspecified_t unspecified{};
+
+/// @brief Satisfied when a customization point has been given a value (i.e. is not `unspecified`).
+MP_UNITS_EXPORT template<typename T>
+concept specified = !std::same_as<std::remove_cvref_t<T>, unspecified_t>;
+
+}  // namespace mp_units::utility

@@ -82,6 +82,7 @@ add_mp_units_module(
             include/mp-units/utility/constrained.h
             include/mp-units/utility/safe_int.h
             include/mp-units/utility/representation.h
+            include/mp-units/utility/unspecified.h
             include/mp-units/compat_macros.h
             include/mp-units/concepts.h
             include/mp-units/core.h

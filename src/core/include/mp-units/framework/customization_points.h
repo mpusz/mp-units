@@ -27,6 +27,7 @@
 #include <mp-units/ext/type_traits.h>
 #include <mp-units/framework/quantity_character.h>
 #include <mp-units/framework/quantity_spec_concepts.h>
+#include <mp-units/utility/unspecified.h>  // utility::unspecified / utility::specified
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #ifdef MP_UNITS_IMPORT_STD
@@ -55,25 +56,6 @@ import std;
 //   - frame_projection<From, To>                             <mp-units/framework/quantity_point_concepts.h>
 
 namespace mp_units {
-
-namespace utility {
-
-/**
- * @brief Sentinel type indicating no default implementation for a variable template
- *
- * Used as the default value of a specializable variable template (a customization point) that must
- * not have a working default, working around the language limitation that variable templates cannot
- * be "deleted" like functions can. `specified` tests whether such a point has been given a real value
- * (i.e. is not `undefined`). These are public authoring vocabulary shared by the library's
- * customization points and by higher-level tools, so they live in `mp_units::utility`.
- */
-MP_UNITS_EXPORT struct undefined_t {};
-MP_UNITS_EXPORT inline constexpr undefined_t undefined{};
-
-MP_UNITS_EXPORT template<typename T>
-concept specified = !std::same_as<std::remove_cvref_t<T>, undefined_t>;
-
-}  // namespace utility
 
 namespace detail {
 
@@ -313,14 +295,14 @@ concept has_ambiguous_order = has_vector_indexing<T> && has_matrix_indexing<T>;
 }  // namespace detail
 
 // The intrinsic tensor order of a representation: 0 scalar, 1 vector, 2 tensor. The primary template
-// is left *undefined* (`utility::undefined_t`); a partial specialization detects the order structurally
+// is left *undefined* (`utility::unspecified_t`); a partial specialization detects the order structurally
 // for a type that exposes exactly one indexing shape (single-index `t[i]` -> 1, two-index `t(i, j)` ->
 // 2, neither -> 0), and a third-party representation may specialize it (e.g. an Eigen adapter reading
 // `RowsAtCompileTime` / `ColsAtCompileTime`). A type that exposes *both* shapes is ambiguous - only
 // its extents can decide - so it matches neither and stays `undefined` unless specialized: guessing
 // would disagree with an adapter, an ODR hazard across translation units.
 MP_UNITS_EXPORT template<typename T>
-constexpr utility::undefined_t tensor_order;
+constexpr utility::unspecified_t tensor_order;
 
 template<typename T>
   requires(!detail::has_ambiguous_order<T>)
@@ -382,7 +364,7 @@ template<typename T>
 // container's surface, since a linear-algebra vector or matrix exposes `real()`/`imag()` even when it
 // is real).
 MP_UNITS_EXPORT template<typename T>
-constexpr utility::undefined_t numeric_field;
+constexpr utility::unspecified_t numeric_field;
 
 template<typename T>
   requires detail::field_reachable<T>

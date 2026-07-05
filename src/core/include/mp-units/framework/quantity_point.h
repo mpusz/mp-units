@@ -148,7 +148,7 @@ template<auto... Args>
   requires(sizeof...(Args) == 0)
 consteval auto bounds_arg()
 {
-  return utility::undefined;
+  return utility::unspecified;
 }
 
 template<auto First, auto... Rest>
