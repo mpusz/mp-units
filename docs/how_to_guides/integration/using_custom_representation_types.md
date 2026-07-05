@@ -218,14 +218,17 @@ libraries:
 - **Magnitude.** Eigen and Blaze provide `norm()`, which the `magnitude()` CPO uses
   directly. GLM spells it `length()`, so its plugin adds a one-line `magnitude()` overload
   (found by ADL) that forwards to it.
-- **Order and field.** A library whose structural shape or API misreports its character
-  declares it explicitly. An Eigen column vector is an `N×1` matrix, so it exposes a
-  two-index `operator()` that the default reads as order `2`. Its plugin specializes
+- **Order.** A library whose structural shape is ambiguous declares its order explicitly.
+  An Eigen column vector is an `N×1` matrix, so it exposes *both* single-index `operator[]`
+  and two-index `operator()`, making its order ambiguous, so
   [`tensor_order`](../../users_guide/framework_basics/representation_types.md#tensor_order)
-  from the compile-time shape. Eigen and Blaze also expose `real()`/`imag()` on real types,
-  so their plugins specialize
+  has no default for it and its plugin specializes it from the compile-time shape. GLM,
+  whose vectors and matrices are structurally distinct, needs no such override.
+- **Field.** Eigen and Blaze expose `real()`/`imag()` on their real matrices too, but no
+  override is needed:
   [`numeric_field`](../../users_guide/framework_basics/representation_types.md#numeric_field)
-  from the element type to keep a real matrix classified as real. GLM needs neither.
+  reads the field off a scalar element rather than the container's surface, so a real matrix
+  of `double` is correctly classified real on its own.
 - **Materializing expression templates.** Eigen and Blaze return lazy proxy types from
   their arithmetic operators. A proxy holds references to its operands, so storing one
   inside a `quantity` would leave dangling references once those operands expire. Their

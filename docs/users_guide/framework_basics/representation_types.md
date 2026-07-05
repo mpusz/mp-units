@@ -67,10 +67,12 @@ the detected order by specializing `tensor_order<T>`.
 ### Field axis — [`numeric_field<T>`](#numeric_field)
 
 The field is matched exactly: a real quantity needs a real representation and a complex one
-a complex representation. It is reported by [`numeric_field<T>`](#numeric_field) of the
-representation type itself, never by inspecting a vector's or tensor's elements. The
-requirements below are what a *scalar* representation provides for each field.
-Override the detected field by specializing `numeric_field<T>`.
+a complex representation. It is reported by [`numeric_field<T>`](#numeric_field), which reads
+the field off a scalar *element* of the representation (reached by indexing for a vector or
+tensor, or the type itself for a scalar), so a container is complex exactly when its element
+is. The requirements below are what a *scalar* representation provides for each field. In
+the rare case a type misreports its element's field, override it by specializing
+`numeric_field<T>`.
 
 | Requirement (on a scalar representation)                           |                    Real                     |                             Complex                              |
 |--------------------------------------------------------------------|:-------------------------------------------:|:----------------------------------------------------------------:|
@@ -296,24 +298,32 @@ real or complex. It is the single source of truth for the field axis:
 ```cpp
 template<typename T>
 constexpr quantity_field mp_units::numeric_field =
-  /* complex if the mp_units::real()/imag() CPOs are valid for T, real otherwise */;
+  /* field of a scalar element of T: complex if that element satisfies the
+     mp_units::real()/imag() CPOs, real otherwise */;
 ```
 
-**Default:** A type is complex exactly when it satisfies the `mp_units::real()` and
-`mp_units::imag()` CPOs (by providing them as member or ADL free functions), and real
-otherwise. This is why `std::complex<double>` is treated as a complex scalar and `double`
-as a real one, with no extra wiring.
+**Default:** The field is read off a scalar *element* of the representation, not off the
+container's surface. For an order >= 1 type (a vector or tensor) the trait recurses into one
+element reached by indexing; for a scalar (order 0) it checks the `mp_units::real()` and
+`mp_units::imag()` CPOs directly. So `std::complex<double>` is complex and `double` real,
+and a `cartesian_vector<std::complex<double>>` is complex while a `cartesian_vector<double>`
+is real, with no extra wiring.
 
-**When to specialize:** When a type's API does not follow the "expose `real()`/`imag()`
-if and only if complex" convention. The prominent example is a linear algebra library.
-Eigen and Blaze expose `real()` and `imag()` on their **real** matrices and vectors
-(a real value is a degenerate complex one), so the default would misread a real Eigen
-matrix as complex. The integration adapter declares the field from the element type instead:
+Because the element is reached structurally, this handles the linear algebra libraries for
+free. Eigen and Blaze expose `real()` and `imag()` on their **real** matrices and vectors
+(a real value is a degenerate complex one), which would fool a check made on the container
+itself, but the trait looks at the element type, so a real Eigen matrix is correctly real.
+No integration-adapter override is needed for the field axis. Like `tensor_order`, the field
+is left undefined where the order is unresolved (an ambiguous type without a specialization),
+so the field and order axes reject such a type together.
+
+**When to specialize:** Rarely. The one case the default cannot see through is a scalar type
+that exposes `real()`/`imag()` yet is meant to be real (a "degenerate complex" that supports
+generic call sites). Specialize `numeric_field<T>` to `quantity_field::real` for such a type:
 
 ```cpp
-template<typename T>
-  requires /* T is an Eigen type */
-constexpr quantity_field mp_units::numeric_field<T> = numeric_field<typename T::Scalar>;
+template<>
+constexpr quantity_field mp_units::numeric_field<my_real> = quantity_field::real;
 ```
 
 Field matching is **exact**: a real quantity requires a real representation and a complex
@@ -326,21 +336,27 @@ imaginary part when a complex value is assigned where a real one is expected.
 #### `tensor_order<T>` { #tensor_order }
 
 A specializable variable template that reports the intrinsic **order** of a representation
-type: `0` for a scalar, `1` for a vector, `2` for a second-order tensor.
+type: `0` for a scalar, `1` for a vector, `2` for a second-order tensor. Its primary template
+is left *undefined*. A specialization detects the order for a type that exposes exactly one
+indexing shape:
 
 ```cpp
 template<typename T>
-constexpr std::size_t mp_units::tensor_order = /* detected from the type's structure */;
+  requires /* T exposes exactly one indexing shape */
+constexpr std::size_t mp_units::tensor_order<T> = /* t(i, j) -> 2, t[i] -> 1, otherwise 0 */;
 ```
 
-**Default:** The order is detected structurally from the type's element access. Two-index
+**Default:** The order is detected structurally from the type's element access: two-index
 access (the call operator `t(i, j)` or the C++23 multidimensional subscript `t[i, j]`) is
-order `2`, one-index access (`t[i]`) is order `1`, and anything else is order `0`.
+order `2`, single-index access (`t[i]`) is order `1`, and anything else is order `0`. A type
+that exposes **both** shapes is *ambiguous* — an `N×1` matrix models a vector yet also offers
+`t(i, j)`, and only its compile-time extents can decide — so it has **no default** and must
+be specialized. This is the single source of truth for the order: `numeric_field` consults
+it too rather than guessing separately.
 
-**When to specialize:** When the structural default reads the wrong order. The prominent
-example is again Eigen. An Eigen column vector is an `N×1` matrix, so it exposes a two-index
-`operator()(i, j)` that would otherwise make it look like an order-2 tensor. The adapter
-reads Eigen's compile-time shape instead:
+**When to specialize:** For an ambiguous type, whose order the library will not guess. The
+prominent example is Eigen: its column vector is an `N×1` matrix exposing both `t[i]` and
+`t(i, j)`, so its adapter declares the order from Eigen's compile-time shape:
 
 ```cpp
 template<typename T>
@@ -348,6 +364,11 @@ template<typename T>
 constexpr std::size_t mp_units::tensor_order<T> =
   (T::RowsAtCompileTime == 1 || T::ColsAtCompileTime == 1) ? 1 : 2;
 ```
+
+An ordinary full specialization works too (`template<> constexpr std::size_t
+mp_units::tensor_order<my_type> = 2;`). Until specified, an ambiguous type is simply not a
+valid representation — a SFINAE-friendly rejection, so forgetting the adapter is a clean
+compile error at the point of use, not a silent misclassification.
 
 Order matching is **rank-ordered**: a representation fills a slot of equal or higher order.
 A scalar can back a vector or a tensor quantity (very common in engineering, where `double`
