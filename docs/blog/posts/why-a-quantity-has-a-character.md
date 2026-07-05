@@ -18,6 +18,10 @@ industry.
 
 He is right. And he is not alone.
 
+---
+
+_Note: Revised on July 5, 2026 to incorporate the feedback in the comments below._
+
 <!-- more -->
 
 ## The problem is not the dimension
@@ -27,10 +31,11 @@ versus _weight_ confusion is a good example. In SI the split is clean: _mass_ is
 in kilograms and a _weight_ force in newtons, two different dimensions, so a dimension-safe
 library catches the mix-up for free. The pound tells the more interesting half of the
 story. At a Croydon ISO C++ evening session someone told me, with full confidence, that the
-pound is a unit of _force_, and he was not simply wrong. In the US customary gravitational
-system the pound routinely names a _force_, which is exactly why pounds per square inch is
-a pressure and foot-pounds a torque, while in the avoirdupois system anchored to SI the pound
-is a unit of _mass_. One name, two different quantities, and which one you mean depends on
+pound is a unit of _force_, and he was not simply wrong. In the gravitational
+foot-pound-force units common in US engineering the pound routinely names a _force_
+(`lbf`), which is exactly why pounds per square inch is a pressure and foot-pounds a
+torque, while the international (avoirdupois) pound anchored to SI is a unit of _mass_.
+One name, two different quantities, and which one you mean depends on
 the system in play. That is less a mistake to correct than an ambiguity to pin down, and
 pinning it down is exactly what a quantity-safe library forces you to do.
 
