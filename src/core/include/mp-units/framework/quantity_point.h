@@ -274,8 +274,7 @@ template<PointOrigin PO>
 template<PointOrigin PO>
 constexpr bool has_quantity_bounds_v = [] {
   if constexpr (PO::_quantity_spec_.character == quantity_character{}) {
-    if constexpr (requires { PO::_bounds_; } &&
-                  !std::is_same_v<std::remove_cvref_t<decltype(PO::_bounds_)>, undefined_t>) {
+    if constexpr (requires { PO::_bounds_; } && specified<decltype(PO::_bounds_)>) {
       static_assert(
         requires { PO::_bounds_.min; } || requires { PO::_bounds_.max; },
         "bounds policy must have at least a 'min' or 'max' member");

@@ -427,10 +427,12 @@ static_assert(!RepresentationOf<utility::cartesian_vector<quantity<si::metre>>, 
 static_assert(!RepresentationOf<std::chrono::seconds, quantity_tensor_order::scalar>);
 static_assert(!RepresentationOf<std::string, quantity_tensor_order::scalar>);
 
-// `tensor_order` is detected from a type's structure: one-index access is a vector (order 1),
-// two-index access a tensor (order 2), otherwise a scalar (order 0). A type with two-index access
-// that is conceptually a vector (an Eigen N×1 column matrix) therefore defaults to order 2 and must
-// declare order 1 by specializing `tensor_order` (the Eigen integration does exactly that).
+// `tensor_order` is detected from a type's structure: single-index access `t[i]` is a vector
+// (order 1), two-index access `t(i, j)` a tensor (order 2), otherwise a scalar (order 0). A type
+// that exposes *both* shapes (an Eigen N×1 column matrix models a vector yet also offers `t(i, j)`)
+// is ambiguous and has no default; it must specialize `tensor_order` (the Eigen integration does).
+// The single-shape types below classify without a specialization; the ambiguous both-shape case
+// (`ambiguous_shaped`) is checked afterwards.
 namespace order_detection {
 struct scalar_shaped {};
 struct vector_shaped {
@@ -439,8 +441,18 @@ struct vector_shaped {
 struct matrix_shaped {
   double operator()(std::size_t, std::size_t) const;
 };
+// Exposes *both* indexing styles (an N x 1 column matrix, as Eigen models a vector). Its order is
+// ambiguous, so the primary `tensor_order` is left undefined for it - it has no default.
+struct ambiguous_shaped {
+  double operator[](std::size_t) const;
+  double operator()(std::size_t, std::size_t) const;
+};
+// Whether `tensor_order<T>` yields a usable value. For the ambiguous case the primary is left
+// undefined, so this is `false` via a substitution failure (SFINAE-friendly), not a hard error.
+template<typename T>
+concept order_defined = (tensor_order<T> < 3);
 // GCC 12 prematurely defines `__cpp_multidimensional_subscript` without implementing `t[i, j]`, so
-// the library skips that probe there (see `detect_tensor_order`); keep this test in step.
+// the library skips that probe there (see `has_matrix_indexing`); keep this test in step.
 #if __cpp_multidimensional_subscript && MP_UNITS_COMP_GCC != 12
 struct multidim_subscript_shaped {
   double operator[](std::size_t, std::size_t) const;
@@ -453,6 +465,10 @@ static_assert(tensor_order<order_detection::matrix_shaped> == 2);
 #if __cpp_multidimensional_subscript && MP_UNITS_COMP_GCC != 12
 static_assert(tensor_order<order_detection::multidim_subscript_shaped> == 2);  // C++23 t[i, j]
 #endif
+// Single-shape types have a defined order; the ambiguous both-shape type does not (soft-rejected).
+static_assert(order_detection::order_defined<order_detection::vector_shaped>);
+static_assert(order_detection::order_defined<order_detection::matrix_shaped>);
+static_assert(!order_detection::order_defined<order_detection::ambiguous_shaped>);
 
 // The legacy flat spelling still selects the right (order, field): `vector` -> (vector, real),
 // `complex_scalar` -> (scalar, complex), etc. (converted at a function argument in `order_of` /
@@ -722,3 +738,16 @@ static_assert(detail::UsesIntegerScaling<utility::cartesian_vector<int>>);
 #endif
 
 }  // namespace
+
+// A full explicit specialization of `tensor_order` for an ambiguous type is permitted by the
+// undefined primary (a constrained-out primary would reject `template<>` with "does not match any
+// declaration"). At global scope, which encloses `mp_units`, so it can specialize the trait.
+namespace order_spec_test {
+struct ambiguous {
+  double operator[](std::size_t) const;
+  double operator()(std::size_t, std::size_t) const;
+};
+}  // namespace order_spec_test
+template<>
+constexpr std::size_t mp_units::tensor_order<order_spec_test::ambiguous> = 1;
+static_assert(mp_units::tensor_order<order_spec_test::ambiguous> == 1);

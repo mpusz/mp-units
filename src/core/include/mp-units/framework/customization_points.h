@@ -66,8 +66,10 @@ namespace detail {
  * templates cannot be "deleted" like functions can.
  */
 struct undefined_t {};
-
 inline constexpr undefined_t undefined{};
+
+template<typename T>
+concept specified = !std::same_as<std::remove_cvref_t<T>, undefined_t>;
 
 template<typename>
 struct cond_underlying_type {};
@@ -285,69 +287,79 @@ MP_UNITS_EXPORT inline constexpr ::mp_units::detail::modulus_impl::modulus_t mod
 /////////////// tensor_order ///////////////
 
 namespace detail {
+
 template<typename T>
-[[nodiscard]] consteval std::size_t detect_tensor_order()
-{
-  // two-index access (the call operator or the C++23 multidimensional subscript) is order 2
-  if constexpr (requires(const T& t) { t(std::size_t{}, std::size_t{}); }) return 2;
-// GCC 12 defines `__cpp_multidimensional_subscript` but does not implement it: `t[i, j]` is still
-// parsed as the deprecated comma-subscript, which fails under `-Werror=comma-subscript` even inside
-// this `requires`. Skip the multidimensional-subscript probe there (two-index `t(i, j)` still works).
+concept has_vector_indexing = requires(const T& t) { t[std::size_t{}]; };
+
+template<typename T>
+concept has_matrix_indexing = requires(const T& t) { t(std::size_t{}, std::size_t{}); }
 #if __cpp_multidimensional_subscript && MP_UNITS_COMP_GCC != 12
-  else if constexpr (requires(const T& t) { t[std::size_t{}, std::size_t{}]; })
-    return 2;
+                              || requires(const T& t) { t[std::size_t{}, std::size_t{}]; }
 #endif
-  // one-index access is order 1; everything else is a scalar (order 0)
-  else if constexpr (requires(const T& t) { t[std::size_t{}]; })
-    return 1;
-  else
-    return 0;
-}
+;
+
+// A type is structurally ambiguous about its order when it exposes *both* indexing shapes (an N x 1
+// matrix modeling a vector, as Eigen does): the same accessors fit a vector and a matrix, and only
+// the type's compile-time extents can tell them apart.
+template<typename T>
+concept has_ambiguous_order = has_vector_indexing<T> && has_matrix_indexing<T>;
+
 }  // namespace detail
 
-// The intrinsic tensor order of a representation: 0 scalar, 1 vector, 2 tensor. It is detected from
-// the type's structure (two-index access is order 2, one-index access is order 1, otherwise order
-// 0) and may be specialized for a third-party representation (e.g. an Eigen adapter reading
-// `RowsAtCompileTime` / `ColsAtCompileTime`). This is what replaces the old `disable_vector` /
-// `disable_tensor` opt-outs: "a tensor is not a vector" is simply `order 2`, and `2 <= 1` is false.
+// The intrinsic tensor order of a representation: 0 scalar, 1 vector, 2 tensor. The primary template
+// is left *undefined* (`detail::undefined_t`); a partial specialization detects the order structurally
+// for a type that exposes exactly one indexing shape (single-index `t[i]` -> 1, two-index `t(i, j)` ->
+// 2, neither -> 0), and a third-party representation may specialize it (e.g. an Eigen adapter reading
+// `RowsAtCompileTime` / `ColsAtCompileTime`). A type that exposes *both* shapes is ambiguous - only
+// its extents can decide - so it matches neither and stays `undefined` unless specialized: guessing
+// would disagree with an adapter, an ODR hazard across translation units.
 MP_UNITS_EXPORT template<typename T>
-constexpr std::size_t tensor_order = detail::detect_tensor_order<T>();
+constexpr detail::undefined_t tensor_order;
+
+template<typename T>
+  requires(!detail::has_ambiguous_order<T>)
+constexpr std::size_t tensor_order<T> = detail::has_matrix_indexing<T>   ? std::size_t{2}
+                                        : detail::has_vector_indexing<T> ? std::size_t{1}
+                                                                         : std::size_t{0};
 
 
 /////////////// numeric_field ///////////////
 
 namespace detail {
 
-template<typename T, std::size_t... Is>
-  requires(sizeof...(Is) >= 1)
-[[nodiscard]] consteval auto element_type_of(std::index_sequence<Is...>)
+template<typename T>
+  requires has_vector_indexing<T>
+using vector_element_t = std::remove_cvref_t<decltype(std::declval<const T&>()[std::size_t{}])>;
+
+template<typename T>
+  requires has_matrix_indexing<T>
+[[nodiscard]] consteval auto matrix_element()
 {
-  if constexpr (sizeof...(Is) == 1) {
-    // single-index access uses a plain `t[i]` / `t(i)`: the C++23 pack subscript `t[Is...]` is a
-    // syntax error before C++23 even for a one-element pack, so it is confined to the branch below.
-    if constexpr (requires(const T& t) { t[std::size_t{}]; })
-      return std::type_identity<std::remove_cvref_t<decltype(std::declval<const T&>()[std::size_t{}])>>{};
-    else
-      return std::type_identity<std::remove_cvref_t<decltype(std::declval<const T&>()(std::size_t{}))>>{};
-  } else {
 #if __cpp_multidimensional_subscript && MP_UNITS_COMP_GCC != 12
-    if constexpr (requires(const T& t) { t[Is...]; })
-      return std::type_identity<std::remove_cvref_t<decltype(std::declval<const T&>()[Is...])>>{};
-    else
+  if constexpr (requires(const T& t) { t[std::size_t{}, std::size_t{}]; })
+    return std::type_identity<std::remove_cvref_t<decltype(std::declval<const T&>()[std::size_t{}, std::size_t{}])>>{};
+  else
 #endif
-      return std::type_identity<std::remove_cvref_t<decltype(std::declval<const T&>()(Is...))>>{};
-  }
+    return std::type_identity<std::remove_cvref_t<decltype(std::declval<const T&>()(std::size_t{}, std::size_t{}))>>{};
 }
 
 template<typename T>
-using element_type_of_t =
-  typename decltype(element_type_of<T>(std::make_index_sequence<detect_tensor_order<T>()>{}))::type;
+  requires has_matrix_indexing<T>
+using matrix_element_t = typename decltype(matrix_element<T>())::type;
 
 template<typename T>
+concept field_reachable =
+  specified<decltype(tensor_order<T>)> && (tensor_order<T> == 0 || (tensor_order<T> == 1 && has_vector_indexing<T>) ||
+                                           (tensor_order<T> == 2 && has_matrix_indexing<T>));
+
+template<typename T>
+  requires field_reachable<T>
 [[nodiscard]] consteval quantity_field detect_numeric_field()
 {
-  if constexpr (detect_tensor_order<T>() >= 1)
-    return detect_numeric_field<element_type_of_t<T>>();
+  if constexpr (tensor_order<T> == 1)
+    return detect_numeric_field<vector_element_t<T>>();
+  else if constexpr (tensor_order<T> == 2)
+    return detect_numeric_field<matrix_element_t<T>>();
   else if constexpr (requires(const T& v) {
                        ::mp_units::real(v);
                        ::mp_units::imag(v);
@@ -359,13 +371,16 @@ template<typename T>
 
 }  // namespace detail
 
-// The numeric field of a type: real or complex.
-// Field detection reads the field off a scalar *element*, never off a container's surface, and that is
-// why it consults the order. A linear-algebra vector or matrix (Eigen, Blaze) exposes `real()`/`imag()`
-// even when it is real, so trusting that API at the container level would misclassify a real matrix as
-// complex.
+// The numeric field of a type: real or complex. The primary is left *undefined*; a specialization
+// defines it for a type whose order is known, reading the field off a scalar *element* (never off a
+// container's surface, since a linear-algebra vector or matrix exposes `real()`/`imag()` even when it
+// is real).
 MP_UNITS_EXPORT template<typename T>
-constexpr quantity_field numeric_field = detail::detect_numeric_field<T>();
+constexpr detail::undefined_t numeric_field;
+
+template<typename T>
+  requires detail::field_reachable<T>
+constexpr quantity_field numeric_field<T> = detail::detect_numeric_field<T>();
 
 
 /////////////// disable_representation ///////////////
