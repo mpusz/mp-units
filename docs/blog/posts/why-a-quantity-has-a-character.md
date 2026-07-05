@@ -23,11 +23,16 @@ He is right. And he is not alone.
 ## The problem is not the dimension
 
 Dimension safety is powerful, and it already catches more than people expect. The _mass_
-versus _weight_ confusion is a good example. At a Croydon ISO C++ evening session someone
-told me, with full confidence, that the pound is a unit of _force_. It is a unit of _mass_,
-and the pound-force is the separate unit of _force_. It is an easy mistake to make, and a
-common one. A dimension-safe library catches that one for free, because _mass_ (in kilograms)
-and a _weight_ force (in newtons) have different dimensions.
+versus _weight_ confusion is a good example. In SI the split is clean: _mass_ is measured
+in kilograms and a _weight_ force in newtons, two different dimensions, so a dimension-safe
+library catches the mix-up for free. The pound tells the more interesting half of the
+story. At a Croydon ISO C++ evening session someone told me, with full confidence, that the
+pound is a unit of _force_, and he was not simply wrong. In the US customary gravitational
+system the pound routinely names a _force_, which is exactly why pounds per square inch is
+a pressure and foot-pounds a torque, while in the avoirdupois system anchored to SI the pound
+is a unit of _mass_. One name, two different quantities, and which one you mean depends on
+the system in play. That is less a mistake to correct than an ambiguity to pin down, and
+pinning it down is exactly what a quantity-safe library forces you to do.
 
 The hard cases are the ones that _share_ a dimension, where dimension safety goes blind:
 
@@ -308,6 +313,24 @@ is the rule the whole design follows: a character earns its place only when a re
 cannot be expressed without it, which is exactly how complex got in and exactly why
 bivectors stayed out.
 
+That choice is not free, and the cost is worth naming. "Order" is a projection of the richer
+geometric-algebra notion of "grade," and the projection depends on the dimension of space.
+A bivector such as _angular velocity_ is a single number in 2D and a pseudovector in 3D,
+and the ISQ fixes the 3D view and calls it a vector, so its character is order 1. But the
+standard form in rigid-body dynamics and robotics is the antisymmetric _angular velocity
+tensor_, a 3×3 skew-symmetric matrix, which is order 2. The rank-ordering that lets a scalar
+stand in for a vector does not run the other way, so that tensor cannot fill the vector slot,
+and an engineer who reaches for the usual robotics representation of _angular velocity_ finds
+it turned away. Chip Hogg pressed this point in the comments below, and he is right that it
+is a real barrier for that audience. Two things bound it. The concern lives entirely in
+ordinary 2D and 3D space, where a quantity's components are one homogeneous quantity. We do
+not model more than three spatial dimensions, because a four-component "vector" mixes space
+and time, its components stop being one homogeneous quantity, and it is no longer an ISQ
+quantity at all. Users who need the tensor form today can already do so, defining it as a
+separate quantity and bridging it with an explicit dual, as shown in the
+[how-to guide](../../how_to_guides/advanced_usage/tensor_representation_of_axial_vectors.md).
+Whether the library should provide that bridge itself is a question we return to at the end.
+
 This is the point in the story where the temptation from
 [#648](https://github.com/mpusz/mp-units/issues/648) returns with full force, because once
 you have two clean axes it looks like the representation type could just answer both of them.
@@ -363,7 +386,8 @@ linear algebra libraries do.
   because a real value is a degenerate complex one. If you detect "complex" by the
   presence of `real()`/`imag()`, every real Eigen vector is misread as complex. We hit
   this during the refactor: the build classified a real `Eigen::Vector3d` quantity as
-  complex until we stopped trusting the API. And because real and complex are matched
+  complex until we stopped reading those members off the container and looked at its
+  element instead. And because real and complex are matched
   exactly, that is worse than a stray label: a vector marked complex is no longer real,
   so it can no longer back the real quantity it actually is, a real _velocity_ for
   instance. A correct and common use simply stops compiling.
@@ -453,25 +477,24 @@ inline constexpr struct moment_of_inertia
 ```
 
 The representation type still has to answer a narrower, humbler question: can this storage
-actually hold and manipulate a value of the required character? Because the structural answer
-is sometimes wrong (Eigen, Blaze), that question is answered by a trait with a sensible
-default _and_ an adapter override:
+actually hold and manipulate a value of the required character? Two traits answer it, and
+the two axes need different amounts of help:
 
 - [`numeric_field<T>`](../../users_guide/framework_basics/representation_types.md#numeric_field)
-  reports the field. The default detects it from the `real()`/`imag()` API. Eigen and
-  Blaze declare it from their element type instead.
+  reports the field. It reads `real()`/`imag()` off a scalar _element_ of the type, reached
+  by indexing, rather than off the container's surface. That is what defeats the Eigen and
+  Blaze problem for free: a real matrix exposes `real()`/`imag()` on its surface, but its
+  element is a plain `double`, so it is correctly classified real, no adapter override needed.
 - [`tensor_order<T>`](../../users_guide/framework_basics/representation_types.md#tensor_order)
-  reports the order. The default detects it from a type's indexing operators (`t[i]` for a
-  vector, `t[i, j]` for a tensor). The Eigen adapter reads `RowsAtCompileTime` /
-  `ColsAtCompileTime` instead.
+  reports the order, from a type's indexing operators (`t[i]` for a vector, `t(i, j)` for
+  a tensor). An Eigen column vector is an `N x 1` matrix that exposes both, so its order is
+  genuinely ambiguous: `tensor_order` has no default for it, and the Eigen adapter supplies
+  the order from `RowsAtCompileTime` / `ColsAtCompileTime`.
 
-The override is genuinely small. The entire Eigen adapter for the two character axes is this:
+The one override that remains is genuinely small. The entire Eigen adapter for the character
+axes is a single line:
 
 ```cpp
-template<typename T>
-  requires /* T is an Eigen type */
-constexpr quantity_field numeric_field<T> = numeric_field<typename T::Scalar>;  // a real matrix stays real
-
 template<typename T>
   requires /* T is an Eigen type */
 constexpr std::size_t tensor_order<T> = (T::RowsAtCompileTime == 1 || T::ColsAtCompileTime == 1) ? 1 : 2;
@@ -482,9 +505,10 @@ character is not redundant with the type, because the type
 is underdetermined, unreliable, and the wrong place for a domain fact. And this is the
 answer to the scope-creep charge: we did not bloat the quantity with a speculative
 feature. We recorded a property the **ISO standard** says a quantity has, that a real
-engineer says he cannot work without, and we kept the type's role as small as possible, a
-reasonable default plus a two-line override. The Eigen and Blaze cases prove both halves
-are necessary.
+engineer says he cannot work without, and we kept the type's role as small as possible: a
+reasonable default plus a one-line override. The default handles Blaze and the built-in
+vector and tensor types unaided. Only Eigen, whose `N x 1` vector is genuinely ambiguous,
+needs the override, so both the default and the escape hatch earn their place.
 
 ## The dead ends (where the design, and the AI, kept slipping)
 
@@ -551,6 +575,52 @@ It was exactly the same category of opt-out, so we folded it into `disable_repre
 too, leaving one trait to answer for both `bool` and the quantity-like types. Fewer knobs,
 and the general question finally has an answer. **Principle: when you find yourself adding
 the third special-case opt-out, step back and look for the general one.**
+
+### Trap 6: trust the type's `real()`/`imag()`, then patch the types that lie
+
+The first approach was the naive one: a type is complex when it exposes `real()`/`imag()`,
+and the types that lie about that, the Eigen and Blaze matrices that expose those members
+even when real, get an explicit `numeric_field` override declaring the field from their
+element type. It worked, but the override is per-type boilerplate, and worse, it makes a
+type's field depend on whether the adapter is in scope, which is an ODR hazard Chip Hogg
+flagged in review.
+
+Chip also pointed to the way out: read the field off the scalar element from the start,
+which removes the override entirely. Getting there took two wrong turns. His own spelling,
+following the recursive `value_type` chain, walks straight through `std::complex`, whose own
+`value_type` is `double`, so a complex vector comes out _real_. Reaching instead for the
+value returned by `magnitude()` fails from the other side: the norm of a complex vector is
+real, so a magnitude reports every complex quantity as real. One probe looks a level below
+the field, the other a level above it. The landing, which the section above describes, is
+to take one element by indexing and read `real()`/`imag()` off it directly, never following
+the recursive `value_type` chain that would walk past `std::complex` to `double`. Reaching
+the element structurally also keeps the field independent of whether an adapter is in scope,
+closing the ODR hole for the field axis.
+**Principle: detect a property where it lives, on the element, not off a container surface
+you then patch type by type.**
+
+### Trap 7: relax the vector slot to accept the tensor
+
+_angular velocity_ is a vector in the ISQ (ISO 80000-3, item 3-12), yet robotics and
+rigid-body dynamics routinely represent it as an antisymmetric 3×3 matrix, which is order
+2. Chip Hogg made the case that shutting that representation out is a real barrier, and our
+first answer was to let such quantities accept a _band_ of orders, so the matrix form would
+fit the vector slot alongside the vector form. It does not hold up, for three reasons that
+build on each other. There is no way to relax the slot for the bivector quantities alone
+without first teaching the library which quantities are bivectors, and that is exactly the
+geometric-algebra grade machinery we declined to add. Relaxing it for _all_ vectors instead
+is absurd: a _force_ is not a matrix, and nothing would want that. And the band rests on a
+false premise anyway, because the matrix is not the same quantity wearing a larger
+representation. ISO 80000-3 defines the vector _angular velocity_ as a scalar rate of
+rotation carrying the axis direction, not as a product of two vectors, and the matrix is a
+different object, the operator form of the map that sends a position to its velocity, tied
+to the vector by an explicit dual (the hat and vee maps) rather than by any operation that
+yields the vector. Character is part of a quantity's identity, and the ISQ defines only the
+vector, so the honest model is the opposite of a band: the antisymmetric-tensor form is a
+_different_ quantity, defined in the user's own domain and bridged to the ISQ vector by that
+explicit dual. **Principle: do not widen a quantity to swallow a representation of a
+different character. A different character is a different quantity, and the bridge between
+them is an explicit operation, not a relaxed constraint.**
 
 ## Back to the scope question
 
@@ -629,6 +699,23 @@ two-axis split the right granularity, or will a real domain eventually need a di
 we have not anticipated, the way complex surprised us once already? Complex was not on the
 roadmap until an engineer made the case for it, and the next axis, if there is one, will
 probably arrive the same way.
+
+One such question is already on the table. Because a quantity's character is part of its
+identity, the order-2 antisymmetric-tensor form of _angular velocity_ is not the same
+quantity as the vector one. The ISQ defines only the vector (ISO 80000-3 gives _angular
+velocity_ as a scalar rate of rotation carrying the axis direction, with no tensor form),
+so the antisymmetric-tensor representation that robotics and rigid-body dynamics treat as
+standard is, in this model, a separate quantity living outside the ISQ, related to
+`isq::angular_velocity` by an explicit dual map rather than by an implicit conversion. That
+is deliberate, since the two are genuinely different mathematical objects, but it leaves a
+real cost: a user working in the tensor form has to define those quantities and bridge them
+by hand, as the
+[how-to guide](../../how_to_guides/advanced_usage/tensor_representation_of_axial_vectors.md)
+shows. Whether the library should provide that bridge, a ready-made dual between an axial
+vector and its antisymmetric tensor, without introducing geometric-algebra grades as
+first-class characters, is the open question. Relaxing the vector quantities to also accept
+tensor storage is not the answer, for the reasons in
+[Trap 7](#trap-7-relax-the-vector-slot-to-accept-the-tensor) above.
 
 So if you work in a domain where these distinctions are load-bearing, electrical power,
 structural mechanics, electromagnetism, robotics, or anywhere _mass_ and _weight_ have ever
