@@ -37,5 +37,7 @@ import std;
 #if MP_UNITS_HOSTED
 #include <mp-units/utility/cartesian_tensor.h>
 #include <mp-units/utility/cartesian_vector.h>
+#include <mp-units/utility/polar_vector.h>
 #include <mp-units/utility/random.h>
+#include <mp-units/utility/spherical_vector.h>
 #endif

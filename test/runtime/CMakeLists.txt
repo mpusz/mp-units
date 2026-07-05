@@ -35,6 +35,7 @@ add_executable(
     fixed_string_test.cpp
     fmt_test.cpp
     math_test.cpp
+    polar_spherical_test.cpp
     quantity_test.cpp
     truncation_test.cpp
 )

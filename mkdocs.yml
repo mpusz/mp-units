@@ -231,6 +231,7 @@ nav:
           - Type-Safe Indices and Offsets: how_to_guides/advanced_usage/typed_indices.md
           - Decompose a Vector Quantity into Components: how_to_guides/advanced_usage/decompose_vector_quantity.md
           - Represent an Axial Vector as an Antisymmetric Tensor: how_to_guides/advanced_usage/tensor_representation_of_axial_vectors.md
+          - Working with Polar and Spherical Coordinates: how_to_guides/advanced_usage/polar_and_spherical_coordinates.md
           - Ensure Ultimate Safety: how_to_guides/advanced_usage/ultimate_safety.md
           - Working With Nondimensionalized Physics: how_to_guides/advanced_usage/nondimensionalization.md
       - Integration:
