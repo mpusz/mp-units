@@ -33,16 +33,18 @@
 #include <mp-units/framework/quantity_spec_concepts.h>
 #include <mp-units/framework/reference_concepts.h>
 #include <mp-units/framework/unit_concepts.h>
-#include <mp-units/overflow_policies.h>    // wrap_to_range - reused to keep angles canonical
-#include <mp-units/systems/angular.h>      // opt-in strong angular system (angular::radian/degree/...)
-#include <mp-units/systems/si/units.h>     // si::radian - the default, and the SI radian to scale through
-#include <mp-units/utility/unspecified.h>  // utility::unspecified / utility::specified
+#include <mp-units/overflow_policies.h>       // wrap_to_range - reused to keep angles canonical
+#include <mp-units/systems/angular.h>         // opt-in strong angular system (angular::radian/degree/...)
+#include <mp-units/systems/si/units.h>        // si::radian - the default, and the SI radian to scale through
+#include <mp-units/utility/representation.h>  // utility::Vector - the exported vector-representation concept
+#include <mp-units/utility/unspecified.h>     // utility::unspecified / utility::specified
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
 #include <cmath>
 #include <concepts>
 #include <numbers>
+#include <tuple>
 #include <type_traits>
 #include <utility>
 #if MP_UNITS_HOSTED
@@ -108,16 +110,52 @@ template<typename R>
 concept RadialReference = Reference<R> && (get_quantity_spec(R{}).character.order == quantity_tensor_order::scalar) &&
                           !AngleUnit<MP_UNITS_NONCONST_TYPE(get_unit(R{}))>;
 
+// Whether a vector representation `To` can be initialized from its components. Two spellings are
+// possible, and `std::constructible_from` covers only the first: parenthesized init (aggregates since
+// C++20, and reps with an N-argument constructor - e.g. Eigen and `cartesian_vector`) and braced init
+// (reps whose only N-value constructor is an `initializer_list` one - e.g. Blaze's `StaticVector`).
+template<typename To, typename... Cs>
+concept InitializableFrom = requires(Cs... cs) { To(cs...); } || requires(Cs... cs) { To{cs...}; };
+
+// Build a vector representation `To` from its components, preferring parenthesized init: it is the one
+// that permits a narrowing element conversion (e.g. building a `float` vector from `double`
+// components), which braced init rejects. Falls back to braced init for the `initializer_list`-only
+// reps. `InitializableFrom` (checked by the callers' `requires`) guarantees at least one spelling works.
+template<typename To, typename... Cs>
+[[nodiscard]] constexpr To make_vector(Cs... cs)
+{
+  if constexpr (requires { To(cs...); })
+    return To(cs...);
+  else
+    return To{cs...};
+}
+
+// A representation usable as a facade's Cartesian source *and* target: an `N`-dimensional vector
+// representation that is also structured-bindings-compliant. We use the exported `utility::Vector`
+// concept (order-1, magnitude-bearing, addable) rather than `RepresentationOf<V, ...vector>`: the
+// latter is semantically a touch stronger (it also carries `RepresentationBaseline`) but its
+// `order_of(V.character)` sub-expression hard-errors under GCC when the character-keyed concept is
+// *nested* inside another one like this (fine at top level, not when normalized here). The output
+// side still gets its full representation check from the `quantity{...}` construction in the body.
+// Dimension reads from `std::tuple_size`, element type from `std::tuple_element`, components via
+// `get`; those probes guard the reads below. `cartesian_vector<T, N>` models it, and so does any such
+// vector rep (e.g. an Eigen/Blaze one) - the facades are not tied to `cartesian_vector`.
+template<typename V, std::size_t N>
+concept VectorRepOf = Vector<V> && requires {
+  std::tuple_size<V>::value;
+  typename std::tuple_element<0, V>::type;
+} && (std::tuple_size_v<V> == N) && requires(const V& c) { get<0>(c); };
+
 // The radius reference a facade takes when deduced (CTAD) from a vector quantity. A vector-character
 // quantity (e.g. `isq::velocity[m/s]`) has a `magnitude()`, so we take that magnitude's reference: a
 // kind over the unit in V2, upgrading for free to the strong scalar sibling (e.g. `isq::speed`, or a
 // `magnitude<...>` expression) once V3 names it. A bare-unit vector quantity (`cartesian_vector * m`)
 // has a scalar-character spec with a vector rep and thus no `magnitude()`; there is no strong scalar
 // to recover, so we fall back to the plain unit.
-template<Reference auto VR, std::floating_point Rep, std::size_t N>
+template<Reference auto VR, typename V>
 constexpr Reference auto magnitude_reference_of = [] {
-  if constexpr (requires(quantity<VR, cartesian_vector<Rep, N>> v) { v.magnitude(); })
-    return decltype(std::declval<quantity<VR, cartesian_vector<Rep, N>>>().magnitude())::reference;
+  if constexpr (requires(quantity<VR, V> v) { v.magnitude(); })
+    return decltype(std::declval<quantity<VR, V>>().magnitude())::reference;
   else
     return get_unit(VR);
 }();
@@ -201,18 +239,20 @@ public:
   // turns are equal.
   constexpr polar_vector(radius_type r, angle_type theta) : _r_(r), _theta_(detail::wrap_azimuth(theta)) {}
 
-  // Explicit construction from a 2-D vector quantity: r = |v|, theta = atan2(y, x). The vector's rep
-  // may differ from `Rep`, constrained exactly as `cartesian_vector` constrains its own conversions
-  // (`constructible_from`) and converted via `static_cast` so a narrowing target stays warning-clean.
-  // The constructor is always `explicit` regardless - a Cartesian round-trip is never implicit.
-  template<auto VR, typename VRep>
-    requires std::constructible_from<Rep, VRep> &&
-               requires(const quantity<VR, cartesian_vector<VRep, 2>>& v) { v.numerical_value_in(get_unit(RadiusRef)); }
-  constexpr explicit polar_vector(const quantity<VR, cartesian_vector<VRep, 2>>& v) :
-      _r_(static_cast<Rep>(v.numerical_value_in(get_unit(RadiusRef)).magnitude()), RadiusRef), _theta_([&] {
+  // Explicit construction from a 2-D vector quantity: r = |v|, theta = atan2(y, x). Works with any
+  // tuple-like vector representation of dimension 2 that offers the `magnitude` CPO - not only
+  // `cartesian_vector` - reading its components via structured bindings (see `detail::VectorRepOf`).
+  // The element type may differ from `Rep`; it is `static_cast`, so a narrowing target stays
+  // warning-clean. Always `explicit` - a Cartesian round-trip is never implicit. (`VR` is plain `auto`
+  // to avoid the GCC 15 constrained-`auto`-NTTP ICE.)
+  template<auto VR, detail::VectorRepOf<2> V>
+    requires requires(const quantity<VR, V>& v) { v.numerical_value_in(get_unit(RadiusRef)); }
+  constexpr explicit polar_vector(const quantity<VR, V>& v) :
+      _r_(static_cast<Rep>(::mp_units::magnitude(v.numerical_value_in(get_unit(RadiusRef)))), RadiusRef), _theta_([&] {
         using std::atan2;
-        const cartesian_vector<VRep, 2> c = v.numerical_value_in(get_unit(RadiusRef));
-        return detail::wrap_azimuth(detail::radians_to_angle<AngleUnit, Rep>(static_cast<Rep>(atan2(c[1], c[0]))));
+        const V c = v.numerical_value_in(get_unit(RadiusRef));
+        const auto& [x, y] = c;
+        return detail::wrap_azimuth(detail::radians_to_angle<AngleUnit, Rep>(static_cast<Rep>(atan2(y, x))));
       }())
   {
   }
@@ -241,14 +281,20 @@ public:
   [[nodiscard]] constexpr radius_type magnitude() const { return _r_; }
   [[nodiscard]] constexpr angle_type theta() const { return _theta_; }
 
-  // Explicit conversion to a 2-D Cartesian vector quantity: (r cos theta, r sin theta).
+  // Explicit conversion to a 2-D Cartesian vector quantity: (r cos theta, r sin theta). The destination
+  // representation `To` defaults to `cartesian_vector`, but may be any 2-D vector representation
+  // (`detail::VectorRepOf<To, 2>`, the same contract accepted on input) that is initializable from the
+  // two components. Initialization uses parenthesized init (aggregate or N-argument constructor, e.g.
+  // Eigen) or braced init (an `initializer_list` constructor, e.g. Blaze); see `detail::make_vector`.
+  template<typename To = cartesian_vector<Rep, 2>>
+    requires detail::VectorRepOf<To, 2> && detail::InitializableFrom<To, Rep, Rep>
   [[nodiscard]] constexpr auto to_cartesian() const
   {
     using std::cos;
     using std::sin;
     const Rep th = detail::angle_in_radians(_theta_);
     const Rep r = _r_.numerical_value_in(get_unit(RadiusRef));
-    return quantity{cartesian_vector{static_cast<Rep>(r * cos(th)), static_cast<Rep>(r * sin(th))},
+    return quantity{detail::make_vector<To>(static_cast<Rep>(r * cos(th)), static_cast<Rep>(r * sin(th))),
                     get_unit(RadiusRef)};
   }
 
@@ -302,8 +348,8 @@ public:
 template<Reference auto RR, Unit auto AU, std::floating_point Rep>
 polar_vector(quantity<RR, Rep>, quantity<AU, Rep>) -> polar_vector<RR, AU, Rep>;
 
-template<Reference auto VR, std::floating_point Rep>
-polar_vector(quantity<VR, cartesian_vector<Rep, 2>>)
-  -> polar_vector<detail::magnitude_reference_of<VR, Rep, 2>, si::radian, Rep>;
+template<Reference auto VR, detail::VectorRepOf<2> V>
+polar_vector(quantity<VR, V>)
+  -> polar_vector<detail::magnitude_reference_of<VR, V>, si::radian, std::tuple_element_t<0, V>>;
 
 }  // namespace mp_units::utility

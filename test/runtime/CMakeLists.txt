@@ -80,6 +80,27 @@ add_linear_algebra_test(eigen)
 add_linear_algebra_test(glm)
 add_linear_algebra_test(blaze)
 
+# The polar/spherical facades are not tied to `cartesian_vector`: they accept any tuple-like vector
+# representation that offers the `magnitude` CPO. This test exercises them with a third-party backend
+# vector (via the integration adapter's tuple protocol), so it is built once per available backend,
+# like the linear algebra test above. The built-in `cartesian_vector` case lives in the
+# always-built `polar_spherical_test`.
+function(add_polar_spherical_integration_test backend)
+    if(NOT TARGET mp-units::integrations-${backend})
+        message(STATUS "Skipping the '${backend}' polar/spherical integration test (integration not available)")
+        return()
+    endif()
+    add_executable(polar_spherical_integration_test-${backend} polar_spherical_integration_test.cpp)
+    target_link_libraries(
+        polar_spherical_integration_test-${backend} PRIVATE mp-units::mp-units mp-units::integrations-${backend}
+                                                            Catch2::Catch2WithMain
+    )
+    catch_discover_tests(polar_spherical_integration_test-${backend})
+endfunction()
+
+add_polar_spherical_integration_test(eigen)
+add_polar_spherical_integration_test(blaze)
+
 # The built-in `cartesian_vector` backend ships with `mp-units::mp-units` (no third-party dependency
 # and no integration plugin), so it is always built and forced via `MP_UNITS_LA_USE_CARTESIAN`. It
 # additionally covers integral representations and `constexpr` evaluation.

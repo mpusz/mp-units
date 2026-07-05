@@ -80,25 +80,26 @@ public:
   }
 
   // Explicit construction from a 3-D vector quantity: r = |v|, theta = acos(z / r), phi = atan2(y, x).
-  // For r == 0 the angles are left at zero (the direction is undefined). The vector's rep may differ
-  // from `Rep`, constrained exactly as `cartesian_vector` constrains its own conversions
-  // (`constructible_from`) and converted via `static_cast` so a narrowing target stays warning-clean.
-  // The constructor is always `explicit` regardless - a Cartesian round-trip is never implicit.
-  template<auto VR, typename VRep>
-    requires std::constructible_from<Rep, VRep> &&
-             requires(const quantity<VR, cartesian_vector<VRep, 3>>& v) { v.numerical_value_in(get_unit(RadiusRef)); }
-  constexpr explicit spherical_vector(const quantity<VR, cartesian_vector<VRep, 3>>& v)
+  // For r == 0 the angles are left at zero (the direction is undefined). Works with any tuple-like
+  // vector representation of dimension 3 that offers the `magnitude` CPO - not only `cartesian_vector`
+  // - reading its components via structured bindings (see `detail::VectorRepOf`). The trig is done in
+  // the vector's own element type and `static_cast` to `Rep`, so a narrowing target stays
+  // warning-clean. Always `explicit` - a Cartesian round-trip is never implicit.
+  template<auto VR, detail::VectorRepOf<3> V>
+    requires requires(const quantity<VR, V>& v) { v.numerical_value_in(get_unit(RadiusRef)); }
+  constexpr explicit spherical_vector(const quantity<VR, V>& v)
   {
     using std::acos;
     using std::atan2;
-    // do the trig in the vector's own rep (VRep), then static_cast to Rep - avoids float<->double mixing
-    const cartesian_vector<VRep, 3> c = v.numerical_value_in(get_unit(RadiusRef));
-    const VRep rv = c.magnitude();
+    using elem = std::tuple_element_t<0, V>;
+    const V c = v.numerical_value_in(get_unit(RadiusRef));
+    const auto& [x, y, z] = c;
+    const elem rv = static_cast<elem>(::mp_units::magnitude(c));
     _r_ = quantity{static_cast<Rep>(rv), RadiusRef};
     const auto theta_raw =
-      rv != VRep{0} ? detail::radians_to_angle<AngleUnit, Rep>(static_cast<Rep>(acos(c[2] / rv))) : angle_type{};
-    const auto [t, p] = detail::canonical_spherical(
-      theta_raw, detail::radians_to_angle<AngleUnit, Rep>(static_cast<Rep>(atan2(c[1], c[0]))));
+      rv != elem{0} ? detail::radians_to_angle<AngleUnit, Rep>(static_cast<Rep>(acos(z / rv))) : angle_type{};
+    const auto [t, p] =
+      detail::canonical_spherical(theta_raw, detail::radians_to_angle<AngleUnit, Rep>(static_cast<Rep>(atan2(y, x))));
     _theta_ = t;
     _phi_ = p;
   }
@@ -131,6 +132,13 @@ public:
 
   // Explicit conversion to a 3-D Cartesian vector quantity:
   //   (r sin(theta) cos(phi), r sin(theta) sin(phi), r cos(theta)).
+  // The destination representation `To` defaults to `cartesian_vector`, but may be any 3-D vector
+  // representation (`detail::VectorRepOf<To, 3>`, the same contract accepted on input) that is
+  // initializable from the three components. Initialization uses parenthesized init (aggregate or
+  // N-argument constructor, e.g. Eigen) or braced init (an `initializer_list` constructor, e.g.
+  // Blaze); see `detail::make_vector`.
+  template<typename To = cartesian_vector<Rep, 3>>
+    requires detail::VectorRepOf<To, 3> && detail::InitializableFrom<To, Rep, Rep, Rep>
   [[nodiscard]] constexpr auto to_cartesian() const
   {
     using std::cos;
@@ -138,8 +146,8 @@ public:
     const Rep th = detail::angle_in_radians(_theta_);
     const Rep ph = detail::angle_in_radians(_phi_);
     const Rep r = _r_.numerical_value_in(get_unit(RadiusRef));
-    return quantity{cartesian_vector{static_cast<Rep>(r * sin(th) * cos(ph)), static_cast<Rep>(r * sin(th) * sin(ph)),
-                                     static_cast<Rep>(r * cos(th))},
+    return quantity{detail::make_vector<To>(static_cast<Rep>(r * sin(th) * cos(ph)),
+                                            static_cast<Rep>(r * sin(th) * sin(ph)), static_cast<Rep>(r * cos(th))),
                     get_unit(RadiusRef)};
   }
 
@@ -196,8 +204,8 @@ public:
 template<Reference auto RR, Unit auto AU, std::floating_point Rep>
 spherical_vector(quantity<RR, Rep>, quantity<AU, Rep>, quantity<AU, Rep>) -> spherical_vector<RR, AU, Rep>;
 
-template<Reference auto VR, std::floating_point Rep>
-spherical_vector(quantity<VR, cartesian_vector<Rep, 3>>)
-  -> spherical_vector<detail::magnitude_reference_of<VR, Rep, 3>, si::radian, Rep>;
+template<Reference auto VR, detail::VectorRepOf<3> V>
+spherical_vector(quantity<VR, V>)
+  -> spherical_vector<detail::magnitude_reference_of<VR, V>, si::radian, std::tuple_element_t<0, V>>;
 
 }  // namespace mp_units::utility

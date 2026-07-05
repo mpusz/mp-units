@@ -52,6 +52,7 @@ import std;
 #include <concepts>
 #include <cstddef>
 #include <type_traits>
+#include <utility>
 #endif
 #endif
 
@@ -78,6 +79,43 @@ template<typename T>
   requires requires { typename T::PlainObject; } && std::derived_from<T, Eigen::EigenBase<T>>
 constexpr std::size_t tensor_order<T> = (T::RowsAtCompileTime == 1 || T::ColsAtCompileTime == 1) ? 1 : 2;
 
+namespace detail {
+
+// A fixed-size Eigen vector (a row or column whose length is known at compile time). This is the
+// shape the tuple protocol below is defined for: `std::tuple_size` needs a compile-time size, so
+// dynamic-size vectors (`SizeAtCompileTime == Eigen::Dynamic`) are deliberately excluded, and a
+// two-dimensional matrix is not a vector. The `typename T::PlainObject` probe is checked first and
+// short-circuits the rest, because the concept is evaluated for arbitrary representation types
+// (`int`, `double`, ...) for which `Eigen::EigenBase<T>` would be ill-formed.
+template<typename T>
+concept eigen_fixed_vector = requires { typename T::PlainObject; } && std::derived_from<T, Eigen::EigenBase<T>> &&
+                             (T::SizeAtCompileTime != Eigen::Dynamic) && (T::SizeAtCompileTime >= 1) &&
+                             (T::RowsAtCompileTime == 1 || T::ColsAtCompileTime == 1);
+
+}  // namespace detail
+
 }  // namespace mp_units
+
+// Tuple protocol for fixed-size Eigen vectors: makes them structured-bindings friendly
+// (`auto [x, y, z] = vec;`) and, lets `mp_units::utility`'s `polar_vector`/`spherical_vector`
+// read a vector representation's dimension via `std::tuple_size` and its components via `get`.
+namespace Eigen {
+
+template<std::size_t I, typename T>
+  requires mp_units::detail::eigen_fixed_vector<std::remove_cvref_t<T>>
+[[nodiscard]] constexpr decltype(auto) get(T&& v)
+{
+  return std::forward<T>(v)[static_cast<Eigen::Index>(I)];
+}
+
+}  // namespace Eigen
+
+template<mp_units::detail::eigen_fixed_vector T>
+struct std::tuple_size<T> : std::integral_constant<std::size_t, static_cast<std::size_t>(T::SizeAtCompileTime)> {};
+
+template<std::size_t I, mp_units::detail::eigen_fixed_vector T>
+struct std::tuple_element<I, T> {
+  using type = std::remove_cv_t<typename T::Scalar>;
+};
 
 #endif  // __has_include(<Eigen/Core>)

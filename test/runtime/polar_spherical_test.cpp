@@ -354,6 +354,27 @@ TEST_CASE("converting constructors between compatible facades", "[polar][spheric
   }
 }
 
+TEST_CASE("the facades are not tied to cartesian_vector", "[polar][spherical][generic-rep]")
+{
+  // The input rep only has to be a tuple-like vector of the right dimension with a magnitude() CPO
+  // (dimension read from std::tuple_size, components via get<>). The dimension gating is observable
+  // through construction: a 2-D vector builds a polar_vector but not a spherical_vector, and vice versa.
+  using v2 = quantity<si::metre, utility::cartesian_vector<double, 2>>;
+  using v3 = quantity<si::metre, utility::cartesian_vector<double, 3>>;
+  static_assert(std::constructible_from<polar_vector<si::metre, si::radian, double>, v2>);
+  static_assert(!std::constructible_from<polar_vector<si::metre, si::radian, double>, v3>);
+  static_assert(std::constructible_from<spherical_vector<si::metre, si::radian, double>, v3>);
+  static_assert(!std::constructible_from<spherical_vector<si::metre, si::radian, double>, v2>);
+
+  // to_cartesian's destination representation is a template parameter (here a different element type,
+  // proving the output is not hard-wired to cartesian_vector<Rep, N>)
+  const polar_vector<si::metre, si::radian, double> p{2.0 * m, 0.0 * rad};
+  const quantity<si::metre, utility::cartesian_vector<float, 2>> xy =
+    p.to_cartesian<utility::cartesian_vector<float, 2>>();
+  CHECK_THAT(xy.numerical_value_in(m)[0], WithinAbs(2.0f, 1e-6f));
+  CHECK_THAT(xy.numerical_value_in(m)[1], WithinAbs(0.0f, 1e-6f));
+}
+
 TEST_CASE("angle unit is an extension point via radian_of", "[polar][spherical][angle_unit]")
 {
   using namespace test_angle;

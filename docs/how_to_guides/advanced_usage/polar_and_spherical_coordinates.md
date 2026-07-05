@@ -15,6 +15,16 @@ the only correct implementation would convert to Cartesian and back on every cal
 than hide that cost behind an operator that looks cheap, the facades leave the Cartesian
 round-trip explicit.
 
+The Cartesian side is not tied to `cartesian_vector`. Construction accepts any vector
+quantity of the right dimension whose representation is tuple-like (the dimension is read
+from `std::tuple_size`, the components with `get`) and offers the `magnitude` customization
+point, and `to_cartesian<To>()` takes the destination representation as a parameter,
+defaulting to `cartesian_vector`. A Blaze `StaticVector` works on both sides with nothing
+extra, because Blaze already ships that tuple protocol for it. An Eigen fixed-size vector
+works too, because `mp-units/integrations/eigen.h` adds the tuple protocol that Eigen itself
+does not provide. See [Using an Eigen or Blaze vector](#using-an-eigen-or-blaze-vector)
+below.
+
 ## Why not a polar quantity?
 
 A `quantity`'s representation has to support addition and subtraction (it must be
@@ -200,6 +210,46 @@ polar_vector p{2.0 * m, 90.0 * my::degree};  // converts through my::radian
 This is the only extension point the facades expose, and it lives with them rather than in
 the core customization-point header. It is specific to these converters, not a general
 library facility.
+
+## Using an Eigen or Blaze vector
+
+The facades read a vector representation's dimension from `std::tuple_size` and its
+components with `get`, and `to_cartesian<To>()` builds whatever representation you name. So
+they work with any linear algebra backend whose vector is tuple-like and provides the
+`magnitude` customization point, on both sides of the conversion:
+
+```cpp
+#include <mp-units/integrations/eigen.h>
+#include <mp-units/utility/spherical_vector.h>
+#include <mp-units/systems/si.h>
+
+using namespace mp_units;
+using namespace mp_units::si::unit_symbols;
+
+// an Eigen vector quantity -> spherical and back
+quantity<si::metre, Eigen::Vector3d> xyz{Eigen::Vector3d{3.0, 4.0, 0.0}, si::metre};
+utility::spherical_vector s{xyz};        // r = 5 m, theta = pi/2, phi = atan2(4, 3)
+Eigen::Vector3d back = s.to_cartesian<Eigen::Vector3d>().numerical_value_in(m);
+```
+
+The two supported backends need different amounts of glue, and the reason is instructive:
+
+- **Blaze** ships the tuple protocol (`std::tuple_size`, `std::tuple_element`, and a `get`
+  found by argument-dependent lookup) for its `StaticVector` itself, so a
+  `quantity<si::metre, blaze::StaticVector<double, 3>>` is a valid Cartesian source and
+  target as soon as `mp-units/integrations/blaze.h` is included. That header adds nothing
+  for it.
+- **Eigen** provides none of that for its matrices, so `mp-units/integrations/eigen.h` adds
+  it for fixed-size Eigen vectors (an N-element row or column known at compile time).
+  Dynamic-size vectors are excluded on purpose, because `std::tuple_size` needs a
+  compile-time size.
+
+`to_cartesian<To>()` constructs `To` from the components with parentheses when it can (an
+aggregate or an N-argument constructor, as Eigen and `cartesian_vector` offer) and falls
+back to braces for a representation whose only such constructor takes an `initializer_list`,
+as Blaze's `StaticVector` does. The parenthesized form is preferred because it permits a
+narrowing element conversion (building a `float` vector from `double` components), which
+braces reject.
 
 ## Limitations (by design)
 
