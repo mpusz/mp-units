@@ -45,6 +45,9 @@ if(NOT MP_UNITS_API_FREESTANDING)
     )
 endif()
 
+# Disable VERIFY_INTERFACE_HEADER_SETS
+set_source_files_properties(include/mp-units/cartesian_vector.h include/mp-units/random.h PROPERTIES SKIP_LINTING ON)
+
 if(MP_UNITS_DEV_TIME_TRACE STREQUAL "MODULES")
     target_compile_options(mp-units-utility PRIVATE "-ftime-trace")
 endif()
