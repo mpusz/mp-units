@@ -74,9 +74,9 @@ public:
   // out-of-range or pole-crossing inputs become the same physical direction expressed canonically.
   constexpr spherical_vector(radius_type r, angle_type theta, angle_type phi) : _r_(r)
   {
-    const auto [t, p] = detail::canonical_spherical(theta, phi);
-    _theta_ = t;
-    _phi_ = p;
+    const auto [norm_theta, norm_phi] = detail::canonical_spherical(theta, phi);
+    _theta_ = norm_theta;
+    _phi_ = norm_phi;
   }
 
   // Explicit construction from a 3-D vector quantity: r = |v|, theta = acos(z / r), phi = atan2(y, x).
@@ -98,10 +98,10 @@ public:
     _r_ = quantity{static_cast<Rep>(rv), RadiusRef};
     const auto theta_raw =
       rv != elem{0} ? detail::radians_to_angle<AngleUnit, Rep>(static_cast<Rep>(acos(z / rv))) : angle_type{};
-    const auto [t, p] =
+    const auto [norm_theta, norm_phi] =
       detail::canonical_spherical(theta_raw, detail::radians_to_angle<AngleUnit, Rep>(static_cast<Rep>(atan2(y, x))));
-    _theta_ = t;
-    _phi_ = p;
+    _theta_ = norm_theta;
+    _phi_ = norm_phi;
   }
 
   // Converting constructor from a spherical_vector over different units and/or a different rep. The
@@ -170,14 +170,17 @@ public:
   }
 
   // Dimensionless scaling by a plain number keeps the radius unit unchanged.
-  [[nodiscard]] friend constexpr spherical_vector operator*(const Rep& s, const spherical_vector& v)
+  [[nodiscard]] friend constexpr spherical_vector operator*(const Rep& scalar, const spherical_vector& v)
   {
-    return {s * v._r_, v._theta_, v._phi_};
+    return {scalar * v._r_, v._theta_, v._phi_};
   }
-  [[nodiscard]] friend constexpr spherical_vector operator*(const spherical_vector& v, const Rep& s) { return s * v; }
-  [[nodiscard]] friend constexpr spherical_vector operator/(const spherical_vector& v, const Rep& s)
+  [[nodiscard]] friend constexpr spherical_vector operator*(const spherical_vector& v, const Rep& scalar)
   {
-    return {v._r_ / s, v._theta_, v._phi_};
+    return scalar * v;
+  }
+  [[nodiscard]] friend constexpr spherical_vector operator/(const spherical_vector& v, const Rep& scalar)
+  {
+    return {v._r_ / scalar, v._theta_, v._phi_};
   }
 
   // Rotation about the +z (polar) axis: adds to the azimuth (wrapped to canonical by the ctor).

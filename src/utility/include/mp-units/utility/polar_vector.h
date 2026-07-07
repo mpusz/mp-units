@@ -185,8 +185,8 @@ template<Unit auto U, std::floating_point T>
 template<Unit auto U, std::floating_point T>
 [[nodiscard]] constexpr quantity<U, T> wrap_azimuth(quantity<U, T> phi)
 {
-  const auto h = half_turn<U, T>();
-  return wrap_to_range{-h, h}(phi);
+  const auto half = half_turn<U, T>();
+  return wrap_to_range{-half, half}(phi);
 }
 
 // Canonical spherical angles: inclination folded into [0, pi], azimuth wrapped. Folding past a pole
@@ -196,14 +196,14 @@ template<Unit auto U, std::floating_point T>
 [[nodiscard]] constexpr std::pair<quantity<U, T>, quantity<U, T>> canonical_spherical(quantity<U, T> theta,
                                                                                       quantity<U, T> phi)
 {
-  const auto h = half_turn<U, T>();
-  const auto full = h + h;
-  quantity<U, T> t = wrap_to_range{quantity<U, T>{}, full}(theta);  // reduce inclination into [0, 2pi)
-  if (t > h) {                                                      // crossed a pole
-    t = full - t;
-    phi += h;
+  const auto half = half_turn<U, T>();
+  const auto full = half + half;
+  quantity<U, T> incl = wrap_to_range{quantity<U, T>{}, full}(theta);  // reduce inclination into [0, 2pi)
+  if (incl > half) {                                                   // crossed a pole
+    incl = full - incl;
+    phi += half;
   }
-  return {t, wrap_azimuth(phi)};
+  return {incl, wrap_azimuth(phi)};
 }
 
 }  // namespace detail
@@ -319,16 +319,16 @@ public:
   }
 
   // Dimensionless scaling by a plain number keeps the radius unit unchanged.
-  [[nodiscard]] friend constexpr polar_vector operator*(const Rep& s, const polar_vector& v)
+  [[nodiscard]] friend constexpr polar_vector operator*(const Rep& scalar, const polar_vector& v)
   {
-    return {s * v._r_, v._theta_};
+    return {scalar * v._r_, v._theta_};
   }
 
-  [[nodiscard]] friend constexpr polar_vector operator*(const polar_vector& v, const Rep& s) { return s * v; }
+  [[nodiscard]] friend constexpr polar_vector operator*(const polar_vector& v, const Rep& scalar) { return scalar * v; }
 
-  [[nodiscard]] friend constexpr polar_vector operator/(const polar_vector& v, const Rep& s)
+  [[nodiscard]] friend constexpr polar_vector operator/(const polar_vector& v, const Rep& scalar)
   {
-    return {v._r_ / s, v._theta_};
+    return {v._r_ / scalar, v._theta_};
   }
 
   // Rotation by an angle (exact: adds to theta, no trig). The delta is in the stored angle unit.
