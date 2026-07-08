@@ -219,9 +219,11 @@ velocity.
 
 ## Try it
 
-The vector-quantity integrations ship now. See the
-[linear algebra example](../../examples/linear_algebra.md), which compiles the *same*
-scenario against Eigen, GLM, Blaze, and the built-in `cartesian_vector`. For the
+The vector-quantity integrations ship now. The
+[Using a Linear Algebra Library](../../how_to_guides/integration/using_linear_algebra_libraries.md)
+guide walks through the shipped plugins and how to adapt a library that has none, and the
+[linear algebra example](../../examples/linear_algebra.md) compiles the *same* scenario
+against Eigen, GLM, Blaze, and the built-in `cartesian_vector`. For the
 vector-of-quantities case, try
 [TypedLinearAlgebra](https://github.com/FrancoisCarouge/TypedLinearAlgebra) and tell
 François (and us) how it goes.

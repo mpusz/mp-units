@@ -10,7 +10,7 @@ transition.
 You'll learn the **bridge pattern**: specialize `quantity_like_traits` to enable seamless
 conversion between legacy types and **mp-units**, then **add new features** using mp-units
 while keeping existing code working unchanged. For complete details on `quantity_like_traits`,
-see the [Interoperability with Other Libraries](../../how_to_guides/integration/interoperability_with_other_libraries.md)
+see the [Converting to and from External Quantity Types](../../how_to_guides/integration/converting_external_quantity_types.md)
 guide.
 
 **Key migration strategy**: This workshop demonstrates an asymmetric approach to interoperability.
@@ -478,7 +478,7 @@ int main()
 ## References
 
 <!-- markdownlint-disable MD013 -->
-- [Interoperability with Other Libraries](../../how_to_guides/integration/interoperability_with_other_libraries.md) -
+- [Converting to and from External Quantity Types](../../how_to_guides/integration/converting_external_quantity_types.md) -
   Complete guide to `quantity_like_traits`
 - [Working with Legacy Interfaces](../../how_to_guides/integration/working_with_legacy_interfaces.md) -
   Extracting numerical values and working with `double`-based APIs

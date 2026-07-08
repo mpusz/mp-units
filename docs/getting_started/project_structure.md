@@ -101,7 +101,12 @@ modules build, the matching `mp_units.integrations.<lib>` module:
 Each depends only on `mp_units.core` and is built solely when the matching third-party library
 is found (the module is added on top in a C++ modules build). A component is **exported separately**
 (`find_package(mp-units-integrations-<lib>)`), never through `mp-unitsTargets`, so that
-`find_package(mp-units)` never gains a dependency on a third-party library.
+`find_package(mp-units)` never gains a dependency on a third-party library. Because the
+integration target pulls in only `mp_units.core` and the third-party library, link it
+**alongside** your usual `mp-units::mp-units` (or `mp-units::systems`) target, not instead
+of it. See
+[Using a Linear Algebra Library](../how_to_guides/integration/using_linear_algebra_libraries.md)
+for the CMake recipe.
 
 ## Namespaces
 

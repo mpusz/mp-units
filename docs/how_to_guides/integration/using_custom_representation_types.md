@@ -203,57 +203,13 @@ quantity speed = magnitude(v);  // 5 m/s
     [Decompose a Vector Quantity into Components](../advanced_usage/decompose_vector_quantity.md)
     for the full recipe.
 
-#### Adapting an existing vector library
+!!! tip "Using an existing linear algebra library?"
 
-Any _weakly-regular_ vector type (copyable, with `bool`-returning equality) that exposes a
-Euclidean norm can serve as a representation. The bundled integrations for
-[Eigen](https://eigen.tuxfamily.org), [GLM](https://github.com/g-truc/glm), and
-[Blaze](https://bitbucket.org/blaze-lib/blaze) wire up exactly the customization points
-above, and they are the template for adapting any other library. Three things vary between
-libraries:
-
-- **Underlying type.** Eigen and GLM expose a `value_type` member, so
-  `representation_underlying_type` detects it automatically. Blaze names it `ElementType`
-  instead, so its plugin specializes `representation_underlying_type` explicitly.
-- **Magnitude.** Eigen and Blaze provide `norm()`, which the `magnitude()` CPO uses
-  directly. GLM spells it `length()`, so its plugin adds a one-line `magnitude()` overload
-  (found by ADL) that forwards to it.
-- **Order.** A library whose structural shape is ambiguous declares its order explicitly.
-  An Eigen column vector is an `N×1` matrix, so it exposes *both* single-index `operator[]`
-  and two-index `operator()`, making its order ambiguous, so
-  [`tensor_order`](../../users_guide/framework_basics/representation_types.md#tensor_order)
-  has no default for it and its plugin specializes it from the compile-time shape. GLM,
-  whose vectors and matrices are structurally distinct, needs no such override.
-- **Field.** Eigen and Blaze expose `real()`/`imag()` on their real matrices too, but no
-  override is needed:
-  [`numeric_field`](../../users_guide/framework_basics/representation_types.md#numeric_field)
-  reads the field off a scalar element rather than the container's surface, so a real matrix
-  of `double` is correctly classified real on its own.
-- **Materializing expression templates.** Eigen and Blaze return lazy proxy types from
-  their arithmetic operators. A proxy holds references to its operands, so storing one
-  inside a `quantity` would leave dangling references once those operands expire. Their
-  plugins specialize
-  [`representation_canonical_type`](../../users_guide/framework_basics/representation_types.md#representation_canonical_type)
-  to map each proxy to its evaluated concrete type (Eigen's `PlainObject`, Blaze's
-  `ResultType`), so a `quantity` always stores a materialized value. GLM evaluates
-  eagerly, so it needs no such specialization.
-
-```cpp
-// materialize an expression-template proxy before a quantity stores it
-template<typename T>
-  requires /* T is one of your library's lazy expression types */
-struct mp_units::representation_canonical_type<T> {
-  using type = std::remove_cvref_t<typename T::evaluated_type>;
-};
-```
-
-!!! warning "Element-wise `operator==` is disqualifying"
-
-    [Armadillo](https://arma.sourceforge.net) is the notable type that does **not** qualify: its
-    `operator==` returns an element-wise mask rather than a `bool`, so it is not
-    `std::equality_comparable` and cannot satisfy the representation requirements. See
-    [Third-Party Library Integrations](../../users_guide/framework_basics/representation_types.md#third-party-library-integrations)
-    for the complete picture.
+    If you want to reuse a mainstream vector/matrix library (Eigen, GLM, Blaze, …) rather than
+    write a representation type by hand, you usually don't need the customization points on
+    this page at all — **mp-units** ships opt-in plugins that wire them up for you. See
+    [Using a Linear Algebra Library](using_linear_algebra_libraries.md), which also covers the
+    recipe for adapting a library that has no plugin.
 
 ### Step 3: Add Formatting Support (optional)
 
@@ -657,6 +613,7 @@ custom types.
 
 **How-to Guides:**
 
+- [Using a Linear Algebra Library](using_linear_algebra_libraries.md) - Use Eigen, GLM, or Blaze as a vector/tensor representation via the shipped plugins
 - [Ensure Ultimate Safety](../advanced_usage/ultimate_safety.md) - Combining `constrained` reps with `check_in_range` for guaranteed bounds enforcement
 - [Decompose a Vector Quantity into Components](../advanced_usage/decompose_vector_quantity.md) - Element-access requirement for splitting a vector quantity into named component quantities
 

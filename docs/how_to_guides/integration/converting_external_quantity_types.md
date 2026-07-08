@@ -1,10 +1,10 @@
-# Interoperability with Other Libraries
+# Converting to and from External Quantity Types
 
-This guide shows you how to make **mp-units** work seamlessly with other libraries—whether
-it's a simple home-grown strongly typed wrapper, a feature-rich units library, or the C++
-Standard Library's `std::chrono` types. You'll learn how to specify conversion traits,
-control whether conversions are implicit or explicit, and maintain safety at library
-boundaries.
+This guide shows you how to convert between **mp-units** and external quantity-like
+types, whether that is a simple home-grown strongly typed wrapper, a feature-rich units
+library, or the C++ Standard Library's `std::chrono` types. You will learn how to specify
+conversion traits, control whether conversions are implicit or explicit, and maintain safety
+at library boundaries.
 
 For background on the concepts used in these conversions, see
 [Concepts](../../users_guide/framework_basics/concepts.md) in the User's Guide.

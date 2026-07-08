@@ -238,7 +238,8 @@ nav:
           - Integration Guides: how_to_guides/integration/index.md
           - Working with Legacy Interfaces: how_to_guides/integration/working_with_legacy_interfaces.md
           - Using Custom Representation Types: how_to_guides/integration/using_custom_representation_types.md
-          - Interoperability with Other Libraries: how_to_guides/integration/interoperability_with_other_libraries.md
+          - Using a Linear Algebra Library: how_to_guides/integration/using_linear_algebra_libraries.md
+          - Converting to and from External Quantity Types: how_to_guides/integration/converting_external_quantity_types.md
           - Wide Compatibility: how_to_guides/integration/wide_compatibility.md
   - Examples:
       - Examples: examples/index.md
