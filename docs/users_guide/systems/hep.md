@@ -60,7 +60,7 @@ The HEP system uses eight base quantities:
 | **_thermodynamic temperature_** |        Θ         |              ✓ (yes)              |
 | **_amount of substance_**       |        N         |              ✓ (yes)              |
 | **_luminous intensity_**        |        I         |              ✓ (yes)              |
-| **_angle_**                     |        α         |              ✗ (no)               |
+| **_angle_**                     |        α         |      ✗ (dimensionless in ISQ)     |
 
 ### Key Differences from ISQ
 
@@ -156,7 +156,7 @@ values is physically meaningless but dimensionally valid.
 
 ### Motivation: The "Argument Soup" Problem
 
-Consider the Geant4 `G4Trap` constructor, which takes 12 `G4double` parameters —
+Consider the Geant4 `G4Trap` constructor, which takes 11 `G4double` parameters —
 some _lengths_, some _angles_:
 
 ```cpp
