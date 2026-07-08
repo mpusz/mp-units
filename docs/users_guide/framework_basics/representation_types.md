@@ -299,27 +299,40 @@ real or complex. It is the single source of truth for the field axis:
 template<typename T>
 constexpr quantity_field mp_units::numeric_field =
   /* field of a scalar element of T: complex if that element satisfies the
-     mp_units::real()/imag() CPOs, real otherwise */;
+     mp_units::real()/imag() CPOs, real otherwise; for a vector or tensor a complex
+     element additionally requires the container itself to expose real()/imag() */;
 ```
 
-**Default:** The field is read off a scalar *element* of the representation, not off the
-container's surface. For an order >= 1 type (a vector or tensor) the trait recurses into one
-element reached by indexing; for a scalar (order 0) it checks the `mp_units::real()` and
-`mp_units::imag()` CPOs directly. So `std::complex<double>` is complex and `double` real,
-and a `cartesian_vector<std::complex<double>>` is complex while a `cartesian_vector<double>`
-is real, with no extra wiring.
+**Default:** The field is read off a scalar *element* of the representation. For an
+order >= 1 type (a vector or tensor) the trait recurses into one element reached by indexing;
+for a scalar (order 0) it checks the `mp_units::real()` and `mp_units::imag()` CPOs directly.
+So `std::complex<double>` is complex and `double` real.
 
-Because the element is reached structurally, this handles the linear algebra libraries for
-free. Eigen and Blaze expose `real()` and `imag()` on their **real** matrices and vectors
-(a real value is a degenerate complex one), which would fool a check made on the container
-itself, but the trait looks at the element type, so a real Eigen matrix is correctly real.
-No integration-adapter override is needed for the field axis. Like `tensor_order`, the field
-is left undefined where the order is unresolved (an ambiguous type without a specialization),
-so the field and order axes reject such a type together.
+A vector or tensor carries the field of its element, **plus** one consistency requirement:
+a container whose element is complex must also expose the `real()`/`imag()` decomposition
+API on its own surface. A `cartesian_vector<std::complex<double>>` is complex (it exposes
+`real()`/`imag()`) and a `cartesian_vector<double>` is real, with no extra wiring.
 
-**When to specialize:** Rarely. The one case the default cannot see through is a scalar type
-that exposes `real()`/`imag()` yet is meant to be real (a "degenerate complex" that supports
-generic call sites). Specialize `numeric_field<T>` to `quantity_field::real` for such a type:
+This handles the linear algebra libraries for free from both sides. Eigen and Blaze expose
+`real()` and `imag()` on their **real** matrices and vectors (a real value is a degenerate
+complex one), which would fool a check made only on the container surface, but the field is
+read from the (real) element, so a real Eigen matrix is correctly real. Their **complex**
+matrices carry a complex element *and* expose `real()`/`imag()`, so they are correctly
+complex.
+
+A container with a complex element that does **not** expose `real()`/`imag()` cannot be used
+as a complex representation (the decomposition API is missing). Rather than silently classify
+it real, which would pick a Euclidean instead of a Hermitian magnitude, its field is left
+**undefined** here, exactly as `tensor_order` is left undefined for an ambiguous shape. The
+field and order axes then reject such a type together until the author either exposes the
+API or specializes `numeric_field`.
+
+**When to specialize:** Rarely, in one of two cases:
+
+- A scalar type that exposes `real()`/`imag()` yet is meant to be real (a "degenerate
+  complex" that supports generic call sites). Specialize to `quantity_field::real`.
+- A complex-element vector or tensor that cannot expose `real()`/`imag()` on its surface but
+  is nonetheless usable as complex. Specialize to `quantity_field::complex`.
 
 ```cpp
 template<>

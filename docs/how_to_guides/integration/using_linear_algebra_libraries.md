@@ -120,11 +120,14 @@ Five things vary between libraries:
   [`tensor_order`](../../users_guide/framework_basics/representation_types.md#tensor_order)
   has no default for it and its plugin specializes it from the compile-time shape. GLM and
   Blaze, whose vectors and matrices are structurally distinct types, need no such override.
-- **Field.** Eigen and Blaze expose `real()`/`imag()` on their real matrices too, but no
-  override is needed:
+- **Field.** No override is needed:
   [`numeric_field`](../../users_guide/framework_basics/representation_types.md#numeric_field)
-  reads the field off a scalar element rather than the container's surface, so a real matrix
-  of `double` is correctly classified real on its own.
+  reads the field off a scalar element, so a real matrix of `double` is real even though Eigen
+  and Blaze also expose `real()`/`imag()` on it, and a complex matrix is complex. The one
+  requirement is that a complex-element container also expose `real()`/`imag()` on its surface
+  (Eigen and Blaze do); a complex container missing that API is left unclassified rather than
+  guessed, so it is not a representation until it provides the API or specializes
+  `numeric_field`.
 - **Materializing expression templates.** Eigen and Blaze return lazy proxy types from
   their arithmetic operators. A proxy holds references to its operands, so storing one
   inside a `quantity` would leave dangling references once those operands expire. Their

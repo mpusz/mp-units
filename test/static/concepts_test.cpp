@@ -356,6 +356,42 @@ static_assert(!RepresentationOf<utility::cartesian_vector<std::complex<double>>,
 static_assert(RepresentationOf<utility::cartesian_vector<std::complex<double>>, quantity_tensor_order::vector>);
 static_assert(RepresentationOf<utility::cartesian_vector<std::complex<double>>, quantity_tensor_order::tensor>);
 
+// Field classification of a vector/tensor takes the field of its scalar element, but a *complex*
+// element additionally requires the container to expose the `real()`/`imag()` decomposition API on
+// its own surface. A complex-element container that lacks that API cannot be used as complex, so its
+// numeric_field is left *unspecified* (like an ambiguous tensor_order) rather than guessed - the type
+// is then not a representation until the author exposes the API or specializes numeric_field. Only the
+// presence of `real()`/`imag()` matters for detection; their return type is irrelevant here.
+struct complex_vec_no_api {
+  std::complex<double> data[2];
+  constexpr const std::complex<double>& operator[](std::size_t i) const { return data[i]; }
+};
+struct complex_vec_with_api {
+  std::complex<double> data[2];
+  constexpr const std::complex<double>& operator[](std::size_t i) const { return data[i]; }
+  constexpr double real() const { return data[0].real(); }
+  constexpr double imag() const { return data[0].imag(); }
+};
+struct complex_mat_no_api {
+  std::complex<double> data[4];
+  constexpr const std::complex<double>& operator()(std::size_t r, std::size_t c) const { return data[2 * r + c]; }
+};
+// A real container that exposes element-wise real()/imag() (as a real Eigen/Blaze matrix does) stays
+// real, because its field is read off the (real) element, not the container surface.
+struct real_vec_with_api {
+  double data[2];
+  constexpr const double& operator[](std::size_t i) const { return data[i]; }
+  constexpr double real() const { return data[0]; }
+  constexpr double imag() const { return 0.0; }
+};
+
+// complex element + decomposition API -> complex; real element -> real (API on the container is moot)
+static_assert(numeric_field<complex_vec_with_api> == quantity_field::complex);
+static_assert(numeric_field<real_vec_with_api> == quantity_field::real);
+// complex element without the API -> field left unspecified (not classified, not a representation)
+static_assert(!utility::specified<decltype(numeric_field<complex_vec_no_api>)>);
+static_assert(!utility::specified<decltype(numeric_field<complex_mat_no_api>)>);
+
 // utility::cartesian_tensor<double>: second-order tensor; tensor-only - never a (lower-rank) vector or scalar
 static_assert(RepresentationOf<utility::cartesian_tensor<double>, quantity_field::real>);
 static_assert(!RepresentationOf<utility::cartesian_tensor<double>, quantity_field::complex>);

@@ -340,34 +340,80 @@ concept field_reachable = utility::specified<decltype(tensor_order<T>)> &&
                           (tensor_order<T> == 0 || (tensor_order<T> == 1 && has_vector_indexing<T>) ||
                            (tensor_order<T> == 2 && has_matrix_indexing<T>));
 
+// The complex read API (`real()`/`imag()`) on a type's *own* surface, discovered through the
+// `real`/`imag` CPOs (members or ADL free functions).
+template<typename T>
+concept has_complex_api = requires(const T& v) {
+  ::mp_units::real(v);
+  ::mp_units::imag(v);
+};
+
 template<typename T>
   requires field_reachable<T>
 [[nodiscard]] consteval quantity_field detect_numeric_field()
 {
+  // The field is the field of the scalar element (recursively for a vector or tensor); at order 0 the
+  // element itself is complex when it exposes the `real()`/`imag()` API. A real container that merely
+  // exposes element-wise `real()`/`imag()` (as linear-algebra libraries do) stays real because its
+  // element is real. The extra requirement that a *complex* container also carry the API lives in
+  // `field_consistent`, so this function is only ever evaluated on a consistent type.
   if constexpr (tensor_order<T> == 1)
     return detect_numeric_field<vector_element_t<T>>();
   else if constexpr (tensor_order<T> == 2)
     return detect_numeric_field<matrix_element_t<T>>();
-  else if constexpr (requires(const T& v) {
-                       ::mp_units::real(v);
-                       ::mp_units::imag(v);
-                     })
+  else if constexpr (has_complex_api<T>)
     return quantity_field::complex;
   else
     return quantity_field::real;
 }
 
+// A vector or tensor whose scalar element is complex must also expose the `real()`/`imag()`
+// decomposition API on its own surface to be classifiable. If it does not, it cannot be used as a
+// complex representation, and rather than silently classify it real (which would pick a Euclidean
+// instead of a Hermitian magnitude) its `numeric_field` is left *unspecified* - exactly like an
+// ambiguous `tensor_order`. The author must then expose `real()`/`imag()` or specialize
+// `numeric_field` explicitly. A scalar (order 0) and any real-element container are always consistent.
+//
+// The branch selection uses `if constexpr` (rather than a concept disjunction) so that the element
+// aliases and the recursive `detect_numeric_field` call are only instantiated for the matching order;
+// substituting `vector_element_t<T>` for an order-0 type is ill-formed and some compilers do not
+// short-circuit it out of a concept's atomic constraints.
+template<typename T>
+  requires field_reachable<T>
+[[nodiscard]] consteval bool field_is_consistent()
+{
+  if constexpr (tensor_order<T> == 1) {
+    if constexpr (field_reachable<vector_element_t<T>>)
+      return has_complex_api<T> || detect_numeric_field<vector_element_t<T>>() == quantity_field::real;
+    else
+      return has_complex_api<T>;
+  } else if constexpr (tensor_order<T> == 2) {
+    if constexpr (field_reachable<matrix_element_t<T>>)
+      return has_complex_api<T> || detect_numeric_field<matrix_element_t<T>>() == quantity_field::real;
+    else
+      return has_complex_api<T>;
+  } else {
+    return true;  // a scalar (order 0) is always field-consistent
+  }
+}
+
+template<typename T>
+concept field_consistent = field_reachable<T> && (field_is_consistent<T>());
+
 }  // namespace detail
 
 // The numeric field of a type: real or complex. The primary is left *undefined*; a specialization
-// defines it for a type whose order is known, reading the field off a scalar *element* (never off a
-// container's surface, since a linear-algebra vector or matrix exposes `real()`/`imag()` even when it
-// is real).
+// defines it for a type whose order is known and whose field is consistent (see `field_consistent`).
+// A scalar is complex when it exposes the `real()`/`imag()` API. A vector or tensor takes the field of
+// its scalar element, so a real linear-algebra matrix that merely exposes element-wise `real()`/
+// `imag()` stays real. A container with a complex element but no such API is left *unspecified* here
+// (not a representation until the author exposes the API or specializes this trait), rather than
+// silently misclassified.
 MP_UNITS_EXPORT template<typename T>
 constexpr utility::unspecified_t numeric_field;
 
 template<typename T>
-  requires detail::field_reachable<T>
+  requires detail::field_consistent<T>
 constexpr quantity_field numeric_field<T> = detail::detect_numeric_field<T>();
 
 

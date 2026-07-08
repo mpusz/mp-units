@@ -490,6 +490,11 @@ the two axes need different amounts of help:
   by indexing, rather than off the container's surface. That is what defeats the Eigen and
   Blaze problem for free: a real matrix exposes `real()`/`imag()` on its surface, but its
   element is a plain `double`, so it is correctly classified real, no adapter override needed.
+  There is one consistency requirement in the other direction. A container whose element is
+  complex must also expose `real()`/`imag()` on its own surface, because that is the API a
+  complex representation is used through. A complex-element container that lacks it is left
+  unclassified, exactly as an ambiguous order is, rather than guessed and silently given a
+  Euclidean magnitude where a Hermitian one was meant.
 - [`tensor_order<T>`](../../users_guide/framework_basics/representation_types.md#tensor_order)
   reports the order, from a type's indexing operators (`t[i]` for a vector, `t(i, j)` for
   a tensor). An Eigen column vector is an `N x 1` matrix that exposes both, so its order is
@@ -601,6 +606,12 @@ to take one element by indexing and read `real()`/`imag()` off it directly, neve
 the recursive `value_type` chain that would walk past `std::complex` to `double`. Reaching
 the element structurally also keeps the field independent of whether an adapter is in scope,
 closing the ODR hole for the field axis.
+
+One refinement completes the picture. Reading the field off the element settles what a
+container _is_, but a complex representation is still _used_ through the container's own
+`real()`/`imag()`. So a complex-element container that does not expose them is left
+unclassified rather than accepted, the same no-guess stance `tensor_order` takes for an
+ambiguous shape.
 **Principle: detect a property where it lives, on the element, not off a container surface
 you then patch type by type.**
 
