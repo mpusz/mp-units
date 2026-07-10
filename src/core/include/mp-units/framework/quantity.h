@@ -141,6 +141,43 @@ template<typename Func, typename Q1, typename Q2,
 concept InvocableQuantities = QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> && Quantity<Q1> && Quantity<Q2> &&
                               InvokeResultOf<QS, Func, typename Q1::rep, typename Q2::rep>;
 
+// A representation whose tensor order is that of a vector or tensor (order >= 1). Written as a nested
+// requirement so a type for which `tensor_order` is unspecified is simply not satisfied rather than
+// a hard error.
+template<typename T>
+concept OrderRaisingRepresentation = requires { requires tensor_order<T> >= 1; };
+
+// Like `InvokeResultOf`, but also accepts the case where scaling *raises the tensor order*: a
+// scalar-character quantity multiplied by a vector or tensor representation. The specific scalar spec
+// `QS` can no longer describe such a result and the framework cannot infer the concrete vector/tensor
+// sibling (e.g. that `speed`'s vector sibling is `velocity`), so the result is expressed over `QS`'s
+// tensor-order-agnostic *kind* and the caller pins the concrete spec. Deliberately limited to a
+// *scalar* `QS` scaled up on the tensor-order axis: a vector/tensor `QS` is never demoted this way, and
+// a real->complex field mismatch is not bridged either.
+template<auto QS>
+concept ScalarCharacterSpec =
+  QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> && (QS.character.order == quantity_tensor_order::scalar);
+
+template<auto QS, typename Func, typename T, typename U>
+concept ScalableResultOf =
+  QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> && std::regular_invocable<Func, T, U> &&
+  (RepresentationOf<representation_canonical_type_t<std::invoke_result_t<Func, T, U>>, QS> ||
+   (ScalarCharacterSpec<QS> &&
+    OrderRaisingRepresentation<representation_canonical_type_t<std::invoke_result_t<Func, T, U>>> &&
+    RepresentationOf<representation_canonical_type_t<std::invoke_result_t<Func, T, U>>, get_kind(QS)>));
+
+// The reference of a scaled result. When the result representation still matches the reference's spec
+// it is returned unchanged; otherwise (the order-raising case above) the spec is replaced by its kind
+// over the same unit.
+template<Reference auto R, typename Res>
+[[nodiscard]] consteval Reference auto scaled_reference()
+{
+  if constexpr (RepresentationOf<Res, get_quantity_spec(R)>)
+    return R;
+  else
+    return get_kind(get_quantity_spec(R))[get_unit(R)];
+}
+
 template<auto R1, auto R2>
 concept HaveCommonReference = requires { mp_units::get_common_reference(R1, R2); };
 
@@ -322,20 +359,24 @@ struct quantity_iface {
 
   template<auto R1, typename Rep1, typename Value>
     requires(!Quantity<Value>) && (!Reference<Value>) &&
-            InvokeResultOf<get_quantity_spec(R1), std::multiplies<>, Rep1, const Value&>
-  [[nodiscard]] friend constexpr QuantityOf<get_quantity_spec(R1)> auto operator*(const quantity<R1, Rep1>& q,
-                                                                                  const Value& val)
+            ScalableResultOf<get_quantity_spec(R1), std::multiplies<>, Rep1, const Value&>
+  [[nodiscard]] friend constexpr Quantity auto operator*(const quantity<R1, Rep1>& q, const Value& val)
   {
-    return quantity{q.numerical_value_ref_in(get_unit(R1)) * val, R1};
+    return quantity{
+      q.numerical_value_ref_in(get_unit(R1)) * val,
+      scaled_reference<R1,
+                       representation_canonical_type_t<std::invoke_result_t<std::multiplies<>, Rep1, const Value&>>>()};
   }
 
   template<typename Value, auto R1, typename Rep1>
     requires(!Quantity<Value>) && (!Reference<Value>) &&
-            InvokeResultOf<get_quantity_spec(R1), std::multiplies<>, const Value&, Rep1>
-  [[nodiscard]] friend constexpr QuantityOf<get_quantity_spec(R1)> auto operator*(const Value& val,
-                                                                                  const quantity<R1, Rep1>& q)
+            ScalableResultOf<get_quantity_spec(R1), std::multiplies<>, const Value&, Rep1>
+  [[nodiscard]] friend constexpr Quantity auto operator*(const Value& val, const quantity<R1, Rep1>& q)
   {
-    return quantity{val * q.numerical_value_ref_in(get_unit(R1)), R1};
+    return quantity{
+      val * q.numerical_value_ref_in(get_unit(R1)),
+      scaled_reference<R1,
+                       representation_canonical_type_t<std::invoke_result_t<std::multiplies<>, const Value&, Rep1>>>()};
   }
 
   // operator/
@@ -359,11 +400,14 @@ struct quantity_iface {
 
   template<typename Value, auto R1, typename Rep1>
     requires(!Quantity<Value>) && (!Reference<Value>) &&
-            InvokeResultOf<get_quantity_spec(R1), std::divides<>, const Value&, Rep1>
+            ScalableResultOf<get_quantity_spec(one / R1), std::divides<>, const Value&, Rep1>
   [[nodiscard]] friend constexpr Quantity auto operator/(const Value& val, const quantity<R1, Rep1>& q)
   {
     MP_UNITS_EXPECTS_DEBUG(q != 0);
-    return quantity{val / q.numerical_value_ref_in(get_unit(R1)), one / R1};
+    return quantity{
+      val / q.numerical_value_ref_in(get_unit(R1)),
+      scaled_reference<one / R1,
+                       representation_canonical_type_t<std::invoke_result_t<std::divides<>, const Value&, Rep1>>>()};
   }
 
   // operator==

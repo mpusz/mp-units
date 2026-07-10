@@ -467,6 +467,40 @@ static_assert(
   is_of_type<cvec_lvalue * (1. * m / s), quantity<si::metre / si::second, utility::cartesian_vector<double>>>);
 static_assert(std::constructible_from<quantity<isq::velocity[m / s], utility::cartesian_vector<double>>,
                                       decltype(cvec_lvalue * (1. * m / s))>);
+// scaling a *scalar-character* quantity by a *vector* representation raises the tensor order, so the
+// specific scalar spec cannot describe the result; the framework cannot infer the concrete vector
+// sibling (that speed's is velocity), so the result is expressed over the spec's tensor-order-agnostic
+// *kind*, which the caller pins to a concrete vector spec. Regression for #809.
+static_assert(is_of_type<quantity<isq::speed[m / s]>{} * utility::cartesian_vector{0., -1., 0.},
+                         quantity<kind_of<isq::speed>[m / s], utility::cartesian_vector<double>>>);
+static_assert(is_of_type<utility::cartesian_vector{0., -1., 0.} * quantity<isq::speed[m / s]>{},
+                         quantity<kind_of<isq::speed>[m / s], utility::cartesian_vector<double>>>);
+static_assert(
+  std::constructible_from<quantity<isq::velocity[m / s], utility::cartesian_vector<double>>,
+                          decltype(quantity<isq::speed[m / s]>{} * utility::cartesian_vector{0., -1., 0.})>);
+// scaling by a plain (scalar) number keeps the specific scalar spec - no order is raised
+static_assert(is_of_type<quantity<isq::speed[m / s]>{} * 2., quantity<isq::speed[m / s], double>>);
+// the real->complex *field* axis is not bridged this way: a real scalar spec rejects a complex rep
+template<typename Rep>
+concept speed_scales_by = requires(Rep r) { quantity<isq::speed[m / s]>{} * r; };
+static_assert(speed_scales_by<utility::cartesian_vector<double>>);  // order raised -> kind
+static_assert(!speed_scales_by<std::complex<double>>);              // field mismatch -> rejected
+// Value / quantity raises order too: vector / speed -> kind of inverse(speed)
+static_assert(is_of_type<utility::cartesian_vector{0., -1., 0.} / isq::speed(2. * m / s),
+                         quantity<kind_of<inverse(isq::speed)>[s / m], utility::cartesian_vector<double>>>);
+// the demotion uses the spec's *kind tree root* (`get_kind`), not the spec wrapped as-is: scaling a
+// child scalar spec (`isq::width`, a kind of `isq::length`) by a vector yields a length-kind vector
+// quantity, so a *sibling* vector spec such as `isq::position_vector` pins - which `kind_of<isq::width>`
+// would not permit.
+static_assert(std::constructible_from<quantity<isq::position_vector[m], utility::cartesian_vector<double>>,
+                                      decltype(isq::width(2. * m) * utility::cartesian_vector{0., 1., 0.})>);
+// the order-raising demotion also covers tensors (order 2): a scalar spec times a tensor representation
+static_assert(is_of_type<isq::speed(2. * m / s) * utility::cartesian_tensor<double>{},
+                         quantity<kind_of<isq::speed>[m / s], utility::cartesian_tensor<double>>>);
+// defensive: the demotion is gated on a *scalar* spec, so a vector-character spec is never demoted to
+// its kind - scaling it by a scalar keeps its exact spec
+static_assert(is_of_type<quantity<isq::velocity[m / s], utility::cartesian_vector<double>>{} * 2.,
+                         quantity<isq::velocity[m / s], utility::cartesian_vector<double>>>);
 
 // utility::cartesian_vector<double>: unit conversion via UsesFloatingPointScaling (FP element type)
 // Use bare SI units (no quantity spec) since isq::length is real_scalar, not vector
