@@ -449,6 +449,25 @@ static_assert(
 // self-referential constraint cycle when dividing utility::cartesian_vector<Quantity> by a unit
 static_assert(requires { utility::cartesian_vector{0, 0, -60} * km / h; });
 
+// `vector * unit` must not depend on value category: a named lvalue yields the same vector quantity as a
+// prvalue (a `Reference`/`Quantity` operand is excluded from `cartesian_vector`'s element-wise scaling so
+// the framework's `Rep * Reference` operator is the sole match). Regression for #809.
+inline constexpr utility::cartesian_vector cvec_lvalue{1., 2., 3.};
+static_assert(is_of_type<cvec_lvalue * m, quantity<si::metre, utility::cartesian_vector<double>>>);
+static_assert(is_of_type<cvec_lvalue*(m / s), quantity<si::metre / si::second, utility::cartesian_vector<double>>>);
+// scaling by a plain number stays a bare `cartesian_vector` (element-wise), unchanged by the guard
+static_assert(is_of_type<cvec_lvalue * 2., utility::cartesian_vector<double>>);
+static_assert(is_of_type<2. * cvec_lvalue, utility::cartesian_vector<double>>);
+static_assert(is_of_type<cvec_lvalue / 2., utility::cartesian_vector<double>>);
+// a scalar quantity over a *bare unit* (a `kind_of` reference) times a vector is unambiguous and yields a
+// vector quantity over that kind, which the user pins to a concrete vector spec (`isq::velocity`)
+static_assert(
+  is_of_type<(1. * m / s) * cvec_lvalue, quantity<si::metre / si::second, utility::cartesian_vector<double>>>);
+static_assert(
+  is_of_type<cvec_lvalue * (1. * m / s), quantity<si::metre / si::second, utility::cartesian_vector<double>>>);
+static_assert(std::constructible_from<quantity<isq::velocity[m / s], utility::cartesian_vector<double>>,
+                                      decltype(cvec_lvalue * (1. * m / s))>);
+
 // utility::cartesian_vector<double>: unit conversion via UsesFloatingPointScaling (FP element type)
 // Use bare SI units (no quantity spec) since isq::length is real_scalar, not vector
 static_assert(quantity<si::kilo<si::metre>, utility::cartesian_vector<double>>(utility::cartesian_vector{1., 2., 3.} *

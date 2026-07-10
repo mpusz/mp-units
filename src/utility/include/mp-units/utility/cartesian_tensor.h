@@ -88,8 +88,15 @@ struct cartesian_tensor_iface {
       std::make_index_sequence<N * N>{}, [&](std::size_t i) { return lhs._data_[i] - rhs._data_[i]; });
   }
 
+  // A `Reference` (unit) or `Quantity` right-hand operand is deliberately excluded from these
+  // element-wise scaling operators so they do not compete with the framework's `Rep * Reference` /
+  // `quantity * Value` operators. Multiplying a plain-number tensor by a unit or a scalar quantity must
+  // yield a *tensor quantity* (`quantity<unit, cartesian_tensor>`), not a *tensor of quantities*
+  // (`cartesian_tensor<quantity>`); without this guard the result depended on the tensor's value
+  // category and `quantity * tensor` was ambiguous. Same discipline `quantity`'s own scalar operators
+  // use.
   template<typename T, std::size_t N, typename U>
-    requires requires(const T& t, const U& u) { t * u; }
+    requires(!Reference<U>) && (!Quantity<U>) && requires(const T& t, const U& u) { t * u; }
   [[nodiscard]] friend constexpr auto operator*(const cartesian_tensor<T, N>& lhs, const U& rhs)
   {
     return ::mp_units::utility::detail::cartesian_tensor_from(std::make_index_sequence<N * N>{},
@@ -97,14 +104,14 @@ struct cartesian_tensor_iface {
   }
 
   template<typename T, std::size_t N, typename U>
-    requires requires(const T& t, const U& u) { t * u; }
+    requires(!Reference<T>) && (!Quantity<T>) && requires(const T& t, const U& u) { t * u; }
   [[nodiscard]] friend constexpr auto operator*(const T& lhs, const cartesian_tensor<U, N>& rhs)
   {
     return rhs * lhs;
   }
 
   template<typename T, std::size_t N, typename U>
-    requires requires(const T& t, const U& u) { t / u; }
+    requires(!Reference<U>) && (!Quantity<U>) && requires(const T& t, const U& u) { t / u; }
   [[nodiscard]] friend constexpr auto operator/(const cartesian_tensor<T, N>& lhs, const U& rhs)
   {
     return ::mp_units::utility::detail::cartesian_tensor_from(std::make_index_sequence<N * N>{},
