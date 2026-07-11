@@ -40,7 +40,7 @@
 
 #endif
 
-#if MP_UNITS_HOSTED
+#if MP_UNITS_HOSTED && (defined __cpp_exceptions || defined __EXCEPTIONS || defined _CPPUNWIND)
 #define MP_UNITS_THROW(expr) throw expr
 #else
 #include <cstdlib>
