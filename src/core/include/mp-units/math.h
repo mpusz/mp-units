@@ -37,16 +37,26 @@ import std;
 #include <cstdint>
 #include <cstdlib>
 #include <limits>
+#include <version>
 #if MP_UNITS_HOSTED
 #include <cmath>
 #endif  // MP_UNITS_HOSTED
+#if MP_UNITS_HOSTED || __cpp_lib_freestanding_numeric >= 202502L
+#include <numeric>
+#endif
 #endif  // MP_UNITS_IMPORT_STD
 #endif  // MP_UNITS_IN_MODULE_INTERFACE
 
 MP_UNITS_EXPORT
 namespace mp_units {
 
-#if MP_UNITS_HOSTED || __cpp_lib_freestanding_cstdlib >= 202306L
+// The math functions below customize on their standard-library counterparts through ADL. Only the
+// `std::`-qualified fallback (and its use in the constraints) is guarded on availability, so a user
+// providing an ADL overload for a custom representation type can still use these in freestanding
+// mode. `std::abs` (in `<cstdlib>`/`<cmath>`, freestanding since C++26 - P2338) and `std::midpoint`
+// (in `<numeric>`, freestanding since C++26 - P2976) enable their fallback whenever the matching
+// freestanding feature-test macro is present; the remaining functions rely on the rest of `<cmath>`,
+// which is hosted-only.
 
 /**
  * @brief Computes the absolute value of a quantity
@@ -55,16 +65,17 @@ namespace mp_units {
  * @return Quantity The absolute value of a provided quantity
  */
 template<auto R, typename Rep>
-  requires requires(Rep v) { abs(v); } || requires(Rep v) { std::abs(v); }
+  requires requires(Rep v) { abs(v); }
+#if MP_UNITS_HOSTED || __cpp_lib_freestanding_cstdlib >= 202306L
+           || requires(Rep v) { std::abs(v); }
+#endif
 [[nodiscard]] constexpr quantity<R, Rep> abs(const quantity<R, Rep>& q) noexcept
 {
+#if MP_UNITS_HOSTED || __cpp_lib_freestanding_cstdlib >= 202306L
   using std::abs;
+#endif
   return {static_cast<Rep>(abs(q.numerical_value_ref_in(q.unit))), R};
 }
-
-#endif
-
-#if MP_UNITS_HOSTED
 
 /**
  * @brief Computes the value of a quantity raised to the `Num/Den` power
@@ -79,7 +90,11 @@ template<auto R, typename Rep>
 template<std::intmax_t Num, std::intmax_t Den = 1, auto R, typename Rep>
   requires(Den != 0) && requires(Rep v) {
     representation_values<Rep>::one();
-    requires requires { pow(v, 1.0); } || requires { std::pow(v, 1.0); };
+    requires requires { pow(v, 1.0); }
+#if MP_UNITS_HOSTED
+               || requires { std::pow(v, 1.0); }
+#endif
+               ;
   }
 [[nodiscard]] constexpr quantity<pow<Num, Den>(R), Rep> pow(const quantity<R, Rep>& q) noexcept
 
@@ -89,7 +104,9 @@ template<std::intmax_t Num, std::intmax_t Den = 1, auto R, typename Rep>
   } else if constexpr (Num == Den) {
     return q;
   } else {
+#if MP_UNITS_HOSTED
     using std::pow;
+#endif
     return {
       static_cast<Rep>(pow(q.numerical_value_ref_in(q.unit), static_cast<double>(Num) / static_cast<double>(Den))),
       pow<Num, Den>(R)};
@@ -105,10 +122,15 @@ template<std::intmax_t Num, std::intmax_t Den = 1, auto R, typename Rep>
  * @return Quantity The result of computation
  */
 template<auto R, typename Rep>
-  requires requires(Rep v) { sqrt(v); } || requires(Rep v) { std::sqrt(v); }
+  requires requires(Rep v) { sqrt(v); }
+#if MP_UNITS_HOSTED
+           || requires(Rep v) { std::sqrt(v); }
+#endif
 [[nodiscard]] constexpr quantity<sqrt(R), Rep> sqrt(const quantity<R, Rep>& q) noexcept
 {
+#if MP_UNITS_HOSTED
   using std::sqrt;
+#endif
   return {static_cast<Rep>(sqrt(q.numerical_value_ref_in(q.unit))), sqrt(R)};
 }
 
@@ -121,10 +143,15 @@ template<auto R, typename Rep>
  * @return Quantity The result of computation
  */
 template<auto R, typename Rep>
-  requires requires(Rep v) { cbrt(v); } || requires(Rep v) { std::cbrt(v); }
+  requires requires(Rep v) { cbrt(v); }
+#if MP_UNITS_HOSTED
+           || requires(Rep v) { std::cbrt(v); }
+#endif
 [[nodiscard]] constexpr quantity<cbrt(R), Rep> cbrt(const quantity<R, Rep>& q) noexcept
 {
+#if MP_UNITS_HOSTED
   using std::cbrt;
+#endif
   return {static_cast<Rep>(cbrt(q.numerical_value_ref_in(q.unit))), cbrt(R)};
 }
 
@@ -137,10 +164,15 @@ template<auto R, typename Rep>
  * @return Quantity The value of the same quantity type
  */
 template<ReferenceOf<dimensionless> auto R, typename Rep>
-  requires requires(Rep v) { exp(v); } || requires(Rep v) { std::exp(v); }
+  requires requires(Rep v) { exp(v); }
+#if MP_UNITS_HOSTED
+           || requires(Rep v) { std::exp(v); }
+#endif
 [[nodiscard]] constexpr quantity<R, Rep> exp(const quantity<R, Rep>& q)
 {
+#if MP_UNITS_HOSTED
   using std::exp;
+#endif
   return value_cast<get_unit(R)>(
     quantity{static_cast<Rep>(exp(q.force_numerical_value_in(q.unit))), detail::clone_reference_with<one>(R)});
 }
@@ -152,10 +184,15 @@ template<ReferenceOf<dimensionless> auto R, typename Rep>
  * @return bool: Whether the quantity is finite or not.
  */
 template<auto R, typename Rep>
-  requires requires(Rep v) { isfinite(v); } || requires(Rep v) { std::isfinite(v); }
+  requires requires(Rep v) { isfinite(v); }
+#if MP_UNITS_HOSTED
+           || requires(Rep v) { std::isfinite(v); }
+#endif
 [[nodiscard]] constexpr bool isfinite(const quantity<R, Rep>& a) noexcept
 {
+#if MP_UNITS_HOSTED
   using std::isfinite;
+#endif
   return isfinite(a.numerical_value_ref_in(a.unit));
 }
 
@@ -179,10 +216,15 @@ template<auto R, auto PO, typename Rep>
  * @return bool: Whether the quantity is infinite or not.
  */
 template<auto R, typename Rep>
-  requires requires(Rep v) { isinf(v); } || requires(Rep v) { std::isinf(v); }
+  requires requires(Rep v) { isinf(v); }
+#if MP_UNITS_HOSTED
+           || requires(Rep v) { std::isinf(v); }
+#endif
 [[nodiscard]] constexpr bool isinf(const quantity<R, Rep>& a) noexcept
 {
+#if MP_UNITS_HOSTED
   using std::isinf;
+#endif
   return isinf(a.numerical_value_ref_in(a.unit));
 }
 
@@ -207,10 +249,15 @@ template<auto R, auto PO, typename Rep>
  * @return bool: Whether the quantity is a NaN or not.
  */
 template<auto R, typename Rep>
-  requires requires(Rep v) { isnan(v); } || requires(Rep v) { std::isnan(v); }
+  requires requires(Rep v) { isnan(v); }
+#if MP_UNITS_HOSTED
+           || requires(Rep v) { std::isnan(v); }
+#endif
 [[nodiscard]] constexpr bool isnan(const quantity<R, Rep>& a) noexcept
 {
+#if MP_UNITS_HOSTED
   using std::isnan;
+#endif
   return isnan(a.numerical_value_ref_in(a.unit));
 }
 
@@ -239,13 +286,19 @@ template<auto R, auto PO, typename Rep>
 template<auto R, auto S, auto T, typename Rep1, typename Rep2, typename Rep3>
   requires requires { get_common_quantity_spec(get_quantity_spec(R) * get_quantity_spec(S), get_quantity_spec(T)); } &&
            (equivalent(get_unit(R) * get_unit(S), get_unit(T))) && requires(Rep1 v1, Rep2 v2, Rep3 v3) {
-             requires requires { fma(v1, v2, v3); } || requires { std::fma(v1, v2, v3); };
+             requires requires { fma(v1, v2, v3); }
+#if MP_UNITS_HOSTED
+                        || requires { std::fma(v1, v2, v3); }
+#endif
+                        ;
            }
 [[nodiscard]] constexpr QuantityOf<get_common_quantity_spec(get_quantity_spec(R) * get_quantity_spec(S),
                                                             get_quantity_spec(T))> auto
 fma(const quantity<R, Rep1>& a, const quantity<S, Rep2>& x, const quantity<T, Rep3>& b) noexcept
 {
+#if MP_UNITS_HOSTED
   using std::fma;
+#endif
   return quantity{
     fma(a.numerical_value_ref_in(a.unit), x.numerical_value_ref_in(x.unit), b.numerical_value_ref_in(b.unit)),
     get_common_reference(R * S, T)};
@@ -262,13 +315,19 @@ fma(const quantity<R, Rep1>& a, const quantity<S, Rep2>& x, const quantity<T, Re
 template<auto R, auto S, auto T, auto Origin, typename Rep1, typename Rep2, typename Rep3>
   requires requires { get_common_quantity_spec(get_quantity_spec(R) * get_quantity_spec(S), get_quantity_spec(T)); } &&
            (equivalent(get_unit(R) * get_unit(S), get_unit(T))) && requires(Rep1 v1, Rep2 v2, Rep3 v3) {
-             requires requires { fma(v1, v2, v3); } || requires { std::fma(v1, v2, v3); };
+             requires requires { fma(v1, v2, v3); }
+#if MP_UNITS_HOSTED
+                        || requires { std::fma(v1, v2, v3); }
+#endif
+                        ;
            }
 [[nodiscard]] constexpr QuantityPointOf<get_common_quantity_spec(get_quantity_spec(R) * get_quantity_spec(S),
                                                                  get_quantity_spec(T))> auto
 fma(const quantity<R, Rep1>& a, const quantity<S, Rep2>& x, const quantity_point<T, Origin, Rep3>& b) noexcept
 {
+#if MP_UNITS_HOSTED
   using std::fma;
+#endif
   return Origin + quantity{fma(a.numerical_value_ref_in(a.unit), x.numerical_value_ref_in(x.unit),
                                b.quantity_ref_from(b.point_origin).numerical_value_ref_in(b.unit)),
                            get_common_reference(R * S, T)};
@@ -280,14 +339,20 @@ fma(const quantity<R, Rep1>& a, const quantity<S, Rep2>& x, const quantity_point
 template<auto R1, typename Rep1, auto R2, typename Rep2>
   requires requires(Rep1 v1, Rep2 v2) {
     get_common_reference(R1, R2);
-    requires requires { fmod(v1, v2); } || requires { std::fmod(v1, v2); };
+    requires requires { fmod(v1, v2); }
+#if MP_UNITS_HOSTED
+               || requires { std::fmod(v1, v2); }
+#endif
+               ;
   }
 [[nodiscard]] constexpr QuantityOf<get_quantity_spec(R1)> auto fmod(const quantity<R1, Rep1>& x,
                                                                     const quantity<R2, Rep2>& y) noexcept
 {
   constexpr auto ref = get_common_reference(R1, R2);
   constexpr auto unit = get_unit(ref);
+#if MP_UNITS_HOSTED
   using std::fmod;
+#endif
   return quantity{fmod(x.numerical_value_in(unit), y.numerical_value_in(unit)), ref};
 }
 
@@ -297,14 +362,20 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
 template<auto R1, typename Rep1, auto R2, typename Rep2>
   requires requires(Rep1 v1, Rep2 v2) {
     get_common_reference(R1, R2);
-    requires requires { remainder(v1, v2); } || requires { std::remainder(v1, v2); };
+    requires requires { remainder(v1, v2); }
+#if MP_UNITS_HOSTED
+               || requires { std::remainder(v1, v2); }
+#endif
+               ;
   }
 [[nodiscard]] constexpr QuantityOf<get_quantity_spec(R1)> auto remainder(const quantity<R1, Rep1>& x,
                                                                          const quantity<R2, Rep2>& y) noexcept
 {
   constexpr auto ref = get_common_reference(R1, R2);
   constexpr auto unit = get_unit(ref);
+#if MP_UNITS_HOSTED
   using std::remainder;
+#endif
   return quantity{remainder(x.numerical_value_in(unit), y.numerical_value_in(unit)), ref};
 }
 
@@ -335,12 +406,18 @@ template<typename Rep, Reference R>
 template<Unit auto To, auto R, typename Rep>
 [[nodiscard]] constexpr quantity<detail::clone_reference_with<To>(R), Rep> floor(const quantity<R, Rep>& q) noexcept
   requires requires { q.force_in(To); } &&
-           ((treat_as_floating_point<Rep> && (requires(Rep v) { floor(v); } || requires(Rep v) { std::floor(v); })) ||
+           ((treat_as_floating_point<Rep> && (requires(Rep v) { floor(v); }
+#if MP_UNITS_HOSTED
+                                              || requires(Rep v) { std::floor(v); }
+#endif
+                                              )) ||
             (!treat_as_floating_point<Rep> && requires { representation_values<Rep>::one(); }))
 {
   const quantity res = q.force_in(To);
   if constexpr (treat_as_floating_point<Rep>) {
+#if MP_UNITS_HOSTED
     using std::floor;
+#endif
     return {static_cast<Rep>(floor(res.numerical_value_ref_in(res.unit))), res.reference};
   } else {
     if (res > q) return res - quantity{representation_values<Rep>::one(), res.reference};
@@ -357,12 +434,18 @@ template<Unit auto To, auto R, typename Rep>
 template<Unit auto To, auto R, typename Rep>
 [[nodiscard]] constexpr quantity<detail::clone_reference_with<To>(R), Rep> ceil(const quantity<R, Rep>& q) noexcept
   requires requires { q.force_in(To); } &&
-           ((treat_as_floating_point<Rep> && (requires(Rep v) { ceil(v); } || requires(Rep v) { std::ceil(v); })) ||
+           ((treat_as_floating_point<Rep> && (requires(Rep v) { ceil(v); }
+#if MP_UNITS_HOSTED
+                                              || requires(Rep v) { std::ceil(v); }
+#endif
+                                              )) ||
             (!treat_as_floating_point<Rep> && requires { representation_values<Rep>::one(); }))
 {
   const quantity res = q.force_in(To);
   if constexpr (treat_as_floating_point<Rep>) {
+#if MP_UNITS_HOSTED
     using std::ceil;
+#endif
     return {static_cast<Rep>(ceil(res.numerical_value_ref_in(res.unit))), res.reference};
   } else {
     if (res < q) return res + quantity{representation_values<Rep>::one(), res.reference};
@@ -422,14 +505,20 @@ template<Unit auto To, auto R, typename Rep>
 template<auto R1, typename Rep1, auto R2, typename Rep2>
   requires requires(Rep1 v1, Rep2 v2) {
     get_common_reference(R1, R2);
-    requires requires { hypot(v1, v2); } || requires { std::hypot(v1, v2); };
+    requires requires { hypot(v1, v2); }
+#if MP_UNITS_HOSTED
+               || requires { std::hypot(v1, v2); }
+#endif
+               ;
   }
 [[nodiscard]] constexpr QuantityOf<get_quantity_spec(get_common_reference(R1, R2))> auto hypot(
   const quantity<R1, Rep1>& x, const quantity<R2, Rep2>& y) noexcept
 {
   constexpr auto ref = get_common_reference(R1, R2);
   constexpr auto unit = get_unit(ref);
+#if MP_UNITS_HOSTED
   using std::hypot;
+#endif
   return quantity{hypot(x.numerical_value_in(unit), y.numerical_value_in(unit)), ref};
 }
 
@@ -440,14 +529,20 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
 template<auto R1, typename Rep1, auto R2, typename Rep2, auto R3, typename Rep3>
   requires requires(Rep1 v1, Rep2 v2, Rep3 v3) {
     get_common_reference(R1, R2, R3);
-    requires requires { hypot(v1, v2, v3); } || requires { std::hypot(v1, v2, v3); };
+    requires requires { hypot(v1, v2, v3); }
+#if MP_UNITS_HOSTED
+               || requires { std::hypot(v1, v2, v3); }
+#endif
+               ;
   }
 [[nodiscard]] constexpr QuantityOf<get_quantity_spec(get_common_reference(R1, R2, R3))> auto hypot(
   const quantity<R1, Rep1>& x, const quantity<R2, Rep2>& y, const quantity<R3, Rep3>& z) noexcept
 {
   constexpr auto ref = get_common_reference(R1, R2);
   constexpr auto unit = get_unit(ref);
+#if MP_UNITS_HOSTED
   using std::hypot;
+#endif
   return quantity{hypot(x.numerical_value_in(unit), y.numerical_value_in(unit), z.numerical_value_in(unit)), ref};
 }
 
@@ -461,14 +556,20 @@ template<auto R1, typename Rep1, auto R2, typename Rep2, auto R3, typename Rep3>
 template<auto R1, auto Origin, typename Rep1, auto R2, typename Rep2, typename Factor>
   requires requires(Rep1 a, Rep2 b, Factor t) {
     get_common_reference(R1, R2);
-    requires requires { lerp(a, b, t); } || requires { std::lerp(a, b, t); };
+    requires requires { lerp(a, b, t); }
+#if MP_UNITS_HOSTED
+               || requires { std::lerp(a, b, t); }
+#endif
+               ;
   }
 [[nodiscard]] constexpr QuantityPointOf<get_quantity_spec(get_common_reference(R1, R2))> auto lerp(
   const quantity_point<R1, Origin, Rep1>& a, const quantity_point<R2, Origin, Rep2>& b, const Factor& t) noexcept
 {
   constexpr auto ref = get_common_reference(R1, R2);
   constexpr auto unit = get_unit(ref);
+#if MP_UNITS_HOSTED
   using std::lerp;
+#endif
   return Origin + quantity{lerp(a.quantity_ref_from(Origin).numerical_value_in(unit),
                                 b.quantity_ref_from(Origin).numerical_value_in(unit), t),
                            ref};
@@ -480,19 +581,23 @@ template<auto R1, auto Origin, typename Rep1, auto R2, typename Rep2, typename F
 template<auto R1, auto Origin, typename Rep1, auto R2, typename Rep2>
   requires requires(Rep1 a, Rep2 b) {
     get_common_reference(R1, R2);
-    requires requires { midpoint(a, b); } || requires { std::midpoint(a, b); };
+    requires requires { midpoint(a, b); }
+#if MP_UNITS_HOSTED || __cpp_lib_freestanding_numeric >= 202502L
+               || requires { std::midpoint(a, b); }
+#endif
+               ;
   }
 [[nodiscard]] constexpr QuantityPointOf<get_quantity_spec(get_common_reference(R1, R2))> auto midpoint(
   const quantity_point<R1, Origin, Rep1>& a, const quantity_point<R2, Origin, Rep2>& b) noexcept
 {
   constexpr auto ref = get_common_reference(R1, R2);
   constexpr auto unit = get_unit(ref);
+#if MP_UNITS_HOSTED || __cpp_lib_freestanding_numeric >= 202502L
   using std::midpoint;
+#endif
   return Origin + quantity{midpoint(a.quantity_ref_from(Origin).numerical_value_in(unit),
                                     b.quantity_ref_from(Origin).numerical_value_in(unit)),
                            ref};
 }
-
-#endif  // MP_UNITS_HOSTED
 
 }  // namespace mp_units
