@@ -223,17 +223,88 @@ concept CommonlyComparableQuantities =
   Quantity<Q1> && Quantity<Q2> && HaveCommonReference<Q1::reference, Q2::reference> &&
   requires { typename std::common_type_t<Q1, Q2>; } && comparable_in_wide_type<Q1, Q2>();
 
+// Sign-aware integer comparisons with `std::cmp_less`/`std::cmp_equal` semantics.  Written by
+// hand rather than reusing the standard ones so they also work with the extended 128-bit
+// integer types, which `std::cmp_*` reject in strict `-std=c++20` mode (`std::is_signed` is not
+// specialized for `__int128` there).  Only ever used for two integers of *different* signedness
+// (same-signedness comparisons stay on the ordinary path), where comparing through the common
+// unsigned type would silently convert a negative value into a large positive one — the trap
+// behind both `-1 < 1u` (wrongly ordered) and `-1 == 4294967295u` (wrongly equal).  See GH #703.
+template<typename L, typename R>
+[[nodiscard]] constexpr bool cmp_less(L lhs, R rhs)
+{
+  if constexpr (is_signed_v<L> == is_signed_v<R>)
+    return lhs < rhs;
+  else if constexpr (is_signed_v<L>)
+    return lhs < 0 || static_cast<min_width_uint_t<integer_rep_width_v<L>>>(lhs) < rhs;
+  else
+    return rhs >= 0 && lhs < static_cast<min_width_uint_t<integer_rep_width_v<R>>>(rhs);
+}
+
+template<typename L, typename R>
+[[nodiscard]] constexpr bool cmp_equal(L lhs, R rhs)
+{
+  if constexpr (is_signed_v<L> == is_signed_v<R>)
+    return lhs == rhs;
+  else if constexpr (is_signed_v<L>)
+    return lhs >= 0 && static_cast<min_width_uint_t<integer_rep_width_v<L>>>(lhs) == rhs;
+  else
+    return rhs >= 0 && lhs == static_cast<min_width_uint_t<integer_rep_width_v<R>>>(rhs);
+}
+
+template<typename L, typename R>
+[[nodiscard]] constexpr std::strong_ordering cmp_three_way(L lhs, R rhs)
+{
+  if (detail::cmp_less(lhs, rhs)) return std::strong_ordering::less;
+  if (detail::cmp_less(rhs, lhs)) return std::strong_ordering::greater;
+  return std::strong_ordering::equal;
+}
+
+template<typename Q1, typename Q2>
+concept DifferentlySignedIntegers =
+  Quantity<Q1> && Quantity<Q2> && integral<typename Q1::rep> && integral<typename Q2::rep> &&
+  (is_signed_v<typename Q1::rep> != is_signed_v<typename Q2::rep>);
+
+template<typename LhsRep, typename RhsRep, UnitMagnitude M1, typename V1, UnitMagnitude M2, typename V2, typename Cmp>
+[[nodiscard]] constexpr auto scaled_sign_aware_compare(M1 lhs_m, const V1& lhs_val, M2 rhs_m, const V2& rhs_val, Cmp)
+{
+  const auto lhs = scale<LhsRep>(lhs_m, lhs_val);
+  const auto rhs = scale<RhsRep>(rhs_m, rhs_val);
+  if constexpr (is_same_v<Cmp, std::compare_three_way>)
+    return detail::cmp_three_way(lhs, rhs);
+  else
+    return detail::cmp_equal(lhs, rhs);
+}
+
 template<typename Q1, typename Q2, typename Cmp>
-  requires CommonlyComparableQuantities<Q1, Q2>
-[[nodiscard]] constexpr auto compare_quantities(const Q1& lhs, const Q2& rhs, Cmp cmp)
+[[nodiscard]] constexpr auto compare_differently_signed_integers(const Q1& lhs, const Q2& rhs, Cmp cmp)
 {
   using ct = std::common_type_t<Q1, Q2>;
   using ct_rep = value_type_t<typename ct::rep>;
-  // Fallback path used when the wide-type integer optimization doesn't apply (floating-point
-  // ct_rep, already-widest integer, or unit ratio too large for wide_t).  Defined as a
-  // lambda so it can be invoked from either of the explicit branches below — a bare
-  // fallthrough `return` after the `if constexpr` chain would trip MSVC Debug C4702
-  // ("unreachable code") on instantiations where the optimization branch returns.
+  constexpr UnitMagnitude auto lhs_m = get_canonical_unit(Q1::unit).mag / get_canonical_unit(ct::unit).mag;
+  constexpr UnitMagnitude auto rhs_m = get_canonical_unit(Q2::unit).mag / get_canonical_unit(ct::unit).mag;
+  const auto& lhs_val = lhs.numerical_value_is_an_implementation_detail_;
+  const auto& rhs_val = rhs.numerical_value_is_an_implementation_detail_;
+  if constexpr (sizeof(ct_rep) < sizeof(int128_t)) {
+    constexpr std::size_t w = integer_rep_width_v<double_width_int_for_t<ct_rep>>;
+    using lhs_rep = conditional<is_signed_v<typename Q1::rep>, min_width_int_t<w>, min_width_uint_t<w>>;
+    using rhs_rep = conditional<is_signed_v<typename Q2::rep>, min_width_int_t<w>, min_width_uint_t<w>>;
+    return scaled_sign_aware_compare<lhs_rep, rhs_rep>(lhs_m, lhs_val, rhs_m, rhs_val, cmp);
+  } else {
+    using lhs_rep = conditional<is_signed_v<typename Q1::rep>, int128_t, uint128_t>;
+    using rhs_rep = conditional<is_signed_v<typename Q2::rep>, int128_t, uint128_t>;
+    return scaled_sign_aware_compare<lhs_rep, rhs_rep>(lhs_m, lhs_val, rhs_m, rhs_val, cmp);
+  }
+}
+
+template<typename Q1, typename Q2, typename Cmp>
+[[nodiscard]] constexpr auto compare_in_common_type(const Q1& lhs, const Q2& rhs, Cmp cmp)
+{
+  using ct = std::common_type_t<Q1, Q2>;
+  using ct_rep = value_type_t<typename ct::rep>;
+  // `fallback_cmp` is a lambda so it can be invoked from either branch below — a bare fallthrough
+  // `return` after the `if constexpr` chain would trip MSVC Debug C4702 ("unreachable code") on
+  // instantiations where the optimization branch returns.
   auto fallback_cmp = [&] {
     const ct ct_lhs(lhs);
     const ct ct_rhs(rhs);
@@ -242,12 +313,8 @@ template<typename Q1, typename Q2, typename Cmp>
     return cmp(ct_lhs.numerical_value_ref_in(ct::unit), ct_rhs.numerical_value_ref_in(ct::unit));
     MP_UNITS_DIAGNOSTIC_POP
   };
-  // Integer path: scale into double-width type to avoid overflow.
-  // The nested if constexpr is intentional: forming double_width_int_for_t<ct_rep> as a
-  // template argument is itself part of type instantiation, so it must be guarded by a
-  // separate if constexpr (not just a && in the same condition) to prevent it from being
-  // instantiated when ct_rep is a floating-point type or already-widest integer.
   if constexpr (!treat_as_floating_point<ct_rep> && sizeof(ct_rep) < sizeof(int128_t)) {
+    // widen to a double-width integer so the unit-ratio scaling can't overflow
     using wide_t = double_width_int_for_t<ct_rep>;
     if constexpr (!overflows_non_zero_common_values<wide_t>(Q1::unit, Q2::unit)) {
       constexpr UnitMagnitude auto lhs_m = get_canonical_unit(Q1::unit).mag / get_canonical_unit(ct::unit).mag;
@@ -260,6 +327,16 @@ template<typename Q1, typename Q2, typename Cmp>
   } else {
     return fallback_cmp();
   }
+}
+
+template<typename Q1, typename Q2, typename Cmp>
+  requires CommonlyComparableQuantities<Q1, Q2>
+[[nodiscard]] constexpr auto compare_quantities(const Q1& lhs, const Q2& rhs, Cmp cmp)
+{
+  if constexpr (DifferentlySignedIntegers<Q1, Q2>)
+    return compare_differently_signed_integers(lhs, rhs, cmp);
+  else
+    return compare_in_common_type(lhs, rhs, cmp);
 }
 
 template<typename T>

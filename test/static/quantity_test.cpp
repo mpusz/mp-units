@@ -1547,6 +1547,30 @@ static_assert(0 * m <= 0);
 static_assert(!(-42 * m >= 0));
 static_assert(!(42 * m <= 0));
 
+// Mixed-signedness comparison must reflect the true mathematical value, not the wrapped
+// unsigned result of reducing both operands to their common representation type (GH #703).
+static_assert(-1 * m < 1u * m);
+static_assert(1u * m > -1 * m);
+static_assert(-1 * m <= 1u * m);
+static_assert(!(-1 * m >= 1u * m));
+static_assert(!(-1 * m == 1u * m));
+static_assert(3 * m == 3u * m);
+static_assert(3u * m == 3 * m);
+static_assert((-1 * m <=> 1u * m) == std::strong_ordering::less);
+static_assert((1u * m <=> -1 * m) == std::strong_ordering::greater);
+static_assert((3 * m <=> 3u * m) == std::strong_ordering::equal);
+// ... including across units, where the value is scaled to the common unit first ...
+static_assert(-1 * km < 1u * m);
+static_assert(1u * m > -1 * km);
+static_assert(-5 * km < 0u * m);
+static_assert(2000u * m == 2 * km);
+static_assert(2 * km == 2000u * m);
+static_assert(!(2001u * m == 2 * km));
+// ... and for wider integer representations, in either signedness order ...
+static_assert(std::int64_t{-1} * m < 1u * m);
+static_assert(-1 * m < std::uint64_t{1} * m);
+static_assert(std::uint64_t{5} * m > std::int32_t{-7} * m);
+
 // Comparisons between quantities of the same dimension but incompatible units are disabled
 // at compile-time when the unit-ratio scaling would overflow even the double-width integer
 // type.  A template wrapper is used so that the SFINAE failure inside the requires-expression
