@@ -130,6 +130,12 @@ static_assert(std::numeric_limits<i128>::min() == i128{std::numeric_limits<std::
 static_assert(std::numeric_limits<u128>::max() == u128{~std::uint64_t{0}, ~std::uint64_t{0}});
 static_assert(std::numeric_limits<i128>::max() == i128{std::numeric_limits<std::int64_t>::max(), ~std::uint64_t{0}});
 
+// Cross-signedness conversion between the two same-width instantiations (mirrors the built-in
+// (unsigned) __int128 interconversion; the sign-aware quantity comparison helpers rely on it).
+static_assert(static_cast<u128>(i128{-1, ~std::uint64_t{0}}) == u128{~std::uint64_t{0}, ~std::uint64_t{0}});
+static_assert(static_cast<i128>(u128{0, 42}) == i128{0, 42});
+static_assert(static_cast<u32x2>(i32x2{-1, ~std::uint32_t{0}}) == u32x2{~std::uint32_t{0}, ~std::uint32_t{0}});
+
 // Conversion to long double (round-trips small integers exactly; the signed branch goes
 // through unary minus to avoid catastrophic cancellation on platforms where long double
 // has fewer than `width` bits of mantissa, e.g. MSVC where long double == double).

@@ -85,6 +85,16 @@ struct double_width_int {
     lo_ = static_cast<Tl>(v);
   }
 
+  // Cross-signedness conversion between double-width integers of the same base width
+  // (e.g. `int128_t` <-> `uint128_t` on MSVC).  Reinterprets the two-limb representation,
+  // mirroring the built-in `(unsigned) __int128` interconversion; the sign-aware comparison
+  // helpers in quantity.h `static_cast` between the two signednesses and rely on this.
+  template<std::integral U>
+    requires(integer_rep_width_v<U> == base_width && !std::is_same_v<U, T>)
+  explicit constexpr double_width_int(double_width_int<U> other) : hi_(static_cast<Th>(other.hi_)), lo_(other.lo_)
+  {
+  }
+
   template<std::integral U>
   explicit constexpr operator U() const
   {
