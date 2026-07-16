@@ -70,7 +70,9 @@ template<typename Period>
 
 }  // namespace detail
 
-MP_UNITS_EXPORT template<typename Rep, typename Period>
+// specialization is exported automatically because the primary template is exported;
+// MSVC (C7760) rejects `export` applied directly to a partial specialization
+template<typename Rep, typename Period>
 struct quantity_like_traits<std::chrono::duration<Rep, Period>> {
   static constexpr auto reference = detail::time_unit_from_chrono_period<Period>();
   static constexpr bool explicit_import = false;
