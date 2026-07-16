@@ -222,7 +222,7 @@ class MPUnitsConan(ConanFile):
                 self.requires("fmt/12.1.0", transitive_headers=True)
 
     def build_requirements(self):
-        self.tool_requires("cmake/[>=4.3.0 <5]")
+        self.tool_requires("cmake/[>=4.4.0 <5]")
         if self.options.freestanding:
             return
         if self._build_all:
@@ -302,7 +302,7 @@ class MPUnitsConan(ConanFile):
             tc.cache_variables["CMAKE_CXX_MODULE_STD"] = True
             # Current experimental support according to `Help/dev/experimental.rst`
             tc.cache_variables["CMAKE_EXPERIMENTAL_CXX_IMPORT_STD"] = (
-                "451f2fe2-a8a2-47c3-bc32-94786d8fc91b"
+                "f35a9ac6-8463-4d38-8eec-5d6008153e7d"
             )
 
         # TODO remove the below when Conan will learn to handle C++ modules
