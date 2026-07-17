@@ -132,11 +132,17 @@ The [dimension equation](../../reference/glossary.md#dimension-equation) of
 - vector (e.g., _displacement_, _velocity_, _force_),
 - tensor (e.g., _moment of inertia_, _stress_, _strain_).
 
-The quantity character in the **mp-units** library is implemented with the
-`quantity_character` enumeration:
+The quantity character in the **mp-units** library is implemented as a pair of orthogonal
+axes, a _tensor order_ and a _numeric field_:
 
 ```cpp
-enum class quantity_character { real_scalar, complex_scalar, vector, tensor };
+enum class quantity_tensor_order : std::int8_t { scalar, vector, tensor };
+enum class quantity_field : std::int8_t { real, complex };
+
+struct quantity_character {
+  quantity_tensor_order order = quantity_tensor_order::scalar;
+  quantity_field field = quantity_field::real;
+};
 ```
 
 !!! info

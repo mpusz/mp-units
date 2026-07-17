@@ -172,7 +172,7 @@ For example, here is how the above quantity kind tree can be modeled in the libr
     inline constexpr struct distance : quantity_spec<path_length> {} distance;
     inline constexpr struct radial_distance : quantity_spec<distance> {} radial_distance;
     inline constexpr struct wavelength : quantity_spec<length> {} wavelength;
-    inline constexpr struct displacement : quantity_spec<length, quantity_character::vector> {} displacement;
+    inline constexpr struct displacement : quantity_spec<length, quantity_tensor_order::vector> {} displacement;
     inline constexpr struct position_vector : quantity_spec<displacement> {} position_vector;
     ```
 
@@ -195,7 +195,7 @@ For example, here is how the above quantity kind tree can be modeled in the libr
     inline constexpr struct distance : quantity_spec<distance, path_length> {} distance;
     inline constexpr struct radial_distance : quantity_spec<radial_distance, distance> {} radial_distance;
     inline constexpr struct wavelength : quantity_spec<wavelength, length> {} wavelength;
-    inline constexpr struct displacement : quantity_spec<displacement, length, quantity_character::vector> {} displacement;
+    inline constexpr struct displacement : quantity_spec<displacement, length, quantity_tensor_order::vector> {} displacement;
     inline constexpr struct position_vector : quantity_spec<position_vector, displacement> {} position_vector;
     ```
 
@@ -218,7 +218,7 @@ For example, here is how the above quantity kind tree can be modeled in the libr
     QUANTITY_SPEC(distance, path_length);
     QUANTITY_SPEC(radial_distance, distance);
     QUANTITY_SPEC(wavelength, length);
-    QUANTITY_SPEC(displacement, length, quantity_character::vector);
+    QUANTITY_SPEC(displacement, length, quantity_tensor_order::vector);
     QUANTITY_SPEC(position_vector, displacement);
     ```
 
@@ -740,7 +740,7 @@ static_assert(!is_non_negative(isq::electric_charge));
 ### Named real-scalar children inherit from parents
 
 A named child quantity automatically inherits `non_negative` from its parent, as long as the
-child's character is `real_scalar`. This reflects the physical reality: every `height` IS
+child's character is a real scalar. This reflects the physical reality: every `height` IS
 a `length`, so if `length` is non-negative then every specific type of _length_ must be too:
 
 === "C++23"
@@ -793,33 +793,33 @@ a quantity produces a **compile-time error**:
 
     ```cpp
     // displacement is a child of length with vector character — correctly NOT non_negative
-    inline constexpr struct displacement : quantity_spec<length, quantity_character::vector> {} displacement;
+    inline constexpr struct displacement : quantity_spec<length, quantity_tensor_order::vector> {} displacement;
     static_assert(!is_non_negative(displacement));
 
     // compile-time error — non_negative is incompatible with vector character:
-    // inline constexpr struct bad : quantity_spec<length, quantity_character::vector, non_negative> {} bad;  // ← error
+    // inline constexpr struct bad : quantity_spec<length, quantity_tensor_order::vector, non_negative> {} bad;  // ← error
     ```
 
 === "C++20"
 
     ```cpp
     // displacement is a child of length with vector character — correctly NOT non_negative
-    inline constexpr struct displacement : quantity_spec<displacement, length, quantity_character::vector> {} displacement;
+    inline constexpr struct displacement : quantity_spec<displacement, length, quantity_tensor_order::vector> {} displacement;
     static_assert(!is_non_negative(displacement));
 
     // compile-time error — non_negative is incompatible with vector character:
-    // inline constexpr struct bad : quantity_spec<bad, length, quantity_character::vector, non_negative> {} bad;  // ← error
+    // inline constexpr struct bad : quantity_spec<bad, length, quantity_tensor_order::vector, non_negative> {} bad;  // ← error
     ```
 
 === "Portable"
 
     ```cpp
     // displacement is a child of length with vector character — correctly NOT non_negative
-    QUANTITY_SPEC(displacement, length, quantity_character::vector);
+    QUANTITY_SPEC(displacement, length, quantity_tensor_order::vector);
     static_assert(!is_non_negative(displacement));
 
     // compile-time error — non_negative is incompatible with vector character:
-    // QUANTITY_SPEC(bad, length, quantity_character::vector, non_negative);  // ← error
+    // QUANTITY_SPEC(bad, length, quantity_tensor_order::vector, non_negative);  // ← error
     ```
 
 !!! warning "Kinds are never non-negative"

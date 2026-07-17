@@ -45,7 +45,7 @@ various characters. By default, all quantity types are scalars, but we can set
 any other quantity character in a `quantity_spec` definition. For example:
 
 ```cpp
-inline constexpr struct displacement : quantity_spec<length, quantity_character::vector> {} displacement;
+inline constexpr struct displacement : quantity_spec<length, quantity_tensor_order::vector> {} displacement;
 ```
 
 Character of derived quantities is inherited from the quantity equation taking
@@ -588,8 +588,8 @@ We can add support for the above by adding `point_for<QuantitySpec>` attribute t
 ```cpp
 inline constexpr struct height : quantity_spec<length> {} height;
 inline constexpr struct altitude : quantity_spec<length, point_for<height>> {} altitude;
-inline constexpr struct displacement : quantity_spec<distance, quantity_character::vector> {} displacement;
-inline constexpr struct position_vector : quantity_spec<radial_distance, point_for<displacement>, quantity_character::vector> {} position_vector;
+inline constexpr struct displacement : quantity_spec<distance, quantity_tensor_order::vector> {} displacement;
+inline constexpr struct position_vector : quantity_spec<radial_distance, point_for<displacement>, quantity_tensor_order::vector> {} position_vector;
 ```
 
 Thanks to the above, the library always knows a "delta" quantity for a "point" type. I've

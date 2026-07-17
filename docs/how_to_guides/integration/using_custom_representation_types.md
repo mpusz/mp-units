@@ -366,7 +366,8 @@ in the User's Guide for the complete pattern and design rationale.
 
     ```cpp
     static_assert(mp_units::UnitMagnitudeScalable<MyFloat>);
-    static_assert(mp_units::RepresentationOf<MyFloat, mp_units::quantity_character::real_scalar>);
+    static_assert(mp_units::RepresentationOf<MyFloat, mp_units::quantity_tensor_order::scalar>);
+    static_assert(mp_units::RepresentationOf<MyFloat, mp_units::quantity_field::real>);
 
     const auto q = isq::length(MyFloat{1.0L} * m);
     const auto q_km = q.in(km);  // MyFloat * long double — handled by UsesFloatingPointScaling
@@ -410,7 +411,8 @@ auto area = length * length;  // Quantities compose naturally
     Verify your type satisfies the expected concepts:
 
     ```cpp
-    static_assert(RepresentationOf<my_scalar_type<double>, quantity_character::real_scalar>);
+    static_assert(RepresentationOf<my_scalar_type<double>, quantity_tensor_order::scalar>);
+    static_assert(RepresentationOf<my_scalar_type<double>, quantity_field::real>);
     static_assert(treat_as_floating_point<my_scalar_type<double>>);
     ```
 

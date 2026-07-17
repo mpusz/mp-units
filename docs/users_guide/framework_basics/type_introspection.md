@@ -25,19 +25,24 @@ Base dimensions created with `base_dimension` do not expose public static member
 The `quantity_spec` class template and its specializations provide the following public
 static members:
 
-| Member      | Type                 | Description                                            |
-|-------------|----------------------|--------------------------------------------------------|
-| `dimension` | `Dimension`          | The dimension of the quantity specification            |
-| `character` | `quantity_character` | The character of the quantity (scalar, vector, tensor) |
+| Member      | Type                 | Description                                                                                                |
+|-------------|----------------------|------------------------------------------------------------------------------------------------------------|
+| `dimension` | `Dimension`          | The dimension of the quantity specification                                                                |
+| `character` | `quantity_character` | The character of the quantity, a pair of `order` (scalar, vector, tensor) and `field` (real, complex) axes |
 
 !!! example
 
     ```cpp
     static_assert(isq::length.dimension == isq::dim_length);
-    static_assert(isq::length.character == quantity_character::real_scalar);
+    static_assert(isq::length.character == quantity_character{});
 
     static_assert(isq::velocity.dimension == isq::dim_length / isq::dim_time);
-    static_assert(isq::velocity.character == quantity_character::vector);
+    static_assert(isq::velocity.character == quantity_character{quantity_tensor_order::vector});
+
+    // the character is a pair of orthogonal axes, each queryable on its own
+    static_assert(isq::length.character.order == quantity_tensor_order::scalar);
+    static_assert(isq::length.character.field == quantity_field::real);
+    static_assert(isq::velocity.character.order == quantity_tensor_order::vector);
     ```
 
 

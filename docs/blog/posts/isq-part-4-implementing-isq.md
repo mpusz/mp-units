@@ -78,7 +78,7 @@ inline constexpr auto arc_length = path_length;
 inline constexpr struct distance final            : quantity_spec<path_length> {} distance;
 inline constexpr struct radial_distance final     : quantity_spec<distance> {} radial_distance;
 inline constexpr struct wavelength final          : quantity_spec<length> {} wavelength;
-inline constexpr struct displacement final        : quantity_spec<length, quantity_character::vector> {} displacement;
+inline constexpr struct displacement final        : quantity_spec<length, quantity_tensor_order::vector> {} displacement;
 inline constexpr struct position_vector final     : quantity_spec<displacement> {} position_vector;
 ```
 

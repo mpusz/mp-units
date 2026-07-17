@@ -114,7 +114,7 @@ inline constexpr struct acceleration : quantity_spec<velocity / duration> {} acc
 
 // Dynamics
 inline constexpr struct force : quantity_spec<mass * acceleration> {} force;
-inline constexpr struct pressure : quantity_spec<force / area, quantity_character::real_scalar> {} pressure;
+inline constexpr struct pressure : quantity_spec<force / area, quantity_tensor_order::scalar> {} pressure;
 inline constexpr struct energy : quantity_spec<mass* pow<2>(length) / pow<2>(time)> {} energy;
 inline constexpr struct power : quantity_spec<mass* pow<2>(length) / pow<3>(time)> {} power;
 
@@ -165,7 +165,7 @@ inline constexpr auto arc_length = path_length;
 inline constexpr struct distance : quantity_spec<path_length> {} distance;
 inline constexpr struct radial_distance : quantity_spec<distance> {} radial_distance;
 inline constexpr struct wavelength : quantity_spec<length> {} wavelength;
-inline constexpr struct displacement : quantity_spec<length, quantity_character::vector> {} displacement;
+inline constexpr struct displacement : quantity_spec<length, quantity_tensor_order::vector> {} displacement;
 inline constexpr struct position_vector : quantity_spec<displacement> {} position_vector;
 ```
 
