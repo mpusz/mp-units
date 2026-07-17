@@ -36,6 +36,7 @@ add_mp_units_module(
             include/mp-units/bits/int_power.h
             include/mp-units/bits/get_associated_quantity.h
             include/mp-units/bits/hacks.h
+            include/mp-units/bits/import_std_prelude.h
             include/mp-units/bits/module_macros.h
             include/mp-units/bits/quantity_spec_hierarchy.h
             include/mp-units/bits/ratio.h
@@ -166,15 +167,28 @@ if(CMAKE_CXX_MODULE_STD)
     # <cstddef>'s `std::__byte_operand`, <cmath>, and on GCC 16 even <version>'s `std::__terminate`,
     # all pulled in transitively by mp-units headers). It only happens when `std` is built as a
     # separate BMI (as CMake does), and only when the textual include comes *after* `import std;` --
-    # the reverse order is fine. Consumer TUs typically write `import std;` before any mp-units
-    # header, so force `<version>` (and thus <bits/c++config.h>) to the very top of every consumer TU
-    # so the libstdc++ headers are seen before `import std;`. Header mode only: a forced include would
+    # the reverse order is fine. Consumer TUs typically write `import std;` before any mp-units header,
+    # so force `<version>` (and thus <bits/c++config.h>) to the very top of every consumer TU so the
+    # libstdc++ headers are seen before `import std;`. Header mode only: a forced include would
     # otherwise land before the `module;`/`export module` of an interface unit, and module builds
     # already order things correctly via the GMF.
+    #
+    # The forced include cannot be `<version>` directly: CMake 4.4+ compiles the `std` module's
+    # `std.cc` with each consumer's COMPILE_OPTIONS (see cmake-cxxmodules(7), "synthetic target"), so
+    # a forced `<version>` would land before `std.cc`'s own `module;` and break it. Instead force a
+    # tiny prelude header gated on `MP_UNITS_IMPORT_STD` -- a COMPILE_DEFINITION, which the synthetic
+    # target does *not* inherit -- so it pulls in `<version>` for real consumers yet expands to
+    # nothing when `std.cc` is compiled. An absolute path is required because the synthetic target
+    # also does not inherit the consumer's INCLUDE_DIRECTORIES.
     if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND NOT MP_UNITS_BUILD_CXX_MODULES AND CMAKE_CXX_COMPILER_VERSION
                                                                                    VERSION_LESS 17
     )
-        target_compile_options(mp-units-core ${MP_UNITS_TARGET_SCOPE} "SHELL:-include version")
+        target_compile_options(
+            mp-units-core
+            ${MP_UNITS_TARGET_SCOPE}
+            "$<BUILD_INTERFACE:SHELL:-include ${CMAKE_CURRENT_SOURCE_DIR}/include/mp-units/bits/import_std_prelude.h>"
+            "$<INSTALL_INTERFACE:SHELL:-include $<INSTALL_PREFIX>/${CMAKE_INSTALL_INCLUDEDIR}/mp-units/bits/import_std_prelude.h>"
+        )
     endif()
 endif()
 
