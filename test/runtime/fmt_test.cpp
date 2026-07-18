@@ -1216,6 +1216,32 @@ TEST_CASE("default quantity_point formatting", "[quantity_point][ostream][fmt]")
     }
   }
 
+  SECTION("origin displacement unit in integer point differences (GH #714)")
+  {
+    // An integer point difference across offset origins is reported in the coarsest exact
+    // sub-multiple of the coherent unit rather than in the (finer) unit the origin is stored in.
+    SECTION("single difference")
+    {
+      const quantity T = point<si::degree_Celsius>(21) - si::absolute_zero;
+      os << T;
+
+      SECTION("iostream") { CHECK(os.str() == "5883 (1/20 K)"); }
+      SECTION("default format {}") { CHECK(MP_UNITS_STD_FMT::format("{}", T) == os.str()); }
+    }
+
+    SECTION("compound difference combines into a single coherent sub-multiple")
+    {
+      // `℃`, `K`, and `℉` all reduce to `kelvin`, so the two origin displacement units (`1/20 K` and
+      // `1/9 K`) collapse to their single shared sub-multiple `1/180 K` rather than an ugly composite.
+      const quantity sum = (point<si::degree_Celsius>(0) - point<si::kelvin>(0)) +
+                           (point<usc::degree_Fahrenheit>(0) - point<si::degree_Celsius>(0));
+      os << sum;
+
+      SECTION("iostream") { CHECK(os.str() == "45967 (1/180 K)"); }
+      SECTION("default format {}") { CHECK(MP_UNITS_STD_FMT::format("{}", sum) == os.str()); }
+    }
+  }
+
   SECTION("subentity format specs are inherited from quantity formatter")
   {
     const quantity_point qp{42 * isq::length[m]};

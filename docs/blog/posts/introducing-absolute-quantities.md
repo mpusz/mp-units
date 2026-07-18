@@ -961,16 +961,17 @@ quantity T = temp - si::absolute_zero;  // always correct
 ```
 
 The only thing to be aware of is the resulting unit. Because `si::ice_point` (the origin
-of the Celsius scale) is defined internally in `milli<kelvin>`, the subtraction yields
-`mK` rather than `K`:
+of the Celsius scale) does not sit at an integral number of kelvins from `si::absolute_zero`,
+the subtraction yields a fractional sub-multiple of `K` rather than `K` itself:
 
 ```text
-T == 294150 mK   // correct value, can be rescaled with .in(K)
+T == 5883 (1/20 K)   // correct value, can be rescaled with .in(K)
 ```
 
 The value is correct and rescales cleanly to any unit. In a physical equation like the
-ideal gas law, `p` will come out in `mPa` instead of `Pa`, but it will convert
-automatically on the first assignment to a typed quantity such as `quantity<Pa>`.
+ideal gas law, `p` will come out in a scaled variant of `Pa` rather than `Pa` itself, but
+it will convert automatically on the first assignment to a typed quantity such as
+`quantity<Pa>`.
 
 #### The bottom line
 

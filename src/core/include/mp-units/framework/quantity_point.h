@@ -73,6 +73,29 @@ template<typename FwdQ, PointOrigin PO, QuantityOf<PO::_quantity_spec_> Q = std:
     return quantity_point{std::forward<FwdQ>(q), po};
 }
 
+// Re-expresses a compile-time origin displacement in its "origin displacement unit": the coarsest
+// sub-multiple of the coherent (reference) unit in which the displacement is still represented
+// exactly. Feeding this into the common-unit machinery instead of the unit an origin happens to be
+// stored in produces the most efficient common unit for point differences (e.g. the offset of the
+// Celsius origin stored as `273150 mK` is re-expressed as `5463 (1/20 K)`, so that a temperature
+// point difference is no longer forced down to millikelvins). Displacements that are already an
+// integer number of the coherent unit are left untouched (e.g. a `42 m` origin offset stays `42 m`).
+// The displacement between two origins is a compile-time constant, so it is passed as an NTTP.
+template<Quantity auto Q>
+[[nodiscard]] consteval Quantity auto coarsen_origin_displacement()
+{
+  constexpr auto v = Q.numerical_value_in(Q.unit);
+  // A zero displacement has no magnitude to derive a unit from, and a non-integral value cannot seed
+  // a magnitude; in both cases keep the displacement as stored.
+  if constexpr (!std::integral<MP_UNITS_NONCONST_TYPE(v)> || v == 0)
+    return Q;
+  else {
+    constexpr auto canonical = get_canonical_unit(Q.unit);
+    constexpr auto value_in_coherent_unit = mag<detail::abs(v)> * canonical.mag;
+    return Q.force_in(pow<-1>(denominator(value_in_coherent_unit)) * canonical.reference_unit);
+  }
+}
+
 struct point_origin_interface {
   template<PointOrigin PO, typename FwdQ, QuantityOf<PO::_quantity_spec_> Q = std::remove_cvref_t<FwdQ>>
   [[nodiscard]] friend constexpr QuantityPoint auto operator+(PO po, FwdQ&& q)
@@ -99,15 +122,17 @@ struct point_origin_interface {
              QuantitySpecOf<MP_UNITS_NONCONST_TYPE(PO2::_quantity_spec_), PO1::_quantity_spec_>) &&
             (is_derived_from_specialization_of_v<PO1, relative_point_origin> ||
              is_derived_from_specialization_of_v<PO2, relative_point_origin>)
-  [[nodiscard]] friend constexpr Quantity auto operator-(PO1 po1, PO2 po2)
+  [[nodiscard]] friend constexpr Quantity auto operator-(PO1, PO2)
   {
-    if constexpr (is_derived_from_specialization_of_v<PO1, absolute_point_origin>) {
-      return po1 - po2._quantity_point_;
-    } else if constexpr (is_derived_from_specialization_of_v<PO2, absolute_point_origin>) {
-      return po1._quantity_point_ - po2;
-    } else {
-      return po1._quantity_point_ - po2._quantity_point_;
-    }
+    constexpr auto raw = [] {
+      if constexpr (is_derived_from_specialization_of_v<PO1, absolute_point_origin>)
+        return PO1{} - PO2::_quantity_point_;
+      else if constexpr (is_derived_from_specialization_of_v<PO2, absolute_point_origin>)
+        return PO1::_quantity_point_ - PO2{};
+      else
+        return PO1::_quantity_point_ - PO2::_quantity_point_;
+    }();
+    return detail::coarsen_origin_displacement<raw>();
   }
 
   template<PointOrigin PO1, PointOrigin PO2>

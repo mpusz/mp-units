@@ -1376,6 +1376,26 @@ static_assert(is_of_type<(1 * m + ground_level) - (1 * m + other_ground_level), 
 static_assert(is_of_type<(1 * m + other_ground_level) - (1 * m + tower_peak), quantity<isq::height[m], int>>);
 static_assert(is_of_type<(1 * m + tower_peak) - (1 * m + other_ground_level), quantity<isq::height[m], int>>);
 
+// origin displacement is re-expressed in its coarsest exact unit (a sub-multiple of the coherent
+// unit) rather than in the unit the origin happens to be stored in. This keeps point differences
+// from being forced down to needlessly fine units (see GH #714).
+// `si::ice_point` is stored as `273150 mK`, but its displacement from `si::absolute_zero` is exactly
+// `5463 / 20` K, so it is reported in `1/20 K` instead of `mK`.
+static_assert(si::ice_point - si::absolute_zero == delta<si::milli<si::kelvin>>(273'150));
+static_assert((si::ice_point - si::absolute_zero).unit == mag_ratio<1, 20> * si::kelvin);
+static_assert((si::ice_point - si::absolute_zero).numerical_value_in(mag_ratio<1, 20> * si::kelvin) == 5463);
+static_assert((usc::fahrenheit_zero - si::ice_point).unit == mag_ratio<1, 9> * si::kelvin);
+// a displacement that is already an integer number of the coherent unit keeps that unit untouched
+static_assert(is_of_type<mean_sea_level - ground_level, quantity<isq::height[m], int>>);
+static_assert((mean_sea_level - ground_level).numerical_value_in(m) == -42);
+// a zero displacement between distinct origins has no magnitude to seed a unit, so it is left as stored
+static_assert(is_of_type<ground_level - same_ground_level1, quantity<isq::height[m], int>>);
+static_assert((ground_level - same_ground_level1).numerical_value_in(m) == 0);
+// the motivating compound expression now produces the most efficient underlying value
+inline constexpr auto celsius_fahrenheit_sum = (point<si::degree_Celsius>(0) - point<si::kelvin>(0)) +
+                                               (point<usc::degree_Fahrenheit>(0) - point<si::degree_Celsius>(0));
+static_assert(celsius_fahrenheit_sum.numerical_value_in(celsius_fahrenheit_sum.unit) == 45967);
+
 
 // check for integral types promotion
 static_assert(is_same_v<decltype(((mean_sea_level + std::uint8_t{0} * m) + std::uint8_t{0} * m)

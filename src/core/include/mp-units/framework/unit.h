@@ -709,6 +709,13 @@ template<Unit U1, detail::UnitConvertibleTo<U1{}> U2>
       return u2;
     else if constexpr (is_positive_integral_power(canonical_rhs.mag / canonical_lhs.mag))
       return u1;
+    else if constexpr (detail::is_specialization_of_scaled_unit<U1> && detail::is_specialization_of_scaled_unit<U2>)
+      // Both operands are anonymous scaled units over the same reference unit. A `common_unit` only
+      // pays off when it preserves recognizable named units (e.g. `mi` and `km`); here there are no
+      // names to keep, so a nested composite would be strictly uglier than the single scaled unit the
+      // two already share. Collapse to it (e.g. the origin displacement units `1/20 K` and `1/9 K`
+      // combine to `1/180 K` rather than `[(1/9 (1/20 K)), (1/20 (1/9 K))]`).
+      return detail::get_common_scaled_unit(U1{}, U2{});
     else {
       if constexpr (detail::type_name_less<U1, U2>::value)
         return common_unit<U1, U2>{};
