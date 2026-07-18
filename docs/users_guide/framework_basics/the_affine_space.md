@@ -190,6 +190,61 @@ assert(qp1 - qp2 == -20 * m);
 ```
 
 
+#### Quantity types and points { #quantity-types-and-points }
+
+Quantity types combine differently depending on whether we operate on _vectors_ or _points_.
+
+For _vectors_, mixing sibling quantity types widens the result to their nearest common
+ancestor, exactly as required by ISO 80000:
+
+```cpp
+quantity v = isq::height(1 * m) + isq::width(1 * m);  // isq::length(2 * m)
+```
+
+For _points_, the rules are stricter, because a _point_ carries information a _vector_ does
+not: the axis it lives on. A _vector_ is free. It can be reinterpreted along any direction,
+so combining a vertical and a horizontal displacement into a plain _length_ is meaningful.
+A _point_ is bound to its axis. A point of _height_ lives on a vertical axis and a point of
+_width_ on a horizontal one. Forcing them onto a common _length_ axis would strip away the
+very information that makes a _point_ subtractable and comparable. Two rules follow from this.
+
+**A _point_ keeps its own quantity type.** Offsetting a _point_ by a _vector_ always yields
+a _point_ of the _point's_ quantity type, and the _vector_ must be implicitly convertible
+to that type:
+
+```cpp
+quantity_point h = point<isq::height[m]>(100);
+
+quantity_point h1 = h + isq::height(2 * m);  // quantity_point<isq::height[m]>
+quantity_point h2 = h + 2 * m;               // quantity_point<isq::height[m]>
+
+// quantity_point bad1 = h + isq::width(2 * m);   // Compile-time error
+// quantity_point bad2 = h + isq::length(2 * m);  // Compile-time error
+```
+
+The raw `2 * m` works because it is a quantity of _kind_ `kind_of<isq::length>` ("any
+length"), which is convertible to any specific length including _height_. The specific
+`isq::width(2 * m)` and `isq::length(2 * m)` do not convert to _height_, so they are
+rejected. This is the opposite of the _vector_ + _vector_ case above, where the result
+widens instead of staying fixed to the _point's_ type.
+
+**Two _points_ combine only when they share the same space.** For `natural_point_origin`,
+two points share a space exactly when their quantity types are _interconvertible_. A _kind_
+("any length", the type of `1 * m` or of a `quantity_point<si::metre>`) is interconvertible
+with every length child, so it mixes with all of them, as shown in the previous example. Two
+distinct named children such as _height_ and _width_ are not interconvertible, and neither
+is the generic `isq::length` with any specific child. Each of those gets its own natural
+axis, so their points do not subtract, compare, or convert:
+
+```cpp
+quantity_point height = point<isq::height[m]>(1);
+quantity_point width  = point<isq::width[m]>(1);
+quantity_point length = point<isq::length[m]>(1);
+
+// quantity d1 = height - width;   // Compile-time error: distinct natural axes
+// quantity d2 = height - length;  // Compile-time error: distinct natural axes
+```
+
 ### Absolute _point_ origin
 
 In cases where we want to implement an isolated independent space in which points are not
@@ -991,7 +1046,9 @@ The following operations are not allowed in the affine space:
     - What would multiplying home and DEN airport location mean?
 - **mixing** `quantity_points` of different quantity kinds
     - It is physically impossible to subtract time from length.
-- **mixing** `quantity_points` of inconvertible quantities
+- **mixing** `quantity_points` of quantity types on distinct natural axes (e.g., _height_
+  and _width_, or _distance_ and _altitude_), even though their _vectors_ widen to a common
+  ancestor (see [Quantity types and points](#quantity-types-and-points))
     - What does subtracting a distance point to DEN airport from the Mount Everest base
       camp altitude mean?
 - **mixing** `quantity_points` of convertible quantities but with unrelated origins
