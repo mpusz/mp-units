@@ -1222,11 +1222,11 @@ TEST_CASE("default quantity_point formatting", "[quantity_point][ostream][fmt]")
     // sub-multiple of the coherent unit rather than in the (finer) unit the origin is stored in.
     SECTION("single difference")
     {
-      const quantity T = point<si::degree_Celsius>(21) - si::absolute_zero;
-      os << T;
+      const quantity temperature = point<si::degree_Celsius>(21) - si::absolute_zero;
+      os << temperature;
 
       SECTION("iostream") { CHECK(os.str() == "5883 (1/20 K)"); }
-      SECTION("default format {}") { CHECK(MP_UNITS_STD_FMT::format("{}", T) == os.str()); }
+      SECTION("default format {}") { CHECK(MP_UNITS_STD_FMT::format("{}", temperature) == os.str()); }
     }
 
     SECTION("compound difference combines into a single coherent sub-multiple")
