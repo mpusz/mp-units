@@ -341,8 +341,8 @@ if (q <= 0)
 ## Other maths
 
 This chapter scopes only on the `quantity` type's operators. However, there are many named
-math functions taking quantities as arguments. Those can be found in the _mp-units/math.h_
-header file. Among others, we can find there the following:
+math functions taking quantities or quantity points as arguments. Those can be found in the
+_mp-units/math.h_ header file. Among others, we can find there the following:
 
 - `pow()`, `sqrt()`, `cbrt()`,
 - `exp()`,
@@ -355,6 +355,10 @@ header file. Among others, we can find there the following:
 - `hypot()`,
 - `sin()`, `cos()`, `tan()`,
 - `asin()`, `acos()`, `atan()`, `atan2()`.
+
+`floor()`, `ceil()`, and `round()` take a target unit as template argument and will round
+the quantity rsp. quantity point into that unit. In the integer case `round()` rounds to
+the even value as a tie breaker.
 
 In the library, we can also find _mp-units/utility/random.h_ header file with all the
 pseudo-random number generators working on quantity types.

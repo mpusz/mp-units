@@ -153,50 +153,62 @@ TEST_CASE("math operations", "[math]")
     SECTION("floor 1 second with target unit second should be 1 second")
     {
       REQUIRE(floor<si::second>(1 * isq::duration[s]) == 1 * isq::duration[s]);
+      REQUIRE(floor<si::second>(point<s>(1)) == point<s>(1));
     }
     SECTION("floor 1000 milliseconds with target unit second should be 1 second")
     {
       REQUIRE(floor<si::second>(1000 * isq::duration[ms]) == 1 * isq::duration[s]);
+      REQUIRE(floor<si::second>(point<ms>(1000)) == point<s>(1));
     }
     SECTION("floor 1001 milliseconds with target unit second should be 1 second")
     {
       REQUIRE(floor<si::second>(1001 * isq::duration[ms]) == 1 * isq::duration[s]);
+      REQUIRE(floor<si::second>(point<ms>(1001)) == point<s>(1));
     }
     SECTION("floor 1999 milliseconds with target unit second should be 1 second")
     {
       REQUIRE(floor<si::second>(1999 * isq::duration[ms]) == 1 * isq::duration[s]);
+      REQUIRE(floor<si::second>(point<ms>(1999)) == point<s>(1));
     }
     SECTION("floor -1000 milliseconds with target unit second should be -1 second")
     {
       REQUIRE(floor<si::second>(-1000 * isq::duration[ms]) == -1 * isq::duration[s]);
+      REQUIRE(floor<si::second>(point<ms>(-1000)) == point<s>(-1));
     }
     SECTION("floor -999 milliseconds with target unit second should be -1 second")
     {
       REQUIRE(floor<si::second>(-999 * isq::duration[ms]) == -1 * isq::duration[s]);
+      REQUIRE(floor<si::second>(point<ms>(-999)) == point<s>(-1));
     }
     SECTION("floor 1.3 seconds with target unit second should be 1 second")
     {
       REQUIRE(floor<si::second>(1.3 * isq::duration[s]) == 1 * isq::duration[s]);
+      REQUIRE(floor<si::second>(point<s>(1.3)) == point<s>(1));
     }
     SECTION("floor -1.3 seconds with target unit second should be -2 seconds")
     {
       REQUIRE(floor<si::second>(-1.3 * isq::duration[s]) == -2 * isq::duration[s]);
+      REQUIRE(floor<si::second>(point<s>(-1.3)) == point<s>(-2));
     }
     SECTION("floor 1001. milliseconds with target unit second should be 1 second")
     {
       REQUIRE(floor<si::second>(1001. * isq::duration[ms]) == 1 * isq::duration[s]);
+      REQUIRE(floor<si::second>(point<ms>(1001.)) == point<s>(1));
     }
     SECTION("floor 1999. milliseconds with target unit second should be 1 second")
     {
       REQUIRE(floor<si::second>(1999. * isq::duration[ms]) == 1 * isq::duration[s]);
+      REQUIRE(floor<si::second>(point<ms>(1999.)) == point<s>(1));
     }
     SECTION("floor -1000. milliseconds with target unit second should be -1 second")
     {
       REQUIRE(floor<si::second>(-1000. * isq::duration[ms]) == -1 * isq::duration[s]);
+      REQUIRE(floor<si::second>(point<ms>(-1000.)) == point<s>(-1));
     }
     SECTION("floor -999. milliseconds with target unit second should be -1 second")
     {
       REQUIRE(floor<si::second>(-999. * isq::duration[ms]) == -1 * isq::duration[s]);
+      REQUIRE(floor<si::second>(point<ms>(-999.)) == point<s>(-1));
     }
 
     // TODO Add tests for `N`, `kN` and `kg * m / s2` i `kg * km / s2`
@@ -207,50 +219,62 @@ TEST_CASE("math operations", "[math]")
     SECTION("ceil 1 second with target unit second should be 1 second")
     {
       REQUIRE(ceil<si::second>(1 * isq::duration[s]) == 1 * isq::duration[s]);
+      REQUIRE(ceil<si::second>(point<s>(1)) == point<s>(1));
     }
     SECTION("ceil 1000 milliseconds with target unit second should be 1 second")
     {
       REQUIRE(ceil<si::second>(1000 * isq::duration[ms]) == 1 * isq::duration[s]);
+      REQUIRE(ceil<si::second>(point<ms>(1000)) == point<s>(1));
     }
     SECTION("ceil 1001 milliseconds with target unit second should be 2 seconds")
     {
       REQUIRE(ceil<si::second>(1001 * isq::duration[ms]) == 2 * isq::duration[s]);
+      REQUIRE(ceil<si::second>(point<ms>(1001)) == point<s>(2));
     }
     SECTION("ceil 1999 milliseconds with target unit second should be 2 seconds")
     {
       REQUIRE(ceil<si::second>(1999 * isq::duration[ms]) == 2 * isq::duration[s]);
+      REQUIRE(ceil<si::second>(point<ms>(1999)) == point<s>(2));
     }
     SECTION("ceil -1000 milliseconds with target unit second should be -1 second")
     {
       REQUIRE(ceil<si::second>(-1000 * isq::duration[ms]) == -1 * isq::duration[s]);
+      REQUIRE(ceil<si::second>(point<ms>(-1000)) == point<s>(-1));
     }
     SECTION("ceil -999 milliseconds with target unit second should be 0 seconds")
     {
       REQUIRE(ceil<si::second>(-999 * isq::duration[ms]) == 0 * isq::duration[s]);
+      REQUIRE(ceil<si::second>(point<ms>(-999)) == point<s>(0));
     }
     SECTION("ceil 1.3 seconds with target unit second should be 2 seconds")
     {
       REQUIRE(ceil<si::second>(1.3 * isq::duration[s]) == 2 * isq::duration[s]);
+      REQUIRE(ceil<si::second>(point<s>(1.3)) == point<s>(2));
     }
     SECTION("ceil -1.3 seconds with target unit second should be -1 second")
     {
       REQUIRE(ceil<si::second>(-1.3 * isq::duration[s]) == -1 * isq::duration[s]);
+      REQUIRE(ceil<si::second>(point<s>(-1.3)) == point<s>(-1));
     }
     SECTION("ceil 1001. milliseconds with target unit second should be 2 seconds")
     {
       REQUIRE(ceil<si::second>(1001. * isq::duration[ms]) == 2 * isq::duration[s]);
+      REQUIRE(ceil<si::second>(point<ms>(1001.)) == point<s>(2));
     }
     SECTION("ceil 1999. milliseconds with target unit second should be 2 seconds")
     {
       REQUIRE(ceil<si::second>(1999. * isq::duration[ms]) == 2 * isq::duration[s]);
+      REQUIRE(ceil<si::second>(point<ms>(1999.)) == point<s>(2));
     }
     SECTION("ceil -1000. milliseconds with target unit second should be -1 second")
     {
       REQUIRE(ceil<si::second>(-1000. * isq::duration[ms]) == -1 * isq::duration[s]);
+      REQUIRE(ceil<si::second>(point<ms>(-1000.)) == point<s>(-1));
     }
     SECTION("ceil -999. milliseconds with target unit second should be 0 seconds")
     {
       REQUIRE(ceil<si::second>(-999. * isq::duration[ms]) == 0 * isq::duration[s]);
+      REQUIRE(ceil<si::second>(point<ms>(-999.)) == point<s>(0));
     }
   }
 
@@ -259,86 +283,107 @@ TEST_CASE("math operations", "[math]")
     SECTION("round 1 second with target unit second should be 1 second")
     {
       REQUIRE(round<si::second>(1 * isq::duration[s]) == 1 * isq::duration[s]);
+      REQUIRE(round<si::second>(point<s>(1)) == point<s>(1));
     }
     SECTION("round 1000 milliseconds with target unit second should be 1 second")
     {
       REQUIRE(round<si::second>(1000 * isq::duration[ms]) == 1 * isq::duration[s]);
+      REQUIRE(round<si::second>(point<ms>(1000)) == point<s>(1));
     }
     SECTION("round 1001 milliseconds with target unit second should be 1 second")
     {
       REQUIRE(round<si::second>(1001 * isq::duration[ms]) == 1 * isq::duration[s]);
+      REQUIRE(round<si::second>(point<ms>(1001)) == point<s>(1));
     }
     SECTION("round 1499 milliseconds with target unit second should be 1 second")
     {
       REQUIRE(round<si::second>(1499 * isq::duration[ms]) == 1 * isq::duration[s]);
+      REQUIRE(round<si::second>(point<ms>(1499)) == point<s>(1));
     }
     SECTION("round 1500 milliseconds with target unit second should be 2 seconds")
     {
       REQUIRE(round<si::second>(1500 * isq::duration[ms]) == 2 * isq::duration[s]);
+      REQUIRE(round<si::second>(point<ms>(1500)) == point<s>(2));
     }
     SECTION("round 1999 milliseconds with target unit second should be 2 seconds")
     {
       REQUIRE(round<si::second>(1999 * isq::duration[ms]) == 2 * isq::duration[s]);
+      REQUIRE(round<si::second>(point<ms>(1999)) == point<s>(2));
     }
     SECTION("round -1000 milliseconds with target unit second should be -1 second")
     {
       REQUIRE(round<si::second>(-1000 * isq::duration[ms]) == -1 * isq::duration[s]);
+      REQUIRE(round<si::second>(point<ms>(-1000)) == point<s>(-1));
     }
     SECTION("round -1001 milliseconds with target unit second should be -1 second")
     {
       REQUIRE(round<si::second>(-1001 * isq::duration[ms]) == -1 * isq::duration[s]);
+      REQUIRE(round<si::second>(point<ms>(-1001)) == point<s>(-1));
     }
     SECTION("round -1499 milliseconds with target unit second should be -1 second")
     {
       REQUIRE(round<si::second>(-1499 * isq::duration[ms]) == -1 * isq::duration[s]);
+      REQUIRE(round<si::second>(point<ms>(-1499)) == point<s>(-1));
     }
     SECTION("round -1500 milliseconds with target unit second should be -2 seconds")
     {
       REQUIRE(round<si::second>(-1500 * isq::duration[ms]) == -2 * isq::duration[s]);
+      REQUIRE(round<si::second>(point<ms>(-1500)) == point<s>(-2));
     }
     SECTION("round -1999 milliseconds with target unit second should be -2 seconds")
     {
       REQUIRE(round<si::second>(-1999 * isq::duration[ms]) == -2 * isq::duration[s]);
+      REQUIRE(round<si::second>(point<ms>(-1999)) == point<s>(-2));
     }
     SECTION("round 1000. milliseconds with target unit second should be 1 second")
     {
       REQUIRE(round<si::second>(1000. * isq::duration[ms]) == 1 * isq::duration[s]);
+      REQUIRE(round<si::second>(point<ms>(1000.)) == point<s>(1));
     }
     SECTION("round 1001. milliseconds with target unit second should be 1 second")
     {
       REQUIRE(round<si::second>(1001. * isq::duration[ms]) == 1 * isq::duration[s]);
+      REQUIRE(round<si::second>(point<ms>(1001.)) == point<s>(1));
     }
     SECTION("round 1499. milliseconds with target unit second should be 1 second")
     {
       REQUIRE(round<si::second>(1499. * isq::duration[ms]) == 1 * isq::duration[s]);
+      REQUIRE(round<si::second>(point<ms>(1499.)) == point<s>(1));
     }
     SECTION("round 1500. milliseconds with target unit second should be 2 seconds")
     {
       REQUIRE(round<si::second>(1500. * isq::duration[ms]) == 2 * isq::duration[s]);
+      REQUIRE(round<si::second>(point<ms>(1500.)) == point<s>(2));
     }
     SECTION("round 1999. milliseconds with target unit second should be 2 seconds")
     {
       REQUIRE(round<si::second>(1999. * isq::duration[ms]) == 2 * isq::duration[s]);
+      REQUIRE(round<si::second>(point<ms>(1999.)) == point<s>(2));
     }
     SECTION("round -1000. milliseconds with target unit second should be -1 second")
     {
       REQUIRE(round<si::second>(-1000. * isq::duration[ms]) == -1 * isq::duration[s]);
+      REQUIRE(round<si::second>(point<ms>(-1000.)) == point<s>(-1));
     }
     SECTION("round -1001. milliseconds with target unit second should be -1 second")
     {
       REQUIRE(round<si::second>(-1001. * isq::duration[ms]) == -1 * isq::duration[s]);
+      REQUIRE(round<si::second>(point<ms>(-1001.)) == point<s>(-1));
     }
     SECTION("round -1499. milliseconds with target unit second should be -1 second")
     {
       REQUIRE(round<si::second>(-1499. * isq::duration[ms]) == -1 * isq::duration[s]);
+      REQUIRE(round<si::second>(point<ms>(-1499.)) == point<s>(-1));
     }
     SECTION("round -1500. milliseconds with target unit second should be -2 seconds")
     {
       REQUIRE(round<si::second>(-1500. * isq::duration[ms]) == -2 * isq::duration[s]);
+      REQUIRE(round<si::second>(point<ms>(-1500.)) == point<s>(-2));
     }
     SECTION("round -1999. milliseconds with target unit second should be -2 seconds")
     {
       REQUIRE(round<si::second>(-1999. * isq::duration[ms]) == -2 * isq::duration[s]);
+      REQUIRE(round<si::second>(point<ms>(-1999.)) == point<s>(-2));
     }
   }
 
@@ -375,6 +420,45 @@ TEST_CASE("math operations", "[math]")
     {
       REQUIRE(round<usc::degree_Fahrenheit>(delta<deg_C>(1)) ==
               delta<usc::degree_Fahrenheit>(2));  // 1 Δ°C == 1.8 Δ°F -> 2 Δ°F
+    }
+  }
+
+  SECTION("floor/ceil/round with offset units and integer representation as quantity points")
+  {
+    constexpr auto ddeg_C = si::deci<si::degree_Celsius>;  // 0.1 °C steps
+
+    SECTION("floor with a degree Fahrenheit target")
+    {
+      // -12.5 °C -> 9.5 °F => 9 °F
+      REQUIRE(floor<usc::degree_Fahrenheit>(point<ddeg_C>(-125)) == point<usc::degree_Fahrenheit>(9));
+      // -17 °C -> 1.4 °F => 1 °F
+      REQUIRE(floor<usc::degree_Fahrenheit>(point<ddeg_C>(-170)) == point<usc::degree_Fahrenheit>(1));
+      // -18 °C -> -0.4 °F => -1 °F
+      REQUIRE(floor<usc::degree_Fahrenheit>(point<ddeg_C>(-180)) == point<usc::degree_Fahrenheit>(-1));
+      // -22.5 °C -> -8.5 °F => -9 °F
+      REQUIRE(floor<usc::degree_Fahrenheit>(point<ddeg_C>(-225)) == point<usc::degree_Fahrenheit>(-9));
+    }
+    SECTION("ceil with a degree Fahrenheit target")
+    {
+      // -12.5 °C -> 9.5 °F => 10 °F
+      REQUIRE(ceil<usc::degree_Fahrenheit>(point<ddeg_C>(-125)) == point<usc::degree_Fahrenheit>(10));
+      // -17 °C -> 1.4 °F => 2 °F
+      REQUIRE(ceil<usc::degree_Fahrenheit>(point<ddeg_C>(-170)) == point<usc::degree_Fahrenheit>(2));
+      // -18 °C -> -0.4 °F => 0 °F
+      REQUIRE(ceil<usc::degree_Fahrenheit>(point<ddeg_C>(-180)) == point<usc::degree_Fahrenheit>(0));
+      // -22.5 °C -> -8.5 °F => -8 °F
+      REQUIRE(ceil<usc::degree_Fahrenheit>(point<ddeg_C>(-225)) == point<usc::degree_Fahrenheit>(-8));
+    }
+    SECTION("round with a degree Fahrenheit target (round half to even)")
+    {
+      // -12.5 °C -> 9.5 °F => 10 °F (even)
+      REQUIRE(round<usc::degree_Fahrenheit>(point<ddeg_C>(-125)) == point<usc::degree_Fahrenheit>(10));
+      // -17 °C -> 1.4 °F => 1 °F
+      REQUIRE(round<usc::degree_Fahrenheit>(point<ddeg_C>(-170)) == point<usc::degree_Fahrenheit>(1));
+      // -18 °C -> -0.4 °F => 0 °F
+      REQUIRE(round<usc::degree_Fahrenheit>(point<ddeg_C>(-180)) == point<usc::degree_Fahrenheit>(0));
+      // -22.5 °C -> -8.5 °F => -8 °F (even)
+      REQUIRE(round<usc::degree_Fahrenheit>(point<ddeg_C>(-225)) == point<usc::degree_Fahrenheit>(-8));
     }
   }
 

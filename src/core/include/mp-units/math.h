@@ -426,6 +426,38 @@ template<Unit auto To, auto R, typename Rep>
 }
 
 /**
+ * @brief Computes the largest quantity point with integer representation and unit type To with its number not greater
+ *        than qp
+ *
+ * @param qp QuantityPoint being the base of the operation
+ * @return QuantityPoint The rounded quantity point with unit type To
+ */
+template<Unit auto To, auto R, auto PO, typename Rep>
+[[nodiscard]] constexpr QuantityPointOf<quantity_point<R, PO, Rep>::quantity_spec> auto floor(
+  const quantity_point<R, PO, Rep>& qp) noexcept
+  requires requires { qp.force_in(To); } &&
+           ((treat_as_floating_point<Rep> && (requires(Rep v) { floor(v); }
+#if MP_UNITS_HOSTED
+                                              || requires(Rep v) { std::floor(v); }
+#endif
+                                              )) ||
+            (!treat_as_floating_point<Rep> && requires { representation_values<Rep>::one(); }))
+{
+  const quantity_point res = qp.force_in(To);
+  if constexpr (treat_as_floating_point<Rep>) {
+    using ReturnType = std::remove_reference_t<decltype(res)>;
+#if MP_UNITS_HOSTED
+    using std::floor;
+#endif
+    return ReturnType{
+      quantity{static_cast<Rep>(floor(res.quantity_from_zero().numerical_value_ref_in(res.unit))), res.reference}, PO};
+  } else {
+    if (res > qp) return res - quantity{representation_values<Rep>::one(), res.reference};
+    return res;
+  }
+}
+
+/**
  * @brief Computes the smallest quantity with integer representation and unit type To with its number not less than q
  *
  * @tparam q Quantity being the base of the operation
@@ -454,6 +486,38 @@ template<Unit auto To, auto R, typename Rep>
 }
 
 /**
+ * @brief Computes the smallest quantity point with integer representation and unit type To with its number not less
+ *        than qp
+ *
+ * @param qp Quantity point being the base of the operation
+ * @return QuantityPoint The rounded quantity with unit type To
+ */
+template<Unit auto To, auto R, auto PO, typename Rep>
+[[nodiscard]] constexpr QuantityPointOf<quantity_point<R, PO, Rep>::quantity_spec> auto ceil(
+  const quantity_point<R, PO,Rep>& qp) noexcept
+  requires requires { qp.force_in(To); } &&
+           ((treat_as_floating_point<Rep> && (requires(Rep v) { ceil(v); }
+#if MP_UNITS_HOSTED
+                                              || requires(Rep v) { std::ceil(v); }
+#endif
+                                              )) ||
+            (!treat_as_floating_point<Rep> && requires { representation_values<Rep>::one(); }))
+{
+  const quantity_point res = qp.force_in(To);
+  if constexpr (treat_as_floating_point<Rep>) {
+    using ReturnType = std::remove_reference_t<decltype(res)>;
+#if MP_UNITS_HOSTED
+    using std::ceil;
+#endif
+    return ReturnType{
+      quantity{static_cast<Rep>(ceil(res.quantity_from_zero().numerical_value_ref_in(res.unit))), res.reference}, PO};
+  } else {
+    if (res < qp) return res + quantity{representation_values<Rep>::one(), res.reference};
+    return res;
+  }
+}
+
+/**
  * @brief Computes the nearest quantity with integer representation and unit type `To` to `q`
  *
  * Returns the value `res` representable in `To` unit that is the closest to `q`. If there are two
@@ -477,6 +541,37 @@ template<Unit auto To, auto R, typename Rep>
   if (diff0 == diff1) {
     // TODO How to extend this to custom representation types?
     if (static_cast<std::int64_t>(res_low.numerical_value_ref_in(To)) & 1) return res_high;
+    return res_low;
+  } else if (diff0 < diff1)
+    return res_low;
+  return res_high;
+}
+
+/**
+ * @brief Computes the nearest quantity point with integer representation and unit type `To` to `qp`
+ *
+ * Returns the value `res` representable in `To` unit that is the closest to `qp`. If there are two
+ * such values, returns the even value (that is, the value `res` such that `res % 2 == 0`).
+ *
+ * @param qp Quantity point being the base of the operation
+ * @return QuantityPoint The quantity rounded to the nearest unit `To`, rounding to even in halfway
+ *                       cases.
+ */
+template<Unit auto To, auto R, auto PO, typename Rep>
+[[nodiscard]] constexpr QuantityPointOf<quantity_point<R, PO, Rep>::quantity_spec> auto round(
+  const quantity_point<R, PO, Rep>& qp) noexcept
+  requires requires {
+    mp_units::floor<To>(qp);
+    representation_values<Rep>::one();
+  } && std::constructible_from<std::int64_t, Rep>
+{
+  const auto res_low = mp_units::floor<To>(qp);
+  const auto res_high = res_low + quantity{representation_values<Rep>::one(), res_low.reference};
+  const auto diff0 = qp - res_low;
+  const auto diff1 = res_high - qp;
+  if (diff0 == diff1) {
+    // TODO How to extend this to custom representation types?
+    if (static_cast<std::int64_t>(res_low.quantity_from_zero().numerical_value_ref_in(To)) & 1) return res_high;
     return res_low;
   } else if (diff0 < diff1)
     return res_low;

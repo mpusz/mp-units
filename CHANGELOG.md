@@ -31,6 +31,9 @@ This page documents the version history and changes for the **mp-units** library
 - feat: `natural_point_origin<QuantitySpec>` added (replaces `zeroth_point_origin<QuantitySpec>`)
 - feat: `is_natural_point_origin<T>` added (replaces `is_zeroth_point_origin<T>`)
 - feat: `quantity_from_unit_zero()` member function added (replaces `quantity_from_zero()`)
+- feat: `numerical_value_in(Unit)` and `force_numerical_value_in(Unit)` member functions
+        added to `quantity_point` (extract the raw value of a default-origin point; the
+        inverse of `point<Unit>(value)`) (#813)
 - feat: `fahrenheit_zero` point origin added (replaces `zeroth_degree_Fahrenheit`)
 - feat: dimensionless quantities with unit one can now be created with `quantity_spec::op(Val)`
         explicit conversions

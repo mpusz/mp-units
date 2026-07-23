@@ -833,6 +833,21 @@ static_assert(quantity_point{delta<deg_C>(20.)}.in(deg_F).quantity_from_zero() =
 static_assert(point<deg_C>(20).quantity_from_zero() == delta<deg_C>(20));
 static_assert(point<deg_C>(20.).in(deg_F).quantity_from_zero() == delta<deg_F>(68));
 
+// numerical_value_in(U) - inverse of point<U>(value), available only at the default origin
+static_assert(quantity_point{42 * m}.numerical_value_in(m) == 42);
+static_assert(quantity_point{42. * m}.numerical_value_in(km) == 0.042);
+static_assert(quantity_point{isq::height(42 * m)}.numerical_value_in(m) == 42);
+static_assert(point<deg_C>(20.).numerical_value_in(deg_C) == 20.);
+static_assert(point<deg_C>(20.).numerical_value_in(deg_F) == 68.);
+// re-anchoring across offset units: a 20 degC point reads 293.15 K, not 20 K
+static_assert(point<deg_C>(20.).numerical_value_in(K) == 293.15);
+static_assert(point<K>(300.).numerical_value_in(K) == 300.);
+static_assert(point<K>(300.).numerical_value_in(deg_C) == 26.85);
+// force_numerical_value_in(U) - value-truncating variant (integer rep, non-exact scaling)
+static_assert(point<m>(2500).force_numerical_value_in(km) == 2);
+// numerical_value_in round-trips construction
+static_assert(point<deg_C>(point<deg_C>(20.5).numerical_value_in(deg_C)) == point<deg_C>(20.5));
+
 static_assert((mean_sea_level + 42 * m).quantity_from(mean_sea_level) == 42 * m);
 static_assert((ground_level + 42 * m).quantity_from(mean_sea_level) == 84 * m);
 static_assert((tower_peak + 42 * m).quantity_from(mean_sea_level) == 126 * m);
@@ -916,6 +931,17 @@ concept invalid_unit_conversion = requires {
   requires !requires { QP<isq::height[m], mean_sea_level, int>(2 * m).in(s); };      // invalid unit
 };
 static_assert(invalid_unit_conversion<quantity_point>);
+
+// numerical_value_in is available only at the default point origin; a custom origin has no unique
+// numerical representation, so the raw value must be requested from an explicit origin instead.
+template<auto Origin>
+concept invalid_numerical_value_extraction = requires {
+  requires !requires { (Origin + 2 * m).numerical_value_in(m); };
+  requires !requires { (Origin + 2 * m).force_numerical_value_in(m); };
+  // the explicit-origin path remains available
+  requires requires { (Origin + 2 * m).quantity_from(Origin).numerical_value_in(m); };
+};
+static_assert(invalid_numerical_value_extraction<mean_sea_level>);
 
 
 /////////

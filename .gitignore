@@ -36,6 +36,7 @@
 /.vs/
 /.vscode/
 /CMakeSettings.json
+/.qtcreator
 
 # build artifacts
 /cmake-build-*/
