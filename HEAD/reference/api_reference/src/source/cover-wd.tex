@@ -1,0 +1,27 @@
+%!TEX root = std.tex
+%%--------------------------------------------------
+%% Title page for the C++ Standard
+
+
+\thispagestyle{empty}
+\begingroup
+\def\hd{\begin{tabular}{ll}
+          \textbf{\docnohdr:}       & \docno                      \\
+          \textbf{Date:}            & \reldate                    \\
+          \textbf{Revises:}         & \prevdocno                  \\
+          \textbf{\replytohdr:}     & \replyto
+          \end{tabular}
+}
+\newlength{\hdwidth}
+\settowidth{\hdwidth}{\hd}
+\hfill\begin{minipage}{\hdwidth}\hd\end{minipage}
+\endgroup
+
+\vspace{2.5cm}
+\begin{center}
+\textbf{\Huge
+\covertitle}
+\end{center}
+\vfill
+\coverfooter
+\newpage

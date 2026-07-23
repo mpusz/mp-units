@@ -1,0 +1,221 @@
+\begin{theindex}
+
+  \item \texttt  {\frenchspacing AssociatedUnit}, \hyperpage{9--11}, 
+		\hyperpage{26}, \hyperindexformat{\idxbfpage}{32}, 
+		\hyperpage{32}, \hyperpage{34}, \hyperpage{38--42}
+
+  \indexspace
+
+  \item \texttt  {\frenchspacing \textit  {BaseDimension}}, 
+		\hyperpage{7}, \hyperindexformat{\idxbfpage}{21}, 
+		\hyperpage{24}, \hyperpage{33}
+
+  \indexspace
+
+  \item \texttt  {\frenchspacing \textit  {ChildQuantitySpecOf}}, 
+		\hyperindexformat{\idxbfpage}{23}, \hyperpage{23}
+  \item \texttt  {\frenchspacing \textit  {CommonlyInvocableQuantities}}, 
+		\hyperindexformat{\idxbfpage}{48}, \hyperpage{51}, 
+		\hyperpage{57}
+  \item \texttt  {\frenchspacing \textit  {Complex}}, 
+		\hyperindexformat{\idxbfpage}{45}, \hyperpage{46, 47}
+  \item \texttt  {\frenchspacing \textit  {ComplexRepresentation}}, 
+		\hyperindexformat{\idxbfpage}{46}, \hyperpage{46}
+
+  \indexspace
+
+  \item \texttt  {\frenchspacing \textit  {DerivedQuantitySpec}}, 
+		\hyperpage{7}, \hyperindexformat{\idxbfpage}{23}, 
+		\hyperpage{24}, \hyperpage{28, 29}
+  \item \texttt  {\frenchspacing Dimension}, \hyperpage{6}, 
+		\hyperindexformat{\idxbfpage}{21}, \hyperpage{21--25}, 
+		\hyperpage{49}, \hyperpage{64}
+  \item \texttt  {\frenchspacing DimensionOf}, 
+		\hyperindexformat{\idxbfpage}{21}
+
+  \indexspace
+
+  \item \texttt  {\frenchspacing \textit  {HaveCommonReference}}, 
+		\hyperindexformat{\idxbfpage}{48}, \hyperpage{48}
+
+  \indexspace
+
+  \item \texttt  {\frenchspacing \textit  {InvocableQuantities}}, 
+		\hyperindexformat{\idxbfpage}{48}, \hyperpage{48}, 
+		\hyperpage{52}, \hyperpage{57}
+  \item \texttt  {\frenchspacing \textit  {InvokeResultOf}}, 
+		\hyperindexformat{\idxbfpage}{48}, \hyperpage{48}, 
+		\hyperpage{51, 52}, \hyperpage{57, 58}
+  \item \texttt  {\frenchspacing \textit  {IsFloatingPoint}}, 
+		\hyperindexformat{\idxbfpage}{48}, \hyperpage{48}
+  \item \texttt  {\frenchspacing \textit  {IsOfCharacter}}, 
+		\hyperindexformat{\idxbfpage}{47}, \hyperpage{47}
+
+  \indexspace
+
+  \item \texttt  {\frenchspacing \textit  {MagArg}}, \hyperpage{8}, 
+		\hyperindexformat{\idxbfpage}{30}, \hyperpage{31, 32}
+  \item \texttt  {\frenchspacing MagConstant}, 
+		\hyperindexformat{\idxbfpage}{30}, \hyperpage{30, 31}
+  \item \texttt  {\frenchspacing \textit  {Mutable}}, 
+		\hyperindexformat{\idxbfpage}{49}, \hyperpage{51}, 
+		\hyperpage{55, 56}, \hyperpage{66}, \hyperpage{69, 70}
+
+  \indexspace
+
+  \item \texttt  {\frenchspacing \textit  {NamedQuantitySpec}}, 
+		\hyperpage{7}, \hyperindexformat{\idxbfpage}{23}, 
+		\hyperpage{24}, \hyperindexformat{\idxbfpage}{25}, 
+		\hyperpage{29}
+  \item \texttt  {\frenchspacing \textit  {NestedQuantityKindSpecOf}}, 
+		\hyperindexformat{\idxbfpage}{23}, \hyperpage{24}, 
+		\hyperpage{29}, \hyperpage{32}
+
+  \indexspace
+
+  \item \texttt  {\frenchspacing \textit  {OffsetUnit}}, \hyperpage{11}, 
+		\hyperindexformat{\idxbfpage}{32}, \hyperpage{41}
+
+  \indexspace
+
+  \item \texttt  {\frenchspacing PointOrigin}, \hyperpage{9}, 
+		\hyperpage{33, 34}, \hyperindexformat{\idxbfpage}{61}, 
+		\hyperpage{61--68}, \hyperpage{70}
+  \item \texttt  {\frenchspacing PointOriginFor}, \hyperpage{14}, 
+		\hyperindexformat{\idxbfpage}{61}, \hyperpage{63, 64}, 
+		\hyperpage{66}
+  \item \texttt  {\frenchspacing \textit  {PotentiallyConvertibleTo}}, 
+		\hyperindexformat{\idxbfpage}{32}, \hyperpage{38}
+  \item \texttt  {\frenchspacing PrefixableUnit}, \hyperpage{9}, 
+		\hyperindexformat{\idxbfpage}{32}, \hyperpage{34, 35}
+
+  \indexspace
+
+  \item \texttt  {\frenchspacing \textit  {QSProperty}}, \hyperpage{7}, 
+		\hyperindexformat{\idxbfpage}{24}, \hyperpage{24}
+  \item \texttt  {\frenchspacing \textit  {qty-like-impl}}, 
+		\hyperindexformat{\idxbfpage}{47}, \hyperpage{47}, 
+		\hyperpage{63}
+  \item \texttt  {\frenchspacing Quantity}, \hyperpage{11}, 
+		\hyperpage{13}, \hyperpage{15}, \hyperpage{27}, 
+		\hyperpage{41, 42}, \hyperpage{47}, 
+		\hyperindexformat{\idxbfpage}{48}, \hyperpage{48}, 
+		\hyperpage{51, 52}, \hyperpage{56--60}, \hyperpage{62}, 
+		\hyperpage{65, 66}, \hyperpage{68--70}, \hyperpage{72}
+  \item \texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}, 
+		\hyperindexformat{\idxbfpage}{48}, \hyperpage{49, 50}, 
+		\hyperpage{53--56}, \hyperpage{70}
+  \item \texttt  {\frenchspacing \textit  {QuantityKindSpec}}, 
+		\hyperpage{9}, \hyperindexformat{\idxbfpage}{23}, 
+		\hyperpage{23, 24}, \hyperpage{26}, \hyperpage{28, 29}, 
+		\hyperpage{33, 34}, \hyperpage{47}, \hyperpage{61}
+  \item \texttt  {\frenchspacing QuantityLike}, 
+		\hyperindexformat{\idxbfpage}{47}, \hyperpage{49, 50}, 
+		\hyperpage{53}, \hyperpage{55}
+  \item \texttt  {\frenchspacing QuantityOf}, 
+		\hyperindexformat{\idxbfpage}{48}, \hyperpage{50--52}, 
+		\hyperpage{54--56}, \hyperpage{58}, \hyperpage{62}, 
+		\hyperpage{64}, \hyperpage{67}
+  \item \texttt  {\frenchspacing QuantityPoint}, \hyperpage{14, 15}, 
+		\hyperpage{61--63}, \hyperindexformat{\idxbfpage}{64}, 
+		\hyperpage{64}, \hyperpage{66}, \hyperpage{70--72}
+  \item \texttt  {\frenchspacing QuantityPointLike}, 
+		\hyperindexformat{\idxbfpage}{63}, \hyperpage{64--67}, 
+		\hyperpage{69}
+  \item \texttt  {\frenchspacing QuantityPointOf}, 
+		\hyperindexformat{\idxbfpage}{64}, \hyperpage{64--71}
+  \item \texttt  {\frenchspacing QuantitySpec}, \hyperpage{7}, 
+		\hyperpage{10, 11}, \hyperpage{13--15}, 
+		\hyperindexformat{\idxbfpage}{23}, \hyperpage{23, 24}, 
+		\hyperpage{26--30}, \hyperpage{32}, \hyperpage{38}, 
+		\hyperpage{40}, \hyperpage{42}, \hyperpage{47--49}, 
+		\hyperpage{60--62}, \hyperpage{64}, \hyperpage{72}
+  \item \texttt  {\frenchspacing \textit  {QuantitySpecCastableTo}}, 
+		\hyperindexformat{\idxbfpage}{23}, \hyperpage{60}, 
+		\hyperpage{72}
+  \item \texttt  {\frenchspacing \textit  {QuantitySpecConvertibleTo}}, 
+		\hyperindexformat{\idxbfpage}{23}, \hyperpage{24}, 
+		\hyperpage{29}, \hyperpage{32}, \hyperpage{48}
+  \item \texttt  {\frenchspacing \textit  {QuantitySpecExplicitlyConvertibleTo}}, 
+		\hyperindexformat{\idxbfpage}{23}, \hyperpage{24}, 
+		\hyperpage{27}
+  \item \texttt  {\frenchspacing QuantitySpecOf}, 
+		\hyperindexformat{\idxbfpage}{24}, \hyperpage{40}, 
+		\hyperpage{48}, \hyperpage{61, 62}, \hyperpage{64}
+
+  \indexspace
+
+  \item \texttt  {\frenchspacing Reference}, 
+		\hyperindexformat{\idxbfpage}{10}, \hyperpage{11}, 
+		\hyperpage{13, 14}, \hyperpage{26, 27}, 
+		\hyperindexformat{\idxbfpage}{40}, \hyperpage{40--43}, 
+		\hyperpage{49}, \hyperpage{52, 53}, \hyperpage{58, 59}, 
+		\hyperpage{63, 64}, \hyperpage{71}
+  \item \texttt  {\frenchspacing ReferenceOf}, 
+		\hyperindexformat{\idxbfpage}{11}, 
+		\hyperindexformat{\idxbfpage}{40}, \hyperpage{62}, 
+		\hyperpage{70, 71}
+  \item \texttt  {\frenchspacing Representation}, \hyperpage{13}, 
+		\hyperpage{15}, \hyperindexformat{\idxbfpage}{46}, 
+		\hyperpage{46--48}, \hyperpage{51--53}, 
+		\hyperpage{57--60}, \hyperpage{72}
+  \item \texttt  {\frenchspacing RepresentationOf}, \hyperpage{11}, 
+		\hyperpage{13, 14}, \hyperpage{41, 42}, 
+		\hyperindexformat{\idxbfpage}{47}, \hyperpage{47--50}, 
+		\hyperpage{54}, \hyperpage{59, 60}, \hyperpage{64, 65}, 
+		\hyperpage{68}, \hyperpage{71, 72}
+
+  \indexspace
+
+  \item \texttt  {\frenchspacing \textit  {SameAbsolutePointOriginAs}}, 
+		\hyperindexformat{\idxbfpage}{61}, \hyperpage{62}, 
+		\hyperpage{64, 65}, \hyperpage{67, 68}
+  \item \texttt  {\frenchspacing \textit  {SameValueAs}}, 
+		\hyperindexformat{\idxbfpage}{49}, \hyperpage{49}, 
+		\hyperpage{53}
+  \item \texttt  {\frenchspacing \textit  {Scalar}}, \hyperpage{44}, 
+		\hyperindexformat{\idxbfpage}{45}, \hyperpage{45--47}
+  \item \texttt  {\frenchspacing \textit  {ScalarRepresentation}}, 
+		\hyperindexformat{\idxbfpage}{46}, \hyperpage{46}
+  \item \texttt  {\frenchspacing \textit  {SymbolicConstant}}, 
+		\hyperpage{6, 7}, \hyperpage{9}, 
+		\hyperindexformat{\idxbfpage}{18}, \hyperpage{18, 19}, 
+		\hyperpage{21--23}, \hyperpage{25}, \hyperpage{30}, 
+		\hyperpage{32}, \hyperpage{36}, \hyperpage{61}
+
+  \indexspace
+
+  \item \texttt  {\frenchspacing Unit}, \hyperpage{8--11}, 
+		\hyperpage{13--15}, \hyperpage{26}, 
+		\hyperindexformat{\idxbfpage}{32}, \hyperpage{32--40}, 
+		\hyperpage{42}, \hyperpage{48--50}, \hyperpage{54}, 
+		\hyperpage{59, 60}, \hyperpage{64}, \hyperpage{72}
+  \item \texttt  {\frenchspacing \textit  {UnitCompatibleWith}}, 
+		\hyperindexformat{\idxbfpage}{32}, \hyperpage{50}, 
+		\hyperpage{54, 55}, \hyperpage{65}, \hyperpage{68}
+  \item \texttt  {\frenchspacing \textit  {UnitConvertibleTo}}, 
+		\hyperindexformat{\idxbfpage}{32}, \hyperpage{32}, 
+		\hyperpage{48}
+  \item \texttt  {\frenchspacing UnitMagnitude}, \hyperpage{8, 9}, 
+		\hyperindexformat{\idxbfpage}{30}, \hyperpage{30--33}, 
+		\hyperpage{35--37}
+  \item \texttt  {\frenchspacing UnitOf}, \hyperpage{26, 27}, 
+		\hyperindexformat{\idxbfpage}{32}, \hyperpage{32}
+
+  \indexspace
+
+  \item \texttt  {\frenchspacing \textit  {ValuePreservingTo}}, 
+		\hyperindexformat{\idxbfpage}{48}, \hyperpage{49--51}, 
+		\hyperpage{53, 54}, \hyperpage{56}
+  \item \texttt  {\frenchspacing \textit  {Vector}}, 
+		\hyperindexformat{\idxbfpage}{46}, \hyperpage{46, 47}
+  \item \texttt  {\frenchspacing \textit  {VectorRepresentation}}, 
+		\hyperindexformat{\idxbfpage}{46}, \hyperpage{46}
+
+  \indexspace
+
+  \item \texttt  {\frenchspacing \textit  {WeaklyRegular}}, 
+		\hyperpage{44}, \hyperindexformat{\idxbfpage}{45}, 
+		\hyperpage{45, 46}
+
+\end{theindex}

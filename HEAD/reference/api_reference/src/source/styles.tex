@@ -1,0 +1,334 @@
+%!TEX root = std.tex
+%% styles.tex -- set styles for:
+%     chapters
+%     pages
+%     footnotes
+
+%%--------------------------------------------------
+%%  create chapter style
+
+\makechapterstyle{cppstd}{%
+  \renewcommand{\beforechapskip}{\onelineskip}
+  \renewcommand{\afterchapskip}{\onelineskip}
+  \renewcommand{\chapternamenum}{}
+  \renewcommand{\chapnamefont}{\chaptitlefont}
+  \renewcommand{\chapnumfont}{\chaptitlefont}
+  \renewcommand{\printchapternum}{\chapnumfont\thechapter\quad}
+  \renewcommand{\afterchapternum}{}
+}
+
+%%--------------------------------------------------
+%%  create page styles
+
+\makepagestyle{cpppage}
+\makeevenhead{cpppage}{\textsc{\pagelicense}}{}{\textbf{\docno}}
+\makeoddhead{cpppage}{\textsc{\pagelicense}}{}{\textbf{\docno}}
+\makeevenfoot{cpppage}{\leftmark}{}{\thepage}
+\makeoddfoot{cpppage}{\leftmark}{}{\thepage}
+
+\makeatletter
+\makepsmarks{cpppage}{%
+  \let\@mkboth\markboth
+  \def\chaptermark##1{\markboth{##1}{##1}}%
+  \def\sectionmark##1{\markboth{%
+    \ifnum \c@secnumdepth>\z@
+      \textsection\space\thesection
+    \fi
+    }{\rightmark}}%
+  \def\subsectionmark##1{\markboth{%
+    \ifnum \c@secnumdepth>\z@
+      \textsection\space\thesubsection
+    \fi
+    }{\rightmark}}%
+  \def\subsubsectionmark##1{\markboth{%
+    \ifnum \c@secnumdepth>\z@
+      \textsection\space\thesubsubsection
+    \fi
+    }{\rightmark}}%
+  \def\paragraphmark##1{\markboth{%
+    \ifnum \c@secnumdepth>\z@
+      \textsection\space\theparagraph
+    \fi
+    }{\rightmark}}}
+\makeatother
+
+\aliaspagestyle{chapter}{cpppage}
+
+%%--------------------------------------------------
+%%  set heading styles for main matter
+\newcommand{\beforeskip}{-.7\onelineskip plus -1ex}
+\newcommand{\afterskip}{.3\onelineskip minus .2ex}
+
+\setbeforesecskip{\beforeskip}
+\setsecindent{0pt}
+\setsecheadstyle{\large\bfseries\raggedright}
+\setaftersecskip{\afterskip}
+
+\setbeforesubsecskip{\beforeskip}
+\setsubsecindent{0pt}
+\setsubsecheadstyle{\large\bfseries\raggedright}
+\setaftersubsecskip{\afterskip}
+
+\setbeforesubsubsecskip{\beforeskip}
+\setsubsubsecindent{0pt}
+\setsubsubsecheadstyle{\normalsize\bfseries\raggedright}
+\setaftersubsubsecskip{\afterskip}
+
+\setbeforeparaskip{\beforeskip}
+\setparaindent{0pt}
+\setparaheadstyle{\normalsize\bfseries\raggedright}
+\setafterparaskip{\afterskip}
+
+\setbeforesubparaskip{\beforeskip}
+\setsubparaindent{0pt}
+\setsubparaheadstyle{\normalsize\bfseries\raggedright}
+\setaftersubparaskip{\afterskip}
+
+%%--------------------------------------------------
+% set heading style for annexes
+\newcommand{\Annex}[3]{\chapter[#2]{(#3)\protect\\#2\hfill[#1]}\relax\annexlabel{#1}}
+\newcommand{\infannex}[2]{\addxref{#1}\Annex{#1}{#2}{informative}}
+\newcommand{\normannex}[2]{\addxref{#1}\Annex{#1}{#2}{normative}}
+
+%%--------------------------------------------------
+%%  set footnote style
+\footmarkstyle{\smaller#1) }
+
+%%--------------------------------------------------
+% set style for main text
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1ex}
+
+% set style for lists (itemizations, enumerations)
+\setlength{\partopsep}{0pt}
+\newlist{indenthelper}{itemize}{1}
+\newlist{bnflist}{itemize}{1}
+\setlist[itemize]{parsep=\parskip, partopsep=0pt, itemsep=0pt, topsep=0pt,
+                  beginpenalty=10 }
+\setlist[enumerate]{parsep=\parskip, partopsep=0pt, itemsep=0pt, topsep=0pt}
+\setlist[indenthelper]{parsep=\parskip, partopsep=0pt, itemsep=0pt, topsep=0pt, label={}}
+\setlist[bnflist]{parsep=\parskip, partopsep=0pt, itemsep=0pt, topsep=0pt, label={},
+                  leftmargin=\bnfindentrest, listparindent=-\bnfindentinc, itemindent=\listparindent}
+
+%%--------------------------------------------------
+%%  set caption style
+\captionstyle{\centering}
+\DeclareCaptionLabelSeparator{emdash}{ --- }
+\captionsetup{labelsep=emdash,font+=bf}
+
+%%--------------------------------------------------
+%% set global styles that get reset by \mainmatter
+\newcommand{\setglobalstyles}{
+  \counterwithout{footnote}{chapter}
+  \counterwithout{table}{chapter}
+  \counterwithout{figure}{chapter}
+  \renewcommand{\chaptername}{}
+  \renewcommand{\appendixname}{Annex }
+}
+
+%%--------------------------------------------------
+%% change list item markers to number and em-dash
+
+\renewcommand{\labelitemi}{---\parabullnum{Bullets1}{\labelsep}}
+\renewcommand{\labelitemii}{---\parabullnum{Bullets2}{\labelsep}}
+\renewcommand{\labelitemiii}{---\parabullnum{Bullets3}{\labelsep}}
+\renewcommand{\labelitemiv}{---\parabullnum{Bullets4}{\labelsep}}
+
+%%--------------------------------------------------
+%% set section numbering limit, toc limit
+\maxsecnumdepth{subparagraph}
+\setcounter{tocdepth}{1}
+
+%%--------------------------------------------------
+%% override some functions from the listings package to avoid bad page breaks
+%% (copied verbatim from listings.sty version 1.6 except where commented)
+\makeatletter
+
+\def\lst@Init#1{%
+    \begingroup
+    \ifx\lst@float\relax\else
+        \edef\@tempa{\noexpand\lst@beginfloat{lstlisting}[\lst@float]}%
+        \expandafter\@tempa
+    \fi
+    \ifx\lst@multicols\@empty\else
+        \edef\lst@next{\noexpand\multicols{\lst@multicols}}
+        \expandafter\lst@next
+    \fi
+    \ifhmode\ifinner \lst@boxtrue \fi\fi
+    \lst@ifbox
+        \lsthk@BoxUnsafe
+        \hbox to\z@\bgroup
+             $\if t\lst@boxpos \vtop
+        \else \if b\lst@boxpos \vbox
+        \else \vcenter \fi\fi
+        \bgroup \par\noindent
+    \else
+        \lst@ifdisplaystyle
+            \lst@EveryDisplay
+            % make penalty configurable
+            \par\lst@beginpenalty
+            \vspace\lst@aboveskip
+        \fi
+    \fi
+    \normalbaselines
+    \abovecaptionskip\lst@abovecaption\relax
+    \belowcaptionskip\lst@belowcaption\relax
+    \lst@MakeCaption t%
+    \lsthk@PreInit \lsthk@Init
+    \lst@ifdisplaystyle
+        \global\let\lst@ltxlabel\@empty
+        \if@inlabel
+            \lst@ifresetmargins
+                \leavevmode
+            \else
+                \xdef\lst@ltxlabel{\the\everypar}%
+                \lst@AddTo\lst@ltxlabel{%
+                    \global\let\lst@ltxlabel\@empty
+                    \everypar{\lsthk@EveryLine\lsthk@EveryPar}}%
+            \fi
+        \fi
+        % A section heading might have set \everypar to apply a \clubpenalty
+        % to the following paragraph, changing \everypar in the process.
+        % Unconditionally overriding \everypar is a bad idea.
+        % \everypar\expandafter{\lst@ltxlabel
+        %                      \lsthk@EveryLine\lsthk@EveryPar}%
+    \else
+        \everypar{}\let\lst@NewLine\@empty
+    \fi
+    \lsthk@InitVars \lsthk@InitVarsBOL
+    \lst@Let{13}\lst@MProcessListing
+    \let\lst@Backslash#1%
+    \lst@EnterMode{\lst@Pmode}{\lst@SelectCharTable}%
+    \lst@InitFinalize}
+
+\def\lst@DeInit{%
+    \lst@XPrintToken \lst@EOLUpdate
+    \global\advance\lst@newlines\m@ne
+    \lst@ifshowlines
+        \lst@DoNewLines
+    \else
+        \setbox\@tempboxa\vbox{\lst@DoNewLines}%
+    \fi
+    \lst@ifdisplaystyle \par\removelastskip \fi
+    \lsthk@ExitVars\everypar{}\lsthk@DeInit\normalbaselines\normalcolor
+    \lst@MakeCaption b%
+    \lst@ifbox
+        \egroup $\hss \egroup
+        \vrule\@width\lst@maxwidth\@height\z@\@depth\z@
+    \else
+        \lst@ifdisplaystyle
+            % make penalty configurable
+            \par\lst@endpenalty
+            \vspace\lst@belowskip
+        \fi
+    \fi
+    \ifx\lst@multicols\@empty\else
+        \def\lst@next{\global\let\@checkend\@gobble
+                      \endmulticols
+                      \global\let\@checkend\lst@@checkend}
+        \expandafter\lst@next
+    \fi
+    \ifx\lst@float\relax\else
+        \expandafter\lst@endfloat
+    \fi
+    \endgroup}
+
+
+\def\lst@NewLine{%
+    \ifx\lst@OutputBox\@gobble\else
+        \par
+        % add configurable penalties
+        \lst@ifeolsemicolon
+          \lst@semicolonpenalty
+          \lst@eolsemicolonfalse
+        \else
+          \lst@domidpenalty
+        \fi
+        % Manually apply EveryLine and EveryPar; do not depend on \everypar
+        \noindent \hbox{}\lsthk@EveryLine%
+        % \lsthk@EveryPar uses \refstepcounter which balloons the PDF
+    \fi
+    \global\advance\lst@newlines\m@ne
+    \lst@newlinetrue}
+
+% new macro for empty lines, avoiding an \hbox that cannot be discarded
+\def\lst@DoEmptyLine{%
+  \ifvmode\else\par\fi\lst@emptylinepenalty
+  \vskip\parskip
+  \vskip\baselineskip
+  % \lsthk@EveryLine has \lst@parshape, i.e., \parshape, which causes an \hbox
+  % \lsthk@EveryPar increments line counters; \refstepcounter balloons the PDF
+  \global\advance\lst@newlines\m@ne
+  \lst@newlinetrue}
+
+\def\lst@DoNewLines{
+    \@whilenum\lst@newlines>\lst@maxempty \do
+        {\lst@ifpreservenumber
+            \lsthk@OnEmptyLine
+            \global\advance\c@lstnumber\lst@advancelstnum
+         \fi
+         \global\advance\lst@newlines\m@ne}%
+    \@whilenum \lst@newlines>\@ne \do
+        % special-case empty printing of lines
+        {\lsthk@OnEmptyLine\lst@DoEmptyLine}%
+    \ifnum\lst@newlines>\z@ \lst@NewLine \fi}
+
+% add keys for configuring before/end vertical penalties
+\lst@Key{beginpenalty}\relax{\def\lst@beginpenalty{\penalty #1}}
+\let\lst@beginpenalty\@empty
+\lst@Key{midpenalty}\relax{\def\lst@midpenalty{\penalty #1}}
+\let\lst@midpenalty\@empty
+\lst@Key{endpenalty}\relax{\def\lst@endpenalty{\penalty #1}}
+\let\lst@endpenalty\@empty
+\lst@Key{emptylinepenalty}\relax{\def\lst@emptylinepenalty{\penalty #1}}
+\let\lst@emptylinepenalty\@empty
+\lst@Key{semicolonpenalty}\relax{\def\lst@semicolonpenalty{\penalty #1}}
+\let\lst@semicolonpenalty\@empty
+
+\lst@AddToHook{InitVars}{\let\lst@domidpenalty\@empty}
+\lst@AddToHook{InitVarsEOL}{\let\lst@domidpenalty\lst@midpenalty}
+
+% handle semicolons and closing braces (could be in \lstdefinelanguage as well)
+\def\lst@eolsemicolontrue{\global\let\lst@ifeolsemicolon\iftrue}
+\def\lst@eolsemicolonfalse{\global\let\lst@ifeolsemicolon\iffalse}
+\lst@AddToHook{InitVars}{
+  \global\let\lst@eolsemicolonpending\@empty
+  \lst@eolsemicolonfalse
+}
+% If we found a semicolon or closing brace while parsing the current line,
+% inform the subsequent \lst@NewLine about it for penalties.
+\lst@AddToHook{InitVarsEOL}{%
+  \ifx\lst@eolsemicolonpending\relax
+    \lst@eolsemicolontrue
+    \global\let\lst@eolsemicolonpending\@empty
+  \fi%
+}
+\lst@AddToHook{SelectCharTable}{%
+  % In theory, we should only detect trailing semicolons or braces,
+  % but that would require un-doing the marking for any other character.
+  % The next best thing is to undo the marking for closing parentheses,
+  % because loops or if statements are the only places where we will
+  % reasonably have a semicolon in the middle of a line, and those all
+  % end with a closing parenthesis.
+  \lst@DefSaveDef{41}\lstsaved@closeparen{%    handle closing parenthesis
+    \lstsaved@closeparen
+    \ifnum\lst@mode=\lst@Pmode    % regular processing mode (not a comment)
+      \global\let\lst@eolsemicolonpending\@empty  % undo semicolon setting
+    \fi%
+  }%
+  \lst@DefSaveDef{59}\lstsaved@semicolon{%     handle semicolon
+    \lstsaved@semicolon
+    \ifnum\lst@mode=\lst@Pmode    % regular processing mode (not a comment)
+      \global\let\lst@eolsemicolonpending\relax
+    \fi%
+  }%
+  \lst@DefSaveDef{125}\lstsaved@closebrace{%   handle closing brace
+    \lst@eolsemicolonfalse        % do not break before a closing brace
+    \lstsaved@closebrace          % might invoke \lst@NewLine
+    \ifnum\lst@mode=\lst@Pmode    % regular processing mode (not a comment)
+      \global\let\lst@eolsemicolonpending\relax
+    \fi%
+  }%
+}
+
+\makeatother

@@ -1,0 +1,28 @@
+mjx-math {
+  font-size: 85% !important;
+}
+
+.mermaid {
+  text-align: center;
+}
+
+:root {
+  --md-admonition-icon--important: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M256 512a256 256 0 1 0 0-512 256 256 0 1 0 0 512zm0-384c13.3 0 24 10.7 24 24v112c0 13.3-10.7 24-24 24s-24-10.7-24-24V152c0-13.3 10.7-24 24-24zm-32 224a32 32 0 1 1 64 0 32 32 0 1 1-64 0z"/></svg>')
+}
+
+.md-typeset .admonition.important,
+.md-typeset details.important {
+  border-color: rgb(43, 155, 70);
+}
+
+.md-typeset .important>.admonition-title,
+.md-typeset .important>summary {
+  background-color: rgba(43, 155, 70, 0.1);
+}
+
+.md-typeset .important>.admonition-title::before,
+.md-typeset .important>summary::before {
+  background-color: rgb(43, 155, 70);
+  -webkit-mask-image: var(--md-admonition-icon--important);
+  mask-image: var(--md-admonition-icon--important);
+}
