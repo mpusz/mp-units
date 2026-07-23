@@ -137,4 +137,14 @@ endfunction()
 
 add_mp_units_integration(eigen DEPENDENCY Eigen3 Eigen3::Eigen)
 add_mp_units_integration(glm DEPENDENCY glm glm::glm)
-add_mp_units_integration(blaze DEPENDENCY blaze blaze::blaze)
+
+# Blaze's own headers do not compile on 32-bit Windows: there `size_t`/`ptrdiff_t` alias
+# `unsigned int`/`int`, so Blaze's `Limits`/`Infinity` specializations (guarded only by
+# `BLAZE_WIN32_PLATFORM || BLAZE_WIN64_PLATFORM`) become duplicate definitions (C2766/C2535). This is
+# an upstream Blaze defect that no mp-units code can work around, so skip the integration there rather
+# than break the build (see https://github.com/mpusz/mp-units/issues/814).
+if(WIN32 AND CMAKE_SIZEOF_VOID_P EQUAL 4)
+    message(STATUS "Skipping the 'mp_units.integrations.blaze' integration (Blaze does not compile on 32-bit Windows)")
+else()
+    add_mp_units_integration(blaze DEPENDENCY blaze blaze::blaze)
+endif()
