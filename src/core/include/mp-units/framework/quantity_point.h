@@ -722,6 +722,26 @@ public:
     return quantity_ref_from(PO);
   }
 
+  // Extracts the numerical value of the point on the scale of `U` (measured from the default
+  // point origin of that unit). This is the exact inverse of `point<U>(value)` and is provided
+  // only for points that use `default_point_origin(R)` - the same condition under which text
+  // output and `quantity_from_zero()` are available. Points with a custom origin have no unique
+  // numerical representation, so their value must be requested from an explicit origin via
+  // `quantity_from(origin).numerical_value_in(U)`.
+  template<UnitOf<quantity_spec> U>
+    requires(PO == default_point_origin(R)) && detail::ImplicitScaling<unit, U{}, rep>
+  [[nodiscard]] constexpr RepresentationOf<quantity_spec> auto numerical_value_in(U) const noexcept
+  {
+    return in(U{}).quantity_from_zero().numerical_value_in(U{});
+  }
+
+  template<UnitOf<quantity_spec> U>
+    requires(PO == default_point_origin(R)) && detail::ExplicitlyCastable<unit, U{}, rep>
+  [[nodiscard]] constexpr RepresentationOf<quantity_spec> auto force_numerical_value_in(U) const noexcept
+  {
+    return force_in(U{}).quantity_from_zero().numerical_value_in(U{});
+  }
+
 private:
   template<UnitOf<quantity_spec> ToU, std::invocable<quantity_type> ConvertFn>
   [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto in_impl(ToU, ConvertFn convert) const

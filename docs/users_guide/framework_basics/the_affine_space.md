@@ -1030,6 +1030,35 @@ std::cout << altitude.quantity_ref_from(sea_level) << " AMSL";  // "42 m AMSL"
 ```
 
 
+## Extracting a raw numerical value from a _Point_
+
+At the boundary of our program (serialization, hardware registers, a user interface) we often
+need the plain number stored in a _point_. For a _point_ that uses `default_point_origin(R)`,
+the `numerical_value_in(Unit)` member function returns that value directly. It is the exact
+inverse of the `point<Unit>(value)` helper and reads the _point_ on the scale of the requested
+unit, re-anchoring across offset units when needed:
+
+```cpp
+quantity_point temp = point<deg_C>(20.5);
+
+double celsius = temp.numerical_value_in(deg_C);  // 20.5
+double kelvin = temp.numerical_value_in(K);       // 293.65 (measured from absolute zero)
+```
+
+A truncating variant, `force_numerical_value_in(Unit)`, is provided for conversions that would
+otherwise be rejected as value-preserving (e.g., an integer representation scaled to a coarser
+unit).
+
+Both member functions are available under exactly the same condition as
+[text output](#text-output-for-points): only when the _point_ uses `default_point_origin(R)`.
+A _point_ with a custom origin has no unique numerical representation, so its value must be
+requested from an explicit origin instead:
+
+```cpp
+double above_sea_level = altitude.quantity_from(sea_level).numerical_value_in(m);
+```
+
+
 ## The affine space is about type-safety
 
 The following operations are not allowed in the affine space:
