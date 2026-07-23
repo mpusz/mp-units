@@ -561,11 +561,6 @@ private:
     return (unit_magnitude<>{} * ... * mp_units::detail::remove_positive_power(unit_magnitude<Ms>{}));
   }
 
-  [[nodiscard]] friend consteval auto common_magnitude_type_impl(unit_magnitude)
-  {
-    return (std::intmax_t{} * ... * decltype(get_base_value(Ms)){});
-  }
-
   [[nodiscard]] friend consteval auto extract_components(unit_magnitude)
   {
     constexpr auto ratio = (unit_magnitude<>{} * ... * mp_units::detail::remove_mag_constants(unit_magnitude<Ms>{}));
@@ -776,10 +771,6 @@ template<auto M>
   else
     return unit_magnitude<>{};
 }
-
-// Returns the most precise type to express the magnitude factor
-template<UnitMagnitude auto M>
-using common_magnitude_type = decltype(common_magnitude_type_impl(M));
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // `mag()` implementation.

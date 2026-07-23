@@ -39,25 +39,6 @@ using maybe_common_type =
   conditional<has_common_type_v<T, Other>, std::common_type<T, Other>, std::type_identity<T>>::type;
 
 /**
- * @brief Magnitude-only details about a unit conversion factor
- *
- * Factored out of `conversion_type_traits` and `conversion_value_traits` so that the
- * magnitude decomposition (which depends only on `M`, not on any representation type)
- * is computed once per unique magnitude and shared across all representation combinations.
- *
- * @note This is a low-level facility.
- *
- * @tparam M common magnitude between the two quantities
- */
-template<UnitMagnitude auto M>
-struct magnitude_traits {
-  using c_mag_type = common_magnitude_type<M>;
-  static constexpr UnitMagnitude auto num = numerator(M);
-  static constexpr UnitMagnitude auto den = denominator(M);
-  static constexpr UnitMagnitude auto irr = M * (den / num);
-};
-
-/**
  * @brief Type-related details about the conversion from one quantity to another
  *
  * This trait helps to determine what representations to use at which step in the conversion process,
