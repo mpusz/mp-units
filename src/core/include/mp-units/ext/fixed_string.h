@@ -82,12 +82,12 @@ public:
   // construction and assignment
   template<std::same_as<CharT>... Chars>
     requires(sizeof...(Chars) == N) && (... && !std::is_pointer_v<Chars>)
-  constexpr explicit basic_fixed_string(Chars... chars) noexcept : data_{chars..., CharT{}}
+  [[nodiscard]] constexpr explicit basic_fixed_string(Chars... chars) noexcept : data_{chars..., CharT{}}
   {
   }
 
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
-  consteval explicit(false) basic_fixed_string(const CharT (&txt)[N + 1]) noexcept
+  [[nodiscard]] consteval explicit(false) basic_fixed_string(const CharT (&txt)[N + 1]) noexcept
   {
     MP_UNITS_EXPECTS(txt[N] == CharT{});
     for (std::size_t i = 0; i < N; ++i) data_[i] = txt[i];
@@ -95,7 +95,7 @@ public:
 
   template<std::input_iterator It, std::sentinel_for<It> S>
     requires std::same_as<std::iter_value_t<It>, CharT>
-  constexpr basic_fixed_string(It begin, S end)
+  [[nodiscard]] constexpr basic_fixed_string(It begin, S end)
   {
     MP_UNITS_EXPECTS(std::distance(begin, end) == N);
     for (auto it = data_; begin != end; ++begin, ++it) *it = *begin;
@@ -103,13 +103,13 @@ public:
 
   template<std::ranges::input_range R>
     requires std::same_as<std::ranges::range_value_t<R>, CharT>
-  constexpr basic_fixed_string(std::from_range_t, R&& r)
+  [[nodiscard]] constexpr basic_fixed_string(std::from_range_t, R&& r)
   {
     MP_UNITS_EXPECTS(std::ranges::size(r) == N);
     for (auto it = data_; auto&& v : std::forward<R>(r)) *it++ = std::forward<decltype(v)>(v);
   }
 
-  constexpr basic_fixed_string(const basic_fixed_string&) noexcept = default;
+  [[nodiscard]] constexpr basic_fixed_string(const basic_fixed_string&) noexcept = default;
   constexpr basic_fixed_string& operator=(const basic_fixed_string&) noexcept = default;
 
   // iterator support

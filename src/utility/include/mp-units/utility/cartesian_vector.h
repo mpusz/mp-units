@@ -217,7 +217,8 @@ public:
 
   template<typename... Args>
     requires(sizeof...(Args) <= N) && (... && std::constructible_from<T, Args>)
-  constexpr explicit(!(... && detail::ImplicitlyConvertibleScalar<Args, T>)) cartesian_vector(Args&&... args) :
+  [[nodiscard]] constexpr explicit(!(... && detail::ImplicitlyConvertibleScalar<Args, T>))
+    cartesian_vector(Args&&... args) :
       _coordinates_{static_cast<T>(std::forward<Args>(args))...}
   {
   }
@@ -237,14 +238,16 @@ private:
 public:
   template<typename U>
     requires std::constructible_from<T, U>
-  constexpr explicit(!detail::ImplicitlyConvertibleScalar<U, T>) cartesian_vector(const cartesian_vector<U, N>& other) :
+  [[nodiscard]] constexpr explicit(!detail::ImplicitlyConvertibleScalar<U, T>)
+    cartesian_vector(const cartesian_vector<U, N>& other) :
       cartesian_vector(std::make_index_sequence<N>{}, other)
   {
   }
 
   template<typename U>
     requires std::constructible_from<T, U>
-  constexpr explicit(!detail::ImplicitlyConvertibleScalar<U, T>) cartesian_vector(cartesian_vector<U, N>&& other) :
+  [[nodiscard]] constexpr explicit(!detail::ImplicitlyConvertibleScalar<U, T>)
+    cartesian_vector(cartesian_vector<U, N>&& other) :
       cartesian_vector(std::make_index_sequence<N>{}, std::move(other))
   {
   }

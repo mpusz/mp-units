@@ -218,8 +218,8 @@ public:
   using value_type = T;
   using error_policy = ErrorPolicy;
 
-  constrained() = default;
-  constexpr explicit(false) constrained(T v) noexcept : value_(v) {}
+  [[nodiscard]] constrained() = default;
+  [[nodiscard]] constexpr explicit(false) constrained(T v) noexcept : value_(v) {}
 
   [[nodiscard]] constexpr explicit(false) operator T() const noexcept { return value_; }
 

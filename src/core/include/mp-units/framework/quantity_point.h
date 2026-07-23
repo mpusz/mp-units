@@ -583,11 +583,11 @@ public:
   }
 
   // construction and assignment
-  quantity_point() = default;
+  [[nodiscard]] quantity_point() = default;
 
   template<typename FwdQ, QuantityOf<quantity_spec> Q = std::remove_cvref_t<FwdQ>>
     requires std::constructible_from<quantity_type, FwdQ> && (point_origin == default_point_origin(R))
-  constexpr explicit quantity_point(FwdQ&& q) :
+  [[nodiscard]] constexpr explicit quantity_point(FwdQ&& q) :
       quantity_from_origin_is_an_implementation_detail_(
         detail::enforce_bounds<point_origin>(quantity_type{std::forward<FwdQ>(q)}))
   {
@@ -595,7 +595,7 @@ public:
 
   template<typename FwdQ, QuantityOf<quantity_spec> Q = std::remove_cvref_t<FwdQ>>
     requires std::constructible_from<quantity_type, FwdQ>
-  constexpr quantity_point(FwdQ&& q, decltype(PO)) :
+  [[nodiscard]] constexpr quantity_point(FwdQ&& q, decltype(PO)) :
       quantity_from_origin_is_an_implementation_detail_(
         detail::enforce_bounds<point_origin>(quantity_type{std::forward<FwdQ>(q)}))
   {
@@ -604,7 +604,7 @@ public:
   template<typename FwdQ, PointOrigin PO2, Quantity Q = std::remove_cvref_t<FwdQ>>
     requires PointOriginFor<PO2, Q::quantity_spec> && std::constructible_from<quantity_type, FwdQ> &&
              detail::SameAbsolutePointOriginAs<PO2, PO>
-  constexpr quantity_point(FwdQ&& q, PO2) :
+  [[nodiscard]] constexpr quantity_point(FwdQ&& q, PO2) :
       quantity_point(
         quantity_point<std::remove_reference_t<Q>::reference, PO2{}, typename std::remove_reference_t<Q>::rep>{
           std::forward<FwdQ>(q), PO2{}})
@@ -614,7 +614,8 @@ public:
   template<QuantityPointOf<absolute_point_origin> QP>
     requires std::constructible_from<quantity_type, typename QP::quantity_type>
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
-  constexpr explicit(!std::convertible_to<typename QP::quantity_type, quantity_type>) quantity_point(const QP& qp) :
+  [[nodiscard]] constexpr explicit(!std::convertible_to<typename QP::quantity_type, quantity_type>)
+    quantity_point(const QP& qp) :
       quantity_from_origin_is_an_implementation_detail_(detail::enforce_bounds<point_origin>([&] {
         if constexpr (point_origin == QP::point_origin)
           return quantity_type{qp.quantity_ref_from(point_origin)};
@@ -629,7 +630,7 @@ public:
       { src.point_for(point_origin) } -> QuantityPointOf<point_origin>;
       quantity_type{src.point_for(point_origin) - point_origin};
     }
-  constexpr explicit quantity_point(const QP& qp) :
+  [[nodiscard]] constexpr explicit quantity_point(const QP& qp) :
       quantity_from_origin_is_an_implementation_detail_(detail::enforce_bounds<point_origin>([&] {
         auto at_dest = qp.point_for(point_origin);
         return quantity_type{at_dest - point_origin};
@@ -641,7 +642,7 @@ public:
     requires(quantity_point_like_traits<QP>::point_origin == point_origin) &&
             std::constructible_from<quantity_type, quantity<quantity_point_like_traits<QP>::reference,
                                                             typename quantity_point_like_traits<QP>::rep>>
-  constexpr explicit(
+  [[nodiscard]] constexpr explicit(
     quantity_point_like_traits<QP>::explicit_import ||
     !std::convertible_to<
       quantity<quantity_point_like_traits<QP>::reference, typename quantity_point_like_traits<QP>::rep>, quantity_type>)

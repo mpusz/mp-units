@@ -103,13 +103,13 @@ public:
   fixed_string<M> portable_;
 
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
-  constexpr explicit(false) symbol_text(char ch) : utf8_(static_cast<char8_t>(ch)), portable_(ch)
+  [[nodiscard]] constexpr explicit(false) symbol_text(char ch) : utf8_(static_cast<char8_t>(ch)), portable_(ch)
   {
     MP_UNITS_EXPECTS(detail::is_basic_literal_character_set_char(ch));
   }
 
   // NOLINTNEXTLINE(*-avoid-c-arrays, google-explicit-constructor, hicpp-explicit-conversions)
-  consteval explicit(false) symbol_text(const char (&txt)[N + 1]) :
+  [[nodiscard]] consteval explicit(false) symbol_text(const char (&txt)[N + 1]) :
       utf8_(detail::to_u8string(basic_fixed_string{txt})), portable_(txt)
   {
     MP_UNITS_EXPECTS(txt[N] == char{});
@@ -117,20 +117,21 @@ public:
   }
 
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
-  constexpr explicit(false) symbol_text(const fixed_string<N>& txt) : utf8_(detail::to_u8string(txt)), portable_(txt)
+  [[nodiscard]] constexpr explicit(false) symbol_text(const fixed_string<N>& txt) :
+      utf8_(detail::to_u8string(txt)), portable_(txt)
   {
     MP_UNITS_EXPECTS(detail::is_basic_literal_character_set(txt.data_));
   }
 
   // NOLINTNEXTLINE(*-avoid-c-arrays)
-  consteval symbol_text(const char8_t (&u)[N + 1], const char (&a)[M + 1]) : utf8_(u), portable_(a)
+  [[nodiscard]] consteval symbol_text(const char8_t (&u)[N + 1], const char (&a)[M + 1]) : utf8_(u), portable_(a)
   {
     MP_UNITS_EXPECTS(u[N] == char8_t{});
     MP_UNITS_EXPECTS(a[M] == char{});
     MP_UNITS_EXPECTS(detail::is_basic_literal_character_set(a));
   }
 
-  constexpr symbol_text(const fixed_u8string<N>& utf8, const fixed_string<M>& portable) :
+  [[nodiscard]] constexpr symbol_text(const fixed_u8string<N>& utf8, const fixed_string<M>& portable) :
       utf8_(utf8), portable_(portable)
   {
     MP_UNITS_EXPECTS(detail::is_basic_literal_character_set(portable.data_));

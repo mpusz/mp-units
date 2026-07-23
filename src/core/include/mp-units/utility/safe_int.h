@@ -439,18 +439,18 @@ public:
   using value_type = T;
   using error_policy = ErrorPolicy;
 
-  safe_int() = default;
+  [[nodiscard]] safe_int() = default;
 
   template<typename U>
     requires(!treat_as_floating_point<std::remove_cvref_t<U>>) && std::is_constructible_v<T, U>
-  constexpr explicit(!detail::is_value_preserving_v<std::remove_cvref_t<U>, T> || !std::convertible_to<U, T>)
-    safe_int(const U& v) :
+  [[nodiscard]] constexpr explicit(!detail::is_value_preserving_v<std::remove_cvref_t<U>, T> ||
+                                   !std::convertible_to<U, T>) safe_int(const U& v) :
       value_(detail::checked_int_cast<T, ErrorPolicy>(v))
   {
   }
 
   template<detail::integral U>
-  constexpr explicit(!detail::is_value_preserving_int_v<U, T>) safe_int(safe_int<U, ErrorPolicy> other) :
+  [[nodiscard]] constexpr explicit(!detail::is_value_preserving_int_v<U, T>) safe_int(safe_int<U, ErrorPolicy> other) :
       value_(detail::checked_int_cast<T, ErrorPolicy>(other.value()))
   {
   }

@@ -234,11 +234,13 @@ public:
   radius_type _r_{};
   angle_type _theta_{};
 
-  polar_vector() = default;
+  [[nodiscard]] polar_vector() = default;
 
   // The angle is normalized to the canonical azimuth range so that directions differing by whole
   // turns are equal.
-  constexpr polar_vector(radius_type r, angle_type theta) : _r_(r), _theta_(detail::wrap_azimuth(theta)) {}
+  [[nodiscard]] constexpr polar_vector(radius_type r, angle_type theta) : _r_(r), _theta_(detail::wrap_azimuth(theta))
+  {
+  }
 
   // Explicit construction from a 2-D vector quantity: r = |v|, theta = atan2(y, x). Works with any
   // tuple-like vector representation of dimension 2 that offers the `magnitude` CPO - not only
@@ -248,7 +250,7 @@ public:
   // to avoid the GCC 15 constrained-`auto`-NTTP ICE.)
   template<auto VR, detail::VectorRepOf<2> V>
     requires requires(const quantity<VR, V>& v) { v.numerical_value_in(get_unit(RadiusRef)); }
-  constexpr explicit polar_vector(const quantity<VR, V>& v) :
+  [[nodiscard]] constexpr explicit polar_vector(const quantity<VR, V>& v) :
       _r_(static_cast<Rep>(::mp_units::magnitude(v.numerical_value_in(get_unit(RadiusRef)))), RadiusRef), _theta_([&] {
         using std::atan2;
         const V c = v.numerical_value_in(get_unit(RadiusRef));
@@ -271,7 +273,7 @@ public:
       r.numerical_value_in(get_unit(RadiusRef));
       a.numerical_value_in(AngleUnit);
     }
-  constexpr explicit(!detail::ImplicitlyConvertibleScalar<Rep2, Rep>)
+  [[nodiscard]] constexpr explicit(!detail::ImplicitlyConvertibleScalar<Rep2, Rep>)
     polar_vector(const polar_vector<RU, AU, Rep2>& other) :
       _r_(static_cast<Rep>(other.radius().numerical_value_in(get_unit(RadiusRef))), RadiusRef),
       _theta_(static_cast<Rep>(other.theta().numerical_value_in(AngleUnit)), AngleUnit)

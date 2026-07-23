@@ -66,6 +66,9 @@ This page documents the version history and changes for the **mp-units** library
   (replacing the previous `is_*` / `disable_*` flags and the `NotQuantity` concept)
 - refactor: `quantity_spec` call operator constraints improved
 - refactor: `quantity_cast` constraints improved
+- refactor: `[[nodiscard]]` applied to the constructors of all library value types (`quantity`,
+  `quantity_point`, `cartesian_vector`, `cartesian_tensor`, `polar_vector`, `spherical_vector`,
+  `safe_int`, `constrained`, `fixed_string`, and `symbol_text`) (#234)
 - fix: fixed-point arithmetic for integer unit conversions
   (#764, based on original work by [@burnpanck](https://github.com/burnpanck) in #580)
 - fix: overflow-safe cross-unit integer comparisons using double-width arithmetic

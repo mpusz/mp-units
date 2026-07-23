@@ -68,11 +68,11 @@ public:
   angle_type _theta_{};
   angle_type _phi_{};
 
-  spherical_vector() = default;
+  [[nodiscard]] spherical_vector() = default;
 
   // The angles are normalized to the canonical (inclination in [0, pi], azimuth wrapped) form, so
   // out-of-range or pole-crossing inputs become the same physical direction expressed canonically.
-  constexpr spherical_vector(radius_type r, angle_type theta, angle_type phi) : _r_(r)
+  [[nodiscard]] constexpr spherical_vector(radius_type r, angle_type theta, angle_type phi) : _r_(r)
   {
     const auto [norm_theta, norm_phi] = detail::canonical_spherical(theta, phi);
     _theta_ = norm_theta;
@@ -87,7 +87,7 @@ public:
   // warning-clean. Always `explicit` - a Cartesian round-trip is never implicit.
   template<auto VR, detail::VectorRepOf<3> V>
     requires requires(const quantity<VR, V>& v) { v.numerical_value_in(get_unit(RadiusRef)); }
-  constexpr explicit spherical_vector(const quantity<VR, V>& v)
+  [[nodiscard]] constexpr explicit spherical_vector(const quantity<VR, V>& v)
   {
     using std::acos;
     using std::atan2;
@@ -117,7 +117,7 @@ public:
       r.numerical_value_in(get_unit(RadiusRef));
       a.numerical_value_in(AngleUnit);
     }
-  constexpr explicit(!detail::ImplicitlyConvertibleScalar<Rep2, Rep>)
+  [[nodiscard]] constexpr explicit(!detail::ImplicitlyConvertibleScalar<Rep2, Rep>)
     spherical_vector(const spherical_vector<RU, AU, Rep2>& other) :
       _r_(static_cast<Rep>(other.radius().numerical_value_in(get_unit(RadiusRef))), RadiusRef),
       _theta_(static_cast<Rep>(other.theta().numerical_value_in(AngleUnit)), AngleUnit),

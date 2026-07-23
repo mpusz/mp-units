@@ -212,7 +212,8 @@ public:
 
   template<typename... Args>
     requires(sizeof...(Args) <= N * N) && (... && std::constructible_from<T, Args>)
-  constexpr explicit(!(... && detail::ImplicitlyConvertibleScalar<Args, T>)) cartesian_tensor(Args&&... args) :
+  [[nodiscard]] constexpr explicit(!(... && detail::ImplicitlyConvertibleScalar<Args, T>))
+    cartesian_tensor(Args&&... args) :
       _data_{static_cast<T>(std::forward<Args>(args))...}
   {
   }
@@ -230,7 +231,8 @@ private:
 public:
   template<typename U>
     requires std::constructible_from<T, U>
-  constexpr explicit(!detail::ImplicitlyConvertibleScalar<U, T>) cartesian_tensor(const cartesian_tensor<U, N>& other) :
+  [[nodiscard]] constexpr explicit(!detail::ImplicitlyConvertibleScalar<U, T>)
+    cartesian_tensor(const cartesian_tensor<U, N>& other) :
       cartesian_tensor(std::make_index_sequence<N * N>{}, other)
   {
   }

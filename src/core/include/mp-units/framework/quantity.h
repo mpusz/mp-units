@@ -599,11 +599,11 @@ public:
   }
 
   // construction and assignment
-  quantity() = default;
+  [[nodiscard]] quantity() = default;
 
   template<Reference R2>
     requires(equivalent(unit, get_unit(R2{})))
-  constexpr quantity(rep val, R2) : numerical_value_is_an_implementation_detail_(std::move(val))
+  [[nodiscard]] constexpr quantity(rep val, R2) : numerical_value_is_an_implementation_detail_(std::move(val))
   {
   }
 
@@ -619,11 +619,12 @@ public:
   template<typename FwdValue, Reference R2>
     requires(!equivalent(unit, get_unit(R2{}))) &&
             detail::QuantityConstructibleFrom<quantity, quantity<R2{}, std::remove_cvref_t<FwdValue>>>
-  constexpr quantity(FwdValue&& val, R2) : quantity(::mp_units::quantity{std::forward<FwdValue>(val), R2{}})
+  [[nodiscard]] constexpr quantity(FwdValue&& val, R2) :
+      quantity(::mp_units::quantity{std::forward<FwdValue>(val), R2{}})
   {
   }
 
-  constexpr explicit(!mp_units::implicitly_convertible(quantity_spec, dimensionless)) quantity(rep val)
+  [[nodiscard]] constexpr explicit(!mp_units::implicitly_convertible(quantity_spec, dimensionless)) quantity(rep val)
     requires detail::ExplicitFromNumber<reference>
       : numerical_value_is_an_implementation_detail_(std::move(val))
   {
@@ -632,7 +633,7 @@ public:
   template<typename Value>
     requires detail::ExplicitFromNumber<reference> && detail::RepConstructibleFrom<rep, Value> &&
              (!std::convertible_to<Value, rep>)
-  constexpr explicit quantity(Value val) : numerical_value_is_an_implementation_detail_(std::move(val))
+  [[nodiscard]] constexpr explicit quantity(Value val) : numerical_value_is_an_implementation_detail_(std::move(val))
   {
   }
 
@@ -649,9 +650,9 @@ public:
   template<auto R2, typename Rep2>
     requires detail::QuantityConstructibleFrom<quantity, quantity<R2, Rep2>> && (equivalent(unit, get_unit(R2)))
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
-  constexpr explicit(!std::convertible_to<Rep2, rep> ||
-                     !mp_units::implicitly_convertible(get_quantity_spec(R2), quantity_spec) ||
-                     !mp_units::implicitly_scalable<get_unit(R2), Rep2, unit, rep>)
+  [[nodiscard]] constexpr explicit(!std::convertible_to<Rep2, rep> ||
+                                   !mp_units::implicitly_convertible(get_quantity_spec(R2), quantity_spec) ||
+                                   !mp_units::implicitly_scalable<get_unit(R2), Rep2, unit, rep>)
     quantity(const quantity<R2, Rep2>& q) :
       numerical_value_is_an_implementation_detail_(q.numerical_value_in(q.unit))
   {
@@ -660,9 +661,9 @@ public:
   template<auto R2, typename Rep2>
     requires detail::QuantityConstructibleFrom<quantity, quantity<R2, Rep2>> && (!equivalent(unit, get_unit(R2)))
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
-  constexpr explicit(!std::convertible_to<Rep2, rep> ||
-                     !mp_units::implicitly_convertible(get_quantity_spec(R2), quantity_spec) ||
-                     !mp_units::implicitly_scalable<get_unit(R2), Rep2, unit, rep>)
+  [[nodiscard]] constexpr explicit(!std::convertible_to<Rep2, rep> ||
+                                   !mp_units::implicitly_convertible(get_quantity_spec(R2), quantity_spec) ||
+                                   !mp_units::implicitly_scalable<get_unit(R2), Rep2, unit, rep>)
     quantity(const quantity<R2, Rep2>& q) :
       quantity(detail::sudo_cast<quantity>(q))
   {
@@ -670,9 +671,9 @@ public:
 
   template<QuantityLike Q>
     requires detail::QuantityConstructibleFrom<quantity, detail::quantity_like_type<Q>>
-  constexpr explicit(quantity_like_traits<Q>::explicit_import ||
-                     // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
-                     !std::convertible_to<detail::quantity_like_type<Q>, quantity>) quantity(const Q& q) :
+  [[nodiscard]] constexpr explicit(quantity_like_traits<Q>::explicit_import ||
+                                   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
+                                   !std::convertible_to<detail::quantity_like_type<Q>, quantity>) quantity(const Q& q) :
       quantity(::mp_units::quantity{quantity_like_traits<Q>::to_numerical_value(q), quantity_like_traits<Q>::reference})
   {
   }
