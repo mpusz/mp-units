@@ -107,8 +107,9 @@ concept AngleUnit = Unit<U> && specified<decltype(radian_of<get_quantity_spec(U{
 // the representation check: `double` is a valid 1-D vector rep, so `quantity<velocity[m/s], double>` is
 // well-formed and a vector-spec radius would otherwise slip through in both V2 and V3.
 template<typename R>
-concept RadialReference = Reference<R> && (get_quantity_spec(R{}).character.order == quantity_tensor_order::scalar) &&
-                          !AngleUnit<MP_UNITS_NONCONST_TYPE(get_unit(R{}))>;
+concept RadialReference =
+  Reference<R> && (get_character(get_quantity_spec(R{})).order == quantity_tensor_order::scalar) &&
+  !AngleUnit<MP_UNITS_NONCONST_TYPE(get_unit(R{}))>;
 
 // Whether a vector representation `To` can be initialized from its components. Two spellings are
 // possible, and `std::constructible_from` covers only the first: parenthesized init (aggregates since
@@ -134,7 +135,7 @@ template<typename To, typename... Cs>
 // representation that is also structured-bindings-compliant. We use the exported `utility::Vector`
 // concept (order-1, magnitude-bearing, addable) rather than `RepresentationOf<V, ...vector>`: the
 // latter is semantically a touch stronger (it also carries `RepresentationBaseline`) but its
-// `order_of(V.character)` sub-expression hard-errors under GCC when the character-keyed concept is
+// `order_of(get_character(V))` sub-expression hard-errors under GCC when the character-keyed concept is
 // *nested* inside another one like this (fine at top level, not when normalized here). The output
 // side still gets its full representation check from the `quantity{...}` construction in the body.
 // Dimension reads from `std::tuple_size`, element type from `std::tuple_element`, components via

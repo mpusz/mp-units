@@ -43,16 +43,16 @@ In **mp-units**, dimensions can be used independently to verify dimensional cons
 
 ```cpp
 // Extract dimensions from quantity specifications
-constexpr auto length_dim = isq::length.dimension;
-constexpr auto time_dim = isq::duration.dimension;
+constexpr auto length_dim = get_dimension(isq::length);
+constexpr auto time_dim = get_dimension(isq::duration);
 
 // Dimensions support arithmetic operations
 constexpr auto velocity_dim = length_dim / time_dim;
 constexpr auto acceleration_dim = velocity_dim / time_dim;
 
 // Verify dimensional consistency at compile-time
-static_assert(velocity_dim == isq::velocity.dimension);
-static_assert(acceleration_dim == isq::acceleration.dimension);
+static_assert(velocity_dim == get_dimension(isq::velocity));
+static_assert(acceleration_dim == get_dimension(isq::acceleration));
 ```
 
 
@@ -64,8 +64,8 @@ distinguishes between different quantities sharing the same dimension:
 
 ```cpp
 // Different quantities can have the same dimension
-static_assert(isq::width.dimension == isq::height.dimension);
-static_assert(isq::width.dimension == isq::radius.dimension);
+static_assert(get_dimension(isq::width) == get_dimension(isq::height));
+static_assert(get_dimension(isq::width) == get_dimension(isq::radius));
 
 // But they remain distinct types
 static_assert(isq::width != isq::height);
@@ -104,7 +104,7 @@ public:
   explicit symbolic_expression(std::string expr) : expr_(std::move(expr)) {}
   [[nodiscard]] const std::string& expression() const { return expr_; }
   [[nodiscard]] static constexpr auto quantity_spec() { return QS; }
-  [[nodiscard]] static constexpr auto dimension() { return QS.dimension; }
+  [[nodiscard]] static constexpr auto dimension() { return get_dimension(QS); }
 };
 
 // Operator overloads that propagate dimensional analysis
@@ -143,7 +143,7 @@ void example()
   auto length = distance + distance;
 
   static_assert(implicitly_convertible(speed.quantity_spec(), isq::speed));
-  static_assert(force.dimension() == isq::force.dimension);
+  static_assert(force.dimension() == get_dimension(isq::force));
 
   // This would fail to compile due to dimensional mismatch:
   // auto invalid = distance + duration;  // Error: cannot add length and time
@@ -224,8 +224,9 @@ int main()
   // Display results:
   // Energy value: E = 100 J (dimension: L²MT⁻²)
   // Energy derivative: dE/dv = 20 kg⋅m/s (dimension: LMT⁻¹ - momentum)
-  std::cout << kinetic_energy.value() << " of " << kinetic_energy.value_quantity_spec().dimension << '\n';
-  std::cout << kinetic_energy.derivative() << " of " << kinetic_energy.derivative_quantity_spec().dimension << '\n';
+  std::cout << kinetic_energy.value() << " of " << get_dimension(kinetic_energy.value_quantity_spec()) << '\n';
+  std::cout << kinetic_energy.derivative() << " of " << get_dimension(kinetic_energy.derivative_quantity_spec())
+            << '\n';
 }
 ```
 

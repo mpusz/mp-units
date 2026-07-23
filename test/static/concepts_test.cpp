@@ -75,8 +75,8 @@ static_assert(!Dimension<int>);
 
 // DimensionOf
 static_assert(DimensionOf<struct isq::dim_length, isq::dim_length>);
-static_assert(DimensionOf<struct isq::dim_length, isq::height.dimension>);
-static_assert(DimensionOf<struct isq::dim_length, isq::radius.dimension>);
+static_assert(DimensionOf<struct isq::dim_length, get_dimension(isq::height)>);
+static_assert(DimensionOf<struct isq::dim_length, get_dimension(isq::radius)>);
 static_assert(!DimensionOf<struct isq::dim_length, isq::length>);
 static_assert(!DimensionOf<struct isq::length, isq::dim_length>);
 static_assert(!DimensionOf<struct isq::length, isq::length>);
@@ -88,10 +88,11 @@ static_assert(!DimensionOf<struct isq::length, isq::dim_time>);
 static_assert(!DimensionOf<struct isq::length, isq::duration>);
 static_assert(!DimensionOf<struct isq::duration, isq::dim_length>);
 static_assert(!DimensionOf<struct isq::duration, isq::length>);
-static_assert(DimensionOf<decltype(isq::dim_length / isq::dim_time), isq::speed.dimension>);
-static_assert(DimensionOf<decltype(isq::force.dimension * isq::duration.dimension), isq::impulse.dimension>);
-static_assert(DimensionOf<decltype(isq::angular_momentum.dimension / isq::angular_velocity.dimension),
-                          isq::moment_of_inertia.dimension>);
+static_assert(DimensionOf<decltype(isq::dim_length / isq::dim_time), get_dimension(isq::speed)>);
+static_assert(
+  DimensionOf<decltype(get_dimension(isq::force) * get_dimension(isq::duration)), get_dimension(isq::impulse)>);
+static_assert(DimensionOf<decltype(get_dimension(isq::angular_momentum) / get_dimension(isq::angular_velocity)),
+                          get_dimension(isq::moment_of_inertia)>);
 
 // QuantitySpec
 inline constexpr auto speed = isq::length / isq::duration;

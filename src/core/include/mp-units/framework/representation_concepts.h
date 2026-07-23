@@ -390,8 +390,8 @@ MP_UNITS_EXPORT template<typename T, auto V>
 concept RepresentationOf =
   detail::SomeRepresentation<T> && ((QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(V))> &&
                                      (detail::QuantityKindSpec<MP_UNITS_REMOVE_CONST(decltype(V))> ||
-                                      (detail::RepresentationOfOrder<T, detail::order_of(V.character)> &&
-                                       detail::RepresentationOfField<T, detail::field_of(V.character)>))) ||
+                                      (detail::RepresentationOfOrder<T, detail::order_of(get_character(V))> &&
+                                       detail::RepresentationOfField<T, detail::field_of(get_character(V))>))) ||
                                     detail::RepresentationOfCharacter<T, V>);
 
 #else
@@ -400,8 +400,8 @@ MP_UNITS_EXPORT template<typename T, auto V>
 concept RepresentationOf =
   (QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(V))> &&
    ((detail::QuantityKindSpec<MP_UNITS_REMOVE_CONST(decltype(V))> && detail::SomeRepresentation<T>) ||
-    (detail::RepresentationOfOrder<T, detail::order_of(V.character)> &&
-     detail::RepresentationOfField<T, detail::field_of(V.character)>))) ||
+    (detail::RepresentationOfOrder<T, detail::order_of(get_character(V))> &&
+     detail::RepresentationOfField<T, detail::field_of(get_character(V))>))) ||
   detail::RepresentationOfCharacter<T, V>;
 #endif
 

@@ -146,7 +146,7 @@ inline constexpr struct fuel_consumption : quantity_spec<isq::volume / isq::leng
 inline constexpr auto L_per_100km = si::litre / (mag<100> * si::kilo<si::metre>);
 
 static_assert(fuel_consumption != isq::area);
-static_assert(fuel_consumption.dimension == isq::area.dimension);
+static_assert(get_dimension(fuel_consumption) == get_dimension(isq::area));
 ```
 
 Next, we define two quantities. The first one is based only on a derived unit

@@ -100,7 +100,7 @@ template<std::size_t Idx, auto V0, auto... Vs>
 template<auto... Axes>
 concept ValidVectorAxes =
   ((sizeof...(Axes) >= 2) || unsatisfied<"a vector decomposition needs at least two component axes">()) &&
-  ((... && (Axes.character.order == quantity_tensor_order::vector)) ||
+  ((... && (get_character(Axes).order == quantity_tensor_order::vector)) ||
    unsatisfied<"every component axis must be a vector quantity">()) &&
   ((... && !QuantityKindSpec<MP_UNITS_REMOVE_CONST(decltype(Axes))>) ||
    unsatisfied<"a component axis cannot be a kind_of<> quantity kind">()) &&

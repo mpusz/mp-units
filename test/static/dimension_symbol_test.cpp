@@ -43,16 +43,18 @@ static_assert(dimension_symbol<dimension_symbol_formatting{.char_set = portable}
               "O");
 
 // derived dimensions
-static_assert(dimension_symbol(isq::speed.dimension) == "LT⁻¹");
-static_assert(dimension_symbol<dimension_symbol_formatting{.char_set = portable}>(isq::speed.dimension) == "LT^-1");
-static_assert(dimension_symbol(isq::power.dimension) == "L²MT⁻³");
-static_assert(dimension_symbol<dimension_symbol_formatting{.char_set = portable}>(isq::power.dimension) == "L^2MT^-3");
+static_assert(dimension_symbol(get_dimension(isq::speed)) == "LT⁻¹");
+static_assert(dimension_symbol<dimension_symbol_formatting{.char_set = portable}>(get_dimension(isq::speed)) ==
+              "LT^-1");
+static_assert(dimension_symbol(get_dimension(isq::power)) == "L²MT⁻³");
+static_assert(dimension_symbol<dimension_symbol_formatting{.char_set = portable}>(get_dimension(isq::power)) ==
+              "L^2MT^-3");
 
 static_assert(dimension_symbol(pow<123>(isq::dim_length)) == "L¹²³");
 static_assert(dimension_symbol(pow<1, 2>(isq::dim_length)) == "L^(1/2)");
 static_assert(dimension_symbol(pow<3, 5>(isq::dim_length)) == "L^(3/5)");
-static_assert(dimension_symbol(pow<123>(isq::speed.dimension)) == "L¹²³T⁻¹²³");
-static_assert(dimension_symbol(pow<1, 2>(isq::speed.dimension)) == "L^(1/2)T^-(1/2)");
-static_assert(dimension_symbol(pow<3, 5>(isq::speed.dimension)) == "L^(3/5)T^-(3/5)");
+static_assert(dimension_symbol(pow<123>(get_dimension(isq::speed))) == "L¹²³T⁻¹²³");
+static_assert(dimension_symbol(pow<1, 2>(get_dimension(isq::speed))) == "L^(1/2)T^-(1/2)");
+static_assert(dimension_symbol(pow<3, 5>(get_dimension(isq::speed))) == "L^(3/5)T^-(3/5)");
 
 }  // namespace

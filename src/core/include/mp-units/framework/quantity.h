@@ -156,7 +156,7 @@ concept OrderRaisingRepresentation = requires { requires tensor_order<T> >= 1; }
 // a real->complex field mismatch is not bridged either.
 template<auto QS>
 concept ScalarCharacterSpec =
-  QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> && (QS.character.order == quantity_tensor_order::scalar);
+  QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> && (get_character(QS).order == quantity_tensor_order::scalar);
 
 template<auto QS, typename Func, typename T, typename U>
 concept ScalableResultOf =
@@ -574,7 +574,8 @@ public:
   // member types and values
   static constexpr Reference auto reference = R;
   static constexpr QuantitySpec auto quantity_spec = get_quantity_spec(reference);
-  static constexpr Dimension auto dimension = quantity_spec.dimension;
+  static constexpr Dimension auto dimension = get_dimension(quantity_spec);
+  static constexpr quantity_character character = get_character(quantity_spec);
   static constexpr Unit auto unit = get_unit(reference);
   using rep = Rep;
 
@@ -737,7 +738,7 @@ public:
   // built from scalar base units (e.g. `km/h`); for one tied to a vector spec (e.g. `N`) the result
   // keeps `vector` character, so one could even take the magnitude of a magnitude. A known V2 limitation.
   [[nodiscard]] constexpr Quantity auto magnitude() const
-    requires(quantity_spec.character.order >= quantity_tensor_order::vector) && detail::HasMagnitude<rep>
+    requires(get_character(quantity_spec).order >= quantity_tensor_order::vector) && detail::HasMagnitude<rep>
   {
     return ::mp_units::magnitude(numerical_value_is_an_implementation_detail_) * unit;
   }
@@ -1110,7 +1111,7 @@ template<auto Reference, typename Rep, typename Char>
 #endif
 class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
   static constexpr auto unit = get_unit(Reference);
-  static constexpr auto dimension = get_quantity_spec(Reference).dimension;
+  static constexpr auto dimension = get_dimension(get_quantity_spec(Reference));
 
   using quantity_t = mp_units::quantity<Reference, Rep>;
   using unit_t = MP_UNITS_NONCONST_TYPE(unit);

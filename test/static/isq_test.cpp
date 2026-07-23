@@ -37,7 +37,7 @@ inline constexpr quantity_character tensor{quantity_tensor_order::tensor};
 
 [[nodiscard]] consteval bool verify(QuantitySpec auto q, quantity_character ch, Unit auto... units)
 {
-  return q.character == ch && (... && requires { q[units]; });
+  return get_character(q) == ch && (... && requires { q[units]; });
 }
 
 // space and time

@@ -365,7 +365,7 @@ struct named_unit;
  */
 template<symbol_text Symbol, detail::QuantityKindSpec auto QS>
   requires(!Symbol.empty()) &&
-          (detail::BaseDimension<MP_UNITS_NONCONST_TYPE(QS.dimension)> || detail::remove_kind(QS) == dimensionless)
+          (detail::BaseDimension<MP_UNITS_NONCONST_TYPE(get_dimension(QS))> || detail::remove_kind(QS) == dimensionless)
 struct named_unit<Symbol, QS> : detail::unit_interface {
   using _base_type_ = named_unit;           // exposition only
   static constexpr auto _symbol_ = Symbol;  ///< Unique base unit identifier
@@ -374,7 +374,7 @@ struct named_unit<Symbol, QS> : detail::unit_interface {
 
 template<symbol_text Symbol, detail::QuantityKindSpec auto QS, PointOrigin auto PO>
   requires(!Symbol.empty()) &&
-          (detail::BaseDimension<MP_UNITS_NONCONST_TYPE(QS.dimension)> || detail::remove_kind(QS) == dimensionless)
+          (detail::BaseDimension<MP_UNITS_NONCONST_TYPE(get_dimension(QS))> || detail::remove_kind(QS) == dimensionless)
 struct named_unit<Symbol, QS, PO> : detail::unit_interface {
   using _base_type_ = named_unit;           // exposition only
   static constexpr auto _symbol_ = Symbol;  ///< Unique base unit identifier
@@ -415,7 +415,7 @@ struct named_unit<Symbol, U, PO> : decltype(U)::_base_type_ {
  * @tparam QuantitySpec a specification of a quantity to be measured with this unit
  */
 template<symbol_text Symbol, Unit auto U, detail::QuantityKindSpec auto QS>
-  requires(!Symbol.empty()) && (QS.dimension == detail::get_associated_quantity(U).dimension) &&
+  requires(!Symbol.empty()) && (get_dimension(QS) == get_dimension(detail::get_associated_quantity(U))) &&
           detail::is_positive_canonical_unit_mag<U>
 struct named_unit<Symbol, U, QS> : decltype(U)::_base_type_ {
   using _base_type_ = named_unit;           // exposition only
@@ -424,7 +424,7 @@ struct named_unit<Symbol, U, QS> : decltype(U)::_base_type_ {
 };
 
 template<symbol_text Symbol, Unit auto U, detail::QuantityKindSpec auto QS, PointOrigin auto PO>
-  requires(!Symbol.empty()) && (QS.dimension == detail::get_associated_quantity(U).dimension) &&
+  requires(!Symbol.empty()) && (get_dimension(QS) == get_dimension(detail::get_associated_quantity(U))) &&
           detail::is_positive_canonical_unit_mag<U>
 struct named_unit<Symbol, U, QS, PO> : decltype(U)::_base_type_ {
   using _base_type_ = named_unit;           // exposition only

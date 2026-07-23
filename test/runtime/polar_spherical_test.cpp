@@ -345,7 +345,7 @@ TEST_CASE("converting constructors between compatible facades", "[polar][spheric
     // magnitude's scalar reference (a kind over m/s in V2, upgrading to isq::speed in V3)
     const quantity vel = isq::velocity(utility::cartesian_vector{0.0, 0.0, 2.0} * (m / s));
     const spherical_vector sv{vel};
-    static_assert(get_quantity_spec(sv.radius_reference).character.order == quantity_tensor_order::scalar);
+    static_assert(get_character(get_quantity_spec(sv.radius_reference)).order == quantity_tensor_order::scalar);
     static_assert(sv.radius_unit == m / s);
     CHECK_THAT(sv.radius().numerical_value_in(m / s), WithinAbs(2.0, tol));
     // and it round-trips back into a velocity vector

@@ -618,7 +618,7 @@ struct quantity_point_like_traits;
 // TODO Once point and delta quantity specs are introduced, exclude those here as well: an absolute
 // point or a delta is not decomposable into plain vector components.
 template<QuantitySpec auto QS>
-  requires(QS.character.order == quantity_tensor_order::vector) &&
+  requires(get_character(QS).order == quantity_tensor_order::vector) &&
           (!detail::QuantityKindSpec<MP_UNITS_REMOVE_CONST(decltype(QS))>)
 struct vector_components;
 

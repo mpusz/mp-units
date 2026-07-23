@@ -43,8 +43,8 @@ QUANTITY_SPEC(amplitude_spectral_density, sqrt(power_spectral_density));
 static_assert(implicitly_convertible(sqrt(power_spectral_density), amplitude_spectral_density));
 static_assert(implicitly_convertible(power_spectral_density, pow<2>(amplitude_spectral_density)));
 
-static_assert(sqrt(power_spectral_density).dimension == amplitude_spectral_density.dimension);
-static_assert(power_spectral_density.dimension == pow<2>(amplitude_spectral_density.dimension));
+static_assert(get_dimension(sqrt(power_spectral_density)) == get_dimension(amplitude_spectral_density));
+static_assert(get_dimension(power_spectral_density) == pow<2>(get_dimension(amplitude_spectral_density)));
 
 static_assert(sqrt(square(si::volt) / si::hertz) == si::volt / sqrt(si::hertz));
 static_assert(square(si::volt) / si::hertz == pow<2>(si::volt / sqrt(si::hertz)));
@@ -67,12 +67,13 @@ static_assert(16 * power_spectral_density[square(si::volt) / si::hertz] ==
 // fracture toughness K = stress * sqrt(length) (e.g. MPa·√m): dimension M L^(-1/2) T^-2
 QUANTITY_SPEC(fracture_toughness, isq::pressure* sqrt(isq::length));
 
-static_assert(fracture_toughness.dimension == isq::pressure.dimension * sqrt(isq::length.dimension));
-static_assert(pow<2>(fracture_toughness).dimension == pow<2>(isq::pressure.dimension) * isq::length.dimension);
+static_assert(get_dimension(fracture_toughness) == get_dimension(isq::pressure) * sqrt(get_dimension(isq::length)));
+static_assert(get_dimension(pow<2>(fracture_toughness)) ==
+              pow<2>(get_dimension(isq::pressure)) * get_dimension(isq::length));
 static_assert(implicitly_convertible(sqrt(pow<2>(fracture_toughness)), fracture_toughness));
 static_assert(implicitly_convertible(pow<2>(fracture_toughness), pow<2>(isq::pressure) * isq::length));
 
-static_assert(dimension_symbol(fracture_toughness.dimension) == "ML^-(1/2)T⁻²");
+static_assert(dimension_symbol(get_dimension(fracture_toughness)) == "ML^-(1/2)T⁻²");
 static_assert(pow<2>(si::mega<si::pascal> * sqrt(si::metre)) == pow<2>(si::mega<si::pascal>) * si::metre);
 static_assert(unit_symbol(si::mega<si::pascal> * sqrt(si::metre)) == "MPa m^(1/2)");
 
@@ -82,12 +83,13 @@ static_assert(unit_symbol(si::mega<si::pascal> * sqrt(si::metre)) == "MPa m^(1/2
 
 QUANTITY_SPEC(manning_roughness_coefficient, pow<2, 3>(isq::length) / isq::speed);
 
-static_assert(manning_roughness_coefficient.dimension == pow<2, 3>(isq::length.dimension) / isq::speed.dimension);
-static_assert(pow<3>(manning_roughness_coefficient).dimension ==
-              pow<2>(isq::length.dimension) / pow<3>(isq::speed.dimension));
+static_assert(get_dimension(manning_roughness_coefficient) ==
+              pow<2, 3>(get_dimension(isq::length)) / get_dimension(isq::speed));
+static_assert(get_dimension(pow<3>(manning_roughness_coefficient)) ==
+              pow<2>(get_dimension(isq::length)) / pow<3>(get_dimension(isq::speed)));
 static_assert(implicitly_convertible(cbrt(pow<3>(manning_roughness_coefficient)), manning_roughness_coefficient));
 
-static_assert(dimension_symbol(manning_roughness_coefficient.dimension) == "TL^-(1/3)");
+static_assert(dimension_symbol(get_dimension(manning_roughness_coefficient)) == "TL^-(1/3)");
 static_assert(pow<3>(si::second / cbrt(si::metre)) == pow<3>(si::second) / si::metre);
 static_assert(unit_symbol(si::second / cbrt(si::metre)) == "s/m^(1/3)");
 

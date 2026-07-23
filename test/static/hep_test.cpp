@@ -32,7 +32,7 @@ inline constexpr quantity_character vector{quantity_tensor_order::vector};
 
 [[nodiscard]] consteval bool verify(QuantitySpec auto q, quantity_character ch, Unit auto... units)
 {
-  return q.character == ch && (... && requires { q[units]; });
+  return get_character(q) == ch && (... && requires { q[units]; });
 }
 
 // space and time

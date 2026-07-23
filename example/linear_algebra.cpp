@@ -131,7 +131,7 @@ namespace {
 
 // A vector quantity is printed as bracketed components, a scalar quantity as a plain value.
 template<Quantity Q>
-  requires(Q::quantity_spec.character == quantity_character{quantity_tensor_order::vector})
+  requires(Q::character == quantity_character{quantity_tensor_order::vector})
 void print(std::string_view name, const Q& q)
 {
   const auto& v = q.numerical_value_in(q.unit);
@@ -139,7 +139,7 @@ void print(std::string_view name, const Q& q)
 }
 
 template<Quantity Q>
-  requires(Q::quantity_spec.character != quantity_character{quantity_tensor_order::vector})
+  requires(Q::character != quantity_character{quantity_tensor_order::vector})
 void print(std::string_view name, const Q& q)
 {
   std::cout << name << " = " << q << "\n";

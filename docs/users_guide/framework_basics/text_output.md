@@ -135,7 +135,7 @@ template<dimension_symbol_formatting fmt = dimension_symbol_formatting{}, typena
 For example:
 
 ```cpp
-static_assert(dimension_symbol<{.encoding = text_encoding::portable}>(isq::power.dimension) == "L^2MT^-3");
+static_assert(dimension_symbol<{.encoding = text_encoding::portable}>(get_dimension(isq::power)) == "L^2MT^-3");
 ```
 
 !!! note
@@ -156,7 +156,7 @@ For example:
 
 ```cpp
 std::string txt;
-dimension_symbol_to(std::back_inserter(txt), isq::power.dimension, {.encoding = text_encoding::portable});
+dimension_symbol_to(std::back_inserter(txt), get_dimension(isq::power), {.encoding = text_encoding::portable});
 std::cout << txt << "\n";
 ```
 
@@ -467,8 +467,8 @@ symbol can be forced to be printed using such characters thanks to `character-se
 ```cpp
 std::println("{}", isq::dim_thermodynamic_temperature);   // Θ
 std::println("{:P}", isq::dim_thermodynamic_temperature); // O
-std::println("{}", isq::power.dimension);                 // L²MT⁻³
-std::println("{:P}", isq::power.dimension);               // L^2MT^-3
+std::println("{}", get_dimension(isq::power));                 // L²MT⁻³
+std::println("{:P}", get_dimension(isq::power));               // L^2MT^-3
 ```
 
 ### Unit formatting

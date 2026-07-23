@@ -22,27 +22,26 @@ Base dimensions created with `base_dimension` do not expose public static member
 
 ## `quantity_spec`
 
-The `quantity_spec` class template and its specializations provide the following public
-static members:
+Like other symbolic constants (units, references, point origins), a `quantity_spec` does not
+expose public static data members. Its metadata is obtained through non-member functions:
 
-| Member      | Type                 | Description                                                                                                |
-|-------------|----------------------|------------------------------------------------------------------------------------------------------------|
-| `dimension` | `Dimension`          | The dimension of the quantity specification                                                                |
-| `character` | `quantity_character` | The character of the quantity, a pair of `order` (scalar, vector, tensor) and `field` (real, complex) axes |
+- `get_dimension(qs)` - extracts the dimension
+- `get_character(qs)` - extracts the character, a pair of `order` (scalar, vector, tensor)
+  and `field` (real, complex) axes
 
 !!! example
 
     ```cpp
-    static_assert(isq::length.dimension == isq::dim_length);
-    static_assert(isq::length.character == quantity_character{});
+    static_assert(get_dimension(isq::length) == isq::dim_length);
+    static_assert(get_character(isq::length) == quantity_character{});
 
-    static_assert(isq::velocity.dimension == isq::dim_length / isq::dim_time);
-    static_assert(isq::velocity.character == quantity_character{quantity_tensor_order::vector});
+    static_assert(get_dimension(isq::velocity) == isq::dim_length / isq::dim_time);
+    static_assert(get_character(isq::velocity) == quantity_character{quantity_tensor_order::vector});
 
     // the character is a pair of orthogonal axes, each queryable on its own
-    static_assert(isq::length.character.order == quantity_tensor_order::scalar);
-    static_assert(isq::length.character.field == quantity_field::real);
-    static_assert(isq::velocity.character.order == quantity_tensor_order::vector);
+    static_assert(get_character(isq::length).order == quantity_tensor_order::scalar);
+    static_assert(get_character(isq::length).field == quantity_field::real);
+    static_assert(get_character(isq::velocity).order == quantity_tensor_order::vector);
     ```
 
 
@@ -101,12 +100,13 @@ from any `Reference`:
 The `quantity<R, Rep>` class template takes a `Reference` as its first template parameter.
 It provides the following public static members:
 
-| Member          | Type           | Description                                                                           |
-|-----------------|----------------|---------------------------------------------------------------------------------------|
-| `reference`     | `Reference`    | The reference used to instantiate this quantity (can be a unit or explicit reference) |
-| `quantity_spec` | `QuantitySpec` | The quantity specification (extracted via `get_quantity_spec(reference)`)             |
-| `dimension`     | `Dimension`    | The dimension of the quantity                                                         |
-| `unit`          | `Unit`         | The measurement unit (extracted via `get_unit(reference)`)                            |
+| Member          | Type                 | Description                                                                    |
+|-----------------|----------------------|--------------------------------------------------------------------------------|
+| `reference`     | `Reference`          | The reference used to instantiate this quantity (a unit or explicit reference) |
+| `quantity_spec` | `QuantitySpec`       | The quantity specification (extracted via `get_quantity_spec(reference)`)      |
+| `dimension`     | `Dimension`          | The dimension of the quantity                                                  |
+| `character`     | `quantity_character` | The character of the quantity (`order` and `field` axes)                       |
+| `unit`          | `Unit`               | The measurement unit (extracted via `get_unit(reference)`)                     |
 
 Additionally, `quantity` provides a public type alias:
 

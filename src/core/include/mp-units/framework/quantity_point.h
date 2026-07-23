@@ -64,7 +64,8 @@ template<PointOrigin PO>
   return is_natural_point_origin(po);
 }
 
-template<typename FwdQ, PointOrigin PO, QuantityOf<PO::_quantity_spec_> Q = std::remove_cvref_t<FwdQ>>
+template<typename FwdQ, PointOrigin PO, Quantity Q = std::remove_cvref_t<FwdQ>>
+  requires PointOriginFor<PO, Q::quantity_spec>
 [[nodiscard]] constexpr QuantityPoint auto make_quantity_point(FwdQ&& q, PO po)
 {
   if constexpr (detail::is_natural_point_origin(PO{}))
@@ -97,20 +98,28 @@ template<Quantity auto Q>
 }
 
 struct point_origin_interface {
-  template<PointOrigin PO, typename FwdQ, QuantityOf<PO::_quantity_spec_> Q = std::remove_cvref_t<FwdQ>>
+  template<PointOrigin PO>
+  [[nodiscard]] friend consteval QuantitySpec auto get_quantity_spec(PO po)
+  {
+    return po._quantity_spec_;
+  }
+
+  template<PointOrigin PO, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
+    requires PointOriginFor<PO, Q::quantity_spec>
   [[nodiscard]] friend constexpr QuantityPoint auto operator+(PO po, FwdQ&& q)
   {
     return quantity_point{std::forward<FwdQ>(q), po};
   }
 
-  template<typename FwdQ, PointOrigin PO, QuantityOf<PO::_quantity_spec_> Q = std::remove_cvref_t<FwdQ>>
+  template<typename FwdQ, PointOrigin PO, Quantity Q = std::remove_cvref_t<FwdQ>>
+    requires PointOriginFor<PO, Q::quantity_spec>
   [[nodiscard]] friend constexpr QuantityPoint auto operator+(FwdQ&& q, PO po)
   {
     return po + std::forward<FwdQ>(q);
   }
 
   template<PointOrigin PO, Quantity Q>
-    requires ReferenceOf<MP_UNITS_NONCONST_TYPE(Q::reference), PO::_quantity_spec_>
+    requires PointOriginFor<PO, Q::quantity_spec>
   [[nodiscard]] friend constexpr QuantityPoint auto operator-(PO po, const Q& q)
     requires requires { -q; }
   {
@@ -118,8 +127,7 @@ struct point_origin_interface {
   }
 
   template<PointOrigin PO1, detail::SameAbsolutePointOriginAs<PO1{}> PO2>
-    requires(QuantitySpecOf<MP_UNITS_NONCONST_TYPE(PO1::_quantity_spec_), PO2::_quantity_spec_> ||
-             QuantitySpecOf<MP_UNITS_NONCONST_TYPE(PO2::_quantity_spec_), PO1::_quantity_spec_>) &&
+    requires(PointOriginFor<PO2, get_quantity_spec(PO1{})> || PointOriginFor<PO1, get_quantity_spec(PO2{})>) &&
             (is_derived_from_specialization_of_v<PO1, relative_point_origin> ||
              is_derived_from_specialization_of_v<PO2, relative_point_origin>)
   [[nodiscard]] friend constexpr Quantity auto operator-(PO1, PO2)
@@ -141,7 +149,7 @@ struct point_origin_interface {
     if constexpr (is_derived_from_specialization_of_v<PO1, absolute_point_origin> &&
                   is_derived_from_specialization_of_v<PO2, absolute_point_origin>)
       return is_same_v<PO1, PO2> || (detail::is_natural_point_origin(po1) && detail::is_natural_point_origin(po2) &&
-                                     mp_units::interconvertible(po1._quantity_spec_, po2._quantity_spec_));
+                                     mp_units::interconvertible(get_quantity_spec(po1), get_quantity_spec(po2)));
     else if constexpr (is_derived_from_specialization_of_v<PO1, relative_point_origin> &&
                        is_derived_from_specialization_of_v<PO2, relative_point_origin>)
       return PO1::_quantity_point_ == PO2::_quantity_point_;
@@ -201,7 +209,7 @@ struct relative_point_origin : detail::point_origin_interface {
   static constexpr QuantitySpec auto _quantity_spec_ = []() {
     // select the strongest of specs
     if constexpr (detail::QuantityKindSpec<MP_UNITS_NONCONST_TYPE(QP.quantity_spec)>)
-      return QP.point_origin._quantity_spec_;
+      return get_quantity_spec(QP.point_origin);
     else
       return QP.quantity_spec;
   }();
@@ -298,7 +306,7 @@ template<PointOrigin PO>
 // static_assert fires exactly once per (PO) rather than at each enforce_bounds call.
 template<PointOrigin PO>
 constexpr bool has_quantity_bounds_v = [] {
-  if constexpr (PO::_quantity_spec_.character == quantity_character{}) {
+  if constexpr (get_character(get_quantity_spec(PO{})) == quantity_character{}) {
     if constexpr (requires { PO::_bounds_; } && utility::specified<decltype(PO::_bounds_)>) {
       static_assert(
         requires { PO::_bounds_.min; } || requires { PO::_bounds_.max; },
@@ -406,7 +414,7 @@ constexpr quantity<R, Rep> enforce_bounds(quantity<R, Rep> q)
 struct quantity_point_iface {
   // operator+ (qp + q)
   template<auto R1, auto PO1, typename Rep1, auto R2, typename Rep2>
-    requires ReferenceOf<MP_UNITS_REMOVE_CONST(decltype(R2)), PO1._quantity_spec_>
+    requires ReferenceOf<MP_UNITS_REMOVE_CONST(decltype(R2)), get_quantity_spec(PO1)>
   [[nodiscard]] friend constexpr QuantityPoint auto operator+(const quantity_point<R1, PO1, Rep1>& qp,
                                                               const quantity<R2, Rep2>& q)
     requires requires { qp.quantity_ref_from(PO1) + q; }
@@ -416,7 +424,7 @@ struct quantity_point_iface {
 
   // operator+ (q + qp)
   template<auto R1, typename Rep1, auto R2, auto PO2, typename Rep2>
-    requires ReferenceOf<MP_UNITS_REMOVE_CONST(decltype(R1)), PO2._quantity_spec_>
+    requires ReferenceOf<MP_UNITS_REMOVE_CONST(decltype(R1)), get_quantity_spec(PO2)>
   [[nodiscard]] friend constexpr QuantityPoint auto operator+(const quantity<R1, Rep1>& q,
                                                               const quantity_point<R2, PO2, Rep2>& qp)
     requires requires { q + qp.quantity_ref_from(PO2); }
@@ -426,7 +434,7 @@ struct quantity_point_iface {
 
   // operator- (qp - q)
   template<auto R1, auto PO1, typename Rep1, auto R2, typename Rep2>
-    requires ReferenceOf<MP_UNITS_REMOVE_CONST(decltype(R2)), PO1._quantity_spec_>
+    requires ReferenceOf<MP_UNITS_REMOVE_CONST(decltype(R2)), get_quantity_spec(PO1)>
   [[nodiscard]] friend constexpr QuantityPoint auto operator-(const quantity_point<R1, PO1, Rep1>& qp,
                                                               const quantity<R2, Rep2>& q)
     requires requires { qp.quantity_ref_from(PO1) - q; }
@@ -449,7 +457,7 @@ struct quantity_point_iface {
   // operator- (qp - po)
   template<auto R1, auto PO1, typename Rep1, PointOrigin PO2>
     requires QuantityPointOf<quantity_point<R1, PO1, Rep1>, PO2{}> &&
-             ReferenceOf<MP_UNITS_REMOVE_CONST(decltype(R1)), PO2::_quantity_spec_>
+             ReferenceOf<MP_UNITS_REMOVE_CONST(decltype(R1)), get_quantity_spec(PO2{})>
   [[nodiscard]] friend constexpr Quantity auto operator-(const quantity_point<R1, PO1, Rep1>& qp, PO2 po)
   {
     if constexpr (PO1 == po)
@@ -471,7 +479,7 @@ struct quantity_point_iface {
   // operator- (po - qp)
   template<PointOrigin PO1, auto R2, auto PO2, typename Rep2>
     requires QuantityPointOf<quantity_point<R2, PO2, Rep2>, PO1{}> &&
-             ReferenceOf<MP_UNITS_REMOVE_CONST(decltype(R2)), PO1::_quantity_spec_>
+             ReferenceOf<MP_UNITS_REMOVE_CONST(decltype(R2)), get_quantity_spec(PO1{})>
   [[nodiscard]] friend constexpr Quantity auto operator-(PO1 po, const quantity_point<R2, PO2, Rep2>& qp)
   {
     return -(qp - po);
@@ -533,7 +541,8 @@ public:
   // member types and values
   static constexpr Reference auto reference = R;
   static constexpr QuantitySpec auto quantity_spec = get_quantity_spec(reference);
-  static constexpr Dimension auto dimension = quantity_spec.dimension;
+  static constexpr Dimension auto dimension = get_dimension(quantity_spec);
+  static constexpr quantity_character character = get_character(quantity_spec);
   static constexpr Unit auto unit = get_unit(reference);
   static constexpr PointOrigin auto absolute_point_origin = detail::get_absolute_point_origin(PO);
   static constexpr PointOrigin auto point_origin = PO;
@@ -592,8 +601,9 @@ public:
   {
   }
 
-  template<typename FwdQ, PointOrigin PO2, QuantityOf<PO2::_quantity_spec_> Q = std::remove_cvref_t<FwdQ>>
-    requires std::constructible_from<quantity_type, FwdQ> && detail::SameAbsolutePointOriginAs<PO2, PO>
+  template<typename FwdQ, PointOrigin PO2, Quantity Q = std::remove_cvref_t<FwdQ>>
+    requires PointOriginFor<PO2, Q::quantity_spec> && std::constructible_from<quantity_type, FwdQ> &&
+             detail::SameAbsolutePointOriginAs<PO2, PO>
   constexpr quantity_point(FwdQ&& q, PO2) :
       quantity_point(
         quantity_point<std::remove_reference_t<Q>::reference, PO2{}, typename std::remove_reference_t<Q>::rep>{

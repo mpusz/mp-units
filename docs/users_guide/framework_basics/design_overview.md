@@ -81,7 +81,7 @@ provided in the [quantity specification](../../reference/glossary.md#quantity_sp
     inline constexpr struct time : quantity_spec<dim_time, non_negative> {} time;
     inline constexpr struct speed : quantity_spec<length / time> {} speed;
 
-    static_assert(speed.dimension == dim_length / dim_time);
+    static_assert(get_dimension(speed) == dim_length / dim_time);
     ```
 
 === "C++20"
@@ -91,7 +91,7 @@ provided in the [quantity specification](../../reference/glossary.md#quantity_sp
     inline constexpr struct time : quantity_spec<time, dim_time, non_negative> {} time;
     inline constexpr struct speed : quantity_spec<speed, length / time> {} speed;
 
-    static_assert(speed.dimension == dim_length / dim_time);
+    static_assert(get_dimension(speed) == dim_length / dim_time);
     ```
 
 === "Portable"
@@ -101,7 +101,7 @@ provided in the [quantity specification](../../reference/glossary.md#quantity_sp
     QUANTITY_SPEC(time, dim_time, non_negative);
     QUANTITY_SPEC(speed, length / time);
 
-    static_assert(speed.dimension == dim_length / dim_time);
+    static_assert(get_dimension(speed) == dim_length / dim_time);
     ```
 
 
@@ -113,7 +113,7 @@ provided in the [quantity specification](../../reference/glossary.md#quantity_sp
 The multiplication/division on quantity specifications also multiplies/divides their dimensions:
 
 ```cpp
-static_assert((length / time).dimension == dim_length / dim_time);
+static_assert(get_dimension(length / time) == dim_length / dim_time);
 ```
 
 The [dimension equation](../../reference/glossary.md#dimension-equation) of

@@ -297,15 +297,15 @@ static_assert(is_of_type<length / time*(length / time),
 static_assert(is_of_type<length / time*(time / length), dimensionless_>);
 
 static_assert(is_of_type<speed / acceleration, derived_quantity_spec<speed_, per<acceleration_>>>);
-static_assert(is_of_type<(speed / acceleration).dimension, dim_time_>);
+static_assert(is_of_type<get_dimension(speed / acceleration), dim_time_>);
 static_assert(is_of_type<acceleration / speed, derived_quantity_spec<acceleration_, per<speed_>>>);
-static_assert(is_of_type<(acceleration / speed).dimension, derived_dimension<dim_one_, per<dim_time_>>>);
+static_assert(is_of_type<get_dimension(acceleration / speed), derived_dimension<dim_one_, per<dim_time_>>>);
 static_assert(is_of_type<speed * speed / length, derived_quantity_spec<mp_units::power<speed_, 2>, per<length_>>>);
 static_assert(
-  is_of_type<(speed * speed / length).dimension, derived_dimension<dim_length_, per<mp_units::power<dim_time_, 2>>>>);
+  is_of_type<get_dimension(speed* speed / length), derived_dimension<dim_length_, per<mp_units::power<dim_time_, 2>>>>);
 static_assert(
   is_of_type<inverse(speed* speed) * length, derived_quantity_spec<length_, per<mp_units::power<speed_, 2>>>>);
-static_assert(is_of_type<(inverse(speed * speed) * length).dimension,
+static_assert(is_of_type<get_dimension(inverse(speed* speed) * length),
                          derived_dimension<mp_units::power<dim_time_, 2>, per<dim_length_>>>);
 
 static_assert(is_of_type<(length * length) * (time * time),
@@ -322,14 +322,14 @@ static_assert(
   is_of_type<mass / length / (time * time), derived_quantity_spec<mass_, per<length_, mp_units::power<time_, 2>>>>);
 
 static_assert(is_of_type<force / area, derived_quantity_spec<force_, per<area_>>>);
-static_assert(
-  is_of_type<(force / area).dimension, derived_dimension<dim_mass_, per<dim_length_, mp_units::power<dim_time_, 2>>>>);
+static_assert(is_of_type<get_dimension(force / area),
+                         derived_dimension<dim_mass_, per<dim_length_, mp_units::power<dim_time_, 2>>>>);
 
 static_assert(is_of_type<mass * acceleration, derived_quantity_spec<acceleration_, mass_>>);
-static_assert(is_of_type<(mass * acceleration).dimension,
+static_assert(is_of_type<get_dimension(mass* acceleration),
                          derived_dimension<dim_length_, dim_mass_, per<mp_units::power<dim_time_, 2>>>>);
 static_assert(is_of_type<acceleration * mass, derived_quantity_spec<acceleration_, mass_>>);
-static_assert(is_of_type<(acceleration * mass).dimension,
+static_assert(is_of_type<get_dimension(acceleration* mass),
                          derived_dimension<dim_length_, dim_mass_, per<mp_units::power<dim_time_, 2>>>>);
 
 static_assert(is_of_type<kind_of<length> / kind_of<time>, kind_of_<derived_quantity_spec<length_, per<time_>>>>);

@@ -99,8 +99,8 @@ static_assert(!has_magnitude<quantity<isq::length[m]>>);
 
 // a vector quantity backed by a plain double is a valid (degenerate 1D) vector: it has a magnitude
 static_assert(has_magnitude<quantity<isq::velocity[m / s], double>>);
-static_assert(decltype(std::declval<quantity<isq::velocity[m / s], double>>().magnitude())::quantity_spec.character
-                .order == quantity_tensor_order::scalar);
+static_assert(decltype(std::declval<quantity<isq::velocity[m / s], double>>().magnitude())::character.order ==
+              quantity_tensor_order::scalar);
 
 #if MP_UNITS_HOSTED
 QUANTITY_SPEC(complex_velocity, isq::velocity, quantity_field::complex);
@@ -125,12 +125,10 @@ static_assert(!has_magnitude<quantity<isq::voltage_phasor[V], std::complex<doubl
 static_assert(has_magnitude<cvel_1d>);
 
 // the magnitude of a vector/tensor is a scalar quantity; a complex vector yields a real scalar
-static_assert(decltype(std::declval<vel_vec>().magnitude())::quantity_spec.character.order ==
-              quantity_tensor_order::scalar);
-static_assert(decltype(std::declval<stress_tensor>().magnitude())::quantity_spec.character.order ==
-              quantity_tensor_order::scalar);
-static_assert(decltype(std::declval<cvel_vec>().magnitude())::quantity_spec.character.field == quantity_field::real);
-static_assert(decltype(std::declval<cvel_1d>().magnitude())::quantity_spec.character.field == quantity_field::real);
+static_assert(decltype(std::declval<vel_vec>().magnitude())::character.order == quantity_tensor_order::scalar);
+static_assert(decltype(std::declval<stress_tensor>().magnitude())::character.order == quantity_tensor_order::scalar);
+static_assert(decltype(std::declval<cvel_vec>().magnitude())::character.field == quantity_field::real);
+static_assert(decltype(std::declval<cvel_1d>().magnitude())::character.field == quantity_field::real);
 #endif
 
 static_assert(std::is_trivially_default_constructible_v<quantity<isq::length[m]>>);

@@ -60,13 +60,13 @@ TEST_CASE("dimension_symbol", "[dimension][symbol]")
 
   SECTION("default formatting")
   {
-    os << dimension_symbol(isq::power.dimension);
+    os << dimension_symbol(get_dimension(isq::power));
     CHECK(os.str() == "L²MT⁻³");
   }
 
   SECTION("Portable mode")
   {
-    os << dimension_symbol<dimension_symbol_formatting{.char_set = portable}>(isq::power.dimension);
+    os << dimension_symbol<dimension_symbol_formatting{.char_set = portable}>(get_dimension(isq::power));
     CHECK(os.str() == "L^2MT^-3");
   }
 }
