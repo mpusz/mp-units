@@ -171,7 +171,7 @@ and help potential adopters decide. Whether you are using **mp-units** in **prod
 
 ### Core Team
 
-- **[Mateusz Pusz](https://github.com/mpusz)** – Project founder and lead
+- **[Mateusz Pusz](https://github.com/mpusz)** – Project founder and lead; C++ trainer at [Train IT](https://train-it.eu)
 - **[Johel Ernesto Guerrero Peña](https://github.com/JohelEGP)** – Core maintainer
 - **[Chip Hogg](https://github.com/chiphogg)** – Core maintainer
 
