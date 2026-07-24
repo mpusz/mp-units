@@ -372,8 +372,8 @@ static_assert(get_canonical_unit(helion_g_factor).mag == mag<-ratio{4'255'250'61
 // named units require a positive canonical magnitude (only named constants may be negative)
 // object construction forces the class template to be complete, so constraint failure on every
 // `named_unit` specialization is detected (the primary template is declared but never defined)
-template<Unit auto U>
-concept valid_named_unit = requires { named_unit<"tst", U>{}; };
+template<auto U>
+concept valid_named_unit = Unit<MP_UNITS_REMOVE_CONST(decltype(U))> && requires { named_unit<"tst", U>{}; };
 
 static_assert(valid_named_unit<metre / second>);
 static_assert(valid_named_unit<mag<-1> * helion_g_factor>);  // two sign flips cancel
