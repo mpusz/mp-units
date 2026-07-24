@@ -130,6 +130,27 @@ template<Unit T, typename... Us>
 template<Unit U>
 constexpr auto get_canonical_unit_result = get_canonical_unit_impl(U{}, U{});
 
+template<symbol_text Symbol, auto... Args>
+[[nodiscard]] consteval bool unit_mag_is_positive(const named_unit<Symbol, Args...>&);
+
+template<symbol_text Symbol, Unit auto U, auto... Args>
+[[nodiscard]] consteval bool unit_mag_is_positive(const named_unit<Symbol, U, Args...>&);
+
+template<symbol_text Symbol, Unit auto U>
+[[nodiscard]] consteval bool unit_mag_is_positive(const named_constant<Symbol, U>&);
+
+template<typename F, int Num, int... Den>
+[[nodiscard]] consteval bool unit_mag_is_positive(const power<F, Num, Den...>&);
+
+template<typename... Expr>
+[[nodiscard]] consteval bool unit_mag_is_positive(const derived_unit_impl<Expr...>&);
+
+template<auto M, typename U>
+[[nodiscard]] consteval bool unit_mag_is_positive(const scaled_unit_impl<M, U>&);
+
+template<typename... Us>
+[[nodiscard]] consteval bool unit_mag_is_positive(const common_unit<Us...>&);
+
 }  // namespace detail
 
 // TODO this should really be in the `details` namespace and not exported but is used in `chrono.h`
@@ -141,8 +162,11 @@ MP_UNITS_EXPORT [[nodiscard]] consteval auto get_canonical_unit(Unit auto u)
 
 namespace detail {
 
+// This is evaluated for every named unit definition while system headers are being parsed, so it has to stay cheap.
+// The magnitude sign is determined structurally (a `negative_tag` always sorts first in a magnitude pack), which
+// avoids computing the canonical unit and prime-factorizing its magnitude only to read the sign.
 template<Unit auto U>
-constexpr bool is_positive_canonical_unit_mag = check_magnitude_is_positive(get_canonical_unit(U).mag);
+constexpr bool is_positive_canonical_unit_mag = unit_mag_is_positive(U);
 
 }  // namespace detail
 
@@ -665,6 +689,61 @@ template<Unit T, typename... Expr>
   auto num = get_canonical_unit_impl(typename derived_unit<Expr...>::_num_{});
   auto den = get_canonical_unit_impl(typename derived_unit<Expr...>::_den_{});
   return canonical_unit{num.mag / den.mag, num.reference_unit / den.reference_unit};
+}
+
+// A negative canonical magnitude can only originate from a `negative_tag` in a `scaled_unit` magnitude or
+// in a `named_constant` definition, and such a tag always sorts first in a magnitude pack.  This allows
+// determining the sign structurally in O(expression tree) without forming any magnitude products.
+template<symbol_text Symbol, auto... Args>
+[[nodiscard]] consteval bool unit_mag_is_positive(const named_unit<Symbol, Args...>&)
+{
+  return true;
+}
+
+template<symbol_text Symbol, Unit auto U, auto... Args>
+[[nodiscard]] consteval bool unit_mag_is_positive(const named_unit<Symbol, U, Args...>&)
+{
+  return mp_units::detail::unit_mag_is_positive(U);
+}
+
+template<symbol_text Symbol, Unit auto U>
+[[nodiscard]] consteval bool unit_mag_is_positive(const named_constant<Symbol, U>&)
+{
+  return mp_units::detail::unit_mag_is_positive(U);
+}
+
+template<typename F, int Num, int... Den>
+[[nodiscard]] consteval bool unit_mag_is_positive(const power<F, Num, Den...>&)
+{
+  // an even exponent numerator makes the result positive regardless of the base sign
+  return mp_units::detail::unit_mag_is_positive(F{}) || Num % 2 == 0;
+}
+
+template<typename... Us>
+[[nodiscard]] consteval bool unit_mag_is_positive(const type_list<Us...>&)
+{
+  // the result is positive if and only if the number of negative factors is even
+  return (0U + ... + static_cast<unsigned>(!mp_units::detail::unit_mag_is_positive(Us{}))) % 2 == 0;
+}
+
+template<typename... Expr>
+[[nodiscard]] consteval bool unit_mag_is_positive(const derived_unit_impl<Expr...>&)
+{
+  // the sign of a factor is the same no matter if it ends up in the numerator or the denominator
+  return mp_units::detail::unit_mag_is_positive(typename derived_unit<Expr...>::_num_{}) ==
+         mp_units::detail::unit_mag_is_positive(typename derived_unit<Expr...>::_den_{});
+}
+
+template<auto M, typename U>
+[[nodiscard]] consteval bool unit_mag_is_positive(const scaled_unit_impl<M, U>&)
+{
+  return check_magnitude_is_positive(M) == mp_units::detail::unit_mag_is_positive(U{});
+}
+
+template<typename... Us>
+[[nodiscard]] consteval bool unit_mag_is_positive(const common_unit<Us...>& u)
+{
+  return mp_units::detail::unit_mag_is_positive(u._common_unit_);
 }
 
 }  // namespace detail
