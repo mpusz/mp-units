@@ -26,20 +26,31 @@
 // This header is provided for backward compatibility and will be removed in a future release.
 // Please update your code to use <mp-units/systems/yard_pound.h> instead.
 
+// the module interface unit includes this header only to export the deprecated namespace shim
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 #warning \
   "2.6.0: The header <mp-units/systems/international.h> is deprecated. Use <mp-units/systems/yard_pound.h> instead."
+#endif
 
 // IWYU pragma: begin_exports
 #include <mp-units/systems/yard_pound.h>
 // IWYU pragma: end_exports
 
-MP_UNITS_EXPORT
 namespace mp_units {
 
 // Deprecated namespace alias for backward compatibility
+MP_UNITS_EXPORT
 namespace [[deprecated(
   "2.6.0: The 'international' namespace has been renamed to 'yard_pound'. Please update your code.")]] international {
-using namespace yard_pound;
+
+namespace [[deprecated("2.6.0: Use `mp_units::yard_pound::unit_symbols` instead.")]] unit_symbols {
+
+using namespace yard_pound::unit_symbols;
+
 }
+
+using namespace yard_pound;
+
+}  // namespace international
 
 }  // namespace mp_units
