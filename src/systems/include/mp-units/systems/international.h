@@ -37,8 +37,8 @@ MP_UNITS_EXPORT
 namespace mp_units {
 
 // Deprecated namespace alias for backward compatibility
-namespace international
-  [[deprecated("2.6.0: The 'international' namespace has been renamed to 'yard_pound'. Please update your code.")]] {
+namespace [[deprecated(
+  "2.6.0: The 'international' namespace has been renamed to 'yard_pound'. Please update your code.")]] international {
 using namespace yard_pound;
 }
 
