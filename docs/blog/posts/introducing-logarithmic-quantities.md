@@ -11,7 +11,7 @@ comments: true
 
 Decibels are everywhere in engineering. Signal levels in `dBm`, _sound pressure_ in
 `dB SPL`, _voltage_ gain in `dB`, filter slopes in `dB/octave`. The neper, pH, and stellar
-magnitude are the same idea wearing different clothes. Yet, to the best of our knowledge,
+magnitude share the same structure. Yet, to the best of our knowledge,
 no general-purpose units library models logarithmic quantities correctly. Most do not
 model them at all. The few that do treat a decibel as a non-linear scale or an offset
 unit, and that choice gets the arithmetic wrong in ways that compile silently.
@@ -46,7 +46,7 @@ $$L_P = 10\log_{10}\frac{P}{P_0}\ \mathrm{dB} \qquad L_F = 20\log_{10}\frac{F}{F
 The first is for **power** quantities, the second for **root-power** (field) quantities
 such as _voltage_ or _sound pressure_. So `6 dB` is a _power_ ratio of
 $10^{6/10} \approx 3.98$ or a _voltage_ ratio of $10^{6/20} \approx 2.0$. The two differ
-by a factor of two, which is precisely the power-versus-root-power factor.
+by a factor of two, which is the power-versus-root-power factor.
 
 A decibel modeled as a plain number cannot tell these apart. It has to default to one of
 them, usually the _power_ reading, and that is wrong for every _voltage_, _current_, and
@@ -58,11 +58,14 @@ auto half_voltage = (0.5 * V) * (6.0 * dB).linear();  // 0.5 * 3.98 ≈ 1.99 V, 
                                                       // "+6 dB on a voltage" means *2 -> 1.0 V
 ```
 
-The second failure is more obvious once stated. Adding two absolute _power_ levels is
-meaningless: `10 dBm + 10 dBm` is not `20 dBm`. A level is a point on a logarithmic scale,
-anchored at a reference. You can add a *gain* to a level, you can subtract two levels to
-get a gain, but you cannot add two levels. A type that represents `dBm` as a number
-permits all three.
+The second failure is more obvious once stated. A plain-number `dBm` lets you write
+`10 dBm + 10 dBm` and get `20 dBm`, which is `100 mW` and not any combination of the
+inputs. Combining two sources *is* meaningful, but the answer is `13 dBm`
+(`10 mW + 10 mW = 20 mW`), a linear-domain sum the number type never performs. A level is
+a point on a logarithmic scale, anchored at a reference. You can add a *gain* to a level
+and subtract two levels to get a gain, but `level + level` is not one operation (see
+[Arithmetic in full](#arithmetic-in-full)), so a number type that permits it silently
+gives a wrong answer.
 
 These are not exotic corner cases. They are the everyday arithmetic of the people who use
 decibels for a living. This is why getting the type system right matters here as much as
@@ -76,7 +79,7 @@ three-abstraction model (point, absolute, delta) that we introduced in the
 logarithmic domain.
 
 A **level** carries a fixed reference. `dBm` means "relative to 1 mW", `dB SPL` means
-"relative to 20 µPa in air". The log-domain value 0 corresponds to exactly the reference
+"relative to 20 µPa in air". The log-domain value 0 corresponds to the reference
 in the linear domain. That reference *is* an affine origin, so a level is a **point**:
 
 ```text
@@ -89,7 +92,7 @@ A **ratio** or **gain** has no reference. "3 dB of gain", "a perfect fifth of 7
 semitones", "2 octaves" are multiplicative ratios in the linear domain, expressed
 additively in the log domain. A gain is a **delta**.
 
-The whole arithmetic rule set follows from this one split, and it is exactly affine-space
+The whole arithmetic rule set follows from this one split, and it is affine-space
 arithmetic applied to the log domain:
 
 | Operation            | Result     | Meaning                                       |
@@ -97,7 +100,7 @@ arithmetic applied to the log domain:
 | level $+$ gain       | level      | apply a gain to a level (a linear multiply)   |
 | level $-$ level      | gain       | the gain between two levels (a linear divide) |
 | gain $+$ gain        | gain       | combine two gains                             |
-| level $+$ level      | ill-formed | you cannot add two absolute power levels      |
+| level $+$ level      | ill-formed | not one operation, linearize to combine       |
 | gain $\times$ scalar | gain       | raise the linear ratio to a power             |
 
 Note one consequence: the log-domain value of a level can be negative. `-10 dBm` is a
@@ -198,6 +201,19 @@ system, it is delegated to the user with a warning. Second, pint models these as
 units: the docs say they "behave much like those described in Temperature conversion."
 There is no separate level-versus-gain (point versus delta) type, so the affine rule "you
 may not add two levels" is not expressed by the types. Support is also marked Beta.
+
+**C#'s UnitsNet takes a third route, and it is close to what many reach for first.** It
+models logarithmic quantities as their own types, `PowerRatio` (`dBW`/`dBm`, factor `10`)
+and a separate `AmplitudeRatio` (`dBV`, factor `20`), rather than as units of the linear
+`Power` and `ElectricPotential` types. Equality and summation are evaluated in the linear
+domain, so combining two `10 dBm` sources correctly gives `13 dBm`, and converting a
+voltage ratio to a power ratio takes an explicit impedance
+([`AmplitudeRatio.ToPowerRatio`](https://github.com/angularsen/UnitsNet)). Two points
+matter for us. UnitsNet already splits power from root-power at the type level, which is
+direct support for our claim that the `10`/`20` factor must live in the type. And it stops
+there: the quantities are logarithmic scalars whose arithmetic is defined by round-tripping
+through linear space, with no affine point/delta layer, so there is no separate *level* and
+*gain*, and no origin. That last step is what our design adds.
 
 This is why we open with a novelty claim and a request for review rather than a finished
 feature. We are not aware of any library that models logarithmic quantities as affine
@@ -321,7 +337,7 @@ linear magnitude to divide: its stored value is already a logarithm. Spelling
 `si::deci<bel>` forces a linear-domain prefix onto the logarithmic axis, and the
 `mag<1, 10>` form buries the factor in a magnitude where the framework can no longer read
 it as the multiplier. So the decibel and the bel are co-equal named units, each stating
-its own `(base, multiplier)`, with the decibel's multiplier simply ten times the bel's.
+its own `(base, multiplier)`, with the decibel's multiplier ten times the bel's.
 
 A ratio unit has no reference, so it is the natural delta type and the multiply syntax
 produces a gain directly:
@@ -709,6 +725,25 @@ Addition and subtraction follow the point/delta table from above. Adding or subt
 raw scalar is ill-formed for every logarithmic quantity (`3 dB + 2` has no physical
 meaning). The only scalar interaction is multiplying a gain. Five more operations are
 worth spelling out.
+
+!!! note "Why is `10 dBm + 10 dBm` ill-formed, and not `13 dBm`?"
+
+    Combining two `10 dBm` sources is a real operation, and the answer is `13 dBm`
+    (`10 mW + 10 mW = 20 mW`), not the `20 dBm` a plain-number type would give. But that is
+    a *linear-domain* sum, and it is not the only combination. It depends on the kind and
+    the physics: two incoherent `60 dB SPL` sources add as intensities and give
+    `63 dB SPL`, while two coherent ones add as pressures and give `66 dB SPL`. A `+`
+    operator cannot pick the right one, so `level + level` stays ill-formed and you write
+    the combination explicitly:
+
+    ```cpp
+    quantity total = (a.absolute() + b.absolute()).log_in(dBm);   // 20 mW ≈ 13 dBm
+    ```
+
+    This is also why `dBm` is a *level* rather than a unit of power. In a model where `dBm`
+    is a unit of `Power`, `dBm(40) - dBm(10)` is a power difference in watts, whereas what
+    you usually want is the `30 dB` gain between the two levels. The level/gain split keeps
+    both operations available and distinct.
 
 **Negation.** Negating a gain produces another gain (the reciprocal linear ratio).
 Negating a *level* is also meaningful and permitted, because the log-domain value is
@@ -1115,7 +1150,7 @@ please do not be shy.
 
 ## Conclusion
 
-Logarithmic quantities are not a special case to bolt on. They are the affine point/delta
+Logarithmic quantities did not need a new abstraction. They are the affine point/delta
 model we already adopted for absolute quantities, specialized to a domain where the origin
 is a reference level and the displacement is a gain. Modeling them this way makes
 `level - level` a gain, `level + gain` a level, and `level + level` a compile-time error,
@@ -1126,8 +1161,8 @@ either hardcodes 10 or leaves the choice to the user. The same machinery covers 
 acoustics, music, information theory, chemistry, and astronomy, because each is the same
 structure over a different quantity kind.
 
-We believe this is correct, and we believe it is novel. That combination is exactly why we
-are publishing the design before writing the code. Tell us where we are wrong.
+We believe this is correct, and we believe it is novel. That combination is why we are
+publishing the design before writing the code. Tell us where we are wrong.
 
 ## Acknowledgments
 
