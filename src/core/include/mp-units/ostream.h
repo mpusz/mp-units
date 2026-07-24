@@ -23,4 +23,6 @@
 
 #pragma once
 
-#warning "2.5.0: This header file is deprecated and does not have to be included anymore."
+#include <mp-units/bits/hacks.h>
+
+MP_UNITS_DEPRECATED_HEADER("2.5.0: This header file is deprecated and does not have to be included anymore.")

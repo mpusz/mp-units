@@ -26,10 +26,12 @@
 // This header is provided for backward compatibility and will be removed in a future release.
 // Please update your code to use <mp-units/systems/yard_pound.h> instead.
 
+#include <mp-units/bits/hacks.h>
+
 // the module interface unit includes this header only to export the deprecated namespace shim
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
-#warning \
-  "2.6.0: The header <mp-units/systems/international.h> is deprecated. Use <mp-units/systems/yard_pound.h> instead."
+MP_UNITS_DEPRECATED_HEADER(
+  "2.6.0: The header <mp-units/systems/international.h> is deprecated. Use <mp-units/systems/yard_pound.h> instead.")
 #endif
 
 // IWYU pragma: begin_exports

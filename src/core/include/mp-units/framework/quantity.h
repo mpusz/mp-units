@@ -50,6 +50,7 @@ import std;
 #else
 #include <compare>  // IWYU pragma: export
 #include <concepts>
+#include <functional>
 #include <limits>
 #include <tuple>
 #include <type_traits>
