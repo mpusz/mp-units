@@ -501,7 +501,9 @@ struct named_constant : decltype(U)::_base_type_ {
  */
 MP_UNITS_EXPORT template<symbol_text Symbol, UnitMagnitude auto M, PrefixableUnit auto U>
   requires(!Symbol.empty())
-struct prefixed_unit : decltype(M * U)::_base_type_ {
+// `PrefixableUnit` guarantees a named unit, so `M * U` always reduces to `scaled_unit<M, U>`; spelling the base
+// directly avoids instantiating the `operator*` machinery for every prefix and unit combination (e.g. unit_symbols.h)
+struct prefixed_unit : scaled_unit<M, MP_UNITS_REMOVE_CONST(decltype(U))>::_base_type_ {
   using _base_type_ = prefixed_unit;  // exposition only
   static constexpr auto _symbol_ = Symbol + U._symbol_;
 };
