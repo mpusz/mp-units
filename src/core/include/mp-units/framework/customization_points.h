@@ -439,6 +439,15 @@ constexpr bool disable_representation = detail::is_quantity_abstraction<detail::
 template<>
 MP_UNITS_INLINE constexpr bool disable_representation<bool> = true;
 
+// A representation carries a runtime value, which a stateless type cannot do. Rejecting empty tag
+// types here also short-circuits the whole representation-concept chain (`WeaklyRegular`, scaling,
+// and character detection) that overload resolution of symbolic expressions like `mag * unit` would
+// otherwise evaluate on every unit, magnitude, dimension, or quantity specification for each
+// candidate. An exotic stateless representation can still opt back in with an explicit
+// specialization, which takes precedence over this constrained one.
+template<detail::SymbolicConstant T>
+MP_UNITS_INLINE constexpr bool disable_representation<T> = true;
+
 MP_UNITS_EXPORT_BEGIN
 
 /**
