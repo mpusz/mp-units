@@ -36,7 +36,8 @@ import std;
 // <cmath> becomes partially freestanding in C++26
 // before that, there is no guarantee about this header even existing
 // (GCC 14 has it, but actively #error's out)
-#if __STDC_HOSTED__
+// only needed for `std::ldexp`, which is used only when it is constexpr (C++23)
+#if __STDC_HOSTED__ && defined __cpp_lib_constexpr_cmath && __cpp_lib_constexpr_cmath >= 202202L
 #include <cmath>
 #endif
 #endif

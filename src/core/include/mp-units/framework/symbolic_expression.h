@@ -33,7 +33,6 @@ import std;
 #else
 #include <concepts>
 #include <cstdint>
-#include <functional>
 #include <type_traits>
 #endif
 #endif
@@ -44,6 +43,16 @@ namespace detail {
 
 // `SymbolicArg` is provided because `SymbolicConstant` requires a complete type which is not the case
 // for `OneType` below.
+// resolves a dependent alias to the actual type when applied to a function call result
+// (a minimal stand-in for std `identity` that saves the whole <functional> include)
+struct identity_fn {
+  template<typename T>
+  [[nodiscard]] constexpr T operator()(T value) const
+  {
+    return value;
+  }
+};
+
 template<typename T>
 concept SymbolicArg = !std::is_const_v<T> && !std::is_reference_v<T>;
 
@@ -400,9 +409,9 @@ template<typename NumList, typename DenList, SymbolicArg OneType, template<typen
   using num_list = expr_consolidate<NumList>;
   using den_list = expr_consolidate<DenList>;
   using simple = expr_simplify<num_list, den_list, Pred>;
-  // the usage of `std::identity` below helps to resolve an using alias identifier to the actual
+  // the usage of `identity_fn` below helps to resolve an using alias identifier to the actual
   // type identifier in the clang compile-time errors
-  return std::identity{}(expr_make_spec_impl<typename simple::num, typename simple::den, OneType, To>());
+  return identity_fn{}(expr_make_spec_impl<typename simple::num, typename simple::den, OneType, To>());
 }
 
 /**
@@ -487,9 +496,9 @@ template<template<typename...> typename To, SymbolicArg OneType, typename T>
 [[nodiscard]] consteval auto expr_invert(T)
 {
   if constexpr (is_specialization_of<T, To>)
-    // the usage of `std::identity` below helps to resolve an using alias identifier to the actual
+    // the usage of `identity_fn` below helps to resolve an using alias identifier to the actual
     // type identifier in the clang compile-time errors
-    return std::identity{}(expr_make_spec_impl<typename T::_den_, typename T::_num_, OneType, To>());
+    return identity_fn{}(expr_make_spec_impl<typename T::_den_, typename T::_num_, OneType, To>());
   else
     return To<OneType, per<T>>{};
 }
@@ -615,7 +624,7 @@ template<template<typename> typename Proj, template<typename...> typename To, Sy
   using outer_den =
     type_list_merge_many_sorted<Pred, type_list<>, typename expr_map_contribution_t<Proj, To, OneType, Nums>::_den_...,
                                 typename expr_map_contribution_t<Proj, To, OneType, Dens>::_num_...>;
-  return std::identity{}(get_optimized_expression<outer_num, outer_den, OneType, Pred, To>());
+  return identity_fn{}(get_optimized_expression<outer_num, outer_den, OneType, Pred, To>());
 }
 
 /**

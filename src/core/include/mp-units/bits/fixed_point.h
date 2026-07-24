@@ -24,6 +24,7 @@
 
 #include <mp-units/bits/hacks.h>  // IWYU pragma: keep
 #include <mp-units/bits/int_power.h>
+#include <mp-units/ext/algorithm.h>
 #include <mp-units/ext/type_traits.h>  // IWYU pragma: keep
 
 // `double_width_int` only emulates `int128_t` on platforms without native `__int128` (notably
@@ -36,7 +37,6 @@
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
-#include <algorithm>
 #include <bit>
 #include <concepts>
 #include <cstdint>
@@ -112,7 +112,7 @@ using make_signed_t = conditional<!is_same_v<T, uint128_t>, std::make_signed<T>,
 
 template<std::size_t N>
 using min_width_uint_t =
-  std::tuple_element_t<std::max<std::size_t>(4u, std::bit_width(N) + (std::has_single_bit(N) ? 0u : 1u)) - 4u,
+  std::tuple_element_t<detail::max<std::size_t>(4u, std::bit_width(N) + (std::has_single_bit(N) ? 0u : 1u)) - 4u,
                        std::tuple<std::uint8_t, std::uint16_t, std::uint32_t, std::uint64_t, uint128_t>>;
 
 template<std::size_t N>
