@@ -369,6 +369,21 @@ static_assert(Unit<MP_UNITS_NONCONST_TYPE(helion_g_factor)>);
 static_assert(!PrefixableUnit<MP_UNITS_NONCONST_TYPE(helion_g_factor)>);
 static_assert(get_canonical_unit(helion_g_factor).mag == mag<-ratio{4'255'250'615, 1'000'000'000}>);
 
+// named units require a positive canonical magnitude (only named constants may be negative)
+// object construction forces the class template to be complete, so constraint failure on every
+// `named_unit` specialization is detected (the primary template is declared but never defined)
+template<Unit auto U>
+concept valid_named_unit = requires { named_unit<"tst", U>{}; };
+
+static_assert(valid_named_unit<metre / second>);
+static_assert(valid_named_unit<mag<-1> * helion_g_factor>);  // two sign flips cancel
+static_assert(valid_named_unit<square(helion_g_factor)>);    // even power is positive
+static_assert(!valid_named_unit<mag<-1> * metre>);
+static_assert(!valid_named_unit<mag<-ratio{1, 2}> * metre>);
+static_assert(!valid_named_unit<helion_g_factor * metre>);
+static_assert(!valid_named_unit<one / helion_g_factor>);   // negative denominator flips the sign
+static_assert(!valid_named_unit<cubic(helion_g_factor)>);  // odd power stays negative
+
 // operations commutativity
 constexpr auto u1 = mag<1000> * kilometre / hour;
 static_assert(is_of_type<u1, derived_unit<scaled_unit<mag<1000>, kilo_<metre_>>, per<hour_>>>);
