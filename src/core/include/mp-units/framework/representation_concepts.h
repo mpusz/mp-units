@@ -41,7 +41,6 @@ import std;
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
-#include <functional>
 #include <type_traits>
 #endif  // MP_UNITS_IMPORT_STD
 #endif  // MP_UNITS_IN_MODULE_INTERFACE
