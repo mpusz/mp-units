@@ -22,6 +22,8 @@
 
 #pragma once
 
-#warning "2.6.0: <mp-units/random.h> is deprecated; include <mp-units/utility/random.h> instead."
+#include <mp-units/bits/hacks.h>
+
+MP_UNITS_DEPRECATED_HEADER("2.6.0: <mp-units/random.h> is deprecated; include <mp-units/utility/random.h> instead.")
 
 #include <mp-units/utility/random.h>

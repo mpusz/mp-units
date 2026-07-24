@@ -22,6 +22,9 @@
 
 #pragma once
 
-#warning "2.6.0: <mp-units/cartesian_vector.h> is deprecated; include <mp-units/utility/cartesian_vector.h> instead."
+#include <mp-units/bits/hacks.h>
+
+MP_UNITS_DEPRECATED_HEADER(
+  "2.6.0: <mp-units/cartesian_vector.h> is deprecated; include <mp-units/utility/cartesian_vector.h> instead.")
 
 #include <mp-units/utility/cartesian_vector.h>

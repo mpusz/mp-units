@@ -38,6 +38,14 @@
 
 // Adapted from https://github.com/ericniebler/range-v3/blob/master/include/range/v3/detail/config.hpp#L185.
 #define MP_UNITS_PRAGMA(X) _Pragma(#X)
+
+// `#warning` is C++23, and MSVC emits a hard error for it in earlier modes, so deprecated headers
+// use a compiler-specific pragma instead
+#if MP_UNITS_COMP_MSVC
+#define MP_UNITS_DEPRECATED_HEADER(Msg) MP_UNITS_PRAGMA(message(Msg))
+#else
+#define MP_UNITS_DEPRECATED_HEADER(Msg) MP_UNITS_PRAGMA(GCC warning Msg)
+#endif
 #if !MP_UNITS_COMP_MSVC
 #define MP_UNITS_DIAGNOSTIC_PUSH MP_UNITS_PRAGMA(GCC diagnostic push)
 #define MP_UNITS_DIAGNOSTIC_POP MP_UNITS_PRAGMA(GCC diagnostic pop)
