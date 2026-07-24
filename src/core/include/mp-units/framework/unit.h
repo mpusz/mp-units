@@ -171,7 +171,7 @@ constexpr bool is_positive_canonical_unit_mag = unit_mag_is_positive(U);
 }  // namespace detail
 
 template<UnitMagnitude auto M, Unit U>
-  requires(M != detail::unit_magnitude<>{} && M != mag<1>)
+  requires(M != mag<1>)  // `mag<1>` is the empty `unit_magnitude<>`, so a single check covers both spellings
 struct scaled_unit;
 
 template<detail::SymbolicConstant... Expr>
@@ -332,7 +332,7 @@ struct scaled_unit_impl : detail::unit_interface, detail::propagate_point_origin
  *       instantiate this type automatically based on the unit arithmetic equation provided by the user.
  */
 template<UnitMagnitude auto M, Unit U>
-  requires(M != detail::unit_magnitude<>{} && M != mag<1>)
+  requires(M != mag<1>)  // `mag<1>` is the empty `unit_magnitude<>`, so a single check covers both spellings
 struct scaled_unit final : detail::scaled_unit_impl<M, U> {};
 
 namespace detail {
