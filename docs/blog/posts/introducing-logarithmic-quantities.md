@@ -29,13 +29,13 @@ from them ([Open Question 5](#5-reference-in-the-unit-or-on-the-quantity)).
 This post describes the design in full, from the quantity spec to the named units, the
 arithmetic, the conversions, and every domain we surveyed (audio, RF, acoustics,
 chemistry, astronomy, music, information theory). Then it lays out the
-[open questions](#open-questions-help-us-decide), each with every alternative we
+[open questions](#open-questions), each with every alternative we
 considered and our current preference. Before we implement any of this in **mp-units**, we
 want the people who use these quantities daily to tell us where we are wrong.
 
 <!-- more -->
 
-## The failure that motivates this
+## The problem
 
 Consider a `+6 dB` gain. Ask a naive "decibel type" to convert it back to a linear ratio
 and it must pick a formula. The decibel is defined two ways depending on the underlying
@@ -64,14 +64,14 @@ inputs. Combining two sources *is* meaningful, but the answer is `13 dBm`
 (`10 mW + 10 mW = 20 mW`), a linear-domain sum the number type never performs. A level is
 a point on a logarithmic scale, anchored at a reference. You can add a *gain* to a level
 and subtract two levels to get a gain, but `level + level` is not one operation (see
-[Arithmetic in full](#arithmetic-in-full)), so a number type that permits it silently
+[Arithmetic](#arithmetic)), so a number type that permits it silently
 gives a wrong answer.
 
 These are not exotic corner cases. They are the everyday arithmetic of the people who use
 decibels for a living. This is why getting the type system right matters here as much as
 it does for dimensions.
 
-## Logarithmic quantities are points and deltas
+## Points and deltas
 
 The good news is that we do not need a fourth abstraction. Logarithmic quantities fit the
 three-abstraction model (point, absolute, delta) that we introduced in the
@@ -126,7 +126,7 @@ spec itself as the delta, just as subtracting two positions yields `displacement
 than `delta<displacement>`. (Only ordinary scalar specs, where the delta must be written
 explicitly, give the wrapped `point<X> - point<X> = delta<X>` form.)
 
-## Vocabulary: the IEC 80000-15 categories
+## The IEC 80000-15 categories
 
 We anchor the design to IEC 80000-15:2026, which sorts the underlying (linear) quantities
 into four classes, each with its own standard logarithmic ratio (clauses 5.2 and 5.3):
@@ -437,7 +437,7 @@ would linearize as a power ratio ($\approx 3.98$) instead of the correct root-po
 ($2$). Whether to keep that convenient default or require an explicit classification is
 [Open Question 6](#6-should-the-classification-have-a-default).
 
-### The key decision: gains carry their domain
+### Gains carry their domain
 
 This is the one place our design departs from what you might write first, and the place we
 most want scrutiny.
@@ -475,7 +475,7 @@ the wrong answer. The standard itself states no generic `Np`-to-`dB` equivalence
 (Table 2). The 8.686 factor is the conventional bridge for the root-power quantities the
 neper is normally used with.
 
-### The tradeoff we accept: no universal decibel
+### No universal decibel
 
 Domain-typed gains have a cost, and we state it plainly. There is **no neutral,
 domain-less decibel** that adds to any level. A `+3 dB` _power_ gain moves a _power_
@@ -506,7 +506,7 @@ or an _impedance_), which is user code. If you ever need
 the same gain figure in another domain, you rebuild it there explicitly, as there is no
 cross-kind conversion.
 
-### Comparing bases, and when there is no common unit
+### Comparing bases
 
 Within one logarithmic quantity, IEC 80000-15 §4.2.2 allows any base ("any base can be
 used without detriment to coherence between SI units"). So a single quantity can have
@@ -592,7 +592,7 @@ built with `point<dBm>(...)`:
 quantity p = point<dBm>(3.0);      // a power level, 3 dBm
 ```
 
-### Origins: where a level's zero comes from
+### Origins
 
 Linear quantities can fall back to a `natural_point_origin` (the physical zero).
 Logarithmic quantities cannot, because $\log(0) = -\infty$. Every logarithmic point origin
@@ -719,7 +719,7 @@ precondition check. Whether to offer an opt-in floor for the engineering pipelin
 need a finite sentinel is
 [Open Question 4](#4-what-to-do-at-the-bottom-of-the-scale-log0).
 
-### Arithmetic in full
+### Arithmetic
 
 Addition and subtraction follow the point/delta table from above. Adding or subtracting a
 raw scalar is ill-formed for every logarithmic quantity (`3 dB + 2` has no physical
@@ -955,7 +955,7 @@ explicitly defer them:
   application space. The `Np/m` rate itself is well-formed, but these composite quantities
   are left to client code.
 
-## Open questions: help us decide
+## Open questions
 
 This is the section we are writing the article for. Each question lists the alternatives
 we weighed, with an honest good-parts and drawbacks breakdown, and our current preference.
