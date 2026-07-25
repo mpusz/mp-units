@@ -63,9 +63,9 @@ The second failure is more obvious once stated. A plain-number `dBm` lets you wr
 inputs. Combining two sources *is* meaningful, but the answer is `13 dBm`
 (`10 mW + 10 mW = 20 mW`), a linear-domain sum the number type never performs. A level is
 a point on a logarithmic scale, anchored at a reference. You can add a *gain* to a level
-and subtract two levels to get a gain, but `level + level` is not one operation (see
-[Arithmetic](#arithmetic)), so a number type that permits it silently
-gives a wrong answer.
+and subtract two levels to get a gain, but `level + level` is not one operation: even the
+`13 dBm` above assumes the sources are incoherent, and coherent ones combine differently
+(see [Arithmetic](#arithmetic)). A number type that permits `+` silently picks one answer.
 
 These are not exotic corner cases. They are the everyday arithmetic of the people who use
 decibels for a living. This is why getting the type system right matters here as much as
@@ -732,9 +732,10 @@ worth spelling out.
     (`10 mW + 10 mW = 20 mW`), not the `20 dBm` a plain-number type would give. But that is
     a *linear-domain* sum, and it is not the only combination. It depends on the kind and
     the physics: two incoherent `60 dB SPL` sources add as intensities and give
-    `63 dB SPL`, while two coherent ones add as pressures and give `66 dB SPL`. A `+`
-    operator cannot pick the right one, so `level + level` stays ill-formed and you write
-    the combination explicitly:
+    `63 dB SPL`, while two coherent ones add as pressures and give `66 dB SPL`. The phase
+    that decides between them lives in the [representation](#representation-types), not the
+    unit. A `+` operator cannot pick the right one, so `level + level` stays ill-formed and
+    you write the combination explicitly:
 
     ```cpp
     quantity total = (a.absolute() + b.absolute()).log_in(dBm);   // 20 mW ≈ 13 dBm
@@ -798,6 +799,17 @@ already gates `sin` and `floor` on `treat_as_floating_point`. Storage, same-unit
 arithmetic, scaling, and comparison work for an integer representation. Only the
 operations that cross the linear boundary (`.linear()`, `.log_in()`) or perform an
 irrational base conversion require a floating-point representation.
+
+A representation can also be complex. A transfer function or phasor is a complex amplitude,
+and its dB level is the magnitude, so the phase rides along on the value while the level
+stays real:
+
+```cpp
+quantity Vc    = std::complex{3.0, 4.0} * V;   // a voltage phasor: |Vc| = 5 V, phase ≈ 53°
+quantity level = abs(Vc).log_in(dBV);          // ≈ 14 dBV from |Vc|; the phase stays in Vc
+```
+
+Phase, and signal correlation with it, lives in the representation, not the unit.
 
 A custom representation joins by supplying the math functions through argument-dependent
 lookup, the same idiom `math.h` already uses
@@ -889,6 +901,9 @@ inline constexpr struct sensitivity :
     quantity_spec<isq::voltage / isq::sound_pressure, is_kind, log_coefficient<2>> {} sensitivity;
 inline constexpr struct dB_VPa : named_unit<"dB(V/Pa)", dB<sensitivity>, V / Pa> {} dB_VPa;
 ```
+
+A measured transfer function is complex (magnitude and phase). The dB level reads the
+magnitude, and the phase rides on the [representation](#representation-types).
 
 ### Frequency intervals and music
 
@@ -1078,6 +1093,12 @@ The alternatives we are weighing:
 - **A customization point** supplying an `(epsilon, sentinel)` pair so the conversion
   saturates to a large finite value, most likely keyed on the unit (a generic `double` has
   no floor, but `dBFS` wants `-400`).
+
+Shipping code already picks finite floors, and they differ: the
+[ossia/jamoma](https://github.com/ossia/libossia/blob/4e8e08c05ce614aa1c64fd3c5bf157227b0d4e0a/src/ossia/network/dataspace/gain.hpp#L24)
+gain dataspace clamps to `-96` dB to avoid `-inf` when ramping, and the audio helper above
+uses `-400`. Different floors for different units is the case for keying the customization
+point on the unit.
 
 Author preference leans toward the customization point, keyed on the unit, with the bare
 IEEE 754 behavior as the default when no floor is configured. We would like to hear how
