@@ -852,29 +852,31 @@ is the point: these are the communities whose feedback we are asking for. The wh
 catalog at a glance (the `Underlying QS` column gives the `isq::` quantity spec, prefix
 omitted for brevity, or the category for the domain-typed neper):
 
-| Quantity                | Symbol           | Underlying QS            | Type  | Reference        | Base       | Mult |
-|:------------------------|:-----------------|:-------------------------|:------|:-----------------|:-----------|:-----|
-| Power level             | `dBm`            | `power`                  | level | 1 mW             | 10         | 10   |
-| Power level             | `dBW`            | `power`                  | level | 1 W              | 10         | 10   |
-| Sound power level       | `L_W`            | `sound_power`            | level | 1 pW             | 10         | 10   |
-| Sound exposure level    | `L_E`            | `sound_exposure`         | level | 400 µPa²·s (air) | 10         | 10   |
-| Sound exposure level    | `L_E (water)`    | `sound_exposure`         | level | 1 µPa²·s         | 10         | 10   |
-| Voltage level           | `dBu`            | `voltage`                | level | √(3/5) V         | 10         | 20   |
-| Voltage level           | `dBV`            | `voltage`                | level | 1 V              | 10         | 20   |
-| Sound pressure level    | `dB SPL`         | `sound_pressure`         | level | 20 µPa (air)     | 10         | 20   |
-| Sound pressure level    | `dB SPL (water)` | `sound_pressure`         | level | 1 µPa            | 10         | 20   |
-| Transfer function level | `dB(V/Pa)`       | `voltage/sound_pressure` | level | 1 V/Pa           | 10         | 20   |
-| Power ratio (gain)      | `dB`             | `dimensionless`          | gain  | none             | 10         | 10   |
-| Amplitude ratio         | `Np`             | root-power               | gain  | none             | e          | 1    |
-| Frequency interval      | `oct`            | `frequency`              | gain  | none             | 2          | 1    |
-| Frequency interval      | `dec`            | `frequency`              | gain  | none             | 10         | 1    |
-| Frequency interval      | `semitone`       | `frequency`              | gain  | none             | 2^(1/12)   | 1    |
-| Frequency interval      | `cent`           | `frequency`              | gain  | none             | 2^(1/1200) | 1    |
-| Information content     | `Sh`             | `information_content`    | gain  | none             | 2          | 1    |
-| Information content     | `nat`            | `information_content`    | gain  | none             | e          | 1    |
-| Information content     | `Hart`           | `information_content`    | gain  | none             | 10         | 1    |
-| pH                      | `pH`             | `concentration`          | level | 1 mol/L          | 10         | −1   |
-| Stellar magnitude       | `mag`            | `irradiance`             | level | defined flux     | 10         | −2.5 |
+| Quantity                | Symbol           | Underlying QS            | Type  | Reference         | Base       | Mult |
+|:------------------------|:-----------------|:-------------------------|:------|:------------------|:-----------|:-----|
+| Power level             | `dBm`            | `power`                  | level | 1 mW              | 10         | 10   |
+| Power level             | `dBW`            | `power`                  | level | 1 W               | 10         | 10   |
+| Sound power level       | `L_W`            | `sound_power`            | level | 1 pW              | 10         | 10   |
+| Sound exposure level    | `L_E`            | `sound_exposure`         | level | 400 µPa²·s (air)  | 10         | 10   |
+| Sound exposure level    | `L_E (water)`    | `sound_exposure`         | level | 1 µPa²·s          | 10         | 10   |
+| Voltage level           | `dBu`            | `voltage`                | level | √(3/5) V          | 10         | 20   |
+| Voltage level           | `dBV`            | `voltage`                | level | 1 V               | 10         | 20   |
+| Sound pressure level    | `dB SPL`         | `sound_pressure`         | level | 20 µPa (air)      | 10         | 20   |
+| Sound pressure level    | `dB SPL (water)` | `sound_pressure`         | level | 1 µPa             | 10         | 20   |
+| Transfer function level | `dB(V/Pa)`       | `voltage/sound_pressure` | level | 1 V/Pa            | 10         | 20   |
+| Antenna gain            | `dBi`            | `dimensionless`          | level | isotropic         | 10         | 10   |
+| Antenna gain            | `dBd`            | `dimensionless`          | level | dipole (2.15 dBi) | 10         | 10   |
+| Power ratio (gain)      | `dB`             | `dimensionless`          | gain  | none              | 10         | 10   |
+| Amplitude ratio         | `Np`             | root-power               | gain  | none              | e          | 1    |
+| Frequency interval      | `oct`            | `frequency`              | gain  | none              | 2          | 1    |
+| Frequency interval      | `dec`            | `frequency`              | gain  | none              | 10         | 1    |
+| Frequency interval      | `semitone`       | `frequency`              | gain  | none              | 2^(1/12)   | 1    |
+| Frequency interval      | `cent`           | `frequency`              | gain  | none              | 2^(1/1200) | 1    |
+| Information content     | `Sh`             | `information_content`    | gain  | none              | 2          | 1    |
+| Information content     | `nat`            | `information_content`    | gain  | none              | e          | 1    |
+| Information content     | `Hart`           | `information_content`    | gain  | none              | 10         | 1    |
+| pH                      | `pH`             | `concentration`          | level | 1 mol/L           | 10         | −1   |
+| Stellar magnitude       | `mag`            | `irradiance`             | level | defined flux      | 10         | −2.5 |
 
 ### Power and root-power levels (RF, audio, acoustics)
 
@@ -884,6 +886,24 @@ level value of a root-power quantity equals that of the corresponding _power_ qu
 (because $20\log F = 10\log F^2$), but the type differs, so a `dB<isq::voltage>` gain
 linearizes as a _voltage_ ratio while a `dB<isq::power>` gain linearizes as a _power_
 ratio.
+
+### Antenna gain (RF link budgets)
+
+Antenna gain is a *power* ratio (factor 10, not 20), referenced to a standard radiator:
+`dBi` against an isotropic source, `dBd` against a half-wave dipole. The two differ by the
+dipole's own 2.15 dBi, so they are two origins offset by 2.15 dB, and `.in(dBi)` converts
+between them like `dBm`↔`dBW`. In a link budget the gain enters as its displacement from
+isotropic (a `point<dBi>` minus the isotropic `0 dBi`), which moves the `dBm` level:
+
+```cpp
+// antenna gain vs a reference radiator: dBi (isotropic, gain 1), dBd (half-wave dipole)
+inline constexpr struct dBi : named_unit<"dBi", dB<dimensionless>, one> {} dBi;
+inline constexpr struct dBd : named_unit<"dBd", dBi, mag_power<10, 43, 200>> {} dBd;  // 0 dBd = 2.15 dBi
+
+quantity tx   = point<dBm>(30.0);                    // 30 dBm = 1 W
+quantity gain = point<dBi>(12.0) - point<dBi>(0.0);  // 12 dB gain over isotropic
+quantity eirp = tx + gain;                           // 42 dBm EIRP
+```
 
 ### Transfer functions (microphone sensitivity, transfer impedance)
 
