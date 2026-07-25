@@ -38,11 +38,15 @@ add_mp_units_module(
             include/mp-units/bits/hacks.h
             include/mp-units/bits/import_std_prelude.h
             include/mp-units/bits/module_macros.h
+            include/mp-units/bits/quantity_spec_conversion_impl.h
+            include/mp-units/bits/quantity_spec_equation_conversion.h
+            include/mp-units/bits/quantity_spec_hierarchy_conversion.h
             include/mp-units/bits/quantity_spec_hierarchy.h
             include/mp-units/bits/ratio.h
             include/mp-units/bits/sudo_cast.h
             include/mp-units/bits/text_tools.h
             include/mp-units/bits/type_list.h
+            include/mp-units/bits/unit_conversion_impl.h
             include/mp-units/bits/unit_magnitude.h
             include/mp-units/bits/unsatisfied.h
             include/mp-units/ext/algorithm.h
@@ -65,6 +69,8 @@ add_mp_units_module(
             include/mp-units/framework/quantity_point.h
             include/mp-units/framework/quantity_point_concepts.h
             include/mp-units/framework/quantity_spec.h
+            include/mp-units/framework/quantity_spec_conversion.h
+            include/mp-units/framework/quantity_spec_definitions.h
             include/mp-units/framework/quantity_spec_concepts.h
             include/mp-units/framework/quantity_traits.h
             include/mp-units/framework/reference.h
@@ -75,6 +81,9 @@ add_mp_units_module(
             include/mp-units/framework/symbol_text.h
             include/mp-units/framework/symbolic_expression.h
             include/mp-units/framework/unit.h
+            include/mp-units/framework/unit_conversion.h
+            include/mp-units/framework/unit_definitions.h
+            include/mp-units/framework/unit_text.h
             include/mp-units/framework/unit_concepts.h
             include/mp-units/framework/unit_magnitude.h
             include/mp-units/framework/unit_magnitude_concepts.h
