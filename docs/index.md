@@ -111,16 +111,16 @@ Harvard Bridge length = 364.4 smoot (2034.6 ft, 620.14 m) ± 1 εar
     [P3045](https://wg21.link/p3045) ·
     [P4185](https://wg21.link/p4185)
 
-!!! tip "Bring it to your team"
+!!! tip "Learn it from the author"
 
     The [Tutorials](tutorials/index.md), [Workshops](workshops/index.md), and
     [How-to Guides](how_to_guides/index.md) are written for self-study and cover the whole library.
 
-    These pages tell you **how**. For the **why**, have it taught: the library's author runs a two-day
-    workshop covering the reasoning behind the design decisions, the trade-offs each one resolves, and the
-    modeling questions that only come up once a real codebase is involved. It goes further than the
-    documentation does, and the exercises are re-skinned into the vocabulary of your team's domain, so your
-    engineers practise on quantities they recognise rather than on textbook examples.
+    These pages tell you **how**. For the **why**, have it taught: a two-day workshop covering the reasoning
+    behind the design decisions, the trade-offs each one resolves, and the modeling questions that only come
+    up once a real codebase is involved. It goes further than the documentation does, and the exercises are
+    re-skinned into the vocabulary of your team's domain, so your engineers practise on quantities they
+    recognise rather than on textbook examples.
 
     What those domains turn out to need feeds back into the library and the standardization proposal, which
     is the same evidence the field trials above ask for.
