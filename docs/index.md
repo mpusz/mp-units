@@ -110,3 +110,18 @@ Harvard Bridge length = 364.4 smoot (2034.6 ft, 620.14 m) ± 1 εar
     [P2980](https://wg21.link/p2980) ·
     [P3045](https://wg21.link/p3045) ·
     [P4185](https://wg21.link/p4185)
+
+!!! tip "Learning it with your team"
+
+    The [Tutorials](tutorials/index.md), [Workshops](workshops/index.md), and
+    [How-to Guides](how_to_guides/index.md) are written for self-study and cover the whole library.
+
+    These pages tell you **how**. If you want the **why**, the library's author runs a two-day workshop,
+    [Domain Modeling with the C++ Type System](https://train-it.eu/workshops/domain-modeling-with-types/):
+    the reasoning behind the design decisions, the trade-offs each one resolves, and the modeling questions
+    that only come up once a real codebase is involved. It goes further than the documentation does, and the
+    exercises are re-skinned into the vocabulary of your team's domain, so your engineers practise on
+    quantities they recognise rather than on textbook examples.
+
+    What those domains turn out to need feeds back into the library and the standardization proposal, which
+    is the same evidence the field trials above ask for.
