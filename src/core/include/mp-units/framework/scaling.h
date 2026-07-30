@@ -98,8 +98,9 @@ template<rounding_mode Mode, typename T, typename D>
   if constexpr (Mode == rounding_mode::truncated)
     return quot;
   else {
-    const quot_type one = get_one(divisor);
-    const quot_type two = one + one;
+    // named `step` rather than `one`, which would shadow the `mp_units::one` unit (MSVC C4459)
+    const quot_type step = get_one(divisor);
+    const quot_type two_steps = step + step;
     // `%` lets the compiler share work with the division it has already emitted, which measures as
     // a couple of instructions fewer on some compilers (GCC produces the same code either way).
     // `%` is optional for a `RealScalar` though, so the subtraction stays as the general form: it
@@ -112,18 +113,18 @@ template<rounding_mode Mode, typename T, typename D>
         return dividend - quot * divisor;
     }();
     using rem_type = std::remove_const_t<decltype(rem)>;
-    const rem_type zero = get_zero(rem);
+    const rem_type no_rem = get_zero(rem);
     if constexpr (Mode == rounding_mode::rounded_down)
-      return rem < zero ? quot - one : quot;
+      return rem < no_rem ? quot - step : quot;
     else if constexpr (Mode == rounding_mode::rounded_up)
-      return rem > zero ? quot + one : quot;
+      return rem > no_rem ? quot + step : quot;
     else {  // rounding_mode::rounded (to nearest, ties to even)
-      const auto abs_rem = rem < zero ? rem_type{-rem} : rem;
+      const auto abs_rem = rem < no_rem ? rem_type{-rem} : rem;
       // `abs_rem > divisor / 2` rephrased as `abs_rem > divisor - abs_rem` to stay exact for
       // odd divisors, and with subtraction instead of `2 * abs_rem` to avoid overflow
       const auto complement = divisor - abs_rem;
-      const bool is_odd = quot - (quot / two) * two != get_zero(quot);
-      if (abs_rem > complement || (abs_rem == complement && is_odd)) return rem < zero ? quot - one : quot + one;
+      const bool is_odd = quot - (quot / two_steps) * two_steps != get_zero(quot);
+      if (abs_rem > complement || (abs_rem == complement && is_odd)) return rem < no_rem ? quot - step : quot + step;
       return quot;
     }
   }
@@ -145,20 +146,22 @@ template<rounding_mode Mode, std::floating_point T>
   // and every value below it fits into `std::int64_t` (the threshold never exceeds 2^63)
   constexpr T integral_threshold = int_power<T>(2, std::numeric_limits<T>::digits - 1);
   if (!(value < integral_threshold && value > -integral_threshold)) return value;
-  const T trunc = static_cast<T>(static_cast<std::int64_t>(value));
+  // `whole` and `lower` rather than `trunc` and `floor`, which would shadow the `mp_units::floor`
+  // and `std::trunc`/`std::floor` function templates (MSVC C4459)
+  const T whole = static_cast<T>(static_cast<std::int64_t>(value));
   if constexpr (Mode == rounding_mode::truncated)
-    return trunc;
+    return whole;
   else if constexpr (Mode == rounding_mode::rounded_down)
-    return trunc > value ? trunc - T{1} : trunc;
+    return whole > value ? whole - T{1} : whole;
   else if constexpr (Mode == rounding_mode::rounded_up)
-    return trunc < value ? trunc + T{1} : trunc;
+    return whole < value ? whole + T{1} : whole;
   else {  // rounding_mode::rounded (to nearest, ties to even)
-    const T floor = trunc > value ? trunc - T{1} : trunc;
-    const T frac = value - floor;
-    if (frac > T{0.5}) return floor + T{1};
-    if (frac < T{0.5}) return floor;
-    const bool is_odd = static_cast<T>(static_cast<std::int64_t>(floor / T{2})) * T{2} != floor;
-    return is_odd ? floor + T{1} : floor;
+    const T lower = whole > value ? whole - T{1} : whole;
+    const T frac = value - lower;
+    if (frac > T{0.5}) return lower + T{1};
+    if (frac < T{0.5}) return lower;
+    const bool is_odd = static_cast<T>(static_cast<std::int64_t>(lower / T{2})) * T{2} != lower;
+    return is_odd ? lower + T{1} : lower;
   }
 }
 
