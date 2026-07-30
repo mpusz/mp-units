@@ -118,9 +118,9 @@ int main()
   // Cross-currency arithmetic does not compile — must go through explicit FX conversion:
   // const quantity bad = pos_usd + pos_eur;  // does not compile
 
-  const quantity pos_eur_usd = round<USD>(exchange_to<us_dollar>(pos_eur, timestamp)).force_in<int>();
-  const quantity pos_gbp_usd = round<USD>(exchange_to<us_dollar>(pos_gbp, timestamp)).force_in<int>();
-  const quantity pos_jpy_usd = round<USD>(exchange_to<us_dollar>(pos_jpy, timestamp)).force_in<int>();
+  const quantity pos_eur_usd = round<USD>(exchange_to<us_dollar>(pos_eur, timestamp)).in<int>(rounded);
+  const quantity pos_gbp_usd = round<USD>(exchange_to<us_dollar>(pos_gbp, timestamp)).in<int>(rounded);
+  const quantity pos_jpy_usd = round<USD>(exchange_to<us_dollar>(pos_jpy, timestamp)).in<int>(rounded);
   const quantity total_usd = pos_usd + pos_eur_usd + pos_gbp_usd + pos_jpy_usd;
 
   std::cout << "Portfolio positions:\n";

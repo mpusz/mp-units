@@ -35,6 +35,7 @@
 #include <mp-units/framework/reference.h>
 #include <mp-units/framework/reference_concepts.h>
 #include <mp-units/framework/representation_concepts.h>
+#include <mp-units/framework/rounding.h>
 #include <mp-units/framework/unit_concepts.h>
 #include <mp-units/framework/value_cast.h>
 #include <mp-units/framework/vector_components.h>
@@ -708,25 +709,52 @@ public:
     return detail::sudo_cast<quantity<detail::make_reference(quantity_spec, ToU{}), ToRep>>(*this);
   }
 
+  template<UnitOf<quantity_spec> ToU, RoundingPolicy Policy>
+    requires detail::ExplicitlyCastable<unit, ToU{}, rep> && detail::ValidRoundingPolicyFor<Policy, rep, rep>
+  [[nodiscard]] constexpr QuantityOf<quantity_spec> auto in(ToU, Policy policy) const
+  {
+    return value_cast<ToU{}>(*this, policy);
+  }
+
+  template<RepresentationOf<quantity_spec> ToRep, RoundingPolicy Policy>
+    requires std::constructible_from<ToRep, rep> && detail::ValidRoundingPolicyFor<Policy, rep, ToRep>
+  [[nodiscard]] constexpr QuantityOf<quantity_spec> auto in(Policy policy) const
+  {
+    return value_cast<ToRep>(*this, policy);
+  }
+
+  template<RepresentationOf<quantity_spec> ToRep, UnitOf<quantity_spec> ToU, RoundingPolicy Policy>
+    requires std::constructible_from<ToRep, rep> && detail::ExplicitlyCastable<unit, ToU{}, ToRep> &&
+             detail::ValidRoundingPolicyFor<Policy, rep, ToRep>
+  [[nodiscard]] constexpr QuantityOf<quantity_spec> auto in(ToU, Policy policy) const
+  {
+    return value_cast<ToU{}, ToRep>(*this, policy);
+  }
+
   template<UnitOf<quantity_spec> ToU>
     requires detail::ExplicitlyCastable<unit, ToU{}, rep>
-  [[nodiscard]] constexpr QuantityOf<quantity_spec> auto force_in(ToU) const
+  [[deprecated(
+    "2.6.0: use `in(unit, policy)` with a rounding policy (e.g. `truncated`) "
+    "instead")]] [[nodiscard]] constexpr QuantityOf<quantity_spec> auto force_in(ToU) const
   {
-    return value_cast<ToU{}>(*this);
+    return in(ToU{}, truncated);
   }
 
   template<RepresentationOf<quantity_spec> ToRep>
     requires std::constructible_from<ToRep, rep>
-  [[nodiscard]] constexpr QuantityOf<quantity_spec> auto force_in() const
+  [[deprecated("2.6.0: use `in<Rep>(policy)` with a rounding policy (e.g. `truncated`) instead")]] [[nodiscard]]
+  constexpr QuantityOf<quantity_spec> auto force_in() const
   {
-    return value_cast<ToRep>(*this);
+    return in<ToRep>(truncated);
   }
 
   template<RepresentationOf<quantity_spec> ToRep, UnitOf<quantity_spec> ToU>
     requires std::constructible_from<ToRep, rep> && detail::ExplicitlyCastable<unit, ToU{}, rep>
-  [[nodiscard]] constexpr QuantityOf<quantity_spec> auto force_in(ToU) const
+  [[deprecated(
+    "2.6.0: use `in<Rep>(unit, policy)` with a rounding policy (e.g. `truncated`) "
+    "instead")]] [[nodiscard]] constexpr QuantityOf<quantity_spec> auto force_in(ToU) const
   {
-    return value_cast<ToU{}, ToRep>(*this);
+    return in<ToRep>(ToU{}, truncated);
   }
 
   // Euclidean (or, for a complex field, Hermitian) norm of a vector or tensor quantity, as a scalar
@@ -800,11 +828,20 @@ public:
     return in(U{}).numerical_value_is_an_implementation_detail_;
   }
 
+  template<UnitOf<quantity_spec> U, RoundingPolicy Policy>
+    requires detail::ExplicitlyCastable<unit, U{}, rep> && detail::ValidRoundingPolicyFor<Policy, rep, rep>
+  [[nodiscard]] constexpr RepresentationOf<quantity_spec> auto numerical_value_in(U, Policy policy) const noexcept
+  {
+    return in(U{}, policy).numerical_value_is_an_implementation_detail_;
+  }
+
   template<UnitOf<quantity_spec> U>
     requires detail::ExplicitlyCastable<unit, U{}, rep>
-  [[nodiscard]] constexpr RepresentationOf<quantity_spec> auto force_numerical_value_in(U) const noexcept
+  [[deprecated(
+    "2.6.0: use `numerical_value_in(unit, policy)` with a rounding policy (e.g. `truncated`) "
+    "instead")]] [[nodiscard]] constexpr RepresentationOf<quantity_spec> auto force_numerical_value_in(U) const noexcept
   {
-    return force_in(U{}).numerical_value_is_an_implementation_detail_;
+    return numerical_value_in(U{}, truncated);
   }
 
   // conversion operators

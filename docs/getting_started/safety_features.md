@@ -97,9 +97,13 @@ quantity length = 1500 * m;
 // quantity<km, int> distance = length;             // ❌ Compile-time error!
 // Error: 1500 m → 1.5 km truncates with int
 
-quantity distance2 = length.force_in(km);           // ✅ OK: explicit truncation (returns quantity)
-auto km_count = length.force_numerical_value_in(km);// ✅ OK: explicit truncation (returns raw int: 1)
-quantity<mm, int> length_mm = length;               // ✅ OK: 1'500'000 mm (no truncation)
+// A rounding policy accepts the loss and states which value you get
+quantity distance2 = length.in(km, truncated);            // ✅ 1 km (towards zero)
+quantity distance3 = length.in(km, rounded);              // ✅ 2 km (nearest, ties to even)
+quantity distance4 = length.in(km, rounded_down);         // ✅ 1 km (towards -infinity)
+quantity distance5 = length.in(km, rounded_up);           // ✅ 2 km (towards +infinity)
+auto km_count = length.numerical_value_in(km, truncated); // ✅ raw int: 1
+quantity<mm, int> length_mm = length;                     // ✅ OK: 1'500'000 mm (no truncation)
 
 // Scaling overflow detection
 quantity length1 = std::int8_t{2} * m;

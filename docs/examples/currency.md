@@ -96,7 +96,7 @@ The example uses both types deliberately:
   const quantity pos_usd = 14'230 * USD;
   const quantity pos_eur =  4'902 * EUR;
   // pos_usd + pos_eur                              // does not compile — must convert first
-  const quantity pos_eur_usd = round<USD>(exchange_to<us_dollar>(pos_eur, timestamp)).force_in<int>();
+  const quantity pos_eur_usd = round<USD>(exchange_to<us_dollar>(pos_eur, timestamp)).in<int>(rounded);
   const quantity total_usd = pos_usd + pos_eur_usd; // ok — same unit
   ```
 
@@ -112,8 +112,10 @@ discipline of explicit FX conversion:
 
 The rounding decision is made explicitly at the call site: `round<USD>` rounds to the
 nearest whole dollar; `floor<USD>` or `ceil<USD>` could be substituted depending on the
-desired settlement convention. `.force_in<int>()` changes the representation type to
-`int` so the result stays consistent with the integer-valued input positions.
+desired settlement convention. `.in<int>(rounded)` changes the representation type to `int`
+so the result stays consistent with the integer-valued input positions. The value is already
+a whole number of dollars at that point, so the policy only states which neighbor to pick
+if it ever stops being one, and `rounded` is the honest answer for money.
 
 ## Example Usage
 

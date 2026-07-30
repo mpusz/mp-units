@@ -34,6 +34,18 @@ This page documents the version history and changes for the **mp-units** library
 - feat: `numerical_value_in(Unit)` and `force_numerical_value_in(Unit)` member functions
         added to `quantity_point` (extract the raw value of a default-origin point; the
         inverse of `point<Unit>(value)`) (#813)
+- (!) feat: rounding policies (`truncated`, `rounded`, `rounded_down`, `rounded_up`) added
+        for truncating conversions; passed as the last argument of `in()`, `numerical_value_in()`,
+        and `value_cast()` (#534)
+- (!) refactor: `force_in()` and `force_numerical_value_in()` deprecated (use `in()` and
+        `numerical_value_in()` with a rounding policy, e.g. `truncated`) (#534)
+- (!) fix: truncating conversions by an irrational factor (e.g. `rad` -> `deg`) now round
+        negative values towards zero, consistently with the rational-factor conversions
+        (previously they rounded towards negative infinity)
+- (!) fix: `quantity_point::min()`/`max()` now report a range bound as the point's own quantity
+        type, so a bound declared in a different unit or representation is no longer truncated
+        (e.g. a `1500 * m` bound on a `km`-based point reported `1 km`, below the declared
+        minimum)
 - feat: `fahrenheit_zero` point origin added (replaces `zeroth_degree_Fahrenheit`)
 - feat: dimensionless quantities with unit one can now be created with `quantity_spec::op(Val)`
         explicit conversions

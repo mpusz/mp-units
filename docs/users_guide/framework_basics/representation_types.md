@@ -603,11 +603,11 @@ affects implicit conversions between quantities.
     representation type with non-standard implicit-conversion semantics.
 
 A specializable variable template that controls **whether** a conversion from
-`quantity<FromUnit, FromRep>` to `quantity<ToUnit, ToRep>` is implicit or requires an
-explicit cast via `value_cast`/`force_in`. It is the policy layer built on top of
-`treat_as_floating_point`: the default formula derives the implicit-conversion decision
-from it, and a specialization overrides that decision for types where the derived rule
-is incorrect:
+`quantity<FromUnit, FromRep>` to `quantity<ToUnit, ToRep>` is implicit or requires
+an explicit cast via `value_cast` or a conversion with a rounding policy. It is the
+layer built on top of `treat_as_floating_point`: the default formula derives the
+implicit-conversion decision from it, and a specialization overrides that decision for
+types where the derived rule is incorrect:
 
 ```cpp
 template<auto FromUnit, typename FromRep, auto ToUnit, typename ToRep>
@@ -684,7 +684,7 @@ constexpr bool mp_units::implicitly_scalable<FromUnit, my_special_int, ToUnit, m
 ```
 
 **Impact:** Controls whether conversions between quantity types are implicit or require
-`value_cast`/`force_in`. See [Value Conversions](../../users_guide/framework_basics/value_conversions.md)
+`value_cast` or a rounding policy. See [Value Conversions](../../users_guide/framework_basics/value_conversions.md)
 for the full picture.
 
 ---

@@ -31,6 +31,7 @@
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/quantity.h>
+#include <mp-units/framework/rounding.h>
 #include <mp-units/framework/unit.h>
 #include <mp-units/framework/value_cast.h>
 #ifdef MP_UNITS_IMPORT_STD
@@ -50,7 +51,7 @@ template<ReferenceOf<isq::angular_measure> auto R, typename Rep>
   using std::sin;
   if constexpr (!treat_as_floating_point<Rep>) {
     // check what is the return type when called with the integral value
-    using rep = decltype(sin(q.force_numerical_value_in(radian)));
+    using rep = decltype(sin(q.numerical_value_in(radian, truncated)));
     // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
     return quantity{sin(value_cast<rep>(q).numerical_value_in(radian)), one};
   } else
@@ -64,7 +65,7 @@ template<ReferenceOf<isq::angular_measure> auto R, typename Rep>
   using std::cos;
   if constexpr (!treat_as_floating_point<Rep>) {
     // check what is the return type when called with the integral value
-    using rep = decltype(cos(q.force_numerical_value_in(radian)));
+    using rep = decltype(cos(q.numerical_value_in(radian, truncated)));
     // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
     return quantity{cos(value_cast<rep>(q).numerical_value_in(radian)), one};
   } else
@@ -78,7 +79,7 @@ template<ReferenceOf<isq::angular_measure> auto R, typename Rep>
   using std::tan;
   if constexpr (!treat_as_floating_point<Rep>) {
     // check what is the return type when called with the integral value
-    using rep = decltype(tan(q.force_numerical_value_in(radian)));
+    using rep = decltype(tan(q.numerical_value_in(radian, truncated)));
     // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
     return quantity{tan(value_cast<rep>(q).numerical_value_in(radian)), one};
   } else
@@ -92,7 +93,7 @@ template<ReferenceOf<dimensionless> auto R, typename Rep>
   using std::asin;
   if constexpr (!treat_as_floating_point<Rep>) {
     // check what is the return type when called with the integral value
-    using rep = decltype(asin(q.force_numerical_value_in(one)));
+    using rep = decltype(asin(q.numerical_value_in(one, truncated)));
     // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
     return quantity{asin(value_cast<rep>(q).numerical_value_in(one)), radian};
   } else
@@ -106,7 +107,7 @@ template<ReferenceOf<dimensionless> auto R, typename Rep>
   using std::acos;
   if constexpr (!treat_as_floating_point<Rep>) {
     // check what is the return type when called with the integral value
-    using rep = decltype(acos(q.force_numerical_value_in(one)));
+    using rep = decltype(acos(q.numerical_value_in(one, truncated)));
     // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
     return quantity{acos(value_cast<rep>(q).numerical_value_in(one)), radian};
   } else
@@ -120,7 +121,7 @@ template<ReferenceOf<dimensionless> auto R, typename Rep>
   using std::atan;
   if constexpr (!treat_as_floating_point<Rep>) {
     // check what is the return type when called with the integral value
-    using rep = decltype(atan(q.force_numerical_value_in(one)));
+    using rep = decltype(atan(q.numerical_value_in(one, truncated)));
     // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
     return quantity{atan(value_cast<rep>(q).numerical_value_in(one)), radian};
   } else
@@ -140,7 +141,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
   using std::atan2;
   if constexpr (!treat_as_floating_point<Rep1> || !treat_as_floating_point<Rep2>) {
     // check what is the return type when called with the integral value
-    using rep = decltype(atan2(y.force_numerical_value_in(unit), x.force_numerical_value_in(unit)));
+    using rep = decltype(atan2(y.numerical_value_in(unit, truncated), x.numerical_value_in(unit, truncated)));
     // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
     return quantity{atan2(value_cast<rep>(y).numerical_value_in(unit), value_cast<rep>(x).numerical_value_in(unit)),
                     radian};

@@ -133,6 +133,14 @@ template<typename T, auto... Vs>
   return (false || ... || is_same_v<MP_UNITS_REMOVE_CONST(decltype(Vs)), T>);
 }
 
+// the first list element is mandatory to disambiguate from the empty-pack case of the
+// NTTP-values overload above
+template<typename T, typename T1, typename... Ts>
+[[nodiscard]] consteval bool contains()
+{
+  return is_same_v<T, T1> || (false || ... || is_same_v<T, Ts>);
+}
+
 template<template<typename...> typename T, typename... Ts>
 [[nodiscard]] consteval bool contains()
 {

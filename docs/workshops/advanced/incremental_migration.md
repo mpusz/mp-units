@@ -383,7 +383,7 @@ int main()
     **Why `quantity_like` types don't satisfy `QuantityOf`:**
 
     - Missing static data members: `reference`, `unit`, `quantity_spec`
-    - Missing member functions: `.in()`, `.force_in()`, `.numerical_value_in()`
+    - Missing member functions: `.in()`, `.in(Unit, policy)`, `.numerical_value_in()`
     - Only conversion functions are defined by `quantity_like_traits`
 
     Choose based on priorities:

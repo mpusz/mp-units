@@ -712,7 +712,7 @@ void example()
 Bounds are enforced at these points:
 
 1. **Construction** from a quantity: `quantity_point{value * unit, origin}`
-2. **Unit conversion**: `qp.in(other_unit)`, `qp.force_in(other_unit)`
+2. **Unit conversion**: `qp.in(other_unit)`, `qp.in(other_unit, policy)`
 3. **Arithmetic operations**: `operator+=`, `operator-=`, `operator++`, `operator--`
 4. **Origin conversion**: `qp.point_for(new_origin)`
 
@@ -1045,9 +1045,9 @@ double celsius = temp.numerical_value_in(deg_C);  // 20.5
 double kelvin = temp.numerical_value_in(K);       // 293.65 (measured from absolute zero)
 ```
 
-A truncating variant, `force_numerical_value_in(Unit)`, is provided for conversions that would
-otherwise be rejected as value-preserving (e.g., an integer representation scaled to a coarser
-unit).
+A truncating variant, `numerical_value_in(Unit, policy)`, is provided for conversions
+that would otherwise be rejected as value-preserving (e.g., an integer representation
+scaled to a coarser unit).
 
 Both member functions are available under exactly the same condition as
 [text output](#text-output-for-points): only when the _point_ uses `default_point_origin(R)`.

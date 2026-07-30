@@ -379,7 +379,7 @@ By default, a conversion between two quantity types is implicit only when it is
 non-truncating: the target representation is floating-point, or both representations are
 integer-like and the unit ratio is an integer multiplier (e.g. `m → mm`). All other
 integer-to-integer conversions (fractional ratios such as `mm → m`) are explicit and
-require `value_cast` or `force_in`.
+require `value_cast` or a conversion with a rounding policy.
 
 If your type has different implicit-conversion semantics, specialize
 [`mp_units::implicitly_scalable`](../../users_guide/framework_basics/representation_types.md#implicitly_scalable):
@@ -629,7 +629,7 @@ custom types.
 - [`customization_points.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/customization_points.h) - User-specializable customization points: the character traits (`numeric_field`, `tensor_order`, `disable_representation`) and CPOs (`real`, `imag`, `modulus`), plus `representation_underlying_type`, `representation_canonical_type`, `treat_as_floating_point`, `representation_values`, `constraint_violation_handler`, `quantity_like_traits`, `quantity_point_like_traits`
 - [`quantity_traits.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/quantity_traits.h) - Public helpers (`unit_for`, `reference_for`, `rep_for`)
 - [`scaling.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/scaling.h) - Built-in scaling implementation
-- [`value_cast.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/value_cast.h) - `value_cast`, `force_in`, `is_integral_scaling`, and `implicitly_scalable`
+- [`value_cast.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/value_cast.h) - `value_cast`, `is_integral_scaling`, and `implicitly_scalable`
 - [`cartesian_vector.h`](https://github.com/mpusz/mp-units/blob/master/src/utility/include/mp-units/utility/cartesian_vector.h) - Vector implementation example
 - [`cartesian_tensor.h`](https://github.com/mpusz/mp-units/blob/master/src/utility/include/mp-units/utility/cartesian_tensor.h) - Second-order tensor implementation example
 <!-- markdownlint-enable MD013 -->

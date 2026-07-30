@@ -25,6 +25,7 @@
 #include <mp-units/ext/type_traits.h>
 #include <mp-units/framework/quantity_concepts.h>
 #include <mp-units/framework/reference_concepts.h>
+#include <mp-units/framework/rounding.h>
 #include <mp-units/framework/scaling.h>
 #include <mp-units/framework/unit.h>
 #include <mp-units/framework/unit_magnitude.h>
@@ -64,7 +65,8 @@ struct conversion_type_traits {
  *
  * @tparam To a target quantity type to cast to
  */
-template<Quantity To, typename FwdFrom, Quantity From = std::remove_cvref_t<FwdFrom>>
+template<Quantity To, rounding_mode Mode = rounding_mode::truncated, typename FwdFrom,
+         Quantity From = std::remove_cvref_t<FwdFrom>>
   requires(castable(From::quantity_spec, To::quantity_spec)) &&
           ((equivalent(From::unit, To::unit) && std::constructible_from<typename To::rep, typename From::rep>) ||
            (!equivalent(From::unit, To::unit)))  // && scalable_with_<typename To::rep>))
@@ -72,14 +74,21 @@ template<Quantity To, typename FwdFrom, Quantity From = std::remove_cvref_t<FwdF
 [[nodiscard]] constexpr Quantity auto sudo_cast(FwdFrom&& q)
 {
   if constexpr (equivalent(From::unit, To::unit)) {
-    // no scaling of the number needed
-    return To{
-      detail::silent_cast<typename To::rep>(std::forward<FwdFrom>(q).numerical_value_is_an_implementation_detail_),
-      To::reference};
+    // no scaling of the number needed; rounding applies only when a floating-point source
+    // is narrowed to an integral destination (`silent_cast` truncates that case)
+    if constexpr (Mode != rounding_mode::truncated && treat_as_floating_point<typename From::rep> &&
+                  !treat_as_floating_point<typename To::rep>)
+      return To{detail::silent_cast<typename To::rep>(
+                  detail::round_fp<Mode>(std::forward<FwdFrom>(q).numerical_value_is_an_implementation_detail_)),
+                To::reference};
+    else
+      return To{
+        detail::silent_cast<typename To::rep>(std::forward<FwdFrom>(q).numerical_value_is_an_implementation_detail_),
+        To::reference};
   } else {
     constexpr UnitMagnitude auto c_mag = get_canonical_unit(From::unit).mag / get_canonical_unit(To::unit).mag;
 
-    auto res = scale<typename To::rep>(c_mag, q.numerical_value_is_an_implementation_detail_);
+    auto res = scale_impl<typename To::rep, Mode>(c_mag, q.numerical_value_is_an_implementation_detail_);
     return quantity{std::move(res), To::reference};
   }
 }
@@ -93,7 +102,8 @@ template<Quantity To, typename FwdFrom, Quantity From = std::remove_cvref_t<FwdF
  *
  * @tparam ToQP a target quantity point type to which to cast to
  */
-template<QuantityPoint ToQP, typename FwdFromQP, QuantityPoint FromQP = std::remove_cvref_t<FwdFromQP>>
+template<QuantityPoint ToQP, rounding_mode Mode = rounding_mode::truncated, typename FwdFromQP,
+         QuantityPoint FromQP = std::remove_cvref_t<FwdFromQP>>
   requires(mp_units::castable(FromQP::quantity_spec, ToQP::quantity_spec)) &&
           (detail::same_absolute_point_origins(ToQP::point_origin, FromQP::point_origin)) &&
           ((equivalent(FromQP::unit, ToQP::unit) &&
@@ -104,7 +114,7 @@ template<QuantityPoint ToQP, typename FwdFromQP, QuantityPoint FromQP = std::rem
   if constexpr (is_same_v<MP_UNITS_NONCONST_TYPE(ToQP::point_origin), MP_UNITS_NONCONST_TYPE(FromQP::point_origin)>) {
     // Same origin: delegate entirely to the quantity sudo_cast — no offset arithmetic needed.
     return quantity_point{
-      sudo_cast<typename ToQP::quantity_type>(std::forward<FwdFromQP>(qp).quantity_from(FromQP::point_origin)),
+      sudo_cast<typename ToQP::quantity_type, Mode>(std::forward<FwdFromQP>(qp).quantity_from(FromQP::point_origin)),
       ToQP::point_origin};
   } else {
     // Different origins: we need to (a) convert the rep/unit, (b) add the origin offset.
@@ -130,9 +140,11 @@ template<QuantityPoint ToQP, typename FwdFromQP, QuantityPoint FromQP = std::rem
     // Helper: statically compute the origin offset expressed in the given quantity type Q.
     // We go via quantity_point subtraction to handle all origin relationships correctly,
     // including cases where two natural_point_origins of different units exist.
+    // The offset conversion applies `Mode` too so that a non-representable offset (e.g.
+    // -273.15 K with an integral rep) is rounded consistently with the value itself.
     constexpr auto offset_as = [&]<typename Q>(std::type_identity<Q>) {
       constexpr auto zero = quantity{typename Q::rep{0}, Q::reference};
-      return sudo_cast<Q>(quantity_point{zero, FromQP::point_origin} - quantity_point{zero, ToQP::point_origin});
+      return sudo_cast<Q, Mode>(quantity_point{zero, FromQP::point_origin} - quantity_point{zero, ToQP::point_origin});
     };
 
     constexpr auto output_unit_ref = make_reference(FromQP::quantity_spec, ToQP::unit);
@@ -143,7 +155,7 @@ template<QuantityPoint ToQP, typename FwdFromQP, QuantityPoint FromQP = std::rem
       using intermediate_type = quantity<FromQP::reference, c_rep_type>;
       constexpr auto offset = offset_as(std::type_identity<intermediate_type>{});
       return quantity_point{
-        sudo_cast<typename ToQP::quantity_type>(
+        sudo_cast<typename ToQP::quantity_type, Mode>(
           sudo_cast<intermediate_type>(std::forward<FwdFromQP>(qp).quantity_from(FromQP::point_origin)) + offset),
         ToQP::point_origin};
     } else if constexpr (treat_as_floating_point<c_type>) {
@@ -160,7 +172,7 @@ template<QuantityPoint ToQP, typename FwdFromQP, QuantityPoint FromQP = std::rem
       }();
       using intermediate_type = quantity<intermediate_ref, c_type>;
       return quantity_point{
-        sudo_cast<typename ToQP::quantity_type>(
+        sudo_cast<typename ToQP::quantity_type, Mode>(
           quantity_point{sudo_cast<intermediate_type>(std::forward<FwdFromQP>(qp).quantity_from(FromQP::point_origin)),
                          FromQP::point_origin}
             .point_for(ToQP::point_origin)
@@ -183,16 +195,18 @@ template<QuantityPoint ToQP, typename FwdFromQP, QuantityPoint FromQP = std::rem
         using intermediate_type = quantity<output_unit_ref, c_rep_type>;
         constexpr auto offset = offset_as(std::type_identity<intermediate_type>{});
         return quantity_point{
-          sudo_cast<typename ToQP::quantity_type>(
-            sudo_cast<intermediate_type>(std::forward<FwdFromQP>(qp).quantity_from(FromQP::point_origin)) + offset),
+          sudo_cast<typename ToQP::quantity_type, Mode>(
+            sudo_cast<intermediate_type, Mode>(std::forward<FwdFromQP>(qp).quantity_from(FromQP::point_origin)) +
+            offset),
           ToQP::point_origin};
       } else {
         // offset overflows in the output unit — use the input unit instead
         using intermediate_type = quantity<FromQP::reference, c_rep_type>;
         constexpr auto offset = offset_as(std::type_identity<intermediate_type>{});
         return quantity_point{
-          sudo_cast<typename ToQP::quantity_type>(
-            sudo_cast<intermediate_type>(std::forward<FwdFromQP>(qp).quantity_from(FromQP::point_origin)) + offset),
+          sudo_cast<typename ToQP::quantity_type, Mode>(
+            sudo_cast<intermediate_type, Mode>(std::forward<FwdFromQP>(qp).quantity_from(FromQP::point_origin)) +
+            offset),
           ToQP::point_origin};
       }
     }

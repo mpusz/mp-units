@@ -309,6 +309,16 @@ TEST_CASE("linear algebra type as a quantity representation")
 namespace {
 using vec3i = utility::cartesian_vector<int>;
 [[nodiscard]] constexpr vec3i make_vec3i(int x, int y, int z) { return {x, y, z}; }
+
+// An adjusting policy has to decide which side of a rounding boundary the exact result falls on, and
+// a vector provides no single value to compare against one, so only `truncated` is available for it.
+template<typename Policy>
+concept vector_rounding_valid =
+  requires(quantity<isq::displacement[si::metre], vec3i> q, Policy p) { q.in(si::kilo<si::metre>, p); };
+static_assert(vector_rounding_valid<truncated_t>);
+static_assert(!vector_rounding_valid<rounded_t>);
+static_assert(!vector_rounding_valid<rounded_down_t>);
+static_assert(!vector_rounding_valid<rounded_up_t>);
 }  // namespace
 
 TEST_CASE("built-in cartesian_vector with an integral representation")
@@ -319,10 +329,10 @@ TEST_CASE("built-in cartesian_vector with an integral representation")
     CHECK(v.numerical_value_in(m) == vec3i{3000, 2000, 1000});
   }
 
-  SECTION("truncating unit conversion requires the forcing interface")
+  SECTION("truncating unit conversion requires a rounding policy")
   {
     const quantity v = make_vec3i(1500, 1500, 1500) * isq::displacement[m];
-    CHECK(v.force_numerical_value_in(km) == vec3i{1, 1, 1});
+    CHECK(v.numerical_value_in(km, truncated) == vec3i{1, 1, 1});
   }
 
   SECTION("integral multiplication and division by a scalar number")

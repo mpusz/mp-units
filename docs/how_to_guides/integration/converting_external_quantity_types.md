@@ -138,14 +138,15 @@ no value truncation would occur:
   because the conversion factor preserves all values
 - **Truncating conversions require explicit action**: Converting from a finer unit to
   a coarser one with a non-floating-point representation (e.g., millimeters to meters
-  for integers) requires `.force_in()` because information would be lost
+  for integers) requires a rounding policy (e.g. `.in(Unit, truncated)`) because
+  information would be lost
 
 Examples of compile-time safety checks:
 
 ```cpp
 Meter height{42};
 
-quantity<isq::height[m]> h3 = height;      // ✅ OK
+quantity<isq::height[m]> h3 = height;        // ✅ OK
 quantity<isq::height[mm], int> h4 = height;  // ✅ OK
 
 // ❌ Compile error: truncation while converting from meters to kilometers
@@ -161,14 +162,14 @@ print(Meter(h4));
 **To fix these issues:**
 
 ```cpp
-// Explicitly allow truncation
-quantity<isq::height[km], int> h5 = quantity{height}.force_in(km);
+// State how the leftover meters should round (42 m is 0 km either way)
+quantity<isq::height[km], int> h5 = quantity{height}.in(km, truncated);
 
-// Force conversion double → int
-print(Meter(h3.force_in<int>()));
+// double → int, rounding to the nearest integer
+print(Meter(h3.in<int>(rounded)));
 
-// Force conversion mm → m
-print(Meter(h4.force_in(m)));
+// mm → m, rounding to the nearest meter
+print(Meter(h4.in(m, rounded)));
 ```
 
 ## Querying Type Information

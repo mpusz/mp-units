@@ -1125,4 +1125,23 @@ static_assert(std::is_convertible_v<quantity<isq::length[si::metre], safe_int<in
 static_assert(!std::is_convertible_v<quantity<isq::length[si::milli<si::metre>], safe_int<int>>,
                                      quantity<isq::length[si::metre], safe_int<int>>>);
 
+// `safe_int` is a drop-in replacement for its underlying integral type, so every rounding policy
+// works with it: 1567 mm is 1.567 m, resolved exactly as it would be for `int`.
+inline constexpr quantity<isq::length[si::milli<si::metre>], safe_int<int>> mm_1567{safe_int<int>{1567} *
+                                                                                    si::milli<si::metre>};
+static_assert(mm_1567.in(si::metre, truncated).numerical_value_in(si::metre) == safe_int<int>{1});
+static_assert(mm_1567.in(si::metre, rounded).numerical_value_in(si::metre) == safe_int<int>{2});
+static_assert(mm_1567.in(si::metre, rounded_down).numerical_value_in(si::metre) == safe_int<int>{1});
+static_assert(mm_1567.in(si::metre, rounded_up).numerical_value_in(si::metre) == safe_int<int>{2});
+static_assert((-mm_1567).in(si::metre, truncated).numerical_value_in(si::metre) == safe_int<int>{-1});
+static_assert((-mm_1567).in(si::metre, rounded_down).numerical_value_in(si::metre) == safe_int<int>{-2});
+
+// Rounding a floating-point value to an integral one works on the value's integral part, which the
+// engine can only do for a standard floating-point source.
+template<typename Policy>
+concept lossy_fp_conversion_valid =
+  requires(quantity<isq::length[si::metre], constrained<double>> q, Policy p) { q.template in<int>(p); };
+static_assert(lossy_fp_conversion_valid<truncated_t>);
+static_assert(!lossy_fp_conversion_valid<rounded_t>);
+
 }  // namespace

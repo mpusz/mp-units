@@ -86,7 +86,7 @@ struct Fill {
 
 [[nodiscard]] Notional notional(const Fill& f)
 {
-  const quantity price_in_usd8 = f.price.quantity_from_zero().force_in<std::int64_t>(us_dollar_8);
+  const quantity price_in_usd8 = f.price.quantity_from_zero().in<std::int64_t>(us_dollar_8, rounded);
   return price_in_usd8 * f.qty;
 }
 

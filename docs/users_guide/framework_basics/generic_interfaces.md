@@ -66,16 +66,18 @@ some issues start to be clearly visible:
    Trying to use an integral type in this scenario will work only for `s1`, while `s2` and
    `s3` will fail to compile. Failing to compile is a good thing here as the library tries
    to prevent the user from doing a clearly wrong thing. To make the code compile, the user
-   needs to use dedicated [`value_cast` or `force_in`](value_conversions.md#value-truncating-conversions)
+   needs to use a dedicated [`value_cast` or a conversion with a rounding policy](value_conversions.md#value-truncating-conversions)
    like this:
 
     ```cpp
     quantity<isq::speed[mi / h]> s2 = avg_speed(value_cast<km>(140 * mi), 2 * h);
-    quantity<isq::speed[m / s]> s3 = avg_speed((20 * m).force_in(km), (2 * s).force_in(h));
+    quantity<isq::speed[m / s]> s3 = avg_speed((20 * m).in(km, truncated), (2 * s).in(h, truncated));
     ```
 
     but the above will obviously provide an incorrect behavior (e.g., division by `0` in
-    the evaluation of `s3`).
+    the evaluation of `s3`). No rounding policy rescues this: `20 m` is `0 km` to the nearest
+    kilometer as well. A policy states which representable value you get, not how to keep
+    information that the target type cannot hold.
 
 
 ## A naive solution

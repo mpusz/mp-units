@@ -118,7 +118,7 @@ int main()
       print_trip_stats(duration.in<double>(min), distance, avg_speed.in(km / h));
 
       // Schedule alert
-      car_clock::duration dur_to_arrival = (5 * km / avg_speed).force_in<car_clock::rep>();
+      car_clock::duration dur_to_arrival = (5 * km / avg_speed).in<car_clock::rep>(truncated);
       schedule_driver_alert(tp2 + dur_to_arrival);
     }
     ```
@@ -165,7 +165,7 @@ int main()
     - No conversion needed - types match perfectly
     - Conversion back to `std::chrono` is implicit when there's no precision loss
 
-    ### Explicit conversions with `.force_in<Rep>(Unit)`
+    ### Explicit conversions with `.in<Rep>(Unit, policy)`
 
     When truncation or overflow is possible, use explicit conversion:
 
@@ -173,15 +173,34 @@ int main()
     quantity avg_speed = distance / duration;  // mp-units calculation
 
     // Truncating conversion requires explicit cast:
-    car_clock::duration dur = (5 * km / avg_speed).force_in<car_clock::rep>(unit_for<car_clock::duration>);
+    car_clock::duration dur = (5 * km / avg_speed).in<car_clock::rep>(unit_for<car_clock::duration>, truncated);
     schedule_alert(tp2 + dur);  // Use result with std::chrono
     ```
 
-    The `.force_in<Rep>(Unit)` method:
+    The `.in<Rep>(Unit, policy)` method:
 
     - Converts the quantity to the specified unit and representation type
-    - Explicitly acknowledges potential precision loss (truncation, overflow)
+    - States which representable value you get when the conversion cannot be exact
     - Returns the representation type expected by `std::chrono` duration constructors
+
+    The policy vocabulary maps onto the `std::chrono` conversion functions, so the choice you
+    would make there is the choice you make here:
+
+    | **mp-units**   | `std::chrono`   |
+    |----------------|-----------------|
+    | `truncated`    | `duration_cast` |
+    | `rounded`      | `round`         |
+    | `rounded_down` | `floor`         |
+    | `rounded_up`   | `ceil`          |
+
+    `truncated` above converts whole nanoseconds, so the choice does not change the result.
+    It starts to matter as soon as the target unit is coarser. For a driver alert expressed
+    in whole minutes, `rounded_up` is the honest policy, because it never promises an earlier
+    arrival than the computation supports:
+
+    ```cpp
+    quantity time_to_arrival = (5 * km / avg_speed).in<int>(min, rounded_up);
+    ```
 
     ### Best practices for hybrid applications
 

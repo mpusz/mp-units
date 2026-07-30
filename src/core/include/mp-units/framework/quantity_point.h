@@ -29,6 +29,7 @@
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/quantity.h>
 #include <mp-units/framework/quantity_point_concepts.h>
+#include <mp-units/framework/rounding.h>
 #include <mp-units/overflow_policies.h>
 #if MP_UNITS_HOSTED
 #include <mp-units/bits/format.h>
@@ -93,7 +94,7 @@ template<Quantity auto Q>
   else {
     constexpr auto canonical = get_canonical_unit(Q.unit);
     constexpr auto value_in_coherent_unit = mag<detail::abs(v)> * canonical.mag;
-    return Q.force_in(pow<-1>(denominator(value_in_coherent_unit)) * canonical.reference_unit);
+    return Q.in(pow<-1>(denominator(value_in_coherent_unit)) * canonical.reference_unit, truncated);
   }
 }
 
@@ -521,6 +522,22 @@ struct quantity_point_iface {
 #endif  // MP_UNITS_HOSTED
 };
 
+// Re-expresses a range bound as the point's own quantity type. That conversion is value-preserving
+// for every bounded point type the shipped policies can instantiate (they construct the point's
+// quantity type from the bound, which the framework only permits when nothing is lost), so the bound
+// is reported exactly. A user-defined bounds policy that does not need such a construction may
+// declare a bound that only converts by truncating; that one is rounded *inwards*, because a `min`
+// rounded towards negative infinity or a `max` rounded towards positive infinity would report
+// a range wider than the declared one and admit values outside it.
+template<RoundingPolicy Policy, Quantity ToQ, Quantity Q>
+[[nodiscard]] constexpr ToQ bound_as(const Q& bound)
+{
+  if constexpr (std::convertible_to<Q, ToQ>)
+    return ToQ{bound};
+  else
+    return value_cast<ToQ>(bound, Policy{});
+}
+
 }  // namespace detail
 
 MP_UNITS_EXPORT_BEGIN
@@ -561,7 +578,7 @@ public:
       if constexpr (std::same_as<std::remove_cvref_t<decltype(PO._bounds_.min)>, detail::zero_quantity_t>)
         return {quantity_type::zero(), PO};
       else
-        return {PO._bounds_.min.force_in(unit), PO};
+        return {detail::bound_as<rounded_up_t, quantity_type>(PO._bounds_.min), PO};
     } else {
       return {quantity_type::min(), PO};
     }
@@ -571,7 +588,7 @@ public:
     requires requires { PO._bounds_.max; } || requires { quantity_type::max(); }
   {
     if constexpr (requires { PO._bounds_.max; })
-      return {PO._bounds_.max.force_in(unit), PO};
+      return {detail::bound_as<rounded_down_t, quantity_type>(PO._bounds_.max), PO};
     else
       return {quantity_type::max(), PO};
   }
@@ -736,11 +753,21 @@ public:
     return in(U{}).quantity_from_zero().numerical_value_in(U{});
   }
 
+  template<UnitOf<quantity_spec> U, RoundingPolicy Policy>
+    requires(PO == default_point_origin(R)) && detail::ExplicitlyCastable<unit, U{}, rep> &&
+            detail::ValidRoundingPolicyFor<Policy, rep, rep>
+  [[nodiscard]] constexpr RepresentationOf<quantity_spec> auto numerical_value_in(U, Policy policy) const noexcept
+  {
+    return in(U{}, policy).quantity_from_zero().numerical_value_in(U{});
+  }
+
   template<UnitOf<quantity_spec> U>
     requires(PO == default_point_origin(R)) && detail::ExplicitlyCastable<unit, U{}, rep>
-  [[nodiscard]] constexpr RepresentationOf<quantity_spec> auto force_numerical_value_in(U) const noexcept
+  [[deprecated(
+    "2.6.0: use `numerical_value_in(unit, policy)` with a rounding policy (e.g. `truncated`) "
+    "instead")]] [[nodiscard]] constexpr RepresentationOf<quantity_spec> auto force_numerical_value_in(U) const noexcept
   {
-    return force_in(U{}).quantity_from_zero().numerical_value_in(U{});
+    return numerical_value_in(U{}, truncated);
   }
 
 private:
@@ -778,25 +805,52 @@ public:
     return in_impl(ToU{}, [](const auto& q) { return q.template in<ToRep>(ToU{}); });
   }
 
+  template<UnitOf<quantity_spec> ToU, RoundingPolicy Policy>
+    requires detail::ExplicitlyCastable<unit, ToU{}, rep> && detail::ValidRoundingPolicyFor<Policy, rep, rep>
+  [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto in(ToU, Policy policy) const
+  {
+    return in_impl(ToU{}, [policy](const auto& q) { return q.in(ToU{}, policy); });
+  }
+
+  template<RepresentationOf<quantity_spec> ToRep, RoundingPolicy Policy>
+    requires std::constructible_from<ToRep, rep> && detail::ValidRoundingPolicyFor<Policy, rep, ToRep>
+  [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto in(Policy policy) const
+  {
+    return ::mp_units::quantity_point{quantity_ref_from(point_origin).template in<ToRep>(policy), point_origin};
+  }
+
+  template<RepresentationOf<quantity_spec> ToRep, UnitOf<quantity_spec> ToU, RoundingPolicy Policy>
+    requires std::constructible_from<ToRep, rep> && detail::ExplicitlyCastable<unit, ToU{}, ToRep> &&
+             detail::ValidRoundingPolicyFor<Policy, rep, ToRep>
+  [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto in(ToU, Policy policy) const
+  {
+    return in_impl(ToU{}, [policy](const auto& q) { return q.template in<ToRep>(ToU{}, policy); });
+  }
+
   template<UnitOf<quantity_spec> ToU>
     requires detail::ExplicitlyCastable<unit, ToU{}, rep>
-  [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto force_in(ToU) const
+  [[deprecated(
+    "2.6.0: use `in(unit, policy)` with a rounding policy (e.g. `truncated`) "
+    "instead")]] [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto force_in(ToU) const
   {
-    return in_impl(ToU{}, [](const auto& q) { return q.force_in(ToU{}); });
+    return in(ToU{}, truncated);
   }
 
   template<RepresentationOf<quantity_spec> ToRep>
     requires std::constructible_from<ToRep, rep>
-  [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto force_in() const
+  [[deprecated("2.6.0: use `in<Rep>(policy)` with a rounding policy (e.g. `truncated`) instead")]] [[nodiscard]]
+  constexpr QuantityPointOf<quantity_spec> auto force_in() const
   {
-    return ::mp_units::quantity_point{quantity_ref_from(point_origin).template force_in<ToRep>(), point_origin};
+    return in<ToRep>(truncated);
   }
 
   template<RepresentationOf<quantity_spec> ToRep, UnitOf<quantity_spec> ToU>
     requires std::constructible_from<ToRep, rep> && detail::ExplicitlyCastable<unit, ToU{}, rep>
-  [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto force_in(ToU) const
+  [[deprecated(
+    "2.6.0: use `in<Rep>(unit, policy)` with a rounding policy (e.g. `truncated`) "
+    "instead")]] [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto force_in(ToU) const
   {
-    return in_impl(ToU{}, [](const auto& q) { return q.template force_in<ToRep>(ToU{}); });
+    return in<ToRep>(ToU{}, truncated);
   }
 
   // conversion operators

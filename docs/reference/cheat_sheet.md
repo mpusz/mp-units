@@ -294,19 +294,29 @@ constexpr Unit auto two_pi = mag<2> * π;
 ### Unit Conversions
 
 ```cpp
-// Explicit conversions
-quantity distance = (5 * km).in(m);                                  // 5000 m
-quantity speed = (60 * km / h).force_in(m / s);                      // 16 m/s (1)
-quantity temp = delta<deg_C>(3).in<double>(deg_F);                   // 5.4 ℉
-quantity pressure = (101325. * Pa).in(bar);                          // 1.01325 bar
+// Value-preserving conversions
+quantity distance = (5 * km).in(m);                            // 5000 m
+quantity temp = delta<deg_C>(3).in<double>(deg_F);             // 5.4 ℉
+quantity pressure = (101325. * Pa).in(bar);                    // 1.01325 bar
+int distance_value = (42 * m).numerical_value_in(m);           // 42
 
-// Value extraction
-int distance_value = (42 * m).numerical_value_in(m);                 // 42
-double speed_value = (100 * km / h).force_numerical_value_in(m / s); // 27 (2)
+// Truncating conversions: the rounding policy is the last argument
+quantity speed = (60 * km / h).in(m / s, truncated);           // 16 m/s
+quantity d1 = (1567 * m).in(km, truncated);                    // 1 km
+quantity d2 = (1567 * m).in(km, rounded);                      // 2 km
+quantity d3 = (1567 * m).in(km, rounded_down);                 // 1 km
+quantity d4 = (1567 * m).in(km, rounded_up);                   // 2 km
+quantity d5 = (1.23 * s).in<int>(ms, rounded);                 // 1230 ms (unit and rep)
+int speed_value = (100 * km / h).numerical_value_in(m / s, rounded);  // 28
+quantity d6 = value_cast<km>(1567 * m, rounded);               // 2 km (generic contexts)
 ```
 
-1. Potential value truncation.
-2. Potential value truncation.
+| Policy         | Rounds towards                    | `std::chrono` counterpart |
+|----------------|-----------------------------------|---------------------------|
+| `truncated`    | zero                              | `duration_cast`           |
+| `rounded`      | nearest, to even in halfway cases | `round`                   |
+| `rounded_down` | negative infinity                 | `floor`                   |
+| `rounded_up`   | positive infinity                 | `ceil`                    |
 
 ## Output & Formatting
 
@@ -366,7 +376,8 @@ double speed_value = (100 * km / h).force_numerical_value_in(m / s); // 27 (2)
     quantity distance = (5 * km).in(m);                       // ✓ 5000 m (widening)
     quantity height = (186. * cm).in(m);                      // ✓ 1.86 m (floating-point)
     quantity length = (short{2} * m).in<int>(mm);             // ✓ 2000 mm (explicit)
-    quantity duration = (90 * min).force_in(h);               // ✓ 1 h (forced, may truncate)
+    quantity duration = (90 * min).in(h, truncated);          // ✓ 1 h (towards zero)
+    quantity duration2 = (90 * min).in(h, rounded);           // ✓ 2 h (nearest, ties to even)
 
     // quantity wrong = (42 * m).in(km);                      // ✗ Error: truncating int conversion
     // quantity overflow = (std::int8_t{1} * m).in(mm);       // ✗ Error: only 0 preserves the value
