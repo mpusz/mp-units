@@ -27,6 +27,7 @@
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/quantity.h>
 #include <mp-units/framework/quantity_point.h>
+#include <mp-units/framework/rounding.h>
 #include <mp-units/framework/unit.h>
 #include <mp-units/framework/value_cast.h>
 
@@ -174,7 +175,7 @@ template<ReferenceOf<dimensionless> auto R, typename Rep>
   using std::exp;
 #endif
   return value_cast<get_unit(R)>(
-    quantity{static_cast<Rep>(exp(q.force_numerical_value_in(q.unit))), detail::clone_reference_with<one>(R)});
+    quantity{static_cast<Rep>(exp(q.numerical_value_in(q.unit))), detail::clone_reference_with<one>(R)});
 }
 
 /**
@@ -405,7 +406,7 @@ template<typename Rep, Reference R>
  */
 template<Unit auto To, auto R, typename Rep>
 [[nodiscard]] constexpr quantity<detail::clone_reference_with<To>(R), Rep> floor(const quantity<R, Rep>& q) noexcept
-  requires requires { q.force_in(To); } &&
+  requires requires { q.in(To, truncated); } &&
            ((treat_as_floating_point<Rep> && (requires(Rep v) { floor(v); }
 #if MP_UNITS_HOSTED
                                               || requires(Rep v) { std::floor(v); }
@@ -413,7 +414,7 @@ template<Unit auto To, auto R, typename Rep>
                                               )) ||
             (!treat_as_floating_point<Rep> && requires { representation_values<Rep>::one(); }))
 {
-  const quantity res = q.force_in(To);
+  const quantity res = q.in(To, truncated);
   if constexpr (treat_as_floating_point<Rep>) {
 #if MP_UNITS_HOSTED
     using std::floor;
@@ -435,7 +436,7 @@ template<Unit auto To, auto R, typename Rep>
 template<Unit auto To, auto R, auto PO, typename Rep>
 [[nodiscard]] constexpr QuantityPointOf<quantity_point<R, PO, Rep>::quantity_spec> auto floor(
   const quantity_point<R, PO, Rep>& qp) noexcept
-  requires requires { qp.force_in(To); } &&
+  requires requires { qp.in(To, truncated); } &&
            ((treat_as_floating_point<Rep> && (requires(Rep v) { floor(v); }
 #if MP_UNITS_HOSTED
                                               || requires(Rep v) { std::floor(v); }
@@ -443,7 +444,7 @@ template<Unit auto To, auto R, auto PO, typename Rep>
                                               )) ||
             (!treat_as_floating_point<Rep> && requires { representation_values<Rep>::one(); }))
 {
-  const quantity_point res = qp.force_in(To);
+  const quantity_point res = qp.in(To, truncated);
   if constexpr (treat_as_floating_point<Rep>) {
     using ReturnType = std::remove_reference_t<decltype(res)>;
 #if MP_UNITS_HOSTED
@@ -465,7 +466,7 @@ template<Unit auto To, auto R, auto PO, typename Rep>
  */
 template<Unit auto To, auto R, typename Rep>
 [[nodiscard]] constexpr quantity<detail::clone_reference_with<To>(R), Rep> ceil(const quantity<R, Rep>& q) noexcept
-  requires requires { q.force_in(To); } &&
+  requires requires { q.in(To, truncated); } &&
            ((treat_as_floating_point<Rep> && (requires(Rep v) { ceil(v); }
 #if MP_UNITS_HOSTED
                                               || requires(Rep v) { std::ceil(v); }
@@ -473,7 +474,7 @@ template<Unit auto To, auto R, typename Rep>
                                               )) ||
             (!treat_as_floating_point<Rep> && requires { representation_values<Rep>::one(); }))
 {
-  const quantity res = q.force_in(To);
+  const quantity res = q.in(To, truncated);
   if constexpr (treat_as_floating_point<Rep>) {
 #if MP_UNITS_HOSTED
     using std::ceil;
@@ -495,7 +496,7 @@ template<Unit auto To, auto R, typename Rep>
 template<Unit auto To, auto R, auto PO, typename Rep>
 [[nodiscard]] constexpr QuantityPointOf<quantity_point<R, PO, Rep>::quantity_spec> auto ceil(
   const quantity_point<R, PO,Rep>& qp) noexcept
-  requires requires { qp.force_in(To); } &&
+  requires requires { qp.in(To, truncated); } &&
            ((treat_as_floating_point<Rep> && (requires(Rep v) { ceil(v); }
 #if MP_UNITS_HOSTED
                                               || requires(Rep v) { std::ceil(v); }
@@ -503,7 +504,7 @@ template<Unit auto To, auto R, auto PO, typename Rep>
                                               )) ||
             (!treat_as_floating_point<Rep> && requires { representation_values<Rep>::one(); }))
 {
-  const quantity_point res = qp.force_in(To);
+  const quantity_point res = qp.in(To, truncated);
   if constexpr (treat_as_floating_point<Rep>) {
     using ReturnType = std::remove_reference_t<decltype(res)>;
 #if MP_UNITS_HOSTED
@@ -590,7 +591,7 @@ template<Unit auto To, auto R, typename Rep>
 {
   constexpr QuantitySpec auto spec = get_quantity_spec(To) * quantity<R, Rep>::quantity_spec;
   constexpr Unit auto unit = To * quantity<R, Rep>::unit;
-  return spec(representation_values<Rep>::one() * one).force_in(unit) / q;
+  return spec(representation_values<Rep>::one() * one).in(unit, truncated) / q;
 }
 
 /**

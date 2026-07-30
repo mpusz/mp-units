@@ -222,7 +222,7 @@ TEST_CASE("safe_int as quantity representation", "[safe_int][quantity]")
     quantity<isq::length[ft], safe_int<std::int16_t>> feet = safe_int<std::int16_t>{100} * ft;
 
     auto total = meters + feet;
-    REQUIRE(total.force_in(m).numerical_value_in(m) > 0);
+    REQUIRE(total.in(m, truncated).numerical_value_in(m) > 0);
   }
 
   SECTION("cross-unit overflow throws")
@@ -232,10 +232,10 @@ TEST_CASE("safe_int as quantity representation", "[safe_int][quantity]")
 
     // Adding meters + feet works (promoted to safe_int<int>)
     auto total = meters + feet;
-    REQUIRE(total.force_in(m).numerical_value_in(m) > 0);
+    REQUIRE(total.in(m, truncated).numerical_value_in(m) > 0);
 
     // But forcing back to int16_t overflows (30000 + ~3048 = ~33048 > 32767)
-    REQUIRE_THROWS_AS(total.force_in<safe_int<std::int16_t>>(m), std::overflow_error);
+    REQUIRE_THROWS_AS(total.in<safe_int<std::int16_t>>(m, truncated), std::overflow_error);
   }
 
   SECTION("multiplication overflow throws")

@@ -26,6 +26,7 @@
 #include <mp-units/bits/int_power.h>
 #include <mp-units/ext/algorithm.h>
 #include <mp-units/ext/type_traits.h>  // IWYU pragma: keep
+#include <mp-units/framework/rounding.h>
 
 // `double_width_int` only emulates `int128_t` on platforms without native `__int128` (notably
 // MSVC).  On every other platform `int128_t` is the builtin and dwint is unused in library code
@@ -167,12 +168,30 @@ struct fixed_point {
     }
   }
 
-  template<std::integral U>
+  template<rounding_mode Mode = rounding_mode::truncated, std::integral U>
     requires(integer_rep_width_v<U> <= integer_rep_width_v<T>)
   [[nodiscard]] constexpr auto scale(U v) const
   {
-    auto res = v * int_repr_;
-    return static_cast<conditional<is_signed_v<decltype((res))>, std::make_signed_t<U>, U>>(res >> fractional_bits);
+    const auto res = v * int_repr_;
+    using res_t = std::remove_const_t<decltype(res)>;
+    using ret_t = conditional<is_signed_v<res_t>, std::make_signed_t<U>, U>;
+    // arithmetic right shift rounds towards negative infinity
+    auto quot = res >> fractional_bits;
+    if constexpr (Mode != rounding_mode::rounded_down) {
+      const res_t frac = res - (quot << fractional_bits);  // fraction bits, always in [0, 2^fractional_bits)
+      const res_t zero{0};
+      if constexpr (Mode == rounding_mode::truncated) {
+        // towards zero: the floor quotient is one too low for negative non-exact values
+        if (res < zero && frac != zero) ++quot;
+      } else if constexpr (Mode == rounding_mode::rounded_up) {
+        if (frac != zero) ++quot;
+      } else {  // rounding_mode::rounded (to nearest, ties to even)
+        const res_t half = res_t{1} << (fractional_bits - 1);
+        const auto is_odd = quot - (quot / 2) * 2 != zero;
+        if (frac > half || (frac == half && is_odd)) ++quot;
+      }
+    }
+    return static_cast<ret_t>(quot);
   }
 private:
   value_type int_repr_;

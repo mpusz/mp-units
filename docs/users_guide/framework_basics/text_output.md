@@ -375,7 +375,7 @@ The text output will always print the value using the default formatting for thi
 
     ```cpp
     std::cout << v1.in(km / h) << '\n';       // 110 km/h
-    std::cout << v1.force_in(m / s) << '\n';  // 30.5556 m/s
+    std::cout << v1.in(m / s) << '\n';        // 30.5556 m/s
     ```
 
 

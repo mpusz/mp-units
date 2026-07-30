@@ -63,29 +63,56 @@ quantity<si::kilo<si::metre>> q2 = q1;  // double by default
 
 ## Value-truncating conversions
 
-The second solution is to force a truncating conversion:
+The second solution is to explicitly accept the value loss. Every conversion that the
+framework considers truncating requires the user to state what should happen to the
+information that does not fit in the result. This is done by passing a **rounding policy**
+as the last function argument:
 
 ```cpp
-quantity q1 = 5 * m;
-std::cout << value_cast<km>(q1) << '\n';
-quantity<si::kilo<si::metre>, int> q2 = q1.force_in(km);
+quantity q1 = 1234 * m;
+std::cout << q1.in(km, truncated) << '\n';     // 1 km
+std::cout << q1.in(km, rounded) << '\n';       // 1 km
+std::cout << q1.in(km, rounded_up) << '\n';    // 2 km
+std::cout << q1.in(km, rounded_down) << '\n';  // 1 km
+quantity<si::kilo<si::metre>, int> q2 = q1.in(km, rounded);
 ```
 
-This explicit cast makes it clear that something unsafe is going on. It is easy to spot
+The policy makes it clear at the call site that the conversion loses information and, at
+the same time, states precisely which representable value gets selected. It is easy to spot
 in code reviews or while chasing a bug in the source code.
+
+The library provides four rounding policies:
+
+| Policy         | Semantics                                                           | Consistent with                             |
+|----------------|---------------------------------------------------------------------|---------------------------------------------|
+| `truncated`    | rounds towards zero                                                 | `static_cast`, `std::chrono::duration_cast` |
+| `rounded`      | rounds to the nearest representable value, to even in halfway cases | `std::chrono::round`                        |
+| `rounded_down` | rounds towards negative infinity                                    | `std::chrono::floor`                        |
+| `rounded_up`   | rounds towards positive infinity                                    | `std::chrono::ceil`                         |
 
 !!! note
 
-    `q.force_in(U)` is just a shortcut to run `value_cast<U>(q)`. There is no difference in behavior
-    between those two interfaces. `q.force_in(U)` was added for consistency with `q.in(U)` and
-    `q.force_numerical_value_in(U)`.
+    `mp_units::floor/ceil/round<U>(q)` perform a different operation. They round to an
+    integral multiple of the provided unit even when the representation could store the
+    exact result (e.g. for a floating-point representation). The rounding policies never
+    adjust a value that the destination type represents exactly. Both coincide for
+    integral representations.
 
-Another place where this cast is useful is when a user wants to convert a quantity with
-a floating-point representation to the one using an integral one. Again, this is a truncating
-conversion, so an explicit cast is needed:
+!!! important
+
+    `truncated` and `rounded_down` differ for negative values. `(-1234 * m).in(km, truncated)`
+    yields `-1 km` while `(-1234 * m).in(km, rounded_down)` yields `-2 km`. This is exactly
+    the trap that made `std::chrono` retrofit `floor()`, `ceil()`, and `round()` after
+    shipping the truncating `duration_cast`. In **mp-units**, the conversion states its
+    rounding direction explicitly, so there is no default to be surprised by.
+
+Another place where such a conversion is useful is when a user wants to convert a quantity
+with a floating-point representation to the one using an integral one. Again, this is
+a truncating conversion, so a rounding policy is needed:
 
 ```cpp
-quantity<si::metre, int> q3 = value_cast<int>(3.14 * m);
+quantity<si::metre, int> q3 = (3.14 * m).in<int>(truncated);
+quantity<si::metre, int> q4 = (3.14 * m).in<int>(rounded);
 ```
 
 !!! info
@@ -94,9 +121,38 @@ quantity<si::metre, int> q3 = value_cast<int>(3.14 * m);
     types provide better precision and are privileged in the library as they are considered
     to be value-preserving.
 
+The same policies may be passed as the last argument to `value_cast`, which remains the
+escape hatch for generic contexts where the representation type is a dependent name and
+the member function would require the `template` disambiguator:
+
+```cpp
+quantity q5 = value_cast<km>(1567 * m, rounded);  // 2 km
+quantity q6 = value_cast<int>(3.14 * m);          // truncated (static_cast semantics)
+```
+
+When no policy is provided, `value_cast` keeps its `static_cast`-like (`truncated`) semantics
+for backward compatibility.
+
+!!! note
+
+    A floating-point destination represents every conversion result with a rounding error
+    of at most half ULP, which is the semantics of `rounded`, and the directed modes cannot
+    be delivered for it. This is why a floating-point destination accepts only the
+    `truncated` (understood as the `static_cast` semantics) and `rounded` policies.
+
+    Rounding happens only on the way to an integral representation, so that is where the policies
+    ask something of the representation type:
+
+    - An adjusting policy has to decide which side of a rounding boundary the exact result falls
+      on, which needs a _real scalar_. A real scalar wrapper such as [`safe_int`](safe_int.md)
+      works with every policy, while a vector, tensor, or complex representation offers no single
+      value to compare against a boundary and takes only `truncated` there.
+    - Rounding a floating-point value to an integral one works on the value's integral part, which
+      the library performs for standard floating-point types only.
+
 In some cases, a unit and a representation type should be changed simultaneously. Moreover,
 sometimes, the order of doing those operations matters. In such cases, the library provides
-the `value_cast<U, Rep>(q)` and `q.force_in<Rep>(U)` which always return the most precise
+the `value_cast<U, Rep>(q)` and `q.in<Rep>(U, policy)` which always return the most precise
 result:
 
 === "C++23"
@@ -163,7 +219,7 @@ result:
 using namespace unit_symbols;
 Price price{12.95 * USD};
 Scaled spx1 = value_cast<USD_s, std::int64_t>(price);
-Scaled spx2 = price.force_in<std::int64_t>(USD_s);
+Scaled spx2 = price.in<std::int64_t>(USD_s, truncated);
 ```
 
 As a shortcut, instead of providing a unit and a representation type to `value_cast`, you
@@ -210,7 +266,7 @@ that a naive implementation cannot handle correctly:
     ```cpp
     // deg -> grad: factor 10/9
     // A naive implementation multiplies first: 1e18 * 10 overflows int64_t (max ≈ 9.22e18):
-    quantity q = (std::int64_t{1'000'000'000'000'000'000} * deg).force_in(grad);
+    quantity q = (std::int64_t{1'000'000'000'000'000'000} * deg).in(grad, truncated);
     // Expected:          1'111'111'111'111'111'111ᵍ
     // Naive result:       -938'527'119'301'061'290ᵍ (silent undefined behaviour)
     // mp-units result:   1'111'111'111'111'111'111ᵍ (correct)
@@ -257,10 +313,14 @@ a right-shift with no risk of intermediate overflow and no floating-point operat
     overflow as long as the input value fits in the representation type — for example,
     a value of `std::int32_t` computed in `int64_t` has 32 extra bits of safety margin.
 
-    For the non-integer ratio path, the result is **truncated toward zero**.  The
-    fixed-point constant is rounded *away* from zero at compile time to compensate for
-    one level of double-rounding, keeping the maximum error within 1 ULP of the true
-    result (i.e. at most ±1 relative to the last bit of the output).
+    For the non-integer ratio path, the result honors the requested rounding policy
+    (`truncated` rounds towards zero, and the remaining modes adjust the floor quotient
+    computed by the shift accordingly). The fixed-point constant is rounded *away* from
+    zero at compile time to compensate for one level of double-rounding, keeping the
+    maximum error within 1 ULP of the true result (i.e. at most ±1 relative to the last
+    bit of the output). Because the factor itself is an approximation, a rounding policy
+    may select the neighboring representable value when the exact result lies within that
+    error of a rounding boundary.
 
     !!! hint
 
@@ -278,8 +338,8 @@ conversions:
 
 ```cpp
 quantity q1 = std::int8_t(1) * km;
-quantity q2 = q1.force_in(m);   // Compile-time error (1)
-if(q1 != 1 * m) { /* ... */ }   // Compile-time error (2)
+quantity q2 = q1.in(m, truncated);  // Compile-time error (1)
+if(q1 != 1 * m) { /* ... */ }       // Compile-time error (2)
 ```
 
 1. Forced conversion would overflow on scaling.
@@ -306,11 +366,17 @@ conversion machinery — including how to implement the correct `operator*` and
 The table below provides all the value conversion functions that may be run on `x` being the
 instance of either `quantity` or `quantity_point`:
 
-| Forcing | Representation | Unit | Member function    | Non-member function                            |
-|:-------:|:--------------:|:----:|--------------------|------------------------------------------------|
-|   No    |      Same      | `u`  | `x.in(u)`          |                                                |
-|   No    |      `T`       | Same | `x.in<T>()`        |                                                |
-|   No    |      `T`       | `u`  | `x.in<T>(u)`       |                                                |
-|   Yes   |      Same      | `u`  | `x.force_in(u)`    | `value_cast<u>(x)`                             |
-|   Yes   |      `T`       | Same | `x.force_in<T>()`  | `value_cast<T>(x)`                             |
-|   Yes   |      `T`       | `u`  | `x.force_in<T>(u)` | `value_cast<u, T>(x)` or `value_cast<T, u>(x)` |
+In the table below, `p` is one of the rounding policies (`truncated`, `rounded`,
+`rounded_down`, `rounded_up`), and providing it is what enables a truncating conversion:
+
+| Truncating | Representation | Unit | Member function | Non-member function                                  |
+|:----------:|:--------------:|:----:|-----------------|------------------------------------------------------|
+|     No     |      Same      | `u`  | `x.in(u)`       |                                                      |
+|     No     |      `T`       | Same | `x.in<T>()`     |                                                      |
+|     No     |      `T`       | `u`  | `x.in<T>(u)`    |                                                      |
+|    Yes     |      Same      | `u`  | `x.in(u, p)`    | `value_cast<u>(x, p)`                                |
+|    Yes     |      `T`       | Same | `x.in<T>(p)`    | `value_cast<T>(x, p)`                                |
+|    Yes     |      `T`       | `u`  | `x.in<T>(u, p)` | `value_cast<u, T>(x, p)` or `value_cast<T, u>(x, p)` |
+
+The non-member functions may also be called without a policy, in which case they keep the
+`static_cast`-like (`truncated`) truncating semantics.

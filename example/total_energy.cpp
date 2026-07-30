@@ -97,7 +97,7 @@ void si_example()
             << "E = " << E3 << "\n";
 
   std::cout << "\n[converted from SI units back to GeV]\n"
-            << "E = " << E3.force_in(GeV) << "\n";
+            << "E = " << E3.in(GeV) << "\n";
 }
 
 void natural_example()

@@ -978,6 +978,26 @@ static_assert(std::numeric_limits<qp_clamp>::max().quantity_from(clamp_origin) =
 // lowest() delegates to min() because .min exists in bounds.
 static_assert(std::numeric_limits<qp_clamp>::lowest().quantity_from(clamp_origin) == -90.0 * deg);
 
+// ---- Bounds declared in another unit or representation ---------------------
+
+// The bounds are declared as whole metres while the point counts kilometres in `double`. The bound
+// is reported as the point's own quantity type, so it comes out exactly rather than being truncated
+// to the whole kilometre below (which would report a range wider than the declared one).
+QUANTITY_SPEC(test_height_coarse, isq::height);
+inline constexpr struct coarse_bounds_origin final :
+    absolute_point_origin<test_height_coarse, clamp_to_range{1500 * m, 8500 * m}> {
+} coarse_bounds_origin;
+
+using qp_coarse = quantity_point<test_height_coarse[km], coarse_bounds_origin, double>;
+static_assert(qp_coarse::min().quantity_from(coarse_bounds_origin) == 1.5 * km);
+static_assert(qp_coarse::max().quantity_from(coarse_bounds_origin) == 8.5 * km);
+static_assert(std::numeric_limits<qp_coarse>::min().quantity_from(coarse_bounds_origin) == 1.5 * km);
+static_assert(std::numeric_limits<qp_coarse>::max().quantity_from(coarse_bounds_origin) == 8.5 * km);
+
+// the reported range is exactly the declared one, so it neither admits nor rejects too much
+static_assert(qp_coarse::min().quantity_from(coarse_bounds_origin) == 1500 * m);
+static_assert(qp_coarse::max().quantity_from(coarse_bounds_origin) == 8500 * m);
+
 // ---- Half-line min-only (halfbound_min_origin: value >= 0 m) ---------------
 
 using qp_hmin = quantity_point<test_halfbounded[m], halfbound_min_origin, double>;

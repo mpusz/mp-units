@@ -843,8 +843,12 @@ static_assert(point<deg_C>(20.).numerical_value_in(deg_F) == 68.);
 static_assert(point<deg_C>(20.).numerical_value_in(K) == 293.15);
 static_assert(point<K>(300.).numerical_value_in(K) == 300.);
 static_assert(point<K>(300.).numerical_value_in(deg_C) == 26.85);
-// force_numerical_value_in(U) - value-truncating variant (integer rep, non-exact scaling)
-static_assert(point<m>(2500).force_numerical_value_in(km) == 2);
+// numerical_value_in(U, policy) - value-truncating variants (integer rep, non-exact scaling)
+static_assert(point<m>(2500).numerical_value_in(km, truncated) == 2);
+static_assert(point<m>(2500).numerical_value_in(km, rounded) == 2);  // tie rounds to even
+static_assert(point<m>(2501).numerical_value_in(km, rounded) == 3);
+static_assert(point<m>(2500).numerical_value_in(km, rounded_up) == 3);
+static_assert(point<m>(2999).numerical_value_in(km, rounded_down) == 2);
 // numerical_value_in round-trips construction
 static_assert(point<deg_C>(point<deg_C>(20.5).numerical_value_in(deg_C)) == point<deg_C>(20.5));
 
@@ -908,9 +912,31 @@ static_assert(is_of_type<(mean_sea_level + 2 * km).in(m), quantity_point<m, mean
 static_assert(is_of_type<(mean_sea_level + 2 * km).in<double>(), quantity_point<km, mean_sea_level>>);
 static_assert(is_of_type<(mean_sea_level + 2 * km).in<double>(m), quantity_point<m, mean_sea_level>>);
 
+static_assert(is_of_type<(mean_sea_level + 2500. * m).in(km, truncated), quantity_point<km, mean_sea_level>>);
+static_assert(is_of_type<(mean_sea_level + 2500. * m).in<int>(truncated), quantity_point<m, mean_sea_level, int>>);
+static_assert(is_of_type<(mean_sea_level + 2500. * m).in<int>(km, truncated), quantity_point<km, mean_sea_level, int>>);
+
+// rounding policies for quantity points
+static_assert((mean_sea_level + 2500 * m).in(km, truncated).quantity_from(mean_sea_level).numerical_value_in(km) == 2);
+static_assert((mean_sea_level + 2501 * m).in(km, rounded).quantity_from(mean_sea_level).numerical_value_in(km) == 3);
+static_assert((mean_sea_level + 2500 * m).in(km, rounded_up).quantity_from(mean_sea_level).numerical_value_in(km) == 3);
+static_assert((mean_sea_level - 2500 * m).in(km, truncated).quantity_from(mean_sea_level).numerical_value_in(km) == -2);
+static_assert((mean_sea_level - 2500 * m).in(km, rounded_down).quantity_from(mean_sea_level).numerical_value_in(km) ==
+              -3);
+
+// Cross-origin conversions apply the policy to the origin offset as well. A 20 degC point is
+// 293.15 K, so the policy decides between 293 K and 294 K for an integral representation.
+static_assert(point<deg_C>(20).in(K, truncated).numerical_value_in(K) == 293);
+static_assert(point<deg_C>(20).in(K, rounded).numerical_value_in(K) == 293);
+static_assert(point<deg_C>(20).in(K, rounded_down).numerical_value_in(K) == 293);
+static_assert(point<deg_C>(20).in(K, rounded_up).numerical_value_in(K) == 294);
+
+// deprecated forcing conversions remain available for the transition period
+MP_UNITS_DIAGNOSTIC_PUSH
+MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
 static_assert(is_of_type<(mean_sea_level + 2500. * m).force_in(km), quantity_point<km, mean_sea_level>>);
-static_assert(is_of_type<(mean_sea_level + 2500. * m).force_in<int>(), quantity_point<m, mean_sea_level, int>>);
-static_assert(is_of_type<(mean_sea_level + 2500. * m).force_in<int>(km), quantity_point<km, mean_sea_level, int>>);
+static_assert(point<m>(2500).force_numerical_value_in(km) == 2);
+MP_UNITS_DIAGNOSTIC_POP
 
 // in(unit) for offset units at default origin: switches to unit._point_origin_
 static_assert(is_of_type<point<deg_C>(20.).in(deg_F), quantity_point<deg_F, usc::fahrenheit_zero>>);
@@ -937,7 +963,7 @@ static_assert(invalid_unit_conversion<quantity_point>);
 template<auto Origin>
 concept invalid_numerical_value_extraction = requires {
   requires !requires { (Origin + 2 * m).numerical_value_in(m); };
-  requires !requires { (Origin + 2 * m).force_numerical_value_in(m); };
+  requires !requires { (Origin + 2 * m).numerical_value_in(m, truncated); };
   // the explicit-origin path remains available
   requires requires { (Origin + 2 * m).quantity_from(Origin).numerical_value_in(m); };
 };

@@ -89,9 +89,10 @@ truncation and is blocked - even without changing units!
 
     By default, **mp-units** uses `std::chrono::duration`-like logic for these.
 
-## Forcing Truncating Conversions
+## Truncating Conversions
 
-When you need to truncate, make it explicit:
+When a conversion cannot keep the value, you have to say what should happen to the part
+that does not fit:
 
 ```cpp
 // ce-embed height=550 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
@@ -103,23 +104,37 @@ int main()
   using namespace mp_units;
   using namespace mp_units::si::unit_symbols;
 
-  // Three ways to force truncating conversions:
-  quantity km_int = (500 * m).force_in(km);           // ✅ 0 km (truncates to int)
-  quantity km_dbl = (500 * m).in<double>(km);         // ✅ 0.5 km (changes to double)
-  quantity km_cast = value_cast<double, km>(500 * m); // ✅ 0.5 km (using value_cast)
+  // Option 1: keep the integer and pick a rounding policy
+  quantity km_trunc = (1567 * m).in(km, truncated);      // ✅ 1 km (towards zero)
+  quantity km_round = (1567 * m).in(km, rounded);        // ✅ 2 km (nearest, ties to even)
+  quantity km_down = (1567 * m).in(km, rounded_down);    // ✅ 1 km (towards -infinity)
+  quantity km_up = (1567 * m).in(km, rounded_up);        // ✅ 2 km (towards +infinity)
 
-  std::cout << "Forced conversions:\n";
-  std::cout << "  force_in(km): " << km_int << "\n";
-  std::cout << "  in<double>(km): " << km_dbl << "\n";
-  std::cout << "  value_cast: " << km_cast << "\n";
+  // Option 2: switch to a floating-point representation and keep every digit
+  quantity km_dbl = (1567 * m).in<double>(km);           // ✅ 1.567 km
+  quantity km_cast = value_cast<double, km>(1567 * m);   // ✅ 1.567 km (using value_cast)
+
+  std::cout << "Converting " << 1567 * m << " to km:\n";
+  std::cout << "  truncated:    " << km_trunc << "\n";
+  std::cout << "  rounded:      " << km_round << "\n";
+  std::cout << "  rounded_down: " << km_down << "\n";
+  std::cout << "  rounded_up:   " << km_up << "\n";
+  std::cout << "  in<double>:   " << km_dbl << "\n";
+  std::cout << "  value_cast:   " << km_cast << "\n";
+
+  // Watch out for negatives: truncated rounds towards zero, rounded_down does not
+  std::cout << "\n-1567 m truncated:    " << (-1567 * m).in(km, truncated) << "\n";
+  std::cout << "-1567 m rounded_down: " << (-1567 * m).in(km, rounded_down) << "\n";
 }
 ```
 
-**Key insight**: Explicit syntax prevents accidental data loss!
+**Key insight**: The policy is not paperwork. It is the answer to "which of the two
+neighboring values do I want", and the compiler makes you give it.
 
 ## Challenges
 
-1. **Force truncation**: Create 1234 m as `int`, force convert to km (should get 1 km)
+1. **Round three ways**: Create 1234 m as `int` and convert it to km with `truncated`,
+   `rounded`, and `rounded_up` (you should get 1 km, 1 km, and 2 km)
 2. **Safe with doubles**: Create 1234 m as `double`, convert to km (should get 1.234 km implicitly)
 3. **Mixed representations**: Add 5.5 km (double) + 2000 m (int), what's the result type?
 
@@ -127,6 +142,7 @@ int main()
 
 ✅ Implicit conversions only work when safe (no truncation)  
 ✅ Floating-point types are considered value-preserving  
-✅ Use `.force_in()`, `.in<Rep>()`, or `value_cast` to force truncation  
+✅ Use `.in(Unit, policy)`, `.in<Rep>()`, or `value_cast` for truncating conversions  
+✅ `truncated`, `rounded`, `rounded_down`, and `rounded_up` name the rounding direction  
 ✅ The library follows `std::chrono::duration` logic for safety  
 ✅ Explicit syntax prevents accidental data loss

@@ -542,16 +542,80 @@ static_assert(quantity<isq::length[m]>(2000. * m).in(km).numerical_value_in(km) 
 static_assert(quantity<isq::length[km], int>(2 * km).in(km).numerical_value_in(km) == 2);
 static_assert(quantity<isq::length[km], int>(2 * km).in(m).numerical_value_in(m) == 2000);
 
-static_assert(is_of_type<(2. * km).force_in(m), quantity<si::metre>>);
-static_assert(is_of_type<isq::length(2. * km).force_in(m), quantity<isq::length[m]>>);
-static_assert(is_of_type<isq::height(2. * km).force_in(m), quantity<isq::height[m]>>);
+static_assert(is_of_type<(2. * km).in(m, truncated), quantity<si::metre>>);
+static_assert(is_of_type<isq::length(2. * km).in(m, truncated), quantity<isq::length[m]>>);
+static_assert(is_of_type<isq::height(2. * km).in(m, truncated), quantity<isq::height[m]>>);
 
-static_assert(quantity<isq::length[km]>(2. * km).force_in(km).numerical_value_in(km) == 2.);
-static_assert(quantity<isq::length[km]>(2. * km).force_in(m).numerical_value_in(m) == 2000.);
-static_assert(quantity<isq::length[m]>(2000. * m).force_in(km).numerical_value_in(km) == 2.);
-static_assert(quantity<isq::length[km], int>(2 * km).force_in(km).numerical_value_in(km) == 2);
-static_assert(quantity<isq::length[km], int>(2 * km).force_in(m).numerical_value_in(m) == 2000);
-static_assert(quantity<isq::length[m], int>(2000 * m).force_in(km).numerical_value_in(km) == 2);
+static_assert(quantity<isq::length[km]>(2. * km).in(km, truncated).numerical_value_in(km) == 2.);
+static_assert(quantity<isq::length[km]>(2. * km).in(m, truncated).numerical_value_in(m) == 2000.);
+static_assert(quantity<isq::length[m]>(2000. * m).in(km, truncated).numerical_value_in(km) == 2.);
+static_assert(quantity<isq::length[km], int>(2 * km).in(km, truncated).numerical_value_in(km) == 2);
+static_assert(quantity<isq::length[km], int>(2 * km).in(m, truncated).numerical_value_in(m) == 2000);
+static_assert(quantity<isq::length[m], int>(2000 * m).in(km, truncated).numerical_value_in(km) == 2);
+
+// rounding policies for truncating unit conversions (integral representation, rational factor)
+static_assert((1234 * m).in(km, truncated).numerical_value_in(km) == 1);
+static_assert((1234 * m).in(km, rounded).numerical_value_in(km) == 1);
+static_assert((1567 * m).in(km, rounded).numerical_value_in(km) == 2);
+static_assert((1500 * m).in(km, rounded).numerical_value_in(km) == 2);  // tie rounds to even
+static_assert((2500 * m).in(km, rounded).numerical_value_in(km) == 2);  // tie rounds to even
+static_assert((3500 * m).in(km, rounded).numerical_value_in(km) == 4);  // tie rounds to even
+static_assert((1234 * m).in(km, rounded_down).numerical_value_in(km) == 1);
+static_assert((1234 * m).in(km, rounded_up).numerical_value_in(km) == 2);
+static_assert((1000 * m).in(km, rounded_up).numerical_value_in(km) == 1);  // exact conversion needs no adjustment
+
+// negative values: `truncated` rounds towards zero, `rounded_down` towards negative infinity
+static_assert((-1234 * m).in(km, truncated).numerical_value_in(km) == -1);
+static_assert((-1234 * m).in(km, rounded_down).numerical_value_in(km) == -2);
+static_assert((-1234 * m).in(km, rounded_up).numerical_value_in(km) == -1);
+static_assert((-1500 * m).in(km, rounded).numerical_value_in(km) == -2);  // tie rounds to even
+static_assert((-1567 * m).in(km, rounded).numerical_value_in(km) == -2);
+
+// rounding policies for representation type conversions
+static_assert((1.5 * s).in<int>(rounded).numerical_value_in(s) == 2);
+static_assert((2.5 * s).in<int>(rounded).numerical_value_in(s) == 2);  // tie rounds to even
+static_assert((1.9 * s).in<int>(truncated).numerical_value_in(s) == 1);
+static_assert((-1.9 * s).in<int>(truncated).numerical_value_in(s) == -1);
+static_assert((-1.1 * s).in<int>(rounded_down).numerical_value_in(s) == -2);
+static_assert((1.1 * s).in<int>(rounded_up).numerical_value_in(s) == 2);
+
+// rounding policies for unit and representation type conversions in one step
+static_assert((1.23 * s).in<int>(ms, rounded).numerical_value_in(ms) == 1230);
+
+// a floating-point destination accepts `truncated` (static_cast semantics) and `rounded`
+static_assert((1.5 * km).in(m, truncated).numerical_value_in(m) == 1500.);
+static_assert((1.5 * km).in(m, rounded).numerical_value_in(m) == 1500.);
+
+// Values at or above 2^52 are already integral, so rounding must return them untouched
+// rather than round-trip them through a narrower integer type.
+static_assert((1.e19 * mm).in<std::int64_t>(m, rounded).numerical_value_in(m) == 10'000'000'000'000'000LL);
+static_assert((-1.e19 * mm).in<std::int64_t>(m, rounded).numerical_value_in(m) == -10'000'000'000'000'000LL);
+
+// numerical value accessor with a rounding policy
+static_assert((1567 * m).numerical_value_in(km, truncated) == 1);
+static_assert((1567 * m).numerical_value_in(km, rounded) == 2);
+
+template<template<auto, typename> typename Q>
+concept invalid_rounding_policy = requires {
+  // a floating-point destination cannot deliver the directed rounding modes
+  requires !requires { Q<isq::length[km], double>(2. * km).in(m, rounded_down); };
+  requires !requires { Q<isq::length[km], double>(2. * km).in(m, rounded_up); };
+  requires !requires { Q<isq::length[m], double>(2. * m).template in<float>(rounded_down); };
+};
+static_assert(invalid_rounding_policy<quantity>);
+
+#if MP_UNITS_HOSTED
+// A complex representation has no single value to compare against a rounding boundary, so an
+// adjusting policy is unavailable where rounding would actually happen (an integral destination).
+// Its floating-point conversions round nothing, so `rounded` remains accepted for those.
+template<typename Policy>
+concept phasor_conversion_valid =
+  requires(quantity<isq::voltage_phasor[V], std::complex<double>> q, Policy p) { q.in(mV, p); };
+static_assert(phasor_conversion_valid<truncated_t>);
+static_assert(phasor_conversion_valid<rounded_t>);
+static_assert(!phasor_conversion_valid<rounded_down_t>);
+static_assert(!phasor_conversion_valid<rounded_up_t>);
+#endif
 
 static_assert((15. * m).in(nm).numerical_value_in(m) == 15.);
 static_assert((15'000. * nm).in(m).numerical_value_in(nm) == 15'000.);
@@ -579,9 +643,9 @@ concept invalid_unit_conversion = requires {
   requires !requires { Q<isq::length[m], int>(2 * m).in(s); };         // unit of a different quantity & dimension
   requires !requires { Q<isq::frequency[Hz], int>(60 * Hz).in(Bq); };  // unit of a different kind (same dimension)
 
-  requires !requires { Q<isq::length[m], int>(2 * m).force_in(s); };  // unit of a different quantity & dimension
+  requires !requires { Q<isq::length[m], int>(2 * m).in(s, truncated); };  // unit of a different quantity & dimension
   requires !requires {
-    Q<isq::frequency[Hz], int>(60 * Hz).force_in(Bq);
+    Q<isq::frequency[Hz], int>(60 * Hz).in(Bq, truncated);
   };  // unit of a different kind (same dimension)
 };
 static_assert(invalid_unit_conversion<quantity>);
@@ -1630,12 +1694,30 @@ static_assert(value_cast<int>(1.23 * m).numerical_value_in(m) == 1);
 static_assert(value_cast<km, int>(1.23 * m).numerical_value_in(km) == 0);
 static_assert(value_cast<int, km>(1.23 * m).numerical_value_in(km) == 0);
 
+// value_cast with a rounding policy
+static_assert(value_cast<km>(1567 * m, rounded).numerical_value_in(km) == 2);
+static_assert(value_cast<km>(1567 * m, truncated).numerical_value_in(km) == 1);
+static_assert(value_cast<int>(1.5 * m, rounded).numerical_value_in(m) == 2);
+static_assert(value_cast<km, int>(1567. * m, rounded).numerical_value_in(km) == 2);
+static_assert(value_cast<int, km>(1567. * m, rounded_up).numerical_value_in(km) == 2);
+static_assert(value_cast<quantity<km, int>>(1567 * m, rounded).numerical_value_in(km) == 2);
+
+static_assert((2 * km).in(m, truncated).numerical_value_in(m) == 2000);
+static_assert((2000 * m).in(km, truncated).numerical_value_in(km) == 2);
+static_assert((2000.0 * m / (3600.0 * s)).in(km / h, truncated).numerical_value_in(km / h) == 2);
+
+static_assert((1.23 * m).in<int>(truncated).numerical_value_in(m) == 1);
+static_assert((1.23 * m).in<int>(km, truncated).numerical_value_in(km) == 0);
+
+// deprecated forcing conversions remain available for the transition period
+MP_UNITS_DIAGNOSTIC_PUSH
+MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
 static_assert((2 * km).force_in(m).numerical_value_in(m) == 2000);
 static_assert((2000 * m).force_in(km).numerical_value_in(km) == 2);
-static_assert((2000.0 * m / (3600.0 * s)).force_in(km / h).numerical_value_in(km / h) == 2);
-
 static_assert((1.23 * m).force_in<int>().numerical_value_in(m) == 1);
 static_assert((1.23 * m).force_in<int>(km).numerical_value_in(km) == 0);
+static_assert((1567 * m).force_numerical_value_in(km) == 1);
+MP_UNITS_DIAGNOSTIC_POP
 
 //////////////////
 // quantity_cast
@@ -1702,7 +1784,7 @@ concept overflowing_unit_conversion = requires {
   requires !requires { quantity<si::metre, std::int8_t>(Q); };
   requires !requires { quantity<si::milli<si::metre>, std::int16_t>(Q); };
   requires !requires { Q.in(si::metre); };
-  requires !requires { Q.force_in(si::metre); };
+  requires !requires { Q.in(si::metre, truncated); };
   requires !requires { Q + std::int8_t(1) * nm; };  // promotion to int
   requires !requires { Q - std::int8_t(1) * nm; };  // promotion to int
   requires !requires { Q % std::int8_t(1) * m; };

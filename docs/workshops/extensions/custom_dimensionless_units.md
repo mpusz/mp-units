@@ -196,8 +196,10 @@ int main()
     // For conversions that could truncate, specify representation type:
     std::cout << production.in<double>(carton); // "2100 carton" (divided by 12)
 
-    // Or use force_in for explicit truncation:
-    std::cout << production.force_in(carton);   // "2100 carton" (truncates if needed)
+    // Or keep the integer count and say how a partial carton should round:
+    quantity partial = 25199 * unit;
+    std::cout << partial.in(carton, rounded_down);  // "2099 carton" (full cartons only)
+    std::cout << partial.in(carton, rounded_up);    // "2100 carton" (cartons needed to ship it)
 
     quantity from_cartons = 2100 * carton;
     std::cout << from_cartons.in(unit);         // "25200 unit" (multiplied by 12)
@@ -222,6 +224,15 @@ int main()
     - `floor<Unit>(q)` rounds down to the nearest whole unit
     - `ceil<Unit>(q)` rounds up to the nearest whole unit
     - Both preserve strong typing and prevent errors
+
+    !!! note "Math functions or rounding policies?"
+
+        `floor<Unit>(q)` and `ceil<Unit>(q)` round to a whole number of the target unit and
+        keep the representation type, so they also work on floating-point quantities. The
+        `rounded_down` and `rounded_up` policies round the result of a *conversion* to a
+        value the destination type can represent, so they change nothing when that value is
+        already exact. For an integer quantity converted to a coarser unit the two
+        coincide, and `partial.in(carton, rounded_up)` is the cheaper spelling.
 
     ### Beyond physics: Business and logistics applications
 

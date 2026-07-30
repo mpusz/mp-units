@@ -86,14 +86,19 @@ until the final display.
 
 ## Code Walkthrough
 
-### Computing Notional: `force_in` for Lossless Scaling
+### Computing Notional: Rounding to the Scaled Integer Grid
 
 ```cpp
 --8<-- "example/trade_execution.cpp:87:91"
 ```
 
-`force_in<std::int64_t>(us_dollar_8)` converts the _price_ unit from `USD` to `USD_8`
-and changes the representation from `double` to `std::int64_t` in one step. The product
+`in<std::int64_t>(us_dollar_8, rounded)` converts the _price_ unit from `USD` to `USD_8`
+and changes the representation from `double` to `std::int64_t` in one step. The `rounded`
+policy is the important part: a decimal price is not exactly representable in binary
+floating point, so scaling it by 10⁸ and truncating would report one unit less than the
+quoted price for roughly 7% of two-decimal prices (`0.29 USD` becomes `28999999 USD_8`
+rather than `29000000 USD_8`). Rounding to the nearest scaled integer lands on the
+quoted price. The product
 `price_in_usd8 * f.qty` yields a derived expression (_currency_ × _market quantity_)
 that is implicitly convertible to `notional_value`; the `return` converts it to
 `Notional`.

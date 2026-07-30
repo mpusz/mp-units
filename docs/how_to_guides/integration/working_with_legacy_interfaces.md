@@ -99,20 +99,30 @@ quantity speed = 33. * m / s;   // 118.8 km/h
 legacy_check_speed_limit(speed.numerical_value_in(km / h));
 ```
 
-**Option 2: Explicitly force truncation**
+**Option 2: State how the value should round**
 
-When you're certain that truncation is acceptable, use `.force_numerical_value_in(Unit)`:
+When you're certain that truncation is acceptable, pass a rounding policy (e.g. `truncated`)
+to `.numerical_value_in()`:
 
 ```cpp
 quantity speed = 33 * m / s;   // 118.8 km/h
-legacy_check_speed_limit(speed.force_numerical_value_in(km / h));  // ✅ Truncates to 118
+legacy_check_speed_limit(speed.numerical_value_in(km / h, truncated));  // ✅ Truncates to 118
 ```
 
-!!! warning "Use `.force_numerical_value_in()` Sparingly"
+The policy is a domain decision rather than a formality. Truncating towards zero reports
+118 km/h for a car travelling at 118.8 km/h, which silently favors the driver. When the
+extracted value feeds an enforcement decision, `rounded` or `rounded_up` is the defensible
+choice:
 
-    Only use this function when you've verified that truncation is acceptable for your
-    use case. Document why truncation is safe to help future maintainers understand
-    your reasoning.
+```cpp
+legacy_check_speed_limit(speed.numerical_value_in(km / h, rounded_up));  // ✅ Reports 119
+```
+
+!!! warning "Use Truncating Value Extraction Sparingly"
+
+    Only pass a rounding policy when you've verified that the value loss is acceptable for your
+    use case. Document why the rounding direction you picked is the right one to help future
+    maintainers understand your reasoning.
 
 
 ## Direct Storage Access
@@ -201,7 +211,7 @@ legacy_get_dimensions(
 | Function                          | Purpose                                   | Conversion | Truncation | Returns      |
 |-----------------------------------|-------------------------------------------|------------|------------|--------------|
 | `.numerical_value_in(Unit)`       | Safe value extraction                     | Yes        | Prevented  | By value     |
-| `.force_numerical_value_in(Unit)` | Value extraction with explicit truncation | Yes        | Allowed    | By value     |
+| `.numerical_value_in(Unit, policy)` | Value extraction with explicit rounding | Yes        | Allowed    | By value     |
 | `.numerical_value_ref_in(Unit)`   | Direct storage access                     | No         | N/A        | By reference |
 
 These functions maintain type safety at the boundary between type-safe and legacy code,
