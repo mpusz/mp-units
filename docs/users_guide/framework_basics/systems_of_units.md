@@ -135,6 +135,58 @@ auto q = 1 * Hz + 1 * Bq;   // Fails to compile
 
 This is exactly what we wanted to achieve to improve the type-safety of the library.
 
+The same technique is also useful for user-defined units. Consider a quantity of
+_fuel consumption_ expressed in litres per 100 kilometres:
+
+```cpp
+inline constexpr struct fuel_consumption : quantity_spec<isq::volume / isq::length> {} fuel_consumption;
+inline constexpr auto l_per_100km = si::litre / (mag<100> * si::kilo<si::metre>);
+```
+
+_Volume_ divided by _length_ has the same dimension as _area_, and a unit composed
+dynamically in a unit equation has no associated quantity kind. This is why nothing
+prevents the following from compiling:
+
+```cpp
+quantity fuel = 5.8 * l_per_100km;
+quantity<isq::area[m2]> area = fuel;   // Compiles, but it should not!
+```
+
+Giving this unit a name allows us to bind it to a quantity kind:
+
+```cpp
+inline constexpr struct litre_per_100_kilometre :
+    named_unit<"l/100km", si::litre / (mag<100> * si::kilo<si::metre>),
+               kind_of<fuel_consumption>> {} litre_per_100_kilometre;
+```
+
+With the above, every quantity created with this unit is a _fuel consumption_, and
+the compiler will reject any attempt to use it as an _area_:
+
+```cpp
+quantity fuel = 5.8 * litre_per_100_kilometre;
+quantity<isq::area[m2]> area = fuel;   // Fails to compile
+```
+
+!!! note "Named units do not simplify in unit equations"
+
+    A named unit is an opaque symbolic entity. The library simplifies only identical
+    type identifiers in unit equations, so `litre_per_100_kilometre` will not cancel
+    with `km`:
+
+    ```cpp
+    quantity fuel = 5.8 * litre_per_100_kilometre;
+    quantity dist = 250. * km;
+    quantity vol = fuel * dist;       // 1450 l/100km km
+    ```
+
+    This small drawback affects only the symbolic form of the result. The quantity
+    itself remains convertible to any unit of _volume_ the user wants:
+
+    ```cpp
+    std::cout << vol.in(l) << "\n";   // 14.5 L
+    ```
+
 !!! note "Units intentionally without `kind_of<>`"
 
     Not every SI named unit can be constrained. Some are legitimately shared across multiple
