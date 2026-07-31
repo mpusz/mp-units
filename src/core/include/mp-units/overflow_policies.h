@@ -45,7 +45,7 @@ namespace mp_units {
 // enforces those bounds on a quantity of compatible type.
 //
 // Available policies:
-//   1. check_in_range       - Error reporting via constraint_violation_handler or MP_UNITS_EXPECTS
+//   1. check_in_range       - Error reporting via constraint_violation_handler or MP_UNITS_PRECONDITION
 //   2. clamp_to_range       - Saturate to boundaries (error correction)
 //   3. wrap_to_range        - Modulo wrapping to [min, max)
 //   4. reflect_in_range     - Bounce/fold at boundaries (physics)
@@ -70,13 +70,13 @@ namespace mp_units {
  *
  * If the quantity's representation type has a `constraint_violation_handler` specialization,
  * the handler's `on_violation()` is called on out-of-bounds values (providing guaranteed
- * enforcement regardless of build mode). Otherwise, falls back to `MP_UNITS_EXPECTS`,
+ * enforcement regardless of build mode). Otherwise, falls back to `MP_UNITS_PRECONDITION`,
  * which may be disabled in release builds.
  *
  * Example:
  * @code{cpp}
  * // With constrained<double, throw_policy> rep → throws std::domain_error on violation
- * // With plain double rep → asserts via MP_UNITS_EXPECTS (may be no-op in release)
+ * // With plain double rep → asserts via MP_UNITS_PRECONDITION (may be no-op in release)
  * inline constexpr struct equator :
  *     absolute_point_origin<geo_latitude, check_in_range{-90 * deg, 90 * deg}> {} equator;
  * @endcode
@@ -94,7 +94,7 @@ struct check_in_range {
     if constexpr (detail::HasConstraintViolationHandler<typename V::rep>) {
       if (v < vmin || v > vmax) constraint_violation_handler<typename V::rep>::on_violation("value out of bounds");
     } else {
-      MP_UNITS_EXPECTS(v >= vmin && v <= vmax);
+      MP_UNITS_PRECONDITION(v >= vmin && v <= vmax);
     }
     return v;
   }
@@ -265,7 +265,7 @@ struct zero_quantity_t {
  *
  * If the quantity's representation type has a `constraint_violation_handler` specialization,
  * the handler's `on_violation()` is called on negative values (providing guaranteed
- * enforcement regardless of build mode). Otherwise, falls back to `MP_UNITS_EXPECTS`,
+ * enforcement regardless of build mode). Otherwise, falls back to `MP_UNITS_PRECONDITION`,
  * which may be disabled in release builds.
  */
 MP_UNITS_EXPORT struct check_non_negative {
@@ -281,7 +281,7 @@ MP_UNITS_EXPORT struct check_non_negative {
     if constexpr (detail::HasConstraintViolationHandler<typename V::rep>) {
       if (v < vzero) constraint_violation_handler<typename V::rep>::on_violation("value must be non-negative");
     } else {
-      MP_UNITS_EXPECTS(v >= vzero);
+      MP_UNITS_PRECONDITION(v >= vzero);
     }
     return v;
   }

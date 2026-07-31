@@ -9,6 +9,19 @@ This page documents the version history and changes for the **mp-units** library
 ### 2.6.0 <small>TBD</small> { id="2.6.0" }
 
 - (!) feat: `pi` and `π` is now a unit constant
+- feat: C++26 contracts support added (`contracts=std` Conan option / `MP_UNITS_API_CONTRACTS=STD`
+        CMake option); experimental, requires GCC 16 with `-fcontracts` (#682)
+- feat: `MP_UNITS_PRECONDITION`, `MP_UNITS_PRECONDITION_DEBUG`, `MP_UNITS_PRE`, `MP_UNITS_POST`,
+        `MP_UNITS_PRE_BODY`, and `MP_UNITS_PRE_BODY_DEBUG` compatibility macros added;
+        `MP_UNITS_EXPECTS*` are now GSL-backends-only (unchanged there, no-op under C++26
+        contracts) (#682)
+- feat: `contracts=std` may be combined with `import_std` (the GSL-era restriction applied
+        only to third-party library headers) (#682)
+- feat: `contracts=std` may be combined with `freestanding`; the application has to provide
+        a contract-violation handler or compile with an evaluation semantic that does not
+        call one (e.g. `quick_enforce`) (#682)
+- fix: `INTMAX_MAX` macro replaced with `std::numeric_limits<std::intmax_t>::max()` in
+        contract predicates (the macro is unavailable with `import std;`)
 - (!) feat: natural units reworked from scratch
 - (!) feat: IAU system definition improved
 - feat: comparisons against literal `0`

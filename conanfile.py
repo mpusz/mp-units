@@ -59,7 +59,7 @@ class MPUnitsConan(ConanFile):
         "import_std": [True, False],
         "std_format": [True, False],
         "no_crtp": [True, False],
-        "contracts": ["none", "gsl-lite", "ms-gsl"],
+        "contracts": ["none", "std", "gsl-lite", "ms-gsl"],
         "freestanding": [True, False],
     }
     default_options = {
@@ -129,6 +129,15 @@ class MPUnitsConan(ConanFile):
                     "clang": "18",
                     "apple-clang": "17",
                     "msvc": "195",
+                },
+            },
+            "std_contracts": {
+                "min_cppstd": "26",
+                "compiler": {
+                    "gcc": "16",
+                    "clang": "",
+                    "apple-clang": "",
+                    "msvc": "",
                 },
             },
         }
@@ -250,15 +259,22 @@ class MPUnitsConan(ConanFile):
         for key, value in self._option_feature_map.items():
             if self.options.get_safe(key) == True:
                 self._check_feature_supported(key, value)
-        if self.options.freestanding and self.options.contracts != "none":
+        if self.options.contracts == "std":
+            self._check_feature_supported("contracts", "std_contracts")
+        # third-party contract libraries require a hosted implementation; C++26 contracts
+        # are a language feature (the application has to provide a contract-violation
+        # handler or compile with an evaluation semantic that does not need one)
+        if self.options.freestanding and self.options.contracts not in ["none", "std"]:
             raise ConanInvalidConfiguration(
-                "'contracts' should be set to 'none' for a freestanding build"
+                "'contracts' should be set to 'none' or 'std' for a freestanding build"
             )
         # TODO mixing of `import std;` and regular header files includes does not work for now
         if self.options.import_std:
-            if self.options.contracts != "none":
+            # C++26 contracts are a language feature and do not bring any third-party
+            # library headers that would conflict with `import std;`
+            if self.options.contracts not in ["none", "std"]:
                 raise ConanInvalidConfiguration(
-                    "'contracts' should be set to 'none' to use `import std;`"
+                    "'contracts' should be set to 'none' or 'std' to use `import std;`"
                 )
             if not self.options.get_safe("std_format", default=True):
                 raise ConanInvalidConfiguration(
@@ -366,6 +382,17 @@ class MPUnitsConan(ConanFile):
                 self.cpp_info.components["core"].defines.append(
                     "MP_UNITS_API_CONTRACTS=0"
                 )
+            elif self.options.contracts == "std":
+                self.cpp_info.components["core"].defines.append(
+                    "MP_UNITS_API_CONTRACTS=1"
+                )
+                if self.settings.compiler == "gcc":
+                    self.cpp_info.components["core"].cxxflags.append("-fcontracts")
+                    if not self.options.freestanding:
+                        # the default contract-violation handler lives in the experimental
+                        # library; a freestanding application has to provide its own handler
+                        # (or compile with `-fcontract-evaluation-semantic=quick_enforce`)
+                        self.cpp_info.components["core"].system_libs.append("stdc++exp")
             elif self.options.contracts == "gsl-lite":
                 self.cpp_info.components["core"].requires.append("gsl-lite::gsl-lite")
                 self.cpp_info.components["core"].defines.append(

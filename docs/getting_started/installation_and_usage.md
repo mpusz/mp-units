@@ -142,12 +142,15 @@ If you obtain them differently you may need to adjust some CMake files.
 
 #### `contracts`
 
-:   [:octicons-tag-24: 2.2.0][release-2-2-0] · :octicons-milestone-24: `none`/`gsl-lite`/`ms-gsl`
+:   [:octicons-tag-24: 2.2.0][release-2-2-0] · :octicons-milestone-24: `none`/`std`/`gsl-lite`/`ms-gsl`
     (Default: see below)
 
     Enables precondition checks and additional assertions.
 
     If `import_std` defaults to `True`, `contracts` defaults to `none`; otherwise `gsl-lite`.
+
+    `std` uses C++26 contract assertions and requires an experimental compiler
+    (currently only GCC 16 with `-fcontracts`).
 
 #### `freestanding`
 
@@ -209,9 +212,12 @@ If you obtain them differently you may need to adjust some CMake files.
     [`MP_UNITS_API_CONTRACTS`](#MP_UNITS_API_CONTRACTS){ #MP_UNITS_API_CONTRACTS }
 
     :   [:octicons-tag-24: 2.2.0][release-2-2-0] · :octicons-milestone-24:
-        `NONE`/`GSL-LITE`/`MS-GSL` (Default: `GSL-LITE`)
+        `NONE`/`STD`/`GSL-LITE`/`MS-GSL` (Default: `GSL-LITE`)
 
         Enables checking of preconditions and additional asserts in the code.
+
+        `STD` uses C++26 contract assertions and requires an experimental compiler
+        (currently only GCC 16 with `-fcontracts`).
 
     [`MP_UNITS_API_FREESTANDING`](#MP_UNITS_API_FREESTANDING){ #MP_UNITS_API_FREESTANDING }
 

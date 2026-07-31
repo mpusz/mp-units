@@ -269,7 +269,7 @@ template<typename CharT, std::output_iterator<CharT> Out, typename... Expr>
                                                   const dimension_symbol_formatting& fmt, bool negative_power)
 {
   (void)negative_power;
-  MP_UNITS_EXPECTS(negative_power == false);
+  MP_UNITS_PRECONDITION(negative_power == false);
   return dimension_symbol_impl<CharT>(out, typename derived_dimension_impl<Expr...>::_num_{},
                                       typename derived_dimension_impl<Expr...>::_den_{}, fmt);
 }

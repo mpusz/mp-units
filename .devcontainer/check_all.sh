@@ -73,6 +73,15 @@ conan "$1" . -pr gcc13   -c user.mp-units.build:all=True -o '&:cxx_modules=False
 conan "$1" . -pr gcc14   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=False' -o '&:contracts=ms-gsl'   -s compiler.cppstd=23 -b "$build_policy"
 conan "$1" . -pr gcc15   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=True'  -o '&:std_format=True'  -o '&:contracts=none'     -s compiler.cppstd=26 -b "$build_policy"
 set +x
+# skip configurations for which this environment provides no Conan profile yet
+# (e.g. the devcontainer image lags behind the compiler matrix)
+if conan profile show -pr gcc16 > /dev/null 2>&1; then
+  set -x
+  conan "$1" . -pr gcc16   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=True'  -o '&:std_format=True'  -o '&:contracts=std'      -s compiler.cppstd=26 -b "$build_policy"
+  set +x
+else
+  echo "⚠️  Skipping gcc16: Conan profile not found in this environment"
+fi
 
 echo "⚙️  Testing Clang configurations..."
 set -x
@@ -93,6 +102,13 @@ if [[ $run_debug ]]; then
   conan "$1" . -pr gcc14   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=False' -o '&:contracts=ms-gsl'   -s compiler.cppstd=23 -b "$build_policy" -s build_type=Debug
   conan "$1" . -pr gcc15   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=True'  -o '&:std_format=True'  -o '&:contracts=none'     -s compiler.cppstd=26 -b "$build_policy" -s build_type=Debug
   set +x
+  if conan profile show -pr gcc16 > /dev/null 2>&1; then
+    set -x
+    conan "$1" . -pr gcc16   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=True'  -o '&:std_format=True'  -o '&:contracts=std'      -s compiler.cppstd=26 -b "$build_policy" -s build_type=Debug
+    set +x
+  else
+    echo "⚠️  Skipping gcc16: Conan profile not found in this environment"
+  fi
 
   echo "⚙️  Testing Clang debug configurations..."
   set -x

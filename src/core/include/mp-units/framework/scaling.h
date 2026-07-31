@@ -82,7 +82,7 @@ template<typename T>
 template<typename T>
 [[nodiscard]] constexpr T get_one(const T& value)
 {
-  MP_UNITS_EXPECTS(value != get_zero(value));
+  MP_UNITS_PRECONDITION(value != get_zero(value));
   return value / value;
 }
 
@@ -92,7 +92,7 @@ template<typename T>
 template<rounding_mode Mode, typename T, typename D>
 [[nodiscard]] constexpr auto div_round(const T& dividend, const D& divisor)
 {
-  MP_UNITS_EXPECTS(divisor > get_zero(divisor));  // unit magnitude denominators are always positive
+  MP_UNITS_PRECONDITION(divisor > get_zero(divisor));  // unit magnitude denominators are always positive
   using quot_type = std::remove_const_t<decltype(dividend / divisor)>;
   const quot_type quot = dividend / divisor;
   if constexpr (Mode == rounding_mode::truncated)

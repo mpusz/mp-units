@@ -128,7 +128,7 @@ public:
     requires std::constructible_from<T, Args...>
   constexpr reference emplace_back(Args&&... args)
   {
-    MP_UNITS_EXPECTS(size() < capacity());
+    MP_UNITS_PRECONDITION(size() < capacity());
     auto ptr = try_emplace_back(std::forward<Args>(args)...);
 #if MP_UNITS_HOSTED
     if (!ptr) throw std::runtime_error("not enough capacity");
