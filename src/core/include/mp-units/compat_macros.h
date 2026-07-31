@@ -89,16 +89,17 @@
 
 #if MP_UNITS_API_CONTRACTS == 1 || (!defined MP_UNITS_API_CONTRACTS && __cpp_contracts >= 202502L)
 
-// `contract_assert` is used only at runtime - GCC 16 fails to constant-evaluate its predicates
-// in many valid contexts, so during constant evaluation a violation is reported by making the
-// constant expression invalid with a call to a non-constexpr function instead
-#define MP_UNITS_CONTRACT_ASSERT(expr)                       \
-  do {                                                       \
-    if consteval {                                           \
-      if (!(expr)) ::mp_units::detail::contract_violation(); \
-    } else {                                                 \
-      contract_assert(expr);                                 \
-    }                                                        \
+// `contract_assert` is used only at runtime (behind a non-constexpr helper) - GCC 16 fails to
+// constant-evaluate its predicates in many valid contexts (some snapshots even in the not-taken
+// branch of `if consteval`), so during constant evaluation a violation is reported by making
+// the constant expression invalid with a call to a non-constexpr function instead
+#define MP_UNITS_CONTRACT_ASSERT(expr)                                     \
+  do {                                                                     \
+    if consteval {                                                         \
+      if (!(expr)) ::mp_units::detail::contract_violation();               \
+    } else {                                                               \
+      ::mp_units::detail::runtime_contract_check(static_cast<bool>(expr)); \
+    }                                                                      \
   } while (false)
 
 // `MP_UNITS_EXPECTS*` are GSL-backend-only - a precondition's native form is `pre()` on the

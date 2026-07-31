@@ -363,15 +363,17 @@ def main():
                 std_format=False,
                 **base,
             )
-            # C++26 contracts in freestanding mode (the library provides no violation
-            # handler there, but its own build is compile-only, so this checks that
-            # the contract annotations themselves compile with -ffreestanding)
-            collector.all_combinations(
-                filter=lambda me: me.toolchain.feature_support.std_contracts,
-                toolchain=freestanding_toolchains,
-                std_format=True,
-                **{**base, "contracts": "std", "std": 26},
-            )
+            # TODO C++26 contracts in freestanding mode are supported by the build system
+            # but not CI-covered yet: current GCC 16 snapshots reject `-ffreestanding`
+            # with `-std=c++26` for ANY contracts setting (libstdc++ regression:
+            # "'range_format' does not name a type" in <optional> when <ranges> is
+            # included). Add coverage here when upstream is fixed:
+            # collector.all_combinations(
+            #     filter=lambda me: me.toolchain.feature_support.std_contracts,
+            #     toolchain=freestanding_toolchains,
+            #     std_format=True,
+            #     **{**base, "contracts": "std", "std": 26},
+            # )
             collector.sample_combinations(
                 rgen=rgen,
                 min_samples_per_value=1,

@@ -38,6 +38,11 @@ namespace mp_units::detail {
 // (GCC 16 fails to constant-evaluate `contract_assert` predicates in many valid contexts)
 void contract_violation();
 
+// deliberately not constexpr - hides `contract_assert` from the constant evaluator, which
+// (in some GCC 16 snapshots) chokes on contract assertions even in the not-taken branch of
+// `if consteval`; a non-constexpr function body is never constant-evaluated
+inline void runtime_contract_check(bool pred) { contract_assert(pred); }
+
 }  // namespace mp_units::detail
 
 #elif MP_UNITS_API_CONTRACTS == 2 || (!defined MP_UNITS_API_CONTRACTS && __has_include(<gsl-lite/gsl-lite.hpp>))
