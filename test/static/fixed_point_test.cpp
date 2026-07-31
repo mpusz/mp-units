@@ -44,6 +44,16 @@ static_assert(std::is_same_v<detail::min_width_uint_t<31>, std::uint32_t>);
 static_assert(std::is_same_v<detail::min_width_uint_t<32>, std::uint32_t>);
 static_assert(std::is_same_v<detail::min_width_uint_t<33>, std::uint64_t>);
 
+// int_power computes base^exponent (`std::ldexp(base, exponent)` would be `base * 2^exponent`,
+// a factor-of-`base/2`-different value that a delegating implementation once returned)
+static_assert(detail::int_power<double>(2, 8) == 256.0);
+static_assert(detail::int_power<long double>(2, 8) == 256.0L);
+static_assert(detail::int_power<long double>(2, 0) == 1.0L);
+static_assert(detail::int_power<long double>(2, 1) == 2.0L);
+static_assert(detail::int_power<long double>(2, 63) == 9223372036854775808.0L);
+static_assert(detail::int_power<double>(2, -3) == 0.125);
+static_assert(detail::int_power<double>(10, 3) == 1000.0);
+
 // scale<To>(M{}, value) — integer-to-integer path (exact arithmetic, no floating point)
 
 // integral factor: exact integer multiply
