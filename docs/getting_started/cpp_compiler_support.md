@@ -20,6 +20,7 @@ a specific C++ feature:
 | **C++ modules**               |     20      | None |    17+     |      None      | None  |
 | **`import std;`**             |     23      | 15+  |    18+     |      None      | 19.5+ |
 | **Explicit `this` parameter** |     23      | 14+  |    18+     |      17+       | 19.5+ |
+| **Contracts**                 |     26      | 16+  |    None    |      None      | None  |
 
 ??? note "Clang-19 unfixable bug"
 
@@ -97,5 +98,24 @@ a specific C++ feature:
 - Related build options:
     - Conan: [no_crtp](installation_and_usage.md#no_crtp)
     - CMake: [MP_UNITS_API_NO_CRTP](installation_and_usage.md#MP_UNITS_API_NO_CRTP)
+
+
+## Contracts
+
+- If enabled, the library's preconditions and assertions are checked with C++26 contract
+  assertions instead of a GSL library.
+- A violation during constant evaluation is reported as a compilation error, and a runtime
+  violation is reported through the compiler's contract-violation handler.
+- Tested with `__cpp_contracts` [feature test macro](https://en.cppreference.com/w/cpp/feature_test).
+- The build system adds the required compiler-specific flags (e.g. `-fcontracts` and linking
+  `stdc++exp` for gcc).
+- May be combined with `import_std` (contracts are a language feature, so no third-party
+  headers conflict with importing the standard library) and with `freestanding` (the default
+  contract-violation handler needs a hosted implementation, so a freestanding application
+  has to provide its own handler or compile with an evaluation semantic that does not call
+  one, e.g. gcc's `-fcontract-evaluation-semantic=quick_enforce`).
+- Related build options:
+    - Conan: [contracts](installation_and_usage.md#contracts)
+    - CMake: [MP_UNITS_API_CONTRACTS](installation_and_usage.md#MP_UNITS_API_CONTRACTS)
 
 *[CRTP]: Curiously Recurring Template Parameter

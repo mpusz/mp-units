@@ -87,12 +87,50 @@
 
 #endif  // MP_UNITS_HOSTED
 
-#if MP_UNITS_API_CONTRACTS == 2 || (!defined MP_UNITS_API_CONTRACTS && __has_include(<gsl-lite/gsl-lite.hpp>))
+#if MP_UNITS_API_CONTRACTS == 1 || (!defined MP_UNITS_API_CONTRACTS && __cpp_contracts >= 202502L)
+
+// `contract_assert` is used only at runtime - GCC 16 fails to constant-evaluate its predicates
+// in many valid contexts, so during constant evaluation a violation is reported by making the
+// constant expression invalid with a call to a non-constexpr function instead
+#define MP_UNITS_CONTRACT_ASSERT(expr)                       \
+  do {                                                       \
+    if consteval {                                           \
+      if (!(expr)) ::mp_units::detail::contract_violation(); \
+    } else {                                                 \
+      contract_assert(expr);                                 \
+    }                                                        \
+  } while (false)
+
+// `MP_UNITS_EXPECTS*` are GSL-backend-only - a precondition's native form is `pre()` on the
+// declaration (`MP_UNITS_PRE`), and `MP_UNITS_PRE_BODY` is its in-body stand-in where a
+// declaration contract cannot be used
+#define MP_UNITS_EXPECTS(expr) static_cast<void>(0)
+#define MP_UNITS_EXPECTS_DEBUG(expr) static_cast<void>(0)
+#define MP_UNITS_ASSERT(expr) MP_UNITS_CONTRACT_ASSERT(expr)
+#if defined NDEBUG
+#define MP_UNITS_ASSERT_DEBUG(expr) static_cast<void>(0)
+#else
+#define MP_UNITS_ASSERT_DEBUG(expr) MP_UNITS_CONTRACT_ASSERT(expr)
+#endif
+#define MP_UNITS_PRE(...) pre(__VA_ARGS__)
+#define MP_UNITS_POST(...) post(__VA_ARGS__)
+#define MP_UNITS_PRE_BODY(...) MP_UNITS_CONTRACT_ASSERT(__VA_ARGS__)
+#if defined NDEBUG
+#define MP_UNITS_PRE_BODY_DEBUG(...) static_cast<void>(0)
+#else
+#define MP_UNITS_PRE_BODY_DEBUG(...) MP_UNITS_CONTRACT_ASSERT(__VA_ARGS__)
+#endif
+
+#elif MP_UNITS_API_CONTRACTS == 2 || (!defined MP_UNITS_API_CONTRACTS && __has_include(<gsl-lite/gsl-lite.hpp>))
 
 #define MP_UNITS_EXPECTS(expr) gsl_Expects(expr)
 #define MP_UNITS_EXPECTS_DEBUG(expr) gsl_ExpectsDebug(expr)
 #define MP_UNITS_ASSERT(expr) gsl_Assert(expr)
 #define MP_UNITS_ASSERT_DEBUG(expr) gsl_AssertDebug(expr)
+#define MP_UNITS_PRE(...)
+#define MP_UNITS_POST(...)
+#define MP_UNITS_PRE_BODY(...) static_cast<void>(0)
+#define MP_UNITS_PRE_BODY_DEBUG(...) static_cast<void>(0)
 
 #elif MP_UNITS_API_CONTRACTS == 3 || (!defined MP_UNITS_API_CONTRACTS && __has_include(<gsl/gsl>))
 
@@ -104,6 +142,10 @@
 #endif
 #define MP_UNITS_ASSERT(expr) Expects(expr)
 #define MP_UNITS_ASSERT_DEBUG(expr) assert(expr)
+#define MP_UNITS_PRE(...)
+#define MP_UNITS_POST(...)
+#define MP_UNITS_PRE_BODY(...) static_cast<void>(0)
+#define MP_UNITS_PRE_BODY_DEBUG(...) static_cast<void>(0)
 
 #else
 
@@ -111,6 +153,23 @@
 #define MP_UNITS_EXPECTS_DEBUG(expr) static_cast<void>(0)
 #define MP_UNITS_ASSERT(expr) static_cast<void>(0)
 #define MP_UNITS_ASSERT_DEBUG(expr) static_cast<void>(0)
+#define MP_UNITS_PRE(...)
+#define MP_UNITS_POST(...)
+#define MP_UNITS_PRE_BODY(...) static_cast<void>(0)
+#define MP_UNITS_PRE_BODY_DEBUG(...) static_cast<void>(0)
 
 #endif
+
+// backend-independent precondition checks for functions that do not (yet) declare their
+// precondition with `MP_UNITS_PRE` - exactly one of the two nested macros expands to a check
+#define MP_UNITS_PRECONDITION(...)  \
+  do {                              \
+    MP_UNITS_EXPECTS(__VA_ARGS__);  \
+    MP_UNITS_PRE_BODY(__VA_ARGS__); \
+  } while (false)
+#define MP_UNITS_PRECONDITION_DEBUG(...)  \
+  do {                                    \
+    MP_UNITS_EXPECTS_DEBUG(__VA_ARGS__);  \
+    MP_UNITS_PRE_BODY_DEBUG(__VA_ARGS__); \
+  } while (false)
 // NOLINTEND(cppcoreguidelines-macro-usage)

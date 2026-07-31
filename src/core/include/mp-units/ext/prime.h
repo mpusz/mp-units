@@ -52,9 +52,9 @@ namespace mp_units::detail {
 // Precondition: (n > 0).
 [[nodiscard]] consteval std::uint64_t add_mod(std::uint64_t a, std::uint64_t b, std::uint64_t n)
 {
-  MP_UNITS_EXPECTS_DEBUG(a < n);
-  MP_UNITS_EXPECTS_DEBUG(b < n);
-  MP_UNITS_EXPECTS_DEBUG(n > 0u);
+  MP_UNITS_PRECONDITION_DEBUG(a < n);
+  MP_UNITS_PRECONDITION_DEBUG(b < n);
+  MP_UNITS_PRECONDITION_DEBUG(n > 0u);
 
   if (a >= n - b) {
     return a - (n - b);
@@ -70,9 +70,9 @@ namespace mp_units::detail {
 // Precondition: (n > 0).
 [[nodiscard]] consteval std::uint64_t sub_mod(std::uint64_t a, std::uint64_t b, std::uint64_t n)
 {
-  MP_UNITS_EXPECTS_DEBUG(a < n);
-  MP_UNITS_EXPECTS_DEBUG(b < n);
-  MP_UNITS_EXPECTS_DEBUG(n > 0u);
+  MP_UNITS_PRECONDITION_DEBUG(a < n);
+  MP_UNITS_PRECONDITION_DEBUG(b < n);
+  MP_UNITS_PRECONDITION_DEBUG(n > 0u);
 
   if (a >= b) {
     return a - b;
@@ -88,9 +88,9 @@ namespace mp_units::detail {
 // Precondition: (n > 0).
 [[nodiscard]] consteval std::uint64_t mul_mod(std::uint64_t a, std::uint64_t b, std::uint64_t n)
 {
-  MP_UNITS_EXPECTS_DEBUG(a < n);
-  MP_UNITS_EXPECTS_DEBUG(b < n);
-  MP_UNITS_EXPECTS_DEBUG(n > 0u);
+  MP_UNITS_PRECONDITION_DEBUG(a < n);
+  MP_UNITS_PRECONDITION_DEBUG(b < n);
+  MP_UNITS_PRECONDITION_DEBUG(n > 0u);
 
   if (b == 0u || a < std::numeric_limits<std::uint64_t>::max() / b) {
     return (a * b) % n;
@@ -116,8 +116,8 @@ namespace mp_units::detail {
 // Precondition: (n % 2 == 1).
 [[nodiscard]] consteval std::uint64_t half_mod_odd(std::uint64_t a, std::uint64_t n)
 {
-  MP_UNITS_EXPECTS_DEBUG(a < n);
-  MP_UNITS_EXPECTS_DEBUG(n % 2 == 1);
+  MP_UNITS_PRECONDITION_DEBUG(a < n);
+  MP_UNITS_PRECONDITION_DEBUG(n % 2 == 1);
 
   return (a / 2u) + ((a % 2u == 0u) ? 0u : (n / 2u + 1u));
 }
@@ -164,9 +164,9 @@ struct NumberDecomposition {
 // Precondition: (n % 2 == 1).
 [[nodiscard]] consteval bool miller_rabin_probable_prime(std::uint64_t a, std::uint64_t n)
 {
-  MP_UNITS_EXPECTS_DEBUG(a >= 2u);
-  MP_UNITS_EXPECTS_DEBUG(n >= a + 2u);
-  MP_UNITS_EXPECTS_DEBUG(n % 2u == 1u);
+  MP_UNITS_PRECONDITION_DEBUG(a >= 2u);
+  MP_UNITS_PRECONDITION_DEBUG(n >= a + 2u);
+  MP_UNITS_PRECONDITION_DEBUG(n % 2u == 1u);
 
   const auto [s, d] = decompose(n - 1u);
   auto x = pow_mod(a, d, n);
@@ -355,8 +355,8 @@ struct LucasSequenceElement {
 // Precondition: (n is odd).
 [[nodiscard]] consteval bool strong_lucas_probable_prime(std::uint64_t n)
 {
-  MP_UNITS_EXPECTS_DEBUG(n >= 2u);
-  MP_UNITS_EXPECTS_DEBUG(n % 2u == 1u);
+  MP_UNITS_PRECONDITION_DEBUG(n >= 2u);
+  MP_UNITS_PRECONDITION_DEBUG(n % 2u == 1u);
 
   if (is_perfect_square(n)) {
     return false;

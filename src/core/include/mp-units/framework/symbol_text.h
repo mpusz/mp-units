@@ -79,7 +79,7 @@ constexpr bool is_basic_literal_character_set(const char (&txt)[N]) noexcept
 template<std::size_t N>
 constexpr fixed_u8string<N> to_u8string(fixed_string<N> txt)
 {
-  MP_UNITS_EXPECTS(is_basic_literal_character_set(txt.begin(), txt.end()));
+  MP_UNITS_PRECONDITION(is_basic_literal_character_set(txt.begin(), txt.end()));
   return std::bit_cast<fixed_u8string<N>>(txt);
 }
 
@@ -105,36 +105,36 @@ public:
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   [[nodiscard]] constexpr explicit(false) symbol_text(char ch) : utf8_(static_cast<char8_t>(ch)), portable_(ch)
   {
-    MP_UNITS_EXPECTS(detail::is_basic_literal_character_set_char(ch));
+    MP_UNITS_PRECONDITION(detail::is_basic_literal_character_set_char(ch));
   }
 
   // NOLINTNEXTLINE(*-avoid-c-arrays, google-explicit-constructor, hicpp-explicit-conversions)
   [[nodiscard]] consteval explicit(false) symbol_text(const char (&txt)[N + 1]) :
       utf8_(detail::to_u8string(basic_fixed_string{txt})), portable_(txt)
   {
-    MP_UNITS_EXPECTS(txt[N] == char{});
-    MP_UNITS_EXPECTS(detail::is_basic_literal_character_set(txt));
+    MP_UNITS_PRECONDITION(txt[N] == char{});
+    MP_UNITS_PRECONDITION(detail::is_basic_literal_character_set(txt));
   }
 
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   [[nodiscard]] constexpr explicit(false) symbol_text(const fixed_string<N>& txt) :
       utf8_(detail::to_u8string(txt)), portable_(txt)
   {
-    MP_UNITS_EXPECTS(detail::is_basic_literal_character_set(txt.data_));
+    MP_UNITS_PRECONDITION(detail::is_basic_literal_character_set(txt.data_));
   }
 
   // NOLINTNEXTLINE(*-avoid-c-arrays)
   [[nodiscard]] consteval symbol_text(const char8_t (&u)[N + 1], const char (&a)[M + 1]) : utf8_(u), portable_(a)
   {
-    MP_UNITS_EXPECTS(u[N] == char8_t{});
-    MP_UNITS_EXPECTS(a[M] == char{});
-    MP_UNITS_EXPECTS(detail::is_basic_literal_character_set(a));
+    MP_UNITS_PRECONDITION(u[N] == char8_t{});
+    MP_UNITS_PRECONDITION(a[M] == char{});
+    MP_UNITS_PRECONDITION(detail::is_basic_literal_character_set(a));
   }
 
   [[nodiscard]] constexpr symbol_text(const fixed_u8string<N>& utf8, const fixed_string<M>& portable) :
       utf8_(utf8), portable_(portable)
   {
-    MP_UNITS_EXPECTS(detail::is_basic_literal_character_set(portable.data_));
+    MP_UNITS_PRECONDITION(detail::is_basic_literal_character_set(portable.data_));
   }
 
   [[nodiscard]] constexpr const auto& utf8() const { return utf8_; }

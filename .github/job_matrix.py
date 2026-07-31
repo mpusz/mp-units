@@ -24,6 +24,8 @@ class ToolchainFeatureSupport:
     import_std: bool = False
     freestanding: bool = False
     explicit_this: bool = False
+    std_contracts: bool = False
+    max_std: int = 23
 
 
 @dataclass(frozen=True, order=True, kw_only=True)
@@ -32,7 +34,7 @@ class ConanOptions:
     import_std: bool
     std_format: bool
     no_crtp: bool
-    contracts: typing.Literal["none", "gsl-lite", "ms-gsl"]
+    contracts: typing.Literal["none", "std", "gsl-lite", "ms-gsl"]
     freestanding: bool
 
     def is_supported_on(self, feat: ToolchainFeatureSupport) -> bool:
@@ -42,6 +44,10 @@ class ConanOptions:
         explicit_this = feat.pop("explicit_this")
         if self.no_crtp and not explicit_this:
             return False
+        std_contracts = feat.pop("std_contracts")
+        if self.contracts == "std" and not std_contracts:
+            return False
+        feat.pop("max_std")  # checked in Configuration.is_supported (needs std)
         # now, the rest
         for k, v in feat.items():
             if getattr(self, k) and not v:
@@ -83,7 +89,7 @@ class Toolchain:
 @dataclass(frozen=True, order=True, kw_only=True)
 class Configuration(ConanOptions):
     toolchain: Toolchain
-    std: typing.Literal[20, 23]
+    std: typing.Literal[20, 23, 26]
     build_type: typing.Literal["Release", "Debug"]
 
     @property
@@ -92,14 +98,24 @@ class Configuration(ConanOptions):
         # check if selected features are supported by the toolchain
         if not self.is_supported_on(self.toolchain.feature_support):
             return False
+        # maximum standard supported by the toolchain
+        if self.std > self.toolchain.feature_support.max_std:
+            return False
         # minimum standard
         if self.std < 23 and any([self.import_std, self.no_crtp]):
+            return False
+        if self.std < 26 and self.contracts == "std":
+            return False
+        # third-party contract libraries require a hosted implementation
+        if self.freestanding and self.contracts not in ("none", "std"):
             return False
         # additional checks for import_std
         if self.import_std:
             if not self.std_format:
                 return False
-            if self.contracts != "none":
+            # third-party contract libraries textually include std headers, which
+            # conflict with `import std;`; C++26 contracts are a language feature
+            if self.contracts not in ("none", "std"):
                 return False
         # MSVC Debug + std::format trips error C7595 ("call to immediate function is not a
         # constant expression") on heavily templated mp-units quantity arguments — the

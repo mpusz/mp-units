@@ -89,7 +89,7 @@ public:
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   [[nodiscard]] consteval explicit(false) basic_fixed_string(const CharT (&txt)[N + 1]) noexcept
   {
-    MP_UNITS_EXPECTS(txt[N] == CharT{});
+    MP_UNITS_PRECONDITION(txt[N] == CharT{});
     for (std::size_t i = 0; i < N; ++i) data_[i] = txt[i];
   }
 
@@ -97,7 +97,7 @@ public:
     requires std::same_as<std::iter_value_t<It>, CharT>
   [[nodiscard]] constexpr basic_fixed_string(It begin, S end)
   {
-    MP_UNITS_EXPECTS(std::distance(begin, end) == N);
+    MP_UNITS_PRECONDITION(std::distance(begin, end) == N);
     for (auto it = data_; begin != end; ++begin, ++it) *it = *begin;
   }
 
@@ -105,7 +105,7 @@ public:
     requires std::same_as<std::ranges::range_value_t<R>, CharT>
   [[nodiscard]] constexpr basic_fixed_string(std::from_range_t, R&& r)
   {
-    MP_UNITS_EXPECTS(std::ranges::size(r) == N);
+    MP_UNITS_PRECONDITION(std::ranges::size(r) == N);
     for (auto it = data_; auto&& v : std::forward<R>(r)) *it++ = std::forward<decltype(v)>(v);
   }
 
@@ -129,7 +129,7 @@ public:
   static constexpr std::bool_constant<N == 0> empty{};
 
   // element access
-  [[nodiscard]] constexpr const_reference operator[](size_type pos) const
+  [[nodiscard]] constexpr const_reference operator[](size_type pos) const MP_UNITS_PRE(pos < N)
   {
     MP_UNITS_EXPECTS(pos < N);
     return data()[pos];
@@ -143,12 +143,12 @@ public:
   }
 #endif
 
-  [[nodiscard]] constexpr const_reference front() const
+  [[nodiscard]] constexpr const_reference front() const MP_UNITS_PRE(!empty())
   {
     MP_UNITS_EXPECTS(!empty());
     return (*this)[0];
   }
-  [[nodiscard]] constexpr const_reference back() const
+  [[nodiscard]] constexpr const_reference back() const MP_UNITS_PRE(!empty())
   {
     MP_UNITS_EXPECTS(!empty());
     return (*this)[N - 1];
@@ -202,7 +202,7 @@ public:
   [[nodiscard]] consteval friend basic_fixed_string<CharT, N + N2 - 1> operator+(const basic_fixed_string& lhs,
                                                                                  const CharT (&rhs)[N2]) noexcept
   {
-    MP_UNITS_EXPECTS(rhs[N2 - 1] == CharT{});
+    MP_UNITS_PRECONDITION(rhs[N2 - 1] == CharT{});
     CharT txt[N + N2];
     CharT* it = txt;
     for (CharT ch : lhs) *it++ = ch;
@@ -214,7 +214,7 @@ public:
   [[nodiscard]] consteval friend basic_fixed_string<CharT, N1 + N - 1> operator+(const CharT (&lhs)[N1],
                                                                                  const basic_fixed_string& rhs) noexcept
   {
-    MP_UNITS_EXPECTS(lhs[N1 - 1] == CharT{});
+    MP_UNITS_PRECONDITION(lhs[N1 - 1] == CharT{});
     CharT txt[N1 + N];
     CharT* it = txt;
     for (std::size_t i = 0; i != N1 - 1; ++i) *it++ = lhs[i];
@@ -233,7 +233,7 @@ public:
   template<std::size_t N2>
   [[nodiscard]] friend consteval bool operator==(const basic_fixed_string& lhs, const CharT (&rhs)[N2])
   {
-    MP_UNITS_EXPECTS(rhs[N2 - 1] == CharT{});
+    MP_UNITS_PRECONDITION(rhs[N2 - 1] == CharT{});
     return lhs.view() == std::basic_string_view<CharT>(std::cbegin(rhs), std::cend(rhs) - 1);
   }
 
@@ -246,7 +246,7 @@ public:
   template<std::size_t N2>
   [[nodiscard]] friend consteval auto operator<=>(const basic_fixed_string& lhs, const CharT (&rhs)[N2])
   {
-    MP_UNITS_EXPECTS(rhs[N2 - 1] == CharT{});
+    MP_UNITS_PRECONDITION(rhs[N2 - 1] == CharT{});
     return lhs.view() <=> std::basic_string_view<CharT>(std::cbegin(rhs), std::cend(rhs) - 1);
   }
 

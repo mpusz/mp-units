@@ -627,7 +627,7 @@ static_assert(qp_room(delta<clinical_temperature[si::degree_Celsius]>(37.0), roo
 // ============================================================================
 // Scenario 1 (continued): check_in_range policy.
 // Same abs[bounds] topology; behaviour on out-of-range values is a contract
-// violation (MP_UNITS_EXPECTS) rather than a silent clamp/wrap/reflect.
+// violation (MP_UNITS_PRECONDITION) rather than a silent clamp/wrap/reflect.
 // Only in-range paths can be tested at compile time.
 // ============================================================================
 
@@ -665,7 +665,7 @@ consteval bool check_increment_within_bounds()
 static_assert(check_increment_within_bounds());
 
 // Note: Out-of-bounds cases for check_in_range with plain rep cannot be tested at
-// compile time since they use MP_UNITS_EXPECTS (may be disabled in release builds).
+// compile time since they use MP_UNITS_PRECONDITION (may be disabled in release builds).
 
 // ============================================================================
 // Scenario 2: Only relative bounds (parent absolute origin has NO bounds).
@@ -1143,7 +1143,7 @@ static_assert(mp_units::natural_point_origin_<mp_units::isq::length>::_bounds_(0
 //   rel = -1701 m → abs =  -1 m  (< 0) → check_non_negative fires.
 //
 // The violation case cannot be verified at compile time (check_non_negative uses
-// MP_UNITS_EXPECTS, which may be a no-op in release builds).  See the runtime
+// MP_UNITS_PRECONDITION, which may be a no-op in release builds).  See the runtime
 // test for violation coverage with constrained<double, throw_policy> rep.
 // ============================================================================
 
