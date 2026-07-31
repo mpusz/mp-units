@@ -25,11 +25,13 @@
 # runners.
 #
 # Two pins matter:
-#   * BENCH_REF - an exact commit of mpusz/mp-units-benchmarks, never a branch. A branch would let a
-#     corpus change reach this gate unreviewed, and it would break maintenance work outright: once
-#     the suite's master follows the library to v3, a 2.6.x maintenance branch here still needs the
-#     last suite commit that supports v2. Each branch of this repository therefore pins the suite
-#     commit matching its own era, and bumping the pin is a reviewed change like any other.
+#   * BENCH_REF - which mp-units-benchmarks state to gate against. It tracks `main` FOR NOW, while the
+#     suite is still settling: a suite change then takes effect here without a commit in this
+#     repository, and this workflow can be re-run from the Actions UI instead of pushing (which would
+#     fire every other CI pipeline too). Pin it to an exact commit once the suite is stable, because
+#     a branch lets a corpus change reach this gate unreviewed, and because maintenance work needs
+#     it: when the suite's main follows the library to v3, a 2.6.x branch here still needs the last
+#     suite commit that supports v2. That is a per-branch pin, and bumping it is a reviewed change.
 #   * CLANG_VERSION - must match the suite's baseline key (baselines/instantiations-<key>.json).
 #
 # The bands here are deliberately looser than the ones the benchmarks repository applies to itself:
@@ -55,7 +57,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  BENCH_REF: 25d2105128b451917d538f99e09ad2ac547bcbbc # mp-units-benchmarks, exact commit only
+  BENCH_REF: main # tracks the suite for now; pin to an exact commit once it settles
   CLANG_VERSION: 21
   SLACK: 3 # per-workflow growth that blocks a change
   MEDIAN_ALARM: 2 # framework-wide median growth that blocks
@@ -85,6 +87,5 @@ jobs:
       - name: Gate against the reviewed baselines
         run: |
           benchmarks/runner/bench.py --repo . --cxx clang++-${{ env.CLANG_VERSION }} check \
-            --baseline-key clang${{ env.CLANG_VERSION }} \
             --slack ${{ env.SLACK }} --median-alarm ${{ env.MEDIAN_ALARM }} \
             --advisory-slack ${{ env.ADVISORY_SLACK }}
