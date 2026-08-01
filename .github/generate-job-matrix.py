@@ -36,7 +36,7 @@ _FEATURE_COMPAT = _load_feature_compat()
 
 
 def _make_feature_support(
-    conan_compiler: str, version: int, *, freestanding: bool = False
+    conan_compiler: str, version: int, *, freestanding: bool = False, max_std: int = 23
 ) -> ToolchainFeatureSupport:
     """Derive ToolchainFeatureSupport from conanfile.py's _feature_compatibility."""
 
@@ -49,7 +49,9 @@ def _make_feature_support(
         std_format=supports("std_format"),
         import_std=supports("import_std"),
         explicit_this=supports("explicit_this"),
+        std_contracts=supports("std_contracts"),
         freestanding=freestanding,
+        max_std=max_std,
     )
 
 
@@ -63,7 +65,13 @@ def make_gcc_config(version: int) -> Toolchain:
             cc=f"gcc-{version}",
             cxx=f"g++-{version}",
         ),
-        feature_support=_make_feature_support("gcc", version, freestanding=True),
+        feature_support=_make_feature_support(
+            "gcc",
+            version,
+            freestanding=True,
+            # -std=c++26 is available since gcc-14
+            max_std=26 if version >= 14 else 23,
+        ),
     )
 
 
@@ -77,7 +85,13 @@ def make_clang_config(
             version=version,
         ),
         lib="libc++",
-        feature_support=_make_feature_support("clang", version, freestanding=True),
+        feature_support=_make_feature_support(
+            "clang",
+            version,
+            freestanding=True,
+            # -std=c++26 is available since clang-17
+            max_std=26 if version >= 17 else 23,
+        ),
     )
     match architecture:
         case "x86-64":
@@ -96,7 +110,9 @@ def make_clang_config(
                 std_format=cfg.feature_support.std_format,
                 import_std=False,
                 explicit_this=cfg.feature_support.explicit_this,
+                std_contracts=cfg.feature_support.std_contracts,
                 freestanding=cfg.feature_support.freestanding,
+                max_std=cfg.feature_support.max_std,
             )
         case _:
             raise KeyError(f"Unsupported architecture {architecture!r} for Clang")
@@ -160,7 +176,7 @@ toolchains = {
 
 full_matrix = dict(
     toolchain=list(toolchains.values()),
-    std=[20, 23],
+    std=[20, 23, 26],
     build_type=["Release", "Debug"],
     **ConanOptions.full_matrix(),
 )
@@ -174,9 +190,22 @@ def _guarantee_api_coverage(
     freestanding: bool,
     contracts: str | None = None,
 ) -> None:
-    """Guarantee ≥1 import_std and ≥1 no_crtp configuration per supporting toolchain."""
+    """Guarantee ≥1 import_std, ≥1 no_crtp, and ≥2 C++26-contracts configurations
+    per supporting toolchain."""
     no_crtp_extra = {} if contracts is None else {"contracts": contracts}
     for tc in toolchains_iter:
+        # C++26 contracts require C++26; two samples so that later
+        # `min_samples_per_value=2` passes do not have to hit this narrow
+        # configuration by chance (the freestanding preset adds its own coverage).
+        if tc.feature_support.std_contracts and not freestanding and contracts is None:
+            collector.sample_combinations(
+                rgen=rgen,
+                min_samples=2,
+                toolchain=tc,
+                contracts="std",
+                std=26,
+                freestanding=freestanding,
+            )
         # import_std is incompatible with freestanding: the pre-built std.pcm
         # is compiled without -ffreestanding and cannot be reused.
         if tc.feature_support.import_std and not freestanding:
@@ -293,6 +322,13 @@ def main():
                 rgen=rgen,
                 min_samples_per_value=1,
                 toolchain=latest_clang,
+                # exclude contract backends the toolchain does not support so the
+                # sampler is not asked for unsatisfiable combinations
+                contracts=[
+                    c
+                    for c in ConanOptions.full_matrix()["contracts"]
+                    if c != "std" or latest_clang.feature_support.std_contracts
+                ],
                 freestanding=False,
             )
         case "all-freestanding":
@@ -327,6 +363,17 @@ def main():
                 std_format=False,
                 **base,
             )
+            # TODO C++26 contracts in freestanding mode are supported by the build system
+            # but not CI-covered yet: current GCC 16 snapshots reject `-ffreestanding`
+            # with `-std=c++26` for ANY contracts setting (libstdc++ regression:
+            # "'range_format' does not name a type" in <optional> when <ranges> is
+            # included). Add coverage here when upstream is fixed:
+            # collector.all_combinations(
+            #     filter=lambda me: me.toolchain.feature_support.std_contracts,
+            #     toolchain=freestanding_toolchains,
+            #     std_format=True,
+            #     **{**base, "contracts": "std", "std": 26},
+            # )
             collector.sample_combinations(
                 rgen=rgen,
                 min_samples_per_value=1,

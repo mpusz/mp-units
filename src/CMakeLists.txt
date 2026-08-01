@@ -86,7 +86,7 @@ option(MP_UNITS_API_NO_CRTP "Enable class definitions without CRTP idiom" ${MP_U
 option(MP_UNITS_API_THROWING_CONSTRAINTS "Enable throwing constraints" MP_UNITS_CONSTEXPR_EXCEPTIONS_SUPPORTED)
 option(MP_UNITS_API_FREESTANDING "Builds only freestanding part of the library" OFF)
 set(MP_UNITS_API_CONTRACTS GSL-LITE CACHE STRING "Enable contract checking")
-check_cache_var_values(MP_UNITS_API_CONTRACTS NONE GSL-LITE MS-GSL)
+check_cache_var_values(MP_UNITS_API_CONTRACTS NONE STD GSL-LITE MS-GSL)
 
 message(STATUS "MP_UNITS_API_STD_FORMAT: ${MP_UNITS_API_STD_FORMAT}")
 message(STATUS "MP_UNITS_API_NO_CRTP: ${MP_UNITS_API_NO_CRTP}")
@@ -95,8 +95,11 @@ message(STATUS "MP_UNITS_API_FREESTANDING: ${MP_UNITS_API_FREESTANDING}")
 message(STATUS "MP_UNITS_API_CONTRACTS: ${MP_UNITS_API_CONTRACTS}")
 
 # validate options
-if(MP_UNITS_API_FREESTANDING AND NOT MP_UNITS_API_CONTRACTS STREQUAL "NONE")
-    message(FATAL_ERROR "'MP_UNITS_API_CONTRACTS' should be set to 'NONE' for a freestanding build")
+# third-party contract libraries require a hosted implementation; C++26 contracts are
+# a language feature (the application has to provide a contract-violation handler or
+# compile with an evaluation semantic that does not need one, e.g. `quick_enforce`)
+if(MP_UNITS_API_FREESTANDING AND NOT MP_UNITS_API_CONTRACTS MATCHES "^(NONE|STD)$")
+    message(FATAL_ERROR "'MP_UNITS_API_CONTRACTS' should be set to 'NONE' or 'STD' for a freestanding build")
 endif()
 
 if(NOT MP_UNITS_API_FREESTANDING AND MP_UNITS_API_STD_FORMAT AND NOT MP_UNITS_LIB_FORMAT_SUPPORTED)

@@ -998,7 +998,7 @@ template<typename CharT, std::output_iterator<CharT> Out, typename... Expr>
                                              const unit_symbol_formatting& fmt, bool negative_power)
 {
   (void)negative_power;
-  MP_UNITS_EXPECTS(negative_power == false);
+  MP_UNITS_PRECONDITION(negative_power == false);
   return unit_symbol_impl<CharT>(out, typename derived_unit_impl<Expr...>::_num_{},
                                  typename derived_unit_impl<Expr...>::_den_{}, fmt);
 }

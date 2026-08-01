@@ -219,37 +219,57 @@ std::cout << MP_UNITS_STD_FMT::format("{}", distance) << "\n";
 ### Contract Checking Macros
 
 **Problem:** The library uses contract checking (preconditions, postconditions, assertions)
-which can be provided by either [gsl-lite](https://github.com/gsl-lite/gsl-lite) or
-[ms-gsl](https://github.com/microsoft/GSL).
+which can be provided by C++26 contracts, [gsl-lite](https://github.com/gsl-lite/gsl-lite),
+or [ms-gsl](https://github.com/microsoft/GSL).
 
 **Solution:** Use these macros for portable contract checks:
 
 ```cpp
 #include <mp-units/ext/contracts.h>
 
-void process_speed(quantity<si::metre / si::second, int> speed)
+// preferred: precondition declared on the function itself (C++26 `pre`),
+// with an in-body check for the GSL backends
+void process_speed(quantity<si::metre / si::second, int> speed) MP_UNITS_PRE(speed > 0 * m / s)
 {
-  MP_UNITS_EXPECTS(speed > 0 * m / s);  // Precondition (always checked if enabled)
+  MP_UNITS_EXPECTS(speed > 0 * m / s);  // GSL backends only - pre() already checks it above
   // ...
-  MP_UNITS_ASSERT(result > 0);          // Assertion (always checked if enabled)
+  MP_UNITS_ASSERT(result > 0);          // Assertion (checked by the active backend)
 }
 
-void debug_function()
+// fallback: in-body precondition checked by the active backend; use it where `pre()`
+// cannot be used yet (compilers still fail to constant-evaluate some `pre()` predicates,
+// so a `pre()` on a function like this one could break its compile-time uses)
+constexpr quantity<one> ratio_of(quantity<si::metre> lhs, quantity<si::metre> rhs)
 {
-  MP_UNITS_EXPECTS_DEBUG(condition);    // Only checked in debug builds
-  // ...
-  MP_UNITS_ASSERT_DEBUG(invariant);     // Only checked in debug builds
+  MP_UNITS_PRECONDITION(rhs != 0 * m);
+  return lhs / rhs;
 }
 ```
 
 Available macros:
 
-- `MP_UNITS_EXPECTS(expr)` - Precondition check
-- `MP_UNITS_EXPECTS_DEBUG(expr)` - Debug-only precondition check
-- `MP_UNITS_ASSERT(expr)` - Assertion check
-- `MP_UNITS_ASSERT_DEBUG(expr)` - Debug-only assertion check
+- `MP_UNITS_PRE(...)`/`MP_UNITS_POST(...)` - C++26 [`pre`/`post` specifiers](https://en.cppreference.com/w/cpp/language/contracts)
+  on a function declaration; empty under the other backends. Pair them with
+  `MP_UNITS_EXPECTS` in the body so the GSL backends check the same condition. This is the
+  preferred way to express preconditions and postconditions.
+- `MP_UNITS_EXPECTS(expr)`/`MP_UNITS_EXPECTS_DEBUG(expr)` - GSL-backends-only precondition
+  check (no-op under C++26 contracts). Their behavior is consistent with
+  [gsl-lite contract checking](https://github.com/gsl-lite/gsl-lite?tab=readme-ov-file#contract-checking-configuration-macros).
+- `MP_UNITS_PRECONDITION(expr)`/`MP_UNITS_PRECONDITION_DEBUG(expr)` - Backend-independent
+  in-body precondition check (debug-only in the second form); expands to the GSL or the
+  C++26 contracts check, whichever backend is active. A fallback for functions that cannot
+  use `MP_UNITS_PRE` yet - current compilers still fail to constant-evaluate some `pre()`
+  predicates, which would break compile-time uses of the function.
+- `MP_UNITS_PRE_BODY(...)`/`MP_UNITS_PRE_BODY_DEBUG(...)` - C++26-contracts-only in-body
+  precondition check (no-op under the GSL backends); a workaround for functions that cannot
+  declare their precondition with `MP_UNITS_PRE` yet (e.g., due to compiler limitations) -
+  declaring preconditions on the function is the target solution.
+- `MP_UNITS_ASSERT(expr)`/`MP_UNITS_ASSERT_DEBUG(expr)` - Assertion check (debug-only in
+  the second form); checked by whichever backend is active.
 
-Their behavior is consistent with [gsl-lite contract checking](https://github.com/gsl-lite/gsl-lite?tab=readme-ov-file#contract-checking-configuration-macros).
+`MP_UNITS_PRECONDITION*`, `MP_UNITS_PRE_BODY*`, and (under the C++26 contracts backend)
+`MP_UNITS_ASSERT*` expand to statements, not expressions - use them only as standalone
+statements followed by a semicolon.
 
 !!! note "Configuration"
 
@@ -282,6 +302,7 @@ QUANTITY_SPEC(flight_distance, isq::length);
 
 quantity<flight_distance[km]> calculate_distance(quantity<isq::speed[km / h]> speed,
                                                  quantity<isq::time[h]> duration)
+  MP_UNITS_PRE(speed > 0 * km / h) MP_UNITS_PRE(duration > 0 * h)
 {
   MP_UNITS_EXPECTS(speed > 0 * km / h);
   MP_UNITS_EXPECTS(duration > 0 * h);

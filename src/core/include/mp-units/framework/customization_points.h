@@ -549,7 +549,7 @@ using quantity_values [[deprecated("2.5.0: Use `representation_values` instead")
  * a domain constraint is violated (e.g., out-of-bounds value, non-negativity).
  *
  * No default implementation is provided. When no specialization exists for a given
- * Rep, the library uses MP_UNITS_EXPECTS directly (which may compile to nothing in
+ * Rep, the library uses MP_UNITS_PRECONDITION directly (which may compile to nothing in
  * release builds). Specializing this trait opts the type into guaranteed enforcement.
  *
  * @tparam Rep the representation type

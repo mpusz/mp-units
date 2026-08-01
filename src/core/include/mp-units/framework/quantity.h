@@ -406,7 +406,7 @@ struct quantity_iface {
             CommonlyInvocableQuantities<std::modulus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>
   [[nodiscard]] friend constexpr Quantity auto operator%(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
   {
-    MP_UNITS_EXPECTS_DEBUG(rhs != 0);
+    MP_UNITS_PRECONDITION_DEBUG(rhs != 0);
     using ret = common_quantity_for<std::modulus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>;
     const ret ret_lhs(lhs);
     const ret ret_rhs(rhs);
@@ -463,7 +463,7 @@ struct quantity_iface {
     requires InvocableQuantities<std::divides<>, quantity<R1, Rep1>, quantity<R2, Rep2>>
   [[nodiscard]] friend constexpr Quantity auto operator/(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
   {
-    MP_UNITS_EXPECTS_DEBUG(rhs != 0);
+    MP_UNITS_PRECONDITION_DEBUG(rhs != 0);
     return quantity{lhs.numerical_value_ref_in(get_unit(R1)) / rhs.numerical_value_ref_in(get_unit(R2)), R1 / R2};
   }
 
@@ -473,7 +473,7 @@ struct quantity_iface {
   [[nodiscard]] friend constexpr QuantityOf<get_quantity_spec(R1)> auto operator/(const quantity<R1, Rep1>& q,
                                                                                   const Value& val)
   {
-    MP_UNITS_EXPECTS_DEBUG(val != representation_values<Value>::zero());
+    MP_UNITS_PRECONDITION_DEBUG(val != representation_values<Value>::zero());
     return quantity{q.numerical_value_ref_in(get_unit(R1)) / val, R1};
   }
 
@@ -482,7 +482,7 @@ struct quantity_iface {
             ScalableResultOf<get_quantity_spec(one / R1), std::divides<>, const Value&, Rep1>
   [[nodiscard]] friend constexpr Quantity auto operator/(const Value& val, const quantity<R1, Rep1>& q)
   {
-    MP_UNITS_EXPECTS_DEBUG(q != 0);
+    MP_UNITS_PRECONDITION_DEBUG(q != 0);
     return quantity{
       val / q.numerical_value_ref_in(get_unit(R1)),
       scaled_reference<one / R1,
@@ -953,7 +953,7 @@ public:
             }
   constexpr quantity& operator%=(const quantity<R2, Rep2>& other) &
   {
-    MP_UNITS_EXPECTS_DEBUG(other != 0);
+    MP_UNITS_PRECONDITION_DEBUG(other != 0);
     if constexpr (equivalent(unit, get_unit(R2)))
       numerical_value_is_an_implementation_detail_ %= other.numerical_value_is_an_implementation_detail_;
     else
@@ -986,7 +986,7 @@ public:
     }
   constexpr quantity& operator/=(const Value& val) &
   {
-    MP_UNITS_EXPECTS_DEBUG(val != representation_values<Value>::zero());
+    MP_UNITS_PRECONDITION_DEBUG(val != representation_values<Value>::zero());
     numerical_value_is_an_implementation_detail_ /= val;
     return *this;
   }

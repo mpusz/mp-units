@@ -34,6 +34,7 @@ import std;
 #else
 #include <compare>  // IWYU pragma: export
 #include <cstdint>
+#include <limits>
 #include <numeric>
 #endif
 #endif
@@ -52,8 +53,8 @@ namespace mp_units::detail {
   // overflow in multiplication
   MP_UNITS_ASSERT(a1 == 0 || b1 == 0);
   MP_UNITS_ASSERT(a0 * b1 + b0 * a1 < (c >> 1));  // NOLINT(hicpp-signed-bitwise)
-  MP_UNITS_ASSERT(b0 * a0 <= INTMAX_MAX);
-  MP_UNITS_ASSERT((a0 * b1 + b0 * a1) * c <= INTMAX_MAX - b0 * a0);
+  MP_UNITS_ASSERT(b0 * a0 <= std::numeric_limits<std::intmax_t>::max());
+  MP_UNITS_ASSERT((a0 * b1 + b0 * a1) * c <= std::numeric_limits<std::intmax_t>::max() - b0 * a0);
 
   return lhs * rhs;
 }
@@ -72,7 +73,7 @@ MP_UNITS_EXPORT struct ratio {
   // NOLINTNEXTLINE(bugprone-easily-swappable-parameters, google-explicit-constructor, hicpp-explicit-conversions)
   MP_UNITS_CONSTEVAL explicit(false) ratio(std::intmax_t n, std::intmax_t d = 1) : num{n}, den{d}
   {
-    MP_UNITS_EXPECTS(den != 0);
+    MP_UNITS_PRECONDITION(den != 0);
     if (num == 0)
       den = 1;
     else {

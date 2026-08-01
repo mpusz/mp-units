@@ -27,7 +27,25 @@
 #include <mp-units/bits/hacks.h>
 #include <mp-units/compat_macros.h>
 
-#if MP_UNITS_API_CONTRACTS == 2 || (!defined MP_UNITS_API_CONTRACTS && __has_include(<gsl-lite/gsl-lite.hpp>))
+#if MP_UNITS_API_CONTRACTS == 1 || (!defined MP_UNITS_API_CONTRACTS && __cpp_contracts >= 202502L)
+
+// C++26 contracts are a language feature - no headers needed
+
+namespace mp_units::detail {
+
+// deliberately not constexpr and never defined - calling it poisons the enclosing constant
+// expression, which is how contract violations are reported during constant evaluation
+// (GCC 16 fails to constant-evaluate `contract_assert` predicates in many valid contexts)
+void contract_violation();
+
+// deliberately not constexpr - hides `contract_assert` from the constant evaluator, which
+// (in some GCC 16 snapshots) chokes on contract assertions even in the not-taken branch of
+// `if consteval`; a non-constexpr function body is never constant-evaluated
+inline void runtime_contract_check(bool pred) { contract_assert(pred); }
+
+}  // namespace mp_units::detail
+
+#elif MP_UNITS_API_CONTRACTS == 2 || (!defined MP_UNITS_API_CONTRACTS && __has_include(<gsl-lite/gsl-lite.hpp>))
 
 #if MP_UNITS_HOSTED
 #include <gsl-lite/gsl-lite.hpp>
