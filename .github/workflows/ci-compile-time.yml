@@ -92,6 +92,38 @@ jobs:
         shell: bash
         run: |
           sudo apt install -y libc++-${{ env.CLANG_VERSION }}-dev libc++abi-${{ env.CLANG_VERSION }}-dev libunwind-${{ env.CLANG_VERSION }}-dev
+      - name: Record what was measured
+        shell: bash
+        run: |
+          {
+            echo "| measured | value |"
+            echo "|---|---|"
+            echo "| this tree | \`${{ github.ref_name }}\` @ $(git describe --tags --always --dirty) |"
+            echo "| library version | $(sed -nE 's/.*VERSION[[:space:]]+([0-9]+\.[0-9]+\.[0-9]+).*/\1/p' src/CMakeLists.txt | head -1) |"
+            echo "| benchmark suite | \`${BENCH_REF}\` @ $(git -C benchmarks rev-parse --short HEAD) |"
+            echo "| corpus | $(ls benchmarks/workflows/*/*.cpp | wc -l) workflows |"
+            echo "| compiler | $(clang++-${CLANG_VERSION} --version | head -1), \`-std=c++23\` |"
+            echo "| bands | blocks above ${SLACK}% per workflow or ${MEDIAN_ALARM}% median, annotates from ${ADVISORY_SLACK}% |"
+            echo
+            echo "**What this job does:** compiles the mp-units-benchmarks corpus against this tree and"
+            echo "counts template instantiations (clang \`-ftime-trace\` events), comparing them against the"
+            echo "reviewed baselines in that repository. Counts are deterministic for a pinned compiler and"
+            echo "standard, so unlike wall-clock timings they mean something on a shared runner."
+            echo
+            echo "- **slack ${SLACK}%** - one workflow growing more than this fails this job."
+            echo "- **median ${MEDIAN_ALARM}%** - median growth across non-umbrella workflows (\`umbrella/\` is"
+            echo "  excluded: it grows legitimately when the systems do). Exceeding it means the framework as"
+            echo "  a whole got more expensive, not one workflow."
+            echo "- **advisory ${ADVISORY_SLACK}%** - growth above this is annotated here but never fatal."
+            echo
+            echo "mp-units-benchmarks gates the same numbers tightly (1% per workflow, 0.5% median), so growth"
+            echo "merely annotated here goes red there - which is where it gets investigated, without holding"
+            echo "up library work. If the growth is intentional, re-record the baselines in that repository."
+            echo
+            echo "Wall time and peak memory across several compilers are a different question, answered by the"
+            echo "\`Compile cost\` workflow in mp-units-benchmarks, which can be dispatched against any ref of"
+            echo "this repository."
+          } >> "$GITHUB_STEP_SUMMARY"
       - name: Gate against the reviewed baselines
         run: |
           benchmarks/runner/bench.py --repo . --cxx clang++-${{ env.CLANG_VERSION }} check \
