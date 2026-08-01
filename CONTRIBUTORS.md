@@ -33,12 +33,12 @@ wouldn't be possible without the dedication and hard work of our amazing communi
 ## Statistics
 
 - **Total Contributors**: 37
-- **Total Contributions**: 328
+- **Total Contributions**: 330
 - **Major Contributors** (50+ contributions): 0
 - **Regular Contributors** (10-49 contributions): 10
 - **Occasional Contributors** (1-9 contributions): 27
 
-_Last updated: 2026-07-01_
+_Last updated: 2026-08-01_
 
 
 ### Major Contributors
@@ -69,8 +69,8 @@ _10-49 contributions_
 _Everyone who has contributed to mp-units_
 
 - **[fdischner](https://github.com/fdischner)**
-- **[NAThompson](https://github.com/NAThompson)**
 - **[HazardyKnusperkeks](https://github.com/HazardyKnusperkeks)**
+- **[NAThompson](https://github.com/NAThompson)**
 - **[nebkat](https://github.com/nebkat)**
 - **[jansende](https://github.com/jansende)**
 - **[kammce](https://github.com/kammce)**
