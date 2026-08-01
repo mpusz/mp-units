@@ -73,6 +73,12 @@ env:
 
 jobs:
   instantiations:
+    # One gate per supported language standard: counts differ per -std, and a regression can appear
+    # in one standard alone. Each has its own reviewed baselines in the benchmarks repository.
+    strategy:
+      fail-fast: false
+      matrix:
+        std: [c++20, c++23, c++26]
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
@@ -126,6 +132,6 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
       - name: Gate against the reviewed baselines
         run: |
-          benchmarks/runner/bench.py --repo . --cxx clang++-${{ env.CLANG_VERSION }} check \
+          benchmarks/runner/bench.py --repo . --cxx clang++-${{ env.CLANG_VERSION }} --std ${{ matrix.std }} check \
             --slack ${{ env.SLACK }} --median-alarm ${{ env.MEDIAN_ALARM }} \
             --advisory-slack ${{ env.ADVISORY_SLACK }}
