@@ -45,6 +45,14 @@
 # `--workflows <filters>` to move only the affected entries) and bump BENCH_REF here. Umbrella
 # workflows are churn-expected and excluded from the framework-wide median alarm, so ordinary growth
 # of the systems does not trip it.
+# Only the gate lives here. Wall time and peak memory across several compilers are a different
+# question - asked occasionally rather than on every build - and the `Compile cost` workflow in
+# mp-units-benchmarks answers it, dispatched against any ref of this repository, feature branches
+# included.
+#
+# No workflow_dispatch on purpose: the baselines describe one library state, so running this against
+# an arbitrary older branch or tag would compare it against thresholds recorded for a different tree
+# and fail for reasons that say nothing about that branch.
 name: Compile-time CI
 
 on: [push, pull_request]
