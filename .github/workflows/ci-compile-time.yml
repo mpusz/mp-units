@@ -25,13 +25,12 @@
 # runners.
 #
 # Two pins matter:
-#   * BENCH_REF - which mp-units-benchmarks state to gate against. It tracks `main` FOR NOW, while the
-#     suite is still settling: a suite change then takes effect here without a commit in this
-#     repository, and this workflow can be re-run from the Actions UI instead of pushing (which would
-#     fire every other CI pipeline too). Pin it to an exact commit once the suite is stable, because
-#     a branch lets a corpus change reach this gate unreviewed, and because maintenance work needs
-#     it: when the suite's main follows the library to v3, a 2.6.x branch here still needs the last
-#     suite commit that supports v2. That is a per-branch pin, and bumping it is a reviewed change.
+#   * BENCH_REF - an exact commit of mpusz/mp-units-benchmarks, never a branch. A branch would let a
+#     corpus change reach this gate unreviewed, and it breaks maintenance work outright: when the
+#     suite's main eventually follows the library to v3, a 2.6.x branch here still needs the last
+#     suite commit that supports v2. Each branch of this repository therefore pins the suite commit
+#     matching its own era, and bumping the pin is a reviewed change like any other. Note the suite
+#     tracks THIS repository's master in its own CI - each side pins the other, neither pins itself.
 #   * CLANG_VERSION - must match the suite's baseline key (baselines/instantiations-<key>.json).
 #
 # The bands here are deliberately looser than the ones the benchmarks repository applies to itself:
@@ -65,7 +64,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  BENCH_REF: main # tracks the suite for now; pin to an exact commit once it settles
+  BENCH_REF: cf4768badf7c66e0cc97b030f995cb4255495b9b # mp-units-benchmarks, exact commit - never a branch
   CLANG_VERSION: 21
   SLACK: 3 # per-workflow growth that blocks a change
   MEDIAN_ALARM: 2 # framework-wide median growth that blocks
@@ -108,7 +107,7 @@ jobs:
             echo "| library version | $(sed -nE 's/.*VERSION[[:space:]]+([0-9]+\.[0-9]+\.[0-9]+).*/\1/p' src/CMakeLists.txt | head -1) |"
             echo "| benchmark suite | \`${BENCH_REF}\` @ $(git -C benchmarks rev-parse --short HEAD) |"
             echo "| corpus | $(ls benchmarks/workflows/*/*.cpp | wc -l) workflows |"
-            echo "| compiler | $(clang++-${CLANG_VERSION} --version | head -1), \`-std=c++23\` |"
+            echo "| compiler | $(clang++-${CLANG_VERSION} --version | head -1), \`-std=${{ matrix.std }}\` |"
             echo "| bands | blocks above ${SLACK}% per workflow or ${MEDIAN_ALARM}% median, annotates from ${ADVISORY_SLACK}% |"
             echo
             echo "**What this job does:** compiles the mp-units-benchmarks corpus against this tree and"
