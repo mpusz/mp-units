@@ -31,6 +31,7 @@
 #ifndef MP_UNITS_IMPORT_STD
 #include <array>
 #include <bit>
+#include <cassert>
 #include <compare>
 #include <concepts>
 #include <cstddef>
@@ -40,6 +41,7 @@
 #include <initializer_list>
 #include <iterator>
 #include <limits>
+#include <memory>
 #include <numbers>
 #include <numeric>
 #include <optional>
@@ -48,6 +50,7 @@
 #include <tuple>
 #include <type_traits>
 #include <utility>
+#include <version>
 #if __cpp_lib_text_encoding
 #include <text_encoding>
 #endif
@@ -61,10 +64,9 @@
 #include <complex>
 #include <locale>
 #include <ostream>
-#include <random>
 #include <sstream>
+#include <stdexcept>
 #include <string>
-
 #endif
 #endif
 

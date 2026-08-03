@@ -23,6 +23,11 @@
 module;
 
 #include <mp-units/bits/core_gmf.h>
+// Needed only by this component (utility/random.h); keeping it out of the shared GMF keeps every
+// other component's BMI from serializing a library it never uses.
+#if MP_UNITS_HOSTED && !defined(MP_UNITS_IMPORT_STD)
+#include <random>
+#endif
 
 export module mp_units.utility;
 
