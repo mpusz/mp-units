@@ -29,12 +29,20 @@ on:
       - main
     tags:
       - v*
+    # Everything the published site is generated from: the pages themselves, the code snippets they
+    # embed from `example/`, and the systems reference `scripts/systems_reference.py` generates out
+    # of `src/systems/include/`.
     paths:
       - "docs/**"
       - ".github/workflows/documentation.yml"
       - "CHANGELOG.md"
       - "CONTRIBUTING.md"
+      - "CONTRIBUTORS.md"
+      - "LICENSE.md"
       - "mkdocs.yml"
+      - "example/**"
+      - "scripts/**"
+      - "src/systems/include/**"
 permissions:
   contents: write
   pages: write

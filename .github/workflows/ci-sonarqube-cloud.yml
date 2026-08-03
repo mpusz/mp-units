@@ -27,8 +27,15 @@ on:
     branches:
       - master
       - main
-    paths-ignore:
-      - "docs/**"
+    paths:
+      - "src/**"
+      - "test/**"
+      - "example/**"
+      - "cmake/**"
+      - "CMakeLists.txt"
+      - "conanfile.py"
+      - "sonar-project.properties"
+      - ".github/workflows/ci-sonarqube-cloud.yml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

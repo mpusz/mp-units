@@ -54,7 +54,17 @@
 # and fail for reasons that say nothing about that branch.
 name: Compile-time CI
 
-on: [push, pull_request]
+# The suite compiles its own corpus straight against the headers, so nothing else in this tree - not
+# the tests, not the build system - can move the instantiation counts.
+on:
+  push:
+    paths:
+      - "src/**"
+      - ".github/workflows/ci-compile-time.yml"
+  pull_request:
+    paths:
+      - "src/**"
+      - ".github/workflows/ci-compile-time.yml"
 
 permissions:
   contents: read

@@ -14,13 +14,25 @@ name: "CodeQL"
 on:
   push:
     branches: ["master"]
-    paths-ignore:
-      - "docs/**"
+    paths:
+      - "src/**"
+      - "test/**"
+      - "example/**"
+      - "cmake/**"
+      - "CMakeLists.txt"
+      - "conanfile.py"
+      - ".github/workflows/codeql.yml"
   pull_request:
     # The branches below must be a subset of the branches above
     branches: ["master"]
-    paths-ignore:
-      - "docs/**"
+    paths:
+      - "src/**"
+      - "test/**"
+      - "example/**"
+      - "cmake/**"
+      - "CMakeLists.txt"
+      - "conanfile.py"
+      - ".github/workflows/codeql.yml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

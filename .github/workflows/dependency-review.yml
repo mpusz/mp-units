@@ -25,10 +25,19 @@ name: Dependency Review
 on:
   pull_request:
     branches: [ master ]
+    # The manifests GitHub's dependency graph understands here: pinned action versions and the
+    # Python requirements. Nothing else in the tree reaches this review.
+    paths:
+      - "requirements.txt"
+      - ".github/workflows/**"
 
 permissions:
   contents: read
   pull-requests: write  # To post comments on PRs
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   dependency-review:

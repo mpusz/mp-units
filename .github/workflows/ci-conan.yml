@@ -24,11 +24,29 @@ name: Conan CI
 
 on:
   push:
-    paths-ignore:
-      - "docs/**"
+    paths:
+      - "src/**"
+      - "test/**"
+      - "example/**"
+      - "test_package/**"
+      - "cmake/**"
+      - "CMakeLists.txt"
+      - "conanfile.py"
+      - ".github/generate-job-matrix.py"
+      - ".github/job_matrix.py"
+      - ".github/workflows/ci-conan.yml"
   pull_request:
-    paths-ignore:
-      - "docs/**"
+    paths:
+      - "src/**"
+      - "test/**"
+      - "example/**"
+      - "test_package/**"
+      - "cmake/**"
+      - "CMakeLists.txt"
+      - "conanfile.py"
+      - ".github/generate-job-matrix.py"
+      - ".github/job_matrix.py"
+      - ".github/workflows/ci-conan.yml"
   workflow_dispatch:
     inputs:
       matrix-seed:

@@ -4,9 +4,11 @@ on:
   push:
     paths:
       - CITATION.cff
+      - ".github/workflows/citation.yml"
   pull_request:
     paths:
       - CITATION.cff
+      - ".github/workflows/citation.yml"
 
 permissions:
   contents: read

@@ -26,13 +26,29 @@ on:
   push:
     branches:
       - "**"
-    paths-ignore:
-      - "docs/**"
+    paths:
+      - "src/**"
+      - "test/**"
+      - "example/**"
+      - "cmake/**"
+      - "CMakeLists.txt"
+      - "conanfile.py"
+      - ".github/generate-job-matrix.py"
+      - ".github/job_matrix.py"
+      - ".github/workflows/ci-freestanding.yml"
   pull_request:
     branches:
       - "**"
-    paths-ignore:
-      - "docs/**"
+    paths:
+      - "src/**"
+      - "test/**"
+      - "example/**"
+      - "cmake/**"
+      - "CMakeLists.txt"
+      - "conanfile.py"
+      - ".github/generate-job-matrix.py"
+      - ".github/job_matrix.py"
+      - ".github/workflows/ci-freestanding.yml"
   workflow_dispatch:
     inputs:
       matrix-seed:
