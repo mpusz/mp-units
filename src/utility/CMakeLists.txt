@@ -42,6 +42,7 @@ if(NOT MP_UNITS_API_FREESTANDING)
                include/mp-units/utility/polar_vector.h
                include/mp-units/utility/random.h
                include/mp-units/utility/spherical_vector.h
+               include/mp-units/utility/uncertain.h
     )
 endif()
 

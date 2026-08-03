@@ -89,6 +89,14 @@ template<Quantity To, rounding_mode Mode = rounding_mode::truncated, typename Fw
     constexpr UnitMagnitude auto c_mag = get_canonical_unit(From::unit).mag / get_canonical_unit(To::unit).mag;
 
     auto res = scale_impl<typename To::rep, Mode>(c_mag, q.numerical_value_is_an_implementation_detail_);
+    // A conversion factor built from measured constants is itself a measured value, so a
+    // representation that opted into `fold_conversion_uncertainty` receives the factor's relative
+    // standard uncertainty. For every other representation this block compiles away, and with it
+    // the derivation, which is therefore never instantiated.
+    if constexpr (FoldsConversionUncertainty<std::remove_cvref_t<decltype(res)>>) {
+      constexpr long double conversion_ur = conversion_relative_uncertainty_result<From::unit, To::unit>;
+      if constexpr (conversion_ur != 0.0L) res = fold_conversion_uncertainty(std::move(res), conversion_ur);
+    }
     return quantity{std::move(res), To::reference};
   }
 }

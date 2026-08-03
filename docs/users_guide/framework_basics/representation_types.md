@@ -753,6 +753,66 @@ a representation type. For usage and code examples, see
 [Ensure Ultimate Safety](../../how_to_guides/advanced_usage/ultimate_safety.md).
 
 
+---
+
+#### `fold_conversion_uncertainty(value, u_r)` { #fold_conversion_uncertainty }
+
+!!! note "Advanced use case"
+
+    Needed only by representation types that store a measurement uncertainty. Everything else
+    is unaffected and pays nothing.
+
+An ADL-found function letting a representation absorb the uncertainty of a *unit conversion
+factor*:
+
+```cpp
+friend constexpr Rep fold_conversion_uncertainty(const Rep& value, long double relative_uncertainty);
+```
+
+**Purpose:** Most conversion factors are exact, but one built from
+[measured constants](../../how_to_guides/advanced_usage/working_with_measurement_uncertainty.md#measured-constants)
+is not. Converting a solar _mass_ to kilograms goes through the CODATA value of `G`, so the
+factor is known only as well as `G` is. A representation that can store an uncertainty opts
+into receiving it by providing this function, usually as a hidden friend.
+
+**Default:** Not provided. A representation that does not define it converts exactly, and
+the whole mechanism (including the derivation of the factor's uncertainty) compiles away,
+so opting out costs nothing at compile time or at run time.
+
+**Guarantees:** The library calls it only during a unit conversion, and only when the factor
+actually carries an uncertainty. Specifically:
+
+- `relative_uncertainty` is a non-negative, dimensionless relative standard uncertainty of
+  the conversion factor,
+- it is already reduced over the measured constants of *both* units, so a constant appearing
+  in both cancels. Converting a solar _mass_ to Earth _masses_ never calls this, because both
+  units are defined through `G`,
+- the function is never called when that value would be zero, so an implementation need not
+  special-case exact conversions.
+
+**Expected behavior:** Combine the incoming figure with whatever uncertainty the value already
+carries rather than replacing it. Taking the two as independent, that is
+`σ' = √(σ² + (x·u_r)²)`, which is what
+[`uncertain<T>`](../../how_to_guides/advanced_usage/working_with_measurement_uncertainty.md)
+does:
+
+```cpp
+[[nodiscard]] friend constexpr uncertain fold_conversion_uncertainty(const uncertain& val,
+                                                                     long double relative_uncertainty)
+{
+  using std::hypot;
+  return uncertain(val.value(),
+                   static_cast<value_type>(hypot(static_cast<long double>(val.uncertainty()),
+                                                 static_cast<long double>(val.value()) * relative_uncertainty)));
+}
+```
+
+**Why on the conversion:** The uncertainty of a measured constant is *relational*. In its
+own unit the constant is exactly `1`, and it is the factor between units that carries the
+uncertainty, so the hook belongs to the conversion rather than to the value. See
+[Conversions materialize the uncertainty](../../how_to_guides/advanced_usage/working_with_measurement_uncertainty.md#conversions-materialize-the-uncertainty).
+
+
 ## Character-Specific Operations
 
 The library enforces character at compile-time: vector quantities require
@@ -1096,4 +1156,5 @@ library that has no plugin, and the caveats (expression templates, the unsupport
 - [Using Custom Representation Types](../../how_to_guides/integration/using_custom_representation_types.md) - Step-by-step guide to creating custom representation types
 - [Tutorial: Custom Contract Handlers](../../tutorials/affine_space/custom_contract_handlers.md) - Implementing custom error policies for `constrained` types
 - [Ensure Ultimate Safety](../../how_to_guides/advanced_usage/ultimate_safety.md) - Combining `constrained` reps with bounded quantity points
+- [Working with Measurement Uncertainty](../../how_to_guides/advanced_usage/working_with_measurement_uncertainty.md) - The `uncertain<T>` representation and the `fold_conversion_uncertainty` customization point
 <!-- markdownlint-enable MD013 -->

@@ -38,6 +38,7 @@ add_executable(
     polar_spherical_test.cpp
     quantity_test.cpp
     truncation_test.cpp
+    uncertain_test.cpp
 )
 if(MP_UNITS_BUILD_CXX_MODULES)
     target_compile_definitions(unit_tests_runtime PUBLIC MP_UNITS_MODULES)

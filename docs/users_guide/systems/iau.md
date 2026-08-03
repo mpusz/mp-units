@@ -181,6 +181,26 @@ std::println("G = {::N[.5e]}", G_value.in(m3 / (kg * s2)));
 G = 6.67430e-11 m³ kg⁻¹ s⁻²
 ```
 
+Being a measured constant, `G` also declares the relative standard uncertainty CODATA
+publishes for it (`2.2 × 10⁻⁵`), so the definition carries both numbers from the table.
+Using an [`uncertain`](../../how_to_guides/advanced_usage/working_with_measurement_uncertainty.md)
+representation makes that uncertainty part of the result:
+
+```cpp
+using mp_units::utility::measurement_of;
+
+quantity G_measured = measurement_of(newtonian_constant_of_gravitation);
+std::println("G = {}", G_measured.in(m3 / (kg * s2)));
+```
+
+```text
+G = 6.6743e-11 ± 1.46835e-15 m³ kg⁻¹ s⁻²
+```
+
+The uncertainty is not stored in the value but derived from the conversion. In units of
+`G` itself the constant is exactly `1`, and the `2.2 × 10⁻⁵` appears when converting to
+units that do not contain `G`.
+
 ### Derived Masses
 
 The solar, terrestrial, and jovian masses are derived from the nominal GM values and
@@ -204,6 +224,22 @@ std::println("Jupiter mass: {::N[.4e]}", M_jupiter.in(kg));
 Solar mass: 1.9884e+30 kg
 Earth mass: 5.9722e+24 kg
 Jupiter mass: 1.8981e+27 kg
+```
+
+Because these units are defined through `G`, expressing them in SI units inherits its
+uncertainty. An `uncertain` representation reports it, and, since the nominal `GM` values
+are exact, a conversion between two of these masses cancels `G` and stays exact:
+
+```cpp
+quantity M_sun = uncertain<double>{1.} * solar_mass;
+
+std::println("In kilograms:   {}", M_sun.in(kg));
+std::println("In Earth masses: {}", M_sun.in(terrestrial_mass));
+```
+
+```text
+In kilograms:   1.98841e+30 ± 4.3745e+25 kg
+In Earth masses: 332946 ± 0 M_⊕
 ```
 
 !!! info "Versioning Strategy"

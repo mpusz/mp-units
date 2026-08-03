@@ -56,7 +56,9 @@ Alphabetical list of all constants.
 - [`nuclear_magneton` (hep::codata2014)](systems/hep.md#codata2014-nuclear_magneton)
 - [`nuclear_magneton` (hep::codata2018)](systems/hep.md#codata2018-nuclear_magneton)
 - [`nuclear_magneton` (hep::codata2022)](systems/hep.md#codata2022-nuclear_magneton)
-- [`permeability_of_vacuum` (hep)](systems/hep.md#permeability_of_vacuum)
+- [`permeability_of_vacuum` (hep::codata2014)](systems/hep.md#codata2014-permeability_of_vacuum)
+- [`permeability_of_vacuum` (hep::codata2018)](systems/hep.md#codata2018-permeability_of_vacuum)
+- [`permeability_of_vacuum` (hep::codata2022)](systems/hep.md#codata2022-permeability_of_vacuum)
 - [`pi` (hep)](systems/hep.md#pi)
 - [`pi` (mp_units)](systems/core.md#pi)
 - [`planck_constant` (hep)](systems/hep.md#planck_constant)
@@ -75,4 +77,4 @@ Alphabetical list of all constants.
 - [`universe_mean_density` (hep)](systems/hep.md#universe_mean_density)
 - [`π` (mp_units)](systems/core.md#π)
 
-**Total constants:** 69
+**Total constants:** 71

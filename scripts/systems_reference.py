@@ -130,6 +130,9 @@ class Constant:
     symbol: str
     unit_symbols: list = None  # List of unit_symbol names (e.g., ['π', 'h'])
     definition: str = ""  # Value expression (e.g., "mag<299'792'458> * metre / second")
+    # Relative standard uncertainty magnitude for a measured constant (e.g.,
+    # "mag_ratio<22, 10> * mag_power<10, -5>"); empty for constants that are exact by definition
+    relative_standard_uncertainty: str = ""
     namespace: str = ""
     file: str = ""
     subnamespace: Optional[str] = None  # Relative subnamespace (e.g., "codata2022")
@@ -1023,6 +1026,7 @@ class SystemsParser:
                         name=unit_name,
                         symbol=const.symbol,
                         definition=const.definition,
+                        relative_standard_uncertainty=const.relative_standard_uncertainty,
                         namespace=entity_full_namespace,
                         file=file,
                         alias_target=f"{full_namespace}::{unit_name}",
@@ -1062,6 +1066,36 @@ class SystemsParser:
             else:
                 result.append(char)
         return "".join(result).strip()
+
+    _RSU_MARKER = ", relative_standard_uncertainty{"
+
+    def _strip_constant_metadata(self, definition: str) -> str:
+        """Drop trailing `named_constant` metadata arguments from a definition.
+
+        Metadata such as `relative_standard_uncertainty{...}` describes the constant, not how
+        its value is defined, so it gets its own column rather than sharing "Definition".
+        """
+        idx = definition.find(self._RSU_MARKER)
+        return definition[:idx].strip() if idx != -1 else definition
+
+    def _extract_relative_standard_uncertainty(self, definition: str) -> str:
+        """Extract the relative standard uncertainty magnitude from a raw constant definition.
+
+        Returns an empty string for a constant that is exact by definition (no such argument).
+        """
+        idx = definition.find(self._RSU_MARKER)
+        if idx == -1:
+            return ""
+        inner = definition[idx + len(self._RSU_MARKER) :]
+        depth = 0
+        for pos, char in enumerate(inner):
+            if char == "{":
+                depth += 1
+            elif char == "}":
+                if depth == 0:
+                    return inner[:pos].strip()
+                depth -= 1
+        return ""
 
     def _parse_point_origins(self, content: str, system: SystemInfo, file: str):
         """Parse point origin definitions"""
@@ -1222,7 +1256,9 @@ class SystemsParser:
             ascii_escaped = ascii_symbol.replace("`", "\\`")
             symbol = f"{unicode_symbol} ({ascii_escaped})"
 
-            definition = self._extract_template_arg(definition_raw)
+            definition_full = self._extract_template_arg(definition_raw)
+            definition = self._strip_constant_metadata(definition_full)
+            rsu = self._extract_relative_standard_uncertainty(definition_full)
 
             # Detect nested namespace (including inline namespaces for proper documentation)
             match_pos = match.start()
@@ -1242,6 +1278,7 @@ class SystemsParser:
                 name=var_name,
                 symbol=symbol,
                 definition=definition,
+                relative_standard_uncertainty=rsu,
                 namespace=full_namespace,
                 file=file,
                 subnamespace=nested_ns,
@@ -1254,7 +1291,9 @@ class SystemsParser:
             definition_raw = match.group(3)
             var_name = match.group(4)
 
-            definition = self._extract_template_arg(definition_raw)
+            definition_full = self._extract_template_arg(definition_raw)
+            definition = self._strip_constant_metadata(definition_full)
+            rsu = self._extract_relative_standard_uncertainty(definition_full)
 
             # Detect nested namespace (including inline namespaces for proper documentation)
             match_pos = match.start()
@@ -1274,6 +1313,7 @@ class SystemsParser:
                 name=var_name,
                 symbol=symbol,
                 definition=definition,
+                relative_standard_uncertainty=rsu,
                 namespace=full_namespace,
                 file=file,
                 subnamespace=nested_ns,
@@ -3040,8 +3080,25 @@ class DocumentationGenerator:
                     if need_separator:
                         f.write("\n")
                     f.write("## Constants\n\n")
-                    f.write("| Name | Symbol | unit_symbol | Definition |\n")
-                    f.write("|------|:------:|:------------:|------------|\n")
+                    # The uncertainty column is only rendered for a system that actually has
+                    # measured constants, so systems of exact-by-definition constants keep the
+                    # narrower table.
+                    has_uncertainty = any(
+                        constant.relative_standard_uncertainty
+                        for constant in system.constants
+                    )
+                    if has_uncertainty:
+                        f.write(
+                            "| Name | Symbol | unit_symbol | Definition |"
+                            " Relative standard uncertainty |\n"
+                        )
+                        f.write(
+                            "|------|:------:|:------------:|------------|"
+                            ":-----------------------------:|\n"
+                        )
+                    else:
+                        f.write("| Name | Symbol | unit_symbol | Definition |\n")
+                        f.write("|------|:------:|:------------:|------------|\n")
 
                     # Helper to add word breaks to long identifiers
                     def add_word_breaks(name: str) -> str:
@@ -3079,7 +3136,8 @@ class DocumentationGenerator:
                             f.write(
                                 f'| <span id="{anchor_id}"></span><code>'
                                 f"{constant_display_with_breaks}</code> | — | — | "
-                                f"alias to {alias_target_linked} |\n"
+                                f"alias to {alias_target_linked} |"
+                                f"{' — |' if has_uncertainty else ''}\n"
                             )
                         else:
                             # Format unit_symbols for display
@@ -3095,10 +3153,38 @@ class DocumentationGenerator:
                             definition_linked = self._linkify_definition(
                                 definition, system
                             )
+                            if has_uncertainty:
+                                if constant.relative_standard_uncertainty:
+                                    rsu_display = "<code>{}</code>".format(
+                                        self._linkify_definition(
+                                            constant.relative_standard_uncertainty.replace(
+                                                "|", "\\|"
+                                            ),
+                                            system,
+                                        )
+                                    )
+                                else:
+                                    # Deliberately not "exact": the absence of the annotation
+                                    # only means it is not declared, and the audit of measured
+                                    # constants is not complete across all systems.
+                                    rsu_display = "—"
+                                rsu_cell = f" {rsu_display} |"
+                            else:
+                                rsu_cell = ""
                             f.write(
                                 f'| <span id="{anchor_id}"></span><code>{constant_display_with_breaks}</code> | '
-                                f"{constant.symbol} | {symbols_display} | <code>{definition_linked}</code> |\n"
+                                f"{constant.symbol} | {symbols_display} | <code>{definition_linked}</code> |"
+                                f"{rsu_cell}\n"
                             )
+
+                    if has_uncertainty:
+                        f.write(
+                            "\nConstants with a relative standard uncertainty are measured"
+                            " rather than exact by definition, and satisfy the"
+                            " [`MeasuredConstant`](../../../users_guide/framework_basics/concepts.md#MeasuredConstant)"
+                            " concept. A `—` means no uncertainty is declared for that"
+                            " constant.\n"
+                        )
 
                     # Collect inline subnamespaces used by both units and constants
                     inline_subns_used = set()

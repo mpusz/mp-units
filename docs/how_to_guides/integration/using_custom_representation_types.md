@@ -397,7 +397,34 @@ constexpr bool mp_units::implicitly_scalable<FromUnit, my_safe_decimal, ToUnit, 
 You can use `mp_units::is_integral_scaling(from, to)` in your specialization to reuse the
 library's "is the ratio an integer?" predicate.
 
-### Step 7: Use It with Quantities
+### Step 7: Provide `fold_conversion_uncertainty` (if your type stores an uncertainty)
+
+Skip this unless your representation carries a measurement uncertainty. Most conversion
+factors are exact, but one built from *measured* constants is not: converting a solar _mass_
+to kilograms goes through the CODATA value of `G`, so the factor is known only as well as
+`G` is. Provide
+[`fold_conversion_uncertainty`](../../users_guide/framework_basics/representation_types.md#fold_conversion_uncertainty)
+as a hidden friend to receive that figure during a conversion:
+
+```cpp
+class my_uncertain {
+  // ...
+  [[nodiscard]] friend constexpr my_uncertain fold_conversion_uncertainty(
+    const my_uncertain& value, long double relative_uncertainty)
+  {
+    // combine with the uncertainty already carried, rather than replacing it
+    return my_uncertain(value.central(),
+                        std::hypot(value.sigma(), value.central() * relative_uncertainty));
+  }
+};
+```
+
+The library calls it only when the factor actually carries an uncertainty, and the value
+passed is already reduced over the measured constants of both units, so a constant appearing
+in both cancels. A type that does not provide this converts exactly, and the machinery
+compiles away.
+
+### Step 8: Use It with Quantities
 
 ```cpp
 my_scalar_type value{42.0};

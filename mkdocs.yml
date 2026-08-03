@@ -232,6 +232,7 @@ nav:
           - Decompose a Vector Quantity into Components: how_to_guides/advanced_usage/decompose_vector_quantity.md
           - Represent an Axial Vector as an Antisymmetric Tensor: how_to_guides/advanced_usage/tensor_representation_of_axial_vectors.md
           - Working with Polar and Spherical Coordinates: how_to_guides/advanced_usage/polar_and_spherical_coordinates.md
+          - Working with Measurement Uncertainty: how_to_guides/advanced_usage/working_with_measurement_uncertainty.md
           - Ensure Ultimate Safety: how_to_guides/advanced_usage/ultimate_safety.md
           - Working With Nondimensionalized Physics: how_to_guides/advanced_usage/nondimensionalization.md
       - Integration:
@@ -254,7 +255,7 @@ nav:
           - storage_tank: examples/storage_tank.md
           - capacitor_time_curve: examples/capacitor_time_curve.md
           - hw_voltage: examples/hw_voltage.md
-          - measurement: examples/measurement.md
+          - weighing_the_earth: examples/weighing_the_earth.md
           - currency: examples/currency.md
           - trade_execution: examples/trade_execution.md
           - strong_angular_quantities: examples/strong_angular_quantities.md

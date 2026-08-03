@@ -350,12 +350,17 @@ quantity validate_legacy_analysis(quantity<MeV> E_gamma)
 | **Neutron mass (MeV/c²)**         | 939.5654133        | 939.56542052              | 939.56542194              |
 | **Fine structure constant**       | 7.2973525664×10⁻³  | 7.2973525693×10⁻³         | 7.2973525643×10⁻³         |
 | **Classical electron radius (m)** | 2.8179403227×10⁻¹⁵ | 2.8179403262×10⁻¹⁵        | 2.8179403205×10⁻¹⁵        |
+| **Vacuum permeability (N/A²)**    | 4π×10⁻⁷ (exact)    | 1.25663706212×10⁻⁶        | 1.25663706127×10⁻⁶        |
 
 !!! note "SI 2019 Redefinition"
 
     Since the 2019 SI redefinition, several fundamental constants (Planck constant, Boltzmann
     constant, Avogadro constant, elementary charge) are **exact by definition**. This is why
     the Boltzmann constant doesn't change between CODATA 2018 and 2022 - it's now fixed.
+
+    The vacuum magnetic permeability moved in the opposite direction. The pre-2019 ampere was
+    defined through μ₀, making it exactly 4π × 10⁻⁷ N/A². The redefinition fixed the elementary
+    charge instead, so μ₀ is now a **measured** quantity and differs between releases.
 
 ### Available Constants
 
@@ -365,12 +370,12 @@ Constants that are exact (identical across all CODATA releases):
 - `speed_of_light_in_vacuum` (c)
 - `planck_constant` (h)
 - `elementary_charge` (e)
-- `permeability_of_vacuum` (μ₀)
 
 Constants that vary by CODATA release (organized in `codata2014`,
 `codata2018`, `codata2022` namespaces):
 
 - `boltzmann_constant` (k_B) - exact since 2018
+- `permeability_of_vacuum` (μ₀) - exact before 2019, measured since
 - `electron_mass` (mₑ)
 - `proton_mass` (m_p)
 - `neutron_mass` (m_n)
@@ -381,6 +386,38 @@ Constants that vary by CODATA release (organized in `codata2014`,
 - `bohr_radius` (a₀)
 - `bohr_magneton` (μ_B)
 - `nuclear_magneton` (μ_N)
+
+### Measurement Uncertainty
+
+Every one of those measured constants declares the relative standard uncertainty published
+by its own CODATA release, alongside the central value. `k_B` is the exception: it became
+exact with the 2019 SI redefinition, so only the `codata2014` one is annotated.
+
+The uncertainty is metadata on the definition and costs nothing until asked for. With an
+[`uncertain`](../../how_to_guides/advanced_usage/working_with_measurement_uncertainty.md)
+representation, the same constant reports the precision of the release it comes from:
+
+```cpp
+using mp_units::utility::measurement_of;
+using mp_units::utility::uncertain;
+
+quantity m_e_2018 = measurement_of(codata2018::electron_mass);
+quantity m_e_2022 = measurement_of(codata2022::electron_mass);
+
+// enough digits to see the difference: the releases agree to nine significant figures
+std::println("CODATA 2018: {::N[.11f]}", m_e_2018.in(MeV / pow<2>(speed_of_light_in_vacuum)));
+std::println("CODATA 2022: {::N[.11f]}", m_e_2022.in(MeV / pow<2>(speed_of_light_in_vacuum)));
+```
+
+```text
+CODATA 2018: 0.51099895000 ± 0.00000000015 MeV/c²
+CODATA 2022: 0.51099895069 ± 0.00000000016 MeV/c²
+```
+
+The 2022 adjustment shifted the central value in its tenth significant digit and slightly
+widened the uncertainty. Both are visible only at that precision, and both come from each
+namespace carrying its own published figure rather than a shared one. The output also reads
+the way the source table does, with the uncertainty aligned to the last digits of the value.
 
 
 ## API Reference

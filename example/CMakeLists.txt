@@ -21,17 +21,7 @@
 # SOFTWARE.
 
 add_library(example_utils-headers INTERFACE)
-target_sources(
-    example_utils-headers
-    INTERFACE
-        FILE_SET
-        HEADERS
-        BASE_DIRS
-        include
-        FILES
-        include/geographic.h
-        include/measurement.h
-)
+target_sources(example_utils-headers INTERFACE FILE_SET HEADERS BASE_DIRS include FILES include/geographic.h)
 target_link_libraries(example_utils-headers INTERFACE mp-units::mp-units)
 
 if(MP_UNITS_BUILD_CXX_MODULES)
@@ -70,13 +60,13 @@ add_example(foot_pound_second)
 add_example(glide_computer glide_computer_lib)
 add_example(hello_units)
 add_example(hw_voltage)
-add_example(measurement example_utils)
 add_example(si_constants)
 add_example(spectroscopy_units)
 add_example(storage_tank)
 add_example(strong_angular_quantities)
 add_example(total_energy)
 add_example(unmanned_aerial_vehicle example_utils)
+add_example(weighing_the_earth)
 
 #
 # Linear algebra integration examples

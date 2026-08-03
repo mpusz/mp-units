@@ -24,6 +24,18 @@ This page documents the version history and changes for the **mp-units** library
         contract predicates (the macro is unavailable with `import std;`)
 - (!) feat: natural units reworked from scratch
 - (!) feat: IAU system definition improved
+- feat: `uncertain<T>` representation type added to `mp-units::utility` (first-order
+        uncertainty propagation for independent values) (#464)
+- feat: measured constants may now declare their `relative_standard_uncertainty` (exact
+        magnitude metadata on `named_constant`); `MeasuredConstant` concept,
+        `get_relative_standard_uncertainty`, and `measurement_of` added; declared for
+        `iau::newtonian_constant_of_gravitation` and all measured constants in the three
+        `hep` CODATA namespaces (#464)
+- feat: unit conversion factors built from measured constants carry their relative standard
+        uncertainty; the conversion engine folds it into representation types that opt in
+        via `fold_conversion_uncertainty` (e.g., `uncertain<T>`), with measured constants
+        shared by both units canceling symbolically; exact representation types are
+        unaffected (#464)
 - feat: comparisons against literal `0`
 - feat: `hep` system refactored to be similar to leading projects in the HEP domain
 - feat: `hep` system extended with new constants and specialized quantities
