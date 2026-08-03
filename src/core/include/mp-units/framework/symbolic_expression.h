@@ -72,14 +72,13 @@ concept SymbolicArg = !std::is_const_v<T> && !std::is_reference_v<T>;
 #else
 #define MP_UNITS_TRIVIALLY_DESTRUCTIBLE(T) std::is_trivially_destructible_v<T>
 #endif
-#define MP_UNITS_SYMBOLIC_CONSTANT_TRAITS(T)                                                     \
-  (__is_empty(T) && __is_trivially_constructible(T) && __is_trivially_constructible(T, const T&) \
-   && __is_trivially_constructible(T, T&&) && MP_UNITS_TRIVIALLY_DESTRUCTIBLE(T))
+#define MP_UNITS_SYMBOLIC_CONSTANT_TRAITS(T)                                                        \
+  (__is_empty(T) && __is_trivially_constructible(T) && __is_trivially_constructible(T, const T&) && \
+   __is_trivially_constructible(T, T&&) && MP_UNITS_TRIVIALLY_DESTRUCTIBLE(T))
 #else
-#define MP_UNITS_SYMBOLIC_CONSTANT_TRAITS(T)                                                          \
-  (std::is_empty_v<T> && std::is_trivially_default_constructible_v<T> &&                              \
-   std::is_trivially_copy_constructible_v<T> && std::is_trivially_move_constructible_v<T> &&          \
-   std::is_trivially_destructible_v<T>)
+#define MP_UNITS_SYMBOLIC_CONSTANT_TRAITS(T)                                                                          \
+  (std::is_empty_v<T> && std::is_trivially_default_constructible_v<T> && std::is_trivially_copy_constructible_v<T> && \
+   std::is_trivially_move_constructible_v<T> && std::is_trivially_destructible_v<T>)
 #endif
 
 template<typename T>
