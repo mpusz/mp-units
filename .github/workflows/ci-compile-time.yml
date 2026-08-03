@@ -130,7 +130,39 @@ jobs:
             echo "this repository."
           } >> "$GITHUB_STEP_SUMMARY"
       - name: Gate against the reviewed baselines
+        id: gate
+        continue-on-error: true # so a failure can be explained before the job ends
         run: |
           benchmarks/runner/bench.py --repo . --cxx clang++-${{ env.CLANG_VERSION }} --std ${{ matrix.std }} check \
+            --report report.json \
             --slack ${{ env.SLACK }} --median-alarm ${{ env.MEDIAN_ALARM }} \
             --advisory-slack ${{ env.ADVISORY_SLACK }}
+      - name: Explain the regression
+        # A red gate should arrive with its cause attached. The suite's baselines record the sha they
+        # were measured from, so the offending workflows can be attributed against that exact tree -
+        # naming the templates whose instantiation counts grew - instead of leaving that to be
+        # repeated by hand.
+        if: steps.gate.outcome == 'failure'
+        shell: bash
+        run: |
+          BASELINE_FILE="$(benchmarks/runner/bench.py --cxx clang++-${{ env.CLANG_VERSION }} --std ${{ matrix.std }} key)"
+          BASE_SHA="$(python3 -c "import json,sys; print(json.load(open(sys.argv[1])).get('mp_units_sha',''))" "$BASELINE_FILE")"
+          REGRESSED="$(python3 -c "import json; print(' '.join(json.load(open('report.json'))['regressions'][:3]))")"
+          if [ -z "$BASE_SHA" ] || [ -z "$REGRESSED" ]; then
+            echo "no baseline sha or no named regression - nothing to attribute" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git fetch -q --depth=1 origin "$BASE_SHA" 2>/dev/null || git fetch -q --unshallow || true
+          {
+            echo "## Why it grew"
+            echo
+            echo "Attributed against the tree those baselines were recorded from (\`${BASE_SHA:0:9}\`)."
+            for wf in $REGRESSED; do
+              echo
+              benchmarks/runner/bench.py --repo . --cxx clang++-${{ env.CLANG_VERSION }} --std ${{ matrix.std }} \
+                attribute "$BASE_SHA" HEAD --workflows "$wf" --top 12 || echo "attribution failed for $wf"
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Fail on regression
+        if: steps.gate.outcome == 'failure'
+        run: exit 1

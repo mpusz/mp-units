@@ -633,4 +633,28 @@ struct vector_components;
 
 MP_UNITS_EXPORT_END
 
+
+/////////////// fold_conversion_uncertainty ///////////////
+
+// A representation that stores an uncertainty opts in by providing
+// `fold_conversion_uncertainty(value, relative_uncertainty)` findable by ADL, and is then handed
+// the relative standard uncertainty of a unit conversion factor built from measured constants.
+// The value passed is non-negative and dimensionless, and is already reduced over the measured
+// constants of both units, so one appearing in both cancels. It is never zero, as the engine skips
+// the call in that case. An implementation combines it with the uncertainty the value already
+// carries rather than replacing it.
+
+namespace detail {
+
+// Poison pill, so that only an overload found by ADL on the representation type takes part. A
+// representation that does not opt in is left alone rather than matching some unrelated name.
+void fold_conversion_uncertainty() = delete;
+
+template<typename T>
+concept FoldsConversionUncertainty = requires(const T& value, long double relative_uncertainty) {
+  { fold_conversion_uncertainty(value, relative_uncertainty) } -> std::convertible_to<T>;
+};
+
+}  // namespace detail
+
 }  // namespace mp_units

@@ -94,6 +94,22 @@ concept and when they compare equal.
 Such units can be passed as an argument to a `prefixed_unit` class template.
 
 
+### `MeasuredConstant<T>` { #MeasuredConstant }
+
+`MeasuredConstant` concept is satisfied by the physical constants that are measured rather
+than exact by definition, which are the ones defined with a `relative_standard_uncertainty`
+argument to the `named_constant` class template. For such constants
+`get_relative_standard_uncertainty(constant)` returns the stored magnitude, and
+`mp_units::utility::measurement_of(constant)` yields a quantity carrying that uncertainty.
+
+Constants that are exact by definition (for example, the defining constants of the SI or the
+IAU nominal values) do not satisfy this concept, so asking either function for their uncertainty
+is a compile-time error rather than a zero result. See
+[Working with Measurement Uncertainty][uncertainty-guide] for the complete workflow.
+
+[uncertainty-guide]: ../../how_to_guides/advanced_usage/working_with_measurement_uncertainty.md
+
+
 ### `UnitOf<T, V>` { #UnitOf }
 
 `UnitOf` concept is satisfied for all units `T` for which an associated quantity spec is implicitly

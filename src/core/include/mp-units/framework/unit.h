@@ -63,9 +63,7 @@ import std;
 
 namespace mp_units {
 
-MP_UNITS_EXPORT
-template<symbol_text Symbol, Unit auto U>
-  requires(!Symbol.empty())
+MP_UNITS_EXPORT template<symbol_text Symbol, Unit auto U, auto...>
 struct named_constant;
 
 namespace detail {
@@ -112,8 +110,8 @@ template<Unit T, symbol_text Symbol, auto... Args>
 template<Unit T, symbol_text Symbol, Unit auto U, auto... Args>
 [[nodiscard]] consteval auto get_canonical_unit_impl(T, const named_unit<Symbol, U, Args...>&);
 
-template<Unit T, symbol_text Symbol, Unit auto U>
-[[nodiscard]] consteval auto get_canonical_unit_impl(T, const named_constant<Symbol, U>&);
+template<Unit T, symbol_text Symbol, Unit auto U, auto... Args>
+[[nodiscard]] consteval auto get_canonical_unit_impl(T, const named_constant<Symbol, U, Args...>&);
 
 template<typename T, typename F, int Num, int... Den>
 [[nodiscard]] consteval auto get_canonical_unit_impl(T, const power<F, Num, Den...>&);
@@ -136,8 +134,8 @@ template<symbol_text Symbol, auto... Args>
 template<symbol_text Symbol, Unit auto U, auto... Args>
 [[nodiscard]] consteval bool unit_mag_is_positive(const named_unit<Symbol, U, Args...>&);
 
-template<symbol_text Symbol, Unit auto U>
-[[nodiscard]] consteval bool unit_mag_is_positive(const named_constant<Symbol, U>&);
+template<symbol_text Symbol, Unit auto U, auto... Args>
+[[nodiscard]] consteval bool unit_mag_is_positive(const named_constant<Symbol, U, Args...>&);
 
 template<typename F, int Num, int... Den>
 [[nodiscard]] consteval bool unit_mag_is_positive(const power<F, Num, Den...>&);
@@ -458,6 +456,37 @@ struct named_unit<Symbol, U, QS, PO> : decltype(U)::_base_type_ {
 };
 
 /**
+ * @brief Relative standard uncertainty of a measured constant
+ *
+ * Wraps the relative standard uncertainty (GUM/CODATA `u_r`) of a measured constant as an exact
+ * symbolic magnitude so that no representation type is imposed at the definition point. It is
+ * metadata only - it never participates in unit equality, conversion factors, or symbolic
+ * simplification.
+ *
+ * For example:
+ *
+ * @code{.cpp}
+ * inline constexpr struct newtonian_constant_of_gravitation final :
+ *     named_constant<"G", mag_ratio<667'430, 100'000> * mag_power<10, -11> * m3 / kg / s2,
+ *                    relative_standard_uncertainty{mag_ratio<22, 10> * mag_power<10, -5>}> {}
+ * newtonian_constant_of_gravitation;
+ * @endcode
+ *
+ * @tparam M an exact magnitude representing the relative standard uncertainty
+ */
+MP_UNITS_EXPORT template<UnitMagnitude M>
+struct relative_standard_uncertainty {
+  M magnitude;
+};
+
+#if MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
+
+template<UnitMagnitude M>
+relative_standard_uncertainty(M) -> relative_standard_uncertainty<M>;
+
+#endif
+
+/**
  * @brief Named constant definition
  *
  * It is very similar to `named_unit` but:
@@ -468,13 +497,47 @@ struct named_unit<Symbol, U, QS, PO> : decltype(U)::_base_type_ {
  * @tparam Symbol a short text representation of the constant
  * @tparam Unit a unit that we use to define a constant
  */
-MP_UNITS_EXPORT
 template<symbol_text Symbol, Unit auto U>
   requires(!Symbol.empty())
-struct named_constant : decltype(U)::_base_type_ {
+struct named_constant<Symbol, U> : decltype(U)::_base_type_ {
   using _base_type_ = named_constant;       // exposition only
   static constexpr auto _symbol_ = Symbol;  ///< Unique constant identifier
 };
+
+/**
+ * @brief Specialization for a measured constant
+ *
+ * The same as the above but additionally stores the relative standard uncertainty of a constant
+ * that is measured rather than exact by definition. The value transcribes the entry published in
+ * the source metrology table (e.g., CODATA).
+ *
+ * @tparam Symbol a short text representation of the constant
+ * @tparam Unit a unit that we use to define a constant
+ * @tparam RSU the relative standard uncertainty of the measured value
+ */
+// The magnitude is deduced from the wrapper's type instead of being read from the `RSU` value
+// (`decltype(RSU)` + member access in a constraint misfires on gcc-12), which also spares a
+// detection trait for the wrapper.
+template<symbol_text Symbol, Unit auto U, typename M, relative_standard_uncertainty<M> RSU>
+  requires(!Symbol.empty()) && detail::magnitude_is_positive<M{}>
+struct named_constant<Symbol, U, RSU> : decltype(U)::_base_type_ {
+  using _base_type_ = named_constant;       // exposition only
+  static constexpr auto _symbol_ = Symbol;  ///< Unique constant identifier
+  static constexpr auto _relative_standard_uncertainty_ = M{};
+};
+
+/**
+ * @brief Returns the relative standard uncertainty of a measured constant
+ *
+ * There is no valid result for constants that are exact by definition. Asking for one would
+ * conflate "exact by definition" with "measured infinitely precisely", so it is a compile-time
+ * error rather than a zero magnitude.
+ */
+MP_UNITS_EXPORT template<MeasuredConstant U>
+[[nodiscard]] consteval UnitMagnitude auto get_relative_standard_uncertainty(U)
+{
+  return U::_relative_standard_uncertainty_;
+}
 
 
 /**
@@ -649,8 +712,8 @@ template<Unit T, symbol_text Symbol, Unit auto U, auto... Args>
   return mp_units::get_canonical_unit(U);
 }
 
-template<Unit T, symbol_text Symbol, Unit auto U>
-[[nodiscard]] consteval auto get_canonical_unit_impl(T, const named_constant<Symbol, U>&)
+template<Unit T, symbol_text Symbol, Unit auto U, auto... Args>
+[[nodiscard]] consteval auto get_canonical_unit_impl(T, const named_constant<Symbol, U, Args...>&)
 {
   return mp_units::get_canonical_unit(U);
 }
@@ -708,8 +771,8 @@ template<symbol_text Symbol, Unit auto U, auto... Args>
   return mp_units::detail::unit_mag_is_positive(U);
 }
 
-template<symbol_text Symbol, Unit auto U>
-[[nodiscard]] consteval bool unit_mag_is_positive(const named_constant<Symbol, U>&)
+template<symbol_text Symbol, Unit auto U, auto... Args>
+[[nodiscard]] consteval bool unit_mag_is_positive(const named_constant<Symbol, U, Args...>&)
 {
   return mp_units::detail::unit_mag_is_positive(U);
 }
@@ -747,6 +810,163 @@ template<typename... Us>
 {
   return mp_units::detail::unit_mag_is_positive(u._common_unit_);
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// `conversion_relative_uncertainty` — the relative standard uncertainty of the conversion factor between two units,
+// derived from the measured constants appearing in their definitions.
+//
+// Both unit expression trees are walked, accumulating the net exponent of every measured constant (identified by its
+// type). A constant appearing on both sides cancels here exactly as its central value cancels in the magnitude ratio,
+// so no spurious uncertainty is reported for e.g. a solar-mass -> Earth-mass conversion where `G` contributes to both
+// units. The surviving contributions are combined in quadrature (first-order propagation) under a cross-constant
+// independence assumption; the covariances CODATA publishes between its values are not modeled.
+//
+// The same two-argument dispatch as in `get_canonical_unit_impl` is used: the first argument preserves the actual
+// derived type (needed to identify the constant and read its metadata), the second selects the overload by base.
+
+struct measured_constant_contribution {
+  std::string_view constant_id;  // unique per constant type
+  std::intmax_t exp_num;         // net exponent of the constant in `from / to`
+  std::intmax_t exp_den;
+  long double relative_uncertainty;
+};
+
+// unit expressions reference only a handful of constants; the cap is a sanity bound, not a design limit
+inline constexpr std::size_t max_measured_constants = 16;
+using measured_constant_contributions = inplace_vector<measured_constant_contribution, max_measured_constants>;
+
+consteval void add_measured_constant_contribution(measured_constant_contributions& out, std::string_view id,
+                                                  std::intmax_t num, std::intmax_t den, long double rel_uncertainty)
+{
+  for (measured_constant_contribution& contrib : out)
+    if (contrib.constant_id == id) {
+      // sum of exponents: a/b + c/d = (a*d + c*b)/(b*d); the values are tiny, no normalization needed
+      contrib.exp_num = contrib.exp_num * den + num * contrib.exp_den;
+      contrib.exp_den = contrib.exp_den * den;
+      return;
+    }
+  out.push_back(measured_constant_contribution{id, num, den, rel_uncertainty});
+}
+
+template<typename T, symbol_text Symbol, auto... Args>
+consteval void collect_measured_constants(T, const named_unit<Symbol, Args...>&, measured_constant_contributions&,
+                                          std::intmax_t, std::intmax_t);
+
+template<typename T, symbol_text Symbol, Unit auto U, auto... Args>
+consteval void collect_measured_constants(T, const named_unit<Symbol, U, Args...>&, measured_constant_contributions&,
+                                          std::intmax_t, std::intmax_t);
+
+template<typename T, symbol_text Symbol, Unit auto U, auto... Args>
+consteval void collect_measured_constants(T, const named_constant<Symbol, U, Args...>&,
+                                          measured_constant_contributions&, std::intmax_t, std::intmax_t);
+
+template<typename T, typename F, int Num, int... Den>
+consteval void collect_measured_constants(T, const power<F, Num, Den...>&, measured_constant_contributions&,
+                                          std::intmax_t, std::intmax_t);
+
+template<typename... Us>
+consteval void collect_measured_constants(const type_list<Us...>&, measured_constant_contributions&, std::intmax_t,
+                                          std::intmax_t);
+
+template<typename T, typename... Expr>
+consteval void collect_measured_constants(T, const derived_unit_impl<Expr...>&, measured_constant_contributions&,
+                                          std::intmax_t, std::intmax_t);
+
+template<typename T, auto M, typename U>
+consteval void collect_measured_constants(T, const scaled_unit_impl<M, U>&, measured_constant_contributions&,
+                                          std::intmax_t, std::intmax_t);
+
+template<typename T, typename... Us>
+consteval void collect_measured_constants(T, const common_unit<Us...>&, measured_constant_contributions&, std::intmax_t,
+                                          std::intmax_t);
+
+// base units are exact by construction
+template<typename T, symbol_text Symbol, auto... Args>
+consteval void collect_measured_constants(T, const named_unit<Symbol, Args...>&, measured_constant_contributions&,
+                                          std::intmax_t, std::intmax_t)
+{
+}
+
+template<typename T, symbol_text Symbol, Unit auto U, auto... Args>
+consteval void collect_measured_constants(T, const named_unit<Symbol, U, Args...>&,
+                                          measured_constant_contributions& out, std::intmax_t num, std::intmax_t den)
+{
+  mp_units::detail::collect_measured_constants(U, U, out, num, den);
+}
+
+template<typename T, symbol_text Symbol, Unit auto U, auto... Args>
+consteval void collect_measured_constants(T, const named_constant<Symbol, U, Args...>&,
+                                          measured_constant_contributions& out, std::intmax_t num, std::intmax_t den)
+{
+  if constexpr (MeasuredConstant<T>)
+    // the declared uncertainty covers the constant's whole published value, so nested measured
+    // constants (contributing only their central values to the magnitude) must not be added again
+    mp_units::detail::add_measured_constant_contribution(out, mp_units::detail::type_name<T>(), num, den,
+                                                         get_value<long double>(T::_relative_standard_uncertainty_));
+  else
+    // an unannotated constant may still be defined in terms of measured ones
+    mp_units::detail::collect_measured_constants(U, U, out, num, den);
+}
+
+template<typename T, typename F, int Num, int... Den>
+consteval void collect_measured_constants(T, const power<F, Num, Den...>&, measured_constant_contributions& out,
+                                          std::intmax_t num, std::intmax_t den)
+{
+  constexpr std::intmax_t denominator = (1 * ... * Den);
+  mp_units::detail::collect_measured_constants(F{}, F{}, out, num * Num, den * denominator);
+}
+
+template<typename... Us>
+consteval void collect_measured_constants(const type_list<Us...>&,
+                                          [[maybe_unused]] measured_constant_contributions& out,
+                                          [[maybe_unused]] std::intmax_t num, [[maybe_unused]] std::intmax_t den)
+{
+  (mp_units::detail::collect_measured_constants(Us{}, Us{}, out, num, den), ...);
+}
+
+template<typename T, typename... Expr>
+consteval void collect_measured_constants(T, const derived_unit_impl<Expr...>&, measured_constant_contributions& out,
+                                          std::intmax_t num, std::intmax_t den)
+{
+  mp_units::detail::collect_measured_constants(typename derived_unit<Expr...>::_num_{}, out, num, den);
+  mp_units::detail::collect_measured_constants(typename derived_unit<Expr...>::_den_{}, out, -num, den);
+}
+
+template<typename T, auto M, typename U>
+consteval void collect_measured_constants(T, const scaled_unit_impl<M, U>&, measured_constant_contributions& out,
+                                          std::intmax_t num, std::intmax_t den)
+{
+  mp_units::detail::collect_measured_constants(U{}, U{}, out, num, den);
+}
+
+template<typename T, typename... Us>
+consteval void collect_measured_constants(T, const common_unit<Us...>& u, measured_constant_contributions& out,
+                                          std::intmax_t num, std::intmax_t den)
+{
+  mp_units::detail::collect_measured_constants(u._common_unit_, u._common_unit_, out, num, den);
+}
+
+template<Unit U1, Unit U2>
+[[nodiscard]] consteval long double conversion_relative_uncertainty(U1 u1, U2 u2)
+{
+  measured_constant_contributions contributions;
+  mp_units::detail::collect_measured_constants(u1, u1, contributions, 1, 1);
+  mp_units::detail::collect_measured_constants(u2, u2, contributions, -1, 1);
+  long double sum = 0.0L;
+  for (const measured_constant_contribution& contrib : contributions)
+    if (contrib.exp_num != 0) {
+      const long double weighted = static_cast<long double>(contrib.exp_num) /
+                                   static_cast<long double>(contrib.exp_den) * contrib.relative_uncertainty;
+      sum += weighted * weighted;
+    }
+  // `std::sqrt` is not constexpr before C++26, so the library's own compile-time root is used
+  return sum > 0.0L ? root(sum, 2).value_or(0.0L) : 0.0L;
+}
+
+// evaluated once per unit pair; the conversion engine consults it only for representation types
+// that opted into uncertainty-aware scaling
+template<Unit auto From, Unit auto To>
+constexpr long double conversion_relative_uncertainty_result = conversion_relative_uncertainty(From, To);
 
 }  // namespace detail
 
