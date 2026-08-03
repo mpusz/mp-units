@@ -148,6 +148,26 @@ class Constant:
             self.unit_symbols = []
 
 
+CORE_UNITS_SECTION_START = "// common dimensionless units"
+CORE_UNITS_SECTION_END = "// Common unit"
+
+
+def find_core_units_header(source_root: Path) -> Optional[Path]:
+    """Locate the framework header defining the core dimensionless units.
+
+    Which framework component holds these definitions is an implementation detail that has
+    changed before, so the section markers are searched for instead of a file name being
+    hardcoded — a missing section would silently drop `percent`, `ppm`, and `pi` from the
+    generated reference.
+    """
+    framework_dir = source_root / "src/core/include/mp-units/framework"
+    for path in sorted(framework_dir.glob("*.h")):
+        content = path.read_text()
+        if CORE_UNITS_SECTION_START in content and CORE_UNITS_SECTION_END in content:
+            return path
+    return None
+
+
 @dataclass
 class SystemInfo:
     """Information about a system (namespace-based)"""
@@ -266,14 +286,19 @@ class SystemsParser:
         )
         core_system.units.append(one_unit)
 
-        # Parse other units from unit.h using existing parsers
-        unit_path = self.source_root / "src/core/include/mp-units/framework/unit.h"
-        if unit_path.exists():
+        # Parse other units from the framework component defining them
+        unit_path = find_core_units_header(self.source_root)
+        if unit_path is None:
+            print(
+                "Warning: no framework header defines the core dimensionless units; "
+                "`percent`, `ppm`, and `pi` will be missing from the reference"
+            )
+        else:
             try:
                 raw_content = unit_path.read_text()
                 # Find markers before stripping comments
-                start_marker = raw_content.find("// common dimensionless units")
-                end_marker = raw_content.find("// Common unit")
+                start_marker = raw_content.find(CORE_UNITS_SECTION_START)
+                end_marker = raw_content.find(CORE_UNITS_SECTION_END)
                 if start_marker != -1 and end_marker != -1:
                     # Extract the section, then strip comments
                     section_content = raw_content[start_marker:end_marker]
@@ -289,9 +314,9 @@ class SystemsParser:
                     self._parse_unit_symbols(content, core_system)
             except Exception as e:
                 print(f"Warning: Could not parse {unit_path}: {e}")
-            # Add core.h as the public header (not unit.h which is internal)
-            core_header = self.source_root / "src/core/include/mp-units/core.h"
-            core_system.files.append(core_header)
+        # Users include core.h, never the framework component the definitions were read from
+        core_header = self.source_root / "src/core/include/mp-units/core.h"
+        core_system.files.append(core_header)
 
     def parse_system_with_includes(self, main_header: Path):
         """Parse a system header and all its includes in order"""
@@ -4405,16 +4430,12 @@ def compute_source_hash(source_root: Path) -> str:
     """Compute hash of all source files to detect changes"""
     hasher = hashlib.sha256()
 
-    # Hash all header files that could affect generation
-    # Only systems headers + unit.h (for core dimensionless units)
-    patterns = [
-        "src/systems/include/mp-units/systems/**/*.h",
-        "src/core/include/mp-units/framework/unit.h",
-    ]
-
-    files = []
-    for pattern in patterns:
-        files.extend(sorted(source_root.glob(pattern)))
+    # Hash all header files that could affect generation: the systems headers, plus the
+    # framework component holding the core dimensionless units (whichever one that is)
+    files = sorted(source_root.glob("src/systems/include/mp-units/systems/**/*.h"))
+    core_units_header = find_core_units_header(source_root)
+    if core_units_header is not None:
+        files.append(core_units_header)
 
     for file_path in files:
         hasher.update(str(file_path.relative_to(source_root)).encode())
