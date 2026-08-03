@@ -56,10 +56,34 @@ struct identity_fn {
 template<typename T>
 concept SymbolicArg = !std::is_const_v<T> && !std::is_reference_v<T>;
 
+// This concept is checked for every unit, dimension and quantity spec, so each `std` trait it names
+// costs one class template instantiation per symbolic constant. On libc++ that is ~8% of a translation
+// unit's instantiations; on libstdc++ it is zero, because libstdc++ already defines these helpers as
+// builtins. The builtins below are the same predicates by definition - `is_trivially_copy_constructible`
+// is specified as `is_trivially_constructible<T, const T&>` - and skip the instantiation.
+//
+// Everything is gated on `__has_builtin`: a compiler that does not advertise the builtins gets exactly
+// the previous `std` spelling, so this can only ever be a no-op, never a portability regression.
+#if defined(__has_builtin) && __has_builtin(__is_empty) && __has_builtin(__is_trivially_constructible)
+#if __has_builtin(__is_trivially_destructible)
+#define MP_UNITS_TRIVIALLY_DESTRUCTIBLE(T) __is_trivially_destructible(T)
+#elif __has_builtin(__has_trivial_destructor)  // GCC before 16 spells it this way
+#define MP_UNITS_TRIVIALLY_DESTRUCTIBLE(T) __has_trivial_destructor(T)
+#else
+#define MP_UNITS_TRIVIALLY_DESTRUCTIBLE(T) std::is_trivially_destructible_v<T>
+#endif
+#define MP_UNITS_SYMBOLIC_CONSTANT_TRAITS(T)                                                     \
+  (__is_empty(T) && __is_trivially_constructible(T) && __is_trivially_constructible(T, const T&) \
+   && __is_trivially_constructible(T, T&&) && MP_UNITS_TRIVIALLY_DESTRUCTIBLE(T))
+#else
+#define MP_UNITS_SYMBOLIC_CONSTANT_TRAITS(T)                                                          \
+  (std::is_empty_v<T> && std::is_trivially_default_constructible_v<T> &&                              \
+   std::is_trivially_copy_constructible_v<T> && std::is_trivially_move_constructible_v<T> &&          \
+   std::is_trivially_destructible_v<T>)
+#endif
+
 template<typename T>
-concept SymbolicConstant = SymbolicArg<T> && std::is_empty_v<T> && std::is_trivially_default_constructible_v<T> &&
-                           std::is_trivially_copy_constructible_v<T> && std::is_trivially_move_constructible_v<T> &&
-                           std::is_trivially_destructible_v<T>;
+concept SymbolicConstant = SymbolicArg<T> && MP_UNITS_SYMBOLIC_CONSTANT_TRAITS(T);
 
 /**
  * @brief Type list type used by the expression template framework
