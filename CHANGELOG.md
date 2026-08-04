@@ -36,6 +36,10 @@ This page documents the version history and changes for the **mp-units** library
         via `fold_conversion_uncertainty` (e.g., `uncertain<T>`), with measured constants
         shared by both units canceling symbolically; exact representation types are
         unaffected (#464)
+- feat: `uncertain<T>` gained the concise output notation of ISO 80000-1:2022, 7.2.4,
+        selected by appending `~` to its `format-spec` (`23.4782(32)`); `precision` states
+        the number of significant digits of the uncertainty (two by default, as published
+        by CODATA), and the `value ± σ` form remains the default (#464)
 - feat: comparisons against literal `0`
 - feat: `hep` system refactored to be similar to leading projects in the HEP domain
 - feat: `hep` system extended with new constants and specialized quantities

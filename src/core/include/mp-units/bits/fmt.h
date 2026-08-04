@@ -214,7 +214,7 @@ MP_UNITS_EXPORT_END
 
 // Parses the range [begin, end) as an unsigned integer. This function assumes
 // that the range is non-empty and the first character is a digit.
-template<std::forward_iterator It>
+MP_UNITS_EXPORT template<std::forward_iterator It>
 [[nodiscard]] constexpr int parse_nonnegative_int(It& begin, It end, int error_value)
 {
   MP_UNITS_PRECONDITION(begin != end && '0' <= *begin && *begin <= '9');
@@ -320,7 +320,7 @@ struct dynamic_spec_id_handler {
 #endif
 };
 
-template<std::forward_iterator It, typename Char = std::iter_value_t<It>>
+MP_UNITS_EXPORT template<std::forward_iterator It, typename Char = std::iter_value_t<It>>
 [[nodiscard]] constexpr It parse_dynamic_spec(It begin, It end, int& value, fmt_arg_ref<Char>& ref,
                                               MP_UNITS_STD_FMT::basic_format_parse_context<Char>& ctx)
 {
@@ -357,7 +357,7 @@ constexpr int code_point_length(It begin)
 }
 
 // Parses fill and alignment.
-template<std::forward_iterator It, typename Specs>
+MP_UNITS_EXPORT template<std::forward_iterator It, typename Specs>
 [[nodiscard]] constexpr It parse_align(It begin, It end, Specs& specs, fmt_align default_align = fmt_align::none)
 {
   MP_UNITS_PRECONDITION(begin != end);

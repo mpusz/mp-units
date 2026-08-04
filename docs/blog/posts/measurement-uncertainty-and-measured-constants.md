@@ -254,10 +254,41 @@ the uncertainty published by their own release. Constants that are exact by defi
 nothing at all, which is what makes the distinction visible to the type system in the first
 place.
 
-<!-- TODO before publishing: the ISO 80000-6 concise output format `6.67430(15)` is
-     expected to land before this post goes out. If it has, add a short section showing
-     it next to the `value ± σ` default (and drop this comment). If it has not, restore
-     the bullet that used to live here saying it is planned as a format spec option. -->
+## Printing what the standard prints
+
+The default text output is the `value ± σ` form, the notation engineers read every day:
+
+```cpp
+std::cout << G.in(m3 / kg / s2) << "\n";  // 6.6743e-11 ± 1.46835e-15 m³ kg⁻¹ s⁻²
+```
+
+ISO 80000-1:2022, 7.2.4 specifies a different one. The value is quoted to the last
+significant digit of the uncertainty, and the uncertainty follows in parentheses, counted
+in units of that digit. Appending `~` to the format spec selects it. The tilde marks the
+output as an approximation, because unlike the default form this one rounds the value:
+
+```cpp
+std::println("{::N[~]}", G.in(m3 / kg / s2));  // 6.67430(15)e-11 m³ kg⁻¹ s⁻²
+```
+
+That is character for character how CODATA publishes the value, which is the point. A
+constant transcribed from a published table now prints back in the notation of the table it
+came from.
+
+The standard is also not neutral between the two forms:
+
+!!! quote "ISO 80000-1:2022, 7.2.4"
+
+    Uncertainties are often expressed in the following manner: $(23{,}478\,2 \pm
+    0{,}003\,2)\ \mathrm{m}$. This is, however, wrong from a mathematical point of view.
+    [...] "The ± format should be avoided whenever possible because it has traditionally
+    been used to indicate an interval corresponding to a high level of confidence and thus
+    may be confused with expanded uncertainty".
+
+The `±` form nevertheless remains the default, because the concise form has to round the
+value to the precision of the uncertainty, and a default that silently discards digits is
+the wrong default. The recommendation applies to published results, and that is exactly
+where reaching for `~` costs one character.
 
 ## Further Reading
 

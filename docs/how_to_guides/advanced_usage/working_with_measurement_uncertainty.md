@@ -260,3 +260,70 @@ its unit symbol:
 ```cpp
 std::cout << std::format("{}", uncertain{2.5, 0.25} * m) << "\n";  // 2.5 ± 0.25 m
 ```
+
+### The concise ISO 80000 notation
+
+ISO 80000-1:2022, 7.2.4 specifies a second notation, in which the value is quoted to the
+last significant digit of the uncertainty and the uncertainty follows in parentheses,
+counted in units of that digit. The standard's own example reads:
+
+!!! quote "ISO 80000-1:2022, 7.2.4"
+
+    In the expression $l = 23{,}478\,2(32)\ \mathrm{m}$, $23{,}478\,2$ is the numerical
+    value and $32$ represents a standard uncertainty equal to $0{,}003\,2$.
+
+Appending `~` to the `format-spec` selects it. The tilde marks the output as an
+approximation: the default form prints the value as it is, while this one rounds it to the
+precision the uncertainty justifies.
+
+```cpp
+std::cout << std::format("{:~}", uncertain{23.4782, 0.0032}) << "\n";  // 23.4782(32)
+```
+
+This is the notation CODATA and the SI Brochure use to publish measured constants, so the
+output reproduces the source that the definitions were transcribed from:
+
+```cpp
+quantity G = measurement_of(iau::newtonian_constant_of_gravitation).in(m3 / kg / s2);
+std::cout << std::format("{::N[~]}", G) << "\n";  // 6.67430(15)e-11 m³ kg⁻¹ s⁻²
+```
+
+In the concise form `precision` states the number of significant digits of the uncertainty
+rather than a digit count for the value. It defaults to two, which is what CODATA publishes
+and what GUM 7.2.6 recommends:
+
+```cpp
+std::cout << std::format("{:.1~}", uncertain{6.67430e-11, 1.8e-15}) << "\n";  // 6.6743(2)e-11
+```
+
+`type` selects between the scientific (`e`) and the fixed (`f`) form. Left out, the library
+picks the one that leaves no shown digit of the value ambiguous:
+
+```cpp
+std::cout << std::format("{:~}", uncertain{1234., 15.}) << "\n";   // 1234(15)
+std::cout << std::format("{:~}", uncertain{1234., 150.}) << "\n";  // 1.23(15)e+03
+```
+
+The second case shows why. The uncertainty reaches the tens digit, so a fixed `1230(15)`
+would wrongly read as 15 units of the last digit shown. Quoting the value as a significand
+keeps the count honest. Two cases fall outside the notation and print the `±` form instead:
+a non-finite value or uncertainty. A zero uncertainty prints as `(0)`, because there is no
+rounding rule to apply and every digit of the value is kept.
+
+### Which form to use
+
+The library keeps `value ± σ` as the default, because the concise form necessarily rounds
+the value to the precision of the uncertainty, and a default that silently discards digits
+is the wrong default. Where the output is meant for publication rather than for debugging,
+prefer the concise form, and note that the standard is not neutral between the two:
+
+!!! quote "ISO 80000-1:2022, 7.2.4"
+
+    Uncertainties are often expressed in the following manner: $(23{,}478\,2 \pm
+    0{,}003\,2)\ \mathrm{m}$. This is, however, wrong from a mathematical point of view.
+    [...] According to ISO/IEC Guide 98-3:2008, 7.2.2, "The ± format should be avoided
+    whenever possible because it has traditionally been used to indicate an interval
+    corresponding to a high level of confidence and thus may be confused with expanded
+    uncertainty".
+
+Both forms in this library print one standard uncertainty, never an expanded one.

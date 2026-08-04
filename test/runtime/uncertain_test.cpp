@@ -28,6 +28,7 @@
 import std;
 #else
 #include <cmath>
+#include <limits>
 #include <numbers>
 #include <sstream>
 #include <type_traits>
@@ -393,5 +394,92 @@ TEST_CASE("uncertain text output", "[uncertain]")
   {
     CHECK(MP_UNITS_STD_FMT::format("{}", uncertain{2.5, 0.25}) == "2.5 ± 0.25");
     CHECK(MP_UNITS_STD_FMT::format("{}", uncertain{2.5, 0.25} * m) == "2.5 ± 0.25 m");
+  }
+
+  SECTION("concise notation")
+  {
+    // ISO 80000-1:2022, 7.2.4: `l = 23,478 2(32) m` denotes a standard uncertainty of 0,003 2
+    CHECK(MP_UNITS_STD_FMT::format("{:~}", uncertain{23.4782, 0.0032}) == "23.4782(32)");
+
+    // CODATA publishes the Newtonian constant of gravitation as 6.674 30(15) × 10⁻¹¹
+    CHECK(MP_UNITS_STD_FMT::format("{:~}", uncertain{6.67430e-11, 1.5e-15}) == "6.67430(15)e-11");
+  }
+
+  SECTION("concise notation honors the precision as significant digits of the uncertainty")
+  {
+    // 1.8e-15 rather than 1.5e-15, so that rounding to one digit does not depend on how the
+    // nearest `double` to a decimal tie happens to fall
+    CHECK(MP_UNITS_STD_FMT::format("{:.1~}", uncertain{6.67430e-11, 1.8e-15}) == "6.6743(2)e-11");
+    CHECK(MP_UNITS_STD_FMT::format("{:.3~}", uncertain{6.67430e-11, 1.5e-15}) == "6.674300(150)e-11");
+  }
+
+  SECTION("concise notation honors the presentation type")
+  {
+    CHECK(MP_UNITS_STD_FMT::format("{:e~}", uncertain{23.4782, 0.0032}) == "2.34782(32)e+01");
+    CHECK(MP_UNITS_STD_FMT::format("{:f~}", uncertain{6.67430e-11, 1.5e-15}) == "0.0000000000667430(15)");
+    CHECK(MP_UNITS_STD_FMT::format("{:E~}", uncertain{23.4782, 0.0032}) == "2.34782(32)E+01");
+  }
+
+  SECTION("concise notation switches to the scientific form to keep every shown digit significant")
+  {
+    // The uncertainty reaches the units digit, so a fixed form would not need trailing zeros
+    CHECK(MP_UNITS_STD_FMT::format("{:~}", uncertain{1234., 15.}) == "1234(15)");
+
+    // Here it reaches the tens digit; `1230(15)` would wrongly read as 15 units of the last
+    // digit shown, so the value is quoted as a significand instead
+    CHECK(MP_UNITS_STD_FMT::format("{:~}", uncertain{1234., 150.}) == "1.23(15)e+03");
+
+    // Explicitly asking for the fixed form instead scales the count to the last digit shown
+    CHECK(MP_UNITS_STD_FMT::format("{:f~}", uncertain{1234., 150.}) == "1234(150)");
+  }
+
+  SECTION("concise notation edge cases")
+  {
+    // Rounding the uncertainty up carries into the next power of ten (0.0999 -> 0.10)
+    CHECK(MP_UNITS_STD_FMT::format("{:~}", uncertain{1.0, 0.0999}) == "1.00(10)");
+
+    // An uncertainty larger than the value is still expressible
+    CHECK(MP_UNITS_STD_FMT::format("{:~}", uncertain{10.0, 30.0}) == "10(30)");
+    CHECK(MP_UNITS_STD_FMT::format("{:~}", uncertain{0.0, 0.5}) == "0.00(50)");
+
+    // Without an uncertainty there is no rounding rule, so every digit is kept
+    CHECK(MP_UNITS_STD_FMT::format("{:~}", uncertain{2.5}) == "2.5(0)");
+
+    // A non-finite component has no common decimal place; fall back to the `±` form
+    CHECK(MP_UNITS_STD_FMT::format("{:~}", uncertain{1.0, std::numeric_limits<double>::infinity()}) == "1 ± inf");
+  }
+
+  SECTION("concise notation honors the '#' and 'L' options")
+  {
+    // ISO 80000-1:2022, 7.2.2 permits the decimal sign to be either a comma or a point
+    struct comma_decimal : std::numpunct<char> {
+      [[nodiscard]] char do_decimal_point() const override { return ','; }
+    };
+    const std::locale comma{std::locale::classic(), new comma_decimal};
+    CHECK(MP_UNITS_STD_FMT::format(comma, "{:L~}", uncertain{23.4782, 0.0032}) == "23,4782(32)");
+
+    // '#' keeps the radix separator even when the uncertainty leaves no digit after it
+    CHECK(MP_UNITS_STD_FMT::format("{:#~}", uncertain{10.0, 30.0}) == "10.(30)");
+  }
+
+  SECTION("concise notation composes with fill, align, width, and sign")
+  {
+    CHECK(MP_UNITS_STD_FMT::format("{:>15~}", uncertain{23.4782, 0.0032}) == "    23.4782(32)");
+    CHECK(MP_UNITS_STD_FMT::format("{:*^15~}", uncertain{23.4782, 0.0032}) == "**23.4782(32)**");
+    CHECK(MP_UNITS_STD_FMT::format("{:{}~}", uncertain{23.4782, 0.0032}, 15) == "23.4782(32)    ");
+    CHECK(MP_UNITS_STD_FMT::format("{:+~}", uncertain{23.4782, 0.0032}) == "+23.4782(32)");
+    // a dynamic width still resolves when a sign precedes it, as in `std-format-spec`
+    CHECK(MP_UNITS_STD_FMT::format("{:+{}~}", uncertain{23.4782, 0.0032}, 15) == "+23.4782(32)   ");
+    CHECK(MP_UNITS_STD_FMT::format("{:+~}", uncertain{-23.4782, 0.0032}) == "-23.4782(32)");
+  }
+
+  SECTION("concise notation reaches the representation through a quantity")
+  {
+    CHECK(MP_UNITS_STD_FMT::format("{::N[~]}", uncertain{23.4782, 0.0032} * m) == "23.4782(32) m");
+
+    // CODATA publishes G as 6.674 30(15) × 10⁻¹¹ m³ kg⁻¹ s⁻², so the concise form reproduces
+    // the notation of the source the definition was transcribed from
+    const quantity G = measurement_of(iau::newtonian_constant_of_gravitation).in(m3 / kg / s2);
+    CHECK(MP_UNITS_STD_FMT::format("{::N[~]}", G) == "6.67430(15)e-11 m³ kg⁻¹ s⁻²");
   }
 }

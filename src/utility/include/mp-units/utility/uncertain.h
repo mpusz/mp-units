@@ -29,6 +29,7 @@
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/bits/fmt.h>
+#include <mp-units/bits/format.h>
 #include <mp-units/framework/quantity.h>
 #include <mp-units/framework/unit.h>
 #include <mp-units/utility/representation.h>
@@ -38,6 +39,8 @@ import std;
 #include <cmath>
 #include <concepts>
 #include <ostream>
+#include <string>
+#include <string_view>
 #include <type_traits>
 #include <utility>
 #endif
@@ -107,9 +110,14 @@ namespace mp_units::utility {
 // - `disable_representation` additionally excludes the types the library itself refuses to store
 //   in a `quantity` (notably `bool`), so `uncertain<T>` is never a valid representation built on
 //   an invalid one. It is checked directly rather than through `RepresentationOf` because the
-//   latter needs the quantity-character machinery, which is not complete at this include point.
+//   latter needs the quantity-character machinery, which is not complete at this include point,
+// - `representation_values<T>::zero()` is what the uncertainty precondition compares against.
+//   `RealScalar` does not imply it: it requires `std::copyable` and `std::equality_comparable`
+//   rather than `std::regular`, so neither default-construction nor construction from `int` is
+//   guaranteed. Stating it here also keeps the requirement independent of whether the
+//   precondition macro expands to anything in a given configuration.
 MP_UNITS_EXPORT template<typename T>
-  requires RealScalar<T> && (!disable_representation<T>)
+  requires RealScalar<T> && (!disable_representation<T>) && requires { representation_values<T>::zero(); }
 class uncertain {
 public:
   using value_type = T;
@@ -136,7 +144,7 @@ public:
   [[nodiscard]] constexpr explicit uncertain(value_type val, value_type err) :
       value_(std::move(val)), uncertainty_(std::move(err))
   {
-    MP_UNITS_PRECONDITION(uncertainty_ >= value_type{});
+    MP_UNITS_PRECONDITION(uncertainty_ >= representation_values<value_type>::zero());
   }
 
   /// @brief Returns the central value
@@ -519,6 +527,116 @@ MP_UNITS_EXPORT template<typename Rep = double, MeasuredConstant C>
   return uncertain<Rep>{Rep{1}} * C{};
 }
 
+namespace detail {
+
+// Significand digits (without the sign and the radix separator) and the decimal exponent of
+// a value rendered with a scientific presentation type.
+struct scientific_parts {
+  std::string digits;
+  int exponent = 0;
+};
+
+[[nodiscard]] inline scientific_parts split_scientific(std::string_view text)
+{
+  const auto exp_pos = text.find_first_of("eE");
+  scientific_parts parts;
+  for (const char ch : text.substr(0, exp_pos))
+    if ('0' <= ch && ch <= '9') parts.digits.push_back(ch);
+  if (exp_pos == std::string_view::npos) return parts;
+
+  auto exp_text = text.substr(exp_pos + 1);
+  const bool negative = !exp_text.empty() && exp_text.front() == '-';
+  if (!exp_text.empty() && (exp_text.front() == '-' || exp_text.front() == '+')) exp_text.remove_prefix(1);
+  for (const char ch : exp_text) parts.exponent = parts.exponent * 10 + (ch - '0');
+  if (negative) parts.exponent = -parts.exponent;
+  return parts;
+}
+
+/**
+ * @brief Renders `value(digits)` as specified in ISO 80000-1:2022, 7.2.4
+ *
+ * The digits in parentheses are the standard uncertainty expressed in terms of the least
+ * significant digits of the value (`23.4782(32)` means `23.4782 ± 0.0032`). Every rounding
+ * decision is delegated to the formatter of `T`, so a carry (`9.99` becoming `10.0`) is
+ * resolved by the same rules that round any other number.
+ *
+ * @param sig_digits the number of significant digits of the uncertainty
+ * @param type the presentation type: `e`/`f`/`g` and their uppercase forms, or `\0` for auto
+ * @param sign the `sign` format option
+ * @param format_value renders the value itself, given the number of decimals to quote it to and
+ *        whether the scientific form was selected; supplied by the caller so that the `#` and
+ *        `L` options reach the underlying formatter of `T`
+ */
+template<std::floating_point T, typename ValueFormatter>
+[[nodiscard]] std::string format_concise(T value, T uncertainty, int sig_digits, char type, char sign,
+                                         const ValueFormatter& format_value)
+{
+  using std::isfinite;
+  const bool upper = (type == 'E' || type == 'F' || type == 'G');
+  // Deriving how many digits to show never goes through the user's `#` and `L` options: the
+  // count in parentheses is a plain integer, and a localized radix separator or an enforced
+  // one would only get in the way of reading the exponent back out.
+  const auto fmt_sci = [upper](T val, int decimals) {
+    return upper ? MP_UNITS_STD_FMT::format("{:.{}E}", val, decimals)
+                 : MP_UNITS_STD_FMT::format("{:.{}e}", val, decimals);
+  };
+  const auto with_sign = [sign](std::string text) {
+    if (sign != '-' && !text.empty() && text.front() != '-') text.insert(text.begin(), sign);
+    return text;
+  };
+
+  // Neither component can be quoted to a common decimal place, so fall back to the `±` form.
+  if (!isfinite(value) || !isfinite(uncertainty))
+    return with_sign(MP_UNITS_STD_FMT::format("{} ± {}", value, uncertainty));
+
+  // Without an uncertainty there is no rounding rule; keep every digit the value shows.
+  if (uncertainty == representation_values<T>::zero()) {
+    std::string text = MP_UNITS_STD_FMT::format("{}", value);
+    const auto exp_pos = text.find_first_of("eE");
+    text.insert(exp_pos == std::string::npos ? text.size() : exp_pos, "(0)");
+    return with_sign(std::move(text));
+  }
+
+  const scientific_parts unc = split_scientific(fmt_sci(uncertainty, sig_digits - 1));
+  const int place = unc.exponent - (sig_digits - 1);
+  const int value_exponent = split_scientific(fmt_sci(value, 6)).exponent;
+
+  // Quoting a value whose last shown digit sits left of the decimal point would leave its
+  // trailing zeros ambiguous, exactly the ambiguity ISO 80000-1:2022, 7.2.4 warns about, so
+  // `place > 0` switches to the scientific form where the significant digits are explicit.
+  const bool scientific =
+    (type == 'e' || type == 'E') || (type != 'f' && type != 'F' && (value_exponent < -4 || place > 0));
+
+  int decimals = 0;
+  int shown_place = 0;
+  if (scientific) {
+    decimals = (value_exponent > place) ? value_exponent - place : 0;
+    // Rounding may carry into the next power of ten (9.99e2 becoming 1.00e3), which moves the
+    // exponent and therefore the number of mantissa digits needed to reach `place`.
+    int shown_exponent = split_scientific(fmt_sci(value, decimals)).exponent;
+    if (shown_exponent != value_exponent) {
+      decimals = (shown_exponent > place) ? shown_exponent - place : 0;
+      shown_exponent = split_scientific(fmt_sci(value, decimals)).exponent;
+    }
+    shown_place = shown_exponent - decimals;
+  } else {
+    decimals = (place < 0) ? -place : 0;
+    shown_place = -decimals;
+  }
+
+  // The parenthesized number counts units of the last digit actually shown, which is coarser
+  // than `place` whenever the uncertainty outruns the digits the value can carry.
+  std::string digits = unc.digits;
+  for (int i = shown_place; i < place; ++i) digits.push_back('0');
+
+  std::string text = format_value(value, decimals, scientific);
+  const auto exp_pos = text.find_first_of("eE");
+  text.insert(exp_pos == std::string::npos ? text.size() : exp_pos, "(" + digits + ")");
+  return with_sign(std::move(text));
+}
+
+}  // namespace detail
+
 }  // namespace mp_units::utility
 
 template<typename T, typename U>
@@ -541,11 +659,147 @@ struct std::common_type<U, mp_units::utility::uncertain<T>> {
   using type = mp_units::utility::uncertain<std::common_type_t<T, U>>;
 };
 
+/**
+ * @brief Formatting support for `uncertain`
+ *
+ * By default both components are printed as `value ± uncertainty`, each formatted with the
+ * `format-spec` of the underlying representation type.
+ *
+ * A `~` appended to that spec selects instead the concise notation of ISO 80000-1:2022,
+ * 7.2.4, in which the value is quoted to the last significant digit of the uncertainty and
+ * the uncertainty follows in parentheses, counted in units of that digit. The tilde marks
+ * the output as an approximation: the default form prints the value as it is, while this one
+ * rounds it to the precision the uncertainty justifies:
+ *
+ * @code
+ * uncertain val{6.67430e-11, 1.5e-15};
+ * std::println("{}", val);        // 6.6743e-11 ± 1.5e-15
+ * std::println("{:~}", val);      // 6.67430(15)e-11
+ * std::println("{:.1~}", val);    // 6.6743(2)e-11
+ * @endcode
+ *
+ * In the concise form `precision` gives the number of significant digits of the uncertainty
+ * (two by default, as used by CODATA and recommended by GUM 7.2.6) rather than a digit count
+ * for the value, and `type` selects between the scientific (`e`) and fixed (`f`) forms. The
+ * default picks the one that leaves no trailing digit of the value ambiguous.
+ */
 template<typename T, typename Char>
 struct MP_UNITS_STD_FMT::formatter<mp_units::utility::uncertain<T>, Char> : formatter<T, Char> {
+  // The options of the concise notation. `unit_symbol_formatting` is a public type because the
+  // `unit_symbol` API takes one; these have no consumer outside this formatter, so they stay here.
+  struct concise_formatting {
+    int significant_digits = 2;
+    char sign = '-';
+    char type = '\0';
+    bool alternate = false;
+    bool localized = false;
+  };
+  struct format_specs : mp_units::detail::fill_align_width_format_specs<Char>, concise_formatting {};
+  format_specs specs_{};
+  bool concise_ = false;
+
+  // Finds the end of this replacement field, skipping over the nested `{...}` of a dynamic
+  // width or precision so that their closing braces are not mistaken for the field's own.
+  template<std::forward_iterator It>
+  [[nodiscard]] static constexpr It find_spec_end(It begin, It end)
+  {
+    for (auto it = begin; it != end; ++it) {
+      if (*it == '{') {
+        while (it != end && *it != '}') ++it;
+        if (it == end) break;
+      } else if (*it == '}')
+        return it;
+    }
+    return end;
+  }
+
+  // Parses a concise spec, which follows `std-format-spec` up to the terminating '~'. The
+  // options are taken in the order the standard grammar defines them, so this cannot use
+  // `parse_fill_align_width` (that one goes straight from the alignment to the width, while
+  // `sign` and `#` sit in between).
+  template<std::forward_iterator It>
+  constexpr It parse_concise_specs(It begin, It end, MP_UNITS_STD_FMT::basic_format_parse_context<Char>& ctx)
+  {
+    auto it = begin;
+    if (it == end) return end;
+
+    it = mp_units::detail::parse_align(it, end, specs_);
+    if (it != end && (*it == '+' || *it == '-' || *it == ' ')) specs_.sign = static_cast<char>(*it++);
+    if (it != end && *it == '#') {
+      specs_.alternate = true;
+      ++it;
+    }
+    if (it != end) it = mp_units::detail::parse_dynamic_spec(it, end, specs_.width, specs_.width_ref, ctx);
+    if (it != end && *it == '.') {
+      ++it;
+      if (it == end || *it < '0' || '9' < *it)
+        throw MP_UNITS_STD_FMT::format_error("dynamic precision is not supported with the '~' format option");
+      const int precision = mp_units::detail::parse_nonnegative_int(it, end, -1);
+      if (precision <= 0)
+        throw MP_UNITS_STD_FMT::format_error(
+          "the precision of the '~' format option is a number of significant digits and must be positive");
+      specs_.significant_digits = precision;
+    }
+    if (it != end && *it == 'L') {
+      specs_.localized = true;
+      ++it;
+    }
+    if (it != end) {
+      constexpr auto valid_types = std::string_view{"eEfFgG"};
+      if (valid_types.find(static_cast<char>(*it)) != std::string_view::npos) specs_.type = static_cast<char>(*it++);
+    }
+    if (it != end) throw MP_UNITS_STD_FMT::format_error("invalid format specifier for 'uncertain'");
+    return end;
+  }
+
+public:
+  constexpr auto parse(MP_UNITS_STD_FMT::basic_format_parse_context<Char>& ctx) -> decltype(ctx.begin())
+  {
+    const auto begin = ctx.begin();
+    const auto spec_end = find_spec_end(begin, ctx.end());
+    if (spec_end == begin || *(spec_end - 1) != '~') return formatter<T, Char>::parse(ctx);
+
+    if constexpr (!std::floating_point<T>)
+      throw MP_UNITS_STD_FMT::format_error(
+        "the '~' (concise uncertainty) format option requires a floating-point representation type");
+
+    concise_ = true;
+    parse_concise_specs(begin, spec_end - 1, ctx);
+    return spec_end;  // consume the terminating '~'
+  }
+
   template<typename FormatContext>
   auto format(const mp_units::utility::uncertain<T>& arg, FormatContext& ctx) const
   {
+    // `parse` rejects '~' for the other representation types, so the concise renderer is
+    // never instantiated for them.
+    if constexpr (std::floating_point<T>)
+      if (concise_) {
+        auto specs = specs_;
+        mp_units::detail::handle_dynamic_spec<mp_units::detail::width_checker>(specs.width, specs.width_ref, ctx);
+        // The number of decimals is derived from the uncertainty rather than taken from the
+        // spec, so the value is rendered through a spec rebuilt around it. That keeps `#` and
+        // `L` working, which the standard formatter of `T` applies for us.
+        const auto format_value = [&specs, &ctx](const T& val, int decimals, bool scientific) {
+          const bool upper = (specs.type == 'E' || specs.type == 'F' || specs.type == 'G');
+          std::string spec = "{:";
+          if (specs.alternate) spec += '#';
+          spec += '.';
+          spec += std::to_string(decimals);
+          if (specs.localized) spec += 'L';
+          spec += scientific ? (upper ? 'E' : 'e') : (upper ? 'F' : 'f');
+          spec += '}';
+          if (specs.localized)
+            return MP_UNITS_STD_FMT::vformat(MP_UNITS_FMT_LOCALE(ctx.locale()), spec,
+                                             MP_UNITS_STD_FMT::make_format_args(val));
+          return MP_UNITS_STD_FMT::vformat(spec, MP_UNITS_STD_FMT::make_format_args(val));
+        };
+        const std::string text = mp_units::utility::detail::format_concise(
+          arg.value(), arg.uncertainty(), specs.significant_digits, specs.type, specs.sign, format_value);
+        return mp_units::detail::write_padded<Char>(ctx.out(), std::basic_string_view<Char>{text.data(), text.size()},
+                                                    specs.width, specs.align, specs.fill);
+      }
+
     auto out = formatter<T, Char>::format(arg.value(), ctx);
     out = MP_UNITS_STD_FMT::format_to(out, " ± ");
     ctx.advance_to(out);
