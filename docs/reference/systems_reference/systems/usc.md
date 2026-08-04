@@ -44,7 +44,7 @@
 | <span id="rod"></span><code>rod</code> | rd | `rd` | <code>mag<25> * <wbr>[link](#survey1893-link)</code> |
 | <span id="section"></span><code>section</code> | section | `section` | <code>mag<640> * <wbr>[acre](#acre)</code> |
 | <span id="short_hundredweight"></span><code>short_<wbr>hundredweight</code> | cwt | `cwt` | <code>mag<100> * <wbr>[yard_<wbr>pound::pound](yard_pound.md#pound)</code> |
-| <span id="short_ton"></span><code>short_<wbr>ton</code> | — | — | alias to [ton](#ton) |
+| <span id="short_ton"></span><code>short_<wbr>ton</code> | t | — | alias to [ton](#ton) |
 | <span id="shot"></span><code>shot</code> | jig | `jig` | <code>mag<3> * <wbr>[tablespoon](#tablespoon)</code> |
 | <span id="survey1893-chain"></span><code>survey1893::chain</code> | ch | — | <code>mag<4> * <wbr>[survey1893::rod](usc.md#survey1893-rod)</code> |
 | <span id="survey1893-furlong"></span><code>survey1893::furlong</code> | fur | — | <code>mag<10> * <wbr>[survey1893::chain](usc.md#survey1893-chain)</code> |
@@ -64,5 +64,5 @@
 | Name | Type | Definition |
 |------|:----:|------------|
 | <span id="fahrenheit_zero"></span>`fahrenheit_zero` | relative | <code>::mp_units::point<[si::milli](si.md#milli)<[rankine](#rankine)>>(459'670)</code> |
-| <span id="zeroth_degree_Fahrenheit"></span>`zeroth_degree_Fahrenheit` | — | alias to [fahrenheit_<wbr>zero](#fahrenheit_zero) |
-| <span id="zeroth_rankine"></span>`zeroth_rankine` | — | alias to [si::absolute_<wbr>zero](si.md#absolute_zero) |
+| <span id="zeroth_degree_Fahrenheit"></span>`zeroth_degree_Fahrenheit` | relative | alias to [fahrenheit_<wbr>zero](#fahrenheit_zero) |
+| <span id="zeroth_rankine"></span>`zeroth_rankine` | absolute | alias to [si::absolute_<wbr>zero](si.md#absolute_zero) |

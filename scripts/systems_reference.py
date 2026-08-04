@@ -1080,14 +1080,21 @@ class SystemsParser:
 
             if not is_constant:
                 # Create a unit alias
+                origin_symbol = ""
+                for candidate in system.units:
+                    if candidate.name == unit_name and not candidate.is_alias:
+                        origin_symbol = candidate.symbol
+                        break
+
                 unit = Unit(
                     name=unit_name,
-                    symbol=f"(imported from {full_namespace})",
-                    definition=f"using {full_namespace}::{unit_name}",
+                    symbol=origin_symbol,
+                    definition="",
                     namespace=entity_full_namespace,
                     origin_namespace=origin_namespace,
                     file=file,
                     is_alias=True,
+                    alias_target=f"{full_namespace}::{unit_name}",
                     subnamespace=subns,
                 )
                 system.units.append(unit)
@@ -1788,14 +1795,25 @@ class SystemsParser:
                 )
                 continue
 
+            # An alias denotes the very same unit, so it carries that unit's symbol. The short
+            # `unit_symbols` name is deliberately not carried: that one belongs to this system's
+            # `unit_symbols` namespace and is filled in only if this system declares it.
+            imported_symbol = ""
+            if source is not None:
+                for candidate in source.units:
+                    if candidate.name == unit_name and not candidate.is_alias:
+                        imported_symbol = candidate.symbol
+                        break
+
             unit = Unit(
                 name=unit_name,
-                symbol=f"(imported from {full_namespace})",
-                definition=f"using {full_namespace}::{unit_name}",
+                symbol=imported_symbol,
+                definition="",
                 namespace=f"mp_units::{system.namespace}",
                 origin_namespace=f"mp_units::{full_namespace}",
                 file=file,
                 is_alias=True,
+                alias_target=f"{full_namespace}::{unit_name}",
             )
             system.units.append(unit)
 
@@ -3311,8 +3329,11 @@ class DocumentationGenerator:
                             alias_target_linked = self._linkify_definition(
                                 origin.alias_target, system
                             )
+                            # As elsewhere, an alias denotes the same entity, so it has the
+                            # same kind of origin
                             f.write(
-                                f'| <span id="{origin.name}"></span>`{origin.name}` | — | '
+                                f'| <span id="{origin.name}"></span>`{origin.name}` | '
+                                f"{origin.origin_type if origin.origin_type else '—'} | "
                                 f"alias to {alias_target_linked} |\n"
                             )
                         else:
@@ -3359,11 +3380,18 @@ class DocumentationGenerator:
         anchor_id = f"{subns_prefix}-{unit.name}" if subns_prefix else unit.name
 
         if unit.alias_target:
-            # This is an alias - show reference to original (linkified)
+            # This is an alias - show reference to original (linkified). The symbol comes from
+            # the aliased unit, since an alias denotes the same entity; the short `unit_symbols`
+            # name is shown only when this system declares one of its own.
             alias_target_linked = self._linkify_definition(unit.alias_target, system)
+            if unit.unit_symbols:
+                short_symbol = ", ".join(f"`{sym}`" for sym in unit.unit_symbols)
+            else:
+                short_symbol = "—"
             f.write(
                 f'| <span id="{anchor_id}"></span><code>{unit_display_with_breaks}'
-                f"</code> | — | — | alias to {alias_target_linked} |\n"
+                f"</code> | {unit.symbol if unit.symbol else '—'} | {short_symbol} | "
+                f"alias to {alias_target_linked} |\n"
             )
         else:
             # Regular definition

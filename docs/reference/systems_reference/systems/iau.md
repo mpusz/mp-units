@@ -13,7 +13,7 @@
 
 | Unit Name | Symbol | unit_symbol | Definition |
 |-----------|:------:|:-----------:|------------|
-| <span id="astronomical_unit"></span><code>astronomical_<wbr>unit</code> | (imported from non_si) | — | <code>using [non_<wbr>si::astronomical_<wbr>unit](si.md#astronomical_unit)</code> |
+| <span id="astronomical_unit"></span><code>astronomical_<wbr>unit</code> | au | — | alias to [non_<wbr>si::astronomical_<wbr>unit](si.md#astronomical_unit) |
 | <span id="jovian_mass"></span><code>jovian_<wbr>mass</code> | M_♃ (M_JUP) | `M_JUP` | <code>[nominal_<wbr>jovian_<wbr>mass_<wbr>parameter](#nominal_jovian_mass_parameter) / <wbr>[newtonian_<wbr>constant_<wbr>of_<wbr>gravitation](codata.md#codata2022-newtonian_constant_of_gravitation)</code> |
 | <span id="parsec"></span><code>parsec</code> | pc | `pc` | <code>[astronomical_<wbr>unit](#astronomical_unit) / <wbr>(mag_ratio<1, 3600> * <wbr>[si::degree](si.md#degree))</code> |
 | <span id="solar_mass"></span><code>solar_<wbr>mass</code> | M_☉ (M_SUN) | `M_SUN` | <code>[nominal_<wbr>solar_<wbr>mass_<wbr>parameter](#nominal_solar_mass_parameter) / <wbr>[newtonian_<wbr>constant_<wbr>of_<wbr>gravitation](codata.md#codata2022-newtonian_constant_of_gravitation)</code> |

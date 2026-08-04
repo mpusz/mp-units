@@ -132,5 +132,5 @@
 | <span id="absolute_zero"></span>`absolute_zero` | absolute | <code>[isq::thermodynamic_<wbr>temperature](isq.md#thermodynamic_temperature)</code> |
 | <span id="chrono_point_origin"></span>`chrono_point_origin` | absolute | <code>[isq::time](isq.md#time)</code> |
 | <span id="ice_point"></span>`ice_point` | relative | <code>::mp_units::point<[milli](#milli)<[kelvin](#kelvin)>>(273'150)</code> |
-| <span id="zeroth_degree_Celsius"></span>`zeroth_degree_Celsius` | — | alias to [ice_<wbr>point](#ice_point) |
-| <span id="zeroth_kelvin"></span>`zeroth_kelvin` | — | alias to [absolute_<wbr>zero](#absolute_zero) |
+| <span id="zeroth_degree_Celsius"></span>`zeroth_degree_Celsius` | relative | alias to [ice_<wbr>point](#ice_point) |
+| <span id="zeroth_kelvin"></span>`zeroth_kelvin` | absolute | alias to [absolute_<wbr>zero](#absolute_zero) |

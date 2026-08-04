@@ -29,7 +29,7 @@
 | <span id="parts_per_million"></span><code>parts_<wbr>per_<wbr>million</code> | ppm | — | <code>mag_ratio<1, 1'000'000> * <wbr>[one](core.md#one)</code> |
 | <span id="per_mille"></span><code>per_<wbr>mille</code> | ‰ (%o) | — | <code>mag_ratio<1, 1000> * <wbr>[one](core.md#one)</code> |
 | <span id="percent"></span><code>percent</code> | % | — | <code>mag_ratio<1, 100> * <wbr>[one](core.md#one)</code> |
-| <span id="ppm"></span><code>ppm</code> | — | — | alias to [parts_<wbr>per_<wbr>million](core.md#parts_per_million) |
+| <span id="ppm"></span><code>ppm</code> | ppm | — | alias to [parts_<wbr>per_<wbr>million](core.md#parts_per_million) |
 
 ## Constants
 
