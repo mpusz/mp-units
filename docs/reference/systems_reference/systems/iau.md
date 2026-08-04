@@ -14,16 +14,16 @@
 | Unit Name | Symbol | unit_symbol | Definition |
 |-----------|:------:|:-----------:|------------|
 | <span id="astronomical_unit"></span><code>astronomical_<wbr>unit</code> | (imported from non_si) | — | <code>using [non_<wbr>si::astronomical_<wbr>unit](si.md#astronomical_unit)</code> |
-| <span id="jovian_mass"></span><code>jovian_<wbr>mass</code> | M_♃ (M_JUP) | `M_JUP` | <code>[nominal_<wbr>jovian_<wbr>mass_<wbr>parameter](#nominal_jovian_mass_parameter) / <wbr>[newtonian_<wbr>constant_<wbr>of_<wbr>gravitation](#newtonian_constant_of_gravitation)</code> |
+| <span id="jovian_mass"></span><code>jovian_<wbr>mass</code> | M_♃ (M_JUP) | `M_JUP` | <code>[nominal_<wbr>jovian_<wbr>mass_<wbr>parameter](#nominal_jovian_mass_parameter) / <wbr>[newtonian_<wbr>constant_<wbr>of_<wbr>gravitation](codata.md#codata2022-newtonian_constant_of_gravitation)</code> |
 | <span id="parsec"></span><code>parsec</code> | pc | `pc` | <code>[astronomical_<wbr>unit](#astronomical_unit) / <wbr>(mag_ratio<1, 3600> * <wbr>[si::degree](si.md#degree))</code> |
-| <span id="solar_mass"></span><code>solar_<wbr>mass</code> | M_☉ (M_SUN) | `M_SUN` | <code>[nominal_<wbr>solar_<wbr>mass_<wbr>parameter](#nominal_solar_mass_parameter) / <wbr>[newtonian_<wbr>constant_<wbr>of_<wbr>gravitation](#newtonian_constant_of_gravitation)</code> |
-| <span id="terrestrial_mass"></span><code>terrestrial_<wbr>mass</code> | M_⊕ (M_EARTH) | `M_EARTH` | <code>[nominal_<wbr>terrestrial_<wbr>mass_<wbr>parameter](#nominal_terrestrial_mass_parameter) / <wbr>[newtonian_<wbr>constant_<wbr>of_<wbr>gravitation](#newtonian_constant_of_gravitation)</code> |
+| <span id="solar_mass"></span><code>solar_<wbr>mass</code> | M_☉ (M_SUN) | `M_SUN` | <code>[nominal_<wbr>solar_<wbr>mass_<wbr>parameter](#nominal_solar_mass_parameter) / <wbr>[newtonian_<wbr>constant_<wbr>of_<wbr>gravitation](codata.md#codata2022-newtonian_constant_of_gravitation)</code> |
+| <span id="terrestrial_mass"></span><code>terrestrial_<wbr>mass</code> | M_⊕ (M_EARTH) | `M_EARTH` | <code>[nominal_<wbr>terrestrial_<wbr>mass_<wbr>parameter](#nominal_terrestrial_mass_parameter) / <wbr>[newtonian_<wbr>constant_<wbr>of_<wbr>gravitation](codata.md#codata2022-newtonian_constant_of_gravitation)</code> |
 
 ## Constants
 
 | Name | Symbol | unit_symbol | Definition | Relative standard uncertainty |
 |------|:------:|:------------:|------------|:-----------------------------:|
-| <span id="newtonian_constant_of_gravitation"></span><code>newtonian_<wbr>constant_<wbr>of_<wbr>gravitation</code> | G | `G` | alias to [codata::newtonian_<wbr>constant_<wbr>of_<wbr>gravitation](#newtonian_constant_of_gravitation) | <code>mag_ratio<22, 10> * <wbr>mag_power<10, -5></code> |
+| <span id="newtonian_constant_of_gravitation"></span><code>newtonian_<wbr>constant_<wbr>of_<wbr>gravitation</code> | G | `G` | alias to [codata::newtonian_<wbr>constant_<wbr>of_<wbr>gravitation](codata.md#codata2022-newtonian_constant_of_gravitation) | <code>mag_ratio<22, 10> * <wbr>mag_power<10, -5></code> |
 | <span id="nominal_jovian_equatorial_radius"></span><code>nominal_<wbr>jovian_<wbr>equatorial_<wbr>radius</code> | R_♃ₑᴺ (R_JUP_E_N) | `R_JUP_E_N` | <code>mag_ratio<71'492, 10'000> * <wbr>mag_power<10, 7> * <wbr>[si::metre](si.md#metre)</code> | — |
 | <span id="nominal_jovian_mass_parameter"></span><code>nominal_<wbr>jovian_<wbr>mass_<wbr>parameter</code> | (GM)_♃ᴺ ((GM)_JUP_N) | `GM_JUP_N` | <code>mag_ratio<12'668'653, 10'000'000> * <wbr>mag_power<10, 17> * <wbr>cubic([si::metre](si.md#metre)) / <wbr>square([si::second](si.md#second))</code> | — |
 | <span id="nominal_jovian_polar_radius"></span><code>nominal_<wbr>jovian_<wbr>polar_<wbr>radius</code> | R_♃ₚᴺ (R_JUP_P_N) | `R_JUP_P_N` | <code>mag_ratio<66'854, 10'000> * <wbr>mag_power<10, 7> * <wbr>[si::metre](si.md#metre)</code> | — |
