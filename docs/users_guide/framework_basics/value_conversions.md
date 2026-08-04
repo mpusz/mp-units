@@ -92,11 +92,29 @@ The library provides four rounding policies:
 
 !!! note
 
-    `mp_units::floor/ceil/round<U>(q)` perform a different operation. They round to an
-    integral multiple of the provided unit even when the representation could store the
-    exact result (e.g. for a floating-point representation). The rounding policies never
-    adjust a value that the destination type represents exactly. Both coincide for
-    integral representations.
+    A rounding policy is not a request to round the quantity. It answers a narrower
+    question: when the exact result of the conversion is not representable in the
+    destination, which of the neighboring representable values should be picked? A value
+    the destination represents exactly is never adjusted.
+
+    `mp_units::floor/ceil/round<U>(q)` are the tools for the other question. They round to
+    an integral multiple of the provided unit even when the representation could store the
+    exact result. Both operations coincide for integral representations, and differ as soon
+    as the destination can hold the exact value:
+
+    ```cpp
+    quantity q = 1. * in;
+
+    quantity a = q.in(cm);                   // 2.54 cm, exact, so no policy is needed
+    quantity b = ceil<cm>(q);                // 3.0 cm, a whole number of centimetres
+    quantity c = q.in<int>(cm, rounded_up);  // 3 cm, `int` cannot hold 2.54
+    quantity d = q.in(cm, rounded_up);       // Compile-time error
+    ```
+
+    The last line is rejected rather than silently yielding `2.54 cm`. A `double`
+    destination holds the exact result, so there is no neighboring value for the policy to
+    choose, and answering with the input unchanged would be a poor answer to a question the
+    user seemed to be asking. Reach for `ceil<cm>(q)` to round the quantity itself.
 
 !!! important
 
