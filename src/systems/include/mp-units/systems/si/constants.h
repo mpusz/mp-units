@@ -58,6 +58,16 @@ inline constexpr struct standard_gravity final :
   named_constant<symbol_text{u8"g₀", "g_0"}, mag_ratio<980'665, 100'000> * metre / square(second)> {} standard_gravity;
 inline constexpr struct reduced_planck_constant final :
   named_constant<symbol_text{u8"\u210f", "hbar"}, si2019::planck_constant / (mag<2> * π)> {} reduced_planck_constant;
+// clang-format on
+
+// The value below is exact only under the pre-2019 SI, which defined the ampere through this
+// constant. The 2019 redefinition tied the ampere to the elementary charge instead, making this a
+// measured quantity that belongs to a CODATA adjustment rather than to the SI.
+[[deprecated(
+  "2.6.0: Since the 2019 SI redefinition this constant is measured, not exact. Use "
+  "`codata::magnetic_constant` from <mp-units/systems/codata.h> for the current value, "
+  "or `codata::codata2014::magnetic_constant` for the exact pre-2019 one")]]
+// clang-format off
 inline constexpr struct magnetic_constant final :
   named_constant<symbol_text{u8"μ₀", "u_0"}, mag<4> * mag_power<10, -7> * π * henry / metre> {} magnetic_constant;
 // clang-format on

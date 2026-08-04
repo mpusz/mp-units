@@ -1921,7 +1921,17 @@ class DocumentationGenerator:
         """Get display name for a system namespace."""
         if namespace == "isq_angle":
             return "ISQ Angle"
-        elif namespace in ["cgs", "hep", "iau", "iec", "iec80000", "isq", "si", "usc"]:
+        elif namespace in [
+            "cgs",
+            "codata",
+            "hep",
+            "iau",
+            "iec",
+            "iec80000",
+            "isq",
+            "si",
+            "usc",
+        ]:
             return namespace.upper()
         else:
             return namespace.replace("_", " ").title()
@@ -1997,7 +2007,13 @@ class DocumentationGenerator:
 
         for namespace in sorted(self.parser.systems.keys()):
             system = self.parser.systems[namespace]
-            if not (system.units or system.dimensions or system.quantities):
+            # a system may consist of constants alone (e.g. `codata`), and it still gets a page
+            if not (
+                system.units
+                or system.dimensions
+                or system.quantities
+                or system.constants
+            ):
                 continue
 
             display_name = self._get_system_display_name(namespace)
@@ -2738,6 +2754,7 @@ class DocumentationGenerator:
                     display_name = "ISQ Angle"
                 elif namespace in [
                     "cgs",
+                    "codata",
                     "hep",
                     "iau",
                     "iec",

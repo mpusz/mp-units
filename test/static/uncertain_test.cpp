@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include "test_tools.h"
+#include <mp-units/systems/codata.h>
 #include <mp-units/systems/hep.h>
 #include <mp-units/systems/iau.h>
 #include <mp-units/systems/si.h>
@@ -148,6 +149,26 @@ static_assert(approx_equal(
   get_value<double>(get_relative_standard_uncertainty(hep::codata2018::permeability_of_vacuum)) * one, 1.5e-10 * one));
 static_assert(approx_equal(
   get_value<double>(get_relative_standard_uncertainty(hep::codata2022::permeability_of_vacuum)) * one, 1.6e-10 * one));
+
+// The SI-expressed values track the same history. They are separate CODATA table entries from the
+// HEP ones above: `hep` declares its own system of quantities, so those constants are not even the
+// same type, and before 2019 the two forms of a constant could carry different published `u_r`.
+static_assert(!MeasuredConstant<std::remove_const_t<decltype(codata::codata2014::magnetic_constant)>>);
+static_assert(MeasuredConstant<std::remove_const_t<decltype(codata::codata2018::magnetic_constant)>>);
+static_assert(MeasuredConstant<std::remove_const_t<decltype(codata::codata2022::magnetic_constant)>>);
+static_assert(approx_equal(get_value<double>(get_relative_standard_uncertainty(codata::codata2018::magnetic_constant)) *
+                             one,
+                           1.5e-10 * one));
+static_assert(approx_equal(get_value<double>(get_relative_standard_uncertainty(codata::codata2022::magnetic_constant)) *
+                             one,
+                           1.6e-10 * one));
+
+// The newest adjustment is `inline`, so the unqualified name is the current value. `si` keeps a
+// deprecated `magnetic_constant` holding the pre-2019 exact value (not named here, since referring
+// to it would trip the deprecation warning under `-Werror`).
+static_assert(codata::magnetic_constant == codata::codata2022::magnetic_constant);
+static_assert(codata::codata2018::magnetic_constant != codata::codata2022::magnetic_constant);
+static_assert(MeasuredConstant<std::remove_const_t<decltype(codata::magnetic_constant)>>);
 // the unqualified name resolves through the inline namespace to the CODATA 2018 one
 static_assert(hep::permeability_of_vacuum == hep::codata2018::permeability_of_vacuum);
 

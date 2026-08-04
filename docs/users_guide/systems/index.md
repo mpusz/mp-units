@@ -71,6 +71,9 @@ This User's Guide provides in-depth documentation for the following systems:
   used
 - **[IAU Astronomical Units](iau.md)** - International Astronomical Union standardized
   conversion constants for solar and planetary parameters
+- **[CODATA Fundamental Constants](codata.md)** - CODATA recommended values of the
+  fundamental physical constants in SI units, one namespace per adjustment; a separate
+  include so that `si.h` does not carry constants most code never names
 - **[Centimetre-Gram-Second (CGS) System](cgs.md)** - Still used in some areas of physics
   and chemistry
 - **[Yard-Pound Systems](yard_pound.md)** - Family of measurement systems used primarily in

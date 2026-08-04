@@ -37,6 +37,9 @@ Alphabetical list of all constants.
 - [`gas_threshold` (hep)](systems/hep.md#gas_threshold)
 - [`hyperfine_structure_transition_frequency_of_cs` (si::si2019)](systems/si.md#si2019-hyperfine_structure_transition_frequency_of_cs)
 - [`luminous_efficacy` (si::si2019)](systems/si.md#si2019-luminous_efficacy)
+- [`magnetic_constant` (codata::codata2014)](systems/codata.md#codata2014-magnetic_constant)
+- [`magnetic_constant` (codata::codata2018)](systems/codata.md#codata2018-magnetic_constant)
+- [`magnetic_constant` (codata::codata2022)](systems/codata.md#codata2022-magnetic_constant)
 - [`magnetic_constant` (si)](systems/si.md#magnetic_constant)
 - [`neutron_mass` (hep::codata2014)](systems/hep.md#codata2014-neutron_mass)
 - [`neutron_mass` (hep::codata2018)](systems/hep.md#codata2018-neutron_mass)
@@ -77,4 +80,4 @@ Alphabetical list of all constants.
 - [`universe_mean_density` (hep)](systems/hep.md#universe_mean_density)
 - [`π` (mp_units)](systems/core.md#π)
 
-**Total constants:** 71
+**Total constants:** 74

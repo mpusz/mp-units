@@ -303,6 +303,13 @@ inline constexpr struct luminous_efficacy :
     The `si2019` nested namespace indicates these values are from the 2019 SI definition.
     This allows for future updates if the constants are ever redefined.
 
+## Measured Constants (CODATA)
+
+Those seven are the only constants the SI fixes exactly. Everything else is *measured*, so
+its value carries a relative standard uncertainty and shifts with each CODATA adjustment.
+Those constants are not part of this system. They live in [CODATA](codata.md), a separate
+one you include when you want them, so that `<mp-units/systems/si.h>` stays as cheap as it
+is for the many translation units that never name one.
 
 ## Header Files
 
@@ -373,7 +380,8 @@ Use these when you need only a specific slice of the SI system.
     Provides the seven SI-defining constants from the 2019 redefinition
     (`si::speed_of_light_in_vacuum`, `si::planck_constant`, etc.) in the inline
     namespace `si::si2019` and a few more directly in the `si` namespace.
-    Depends on `units.h`.
+    Depends on `units.h`. The *measured* constants are in the [CODATA](codata.md)
+    system.
 
     ```cpp
     #include <mp-units/systems/si/constants.h>

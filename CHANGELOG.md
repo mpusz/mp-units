@@ -9,6 +9,16 @@ This page documents the version history and changes for the **mp-units** library
 ### 2.6.0 <small>TBD</small> { id="2.6.0" }
 
 - (!) feat: `pi` and `π` is now a unit constant
+- feat: CODATA fundamental physical constants added as a separate system in
+      `mp-units/systems/codata.h` (`codata::codata2014`, `codata::codata2018`, and the
+      `inline` `codata::codata2022`). Deliberately not part of `si`, so that
+      `mp-units/systems/si.h` does not carry constants most code never names
+- deprecated: `si::magnetic_constant`. The pre-2019 SI defined the ampere through it,
+      which made it exactly 4*pi*1e-7 H/m; since the redefinition it is measured. Its
+      value is unchanged, but use `codata::magnetic_constant` for the current adjustment,
+      or `codata::codata2014::magnetic_constant` for the exact pre-2019 one. These are NOT
+      interchangeable with the `hep` constants of the same name, which belong to a
+      different system of quantities
 - (!) refactor: the `std-format-spec` helpers that formatters are written against (`fmt_align`,
       `fill_t`, `fmt_arg_ref`, `fill_align_width_format_specs`, `parse_align`,
       `parse_dynamic_spec`, `parse_fill_align_width`, `parse_nonnegative_int`,

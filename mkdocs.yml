@@ -198,6 +198,7 @@ nav:
           - International System of Quantities (ISQ): users_guide/systems/isq.md
           - International System of Units (SI): users_guide/systems/si.md
           - IAU Astronomical Units: users_guide/systems/iau.md
+          - CODATA Fundamental Constants: users_guide/systems/codata.md
           - Centimetre-Gram-Second (CGS) System: users_guide/systems/cgs.md
           - Yard-Pound Systems: users_guide/systems/yard_pound.md
           - Strong Angular System: users_guide/systems/strong_angular_system.md
@@ -274,6 +275,7 @@ nav:
               - Angular: reference/systems_reference/systems/angular.md
               - Astronomy: reference/systems_reference/systems/astronomy.md
               - CGS: reference/systems_reference/systems/cgs.md
+              - CODATA: reference/systems_reference/systems/codata.md
               - Core: reference/systems_reference/systems/core.md
               - HEP: reference/systems_reference/systems/hep.md
               - IAU: reference/systems_reference/systems/iau.md

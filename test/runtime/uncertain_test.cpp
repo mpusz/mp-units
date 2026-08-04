@@ -36,6 +36,7 @@ import std;
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
+#include <mp-units/systems/codata.h>
 #include <mp-units/systems/iau.h>
 #include <mp-units/systems/si.h>
 #include <mp-units/utility/uncertain.h>
@@ -379,6 +380,19 @@ TEST_CASE("conversion factors built from measured constants carry their uncertai
     CHECK_THAT(sum.numerical_value_in(kg).value(), WithinRel(2.98841e30, 1e-4));
     CHECK_THAT(sum.numerical_value_in(kg).uncertainty(), WithinRel(expected_sigma, 1e-3));
   }
+}
+
+TEST_CASE("SI CODATA constants carry their adjustment's uncertainty", "[uncertain]")
+{
+  // Until the 2019 SI the ampere was defined through mu_0, making it exactly 4*pi*1e-7 H/m.
+  // Since the redefinition it is measured and departs from that in the tenth digit.
+  const quantity mu = measurement_of(codata::magnetic_constant).in(H / m);
+  CHECK_THAT(mu.numerical_value_in(H / m).value(), WithinRel(1.25663706127e-6));
+  CHECK_THAT(mu.numerical_value_in(H / m).relative_uncertainty(), WithinRel(1.6e-10));
+
+  std::ostringstream os;
+  os << mu;
+  CHECK(os.str() == "1.25664e-06 ± 2.01062e-16 H/m");
 }
 
 TEST_CASE("uncertain text output", "[uncertain]")
