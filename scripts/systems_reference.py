@@ -1746,6 +1746,30 @@ class SystemsParser:
 
             system.imported_systems.add(source_system)
 
+            # The target may be a constant rather than a unit (e.g. `using codata::G` in IAU).
+            # Constants are parsed before units, so the source system already knows its own.
+            # Where several adjustments declare the same name, the last one wins, since an
+            # unqualified import resolves through the `inline` (most recent) namespace.
+            source = self.systems.get(source_system)
+            imported_constant = None
+            if source is not None:
+                for const in source.constants:
+                    if const.name == unit_name:
+                        imported_constant = const
+            if imported_constant is not None:
+                system.constants.append(
+                    Constant(
+                        name=unit_name,
+                        symbol=imported_constant.symbol,
+                        definition=f"using {full_namespace}::{unit_name}",
+                        relative_standard_uncertainty=imported_constant.relative_standard_uncertainty,
+                        namespace=f"mp_units::{system.namespace}",
+                        file=file,
+                        alias_target=f"{full_namespace}::{unit_name}",
+                    )
+                )
+                continue
+
             unit = Unit(
                 name=unit_name,
                 symbol=f"(imported from {full_namespace})",
@@ -3171,15 +3195,41 @@ class DocumentationGenerator:
                         constant_display_with_breaks = add_word_breaks(constant_display)
 
                         if constant.alias_target:
-                            # This is an alias - show reference to original (linkified)
+                            # This is an alias - show reference to original (linkified). The
+                            # symbol and the uncertainty are carried over from the imported
+                            # constant: an alias denotes the very same entity, so blanking them
+                            # would understate what the name provides.
                             alias_target_linked = self._linkify_definition(
                                 constant.alias_target, system
                             )
+                            if constant.unit_symbols:
+                                symbols_display = ", ".join(
+                                    f"`{sym}`" for sym in constant.unit_symbols
+                                )
+                            else:
+                                symbols_display = "—"
+                            if has_uncertainty:
+                                if constant.relative_standard_uncertainty:
+                                    rsu_display = "<code>{}</code>".format(
+                                        self._linkify_definition(
+                                            constant.relative_standard_uncertainty.replace(
+                                                "|", "\\|"
+                                            ),
+                                            system,
+                                        )
+                                    )
+                                else:
+                                    rsu_display = "—"
+                                rsu_cell = f" {rsu_display} |"
+                            else:
+                                rsu_cell = ""
                             f.write(
                                 f'| <span id="{anchor_id}"></span><code>'
-                                f"{constant_display_with_breaks}</code> | — | — | "
+                                f"{constant_display_with_breaks}</code> | "
+                                f"{constant.symbol if constant.symbol else '—'} | "
+                                f"{symbols_display} | "
                                 f"alias to {alias_target_linked} |"
-                                f"{' — |' if has_uncertainty else ''}\n"
+                                f"{rsu_cell}\n"
                             )
                         else:
                             # Format unit_symbols for display
@@ -3626,6 +3676,16 @@ class DocumentationGenerator:
 
             # Add constants
             for constant in system.constants:
+                # An alias to another *system* must not claim the name here: every reference
+                # would resolve to this page instead of the defining one, producing a link
+                # straight back to the alias row itself. An alias within this system (such as
+                # core's `π` for `pi`, or a newer adjustment reusing an older declaration) is
+                # documented on this very page, so it stays referenceable.
+                if constant.alias_target and "::" in constant.alias_target:
+                    target_system = constant.alias_target.split("::")[0]
+                    if target_system in self.parser.systems and target_system != sys_ns:
+                        continue
+
                 # Compute anchor ID the same way as in the constants table generation
                 anchor_id = (
                     f"{constant.subnamespace}-{constant.name}"
@@ -3633,21 +3693,29 @@ class DocumentationGenerator:
                     else constant.name
                 )
 
-                # Add unqualified name if not already present
-                if constant.name not in all_refs:
-                    all_refs[constant.name] = (sys_ns, anchor_id)
+                # Several subnamespaces may declare the same constant (one per CODATA
+                # adjustment). An unqualified or system-qualified reference resolves through the
+                # `inline` one, exactly as it does in C++, so an inline declaration replaces an
+                # earlier entry of this system while a non-inline one only fills a gap. Entries
+                # owned by another system are never overwritten.
+                is_inline = (
+                    not constant.subnamespace
+                    or constant.subnamespace in system.inline_subnamespaces
+                )
+
+                def claim(key: str):
+                    existing = all_refs.get(key)
+                    if existing is None or (is_inline and existing[0] == sys_ns):
+                        all_refs[key] = (sys_ns, anchor_id)
+
+                claim(constant.name)
 
                 # Add unit_symbols (like π for pi, or h for planck_constant)
                 if constant.unit_symbols:
                     for symbol in constant.unit_symbols:
-                        if symbol not in all_refs:
-                            all_refs[symbol] = (sys_ns, anchor_id)
+                        claim(symbol)
 
-                # Add qualified names
-                # Don't add system-level qualified name for constants with subnamespaces
-                # (multiple subnamespaces can have constants with the same name)
-                if not constant.subnamespace:
-                    all_refs[f"{sys_ns}::{constant.name}"] = (sys_ns, anchor_id)
+                claim(f"{sys_ns}::{constant.name}")
                 if constant.subnamespace:
                     all_refs[f"{constant.subnamespace}::{constant.name}"] = (
                         sys_ns,

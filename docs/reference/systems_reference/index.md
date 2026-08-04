@@ -22,7 +22,7 @@ Automatically generated reference documentation for all **mp-units** systems.
 | [Angular](systems/angular.md) | 1 | 2 | — | 5 | — | — |
 | [Astronomy](systems/astronomy.md) | — | — | — | 10 | — | — |
 | [CGS](systems/cgs.md) | — | — | — | 10 | — | — |
-| [CODATA](systems/codata.md) | — | — | — | — | 3 | — |
+| [CODATA](systems/codata.md) | — | — | — | — | 5 | — |
 | [Core](systems/core.md) | 1 | 1 | — | 5 | 2 | — |
 | [HEP](systems/hep.md) | 8 | 79 | — | 45 | 45 | — |
 | [IAU](systems/iau.md) | — | — | — | 5 | 12 | — |

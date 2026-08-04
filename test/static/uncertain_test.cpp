@@ -169,6 +169,12 @@ static_assert(approx_equal(get_value<double>(get_relative_standard_uncertainty(c
 static_assert(codata::magnetic_constant == codata::codata2022::magnetic_constant);
 static_assert(codata::codata2018::magnetic_constant != codata::codata2022::magnetic_constant);
 static_assert(MeasuredConstant<std::remove_const_t<decltype(codata::magnetic_constant)>>);
+
+// IAU imports G rather than duplicating it. This must stay a using-declaration: the planetary mass
+// units divide by G, and `M_SUN -> M_EARTH` is exact only because the very same type cancels.
+static_assert(std::is_same_v<std::remove_const_t<decltype(iau::newtonian_constant_of_gravitation)>,
+                             std::remove_const_t<decltype(codata::newtonian_constant_of_gravitation)>>);
+static_assert(detail::conversion_relative_uncertainty(iau::solar_mass, iau::terrestrial_mass) == 0.0L);
 // the unqualified name resolves through the inline namespace to the CODATA 2018 one
 static_assert(hep::permeability_of_vacuum == hep::codata2018::permeability_of_vacuum);
 

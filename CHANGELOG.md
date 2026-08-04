@@ -9,6 +9,11 @@ This page documents the version history and changes for the **mp-units** library
 ### 2.6.0 <small>TBD</small> { id="2.6.0" }
 
 - (!) feat: `pi` and `π` is now a unit constant
+- (!) feat: `iau::newtonian_constant_of_gravitation` is now imported from
+      `codata::newtonian_constant_of_gravitation` instead of being defined by the IAU system,
+      and the `iau::codata2018` inline namespace is gone. IAU 2015 Resolution B3 asks for
+      the current best estimate of G, so the value now follows whichever adjustment is
+      current. The value is unchanged today, since CODATA 2022 kept G at 6.674 30(15)e-11
 - feat: CODATA fundamental physical constants added as a separate system in
       `mp-units/systems/codata.h` (`codata::codata2014`, `codata::codata2018`, and the
       `inline` `codata::codata2022`). Deliberately not part of `si`, so that

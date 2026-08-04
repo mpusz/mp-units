@@ -68,6 +68,12 @@ namespace codata2018 {
 // 1.256 637 062 12(19) × 10⁻⁶ N/A²; measured since the ampere was redefined via the elementary charge
 inline constexpr struct magnetic_constant final :
   named_constant<symbol_text{u8"μ₀", "u_0"}, mag_ratio<125'663'706'212, 100'000'000'000> * mag_power<10, -6> * si::henry / si::metre, relative_standard_uncertainty{mag_ratio<15, 10> * mag_power<10, -10>}> {} magnetic_constant;
+
+// 6.674 30(15) × 10⁻¹¹ m³ kg⁻¹ s⁻². The relative form is stored rather than the absolute one shown
+// in parentheses, because only the relative form is invariant under a change of unit.
+// https://physics.nist.gov/cgi-bin/cuu/Value?bg
+inline constexpr struct newtonian_constant_of_gravitation final :
+  named_constant<"G", mag_ratio<667'430, 100'000> * mag_power<10, -11> * cubic(si::metre) / si::kilogram / square(si::second), relative_standard_uncertainty{mag_ratio<22, 10> * mag_power<10, -5>}> {} newtonian_constant_of_gravitation;
 // clang-format on
 
 }  // namespace codata2018
@@ -78,6 +84,11 @@ inline namespace codata2022 {
 // 1.256 637 061 27(20) × 10⁻⁶ N/A²
 inline constexpr struct magnetic_constant final :
   named_constant<symbol_text{u8"μ₀", "u_0"}, mag_ratio<125'663'706'127, 100'000'000'000> * mag_power<10, -6> * si::henry / si::metre, relative_standard_uncertainty{mag_ratio<16, 10> * mag_power<10, -10>}> {} magnetic_constant;
+
+// Unchanged from the 2018 adjustment: 6.674 30(15) × 10⁻¹¹ m³ kg⁻¹ s⁻².
+// https://physics.nist.gov/cgi-bin/cuu/Value?bg
+inline constexpr struct newtonian_constant_of_gravitation final :
+  named_constant<"G", mag_ratio<667'430, 100'000> * mag_power<10, -11> * cubic(si::metre) / si::kilogram / square(si::second), relative_standard_uncertainty{mag_ratio<22, 10> * mag_power<10, -5>}> {} newtonian_constant_of_gravitation;
 // clang-format on
 
 }  // namespace codata2022

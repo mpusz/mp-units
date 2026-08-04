@@ -44,7 +44,9 @@ Alphabetical list of all constants.
 - [`neutron_mass` (hep::codata2014)](systems/hep.md#codata2014-neutron_mass)
 - [`neutron_mass` (hep::codata2018)](systems/hep.md#codata2018-neutron_mass)
 - [`neutron_mass` (hep::codata2022)](systems/hep.md#codata2022-neutron_mass)
-- [`newtonian_constant_of_gravitation` (iau::codata2018)](systems/iau.md#codata2018-newtonian_constant_of_gravitation)
+- [`newtonian_constant_of_gravitation` (codata::codata2018)](systems/codata.md#codata2018-newtonian_constant_of_gravitation)
+- [`newtonian_constant_of_gravitation` (codata::codata2022)](systems/codata.md#codata2022-newtonian_constant_of_gravitation)
+- [`newtonian_constant_of_gravitation` (iau)](systems/iau.md#newtonian_constant_of_gravitation)
 - [`nominal_jovian_equatorial_radius` (iau)](systems/iau.md#nominal_jovian_equatorial_radius)
 - [`nominal_jovian_mass_parameter` (iau)](systems/iau.md#nominal_jovian_mass_parameter)
 - [`nominal_jovian_polar_radius` (iau)](systems/iau.md#nominal_jovian_polar_radius)
@@ -80,4 +82,4 @@ Alphabetical list of all constants.
 - [`universe_mean_density` (hep)](systems/hep.md#universe_mean_density)
 - [`π` (mp_units)](systems/core.md#π)
 
-**Total constants:** 74
+**Total constants:** 76

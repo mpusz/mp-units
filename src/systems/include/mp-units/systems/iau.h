@@ -23,6 +23,7 @@
 #pragma once
 
 #include <mp-units/bits/module_macros.h>
+#include <mp-units/systems/codata.h>
 #include <mp-units/systems/si/constants.h>
 #include <mp-units/systems/si/unit_symbols.h>
 #include <mp-units/systems/si/units.h>
@@ -62,20 +63,15 @@ using non_si::astronomical_unit;
 // Derived units
 inline constexpr struct parsec final : named_unit<"pc", astronomical_unit / (mag_ratio<1, 3600> * si::degree)> {} parsec;
 
-inline namespace codata2018 {
-
-// Newtonian constant of gravitation (CODATA 2018): 6.674 30(15) × 10⁻¹¹ m³ kg⁻¹ s⁻²
-// The relative standard uncertainty (2.2 × 10⁻⁵) is stored rather than the absolute one shown in
-// parentheses above, because only the relative form is invariant under a change of unit.
-// https://physics.nist.gov/cgi-bin/cuu/Value?bg
-inline constexpr struct newtonian_constant_of_gravitation final : named_constant<"G", mag_ratio<667'430, 100'000> * mag_power<10, -11> * cubic(si::metre) / si::kilogram / square(si::second), relative_standard_uncertainty{mag_ratio<22, 10> * mag_power<10, -5>}> {} newtonian_constant_of_gravitation;
+// IAU 2015 Resolution B3 fixes the nominal mass *parameters* exactly and leaves the mass itself to
+// follow from "the current best estimate" of G, so this simply imports the current CODATA
+// adjustment.
+using codata::newtonian_constant_of_gravitation;
 
 // Derived SI masses using (GM)ᴺ / G
 inline constexpr struct solar_mass final : named_unit<symbol_text{u8"M_☉", "M_SUN"}, nominal_solar_mass_parameter / newtonian_constant_of_gravitation> {} solar_mass;
 inline constexpr struct terrestrial_mass final : named_unit<symbol_text{u8"M_⊕", "M_EARTH"}, nominal_terrestrial_mass_parameter / newtonian_constant_of_gravitation> {} terrestrial_mass;
 inline constexpr struct jovian_mass final : named_unit<symbol_text{u8"M_♃", "M_JUP"}, nominal_jovian_mass_parameter / newtonian_constant_of_gravitation> {} jovian_mass;
-
-}  // namespace codata2018
 
 // clang-format on
 

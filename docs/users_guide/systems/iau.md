@@ -10,8 +10,8 @@ The **mp-units** IAU system implements:
   definition
 - **IAU Resolution B2 (2012)**: astronomical_unit = 149,597,870,700 m (from SI), exact by
   definition
-- **CODATA 2018**: Measured values for the Newtonian gravitational constant G and derived
-  _masses_
+- **CODATA**: the measured Newtonian gravitational constant G, imported from the
+  [CODATA system](codata.md), and the _masses_ derived from it
 
 !!! tip "Astronomy Utilities"
 
@@ -162,15 +162,18 @@ std::println("1 parsec = {::N[.4e]}", distance.in(km));
     with symbol `au`. The IAU system uses `using si::astronomical_unit;` to make it available
     as `iau::astronomical_unit` while avoiding symbol collisions.
 
-## CODATA 2018: Measured Constants
+## Measured Constants
 
 While nominal values are exact by definition, some physical constants must be measured.
-These are provided in the `codata2018` inline namespace:
+IAU 2015 Resolution B3 fixes the nominal mass *parameters* exactly and leaves the mass
+itself to follow from the current best estimate of G, so `iau` does not define G at all.
+It imports it from the [CODATA system](codata.md), which means the value tracks whichever
+adjustment is current there:
 
 ### Newtonian Constant of Gravitation
 
 ```cpp
-using namespace mp_units::iau::codata2018;
+using namespace mp_units::iau;
 
 // Newtonian constant of gravitation: G = 6.67430(15) × 10⁻¹¹ m³/(kg·s²)
 quantity G_value = 1. * newtonian_constant_of_gravitation;
@@ -244,9 +247,14 @@ In Earth masses: 332946 ± 0 M_⊕
 
 !!! info "Versioning Strategy"
 
-    The `codata2018` inline namespace allows for future CODATA versions (e.g., `codata2022`)
-    while maintaining backward compatibility. Nominal values remain in the main `iau` namespace
-    since they never change.
+    IAU carries no adjustment-named namespace of its own. G is imported from the
+    [CODATA system](codata.md), where each adjustment has its own namespace and the most recent
+    one is `inline`, so `iau` follows whatever is current there. That matches Resolution B3,
+    which asks for the current best estimate of G rather than a fixed one. Adopting a new
+    adjustment therefore moves the default in one place, and the masses derived from G follow.
+
+    The nominal values stay in the main `iau` namespace, since they are exact by definition and
+    never change.
 
 ## Symbol Collision Resolution
 
