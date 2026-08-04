@@ -32,9 +32,13 @@ them through observers:
 |--------------------------|-----------------------------------|
 | `value()`                | the central value                 |
 | `uncertainty()`          | the absolute standard uncertainty |
-| `relative_uncertainty()` | `uncertainty() / value()`         |
+| `relative_uncertainty()` | `uncertainty() / abs(value())`    |
 | `lower_bound()`          | `value() - uncertainty()`         |
 | `upper_bound()`          | `value() + uncertainty()`         |
+
+The relative standard uncertainty divides by the *absolute* value, following GUM and the VIM:
+it is a magnitude and is never negative, while the central value may well be (CODATA publishes
+negative magnetic moments and g-factors).
 
 An exact value converts to `uncertain` implicitly as `value ± 0`. This is intentional: the
 conversion is lossless, and it lets exact quantities join the propagation in

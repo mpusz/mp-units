@@ -11,6 +11,9 @@ This page documents the version history and changes for the **mp-units** library
 - feat: unary minus on a unit magnitude (`-mag_ratio<N, D>`, `-mag<N>`), which reads the
       way a published table prints a negative constant. It yields the same type as putting
       the sign in the numerator, and a second negation cancels
+- fix: `uncertain<T>::relative_uncertainty()` now divides by the absolute value. GUM and
+      the VIM define the relative standard uncertainty as `u(x)/|x|`, so it is never
+      negative; it used to come out negative for a negative central value
 - (!) feat: `pi` and `π` is now a unit constant
 - (!) feat: `iau::newtonian_constant_of_gravitation` is now imported from
       `codata::newtonian_constant_of_gravitation` instead of being defined by the IAU system,

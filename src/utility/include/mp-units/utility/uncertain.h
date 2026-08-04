@@ -152,8 +152,16 @@ public:
   /// @brief Returns the absolute uncertainty (standard deviation)
   [[nodiscard]] constexpr const value_type& uncertainty() const { return uncertainty_; }
 
-  /// @brief Returns the relative uncertainty (σ/x)
-  [[nodiscard]] constexpr value_type relative_uncertainty() const { return uncertainty() / value(); }
+  /// @brief Returns the relative standard uncertainty (σ/|x|)
+  ///
+  /// The absolute value follows GUM and the VIM: a relative standard uncertainty is a magnitude
+  /// and is never negative, while the central value may well be (CODATA publishes negative
+  /// magnetic moments and g-factors).
+  [[nodiscard]] constexpr value_type relative_uncertainty() const
+  {
+    using std::abs;
+    return uncertainty() / abs(value());
+  }
 
   /// @brief Returns the lower bound of the uncertainty interval (value - σ)
   [[nodiscard]] constexpr value_type lower_bound() const { return value() - uncertainty(); }

@@ -60,6 +60,14 @@ TEST_CASE("uncertain observers", "[uncertain]")
   const uncertain<double> exact = 5.0;
   CHECK(exact.value() == 5.0);
   CHECK(exact.uncertainty() == 0.0);
+
+  // GUM and the VIM define the relative standard uncertainty as u(x)/|x|, so it is a magnitude
+  // and never negative, even though the central value may be (CODATA publishes negative magnetic
+  // moments and g-factors).
+  const uncertain negative{-2.00231930436092, 3.6e-13};
+  CHECK(negative.value() < 0.0);
+  CHECK(negative.relative_uncertainty() > 0.0);
+  CHECK_THAT(negative.relative_uncertainty(), WithinRel(3.6e-13 / 2.00231930436092));
 }
 
 TEST_CASE("uncertainty propagation for independent values", "[uncertain]")
