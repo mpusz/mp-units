@@ -43,7 +43,7 @@ import std;
 #include <type_traits>
 #include <utility>
 #if MP_UNITS_HOSTED
-#include <ostream>
+#include <iosfwd>
 #endif
 #endif
 #endif

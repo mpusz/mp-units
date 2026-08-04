@@ -38,7 +38,7 @@ import std;
 #include <cmath>
 #include <concepts>
 #if MP_UNITS_HOSTED
-#include <ostream>
+#include <iosfwd>
 #endif
 #endif
 #endif

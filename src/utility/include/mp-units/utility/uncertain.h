@@ -37,7 +37,7 @@ import std;
 #else
 #include <cmath>
 #include <concepts>
-#include <ostream>
+#include <iosfwd>
 #include <string>
 #include <string_view>
 #include <type_traits>
