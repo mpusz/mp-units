@@ -30,6 +30,21 @@
 // NOLINTBEGIN(cppcoreguidelines-pro-bounds-pointer-arithmetic, cppcoreguidelines-pro-type-union-access)
 #pragma once
 
+// The pieces a `std::formatter` specialization is built from, in `mp_units::utility`:
+//
+// - `fmt_align`, `fill_t`, `fmt_arg_ref`, and `fill_align_width_format_specs` describe the
+//   fill/align/width part of a `std-format-spec`,
+// - `parse_align`, `parse_dynamic_spec`, `parse_fill_align_width`, and `parse_nonnegative_int`
+//   parse it (`parse_fill_align_width` covers the common case in one call, the others let a
+//   formatter interleave its own options in the order the standard grammar defines them),
+// - `handle_dynamic_spec` with `width_checker` resolves a `{}` width against the format
+//   arguments at format time, and `write_padded` writes the result honoring fill and alignment.
+//
+// The library's own formatters for `unit`, `dimension`, `quantity`, and `uncertain` are written
+// against exactly this set, so it is known to be sufficient for a non-trivial formatter.
+//
+// TODO these should be exposed by the C++ Standard Library
+
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/compat_macros.h>
 #include <mp-units/ext/algorithm.h>
@@ -37,6 +52,7 @@
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/ext/contracts.h>
 #include <mp-units/ext/format.h>
+#include <mp-units/ext/type_traits.h>
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
@@ -44,15 +60,17 @@ import std;
 #include <concepts>
 #include <cstdint>
 #include <limits>
+#include <string>
 #include <string_view>
 #endif
 #endif
 
 // most of the below code is based on/copied from fmtlib
 
-namespace mp_units::detail {
-
+// The vocabulary of a `std-format-spec`. Public so that users can write their own formatters
+// on top of the same pieces the library's formatters use.
 // TODO the below should be exposed by the C++ Standard Library (used in our examples)
+namespace mp_units::utility {
 MP_UNITS_EXPORT_BEGIN
 
 enum class fmt_align : std::int8_t { none, left, right, center, numeric };
@@ -120,10 +138,7 @@ public:
 };
 
 MP_UNITS_EXPORT_END
-
-template<typename T>
-constexpr bool is_integer =
-  std::is_integral_v<T> && !std::is_same_v<T, bool> && !std::is_same_v<T, char> && !std::is_same_v<T, wchar_t>;
+namespace detail {
 
 // Converts a character to ASCII. Returns a number > 127 on conversion failure.
 template<std::integral Char>
@@ -160,7 +175,7 @@ template<class Handler, typename FormatArg>
   else
     value = MP_UNITS_STD_FMT::visit_format_arg(Handler{}, arg);
 #endif
-  if (value > ::mp_units::detail::to_unsigned(std::numeric_limits<int>::max())) {
+  if (value > detail::to_unsigned(std::numeric_limits<int>::max())) {
     MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("number is too big"));
   }
   return static_cast<int>(value);
@@ -174,6 +189,8 @@ template<typename Context, typename ID>
   return arg;
 }
 
+}  // namespace detail
+
 // TODO the below should be exposed by the C++ Standard Library (used in our examples)
 MP_UNITS_EXPORT_BEGIN
 
@@ -184,11 +201,11 @@ constexpr void handle_dynamic_spec(int& value, fmt_arg_ref<typename Context::cha
     case fmt_arg_id_kind::none:
       break;
     case fmt_arg_id_kind::index:
-      value = ::mp_units::detail::get_dynamic_spec<Handler>(get_arg(ctx, ref.val.index));
+      value = detail::get_dynamic_spec<Handler>(detail::get_arg(ctx, ref.val.index));
       break;
 #if MP_UNITS_USE_FMTLIB
     case fmt_arg_id_kind::name:
-      value = ::mp_units::detail::get_dynamic_spec<Handler>(get_arg(ctx, ref.val.name));
+      value = detail::get_dynamic_spec<Handler>(detail::get_arg(ctx, ref.val.name));
       break;
 #endif
   }
@@ -200,7 +217,7 @@ struct width_checker {
   template<typename T>
   [[nodiscard]] constexpr unsigned long long operator()(T value) const
   {
-    if constexpr (is_integer<T>) {
+    if constexpr (::mp_units::detail::is_integer<T>) {
       if constexpr (std::numeric_limits<T>::is_signed)
         if (value < 0) MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("negative width"));
       return static_cast<unsigned long long>(value);
@@ -210,11 +227,9 @@ struct width_checker {
 };
 MP_UNITS_DIAGNOSTIC_POP
 
-MP_UNITS_EXPORT_END
-
 // Parses the range [begin, end) as an unsigned integer. This function assumes
 // that the range is non-empty and the first character is a digit.
-MP_UNITS_EXPORT template<std::forward_iterator It>
+template<std::forward_iterator It>
 [[nodiscard]] constexpr int parse_nonnegative_int(It& begin, It end, int error_value)
 {
   MP_UNITS_PRECONDITION(begin != end && '0' <= *begin && *begin <= '9');
@@ -229,11 +244,14 @@ MP_UNITS_EXPORT template<std::forward_iterator It>
   begin = pos;
   if (num_digits <= std::numeric_limits<int>::digits10) return static_cast<int>(value);
   // Check for overflow.
-  const unsigned max = ::mp_units::detail::to_unsigned((std::numeric_limits<int>::max)());
+  const unsigned max = detail::to_unsigned((std::numeric_limits<int>::max)());
   return num_digits == std::numeric_limits<int>::digits10 + 1 && prev * 10ull + unsigned(pos[-1] - '0') <= max
            ? static_cast<int>(value)
            : error_value;
 }
+
+MP_UNITS_EXPORT_END
+namespace detail {
 
 template<typename Char>
 [[nodiscard]] constexpr bool is_name_start(Char c)
@@ -249,7 +267,7 @@ template<std::forward_iterator It, typename Handler>
     int index = 0;
     constexpr int max = (std::numeric_limits<int>::max)();
     if (ch != '0')
-      index = ::mp_units::detail::parse_nonnegative_int(begin, end, max);
+      index = parse_nonnegative_int(begin, end, max);
     else
       ++begin;
     if (begin == end || (*begin != '}' && *begin != ':'))
@@ -258,15 +276,15 @@ template<std::forward_iterator It, typename Handler>
     return begin;
   }
   if (ch == '%') return begin;  // mp-units extension
-  if (!::mp_units::detail::is_name_start(ch)) {
+  if (!detail::is_name_start(ch)) {
     MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid format string"));
   }
   auto it = begin;
   do {
     ++it;
-  } while (it != end && (::mp_units::detail::is_name_start(*it) || ('0' <= *it && *it <= '9')));
+  } while (it != end && (detail::is_name_start(*it) || ('0' <= *it && *it <= '9')));
 #if MP_UNITS_USE_FMTLIB
-  handler.on_name({begin, ::mp_units::detail::to_unsigned(it - begin)});
+  handler.on_name({begin, detail::to_unsigned(it - begin)});
 #else
   MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("named arguments are not supported in the C++ standard facilities"));
 #endif
@@ -279,7 +297,7 @@ template<std::forward_iterator It, typename Handler>
 {
   MP_UNITS_PRECONDITION(begin != end);
   auto ch = *begin;
-  if (ch != '}' && ch != ':') return ::mp_units::detail::do_parse_arg_id(begin, end, handler);
+  if (ch != '}' && ch != ':') return detail::do_parse_arg_id(begin, end, handler);
   handler.on_auto();
   return begin;
 }
@@ -320,13 +338,15 @@ struct dynamic_spec_id_handler {
 #endif
 };
 
+}  // namespace detail
+
 MP_UNITS_EXPORT template<std::forward_iterator It, typename Char = std::iter_value_t<It>>
 [[nodiscard]] constexpr It parse_dynamic_spec(It begin, It end, int& value, fmt_arg_ref<Char>& ref,
                                               MP_UNITS_STD_FMT::basic_format_parse_context<Char>& ctx)
 {
   MP_UNITS_PRECONDITION(begin != end);
   if ('0' <= *begin && *begin <= '9') {
-    const int val = ::mp_units::detail::parse_nonnegative_int(begin, end, -1);
+    const int val = parse_nonnegative_int(begin, end, -1);
     if (val != -1)
       value = val;
     else
@@ -334,13 +354,15 @@ MP_UNITS_EXPORT template<std::forward_iterator It, typename Char = std::iter_val
   } else if (*begin == '{') {
     ++begin;
     if (*begin == '%') return begin - 1;  // mp-units extension
-    auto handler = dynamic_spec_id_handler<Char>{ctx, ref};
-    if (begin != end) begin = ::mp_units::detail::parse_arg_id(begin, end, handler);
+    auto handler = detail::dynamic_spec_id_handler<Char>{ctx, ref};
+    if (begin != end) begin = detail::parse_arg_id(begin, end, handler);
     if (begin != end && *begin == '}') return ++begin;
     MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid format string"));
   }
   return begin;
 }
+
+namespace detail {
 
 template<std::input_iterator It>
 constexpr int code_point_length(It begin)
@@ -356,16 +378,31 @@ constexpr int code_point_length(It begin)
   return len + !len;
 }
 
+}  // namespace detail
+
+// Returns the position of the single modifier from `modifiers` present in [begin, end), or
+// `end` when there is none. Throws when more than one is used, which is how a `format-spec`
+// states that a group of modifier letters is mutually exclusive.
+MP_UNITS_EXPORT template<std::forward_iterator It>
+[[nodiscard]] constexpr It at_most_one_of(It begin, It end, std::string_view modifiers)
+{
+  const It it = ::mp_units::detail::find_first_of(begin, end, modifiers.begin(), modifiers.end());
+  if (it != end && ::mp_units::detail::find_first_of(it + 1, end, modifiers.begin(), modifiers.end()) != end)
+    throw MP_UNITS_STD_FMT::format_error("only one of '" + std::string(modifiers) +
+                                         "' unit modifiers may be used in the format spec");
+  return it;
+}
+
 // Parses fill and alignment.
 MP_UNITS_EXPORT template<std::forward_iterator It, typename Specs>
 [[nodiscard]] constexpr It parse_align(It begin, It end, Specs& specs, fmt_align default_align = fmt_align::none)
 {
   MP_UNITS_PRECONDITION(begin != end);
   auto align = fmt_align::none;
-  auto pos = begin + code_point_length(begin);
+  auto pos = begin + detail::code_point_length(begin);
   if (end - pos <= 0) pos = begin;
   for (;;) {
-    switch (to_ascii(*pos)) {
+    switch (detail::to_ascii(*pos)) {
       case '<':
         align = fmt_align::left;
         break;
@@ -396,5 +433,63 @@ MP_UNITS_EXPORT template<std::forward_iterator It, typename Specs>
   return begin;
 }
 
-}  // namespace mp_units::detail
+// The fill/align/width part of a `std-format-spec` and the padding it drives.
+// TODO the below should be exposed by the C++ Standard Library (used in our examples)
+MP_UNITS_EXPORT_BEGIN
+
+template<typename Char>
+struct fill_align_width_format_specs {
+  fill_t<Char> fill;
+  fmt_align align : 4 = fmt_align::none;
+  int width = 0;
+  fmt_arg_ref<Char> width_ref;
+};
+
+template<std::forward_iterator It, typename Specs>
+[[nodiscard]] constexpr It parse_fill_align_width(
+  MP_UNITS_STD_FMT::basic_format_parse_context<std::iter_value_t<It>>& ctx, It begin, It end, Specs& specs,
+  fmt_align default_align = fmt_align::none)
+{
+  auto it = begin;
+  if (it == end || *it == '}') return it;
+
+  it = mp_units::utility::parse_align(it, end, specs, default_align);
+  if (it == end) return it;
+
+  return mp_units::utility::parse_dynamic_spec(it, end, specs.width, specs.width_ref, ctx);
+}
+
+/**
+ * @brief Writes a string to an output iterator with fill/align/width padding.
+ *
+ * Avoids instantiating format_to/vformat_to infrastructure for the common padding use-case
+ * inside formatter<Unit>, formatter<Dimension>, and formatter<quantity> specializations.
+ */
+template<typename Char, std::output_iterator<Char> Out>
+constexpr Out write_padded(Out out, std::basic_string_view<Char> s, int width, fmt_align align,
+                           const fill_t<Char>& fill)
+{
+  const int len = static_cast<int>(s.size());
+  const int pad = (width > len) ? width - len : 0;
+  const int lpad = (align == fmt_align::center) ? pad / 2 : (align == fmt_align::right) ? pad : 0;
+  const int rpad = pad - lpad;
+  auto write_fill = [&](int n) {
+    for (int i = 0; i < n; ++i)
+      for (std::size_t j = 0; j < fill.size(); ++j) *out++ = fill[j];
+  };
+  write_fill(lpad);
+  MP_UNITS_DIAGNOSTIC_PUSH
+  // Loop variable shadows a `si::unit_symbols` short name when `using namespace si::unit_symbols`
+  // is in scope at the call site (MSVC C4459); the local variable here is the documented
+  // canonical name for this trivial loop.
+  MP_UNITS_DIAGNOSTIC_IGNORE_SHADOW
+  for (Char c : s) *out++ = c;
+  MP_UNITS_DIAGNOSTIC_POP
+  write_fill(rpad);
+  return out;
+}
+
+MP_UNITS_EXPORT_END
+}  // namespace mp_units::utility
+
 // NOLINTEND(cppcoreguidelines-pro-bounds-pointer-arithmetic, cppcoreguidelines-pro-type-union-access)

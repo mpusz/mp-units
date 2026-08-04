@@ -32,7 +32,7 @@
 #include <mp-units/framework/value_cast.h>  // implicitly_scalable (+ `one` via unit.h)
 #include <mp-units/utility/representation.h>
 #if MP_UNITS_HOSTED
-#include <mp-units/bits/fmt.h>
+#include <mp-units/ext/format.h>
 #endif
 #ifdef MP_UNITS_IMPORT_STD
 import std;

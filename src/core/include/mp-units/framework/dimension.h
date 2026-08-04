@@ -34,8 +34,8 @@
 #include <mp-units/framework/symbol_text.h>
 #include <mp-units/framework/symbolic_expression.h>
 #if MP_UNITS_HOSTED
-#include <mp-units/bits/format.h>
 #include <mp-units/bits/ostream.h>
+#include <mp-units/utility/format.h>
 #endif
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
@@ -336,7 +336,9 @@ std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>&
 template<typename D, typename Char>
   requires mp_units::detail::GCC_120625_is_complete<D> && mp_units::Dimension<D>
 class MP_UNITS_STD_FMT::formatter<D, Char> {
-  struct format_specs : mp_units::detail::fill_align_width_format_specs<Char>, mp_units::dimension_symbol_formatting {};
+  struct format_specs :
+      mp_units::utility::fill_align_width_format_specs<Char>,
+      mp_units::dimension_symbol_formatting {};
   format_specs specs_{};
 
   template<std::forward_iterator It>
@@ -352,7 +354,7 @@ class MP_UNITS_STD_FMT::formatter<D, Char> {
     }
     end = it;
 
-    if (it = mp_units::detail::at_most_one_of(begin, end, "UAP"); it != end)
+    if (it = mp_units::utility::at_most_one_of(begin, end, "UAP"); it != end)
       // TODO 'A' stands for an old and deprecated ASCII encoding
       specs_.char_set = (*it == 'U') ? mp_units::character_set::utf8 : mp_units::character_set::portable;
 
@@ -375,15 +377,15 @@ public:
   constexpr auto format(const D& d, FormatContext& ctx) const -> decltype(ctx.out())
   {
     auto specs = specs_;
-    mp_units::detail::handle_dynamic_spec<mp_units::detail::width_checker>(specs.width, specs.width_ref, ctx);
+    mp_units::utility::handle_dynamic_spec<mp_units::utility::width_checker>(specs.width, specs.width_ref, ctx);
 
     // Use a fixed-size stack buffer so that dimension_symbol_to is always instantiated
     // with Char* regardless of the FormatContext iterator type. This collapses all
     // call-site instantiations of dimension_symbol_impl to a single one (Char*).
     Char buf[128];
     const Char* const end = mp_units::dimension_symbol_to<Char>(buf, d, specs);
-    return mp_units::detail::write_padded<Char>(ctx.out(), std::basic_string_view<Char>{buf, end}, specs.width,
-                                                specs.align, specs.fill);
+    return mp_units::utility::write_padded<Char>(ctx.out(), std::basic_string_view<Char>{buf, end}, specs.width,
+                                                 specs.align, specs.fill);
   }
 };
 

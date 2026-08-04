@@ -173,4 +173,12 @@ MP_UNITS_DIAGNOSTIC_POP
 #if defined(__clang__) && defined(__apple_build_version__) && __apple_build_version__ < 16000026
 #define MP_UNITS_XCODE15_HACKS
 #endif
+namespace mp_units::detail {
+
+// https://gcc.gnu.org/bugzilla/show_bug.cgi?id=120625
+template<typename T>
+inline constexpr bool GCC_120625_is_complete = requires { sizeof(T) > 0; };
+
+}  // namespace mp_units::detail
+
 // NOLINTEND(bugprone-reserved-identifier, cppcoreguidelines-macro-usage)

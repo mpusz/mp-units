@@ -38,8 +38,8 @@
 #include <mp-units/framework/unit_definitions.h>
 #include <mp-units/framework/unit_symbol_formatting.h>
 #if MP_UNITS_HOSTED
-#include <mp-units/bits/format.h>
 #include <mp-units/bits/ostream.h>
+#include <mp-units/utility/format.h>
 #endif
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
@@ -259,7 +259,7 @@ std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>&
 template<typename U, typename Char>
   requires mp_units::detail::GCC_120625_is_complete<U> && mp_units::Unit<U>
 class MP_UNITS_STD_FMT::formatter<U, Char> {
-  struct format_specs : mp_units::detail::fill_align_width_format_specs<Char>, mp_units::unit_symbol_formatting {};
+  struct format_specs : mp_units::utility::fill_align_width_format_specs<Char>, mp_units::unit_symbol_formatting {};
   format_specs specs_{};
 
   template<std::forward_iterator It>
@@ -275,10 +275,10 @@ class MP_UNITS_STD_FMT::formatter<U, Char> {
     }
     end = it;
 
-    if (it = mp_units::detail::at_most_one_of(begin, end, "UAP"); it != end)
+    if (it = mp_units::utility::at_most_one_of(begin, end, "UAP"); it != end)
       // TODO 'A' stands for an old and deprecated ASCII encoding
       specs_.char_set = (*it == 'U') ? mp_units::character_set::utf8 : mp_units::character_set::portable;
-    if (it = mp_units::detail::at_most_one_of(begin, end, "1an"); it != end) {
+    if (it = mp_units::utility::at_most_one_of(begin, end, "1an"); it != end) {
       switch (*it) {
         case '1':
           specs_.solidus = mp_units::unit_symbol_solidus::one_denominator;
@@ -291,7 +291,7 @@ class MP_UNITS_STD_FMT::formatter<U, Char> {
           break;
       }
     }
-    if (it = mp_units::detail::at_most_one_of(begin, end, "sd"); it != end) {
+    if (it = mp_units::utility::at_most_one_of(begin, end, "sd"); it != end) {
       if (*it == 'd' && specs_.char_set == mp_units::character_set::portable)
         throw MP_UNITS_STD_FMT::format_error("half_high_dot unit separator allowed only for UTF-8 encoding");
       specs_.separator =
@@ -316,15 +316,15 @@ public:
   constexpr auto format(const U& u, FormatContext& ctx) const -> decltype(ctx.out())
   {
     auto specs = specs_;
-    mp_units::detail::handle_dynamic_spec<mp_units::detail::width_checker>(specs.width, specs.width_ref, ctx);
+    mp_units::utility::handle_dynamic_spec<mp_units::utility::width_checker>(specs.width, specs.width_ref, ctx);
 
     // Use a fixed-size stack buffer so that unit_symbol_to is always instantiated
     // with Char* regardless of the FormatContext iterator type. This collapses all
     // call-site instantiations of unit_symbol_impl to a single one (Char*).
     Char buf[128];
     const Char* const end = mp_units::unit_symbol_to<Char>(buf, u, specs);
-    return mp_units::detail::write_padded<Char>(ctx.out(), std::basic_string_view<Char>{buf, end}, specs.width,
-                                                specs.align, specs.fill);
+    return mp_units::utility::write_padded<Char>(ctx.out(), std::basic_string_view<Char>{buf, end}, specs.width,
+                                                 specs.align, specs.fill);
   }
 };
 

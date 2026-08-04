@@ -40,8 +40,8 @@
 #include <mp-units/framework/value_cast.h>
 #include <mp-units/framework/vector_components.h>
 #if MP_UNITS_HOSTED
-#include <mp-units/bits/format.h>
 #include <mp-units/bits/ostream.h>
+#include <mp-units/utility/format.h>
 #endif
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
@@ -1155,7 +1155,7 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
   using quantity_t = mp_units::quantity<Reference, Rep>;
   using unit_t = MP_UNITS_NONCONST_TYPE(unit);
   using dimension_t = MP_UNITS_NONCONST_TYPE(dimension);
-  using format_specs = mp_units::detail::fill_align_width_format_specs<Char>;
+  using format_specs = mp_units::utility::fill_align_width_format_specs<Char>;
 
   format_specs specs_{};
 
@@ -1368,7 +1368,7 @@ public:
   {
     auto begin = ctx.begin(), end = ctx.end();
 
-    begin = parse_fill_align_width(ctx, begin, end, specs_, mp_units::detail::fmt_align::right);
+    begin = parse_fill_align_width(ctx, begin, end, specs_, mp_units::utility::fmt_align::right);
     if (begin == end) return begin;
 
     const format_checker checker{};
@@ -1382,7 +1382,7 @@ public:
   auto format(const quantity_t& q, FormatContext& ctx) const
   {
     auto specs = specs_;
-    mp_units::detail::handle_dynamic_spec<mp_units::detail::width_checker>(specs.width, specs.width_ref, ctx);
+    mp_units::utility::handle_dynamic_spec<mp_units::utility::width_checker>(specs.width, specs.width_ref, ctx);
 
     if (specs.width == 0 && modifiers_format_str_.empty()) {
       // Fast path: no modifiers and no width — call pre-parsed sub-formatters directly.
@@ -1403,8 +1403,8 @@ public:
 
     std::basic_string<Char> quantity_buffer;
     format_to(std::back_inserter(quantity_buffer), q, locale);
-    return mp_units::detail::write_padded<Char>(ctx.out(), std::basic_string_view<Char>{quantity_buffer}, specs.width,
-                                                specs.align, specs.fill);
+    return mp_units::utility::write_padded<Char>(ctx.out(), std::basic_string_view<Char>{quantity_buffer}, specs.width,
+                                                 specs.align, specs.fill);
   }
 };
 

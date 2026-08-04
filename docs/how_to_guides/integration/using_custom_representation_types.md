@@ -226,6 +226,17 @@ struct std::formatter<my_scalar_type<T>, Char> : std::formatter<T, Char> {
 };
 ```
 
+!!! tip "Formatters with their own options"
+
+    Delegating to the underlying type covers most cases. If your type needs a
+    `format-spec` of its own, `mp-units/utility/format.h` provides the pieces the library's
+    own formatters are built from: `fill_align_width_format_specs` to hold the
+    fill/align/width part, `parse_fill_align_width` (or `parse_align` and
+    `parse_dynamic_spec` separately, when you need to interleave your own options in the
+    order the standard grammar defines them), `handle_dynamic_spec` with `width_checker` to
+    resolve a `{}` width at format time, and `write_padded` to emit the result. They live in
+    the `mp_units::utility` namespace. The `uncertain<T>` formatter is a worked example.
+
 ### Step 4: Specialize `representation_values` (if needed)
 
 If your type needs custom special values (see the

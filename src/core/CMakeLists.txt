@@ -91,6 +91,7 @@ add_mp_units_module(
             include/mp-units/framework/value_cast.h
             include/mp-units/framework/vector_components.h
             include/mp-units/utility/constrained.h
+            include/mp-units/utility/format.h
             include/mp-units/utility/safe_int.h
             include/mp-units/utility/representation.h
             include/mp-units/utility/unspecified.h
@@ -112,8 +113,6 @@ if(NOT MP_UNITS_API_FREESTANDING)
                ${CMAKE_CURRENT_SOURCE_DIR}/include
                FILES
                include/mp-units/bits/constexpr_format.h
-               include/mp-units/bits/fmt.h
-               include/mp-units/bits/format.h
                include/mp-units/bits/ostream.h
                include/mp-units/bits/requires_hosted.h
                include/mp-units/ext/format.h

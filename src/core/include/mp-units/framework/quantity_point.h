@@ -32,7 +32,6 @@
 #include <mp-units/framework/rounding.h>
 #include <mp-units/overflow_policies.h>
 #if MP_UNITS_HOSTED
-#include <mp-units/bits/format.h>
 #include <mp-units/bits/ostream.h>
 #endif
 

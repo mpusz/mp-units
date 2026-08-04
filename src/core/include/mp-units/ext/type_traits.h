@@ -39,6 +39,12 @@ namespace mp_units {
 // conditional
 namespace detail {
 
+// An integer type in the arithmetic sense: `bool` and the character types are excluded.
+template<typename T>
+constexpr bool is_integer =
+  std::is_integral_v<T> && !std::is_same_v<T, bool> && !std::is_same_v<T, char> && !std::is_same_v<T, wchar_t>;
+
+
 template<bool>
 struct conditional_impl {
   template<typename T, typename F>

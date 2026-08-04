@@ -29,6 +29,7 @@
 #include <mp-units/math.h>
 #include <mp-units/overflow_policies.h>
 #include <mp-units/utility/constrained.h>
+#include <mp-units/utility/format.h>
 #include <mp-units/utility/representation.h>
 #include <mp-units/utility/safe_int.h>
 #include <mp-units/utility/unspecified.h>

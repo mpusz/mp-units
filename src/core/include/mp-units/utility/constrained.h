@@ -26,7 +26,8 @@
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/framework/customization_points.h>
 #if MP_UNITS_HOSTED
-#include <mp-units/bits/fmt.h>
+#include <mp-units/ext/format.h>
+#include <mp-units/ext/type_traits.h>
 #endif
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE

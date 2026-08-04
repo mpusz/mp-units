@@ -9,6 +9,13 @@ This page documents the version history and changes for the **mp-units** library
 ### 2.6.0 <small>TBD</small> { id="2.6.0" }
 
 - (!) feat: `pi` and `π` is now a unit constant
+- (!) refactor: the `std-format-spec` helpers that formatters are written against (`fmt_align`,
+      `fill_t`, `fmt_arg_ref`, `fill_align_width_format_specs`, `parse_align`,
+      `parse_dynamic_spec`, `parse_fill_align_width`, `parse_nonnegative_int`,
+      `handle_dynamic_spec`, `width_checker`, `write_padded`, `at_most_one_of`) moved from
+      `mp_units::detail` to the public `mp_units::utility` namespace and now ship from
+      `mp-units/utility/format.h`; `mp-units/bits/fmt.h` and `mp-units/bits/format.h`
+      are gone
 - feat: C++26 contracts support added (`contracts=std` Conan option / `MP_UNITS_API_CONTRACTS=STD`
         CMake option); experimental, requires GCC 16 with `-fcontracts` (#682)
 - feat: `MP_UNITS_PRECONDITION`, `MP_UNITS_PRECONDITION_DEBUG`, `MP_UNITS_PRE`, `MP_UNITS_POST`,

@@ -28,10 +28,9 @@
 #include <mp-units/ext/contracts.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
-#include <mp-units/bits/fmt.h>
-#include <mp-units/bits/format.h>
 #include <mp-units/framework/quantity.h>
 #include <mp-units/framework/unit.h>
+#include <mp-units/utility/format.h>
 #include <mp-units/utility/representation.h>
 #ifdef MP_UNITS_IMPORT_STD
 import std;
@@ -694,7 +693,7 @@ struct MP_UNITS_STD_FMT::formatter<mp_units::utility::uncertain<T>, Char> : form
     bool alternate = false;
     bool localized = false;
   };
-  struct format_specs : mp_units::detail::fill_align_width_format_specs<Char>, concise_formatting {};
+  struct format_specs : mp_units::utility::fill_align_width_format_specs<Char>, concise_formatting {};
   format_specs specs_{};
   bool concise_ = false;
 
@@ -723,18 +722,18 @@ struct MP_UNITS_STD_FMT::formatter<mp_units::utility::uncertain<T>, Char> : form
     auto it = begin;
     if (it == end) return end;
 
-    it = mp_units::detail::parse_align(it, end, specs_);
+    it = mp_units::utility::parse_align(it, end, specs_);
     if (it != end && (*it == '+' || *it == '-' || *it == ' ')) specs_.sign = static_cast<char>(*it++);
     if (it != end && *it == '#') {
       specs_.alternate = true;
       ++it;
     }
-    if (it != end) it = mp_units::detail::parse_dynamic_spec(it, end, specs_.width, specs_.width_ref, ctx);
+    if (it != end) it = mp_units::utility::parse_dynamic_spec(it, end, specs_.width, specs_.width_ref, ctx);
     if (it != end && *it == '.') {
       ++it;
       if (it == end || *it < '0' || '9' < *it)
         throw MP_UNITS_STD_FMT::format_error("dynamic precision is not supported with the '~' format option");
-      const int precision = mp_units::detail::parse_nonnegative_int(it, end, -1);
+      const int precision = mp_units::utility::parse_nonnegative_int(it, end, -1);
       if (precision <= 0)
         throw MP_UNITS_STD_FMT::format_error(
           "the precision of the '~' format option is a number of significant digits and must be positive");
@@ -776,7 +775,7 @@ public:
     if constexpr (std::floating_point<T>)
       if (concise_) {
         auto specs = specs_;
-        mp_units::detail::handle_dynamic_spec<mp_units::detail::width_checker>(specs.width, specs.width_ref, ctx);
+        mp_units::utility::handle_dynamic_spec<mp_units::utility::width_checker>(specs.width, specs.width_ref, ctx);
         // The number of decimals is derived from the uncertainty rather than taken from the
         // spec, so the value is rendered through a spec rebuilt around it. That keeps `#` and
         // `L` working, which the standard formatter of `T` applies for us.
@@ -796,8 +795,8 @@ public:
         };
         const std::string text = mp_units::utility::detail::format_concise(
           arg.value(), arg.uncertainty(), specs.significant_digits, specs.type, specs.sign, format_value);
-        return mp_units::detail::write_padded<Char>(ctx.out(), std::basic_string_view<Char>{text.data(), text.size()},
-                                                    specs.width, specs.align, specs.fill);
+        return mp_units::utility::write_padded<Char>(ctx.out(), std::basic_string_view<Char>{text.data(), text.size()},
+                                                     specs.width, specs.align, specs.fill);
       }
 
     auto out = formatter<T, Char>::format(arg.value(), ctx);

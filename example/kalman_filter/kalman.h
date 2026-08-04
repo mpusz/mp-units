@@ -194,7 +194,7 @@ template<mp_units::Quantity Q1, mp_units::Quantity Q2>
 
 template<typename... QPs, typename Char>
 class MP_UNITS_STD_FMT::formatter<kalman::system_state<QPs...>, Char> {
-  using format_specs = mp_units::detail::fill_align_width_format_specs<Char>;
+  using format_specs = mp_units::utility::fill_align_width_format_specs<Char>;
   format_specs specs_{};
   std::array<std::basic_string<Char>, sizeof...(QPs)> format_str_;
   std::tuple<MP_UNITS_STD_FMT::formatter<typename QPs::quantity_type, Char>...> formatters_{};
@@ -277,7 +277,7 @@ public:
   {
     auto begin = ctx.begin(), end = ctx.end();
 
-    begin = parse_fill_align_width(ctx, begin, end, specs_, mp_units::detail::fmt_align::right);
+    begin = parse_fill_align_width(ctx, begin, end, specs_, mp_units::utility::fmt_align::right);
     if (begin == end) return begin;
 
     return parse_defaults_specs(begin, end);
@@ -287,7 +287,7 @@ public:
   auto format(const kalman::system_state<QPs...>& s, FormatContext& ctx) const -> decltype(ctx.out())
   {
     auto specs = specs_;
-    mp_units::detail::handle_dynamic_spec<mp_units::detail::width_checker>(specs.width, specs.width_ref, ctx);
+    mp_units::utility::handle_dynamic_spec<mp_units::utility::width_checker>(specs.width, specs.width_ref, ctx);
 
     if (specs.width == 0) {
       // Avoid extra copying if width is not specified
@@ -297,7 +297,7 @@ public:
     std::basic_string<Char> quantity_buffer;
     format_system_state(std::back_inserter(quantity_buffer), s, ctx, std::index_sequence_for<QPs...>{});
 
-    return mp_units::detail::write_padded<Char>(ctx.out(), std::basic_string_view<Char>{quantity_buffer}, specs.width,
-                                                specs.align, specs.fill);
+    return mp_units::utility::write_padded<Char>(ctx.out(), std::basic_string_view<Char>{quantity_buffer}, specs.width,
+                                                 specs.align, specs.fill);
   }
 };

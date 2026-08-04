@@ -118,8 +118,9 @@ by **purpose**, not by which component or module a name ships from:
 - `mp_units::utility` — a public extension and authoring tier for everything that is useful
   but not part of the standardization target: the `Real`, `Complex`, `RealScalar`,
   `ComplexScalar`, `Scalar`, `Vector`, `Tensor` representation concepts, the built-in
-  `cartesian_vector` / `cartesian_tensor` types, the random number generators, and the
-  `constrained` / `safe_int` wrappers. Keeping these in a separate namespace prevents the
+  `cartesian_vector` / `cartesian_tensor` types, the random number generators, the
+  `constrained` / `safe_int` wrappers, and the formatting helpers that the library's own
+  formatters are written against. Keeping these in a separate namespace prevents the
   standard surface from accidentally depending on them. Some of these names ship from the
   `mp_units.utility` module and some (such as `constrained` / `safe_int`) ship from the core
   component, but they share this one namespace.
@@ -141,16 +142,19 @@ All of the project's header files can be found in the `mp-units/...` subdirector
   `clamp_to_range`, `wrap_to_range`, `reflect_in_range`, `check_non_negative`,
   `clamp_non_negative`),
 - `mp-units/utility/constrained.h` provides the `constrained` range-validated value wrapper,
+- `mp-units/utility/format.h` provides the pieces a `std::formatter` specialization is built
+  from (parsing the fill/align/width part of a `std-format-spec`, resolving a dynamic width,
+  and writing a padded result),
 - `mp-units/utility/safe_int.h` provides the `safe_int` overflow-checked integer wrapper,
 - `mp-units/compat_macros.h` provides macros for
   [wide compatibility](../how_to_guides/integration/wide_compatibility.md).
 
 !!! note
 
-    `constrained` and `safe_int` (and their error policies) are shipped from the core component
-    because they reuse core internals, but they are add-ons rather than framework, so their public
-    names live in the `mp_units::utility` namespace (see [Namespaces](#namespaces) below), not in
-    `mp_units` directly. `overflow_policies.h` is genuine framework (it backs bounded quantity point
+    `constrained`, `safe_int` (and their error policies), and the formatting helpers are shipped
+    from the core component because they reuse core internals, but they are add-ons rather than
+    framework, so their public names live in the `mp_units::utility` namespace (see
+    [Namespaces](#namespaces) below), not in `mp_units` directly. `overflow_policies.h` is genuine framework (it backs bounded quantity point
     origins) and stays in `mp_units`.
 
 ??? info "More details"

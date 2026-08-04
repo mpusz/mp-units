@@ -22,7 +22,6 @@
 
 #include "geographic.h"
 #include <mp-units/compat_macros.h>
-#include <mp-units/ext/format.h>
 #include <cassert>
 #ifdef MP_UNITS_IMPORT_STD
 import std;
@@ -34,7 +33,7 @@ import std;
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
-#include <mp-units/bits/fmt.h>
+#include <mp-units/ext/format.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>
 #include <mp-units/systems/yard_pound.h>
