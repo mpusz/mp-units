@@ -8,6 +8,9 @@ This page documents the version history and changes for the **mp-units** library
 
 ### 2.6.0 <small>TBD</small> { id="2.6.0" }
 
+- feat: unary minus on a unit magnitude (`-mag_ratio<N, D>`, `-mag<N>`), which reads the
+      way a published table prints a negative constant. It yields the same type as putting
+      the sign in the numerator, and a second negation cancels
 - (!) feat: `pi` and `π` is now a unit constant
 - (!) feat: `iau::newtonian_constant_of_gravitation` is now imported from
       `codata::newtonian_constant_of_gravitation` instead of being defined by the IAU system,

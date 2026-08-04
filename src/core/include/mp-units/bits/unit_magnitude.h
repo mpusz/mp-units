@@ -467,6 +467,15 @@ template<typename CharT, UnitMagnitude auto Num, UnitMagnitude auto Den, UnitMag
  */
 template<auto... Ms>
 struct unit_magnitude : magnitude_base<unit_magnitude<Ms...>> {
+  // Negation. CODATA publishes plenty of negative constants (magnetic moments, g-factors,
+  // charge-to-mass quotients), and writing the sign where the table shows it reads better than
+  // burying it in a numerator. `negative_tag` is an ordinary base, so a second negation cancels
+  // through the same multiplication path as any other repeated factor.
+  [[nodiscard]] friend consteval UnitMagnitude auto operator-(unit_magnitude m)
+  {
+    return unit_magnitude<negative_tag{}>{} * m;
+  }
+
   template<UnitMagnitude M>
   [[nodiscard]] friend consteval UnitMagnitude auto operator*(unit_magnitude lhs, M rhs)
   {

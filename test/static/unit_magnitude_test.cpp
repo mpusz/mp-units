@@ -191,6 +191,35 @@ static_assert(mag<-6> != mag<6>);
 static_assert(mag<-1> == unit_magnitude<negative_tag{}>{});
 
 // ============================================================
+// Unary minus
+// ============================================================
+// Negating is the spelling a CODATA table suggests (its rows print the sign in front of the
+// value), and it must produce exactly the type the sign-in-the-numerator spelling does, or unit
+// equality and symbolic cancellation would silently diverge between the two.
+static_assert(-mag_ratio<3, 4> == mag_ratio<-3, 4>);
+static_assert(
+  std::is_same_v<std::remove_cv_t<decltype(-mag_ratio<3, 4>)>, std::remove_cv_t<decltype(mag_ratio<-3, 4>)>>);
+static_assert(-mag<5> == mag_ratio<-5, 1>);
+static_assert(-mag<1> == unit_magnitude<negative_tag{}>{});
+
+// `negative_tag` is an ordinary base, so a second negation cancels through the same path as any
+// other repeated factor rather than accumulating.
+static_assert(-mag_ratio<-3, 4> == mag_ratio<3, 4>);
+static_assert(
+  std::is_same_v<std::remove_cv_t<decltype(-mag_ratio<-3, 4>)>, std::remove_cv_t<decltype(mag_ratio<3, 4>)>>);
+static_assert(-(-mag_ratio<3, 4>) == mag_ratio<3, 4>);
+static_assert(-(-mag<5>) == mag<5>);
+static_assert(mag_ratio<-3, 4> * mag_ratio<-5, 1> == mag_ratio<15, 4>);
+
+// Being a hidden friend of `unit_magnitude`, the operator is only ever found for magnitudes, so
+// it cannot leak onto units or anything else
+template<typename T>
+concept negatable = requires { -T{}; };
+static_assert(negatable<std::remove_cv_t<decltype(mag_ratio<3, 4>)>>);
+struct not_a_magnitude {};
+static_assert(!negatable<not_a_magnitude>);
+
+// ============================================================
 // mag_ratio<N, D>: positive and negative
 // ============================================================
 static_assert(UnitMagnitude<std::remove_cv_t<decltype(mag_ratio<3, 4>)>>);
