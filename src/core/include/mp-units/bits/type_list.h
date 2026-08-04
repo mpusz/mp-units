@@ -208,6 +208,32 @@ template<template<typename...> typename List, typename... Types>
 struct type_list_split_half<List<Types...>> : type_list_split<List<Types...>, (sizeof...(Types) + 1) / 2> {};
 
 // extract
+// Clang before 22 mis-evaluates constant expressions that reach a pack-indexed type through a module
+// interface, reporting an initializer as non-constant with no cause. It is not specific to this
+// algorithm: switching `type_list_front` to `Ts...[0]` reproduces it just as well, while the existing
+// `type_list_element` and `type_list_split` uses escape it only because they sit off the conversion
+// path. Header-mode builds are unaffected, and clang-22 evaluates all of it correctly.
+#if defined(__cpp_pack_indexing) && __cplusplus > 202302 && !(MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 22)
+
+// C++26: The element and the remainder are indexed straight out of the pack, so the two halves
+// that the split-based formulation materializes only to rejoin them never come into existence.
+template<typename List, typename Pre, typename Post>
+struct type_list_extract_impl;
+
+template<template<typename...> typename List, typename... Args, std::size_t... Pre, std::size_t... Post>
+struct type_list_extract_impl<List<Args...>, std::index_sequence<Pre...>, std::index_sequence<Post...>> {
+  using element = Args...[sizeof...(Pre)];
+  using rest = List<Args...[Pre]..., Args...[sizeof...(Pre) + 1 + Post]...>;
+};
+
+template<TypeList List, std::size_t N>
+  requires(type_list_size<List> > N)
+struct type_list_extract :
+    type_list_extract_impl<List, std::make_index_sequence<N>, std::make_index_sequence<type_list_size<List> - N - 1>> {
+};
+
+#else
+
 template<TypeList, TypeList>
 struct type_list_extract_impl;
 
@@ -218,10 +244,12 @@ struct type_list_extract_impl<List<Pre...>, List<Element, Post...>> {
 };
 
 template<TypeList List, std::size_t N>
-  requires(N >= 0) && (type_list_size<List> > N)
+  requires(type_list_size<List> > N)
 struct type_list_extract :
     type_list_extract_impl<typename type_list_split<List, N>::first_list,
                            typename type_list_split<List, N>::second_list> {};
+
+#endif
 
 // merge_sorted
 template<typename SortedList1, typename SortedList2, template<typename, typename> typename Pred>
