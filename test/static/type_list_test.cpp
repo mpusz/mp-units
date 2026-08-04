@@ -103,7 +103,7 @@ static_assert(std::is_same_v<type_list_join<type_list<>, type_list<>, type_list<
 static_assert(
   std::is_same_v<type_list_join<type_list<int>, type_list<float>, type_list<bool>>, type_list<int, float, bool>>);
 static_assert(std::is_same_v<type_list_join<type_list<int, short>, type_list<float, double>, type_list<bool>>,
-                        type_list<int, short, float, double, bool>>);
+                             type_list<int, short, float, double, bool>>);
 
 // type_list_join
 static_assert(std::is_same_v<type_list_join<type_list<>, type_list<>>, type_list<>>);
@@ -148,7 +148,8 @@ static_assert(std::is_same_v<type_list_split_half<type_list<int, long>>::second_
 static_assert(std::is_same_v<type_list_split_half<type_list<int, long, double>>::first_list, type_list<int, long>>);
 static_assert(std::is_same_v<type_list_split_half<type_list<int, long, double>>::second_list, type_list<double>>);
 
-static_assert(std::is_same_v<type_list_split_half<type_list<int, long, double, float>>::first_list, type_list<int, long>>);
+static_assert(
+  std::is_same_v<type_list_split_half<type_list<int, long, double, float>>::first_list, type_list<int, long>>);
 static_assert(
   std::is_same_v<type_list_split_half<type_list<int, long, double, float>>::second_list, type_list<double, float>>);
 
@@ -182,10 +183,10 @@ static_assert(std::is_same_v<type_list_merge_sorted<type_list<>, type_list<>, co
 static_assert(std::is_same_v<type_list_merge_sorted<type_list<v1>, type_list<>, constant_less>, type_list<v1>>);
 static_assert(std::is_same_v<type_list_merge_sorted<type_list<>, type_list<v1>, constant_less>, type_list<v1>>);
 static_assert(std::is_same_v<type_list_merge_sorted<type_list<v1>, type_list<v2>, constant_less>, type_list<v1, v2>>);
-static_assert(
-  std::is_same_v<type_list_merge_sorted<type_list<v1, v3>, type_list<v2, v4>, constant_less>, type_list<v1, v2, v3, v4>>);
+static_assert(std::is_same_v<type_list_merge_sorted<type_list<v1, v3>, type_list<v2, v4>, constant_less>,
+                             type_list<v1, v2, v3, v4>>);
 static_assert(std::is_same_v<type_list_merge_sorted<type_list<v1, v2, v3>, type_list<v1, v2, v4>, constant_less>,
-                        type_list<v1, v1, v2, v2, v3, v4>>);
+                             type_list<v1, v1, v2, v2, v3, v4>>);
 
 // type_list_sort
 

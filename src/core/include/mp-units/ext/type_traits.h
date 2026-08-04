@@ -116,7 +116,7 @@ concept is_scoped_enum_impl = std::is_enum_v<E> &&                         // ch
 }  // namespace detail
 
 template<class T>
-struct is_scoped_enum : std::bool_constant<detail::is_scoped_enum_impl<T>> {};
+struct is_scoped_enum : std::bool_constant<detail::is_scoped_enum_impl<T> > {};
 
 template<class T>
 constexpr bool is_scoped_enum_v = is_scoped_enum<T>::value;

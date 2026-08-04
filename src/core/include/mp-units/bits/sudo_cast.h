@@ -127,7 +127,8 @@ template<QuantityPoint ToQP, rounding_mode Mode = rounding_mode::truncated, type
            (!equivalent(FromQP::unit, ToQP::unit)))
 [[nodiscard]] constexpr QuantityPoint auto sudo_cast(FwdFromQP&& qp)
 {
-  if constexpr (std::is_same_v<MP_UNITS_NONCONST_TYPE(ToQP::point_origin), MP_UNITS_NONCONST_TYPE(FromQP::point_origin)>) {
+  if constexpr (std::is_same_v<MP_UNITS_NONCONST_TYPE(ToQP::point_origin),
+                               MP_UNITS_NONCONST_TYPE(FromQP::point_origin)>) {
     // Same origin: delegate entirely to the quantity sudo_cast — no offset arithmetic needed.
     return quantity_point{
       sudo_cast<typename ToQP::quantity_type, Mode>(std::forward<FwdFromQP>(qp).quantity_from(FromQP::point_origin)),

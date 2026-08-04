@@ -506,7 +506,8 @@ static_assert(std::is_same_v<decltype(pow<2>(metre)), decltype(metre * metre)>);
 static_assert(std::is_same_v<decltype(pow<2>(kilometre)), decltype(kilometre * kilometre)>);
 static_assert(std::is_same_v<decltype(pow<2>(kilo<metre>)), decltype(kilo<metre> * kilo<metre>)>);
 static_assert(std::is_same_v<decltype(pow<2>(hour)), decltype(hour * hour)>);
-static_assert(std::is_same_v<decltype(pow<2>(mag<3600> * second)), decltype((mag<3600> * second) * (mag<3600> * second))>);
+static_assert(
+  std::is_same_v<decltype(pow<2>(mag<3600> * second)), decltype((mag<3600> * second) * (mag<3600> * second))>);
 static_assert(std::is_same_v<decltype(pow<2>(metre / second)), decltype(metre * metre / second / second)>);
 static_assert(std::is_same_v<decltype(pow<2>(kilometre / hour)), decltype(kilometre * kilometre / hour / hour)>);
 

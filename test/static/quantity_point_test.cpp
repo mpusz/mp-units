@@ -1451,20 +1451,20 @@ static_assert(celsius_fahrenheit_sum.numerical_value_in(celsius_fahrenheit_sum.u
 
 // check for integral types promotion
 static_assert(std::is_same_v<decltype(((mean_sea_level + std::uint8_t{0} * m) + std::uint8_t{0} * m)
-                                   .quantity_from(mean_sea_level)
-                                   .numerical_value_in(m)),
-                        int>);
+                                        .quantity_from(mean_sea_level)
+                                        .numerical_value_in(m)),
+                             int>);
 static_assert(std::is_same_v<decltype((std::uint8_t{0} * m + (mean_sea_level + std::uint8_t{0} * m))
-                                   .quantity_from(mean_sea_level)
-                                   .numerical_value_in(m)),
-                        int>);
+                                        .quantity_from(mean_sea_level)
+                                        .numerical_value_in(m)),
+                             int>);
 static_assert(std::is_same_v<decltype(((mean_sea_level + std::uint8_t{0} * m) - std::uint8_t{0} * m)
-                                   .quantity_from(mean_sea_level)
-                                   .numerical_value_in(m)),
-                        int>);
+                                        .quantity_from(mean_sea_level)
+                                        .numerical_value_in(m)),
+                             int>);
 static_assert(std::is_same_v<decltype(((mean_sea_level + std::uint8_t{0} * m) - (mean_sea_level + std::uint8_t{0} * m))
-                                   .numerical_value_in(m)),
-                        int>);
+                                        .numerical_value_in(m)),
+                             int>);
 static_assert(((mean_sea_level + std::uint8_t{128} * m) + std::uint8_t{128} * m)
                 .quantity_from(mean_sea_level)
                 .numerical_value_in(m) == std::uint8_t{128} + std::uint8_t{128});

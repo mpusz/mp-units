@@ -149,8 +149,9 @@ struct point_origin_interface {
   {
     if constexpr (is_derived_from_specialization_of_v<PO1, absolute_point_origin> &&
                   is_derived_from_specialization_of_v<PO2, absolute_point_origin>)
-      return std::is_same_v<PO1, PO2> || (detail::is_natural_point_origin(po1) && detail::is_natural_point_origin(po2) &&
-                                     mp_units::interconvertible(get_quantity_spec(po1), get_quantity_spec(po2)));
+      return std::is_same_v<PO1, PO2> ||
+             (detail::is_natural_point_origin(po1) && detail::is_natural_point_origin(po2) &&
+              mp_units::interconvertible(get_quantity_spec(po1), get_quantity_spec(po2)));
     else if constexpr (is_derived_from_specialization_of_v<PO1, relative_point_origin> &&
                        is_derived_from_specialization_of_v<PO2, relative_point_origin>)
       return PO1::_quantity_point_ == PO2::_quantity_point_;

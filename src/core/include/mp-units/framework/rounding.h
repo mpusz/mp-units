@@ -116,7 +116,7 @@ template<RoundingPolicy Policy>
 constexpr rounding_mode rounding_mode_of = std::is_same_v<Policy, truncated_t>      ? rounding_mode::truncated
                                            : std::is_same_v<Policy, rounded_t>      ? rounding_mode::rounded
                                            : std::is_same_v<Policy, rounded_down_t> ? rounding_mode::rounded_down
-                                                                               : rounding_mode::rounded_up;
+                                                                                    : rounding_mode::rounded_up;
 
 }  // namespace detail
 
