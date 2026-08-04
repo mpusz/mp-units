@@ -47,7 +47,7 @@ import std;
 #if MP_UNITS_HOSTED
 #include <mp-units/ext/format.h>
 #ifndef MP_UNITS_IMPORT_STD
-#include <ostream>
+#include <iosfwd>
 #endif
 #endif  // MP_UNITS_HOSTED
 #endif  // MP_UNITS_IN_MODULE_INTERFACE
