@@ -122,6 +122,24 @@ class Prefix:
     file: str = ""
 
 
+ACRONYM_SYSTEMS = frozenset(
+    {"cgs", "codata", "hep", "iau", "iec", "iec80000", "isq", "si", "usc"}
+)
+
+
+def system_display_name(namespace: str) -> str:
+    """Human-readable name for a system namespace.
+
+    Single definition on purpose: this list used to be duplicated in three places, so adding
+    a system meant fixing it three times and the first two fixes looked complete.
+    """
+    if namespace == "isq_angle":
+        return "ISQ Angle"
+    if namespace in ACRONYM_SYSTEMS:
+        return namespace.upper()
+    return namespace.replace("_", " ").title()
+
+
 @dataclass
 class Constant:
     """Represents a physical constant definition (like 'speed_of_light_in_vacuum' or 'planck_constant')"""
@@ -1943,22 +1961,7 @@ class DocumentationGenerator:
     @staticmethod
     def _get_system_display_name(namespace: str) -> str:
         """Get display name for a system namespace."""
-        if namespace == "isq_angle":
-            return "ISQ Angle"
-        elif namespace in [
-            "cgs",
-            "codata",
-            "hep",
-            "iau",
-            "iec",
-            "iec80000",
-            "isq",
-            "si",
-            "usc",
-        ]:
-            return namespace.upper()
-        else:
-            return namespace.replace("_", " ").title()
+        return system_display_name(namespace)
 
     def update_mkdocs_config(self, mkdocs_path: Path):
         """Update mkdocs.yml with generated pages"""
@@ -2371,11 +2374,7 @@ class DocumentationGenerator:
     @staticmethod
     def _ns_display_name(ns: str) -> str:
         """Convert a system namespace key to a human-readable display name"""
-        if ns == "isq_angle":
-            return "ISQ Angle"
-        if ns in ["cgs", "hep", "iau", "iec", "iec80000", "isq", "si", "usc"]:
-            return ns.upper()
-        return ns.replace("_", " ").title()
+        return system_display_name(ns)
 
     def _generate_hierarchy_file(
         self,
@@ -2774,22 +2773,7 @@ class DocumentationGenerator:
             with open(output_file, "w") as f:
                 self._write_auto_generated_header(f)
                 # Special case for compound names like isq_angle
-                if namespace == "isq_angle":
-                    display_name = "ISQ Angle"
-                elif namespace in [
-                    "cgs",
-                    "codata",
-                    "hep",
-                    "iau",
-                    "iec",
-                    "iec80000",
-                    "isq",
-                    "si",
-                    "usc",
-                ]:
-                    display_name = namespace.upper()
-                else:
-                    display_name = namespace.replace("_", " ").title()
+                display_name = system_display_name(namespace)
                 f.write(f"# {display_name} System\n\n")
                 # Core system has empty namespace, meaning mp_units::
                 if system.namespace:
@@ -3657,6 +3641,13 @@ class DocumentationGenerator:
 
             # Add quantities
             for qty in system.quantities:
+                # As for constants: an alias to another system must not claim the name here, or
+                # references resolve back to the alias row instead of the defining page.
+                if qty.alias_target and "::" in qty.alias_target:
+                    target_system = qty.alias_target.split("::")[0]
+                    if target_system in self.parser.systems and target_system != sys_ns:
+                        continue
+
                 # Only add unqualified name if not already present (first system wins)
                 if qty.name not in all_refs:
                     all_refs[qty.name] = (sys_ns, qty.name)
