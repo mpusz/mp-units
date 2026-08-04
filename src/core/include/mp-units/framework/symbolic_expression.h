@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <mp-units/bits/hacks.h>
 #include <mp-units/bits/ratio.h>
 #include <mp-units/bits/type_list.h>
 #include <mp-units/ext/type_name.h>
@@ -62,12 +63,13 @@ concept SymbolicArg = !std::is_const_v<T> && !std::is_reference_v<T>;
 // builtins. The builtins below are the same predicates by definition - `is_trivially_copy_constructible`
 // is specified as `is_trivially_constructible<T, const T&>` - and skip the instantiation.
 //
-// Everything is gated on `__has_builtin`: a compiler that does not advertise the builtins gets exactly
-// the previous `std` spelling, so this can only ever be a no-op, never a portability regression.
-#if defined(__has_builtin) && __has_builtin(__is_empty) && __has_builtin(__is_trivially_constructible)
-#if __has_builtin(__is_trivially_destructible)
+// Everything is gated on `MP_UNITS_HAS_BUILTIN`: a compiler that does not advertise the builtins (or
+// lacks `__has_builtin` altogether, as MSVC does) gets exactly the previous `std` spelling, so this can
+// only ever be a no-op, never a portability regression.
+#if MP_UNITS_HAS_BUILTIN(__is_empty) && MP_UNITS_HAS_BUILTIN(__is_trivially_constructible)
+#if MP_UNITS_HAS_BUILTIN(__is_trivially_destructible)
 #define MP_UNITS_TRIVIALLY_DESTRUCTIBLE(T) __is_trivially_destructible(T)
-#elif __has_builtin(__has_trivial_destructor)  // GCC before 16 spells it this way
+#elif MP_UNITS_HAS_BUILTIN(__has_trivial_destructor)  // GCC before 16 spells it this way
 #define MP_UNITS_TRIVIALLY_DESTRUCTIBLE(T) __has_trivial_destructor(T)
 #else
 #define MP_UNITS_TRIVIALLY_DESTRUCTIBLE(T) std::is_trivially_destructible_v<T>

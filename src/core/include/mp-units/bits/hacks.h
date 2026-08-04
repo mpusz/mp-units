@@ -173,6 +173,18 @@ MP_UNITS_DIAGNOSTIC_POP
 #if defined(__clang__) && defined(__apple_build_version__) && __apple_build_version__ < 16000026
 #define MP_UNITS_XCODE15_HACKS
 #endif
+
+// MSVC does not define `__has_builtin`. `#if` expands macros before evaluating, and `defined()`
+// does not stop that expansion, so `defined(__has_builtin) && __has_builtin(X)` still leaves
+// `__has_builtin (X)` in the expression; every remaining identifier becomes `0`, giving `0 (0)`
+// and a "unexpected tokens following preprocessor directive" diagnostic. Going through a wrapper
+// keeps the call site free of the bare macro name.
+#ifdef __has_builtin
+#define MP_UNITS_HAS_BUILTIN(...) __has_builtin(__VA_ARGS__)
+#else
+#define MP_UNITS_HAS_BUILTIN(...) 0
+#endif
+
 namespace mp_units::detail {
 
 // https://gcc.gnu.org/bugzilla/show_bug.cgi?id=120625
