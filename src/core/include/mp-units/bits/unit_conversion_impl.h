@@ -41,6 +41,7 @@ import std;
 #include <cstddef>
 #include <cstdint>
 #include <string_view>
+#include <type_traits>
 #endif
 #endif
 
@@ -332,7 +333,7 @@ constexpr long double conversion_relative_uncertainty_result = conversion_relati
 template<Unit U1, UnitConvertibleTo<U1{}> U2>
 [[nodiscard]] consteval Unit auto get_common_unit_impl(U1 u1, U2 u2)
 {
-  if constexpr (is_same_v<U1, U2>)
+  if constexpr (std::is_same_v<U1, U2>)
     return u1;
   else if constexpr (equivalent(U1{}, U2{})) {
     if constexpr (std::derived_from<U1, typename U2::_base_type_>)

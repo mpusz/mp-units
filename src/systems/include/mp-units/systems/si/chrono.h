@@ -36,6 +36,7 @@
 import std;
 #else
 #include <chrono>
+#include <type_traits>
 #endif
 #endif
 
@@ -48,21 +49,21 @@ template<typename Period>
 {
   using namespace si;
 
-  if constexpr (is_same_v<Period, std::chrono::nanoseconds::period>)
+  if constexpr (std::is_same_v<Period, std::chrono::nanoseconds::period>)
     return nano<second>;
-  else if constexpr (is_same_v<Period, std::chrono::microseconds::period>)
+  else if constexpr (std::is_same_v<Period, std::chrono::microseconds::period>)
     return micro<second>;
-  else if constexpr (is_same_v<Period, std::chrono::milliseconds::period>)
+  else if constexpr (std::is_same_v<Period, std::chrono::milliseconds::period>)
     return milli<second>;
-  else if constexpr (is_same_v<Period, std::chrono::seconds::period>)
+  else if constexpr (std::is_same_v<Period, std::chrono::seconds::period>)
     return second;
-  else if constexpr (is_same_v<Period, std::chrono::minutes::period>)
+  else if constexpr (std::is_same_v<Period, std::chrono::minutes::period>)
     return minute;
-  else if constexpr (is_same_v<Period, std::chrono::hours::period>)
+  else if constexpr (std::is_same_v<Period, std::chrono::hours::period>)
     return hour;
-  else if constexpr (is_same_v<Period, std::chrono::days::period>)
+  else if constexpr (std::is_same_v<Period, std::chrono::days::period>)
     return day;
-  else if constexpr (is_same_v<Period, std::chrono::weeks::period>)
+  else if constexpr (std::is_same_v<Period, std::chrono::weeks::period>)
     return mag<7> * day;
   else
     return mag_ratio<Period::num, Period::den> * second;

@@ -109,7 +109,7 @@ constexpr bool is_signed_v<double_width_int<T>> = double_width_int<T>::is_signed
 #endif
 
 template<typename T>
-using make_signed_t = conditional<!is_same_v<T, uint128_t>, std::make_signed<T>, std::type_identity<int128_t>>::type;
+using make_signed_t = conditional<!std::is_same_v<T, uint128_t>, std::make_signed<T>, std::type_identity<int128_t>>::type;
 
 template<std::size_t N>
 using min_width_uint_t =

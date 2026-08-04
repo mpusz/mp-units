@@ -208,14 +208,14 @@ static_assert(reference_for<quantity<isq::angular_measure[rad]>> == isq::angular
 // member types
 /////////////////
 
-static_assert(is_same_v<quantity<isq::length[m]>::rep, double>);
-static_assert(is_same_v<rep_for<quantity<isq::length[m]>>, double>);
-static_assert(is_same_v<quantity<isq::length[m], int>::rep, int>);
-static_assert(is_same_v<rep_for<quantity<isq::length[m], int>>, int>);
+static_assert(std::is_same_v<quantity<isq::length[m]>::rep, double>);
+static_assert(std::is_same_v<rep_for<quantity<isq::length[m]>>, double>);
+static_assert(std::is_same_v<quantity<isq::length[m], int>::rep, int>);
+static_assert(std::is_same_v<rep_for<quantity<isq::length[m], int>>, int>);
 
 [[maybe_unused]] volatile std::int16_t vint = 123;
-static_assert(is_same_v<decltype(quantity(vint * m))::rep, std::int16_t>);
-static_assert(is_same_v<decltype(quantity(vint, m))::rep, std::int16_t>);
+static_assert(std::is_same_v<decltype(quantity(vint * m))::rep, std::int16_t>);
+static_assert(std::is_same_v<decltype(quantity(vint, m))::rep, std::int16_t>);
 
 
 ////////////////////////////
@@ -804,7 +804,7 @@ static_assert([](auto val) {
   return std::pair(val, vv);
 }(123 * m) == std::pair(122 * m, 122 * m));
 
-static_assert(is_same_v<decltype((+(short{0} * m)).numerical_value_in(m)), int>);
+static_assert(std::is_same_v<decltype((+(short{0} * m)).numerical_value_in(m)), int>);
 
 
 ////////////////////////
@@ -1050,14 +1050,14 @@ static_assert(is_of_type<1 * km % (300 * m), quantity<si::metre, int>>);
 static_assert(is_of_type<4 * one % (2 * one), quantity<one, int>>);
 
 // check for integral types promotion
-static_assert(is_same_v<decltype(std::uint8_t{0} * m + std::uint8_t{0} * m)::rep, int>);
-static_assert(is_same_v<decltype(std::uint8_t{0} * m - std::uint8_t{0} * m)::rep, int>);
+static_assert(std::is_same_v<decltype(std::uint8_t{0} * m + std::uint8_t{0} * m)::rep, int>);
+static_assert(std::is_same_v<decltype(std::uint8_t{0} * m - std::uint8_t{0} * m)::rep, int>);
 static_assert((std::uint8_t{128} * m + std::uint8_t{128} * m).numerical_value_in(m) ==
               std::uint8_t{128} + std::uint8_t{128});
 static_assert((std::uint8_t{0} * m - std::uint8_t{1} * m).numerical_value_in(m) == std::uint8_t{0} - std::uint8_t{1});
 
 static_assert(
-  is_same_v<decltype((std::uint8_t{0} * m) % (std::uint8_t{0} * m))::rep, decltype(std::uint8_t{0} % std::uint8_t{0})>);
+  std::is_same_v<decltype((std::uint8_t{0} * m) % (std::uint8_t{0} * m))::rep, decltype(std::uint8_t{0} % std::uint8_t{0})>);
 
 // different representation types
 static_assert(is_of_type<1. * m + 1 * m, quantity<si::metre, double>>);
@@ -1236,16 +1236,16 @@ static_assert(
   is_of_type<isq::length(1. * m) / isq::duration(1. * s) - isq::speed(1 * m / s), quantity<isq::speed[m / s], double>>);
 
 #if MP_UNITS_HOSTED
-static_assert(is_same_v<decltype((isq::mass(1 * kg) * pow<2>(isq::length(1 * m) / isq::duration(1 * s))).in(J) +
+static_assert(std::is_same_v<decltype((isq::mass(1 * kg) * pow<2>(isq::length(1 * m) / isq::duration(1 * s))).in(J) +
                                  isq::energy(1 * kg * m2 / s2)),
                         quantity<isq::energy[J], int>>);
-static_assert(is_same_v<decltype(isq::energy(1 * kg * m2 / s2) +
+static_assert(std::is_same_v<decltype(isq::energy(1 * kg * m2 / s2) +
                                  (isq::mass(1 * kg) * pow<2>(isq::length(1 * m) / isq::duration(1 * s))).in(J)),
                         quantity<isq::energy[J], int>>);
-static_assert(is_same_v<decltype((isq::mass(1 * kg) * pow<2>(isq::length(1 * m) / isq::duration(1 * s)))
+static_assert(std::is_same_v<decltype((isq::mass(1 * kg) * pow<2>(isq::length(1 * m) / isq::duration(1 * s)))
                                    .in(J)-isq::energy(1 * kg * m2 / s2)),
                         quantity<isq::energy[J], int>>);
-static_assert(is_same_v<decltype(isq::energy(1 * kg * m2 / s2) -
+static_assert(std::is_same_v<decltype(isq::energy(1 * kg * m2 / s2) -
                                  (isq::mass(1 * kg) * pow<2>(isq::length(1 * m) / isq::duration(1 * s))).in(J)),
                         quantity<isq::energy[J], int>>);
 #endif
@@ -1360,21 +1360,21 @@ constexpr auto quotient_remainder_theorem(auto q1, auto q2)
 static_assert(quotient_remainder_theorem(7 * m, 3 * m) == 7 * m);
 static_assert(quotient_remainder_theorem(3'000 * m, 400 * m) == 3'000 * m);
 
-static_assert(is_same_v<decltype(0 * one + 0.0 * one), decltype(0.0 * one)>);
-static_assert(is_same_v<decltype(0 * one - 0.0 * one), decltype(0.0 * one)>);
-static_assert(is_same_v<decltype(0.0 * one + 0 * one), decltype(0.0 * one)>);
-static_assert(is_same_v<decltype(0.0 * one - 0 * one), decltype(0.0 * one)>);
+static_assert(std::is_same_v<decltype(0 * one + 0.0 * one), decltype(0.0 * one)>);
+static_assert(std::is_same_v<decltype(0 * one - 0.0 * one), decltype(0.0 * one)>);
+static_assert(std::is_same_v<decltype(0.0 * one + 0 * one), decltype(0.0 * one)>);
+static_assert(std::is_same_v<decltype(0.0 * one - 0 * one), decltype(0.0 * one)>);
 
 static_assert(1 * one - 30 * percent == (100 - 30) * percent);
 static_assert(1 * one + 30 * percent == (100 + 30) * percent);
 
-static_assert(is_same_v<decltype(std::uint8_t{0} * one + std::uint8_t{0} * one)::rep, int>);
-static_assert(is_same_v<decltype(std::uint8_t{0} * one - std::uint8_t{0} * one)::rep, int>);
+static_assert(std::is_same_v<decltype(std::uint8_t{0} * one + std::uint8_t{0} * one)::rep, int>);
+static_assert(std::is_same_v<decltype(std::uint8_t{0} * one - std::uint8_t{0} * one)::rep, int>);
 static_assert((std::uint8_t{128} * one + std::uint8_t{128} * one).numerical_value_in(one) ==
               std::uint8_t{128} + std::uint8_t{128});
 static_assert((std::uint8_t{0} * one - std::uint8_t{1} * one).numerical_value_in(one) ==
               std::uint8_t{0} - std::uint8_t{1});
-static_assert(is_same_v<decltype(std::uint8_t{0} * one % (std::uint8_t{0} * one))::rep,
+static_assert(std::is_same_v<decltype(std::uint8_t{0} * one % (std::uint8_t{0} * one))::rep,
                         decltype(std::uint8_t{0} % std::uint8_t{0})>);
 
 static_assert(2 * one * (1 * m) == 2 * m);
@@ -1664,21 +1664,21 @@ static_assert((50. * percent).numerical_value_in(one) == 0.5);
 // common_type
 //////////////////
 
-static_assert(is_same_v<std::common_type_t<quantity<isq::speed[m / s], int>,
+static_assert(std::is_same_v<std::common_type_t<quantity<isq::speed[m / s], int>,
                                            quantity<(isq::length / isq::duration)[m / s], double>>,
                         quantity<isq::speed[m / s], double>>);
-static_assert(is_same_v<std::common_type_t<quantity<(isq::mass * pow<2>(isq::length / isq::duration))[J], double>,
+static_assert(std::is_same_v<std::common_type_t<quantity<(isq::mass * pow<2>(isq::length / isq::duration))[J], double>,
                                            quantity<isq::energy[kg * m2 / s2], double>>,
                         quantity<isq::energy[J], double>>);
 
-static_assert(is_same_v<std::common_type_t<quantity<one, int>, int>, quantity<one, int>>);
-static_assert(is_same_v<std::common_type_t<quantity<one, int>, double>, quantity<one, double>>);
-static_assert(is_same_v<std::common_type_t<quantity<one, double>, int>, quantity<one, double>>);
-static_assert(is_same_v<std::common_type_t<quantity<isq::angular_measure[one], int>, int>,
+static_assert(std::is_same_v<std::common_type_t<quantity<one, int>, int>, quantity<one, int>>);
+static_assert(std::is_same_v<std::common_type_t<quantity<one, int>, double>, quantity<one, double>>);
+static_assert(std::is_same_v<std::common_type_t<quantity<one, double>, int>, quantity<one, double>>);
+static_assert(std::is_same_v<std::common_type_t<quantity<isq::angular_measure[one], int>, int>,
                         quantity<isq::angular_measure[one], int>>);
-static_assert(is_same_v<std::common_type_t<quantity<isq::angular_measure[one], int>, double>,
+static_assert(std::is_same_v<std::common_type_t<quantity<isq::angular_measure[one], int>, double>,
                         quantity<isq::angular_measure[one], double>>);
-static_assert(is_same_v<std::common_type_t<quantity<isq::angular_measure[one], double>, int>,
+static_assert(std::is_same_v<std::common_type_t<quantity<isq::angular_measure[one], double>, int>,
                         quantity<isq::angular_measure[one], double>>);
 
 

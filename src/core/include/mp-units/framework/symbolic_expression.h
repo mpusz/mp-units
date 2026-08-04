@@ -384,7 +384,7 @@ template<SymbolicArg OneType, typename List>
     using last_element = type_list_back<List>;
 
     if constexpr (is_specialization_of<last_element, per>) {
-      if constexpr (size == 2 && is_same_v<type_list_front<List>, OneType>)
+      if constexpr (size == 2 && std::is_same_v<type_list_front<List>, OneType>)
         return expr_fractions_result<type_list<>, type_list_map<last_element, type_list>>{};
       else {
         using split = type_list_split<List, size - 1>;
@@ -452,9 +452,9 @@ template<template<typename...> typename To, SymbolicArg OneType,
          template<typename, typename> typename Pred = type_list_name_less, typename Lhs, typename Rhs>
 [[nodiscard]] MP_UNITS_CONSTEVAL auto expr_multiply(Lhs, Rhs)
 {
-  if constexpr (is_same_v<Lhs, OneType>) {
+  if constexpr (std::is_same_v<Lhs, OneType>) {
     return Rhs{};
-  } else if constexpr (is_same_v<Rhs, OneType>) {
+  } else if constexpr (std::is_same_v<Rhs, OneType>) {
     return Lhs{};
   } else if constexpr (is_specialization_of<Lhs, To> && is_specialization_of<Rhs, To>) {
     // two derived dimensions
@@ -487,11 +487,11 @@ template<template<typename...> typename To, SymbolicArg OneType,
          template<typename, typename> typename Pred = type_list_name_less, typename Lhs, typename Rhs>
 [[nodiscard]] MP_UNITS_CONSTEVAL auto expr_divide(Lhs lhs, Rhs rhs)
 {
-  if constexpr (is_same_v<Lhs, Rhs>) {
+  if constexpr (std::is_same_v<Lhs, Rhs>) {
     return OneType{};
-  } else if constexpr (is_same_v<Rhs, OneType>) {
+  } else if constexpr (std::is_same_v<Rhs, OneType>) {
     return lhs;
-  } else if constexpr (is_same_v<Lhs, OneType>) {
+  } else if constexpr (std::is_same_v<Lhs, OneType>) {
     return expr_divide<To, OneType, Pred>(To<>{}, rhs);
   } else if constexpr (is_specialization_of<Lhs, To> && is_specialization_of<Rhs, To>) {
     // two derived entities
@@ -554,7 +554,7 @@ template<std::intmax_t Num, std::intmax_t Den, template<typename...> typename To
   requires(Den != 0)
 [[nodiscard]] consteval auto expr_pow(T v)
 {
-  if constexpr (Num == 0 || is_same_v<T, OneType>)
+  if constexpr (Num == 0 || std::is_same_v<T, OneType>)
     return OneType{};
   else if constexpr (detail::ratio{Num, Den} == 1)
     return v;
@@ -621,10 +621,10 @@ template<template<typename> typename Proj, template<typename...> typename To, Sy
 [[nodiscard]] consteval auto expr_map_contributions(T)
 {
   using projected = typename expr_type_map<T, Proj>::type;
-  if constexpr (is_same_v<projected, OneType>)
+  if constexpr (std::is_same_v<projected, OneType>)
     return expr_fractions_result<>{};
   else if constexpr (is_specialization_of_power<projected>) {
-    if constexpr (is_same_v<typename projected::_factor_, OneType>)
+    if constexpr (std::is_same_v<typename projected::_factor_, OneType>)
       return expr_fractions_result<>{};
     else
       return expr_map_expand<To>(projected{});

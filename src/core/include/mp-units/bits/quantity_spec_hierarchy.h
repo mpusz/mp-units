@@ -24,6 +24,14 @@
 
 #include <mp-units/framework/quantity_spec_concepts.h>
 
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
+#include <type_traits>
+#endif
+#endif
+
 namespace mp_units::detail {
 
 [[nodiscard]] consteval std::size_t hierarchy_path_length(QuantitySpec auto q)
@@ -50,7 +58,7 @@ template<std::size_t Offset>
 template<QuantitySpec A, QuantitySpec B>
 [[nodiscard]] consteval bool have_common_base_in_hierarchy_of_equal_length(A a, B b)
 {
-  if constexpr (is_same_v<A, B>)
+  if constexpr (std::is_same_v<A, B>)
     return true;
   else if constexpr (requires { a._parent_; })
     return have_common_base_in_hierarchy_of_equal_length(a._parent_, b._parent_);
@@ -61,7 +69,7 @@ template<QuantitySpec A, QuantitySpec B>
 template<QuantitySpec A, QuantitySpec B>
 [[nodiscard]] consteval bool have_common_base(A a, B b)
 {
-  if constexpr (is_same_v<A, B>)
+  if constexpr (std::is_same_v<A, B>)
     return true;
   else {
     constexpr std::size_t a_length = hierarchy_path_length_v<A>;
@@ -77,7 +85,7 @@ template<QuantitySpec A, QuantitySpec B>
   requires(have_common_base_in_hierarchy_of_equal_length(A{}, B{}))
 [[nodiscard]] consteval QuantitySpec auto get_common_base_for_hierarchy_of_equal_length(A a, B b)
 {
-  if constexpr (is_same_v<A, B>)
+  if constexpr (std::is_same_v<A, B>)
     return a;
   else
     return get_common_base_for_hierarchy_of_equal_length(a._parent_, b._parent_);

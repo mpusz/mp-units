@@ -222,7 +222,7 @@ struct quantity_spec_interface_base {
   template<QuantitySpec Lhs, QuantitySpec Rhs>
   [[nodiscard]] friend consteval bool operator==(Lhs, Rhs)
   {
-    return is_same_v<Lhs, Rhs>;
+    return std::is_same_v<Lhs, Rhs>;
   }
 
   // Clang <= 18 does not support default template arguments in friend function templates.

@@ -25,6 +25,14 @@
 #include <mp-units/systems/si.h>
 #include <mp-units/systems/yard_pound.h>
 
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
+#include <type_traits>
+#endif
+#endif
+
 namespace {
 
 using namespace mp_units;
@@ -34,7 +42,7 @@ using namespace mp_units::yard_pound::unit_symbols;
 template<typename T1, typename T2, typename... Ts>
 [[nodiscard]] consteval bool compare(T1 v1, T2 v2, Ts... vs)
 {
-  return is_same_v<T1, T2> && v1 == v2 && (... && (v1 == vs));
+  return std::is_same_v<T1, T2> && v1 == v2 && (... && (v1 == vs));
 }
 
 #if __cpp_lib_constexpr_cmath || MP_UNITS_COMP_GCC

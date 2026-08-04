@@ -46,13 +46,14 @@ import std;
 #include <limits>
 #include <numbers>
 #include <optional>
+#include <type_traits>
 #endif
 #endif
 
 namespace mp_units::detail {
 
 template<typename T>
-concept MagArg = std::integral<T> || is_mag_constant<T> || is_same_v<T, ratio>;
+concept MagArg = std::integral<T> || is_mag_constant<T> || std::is_same_v<T, ratio>;
 
 /**
  * @brief  A sentinel type representing the factor (-1) in a unit magnitude.
@@ -69,7 +70,7 @@ consteval auto first_mag_arg()
 }
 
 template<typename M>
-constexpr bool is_negative_tag = is_same_v<MP_UNITS_REMOVE_CONST(M), negative_tag>;
+constexpr bool is_negative_tag = std::is_same_v<MP_UNITS_REMOVE_CONST(M), negative_tag>;
 
 /**
  * @brief  Any type which can be used as a basis vector in a power_v.
@@ -295,7 +296,7 @@ struct magnitude_base<unit_magnitude<H, T...>> {
     } else if constexpr (mag_less(H2, H)) {
       return unit_magnitude<H2>{} * (unit_magnitude<H, T...>{} * unit_magnitude<T2...>{});
     } else {
-      if constexpr (is_same_v<decltype(get_base(H)), decltype(get_base(H2))>) {
+      if constexpr (std::is_same_v<decltype(get_base(H)), decltype(get_base(H2))>) {
         constexpr auto partial_product = unit_magnitude<T...>{} * unit_magnitude<T2...>{};
         if constexpr (is_negative_tag<decltype(get_base(H))>) {
           // (-1) * (-1) = 1: two negatives cancel each other out
@@ -481,7 +482,7 @@ struct unit_magnitude : magnitude_base<unit_magnitude<Ms...>> {
   {
     if constexpr (sizeof...(Ms) == 0)
       return rhs;
-    else if constexpr (is_same_v<M, unit_magnitude<>>)
+    else if constexpr (std::is_same_v<M, unit_magnitude<>>)
       return lhs;
     else
       return multiply_impl(lhs, rhs);
@@ -495,7 +496,7 @@ struct unit_magnitude : magnitude_base<unit_magnitude<Ms...>> {
   template<UnitMagnitude Rhs>
   [[nodiscard]] friend consteval bool operator==(unit_magnitude, Rhs)
   {
-    return is_same_v<unit_magnitude, Rhs>;
+    return std::is_same_v<unit_magnitude, Rhs>;
   }
 
 private:
@@ -701,7 +702,7 @@ template<auto H, auto... Rest>
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // `magnitude_is_positive` — checks whether a magnitude is positive (i.e., has no negative_tag).
 
-// Uses a consteval function rather than `is_same_v<decltype(M), decltype(abs_magnitude(M))>` because GCC 12
+// Uses a consteval function rather than `std::is_same_v<decltype(M), decltype(abs_magnitude(M))>` because GCC 12
 // incorrectly evaluates the latter to `false` for genuinely positive magnitudes in some constexpr contexts.
 [[nodiscard]] consteval bool check_magnitude_is_positive(unit_magnitude<>) { return true; }
 
@@ -817,7 +818,7 @@ template<MagArg auto V>
 
   if constexpr (is_mag_constant<mag_arg_type>)
     return unit_magnitude<V>{};
-  else if constexpr (is_same_v<mag_arg_type, ratio>) {
+  else if constexpr (std::is_same_v<mag_arg_type, ratio>) {
     // ratio{num, den}: factor out the sign, then factorize num and den
     constexpr ratio abs_v{V.num < 0 ? -V.num : V.num, V.den};
     constexpr bool negative = V.num < 0;

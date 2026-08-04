@@ -54,17 +54,17 @@ static_assert(type_list_size<type_list<int, long, int>> == 3);
 template<typename... Types>
 struct other_list;
 
-static_assert(is_same_v<type_list_map<type_list<>, other_list>, other_list<>>);
-static_assert(is_same_v<type_list_map<type_list<int>, other_list>, other_list<int>>);
-static_assert(is_same_v<type_list_map<type_list<double, int>, other_list>, other_list<double, int>>);
+static_assert(std::is_same_v<type_list_map<type_list<>, other_list>, other_list<>>);
+static_assert(std::is_same_v<type_list_map<type_list<int>, other_list>, other_list<int>>);
+static_assert(std::is_same_v<type_list_map<type_list<double, int>, other_list>, other_list<double, int>>);
 
 // type_list_element
 
-static_assert(is_same_v<type_list_element<type_list<int>, 0>, int>);
-static_assert(is_same_v<type_list_element<type_list<int, double, float, long>, 0>, int>);
-static_assert(is_same_v<type_list_element<type_list<int, double, float, long>, 1>, double>);
-static_assert(is_same_v<type_list_element<type_list<int, double, float, long>, 2>, float>);
-static_assert(is_same_v<type_list_element<type_list<int, double, float, long>, 3>, long>);
+static_assert(std::is_same_v<type_list_element<type_list<int>, 0>, int>);
+static_assert(std::is_same_v<type_list_element<type_list<int, double, float, long>, 0>, int>);
+static_assert(std::is_same_v<type_list_element<type_list<int, double, float, long>, 1>, double>);
+static_assert(std::is_same_v<type_list_element<type_list<int, double, float, long>, 2>, float>);
+static_assert(std::is_same_v<type_list_element<type_list<int, double, float, long>, 3>, long>);
 
 // type_list_front
 
@@ -72,96 +72,96 @@ template<template<typename...> typename List>
 concept type_list_front_invalid_for_empty_list = !requires { typename type_list_front<List<>>; };
 
 static_assert(type_list_front_invalid_for_empty_list<type_list>);
-static_assert(is_same_v<type_list_front<type_list<int>>, int>);
-static_assert(is_same_v<type_list_front<type_list<long, int>>, long>);
-static_assert(is_same_v<type_list_front<type_list<float, long, int>>, float>);
+static_assert(std::is_same_v<type_list_front<type_list<int>>, int>);
+static_assert(std::is_same_v<type_list_front<type_list<long, int>>, long>);
+static_assert(std::is_same_v<type_list_front<type_list<float, long, int>>, float>);
 
 // type_list_back
 
-static_assert(is_same_v<type_list_back<type_list<int>>, int>);
-static_assert(is_same_v<type_list_back<type_list<int, long>>, long>);
-static_assert(is_same_v<type_list_back<type_list<int, long, float>>, float>);
+static_assert(std::is_same_v<type_list_back<type_list<int>>, int>);
+static_assert(std::is_same_v<type_list_back<type_list<int, long>>, long>);
+static_assert(std::is_same_v<type_list_back<type_list<int, long, float>>, float>);
 
 // type_list_push_front
 
-static_assert(is_same_v<type_list_push_front<type_list<>, int>, type_list<int>>);
-static_assert(is_same_v<type_list_push_front<type_list<>, int, long, double>, type_list<int, long, double>>);
-static_assert(is_same_v<type_list_push_front<type_list<double>, int, long>, type_list<int, long, double>>);
+static_assert(std::is_same_v<type_list_push_front<type_list<>, int>, type_list<int>>);
+static_assert(std::is_same_v<type_list_push_front<type_list<>, int, long, double>, type_list<int, long, double>>);
+static_assert(std::is_same_v<type_list_push_front<type_list<double>, int, long>, type_list<int, long, double>>);
 
 // type_list_push_back
 
-static_assert(is_same_v<type_list_push_back<type_list<>, int>, type_list<int>>);
-static_assert(is_same_v<type_list_push_back<type_list<>, int, long, double>, type_list<int, long, double>>);
-static_assert(is_same_v<type_list_push_back<type_list<double>, int, long>, type_list<double, int, long>>);
+static_assert(std::is_same_v<type_list_push_back<type_list<>, int>, type_list<int>>);
+static_assert(std::is_same_v<type_list_push_back<type_list<>, int, long, double>, type_list<int, long, double>>);
+static_assert(std::is_same_v<type_list_push_back<type_list<double>, int, long>, type_list<double, int, long>>);
 
-static_assert(is_same_v<type_list_join<type_list<>>, type_list<>>);
-static_assert(is_same_v<type_list_join<type_list<>, type_list<>>, type_list<>>);
-static_assert(is_same_v<type_list_join<type_list<>, type_list<>, type_list<>>, type_list<>>);
-static_assert(is_same_v<type_list_join<type_list<int>, type_list<>, type_list<>>, type_list<int>>);
-static_assert(is_same_v<type_list_join<type_list<>, type_list<int>, type_list<>>, type_list<int>>);
-static_assert(is_same_v<type_list_join<type_list<>, type_list<>, type_list<int>>, type_list<int>>);
+static_assert(std::is_same_v<type_list_join<type_list<>>, type_list<>>);
+static_assert(std::is_same_v<type_list_join<type_list<>, type_list<>>, type_list<>>);
+static_assert(std::is_same_v<type_list_join<type_list<>, type_list<>, type_list<>>, type_list<>>);
+static_assert(std::is_same_v<type_list_join<type_list<int>, type_list<>, type_list<>>, type_list<int>>);
+static_assert(std::is_same_v<type_list_join<type_list<>, type_list<int>, type_list<>>, type_list<int>>);
+static_assert(std::is_same_v<type_list_join<type_list<>, type_list<>, type_list<int>>, type_list<int>>);
 static_assert(
-  is_same_v<type_list_join<type_list<int>, type_list<float>, type_list<bool>>, type_list<int, float, bool>>);
-static_assert(is_same_v<type_list_join<type_list<int, short>, type_list<float, double>, type_list<bool>>,
+  std::is_same_v<type_list_join<type_list<int>, type_list<float>, type_list<bool>>, type_list<int, float, bool>>);
+static_assert(std::is_same_v<type_list_join<type_list<int, short>, type_list<float, double>, type_list<bool>>,
                         type_list<int, short, float, double, bool>>);
 
 // type_list_join
-static_assert(is_same_v<type_list_join<type_list<>, type_list<>>, type_list<>>);
-static_assert(is_same_v<type_list_join<type_list<int>, type_list<>>, type_list<int>>);
-static_assert(is_same_v<type_list_join<type_list<>, type_list<int>>, type_list<int>>);
-static_assert(is_same_v<type_list_join<type_list<int>, type_list<int>>, type_list<int, int>>);
-static_assert(is_same_v<type_list_join<type_list<int>, type_list<long>>, type_list<int, long>>);
+static_assert(std::is_same_v<type_list_join<type_list<>, type_list<>>, type_list<>>);
+static_assert(std::is_same_v<type_list_join<type_list<int>, type_list<>>, type_list<int>>);
+static_assert(std::is_same_v<type_list_join<type_list<>, type_list<int>>, type_list<int>>);
+static_assert(std::is_same_v<type_list_join<type_list<int>, type_list<int>>, type_list<int, int>>);
+static_assert(std::is_same_v<type_list_join<type_list<int>, type_list<long>>, type_list<int, long>>);
 static_assert(
-  is_same_v<type_list_join<type_list<int, long>, type_list<float, double>>, type_list<int, long, float, double>>);
+  std::is_same_v<type_list_join<type_list<int, long>, type_list<float, double>>, type_list<int, long, float, double>>);
 
 // type_list_split
 
-static_assert(is_same_v<type_list_split<type_list<int>, 0>::first_list, type_list<>>);
-static_assert(is_same_v<type_list_split<type_list<int>, 0>::second_list, type_list<int>>);
+static_assert(std::is_same_v<type_list_split<type_list<int>, 0>::first_list, type_list<>>);
+static_assert(std::is_same_v<type_list_split<type_list<int>, 0>::second_list, type_list<int>>);
 
-static_assert(is_same_v<type_list_split<type_list<int>, 1>::first_list, type_list<int>>);
-static_assert(is_same_v<type_list_split<type_list<int>, 1>::second_list, type_list<>>);
+static_assert(std::is_same_v<type_list_split<type_list<int>, 1>::first_list, type_list<int>>);
+static_assert(std::is_same_v<type_list_split<type_list<int>, 1>::second_list, type_list<>>);
 
-static_assert(is_same_v<type_list_split<type_list<int, long>, 0>::first_list, type_list<>>);
-static_assert(is_same_v<type_list_split<type_list<int, long>, 0>::second_list, type_list<int, long>>);
+static_assert(std::is_same_v<type_list_split<type_list<int, long>, 0>::first_list, type_list<>>);
+static_assert(std::is_same_v<type_list_split<type_list<int, long>, 0>::second_list, type_list<int, long>>);
 
-static_assert(is_same_v<type_list_split<type_list<int, long>, 1>::first_list, type_list<int>>);
-static_assert(is_same_v<type_list_split<type_list<int, long>, 1>::second_list, type_list<long>>);
+static_assert(std::is_same_v<type_list_split<type_list<int, long>, 1>::first_list, type_list<int>>);
+static_assert(std::is_same_v<type_list_split<type_list<int, long>, 1>::second_list, type_list<long>>);
 
-static_assert(is_same_v<type_list_split<type_list<int, long>, 2>::first_list, type_list<int, long>>);
-static_assert(is_same_v<type_list_split<type_list<int, long>, 2>::second_list, type_list<>>);
+static_assert(std::is_same_v<type_list_split<type_list<int, long>, 2>::first_list, type_list<int, long>>);
+static_assert(std::is_same_v<type_list_split<type_list<int, long>, 2>::second_list, type_list<>>);
 
-static_assert(is_same_v<type_list_split<type_list<int, long, double>, 1>::first_list, type_list<int>>);
-static_assert(is_same_v<type_list_split<type_list<int, long, double>, 1>::second_list, type_list<long, double>>);
+static_assert(std::is_same_v<type_list_split<type_list<int, long, double>, 1>::first_list, type_list<int>>);
+static_assert(std::is_same_v<type_list_split<type_list<int, long, double>, 1>::second_list, type_list<long, double>>);
 
-static_assert(is_same_v<type_list_split<type_list<int, long, double>, 2>::first_list, type_list<int, long>>);
-static_assert(is_same_v<type_list_split<type_list<int, long, double>, 2>::second_list, type_list<double>>);
+static_assert(std::is_same_v<type_list_split<type_list<int, long, double>, 2>::first_list, type_list<int, long>>);
+static_assert(std::is_same_v<type_list_split<type_list<int, long, double>, 2>::second_list, type_list<double>>);
 
 // type_list_split_half
 
-static_assert(is_same_v<type_list_split_half<type_list<int>>::first_list, type_list<int>>);
-static_assert(is_same_v<type_list_split_half<type_list<int>>::second_list, type_list<>>);
+static_assert(std::is_same_v<type_list_split_half<type_list<int>>::first_list, type_list<int>>);
+static_assert(std::is_same_v<type_list_split_half<type_list<int>>::second_list, type_list<>>);
 
-static_assert(is_same_v<type_list_split_half<type_list<int, long>>::first_list, type_list<int>>);
-static_assert(is_same_v<type_list_split_half<type_list<int, long>>::second_list, type_list<long>>);
+static_assert(std::is_same_v<type_list_split_half<type_list<int, long>>::first_list, type_list<int>>);
+static_assert(std::is_same_v<type_list_split_half<type_list<int, long>>::second_list, type_list<long>>);
 
-static_assert(is_same_v<type_list_split_half<type_list<int, long, double>>::first_list, type_list<int, long>>);
-static_assert(is_same_v<type_list_split_half<type_list<int, long, double>>::second_list, type_list<double>>);
+static_assert(std::is_same_v<type_list_split_half<type_list<int, long, double>>::first_list, type_list<int, long>>);
+static_assert(std::is_same_v<type_list_split_half<type_list<int, long, double>>::second_list, type_list<double>>);
 
-static_assert(is_same_v<type_list_split_half<type_list<int, long, double, float>>::first_list, type_list<int, long>>);
+static_assert(std::is_same_v<type_list_split_half<type_list<int, long, double, float>>::first_list, type_list<int, long>>);
 static_assert(
-  is_same_v<type_list_split_half<type_list<int, long, double, float>>::second_list, type_list<double, float>>);
+  std::is_same_v<type_list_split_half<type_list<int, long, double, float>>::second_list, type_list<double, float>>);
 
 // type_list_extract
 
-static_assert(is_same_v<type_list_extract<type_list<int>, 0>::element, int>);
-static_assert(is_same_v<type_list_extract<type_list<int>, 0>::rest, type_list<>>);
-static_assert(is_same_v<type_list_extract<type_list<int, long>, 0>::element, int>);
-static_assert(is_same_v<type_list_extract<type_list<int, long>, 0>::rest, type_list<long>>);
-static_assert(is_same_v<type_list_extract<type_list<int, long>, 1>::element, long>);
-static_assert(is_same_v<type_list_extract<type_list<int, long>, 1>::rest, type_list<int>>);
-static_assert(is_same_v<type_list_extract<type_list<int, long, double>, 1>::element, long>);
-static_assert(is_same_v<type_list_extract<type_list<int, long, double>, 1>::rest, type_list<int, double>>);
+static_assert(std::is_same_v<type_list_extract<type_list<int>, 0>::element, int>);
+static_assert(std::is_same_v<type_list_extract<type_list<int>, 0>::rest, type_list<>>);
+static_assert(std::is_same_v<type_list_extract<type_list<int, long>, 0>::element, int>);
+static_assert(std::is_same_v<type_list_extract<type_list<int, long>, 0>::rest, type_list<long>>);
+static_assert(std::is_same_v<type_list_extract<type_list<int, long>, 1>::element, long>);
+static_assert(std::is_same_v<type_list_extract<type_list<int, long>, 1>::rest, type_list<int>>);
+static_assert(std::is_same_v<type_list_extract<type_list<int, long, double>, 1>::element, long>);
+static_assert(std::is_same_v<type_list_extract<type_list<int, long, double>, 1>::rest, type_list<int, double>>);
 
 template<auto V>
 struct constant {
@@ -178,34 +178,34 @@ struct constant_less : std::bool_constant<(T1::value < T2::value)> {};
 
 // type_list_merge_sorted
 
-static_assert(is_same_v<type_list_merge_sorted<type_list<>, type_list<>, constant_less>, type_list<>>);
-static_assert(is_same_v<type_list_merge_sorted<type_list<v1>, type_list<>, constant_less>, type_list<v1>>);
-static_assert(is_same_v<type_list_merge_sorted<type_list<>, type_list<v1>, constant_less>, type_list<v1>>);
-static_assert(is_same_v<type_list_merge_sorted<type_list<v1>, type_list<v2>, constant_less>, type_list<v1, v2>>);
+static_assert(std::is_same_v<type_list_merge_sorted<type_list<>, type_list<>, constant_less>, type_list<>>);
+static_assert(std::is_same_v<type_list_merge_sorted<type_list<v1>, type_list<>, constant_less>, type_list<v1>>);
+static_assert(std::is_same_v<type_list_merge_sorted<type_list<>, type_list<v1>, constant_less>, type_list<v1>>);
+static_assert(std::is_same_v<type_list_merge_sorted<type_list<v1>, type_list<v2>, constant_less>, type_list<v1, v2>>);
 static_assert(
-  is_same_v<type_list_merge_sorted<type_list<v1, v3>, type_list<v2, v4>, constant_less>, type_list<v1, v2, v3, v4>>);
-static_assert(is_same_v<type_list_merge_sorted<type_list<v1, v2, v3>, type_list<v1, v2, v4>, constant_less>,
+  std::is_same_v<type_list_merge_sorted<type_list<v1, v3>, type_list<v2, v4>, constant_less>, type_list<v1, v2, v3, v4>>);
+static_assert(std::is_same_v<type_list_merge_sorted<type_list<v1, v2, v3>, type_list<v1, v2, v4>, constant_less>,
                         type_list<v1, v1, v2, v2, v3, v4>>);
 
 // type_list_sort
 
-static_assert(is_same_v<type_list_sort<type_list<>, constant_less>, type_list<>>);
-static_assert(is_same_v<type_list_sort<type_list<v1>, constant_less>, type_list<v1>>);
-static_assert(is_same_v<type_list_sort<type_list<v1, v2>, constant_less>, type_list<v1, v2>>);
-static_assert(is_same_v<type_list_sort<type_list<v2, v1>, constant_less>, type_list<v1, v2>>);
-static_assert(is_same_v<type_list_sort<type_list<v2, v1, v3>, constant_less>, type_list<v1, v2, v3>>);
-static_assert(is_same_v<type_list_sort<type_list<v4, v3, v2, v1>, constant_less>, type_list<v1, v2, v3, v4>>);
+static_assert(std::is_same_v<type_list_sort<type_list<>, constant_less>, type_list<>>);
+static_assert(std::is_same_v<type_list_sort<type_list<v1>, constant_less>, type_list<v1>>);
+static_assert(std::is_same_v<type_list_sort<type_list<v1, v2>, constant_less>, type_list<v1, v2>>);
+static_assert(std::is_same_v<type_list_sort<type_list<v2, v1>, constant_less>, type_list<v1, v2>>);
+static_assert(std::is_same_v<type_list_sort<type_list<v2, v1, v3>, constant_less>, type_list<v1, v2, v3>>);
+static_assert(std::is_same_v<type_list_sort<type_list<v4, v3, v2, v1>, constant_less>, type_list<v1, v2, v3, v4>>);
 
 // type_list_unique
 
-static_assert(is_same_v<type_list_unique<type_list<v1>>, type_list<v1>>);
-static_assert(is_same_v<type_list_unique<type_list<v1, v1>>, type_list<v1>>);
-static_assert(is_same_v<type_list_unique<type_list<v1, v1, v1>>, type_list<v1>>);
-static_assert(is_same_v<type_list_unique<type_list<v1, v2>>, type_list<v1, v2>>);
-static_assert(is_same_v<type_list_unique<type_list<v1, v1, v2>>, type_list<v1, v2>>);
-static_assert(is_same_v<type_list_unique<type_list<v1, v2, v2>>, type_list<v1, v2>>);
-static_assert(is_same_v<type_list_unique<type_list<v1, v2, v3>>, type_list<v1, v2, v3>>);
-static_assert(is_same_v<type_list_unique<type_list<v1, v2, v2, v3>>, type_list<v1, v2, v3>>);
-static_assert(is_same_v<type_list_unique<type_list<v1, v1, v2, v3, v3>>, type_list<v1, v2, v3>>);
+static_assert(std::is_same_v<type_list_unique<type_list<v1>>, type_list<v1>>);
+static_assert(std::is_same_v<type_list_unique<type_list<v1, v1>>, type_list<v1>>);
+static_assert(std::is_same_v<type_list_unique<type_list<v1, v1, v1>>, type_list<v1>>);
+static_assert(std::is_same_v<type_list_unique<type_list<v1, v2>>, type_list<v1, v2>>);
+static_assert(std::is_same_v<type_list_unique<type_list<v1, v1, v2>>, type_list<v1, v2>>);
+static_assert(std::is_same_v<type_list_unique<type_list<v1, v2, v2>>, type_list<v1, v2>>);
+static_assert(std::is_same_v<type_list_unique<type_list<v1, v2, v3>>, type_list<v1, v2, v3>>);
+static_assert(std::is_same_v<type_list_unique<type_list<v1, v2, v2, v3>>, type_list<v1, v2, v3>>);
+static_assert(std::is_same_v<type_list_unique<type_list<v1, v1, v2, v3, v3>>, type_list<v1, v2, v3>>);
 
 }  // namespace

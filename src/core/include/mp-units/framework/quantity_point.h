@@ -41,6 +41,7 @@ import std;
 #else
 #include <compare>  // IWYU pragma: export
 #include <limits>
+#include <type_traits>
 #endif
 #endif
 
@@ -148,7 +149,7 @@ struct point_origin_interface {
   {
     if constexpr (is_derived_from_specialization_of_v<PO1, absolute_point_origin> &&
                   is_derived_from_specialization_of_v<PO2, absolute_point_origin>)
-      return is_same_v<PO1, PO2> || (detail::is_natural_point_origin(po1) && detail::is_natural_point_origin(po2) &&
+      return std::is_same_v<PO1, PO2> || (detail::is_natural_point_origin(po1) && detail::is_natural_point_origin(po2) &&
                                      mp_units::interconvertible(get_quantity_spec(po1), get_quantity_spec(po2)));
     else if constexpr (is_derived_from_specialization_of_v<PO1, relative_point_origin> &&
                        is_derived_from_specialization_of_v<PO2, relative_point_origin>)
@@ -672,7 +673,7 @@ public:
   template<detail::SameAbsolutePointOriginAs<absolute_point_origin> NewPO>
   [[nodiscard]] constexpr QuantityPointOf<(NewPO{})> auto point_for(NewPO new_origin) const
   {
-    if constexpr (is_same_v<NewPO, MP_UNITS_NONCONST_TYPE(point_origin)>)
+    if constexpr (std::is_same_v<NewPO, MP_UNITS_NONCONST_TYPE(point_origin)>)
       return *this;
     else
       return ::mp_units::quantity_point{*this - new_origin, new_origin};

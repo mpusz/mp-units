@@ -31,6 +31,7 @@
 import std;
 #else
 #include <cstdint>
+#include <type_traits>
 #endif  // MP_UNITS_IMPORT_STD
 #endif  // MP_UNITS_IN_MODULE_INTERFACE
 
@@ -112,9 +113,9 @@ namespace detail {
 enum class rounding_mode : std::int8_t { truncated, rounded, rounded_down, rounded_up };
 
 template<RoundingPolicy Policy>
-constexpr rounding_mode rounding_mode_of = is_same_v<Policy, truncated_t>      ? rounding_mode::truncated
-                                           : is_same_v<Policy, rounded_t>      ? rounding_mode::rounded
-                                           : is_same_v<Policy, rounded_down_t> ? rounding_mode::rounded_down
+constexpr rounding_mode rounding_mode_of = std::is_same_v<Policy, truncated_t>      ? rounding_mode::truncated
+                                           : std::is_same_v<Policy, rounded_t>      ? rounding_mode::rounded
+                                           : std::is_same_v<Policy, rounded_down_t> ? rounding_mode::rounded_down
                                                                                : rounding_mode::rounded_up;
 
 }  // namespace detail

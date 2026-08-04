@@ -46,6 +46,7 @@ import std;
 #include <cstdint>
 #include <iterator>
 #include <string_view>
+#include <type_traits>
 #if MP_UNITS_HOSTED
 #include <string>
 #endif
@@ -80,7 +81,7 @@ struct dimension_interface {
   template<Dimension Lhs, Dimension Rhs>
   [[nodiscard]] friend consteval bool operator==(Lhs, Rhs)
   {
-    return is_same_v<Lhs, Rhs>;
+    return std::is_same_v<Lhs, Rhs>;
   }
 
   // Clang <= 18 does not support default template arguments in friend function templates.

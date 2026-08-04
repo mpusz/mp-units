@@ -33,6 +33,7 @@
 import std;
 #else
 #include <cstdint>
+#include <type_traits>
 #if __cpp_lib_text_encoding
 #include <text_encoding>
 #endif  // __cpp_lib_text_encoding
@@ -102,9 +103,9 @@ template<typename CharT, std::size_t N, std::size_t M, std::output_iterator<Char
 [[nodiscard]] constexpr Out copy(const symbol_text<N, M>& txt, character_set char_set, Out out)
 {
   if (char_set == character_set::utf8) {
-    if constexpr (is_same_v<CharT, char8_t>)
+    if constexpr (std::is_same_v<CharT, char8_t>)
       return ::mp_units::detail::copy(txt.utf8().begin(), txt.utf8().end(), out);
-    else if constexpr (is_same_v<CharT, char>) {
+    else if constexpr (std::is_same_v<CharT, char>) {
 #if __cpp_lib_text_encoding
       if (std::text_encoding::literal().mib() != std::text_encoding::id::UTF8)
         // fallback to portable mode
@@ -120,7 +121,7 @@ template<typename CharT, std::size_t N, std::size_t M, std::output_iterator<Char
     } else
       MP_UNITS_THROW(std::invalid_argument("UTF-8 text can't be copied to CharT output"));
   } else {
-    if constexpr (is_same_v<CharT, char>)
+    if constexpr (std::is_same_v<CharT, char>)
       return ::mp_units::detail::copy(txt.portable().begin(), txt.portable().end(), out);
     else
       MP_UNITS_THROW(std::invalid_argument("Portable text can't be copied to CharT output"));

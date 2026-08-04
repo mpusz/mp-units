@@ -248,7 +248,7 @@ static_assert(is_of_type<pow<1, 2>(length / time),
 static_assert(
   is_of_type<pow<1, 2>(length / (time * time)), derived_dimension<mp_units::power<length_, 1, 2>, per<time_>>>);
 
-static_assert(is_same_v<decltype(pow<2>(length)), decltype(length * length)>);
-static_assert(is_same_v<decltype(pow<2>(length / time)), decltype(length * length / time / time)>);
+static_assert(std::is_same_v<decltype(pow<2>(length)), decltype(length * length)>);
+static_assert(std::is_same_v<decltype(pow<2>(length / time)), decltype(length * length / time / time)>);
 
 }  // namespace

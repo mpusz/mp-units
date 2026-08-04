@@ -31,6 +31,7 @@ import std;
 #include <chrono>
 #include <concepts>
 #include <ratio>
+#include <type_traits>
 #endif
 
 namespace {
@@ -166,9 +167,9 @@ static_assert(to_chrono_duration(3 * ns) == 3ns);
 static_assert(to_chrono_duration(quantity{1s}) == 1s);
 static_assert(to_chrono_duration(quantity{2h}) == 2h);
 static_assert(to_chrono_duration(quantity{3ns}) == 3ns);
-static_assert(is_same_v<decltype(to_chrono_duration(1 * s))::period, std::ratio<1>>);
-static_assert(is_same_v<decltype(to_chrono_duration(2 * h))::period, std::ratio<3600>>);
-static_assert(is_same_v<decltype(to_chrono_duration(3 * ns))::period, std::nano>);
+static_assert(std::is_same_v<decltype(to_chrono_duration(1 * s))::period, std::ratio<1>>);
+static_assert(std::is_same_v<decltype(to_chrono_duration(2 * h))::period, std::ratio<3600>>);
+static_assert(std::is_same_v<decltype(to_chrono_duration(3 * ns))::period, std::nano>);
 
 // to_chrono_time_point
 static_assert(to_chrono_time_point(quantity_point{sys_seconds{1s}}) == sys_seconds{1s});

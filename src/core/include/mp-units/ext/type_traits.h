@@ -64,16 +64,6 @@ MP_UNITS_EXPORT_BEGIN
 template<bool B, typename T, typename F>
 using conditional = detail::conditional_impl<B>::template type<T, F>;
 
-// is_same
-template<class T, class U>
-constexpr bool is_same_v = false;
-
-template<class T>
-constexpr bool is_same_v<T, T> = true;
-
-template<class T, class U>
-using is_same = std::bool_constant<is_same_v<T, U>>;
-
 // is_specialization_of
 template<typename T, template<typename...> typename Type>
 constexpr bool is_specialization_of = false;
@@ -136,7 +126,7 @@ constexpr bool is_scoped_enum_v = is_scoped_enum<T>::value;
 template<typename T, auto... Vs>
 [[nodiscard]] consteval bool contains()
 {
-  return (false || ... || is_same_v<MP_UNITS_REMOVE_CONST(decltype(Vs)), T>);
+  return (false || ... || std::is_same_v<MP_UNITS_REMOVE_CONST(decltype(Vs)), T>);
 }
 
 // the first list element is mandatory to disambiguate from the empty-pack case of the
@@ -144,7 +134,7 @@ template<typename T, auto... Vs>
 template<typename T, typename T1, typename... Ts>
 [[nodiscard]] consteval bool contains()
 {
-  return is_same_v<T, T1> || (false || ... || is_same_v<T, Ts>);
+  return std::is_same_v<T, T1> || (false || ... || std::is_same_v<T, Ts>);
 }
 
 template<template<typename...> typename T, typename... Ts>
@@ -168,7 +158,7 @@ template<typename T, std::same_as<T> auto V>
 template<typename T, auto V1, auto V2, auto... Vs>
 [[nodiscard]] consteval auto get()
 {
-  if constexpr (is_same_v<T, MP_UNITS_REMOVE_CONST(decltype(V1))>)
+  if constexpr (std::is_same_v<T, MP_UNITS_REMOVE_CONST(decltype(V1))>)
     return V1;
   else
     return get<T, V2, Vs...>();

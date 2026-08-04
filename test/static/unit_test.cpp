@@ -326,11 +326,11 @@ static_assert(is_of_type<speed_of_light_in_vacuum * gram * standard_gravity,
 static_assert(is_of_type<gram * standard_gravity * speed_of_light_in_vacuum,
                          derived_unit<gram_, speed_of_light_in_vacuum_, standard_gravity_>>);
 
-static_assert(is_same_v<decltype(inverse(second) * metre), decltype(metre / second)>);
-static_assert(is_same_v<decltype(metre * inverse(second)), decltype(metre / second)>);
-static_assert(is_same_v<decltype((metre / second) * inverse(second)), decltype(metre / second / second)>);
-static_assert(is_same_v<decltype((metre / second) * inverse(second)), decltype(metre / (second * second))>);
-static_assert(is_same_v<decltype((metre / second) * inverse(second)), decltype(metre / square(second))>);
+static_assert(std::is_same_v<decltype(inverse(second) * metre), decltype(metre / second)>);
+static_assert(std::is_same_v<decltype(metre * inverse(second)), decltype(metre / second)>);
+static_assert(std::is_same_v<decltype((metre / second) * inverse(second)), decltype(metre / second / second)>);
+static_assert(std::is_same_v<decltype((metre / second) * inverse(second)), decltype(metre / (second * second))>);
+static_assert(std::is_same_v<decltype((metre / second) * inverse(second)), decltype(metre / square(second))>);
 
 
 // derived unit normalization
@@ -502,13 +502,13 @@ static_assert(watt != kilogram * square(metre) / cubic(second));
 static_assert(equivalent(watt, kilogram* square(metre) / cubic(second)));
 
 // power
-static_assert(is_same_v<decltype(pow<2>(metre)), decltype(metre * metre)>);
-static_assert(is_same_v<decltype(pow<2>(kilometre)), decltype(kilometre * kilometre)>);
-static_assert(is_same_v<decltype(pow<2>(kilo<metre>)), decltype(kilo<metre> * kilo<metre>)>);
-static_assert(is_same_v<decltype(pow<2>(hour)), decltype(hour * hour)>);
-static_assert(is_same_v<decltype(pow<2>(mag<3600> * second)), decltype((mag<3600> * second) * (mag<3600> * second))>);
-static_assert(is_same_v<decltype(pow<2>(metre / second)), decltype(metre * metre / second / second)>);
-static_assert(is_same_v<decltype(pow<2>(kilometre / hour)), decltype(kilometre * kilometre / hour / hour)>);
+static_assert(std::is_same_v<decltype(pow<2>(metre)), decltype(metre * metre)>);
+static_assert(std::is_same_v<decltype(pow<2>(kilometre)), decltype(kilometre * kilometre)>);
+static_assert(std::is_same_v<decltype(pow<2>(kilo<metre>)), decltype(kilo<metre> * kilo<metre>)>);
+static_assert(std::is_same_v<decltype(pow<2>(hour)), decltype(hour * hour)>);
+static_assert(std::is_same_v<decltype(pow<2>(mag<3600> * second)), decltype((mag<3600> * second) * (mag<3600> * second))>);
+static_assert(std::is_same_v<decltype(pow<2>(metre / second)), decltype(metre * metre / second / second)>);
+static_assert(std::is_same_v<decltype(pow<2>(kilometre / hour)), decltype(kilometre * kilometre / hour / hour)>);
 
 static_assert(is_of_type<pow<0>(metre), one_>);
 static_assert(is_of_type<pow<1>(metre), metre_>);

@@ -170,7 +170,7 @@ struct unit_interface {
   template<UnitMagnitude M, Unit U>
   [[nodiscard]] friend MP_UNITS_CONSTEVAL Unit auto operator*(M, U u)
   {
-    if constexpr (is_same_v<M, MP_UNITS_NONCONST_TYPE(mp_units::mag<1>)>)
+    if constexpr (std::is_same_v<M, MP_UNITS_NONCONST_TYPE(mp_units::mag<1>)>)
       return u;
     else if constexpr (is_specialization_of_scaled_unit<U>) {
       if constexpr (M{} * U::_mag_ == mag<1>)
@@ -222,13 +222,13 @@ struct unit_interface {
   template<Unit Lhs, Unit Rhs>
   [[nodiscard]] friend consteval bool operator==(Lhs, Rhs)
   {
-    return is_same_v<Lhs, Rhs>;
+    return std::is_same_v<Lhs, Rhs>;
   }
 
   template<Unit Lhs, Unit Rhs>
   [[nodiscard]] friend consteval bool equivalent(Lhs lhs, Rhs rhs)
   {
-    if constexpr (is_same_v<Lhs, Rhs>)
+    if constexpr (std::is_same_v<Lhs, Rhs>)
       return true;
     else {
       const auto lhs_canonical = mp_units::get_canonical_unit(lhs);

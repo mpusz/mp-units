@@ -40,6 +40,7 @@
 import std;
 #else
 #include <cstdint>
+#include <type_traits>
 #endif
 #endif
 
@@ -107,7 +108,7 @@ template<NamedQuantitySpec From, NamedQuantitySpec To>
 [[nodiscard]] consteval specs_convertible_result convertible_common_base(From from, To to)
 {
   using enum specs_convertible_result;
-  if constexpr (is_same_v<From, To>) return yes;
+  if constexpr (std::is_same_v<From, To>) return yes;
   if constexpr (detail::is_child_of(From{}, To{}))
     return (detail::get_kind_tree_root(from) == detail::get_kind_tree_root(to)) ? yes : explicit_conversion_beyond_kind;
   if constexpr (detail::is_child_of(To{}, From{})) return explicit_conversion;

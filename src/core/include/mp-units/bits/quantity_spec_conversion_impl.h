@@ -36,6 +36,14 @@
 #include <mp-units/framework/quantity_spec_concepts.h>
 #include <mp-units/framework/quantity_spec_definitions.h>
 
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
+#include <type_traits>
+#endif
+#endif
+
 namespace mp_units::detail {
 
 // verifies convertibility when at least one of the specs is a kind
@@ -124,7 +132,7 @@ struct no_common_quantity_spec {};
 template<QuantitySpec Q1, QuantitySpec Q2>
 [[nodiscard]] consteval auto get_common_quantity_spec_impl(Q1 q1, Q2 q2)
 {
-  if constexpr (is_same_v<Q1, Q2>)
+  if constexpr (std::is_same_v<Q1, Q2>)
     return q1;
   else {
     constexpr bool q1q2 = mp_units::implicitly_convertible(Q1{}, Q2{});
@@ -182,7 +190,7 @@ constexpr auto get_common_quantity_spec_result = detail::get_common_quantity_spe
 template<QuantitySpec Q1, QuantitySpec Q2>
 [[nodiscard]] consteval bool have_common_quantity_spec(Q1, Q2)
 {
-  return !is_same_v<decltype(detail::get_common_quantity_spec_result<Q1, Q2>), const no_common_quantity_spec>;
+  return !std::is_same_v<decltype(detail::get_common_quantity_spec_result<Q1, Q2>), const no_common_quantity_spec>;
 }
 
 }  // namespace mp_units::detail

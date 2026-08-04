@@ -347,18 +347,18 @@ static_assert(reference_for<quantity_point<isq::thermodynamic_temperature[si::de
 // member types
 //////////////////
 
-static_assert(is_same_v<quantity_point<si::metre, mean_sea_level>::rep, double>);
-static_assert(is_same_v<quantity_point<si::metre, mean_sea_level>::quantity_type, quantity<si::metre>>);
+static_assert(std::is_same_v<quantity_point<si::metre, mean_sea_level>::rep, double>);
+static_assert(std::is_same_v<quantity_point<si::metre, mean_sea_level>::quantity_type, quantity<si::metre>>);
 
-static_assert(is_same_v<quantity_point<si::metre, mean_sea_level, int>::rep, int>);
-static_assert(is_same_v<quantity_point<si::metre, mean_sea_level, int>::quantity_type, quantity<si::metre, int>>);
+static_assert(std::is_same_v<quantity_point<si::metre, mean_sea_level, int>::rep, int>);
+static_assert(std::is_same_v<quantity_point<si::metre, mean_sea_level, int>::quantity_type, quantity<si::metre, int>>);
 
-static_assert(is_same_v<quantity_point<isq::height[m], mean_sea_level>::rep, double>);
-static_assert(is_same_v<quantity_point<isq::height[m], mean_sea_level>::quantity_type, quantity<isq::height[m]>>);
+static_assert(std::is_same_v<quantity_point<isq::height[m], mean_sea_level>::rep, double>);
+static_assert(std::is_same_v<quantity_point<isq::height[m], mean_sea_level>::quantity_type, quantity<isq::height[m]>>);
 
-static_assert(is_same_v<quantity_point<isq::height[m], mean_sea_level, int>::rep, int>);
+static_assert(std::is_same_v<quantity_point<isq::height[m], mean_sea_level, int>::rep, int>);
 static_assert(
-  is_same_v<quantity_point<isq::height[m], mean_sea_level, int>::quantity_type, quantity<isq::height[m], int>>);
+  std::is_same_v<quantity_point<isq::height[m], mean_sea_level, int>::quantity_type, quantity<isq::height[m], int>>);
 
 
 ////////////////////////////
@@ -1450,19 +1450,19 @@ static_assert(celsius_fahrenheit_sum.numerical_value_in(celsius_fahrenheit_sum.u
 
 
 // check for integral types promotion
-static_assert(is_same_v<decltype(((mean_sea_level + std::uint8_t{0} * m) + std::uint8_t{0} * m)
+static_assert(std::is_same_v<decltype(((mean_sea_level + std::uint8_t{0} * m) + std::uint8_t{0} * m)
                                    .quantity_from(mean_sea_level)
                                    .numerical_value_in(m)),
                         int>);
-static_assert(is_same_v<decltype((std::uint8_t{0} * m + (mean_sea_level + std::uint8_t{0} * m))
+static_assert(std::is_same_v<decltype((std::uint8_t{0} * m + (mean_sea_level + std::uint8_t{0} * m))
                                    .quantity_from(mean_sea_level)
                                    .numerical_value_in(m)),
                         int>);
-static_assert(is_same_v<decltype(((mean_sea_level + std::uint8_t{0} * m) - std::uint8_t{0} * m)
+static_assert(std::is_same_v<decltype(((mean_sea_level + std::uint8_t{0} * m) - std::uint8_t{0} * m)
                                    .quantity_from(mean_sea_level)
                                    .numerical_value_in(m)),
                         int>);
-static_assert(is_same_v<decltype(((mean_sea_level + std::uint8_t{0} * m) - (mean_sea_level + std::uint8_t{0} * m))
+static_assert(std::is_same_v<decltype(((mean_sea_level + std::uint8_t{0} * m) - (mean_sea_level + std::uint8_t{0} * m))
                                    .numerical_value_in(m)),
                         int>);
 static_assert(((mean_sea_level + std::uint8_t{128} * m) + std::uint8_t{128} * m)

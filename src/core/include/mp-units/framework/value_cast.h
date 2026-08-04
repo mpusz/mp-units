@@ -34,6 +34,14 @@
 #include <mp-units/framework/rounding.h>
 #include <mp-units/framework/unit_concepts.h>
 
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
+#include <type_traits>
+#endif
+#endif
+
 namespace mp_units {
 
 namespace detail {
@@ -41,7 +49,7 @@ namespace detail {
 template<typename Rep, Unit UFrom, Unit UTo>
 [[nodiscard]] consteval bool scaling_overflows_non_zero_values(UFrom, UTo)
 {
-  if constexpr (is_same_v<UFrom, UTo> || treat_as_floating_point<Rep>)
+  if constexpr (std::is_same_v<UFrom, UTo> || treat_as_floating_point<Rep>)
     return false;
   else if constexpr (std::totally_ordered_with<Rep, std::uintmax_t> &&
                      requires(Rep v) { representation_values<Rep>::max(); }) {
@@ -84,7 +92,7 @@ concept ExplicitlyCastable = UnitConvertibleTo<MP_UNITS_REMOVE_CONST(decltype(Fr
 // An adjusting policy is one that may move the result to a neighboring representable value, which is
 // every policy but `truncated`.
 template<typename T>
-concept AdjustingRoundingPolicy = RoundingPolicy<T> && !is_same_v<T, truncated_t>;
+concept AdjustingRoundingPolicy = RoundingPolicy<T> && !std::is_same_v<T, truncated_t>;
 
 template<typename Policy, typename FromRep, typename ToRep>
 constexpr bool rounding_lacks_real_scalars =
@@ -99,7 +107,7 @@ constexpr bool rounding_lacks_standard_floating_point =
 
 template<typename Policy, typename ToRep>
 constexpr bool rounding_direction_undeliverable =
-  treat_as_floating_point<ToRep> && (is_same_v<Policy, rounded_down_t> || is_same_v<Policy, rounded_up_t>);
+  treat_as_floating_point<ToRep> && (std::is_same_v<Policy, rounded_down_t> || std::is_same_v<Policy, rounded_up_t>);
 
 template<typename Policy, typename FromRep, typename ToRep>
 constexpr bool rounding_policy_applies =
@@ -138,7 +146,7 @@ MP_UNITS_EXPORT_BEGIN
  */
 [[nodiscard]] consteval bool is_integral_scaling(Unit auto from, Unit auto to)
 {
-  if constexpr (is_same_v<decltype(from), decltype(to)>)
+  if constexpr (std::is_same_v<decltype(from), decltype(to)>)
     return true;
   else
     return is_integral(get_canonical_unit(from).mag / get_canonical_unit(to).mag);

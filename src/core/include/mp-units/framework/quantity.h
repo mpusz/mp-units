@@ -69,7 +69,7 @@ namespace detail {
 
 struct zero {
   template<typename T>
-    requires std::is_arithmetic_v<T> && (!is_same_v<T, bool>)
+    requires std::is_arithmetic_v<T> && (!std::is_same_v<T, bool>)
   consteval explicit(false) zero(T val)
   {
     if (val != T{0}) MP_UNITS_THROW(std::logic_error("not zero"));
@@ -272,7 +272,7 @@ template<typename LhsRep, typename RhsRep, UnitMagnitude M1, typename V1, UnitMa
 {
   const auto lhs = scale<LhsRep>(lhs_m, lhs_val);
   const auto rhs = scale<RhsRep>(rhs_m, rhs_val);
-  if constexpr (is_same_v<Cmp, std::compare_three_way>)
+  if constexpr (std::is_same_v<Cmp, std::compare_three_way>)
     return detail::cmp_three_way(lhs, rhs);
   else
     return detail::cmp_equal(lhs, rhs);
@@ -542,7 +542,7 @@ struct quantity_iface {
     requires requires { os << q.numerical_value_ref_in(q.unit); }
   {
     return detail::to_stream(os, [&](std::basic_ostream<CharT, Traits>& oss) {
-      if constexpr (is_same_v<Rep, std::uint8_t> || is_same_v<Rep, std::int8_t>)
+      if constexpr (std::is_same_v<Rep, std::uint8_t> || std::is_same_v<Rep, std::int8_t>)
         // promote the value to int
         oss << +q.numerical_value_ref_in(q.unit);
       else
