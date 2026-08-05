@@ -249,10 +249,13 @@ both units is fully correlated with itself, and it cancels symbolically before t
 is ever applied, which is exactly why the solar-to-Earth-mass conversion reports zero rather
 than a small non-zero number.
 
-**Coverage.** `iau::G` and every measured constant in the three HEP CODATA namespaces carry
-the uncertainty published by their own release. Constants that are exact by definition carry
-nothing at all, which is what makes the distinction visible to the type system in the first
-place.
+**Coverage.** Every measured constant in the three HEP CODATA namespaces carries the
+uncertainty published by its own release, as do the SI-expressed ones in the new
+[`codata`](../../users_guide/systems/codata.md) system, which `iau::G` now imports rather
+than duplicating. Constants that are exact by definition carry nothing at all, which is
+what makes the distinction visible to the type system in the first place. Filling out the
+rest of the CODATA table is tracked in
+[#820](https://github.com/mpusz/mp-units/issues/820).
 
 ## Printing what the standard prints
 
