@@ -151,6 +151,10 @@ class Constant:
     # Relative standard uncertainty magnitude for a measured constant (e.g.,
     # "mag_ratio<22, 10> * mag_power<10, -5>"); empty for constants that are exact by definition
     relative_standard_uncertainty: str = ""
+    # Absolute standard uncertainty expression for a measured constant declared with the
+    # `standard_uncertainty` wrapper (e.g., "mag_ratio<15, 10> * mag_power<10, -15> * m3 / kg /
+    # s2"); empty when the constant is exact or declares the relative form instead
+    standard_uncertainty: str = ""
     namespace: str = ""
     file: str = ""
     subnamespace: Optional[str] = None  # Relative subnamespace (e.g., "codata2022")
@@ -1070,6 +1074,7 @@ class SystemsParser:
                         symbol=const.symbol,
                         definition=const.definition,
                         relative_standard_uncertainty=const.relative_standard_uncertainty,
+                        standard_uncertainty=const.standard_uncertainty,
                         namespace=entity_full_namespace,
                         file=file,
                         alias_target=f"{full_namespace}::{unit_name}",
@@ -1118,25 +1123,39 @@ class SystemsParser:
         return "".join(result).strip()
 
     _RSU_MARKER = ", relative_standard_uncertainty{"
+    _SU_MARKER = ", standard_uncertainty{"
+
+    def _metadata_marker_index(self, definition: str) -> int:
+        """Index of the first uncertainty-wrapper argument, or -1 when there is none."""
+        indices = [
+            idx
+            for idx in (
+                definition.find(self._RSU_MARKER),
+                definition.find(self._SU_MARKER),
+            )
+            if idx != -1
+        ]
+        return min(indices) if indices else -1
 
     def _strip_constant_metadata(self, definition: str) -> str:
         """Drop trailing `named_constant` metadata arguments from a definition.
 
-        Metadata such as `relative_standard_uncertainty{...}` describes the constant, not how
-        its value is defined, so it gets its own column rather than sharing "Definition".
+        Metadata such as `relative_standard_uncertainty{...}` or `standard_uncertainty{...}`
+        describes the constant, not how its value is defined, so it gets its own column rather
+        than sharing "Definition".
         """
-        idx = definition.find(self._RSU_MARKER)
+        idx = self._metadata_marker_index(definition)
         return definition[:idx].strip() if idx != -1 else definition
 
-    def _extract_relative_standard_uncertainty(self, definition: str) -> str:
-        """Extract the relative standard uncertainty magnitude from a raw constant definition.
+    def _extract_metadata_argument(self, definition: str, marker: str) -> str:
+        """Extract the content of an uncertainty-wrapper argument from a raw definition.
 
-        Returns an empty string for a constant that is exact by definition (no such argument).
+        Returns an empty string when the definition does not carry that wrapper.
         """
-        idx = definition.find(self._RSU_MARKER)
+        idx = definition.find(marker)
         if idx == -1:
             return ""
-        inner = definition[idx + len(self._RSU_MARKER) :]
+        inner = definition[idx + len(marker) :]
         depth = 0
         for pos, char in enumerate(inner):
             if char == "{":
@@ -1146,6 +1165,20 @@ class SystemsParser:
                     return inner[:pos].strip()
                 depth -= 1
         return ""
+
+    def _extract_relative_standard_uncertainty(self, definition: str) -> str:
+        """Extract the relative standard uncertainty magnitude from a raw constant definition.
+
+        Returns an empty string for a constant that is exact by definition (no such argument).
+        """
+        return self._extract_metadata_argument(definition, self._RSU_MARKER)
+
+    def _extract_standard_uncertainty(self, definition: str) -> str:
+        """Extract the absolute standard uncertainty expression from a raw constant definition.
+
+        Returns an empty string for a constant that is exact by definition (no such argument).
+        """
+        return self._extract_metadata_argument(definition, self._SU_MARKER)
 
     def _parse_point_origins(self, content: str, system: SystemInfo, file: str):
         """Parse point origin definitions"""
@@ -1309,6 +1342,7 @@ class SystemsParser:
             definition_full = self._extract_template_arg(definition_raw)
             definition = self._strip_constant_metadata(definition_full)
             rsu = self._extract_relative_standard_uncertainty(definition_full)
+            su = self._extract_standard_uncertainty(definition_full)
 
             # Detect nested namespace (including inline namespaces for proper documentation)
             match_pos = match.start()
@@ -1329,6 +1363,7 @@ class SystemsParser:
                 symbol=symbol,
                 definition=definition,
                 relative_standard_uncertainty=rsu,
+                standard_uncertainty=su,
                 namespace=full_namespace,
                 file=file,
                 subnamespace=nested_ns,
@@ -1344,6 +1379,7 @@ class SystemsParser:
             definition_full = self._extract_template_arg(definition_raw)
             definition = self._strip_constant_metadata(definition_full)
             rsu = self._extract_relative_standard_uncertainty(definition_full)
+            su = self._extract_standard_uncertainty(definition_full)
 
             # Detect nested namespace (including inline namespaces for proper documentation)
             match_pos = match.start()
@@ -1364,6 +1400,7 @@ class SystemsParser:
                 symbol=symbol,
                 definition=definition,
                 relative_standard_uncertainty=rsu,
+                standard_uncertainty=su,
                 namespace=full_namespace,
                 file=file,
                 subnamespace=nested_ns,
@@ -1788,6 +1825,7 @@ class SystemsParser:
                         symbol=imported_constant.symbol,
                         definition=f"using {full_namespace}::{unit_name}",
                         relative_standard_uncertainty=imported_constant.relative_standard_uncertainty,
+                        standard_uncertainty=imported_constant.standard_uncertainty,
                         namespace=f"mp_units::{system.namespace}",
                         file=file,
                         alias_target=f"{full_namespace}::{unit_name}",
@@ -3153,16 +3191,17 @@ class DocumentationGenerator:
                     # narrower table.
                     has_uncertainty = any(
                         constant.relative_standard_uncertainty
+                        or constant.standard_uncertainty
                         for constant in system.constants
                     )
                     if has_uncertainty:
                         f.write(
                             "| Name | Symbol | unit_symbol | Definition |"
-                            " Relative standard uncertainty |\n"
+                            " Standard uncertainty |\n"
                         )
                         f.write(
                             "|------|:------:|:------------:|------------|"
-                            ":-----------------------------:|\n"
+                            ":--------------------:|\n"
                         )
                     else:
                         f.write("| Name | Symbol | unit_symbol | Definition |\n")
@@ -3211,18 +3250,9 @@ class DocumentationGenerator:
                             else:
                                 symbols_display = "—"
                             if has_uncertainty:
-                                if constant.relative_standard_uncertainty:
-                                    rsu_display = "<code>{}</code>".format(
-                                        self._linkify_definition(
-                                            constant.relative_standard_uncertainty.replace(
-                                                "|", "\\|"
-                                            ),
-                                            system,
-                                        )
-                                    )
-                                else:
-                                    rsu_display = "—"
-                                rsu_cell = f" {rsu_display} |"
+                                rsu_cell = (
+                                    f" {self._uncertainty_cell(constant, system)} |"
+                                )
                             else:
                                 rsu_cell = ""
                             f.write(
@@ -3248,21 +3278,12 @@ class DocumentationGenerator:
                                 definition, system
                             )
                             if has_uncertainty:
-                                if constant.relative_standard_uncertainty:
-                                    rsu_display = "<code>{}</code>".format(
-                                        self._linkify_definition(
-                                            constant.relative_standard_uncertainty.replace(
-                                                "|", "\\|"
-                                            ),
-                                            system,
-                                        )
-                                    )
-                                else:
-                                    # Deliberately not "exact": the absence of the annotation
-                                    # only means it is not declared, and the audit of measured
-                                    # constants is not complete across all systems.
-                                    rsu_display = "—"
-                                rsu_cell = f" {rsu_display} |"
+                                # A "—" is deliberately not "exact": the absence of the
+                                # annotation only means it is not declared, and the audit of
+                                # measured constants is not complete across all systems.
+                                rsu_cell = (
+                                    f" {self._uncertainty_cell(constant, system)} |"
+                                )
                             else:
                                 rsu_cell = ""
                             f.write(
@@ -3273,10 +3294,13 @@ class DocumentationGenerator:
 
                     if has_uncertainty:
                         f.write(
-                            "\nConstants with a relative standard uncertainty are measured"
-                            " rather than exact by definition, and satisfy the"
+                            "\nConstants with a standard uncertainty are measured rather"
+                            " than exact by definition, and satisfy the"
                             " [`MeasuredConstant`](../../../users_guide/framework_basics/concepts.md#MeasuredConstant)"
-                            " concept. A `—` means no uncertainty is declared for that"
+                            " concept. The uncertainty is stated in the form its source"
+                            " publishes: an absolute value in the constant's own dimension,"
+                            " or a relative one (marked *(relative)*) when only that form is"
+                            " published. A `—` means no uncertainty is declared for that"
                             " constant.\n"
                         )
 
@@ -3561,6 +3585,27 @@ class DocumentationGenerator:
             definition = re.sub(pattern, replacement, definition)
 
         return definition
+
+    def _uncertainty_cell(self, constant, system) -> str:
+        """Render the "Standard uncertainty" table cell for a constant.
+
+        The declared form is shown as-is: the absolute one is a unit expression in the
+        constant's own dimension, while the relative one is a bare magnitude and gets marked
+        accordingly. A constant declares at most one of the two.
+        """
+        if constant.standard_uncertainty:
+            return "<code>{}</code>".format(
+                self._linkify_definition(
+                    constant.standard_uncertainty.replace("|", "\\|"), system
+                )
+            )
+        if constant.relative_standard_uncertainty:
+            return "<code>{}</code> *(relative)*".format(
+                self._linkify_definition(
+                    constant.relative_standard_uncertainty.replace("|", "\\|"), system
+                )
+            )
+        return "—"
 
     def _linkify_definition(self, definition: str, current_system: SystemInfo) -> str:
         """Convert unit/quantity/origin references in definition to markdown links while preserving code font.

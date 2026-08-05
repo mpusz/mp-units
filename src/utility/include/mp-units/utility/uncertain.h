@@ -674,9 +674,10 @@ struct std::common_type<U, mp_units::utility::uncertain<T>> {
  *
  * A `~` appended to that spec selects instead the concise notation of ISO 80000-1:2022,
  * 7.2.4, in which the value is quoted to the last significant digit of the uncertainty and
- * the uncertainty follows in parentheses, counted in units of that digit. The tilde marks
- * the output as an approximation: the default form prints the value as it is, while this one
- * rounds it to the precision the uncertainty justifies:
+ * the uncertainty follows in parentheses, counted in units of that digit. Where the default
+ * form prints both components losslessly, this one quotes the value to the precision the
+ * uncertainty justifies (GUM 7.2.6); for a constant transcribed from a metrology table it
+ * reproduces the published notation verbatim:
  *
  * @code
  * uncertain val{6.67430e-11, 1.5e-15};

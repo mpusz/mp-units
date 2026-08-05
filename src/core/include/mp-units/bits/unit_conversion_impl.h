@@ -260,9 +260,11 @@ consteval void collect_measured_constants(T, const named_constant<Symbol, U, Arg
 {
   if constexpr (MeasuredConstant<T>)
     // the declared uncertainty covers the constant's whole published value, so nested measured
-    // constants (contributing only their central values to the magnitude) must not be added again
-    mp_units::detail::add_measured_constant_contribution(out, mp_units::detail::type_name<T>(), num, den,
-                                                         get_value<long double>(T::_relative_standard_uncertainty_));
+    // constants (contributing only their central values to the magnitude) must not be added again;
+    // the accessor also derives `u_r` for constants that declare the absolute form
+    mp_units::detail::add_measured_constant_contribution(
+      out, mp_units::detail::type_name<T>(), num, den,
+      get_value<long double>(mp_units::get_relative_standard_uncertainty(T{})));
   else
     // an unannotated constant may still be defined in terms of measured ones
     mp_units::detail::collect_measured_constants(U, U, out, num, den);

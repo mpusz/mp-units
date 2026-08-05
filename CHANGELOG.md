@@ -54,11 +54,15 @@ This page documents the version history and changes for the **mp-units** library
 - (!) feat: IAU system definition improved
 - feat: `uncertain<T>` representation type added to `mp-units::utility` (first-order
         uncertainty propagation for independent values) (#464)
-- feat: measured constants may now declare their `relative_standard_uncertainty` (exact
-        magnitude metadata on `named_constant`); `MeasuredConstant` concept,
-        `get_relative_standard_uncertainty`, and `measurement_of` added; declared for
-        `iau::newtonian_constant_of_gravitation` and all measured constants in the three
-        `hep` CODATA namespaces (#464)
+- feat: measured constants may now declare their standard uncertainty in the form their
+        source publishes it (exact metadata on `named_constant`): `standard_uncertainty`
+        (absolute, in the constant's own dimension, transcribing the CODATA table row
+        verbatim) or `relative_standard_uncertainty` (unit-invariant, for constants whose
+        defining unit is not tabulated); `MeasuredConstant` concept,
+        `get_standard_uncertainty`, `get_relative_standard_uncertainty`, and
+        `measurement_of` added, with each accessor deriving the undeclared form on demand;
+        declared for `iau::newtonian_constant_of_gravitation` and all measured constants in
+        the three `hep` CODATA namespaces (#464, #820)
 - feat: unit conversion factors built from measured constants carry their relative standard
         uncertainty; the conversion engine folds it into representation types that opt in
         via `fold_conversion_uncertainty` (e.g., `uncertain<T>`), with measured constants

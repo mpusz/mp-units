@@ -105,11 +105,13 @@ concept OffsetUnit = Unit<T> && requires { T::_point_origin_; };
 /**
  * @brief A concept matching constants that are measured rather than exact by definition
  *
- * Satisfied by all constants defined with a `relative_standard_uncertainty` argument. Exact
- * constants do not have that argument, so the distinction is visible to the type system.
+ * Satisfied by all constants defined with a `relative_standard_uncertainty` or a
+ * `standard_uncertainty` argument. Exact constants do not have such an argument, so the
+ * distinction is visible to the type system.
  */
 MP_UNITS_EXPORT template<typename T>
 concept MeasuredConstant =
-  Unit<T> && requires { requires UnitMagnitude<MP_UNITS_NONCONST_TYPE(T::_relative_standard_uncertainty_)>; };
+  Unit<T> && (requires { requires UnitMagnitude<MP_UNITS_NONCONST_TYPE(T::_relative_standard_uncertainty_)>; } ||
+              requires { requires Unit<MP_UNITS_NONCONST_TYPE(T::_standard_uncertainty_)>; });
 
 }  // namespace mp_units
