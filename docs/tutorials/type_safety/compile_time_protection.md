@@ -11,6 +11,7 @@ See how **mp-units** catches unit errors at compile time, before your code runs.
 
 ```cpp
 // ce-embed height=550 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
+#include <mp-units/systems/codata/adopted_values.h>
 #include <mp-units/systems/si.h>
 #include <iostream>
 
@@ -23,7 +24,7 @@ int main()
   quantity time = 10.0 * s;
   quantity mass = 5.0 * kg;
   // standard_gravity is a unit constant provided by mp-units (~9.80665 m/s²)
-  quantity weight = mass * si::standard_gravity;  // Force (weight = mass × gravity)
+  quantity weight = mass * codata::standard_gravity;  // Force (weight = mass × gravity)
 
   // These work - compatible units
   quantity total_distance = distance + 50.0 * m;

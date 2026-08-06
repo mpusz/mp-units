@@ -63,7 +63,7 @@ static_assert(1 * isq::speed[kn] == isq::length(1 * nmi) / isq::duration(1 * si:
 // Force
 static_assert(1 * isq::force[pdl] == isq::mass(1 * lb) * isq::length(1 * ft) /
                                        (isq::duration(1 * si::second) * isq::duration(1 * si::second)));
-static_assert(1 * isq::force[lbf] == isq::mass(1 * lb) * (1 * si::standard_gravity));
+static_assert(1 * isq::force[lbf] == isq::mass(1 * lb) * (1 * codata::standard_gravity));
 static_assert(1 * isq::force[kip] == 1000 * isq::force[lbf]);
 
 // Pressure

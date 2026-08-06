@@ -48,6 +48,17 @@ This page documents the version history and changes for the **mp-units** library
       table, including the essential tier), with `mp-units/systems/codata.h` as the
       umbrella. Deliberately not part of `si`, so that `mp-units/systems/si.h` does not
       carry constants most code never names (#820)
+- deprecated: `si::standard_gravity`. It is not an SI defining constant but a conventional
+      value adopted by CGPM 3 (1901), which is what NIST's "adopted values" CODATA category
+      holds; its home is now `codata::standard_gravity` from
+      `<mp-units/systems/codata/adopted_values.h>`, a single adjustment-invariant entity
+      shared by all CODATA namespaces (as are the standard atmosphere, the standard-state
+      pressure, and the conventional Josephson and von Klitzing values). `yard_pound`'s
+      `pound_force` is now defined through the codata entity
+- deprecated: `si::reduced_planck_constant`. ℏ is not an SI defining constant either; its
+      home is `codata::reduced_planck_constant`, defined as the exact `h / 2π` relation in
+      the post-2019 adjustments and as the measured "Planck constant over 2 pi" in
+      `codata2014`
 - deprecated: `si::magnetic_constant`. The pre-2019 SI defined the ampere through it,
       which made it exactly 4*pi*1e-7 H/m; since the redefinition it is measured. Its
       value is unchanged, but use `codata::magnetic_constant` for the current adjustment,

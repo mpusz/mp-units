@@ -94,6 +94,7 @@ specifications so the type system enforces semantic correctness.
 ```cpp
 // ce-embed height=650 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
 #include <mp-units/core.h>
+#include <mp-units/systems/codata/adopted_values.h>
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
 #include <iostream>
@@ -132,7 +133,7 @@ constexpr quantity<qs::total_mass[kg]> total_mass(quantity<qs::cabin_mass[kg]> c
 constexpr quantity<qs::gravitational_potential_energy[J]> lifting_energy(quantity<qs::total_mass[kg]> mass,
                                                                          quantity<qs::travel_height[m]> height)
 {
-  constexpr quantity g0 = isq::acceleration_of_free_fall(1 * si::standard_gravity);
+  constexpr quantity g0 = isq::acceleration_of_free_fall(1 * codata::standard_gravity);
   return mass * g0 * height;
 }
 
@@ -194,6 +195,7 @@ int main()
 ??? tip "Solution"
 
     ```cpp
+    #include <mp-units/systems/codata/adopted_values.h>
     #include <mp-units/core.h>
     #include <mp-units/systems/isq.h>
     #include <mp-units/systems/si.h>
@@ -232,7 +234,7 @@ int main()
     constexpr quantity<qs::gravitational_potential_energy[J]> lifting_energy(quantity<qs::total_mass[kg]> mass,
                                                                              quantity<qs::travel_height[m]> height)
     {
-      constexpr quantity g0 = isq::acceleration_of_free_fall(1 * si::standard_gravity);
+      constexpr quantity g0 = isq::acceleration_of_free_fall(1 * codata::standard_gravity);
       return mass * g0 * height;
     }
 
@@ -327,7 +329,7 @@ int main()
 
     // Type-checked dimensional analysis!
     quantity energy =
-      gravitational_potential_energy(total_mass(1200 * kg) * isq::acceleration_of_free_fall(1 * si::standard_gravity) * travel_height(30 * m));
+      gravitational_potential_energy(total_mass(1200 * kg) * isq::acceleration_of_free_fall(1 * codata::standard_gravity) * travel_height(30 * m));
     ```
 
     The equation form `mass * acceleration_of_free_fall * height`:

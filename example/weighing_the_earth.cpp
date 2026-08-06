@@ -44,6 +44,7 @@ import mp_units;
 #else
 #include <mp-units/framework.h>
 #include <mp-units/math.h>
+#include <mp-units/systems/codata/adopted_values.h>
 #include <mp-units/systems/iau.h>
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
@@ -97,7 +98,8 @@ int main()
   std::cout << MP_UNITS_STD_FMT::format("time for {} swings  = {}\n", swings, total_time);
   std::cout << MP_UNITS_STD_FMT::format("local gravity       = {::N[.4f]}\n", gravity.in(m / s2));
   // a conventional value fixed by the CGPM, not a measurement, so it carries no uncertainty
-  std::cout << MP_UNITS_STD_FMT::format("  standard gravity  = {::N[.4f]}\n", (1. * si::standard_gravity).in(m / s2));
+  std::cout << MP_UNITS_STD_FMT::format("  standard gravity  = {::N[.4f]}\n",
+                                        (1. * codata::standard_gravity).in(m / s2));
   std::cout << MP_UNITS_STD_FMT::format("mass of the Earth   = {::N[.4e]}\n", earth_mass.in(kg));
   // the published mass is itself defined as (GM)⊕ᴺ/G, so requesting an uncertainty-capable
   // representation for the conversion reports how well `G` is known

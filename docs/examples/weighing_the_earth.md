@@ -33,7 +33,7 @@ A pendulum is timed over many swings so that the reaction-time error is divided 
 count. Solving $T = 2\pi\sqrt{L/g}$ for the acceleration gives the first stage:
 
 ```cpp title="weighing_the_earth.cpp"
---8<-- "example/weighing_the_earth.cpp:60:71"
+--8<-- "example/weighing_the_earth.cpp:61:72"
 ```
 
 The `π` here is a
@@ -58,7 +58,7 @@ The second stage asks what mass a sphere must have to produce the observed surfa
 rather than used as a bare unit, and its CODATA uncertainty joins the propagation:
 
 ```cpp title="weighing_the_earth.cpp"
---8<-- "example/weighing_the_earth.cpp:73:78"
+--8<-- "example/weighing_the_earth.cpp:74:79"
 ```
 
 ## Running the experiment
@@ -66,7 +66,7 @@ rather than used as a bare unit, and its CODATA uncertainty joins the propagatio
 First the measured inputs, each with the uncertainty its instrument justifies:
 
 ```cpp title="weighing_the_earth.cpp"
---8<-- "example/weighing_the_earth.cpp:85:91"
+--8<-- "example/weighing_the_earth.cpp:86:92"
 ```
 
 The two _lengths_ are given strong quantity types, and that is typing which buys something.
@@ -81,7 +81,7 @@ either constraint.
 Then the two stages run and the results are printed against their published counterparts:
 
 ```cpp title="weighing_the_earth.cpp"
---8<-- "example/weighing_the_earth.cpp:93:105"
+--8<-- "example/weighing_the_earth.cpp:94:106"
 ```
 
 Finally the uncertainty budget, which is where the interesting part is. Each input
@@ -90,7 +90,7 @@ and the contributions are combined by hand so that the total can be compared aga
 the library propagated:
 
 ```cpp title="weighing_the_earth.cpp"
---8<-- "example/weighing_the_earth.cpp:107:124"
+--8<-- "example/weighing_the_earth.cpp:108:125"
 ```
 
 ```text
@@ -98,8 +98,8 @@ pendulum length     = 1 ± 5e-04 m
 time for 50 swings  = 100.3 ± 0.06 s
 local gravity       = 9.8107 ± 0.0127 m/s²
   standard gravity  = 9.8066 m/s²
-mass of the Earth   = 5.9663e+24 ± 7.7398e+21 kg
-  accepted value    = 5.9722e+24 ± 1.3139e+20 kg
+mass of the Earth   = 5.9663e+24 ± 7.7399e+21 kg
+  accepted value    = 5.9722e+24 ± 1.3422e+20 kg
 
 relative uncertainty contributions
   pendulum length        = 5.0e-04
@@ -116,8 +116,8 @@ relative uncertainty contributions
 
 | From the output                     | Value                            |
 |-------------------------------------|----------------------------------|
-| this experiment                     | 5.9663 × 10²⁴ ± 7.7398 × 10²¹ kg |
-| published (`iau::terrestrial_mass`) | 5.9722 × 10²⁴ ± 1.3139 × 10²⁰ kg |
+| this experiment                     | 5.9663 × 10²⁴ ± 7.7399 × 10²¹ kg |
+| published (`iau::terrestrial_mass`) | 5.9722 × 10²⁴ ± 1.3422 × 10²⁰ kg |
 
 The gap between the two central values is 0.099% of the published mass:
 
@@ -127,8 +127,8 @@ $$\Delta = 5.9722 \times 10^{24}\,\mathrm{kg} - 5.9663 \times 10^{24}\,\mathrm{k
 Because *both* figures carry an uncertainty, the comparison uses their combination rather
 than either alone:
 
-$$u_\text{combined} = \sqrt{\left(7.7398 \times 10^{21}\right)^2
-                           + \left(1.3139 \times 10^{20}\right)^2}
+$$u_\text{combined} = \sqrt{\left(7.7399 \times 10^{21}\right)^2
+                           + \left(1.3422 \times 10^{20}\right)^2}
                     = 7.74 \times 10^{21}\,\mathrm{kg}$$
 
 The gap is therefore well inside one combined standard uncertainty:
@@ -143,8 +143,8 @@ away. This is the question an uncertainty exists to answer: not "what number did
 Note where those two uncertainties come from. `iau::terrestrial_mass` is defined as
 `(GM)⊕ᴺ/G`, so its value *in kilograms* is known only as well as `G` is, and the example
 opts into reporting that with `.in<uncertain<double>>(kg)`. The standard free-fall
-acceleration, by contrast, prints without a `±`, because `si::standard_gravity` is an exact
-*conventional* value fixed by the CGPM rather than a measured one. It is a reference point,
+acceleration, by contrast, prints without a `±`, because `codata::standard_gravity` is an
+exact *conventional* value fixed by the CGPM rather than a measured one. It is a reference point,
 not the true local value: real free-fall acceleration ranges from about 9.78 m/s² at the
 equator to 9.83 m/s² at the poles, a spread far wider than this experiment's uncertainty.
 

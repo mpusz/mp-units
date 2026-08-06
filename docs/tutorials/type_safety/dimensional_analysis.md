@@ -133,6 +133,7 @@ always happens automatically.
 ```cpp
 // ce-embed height=700 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
 #include <mp-units/core.h>
+#include <mp-units/systems/codata/adopted_values.h>
 #include <mp-units/systems/si.h>
 #include <iostream>
 
@@ -143,7 +144,7 @@ int main()
 
   // Projectile motion: h = v₀t - ½gt²
   quantity initial_velocity = 50.0 * m / s;
-  quantity gravity = 1.0 * si::standard_gravity; // unit constant (implicitly m/s2)
+  quantity gravity = 1.0 * codata::standard_gravity; // unit constant (implicitly m/s2)
   quantity time = 3.0 * s;
 
   // Upward distance from initial velocity
@@ -178,7 +179,7 @@ is correct regardless of intermediate unit representations.
 
 1. **_Density_**: Calculate _density_ from _mass_ 500 g, _volume_ 250 cm³. What unit?
 2. **_Gravitational potential energy_**: Calculate $PE = mgh$ for _mass_ 10 kg,
-  _height_ 5 m, using `si::standard_gravity`. What unit? (Hint: Joule)
+  _height_ 5 m, using `codata::standard_gravity`. What unit? (Hint: Joule)
 3. **_Work_**: _Force_ 10 N over _distance_ 5 m. What unit? (Hint: Joule again)
 
 ## What You Learned
