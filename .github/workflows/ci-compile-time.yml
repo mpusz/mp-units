@@ -82,6 +82,11 @@ env:
 
 jobs:
   instantiations:
+    # A PR whose head branch lives in this repository is already covered by the `push` event above,
+    # whose path filters match only the commits just pushed - unlike `pull_request`, which matches
+    # them against the whole base...head diff and so re-runs everything for a docs-only push. Fork
+    # PRs never fire `push` here, so they are what this event exists to serve.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
     # One gate per supported language standard: counts differ per -std, and a regression can appear
     # in one standard alone. Each has its own reviewed baselines in the benchmarks repository.
     strategy:
