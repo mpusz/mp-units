@@ -532,34 +532,36 @@ constexpr auto first_n_primes_result = first_n_primes<N>();
 
 // The smallest prime factor of a composite `n` all of whose prime factors exceed the
 // trial-division cutoff of `find_first_factor` below. Pollard's rho splits `n` recursively, with
-// Baillie-PSW certifying the leaves; the smallest leaf is the answer. Returns `std::nullopt` in
-// the (never yet observed) case that every rho parameterization fails for some split.
-// The two functions are mutually recursive free functions rather than a local lambda: only C++23
+// Baillie-PSW certifying the leaves; the smallest leaf is the answer. Returns `0` (never a valid
+// factor) in the (never yet observed) case that every rho parameterization fails for some split.
+// A sentinel is used instead of `std::optional` because MSVC's constant evaluator rejects the
+// optional-returning recursion with a bogus "read of an uninitialized symbol" error, and the two
+// functions are mutually recursive free functions rather than a local lambda because only C++23
 // consteval propagation would let a plain lambda call `consteval` functions with its parameter.
-[[nodiscard]] consteval std::optional<std::uint64_t> smallest_prime_factor_of_hard_composite(std::uint64_t n);
+[[nodiscard]] consteval std::uint64_t smallest_prime_factor_of_hard_composite(std::uint64_t n);
 
 // `m` itself when it is prime, otherwise its smallest prime factor found via Pollard's rho.
-[[nodiscard]] consteval std::optional<std::uint64_t> smallest_prime_in(std::uint64_t m)
+[[nodiscard]] consteval std::uint64_t smallest_prime_in(std::uint64_t m)
 {
-  return baillie_psw_probable_prime(m) ? std::optional{m} : smallest_prime_factor_of_hard_composite(m);
+  return baillie_psw_probable_prime(m) ? m : smallest_prime_factor_of_hard_composite(m);
 }
 
-[[nodiscard]] consteval std::optional<std::uint64_t> smallest_prime_factor_of_hard_composite(std::uint64_t n)
+[[nodiscard]] consteval std::uint64_t smallest_prime_factor_of_hard_composite(std::uint64_t n)
 {
   std::uint64_t factor = n;
   for (std::uint64_t c = 1u; factor == n; ++c) {
     if (c > 100u) {
-      return std::nullopt;
+      return 0u;
     }
     factor = pollard_rho_attempt(n, c);
   }
 
-  const auto lhs = smallest_prime_in(factor);
-  const auto rhs = smallest_prime_in(n / factor);
-  if (!lhs || !rhs) {
-    return std::nullopt;
+  const std::uint64_t lhs = smallest_prime_in(factor);
+  const std::uint64_t rhs = smallest_prime_in(n / factor);
+  if (lhs == 0u || rhs == 0u) {
+    return 0u;
   }
-  return *lhs < *rhs ? *lhs : *rhs;
+  return lhs < rhs ? lhs : rhs;
 }
 
 [[nodiscard]] consteval std::uintmax_t find_first_factor(std::uintmax_t n)
@@ -584,8 +586,8 @@ constexpr auto first_n_primes_result = first_n_primes<N>();
   // finds one in ~n^(1/4) steps where trial division needs up to ~n^(1/2) iterations and can
   // exceed compiler constexpr-loop limits (a semiprime of two ~500'000-sized primes needs ~266k
   // iterations, over GCC's default limit of 262144; hit by real CODATA values).
-  if (const auto factor = smallest_prime_factor_of_hard_composite(n)) {
-    return *factor;
+  if (const std::uint64_t factor = smallest_prime_factor_of_hard_composite(n); factor != 0u) {
+    return factor;
   }
 
   // Pollard's rho failed on every tried parameterization (not observed in practice for any
