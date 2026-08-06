@@ -10,7 +10,10 @@ repos:
     hooks:
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]
+        # the NIST CODATA tables are checked in byte-verbatim; nothing may rewrite them
+        exclude: ^scripts/codata/
       - id: end-of-file-fixer
+        exclude: ^scripts/codata/
       - id: check-yaml
         args: [--unsafe] # mkdocs.yml uses !ENV and !!python/name: tags
       - id: check-json

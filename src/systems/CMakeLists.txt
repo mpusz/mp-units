@@ -24,6 +24,14 @@ add_mp_units_module(
     systems mp-units-systems
     DEPENDENCIES mp-units::core
     HEADERS include/mp-units/systems/angular/units.h
+            include/mp-units/systems/codata/adopted_values.h
+            include/mp-units/systems/codata/codata2014.h
+            include/mp-units/systems/codata/codata2014_essential.h
+            include/mp-units/systems/codata/codata2018.h
+            include/mp-units/systems/codata/codata2018_essential.h
+            include/mp-units/systems/codata/codata2022.h
+            include/mp-units/systems/codata/codata2022_essential.h
+            include/mp-units/systems/codata/math_constants.h
             include/mp-units/systems/hep/constants.h
             include/mp-units/systems/hep/quantities.h
             include/mp-units/systems/hep/units.h

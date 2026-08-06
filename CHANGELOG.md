@@ -35,10 +35,19 @@ This page documents the version history and changes for the **mp-units** library
       and the `iau::codata2018` inline namespace is gone. IAU 2015 Resolution B3 asks for
       the current best estimate of G, so the value now follows whichever adjustment is
       current. The value is unchanged today, since CODATA 2022 kept G at 6.674 30(15)e-11
-- feat: CODATA fundamental physical constants added as a separate system in
-      `mp-units/systems/codata.h` (`codata::codata2014`, `codata::codata2018`, and the
-      `inline` `codata::codata2022`). Deliberately not part of `si`, so that
-      `mp-units/systems/si.h` does not carry constants most code never names
+- feat: CODATA fundamental physical constants added as a separate system with one
+      namespace and one header per adjustment (`codata::codata2014`, `codata::codata2018`,
+      and the `inline` `codata::codata2022`), GENERATED from the NIST "allascii" tables by
+      `scripts/codata_constants.py` for complete coverage (~230 constants per adjustment):
+      measured constants transcribe the published value and absolute standard uncertainty
+      digit for digit, exact non-terminating values are defined by their exact symbolic
+      relations, and an independent verification step recomputes every emitted value
+      against its source row. Each adjustment ships in two tiers:
+      `mp-units/systems/codata/codataYYYY_essential.h` (the NIST "frequently used"
+      selection, cheap to compile) and `mp-units/systems/codata/codataYYYY.h` (the complete
+      table, including the essential tier), with `mp-units/systems/codata.h` as the
+      umbrella. Deliberately not part of `si`, so that `mp-units/systems/si.h` does not
+      carry constants most code never names (#820)
 - deprecated: `si::magnetic_constant`. The pre-2019 SI defined the ampere through it,
       which made it exactly 4*pi*1e-7 H/m; since the redefinition it is measured. Its
       value is unchanged, but use `codata::magnetic_constant` for the current adjustment,

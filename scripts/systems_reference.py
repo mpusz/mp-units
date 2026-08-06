@@ -1457,8 +1457,11 @@ class SystemsParser:
                     s for s in self.systems.values() if s != system
                 ]
 
-            # Check if target is a point origin
-            target_origin = None
+            # Resolve the target within one system at a time: an entity of any kind in a
+            # nearer system wins over any kind in a farther one. Sweeping all systems per
+            # kind instead made `codata::atomic_unit_of_charge = elementary_charge` resolve
+            # to the `isq` QUANTITY of that name rather than to codata's own constant.
+            target_origin = target_quantity = target_constant = target_unit = None
             for search_system in search_systems:
                 if search_system is None:
                     continue
@@ -1466,8 +1469,27 @@ class SystemsParser:
                     if origin.name == target_lookup:
                         target_origin = origin
                         break
-                if target_origin:
+                for qty in search_system.quantities:
+                    if qty.name == target_lookup:
+                        target_quantity = qty
+                        break
+                for constant in search_system.constants:
+                    if constant.name == target_lookup:
+                        target_constant = constant
+                        break
+                for unit in search_system.units:
+                    if unit.name == target_lookup:
+                        target_unit = unit
+                        break
+                if target_origin or target_quantity or target_constant or target_unit:
                     break
+            # within one system, a point origin wins, then a quantity, a constant, a unit
+            if target_origin:
+                target_quantity = target_constant = target_unit = None
+            elif target_quantity:
+                target_constant = target_unit = None
+            elif target_constant:
+                target_unit = None
 
             if target_origin:
                 # Determine the display name for alias_target
@@ -1501,18 +1523,6 @@ class SystemsParser:
                 )
                 system.point_origins.append(alias_origin)
                 continue
-
-            # Check if target is a quantity
-            target_quantity = None
-            for search_system in search_systems:
-                if search_system is None:
-                    continue
-                for qty in search_system.quantities:
-                    if qty.name == target_lookup:
-                        target_quantity = qty
-                        break
-                if target_quantity:
-                    break
 
             if target_quantity:
                 # Determine the display name for alias_target
@@ -1550,18 +1560,6 @@ class SystemsParser:
                 system.quantities.append(alias_quantity)
                 continue
 
-            # Check if target is a constant
-            target_constant = None
-            for search_system in search_systems:
-                if search_system is None:
-                    continue
-                for constant in search_system.constants:
-                    if constant.name == target_lookup:
-                        target_constant = constant
-                        break
-                if target_constant:
-                    break
-
             if target_constant:
                 # Determine the display name for alias_target
                 if "::" in target_name:
@@ -1583,29 +1581,37 @@ class SystemsParser:
                             f"{target_system_name}::{target_constant.name}"
                         )
 
-                # Add as an alias constant
+                # An alias defined inside an inline/nested namespace (e.g. the codata
+                # adjustment namespaces) belongs to it, exactly like a regular constant;
+                # without this, the three per-adjustment aliases collapse into identical
+                # index entries with a dead anchor.
+                nested_ns = self._get_nested_namespace(
+                    content,
+                    match.start(),
+                    system.namespace if system.namespace else "",
+                    include_inline=True,
+                )
+                full_namespace = (
+                    f"mp_units::{system.namespace}::{nested_ns}"
+                    if nested_ns and system.namespace
+                    else f"mp_units::{system.namespace}"
+                )
+
+                # Add as an alias constant. The symbol and the uncertainty are carried over:
+                # an alias denotes the very same entity.
                 alias_constant = Constant(
                     name=alias_name,
                     symbol=target_constant.symbol,
                     definition=target_constant.definition,
-                    namespace=f"mp_units::{system.namespace}",
+                    relative_standard_uncertainty=target_constant.relative_standard_uncertainty,
+                    standard_uncertainty=target_constant.standard_uncertainty,
+                    namespace=full_namespace,
                     file=file,
+                    subnamespace=nested_ns,
                     alias_target=alias_target_display,
                 )
                 system.constants.append(alias_constant)
                 continue
-
-            # Check if target is a unit
-            target_unit = None
-            for search_system in search_systems:
-                if search_system is None:
-                    continue
-                for unit in search_system.units:
-                    if unit.name == target_lookup:
-                        target_unit = unit
-                        break
-                if target_unit:
-                    break
 
             if target_unit:
                 # Determine the display name for alias_target
@@ -3258,7 +3264,7 @@ class DocumentationGenerator:
                             f.write(
                                 f'| <span id="{anchor_id}"></span><code>'
                                 f"{constant_display_with_breaks}</code> | "
-                                f"{constant.symbol if constant.symbol else '—'} | "
+                                f"{add_word_breaks(constant.symbol) if constant.symbol else '—'} | "
                                 f"{symbols_display} | "
                                 f"alias to {alias_target_linked} |"
                                 f"{rsu_cell}\n"
@@ -3286,9 +3292,10 @@ class DocumentationGenerator:
                                 )
                             else:
                                 rsu_cell = ""
+                            symbol_display = add_word_breaks(constant.symbol)
                             f.write(
                                 f'| <span id="{anchor_id}"></span><code>{constant_display_with_breaks}</code> | '
-                                f"{constant.symbol} | {symbols_display} | <code>{definition_linked}</code> |"
+                                f"{symbol_display} | {symbols_display} | <code>{definition_linked}</code> |"
                                 f"{rsu_cell}\n"
                             )
 
