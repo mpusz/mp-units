@@ -250,118 +250,22 @@ consteval void try_accumulate_element(std::optional<T>& result)
   return static_cast<ct>(get_base_value(lhs)) < static_cast<ct>(get_base_value(rhs));
 }
 
-// The largest integer which can be extracted from any magnitude with only a single basis vector.
-template<auto M>
-[[nodiscard]] consteval auto integer_part(unit_magnitude<M>);
 [[nodiscard]] consteval std::intmax_t integer_part(ratio r) { return r.num / r.den; }
-
-template<auto M>
-[[nodiscard]] consteval auto remove_positive_power(unit_magnitude<M> m);
-template<auto M>
-[[nodiscard]] consteval auto remove_mag_constants(unit_magnitude<M> m);
-template<auto M>
-[[nodiscard]] consteval auto only_positive_mag_constants(unit_magnitude<M> m);
-template<auto M>
-[[nodiscard]] consteval auto only_negative_mag_constants(unit_magnitude<M> m);
 
 template<MagArg auto Base, int Num, int Den = 1>
   requires is_positive_mag_arg<Base>
 [[nodiscard]] consteval UnitMagnitude auto mag_power_lazy();
 
-// Forward declarations; fully defined after unit_magnitude
-template<auto H, auto... Rest>
-[[nodiscard]] consteval auto abs_magnitude(unit_magnitude<H, Rest...>);
-[[nodiscard]] consteval auto abs_magnitude(unit_magnitude<>);
-
-template<int Num, int Den>
-[[nodiscard]] consteval auto pow_magnitude(unit_magnitude<>);
-template<int Num, int Den, auto H, auto... Rest>
-[[nodiscard]] consteval auto pow_magnitude(unit_magnitude<H, Rest...>);
-
-template<typename T>
-struct magnitude_base {};
-
-template<auto H, auto... T>
-struct magnitude_base<unit_magnitude<H, T...>> {
-  template<auto H2, auto... T2>
-  [[nodiscard]] friend consteval UnitMagnitude auto multiply_impl(unit_magnitude<H, T...>, unit_magnitude<H2, T2...>)
-  {
-    if constexpr (mag_less(H, H2)) {
-      if constexpr (sizeof...(T) == 0) {
-        // Shortcut for the "pure prepend" case, which makes it easier to implement some of the other cases.
-        return unit_magnitude<H, H2, T2...>{};
-      } else {
-        return unit_magnitude<H>{} * (unit_magnitude<T...>{} * unit_magnitude<H2, T2...>{});
-      }
-    } else if constexpr (mag_less(H2, H)) {
-      return unit_magnitude<H2>{} * (unit_magnitude<H, T...>{} * unit_magnitude<T2...>{});
-    } else {
-      if constexpr (std::is_same_v<decltype(get_base(H)), decltype(get_base(H2))>) {
-        constexpr auto partial_product = unit_magnitude<T...>{} * unit_magnitude<T2...>{};
-        if constexpr (is_negative_tag<decltype(get_base(H))>) {
-          // (-1) * (-1) = 1: two negatives cancel each other out
-          return partial_product;
-        } else if constexpr (get_exponent(H) + get_exponent(H2) == 0) {
-          return partial_product;
-        } else {
-          // Make a new power_v with the common base of H and H2, whose power is their powers' sum.
-          constexpr auto new_head = power_v_or_T<get_base(H), get_exponent(H) + get_exponent(H2)>();
-
-          if constexpr (get_exponent(new_head) == 0) {
-            return partial_product;
-          } else {
-            return unit_magnitude<new_head>{} * partial_product;
-          }
-        }
-      }
-    }
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  // Common Magnitude.
-  //
-  // The "common Magnitude" C, of two Magnitudes M1 and M2, is the largest Magnitude such that each of its inputs is
-  // expressible by only positive basis powers relative to C.  That is, both (M1 / C) and (M2 / C) contain only positive
-  // powers in the expansion on our basis.
-  //
-  // For rational Magnitudes (or, more precisely, Magnitudes that are rational _relative to each other_), this reduces
-  // to the familiar convention from the std::chrono library: it is the largest Magnitude C such that each input
-  // Magnitude is an _integer multiple_ of C.  The connection can be seen by considering the definition in the above
-  // paragraph, and recognizing that both the bases and the powers are all integers for rational Magnitudes.
-  //
-  // For relatively _irrational_ Magnitudes (whether from irrational bases, or fractional powers of integer bases), the
-  // notion of a "common type" becomes less important, because there is no way to preserve pure integer multiplication.
-  // When we go to retrieve our value, we'll be stuck with a floating point approximation no matter what choice we make.
-  // Thus, we make the _simplest_ choice which reproduces the correct convention in the rational case: namely, taking
-  // the minimum power for each base (where absent bases implicitly have a power of 0).
-  template<auto H2, auto... T2>
-  [[nodiscard]] friend consteval auto common_magnitude(unit_magnitude<H, T...>, unit_magnitude<H2, T2...>)
-  {
-    if constexpr (get_base_value(H) < get_base_value(H2)) {
-      // When H1 has the smaller base, prepend to result from recursion.
-      return mp_units::detail::remove_positive_power(unit_magnitude<H>{}) *
-             common_magnitude(unit_magnitude<T...>{}, unit_magnitude<H2, T2...>{});
-    } else if constexpr (get_base_value(H2) < get_base_value(H)) {
-      // When H2 has the smaller base, prepend to result from recursion.
-      return mp_units::detail::remove_positive_power(unit_magnitude<H2>{}) *
-             common_magnitude(unit_magnitude<H, T...>{}, unit_magnitude<T2...>{});
-    } else {
-      // When the bases are equal, pick whichever has the lower power.
-      constexpr auto common_tail = common_magnitude(unit_magnitude<T...>{}, unit_magnitude<T2...>{});
-      if constexpr (get_exponent(H) < get_exponent(H2)) {
-        return unit_magnitude<H>{} * common_tail;
-      } else {
-        return unit_magnitude<H2>{} * common_tail;
-      }
-    }
-  }
-};
+// The two escape hatches of `unit_magnitude_interface` below. Friend bodies in the interface may
+// not name a concrete specialization of the still-incomplete `unit_magnitude` in a non-dependent
+// expression, and these two need to (`unit_magnitude<>`, `unit_magnitude<negative_tag{}>`), so
+// they are the only magnitude-taking functions living at namespace scope; the dependent calls
+// resolve here at instantiation, when the class is complete.
+template<auto... Ms>
+[[nodiscard]] consteval unit_magnitude<> empty_magnitude(unit_magnitude<Ms...>);
 
 template<auto... Ms>
-[[nodiscard]] consteval std::size_t magnitude_list_size(unit_magnitude<Ms...>)
-{
-  return sizeof...(Ms);
-}
+[[nodiscard]] consteval auto negate_magnitude(unit_magnitude<Ms...>);
 
 template<typename CharT, std::output_iterator<CharT> Out>
 [[nodiscard]] constexpr Out print_separator(Out out, const unit_symbol_formatting& fmt)
@@ -376,25 +280,6 @@ template<typename CharT, std::output_iterator<CharT> Out>
     *out++ = ' ';
   }
   return out;
-}
-
-template<typename CharT, std::output_iterator<CharT> Out, auto... Ms>
-  requires(sizeof...(Ms) == 0)
-[[nodiscard]] constexpr auto mag_constants_text(Out out, unit_magnitude<Ms...>, const unit_symbol_formatting&, bool)
-{
-  return out;
-}
-
-template<typename CharT, std::output_iterator<CharT> Out, auto M, auto... Rest>
-[[nodiscard]] constexpr auto mag_constants_text(Out out, unit_magnitude<M, Rest...>, const unit_symbol_formatting& fmt,
-                                                bool negative_power)
-{
-  auto to_symbol = [&]<typename T>(T v) {
-    out = copy_symbol<CharT>(get_base(v)._symbol_, fmt.char_set, negative_power, out);
-    constexpr ratio r = get_exponent(T{});
-    return copy_symbol_exponent<CharT, detail::abs(r.num), r.den>(fmt.char_set, negative_power, out);
-  };
-  return (to_symbol(M), ..., (out = print_separator<CharT>(out, fmt), to_symbol(Rest)));
 }
 
 template<typename CharT, UnitMagnitude auto Num, UnitMagnitude auto Den, UnitMagnitude auto NumConstants,
@@ -461,49 +346,69 @@ template<typename CharT, UnitMagnitude auto Num, UnitMagnitude auto Den, UnitMag
 }
 
 /**
- * @brief  A representation for positive real numbers which optimizes taking products and rational powers.
+ * @brief  The interface of unit magnitudes: every operation, as hidden friends.
  *
- * Magnitudes can be treated as values.  Each type encodes exactly one value.  Users can multiply, divide, raise to
- * rational powers, and compare for equality.
+ * A hidden friend of a class template is redeclared by every specialization, and magnitude-heavy
+ * code instantiates thousands of specializations per translation unit (every product materializes
+ * intermediates), so hosting these functions in `unit_magnitude` itself made its instantiations
+ * dominate compile times. In this non-template base they are declared exactly once per program,
+ * while keeping every hidden-friend benefit: ADL finds them for every magnitude (a base class is
+ * an associated class of the argument), they stay invisible to ordinary lookup, and operator
+ * candidate lists in diagnostics stay short. Same pattern as `unit_interface` and
+ * `quantity_spec_interface`.
+ *
+ * `unit_magnitude` is still incomplete here, so no body may name a concrete specialization in a
+ * non-dependent expression; `empty_magnitude(m)` and `negate_magnitude(m)` keep those spellings
+ * dependent.
  */
-template<auto... Ms>
-struct unit_magnitude : magnitude_base<unit_magnitude<Ms...>> {
+struct unit_magnitude_interface {
   // Negation. CODATA publishes plenty of negative constants (magnetic moments, g-factors,
   // charge-to-mass quotients), and writing the sign where the table shows it reads better than
   // burying it in a numerator. `negative_tag` is an ordinary base, so a second negation cancels
   // through the same multiplication path as any other repeated factor.
-  [[nodiscard]] friend consteval UnitMagnitude auto operator-(unit_magnitude m)
+  template<UnitMagnitude M>
+  [[nodiscard]] friend consteval UnitMagnitude auto operator-(M m)
   {
-    return unit_magnitude<negative_tag{}>{} * m;
+    return mp_units::detail::negate_magnitude(m);
   }
 
-  template<UnitMagnitude M>
-  [[nodiscard]] friend consteval UnitMagnitude auto operator*(unit_magnitude lhs, M rhs)
+  template<UnitMagnitude Lhs, UnitMagnitude Rhs>
+  [[nodiscard]] friend consteval UnitMagnitude auto operator*(Lhs lhs, Rhs rhs)
   {
-    if constexpr (sizeof...(Ms) == 0)
+    if constexpr (std::is_same_v<Lhs, unit_magnitude<>>)
       return rhs;
-    else if constexpr (std::is_same_v<M, unit_magnitude<>>)
+    else if constexpr (std::is_same_v<Rhs, unit_magnitude<>>)
       return lhs;
     else
       return multiply_impl(lhs, rhs);
   }
 
-  [[nodiscard]] friend consteval auto operator/(unit_magnitude lhs, UnitMagnitude auto rhs)
+  template<UnitMagnitude Lhs, UnitMagnitude Rhs>
+  [[nodiscard]] friend consteval auto operator/(Lhs lhs, Rhs rhs)
   {
     return lhs * pow<-1>(rhs);
   }
 
-  template<UnitMagnitude Rhs>
-  [[nodiscard]] friend consteval bool operator==(unit_magnitude, Rhs)
+  template<UnitMagnitude Lhs, UnitMagnitude Rhs>
+  [[nodiscard]] friend consteval bool operator==(Lhs, Rhs)
   {
-    return std::is_same_v<unit_magnitude, Rhs>;
+    return std::is_same_v<Lhs, Rhs>;
   }
 
-private:
-  // all below functions should in fact be in a `detail` namespace but are placed here to benefit from the ADL
-  [[nodiscard]] friend consteval bool is_integral(const unit_magnitude&) { return (is_integral_impl(Ms) && ...); }
-  [[nodiscard]] friend consteval bool is_rational(const unit_magnitude&) { return (is_rational_impl(Ms) && ...); }
-  [[nodiscard]] friend consteval bool is_positive_integral_power(const unit_magnitude&)
+  template<auto... Ms>
+  [[nodiscard]] friend consteval bool is_integral(unit_magnitude<Ms...>)
+  {
+    return (is_integral_impl(Ms) && ...);
+  }
+
+  template<auto... Ms>
+  [[nodiscard]] friend consteval bool is_rational(unit_magnitude<Ms...>)
+  {
+    return (is_rational_impl(Ms) && ...);
+  }
+
+  template<auto... Ms>
+  [[nodiscard]] friend consteval bool is_positive_integral_power(unit_magnitude<Ms...>)
   {
     return (is_positive_integral_power_impl(Ms) && ...);
   }
@@ -515,9 +420,9 @@ private:
    * prevent the expression from being softly evaluated in a `requires` clause.
    * Only available for unsigned integral T.
    */
-  template<typename T>
+  template<typename T, auto... Ms>
     requires std::is_unsigned_v<T> && ((is_integral_impl(Ms) && ...))
-  [[nodiscard]] friend consteval std::optional<T> try_get_value(const unit_magnitude&)
+  [[nodiscard]] friend consteval std::optional<T> try_get_value(unit_magnitude<Ms...>)
   {
     std::optional<T> result{T{1}};
     (try_accumulate_element<T, Ms>(result), ...);
@@ -527,12 +432,12 @@ private:
   /**
    * @brief  The value of a Magnitude in a desired type T.
    */
-  template<typename T>
+  template<typename T, auto... Ms>
     requires((is_integral_impl(Ms) && ...)) || treat_as_floating_point<T>
-  [[nodiscard]] friend consteval T get_value(const unit_magnitude&)
+  [[nodiscard]] friend consteval T get_value(unit_magnitude<Ms...>)
   {
     if constexpr (std::is_unsigned_v<T>) {
-      constexpr auto result = try_get_value<T>(unit_magnitude{});
+      constexpr auto result = try_get_value<T>(unit_magnitude<Ms...>{});
       static_assert(result.has_value(), "Magnitude value overflows the target unsigned type");
       return *result;
     } else {
@@ -542,51 +447,54 @@ private:
     }
   }
 
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Magnitude rational powers implementation.
-  template<int Num, int Den = 1>
-  [[nodiscard]] friend consteval auto pow(unit_magnitude)
+  template<int Num, int Den = 1, auto... Ms>
+  [[nodiscard]] friend consteval auto pow(unit_magnitude<Ms...> m)
   {
     if constexpr (Num == 0) {
-      return unit_magnitude<>{};
+      return mp_units::detail::empty_magnitude(m);
     } else {
-      return pow_magnitude<Num, Den>(unit_magnitude{});
+      return pow_magnitude<Num, Den>(m);
     }
   }
 
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Magnitude numerator and denominator implementation.
-  [[nodiscard]] friend consteval auto numerator(unit_magnitude)
+  template<auto... Ms>
+  [[nodiscard]] friend consteval auto numerator(unit_magnitude<Ms...> m)
   {
-    return (mp_units::detail::integer_part(unit_magnitude<Ms>{}) * ... * unit_magnitude<>{});
+    return (integer_part(unit_magnitude<Ms>{}) * ... * mp_units::detail::empty_magnitude(m));
   }
 
-  [[nodiscard]] friend consteval auto denominator(unit_magnitude)
+  template<auto... Ms>
+  [[nodiscard]] friend consteval auto denominator(unit_magnitude<Ms...>)
   {
-    return numerator(pow<-1>(mp_units::detail::abs_magnitude(unit_magnitude{})));
+    return numerator(pow<-1>(abs_magnitude(unit_magnitude<Ms...>{})));
   }
 
-  [[nodiscard]] friend consteval auto remove_positive_powers(unit_magnitude)
+  template<auto... Ms>
+  [[nodiscard]] friend consteval auto remove_positive_powers(unit_magnitude<Ms...> m)
   {
-    return (unit_magnitude<>{} * ... * mp_units::detail::remove_positive_power(unit_magnitude<Ms>{}));
+    return (mp_units::detail::empty_magnitude(m) * ... * remove_positive_power(unit_magnitude<Ms>{}));
   }
 
-  [[nodiscard]] friend consteval auto extract_components(unit_magnitude)
+  template<auto... Ms>
+  [[nodiscard]] friend consteval auto extract_components(unit_magnitude<Ms...> m)
   {
-    constexpr auto ratio = (unit_magnitude<>{} * ... * mp_units::detail::remove_mag_constants(unit_magnitude<Ms>{}));
-    if constexpr (ratio == unit_magnitude{})
-      return std::tuple{ratio, unit_magnitude<>{}, unit_magnitude<>{}};
+    constexpr auto ratio =
+      (mp_units::detail::empty_magnitude(unit_magnitude<Ms...>{}) * ... * remove_mag_constants(unit_magnitude<Ms>{}));
+    if constexpr (ratio == unit_magnitude<Ms...>{})
+      return std::tuple{ratio, mp_units::detail::empty_magnitude(m), mp_units::detail::empty_magnitude(m)};
     else {
-      constexpr auto num_constants =
-        (unit_magnitude<>{} * ... * mp_units::detail::only_positive_mag_constants(unit_magnitude<Ms>{}));
-      constexpr auto den_constants =
-        (unit_magnitude<>{} * ... * mp_units::detail::only_negative_mag_constants(unit_magnitude<Ms>{}));
+      constexpr auto num_constants = (mp_units::detail::empty_magnitude(unit_magnitude<Ms...>{}) * ... *
+                                      only_positive_mag_constants(unit_magnitude<Ms>{}));
+      constexpr auto den_constants = (mp_units::detail::empty_magnitude(unit_magnitude<Ms...>{}) * ... *
+                                      only_negative_mag_constants(unit_magnitude<Ms>{}));
       return std::tuple{ratio, num_constants, den_constants};
     }
   }
 
-  template<typename T>
-  [[nodiscard]] friend consteval ratio get_power([[maybe_unused]] T base, unit_magnitude)
+  template<typename T, auto... Ms>
+  [[nodiscard]] friend consteval ratio get_power([[maybe_unused]] T base, unit_magnitude<Ms...>)
   {
     [[maybe_unused]] auto is_base = [&](auto element) consteval {
       if constexpr (is_negative_tag<decltype(element)>)
@@ -597,7 +505,8 @@ private:
     return ((is_base(Ms) ? get_exponent(Ms) : ratio{0}) + ... + ratio{0});
   }
 
-  [[nodiscard]] friend consteval std::intmax_t extract_power_of_10(unit_magnitude mag)
+  template<auto... Ms>
+  [[nodiscard]] friend consteval std::intmax_t extract_power_of_10(unit_magnitude<Ms...> mag)
   {
     const auto power_of_2 = get_power(2, mag);
     const auto power_of_5 = get_power(5, mag);
@@ -607,8 +516,8 @@ private:
     return integer_part((detail::abs(power_of_2) < detail::abs(power_of_5)) ? power_of_2 : power_of_5);
   }
 
-  template<typename CharT, std::output_iterator<CharT> Out>
-  [[nodiscard]] friend constexpr Out magnitude_symbol(Out out, unit_magnitude, const unit_symbol_formatting& fmt)
+  template<typename CharT, std::output_iterator<CharT> Out, auto... Ms>
+  [[nodiscard]] friend constexpr Out magnitude_symbol(Out out, unit_magnitude<Ms...>, const unit_symbol_formatting& fmt)
   {
     if constexpr (sizeof...(Ms) == 0) {
       return out;
@@ -617,18 +526,18 @@ private:
       constexpr bool is_negative = sizeof...(Ms) > 0 && is_negative_tag<decltype(first_mag_arg<Ms...>())>;
       if constexpr (is_negative) {
         *out++ = '-';
-        constexpr UnitMagnitude auto abs_mag = mp_units::detail::abs_magnitude(unit_magnitude{});
+        constexpr UnitMagnitude auto abs_mag = abs_magnitude(unit_magnitude<Ms...>{});
         return magnitude_symbol<CharT>(out, abs_mag, fmt);
       } else {
-        constexpr auto extract_res = extract_components(unit_magnitude{});
+        constexpr auto extract_res = extract_components(unit_magnitude<Ms...>{});
         constexpr UnitMagnitude auto ratio = std::get<0>(extract_res);
         constexpr UnitMagnitude auto num_constants = std::get<1>(extract_res);
         constexpr UnitMagnitude auto den_constants = std::get<2>(extract_res);
         constexpr std::intmax_t exp10 = extract_power_of_10(ratio);
         if constexpr (detail::abs(exp10) < 3) {
           // print the value as a regular number (without exponent)
-          constexpr UnitMagnitude auto num = numerator(unit_magnitude{});
-          constexpr UnitMagnitude auto den = denominator(unit_magnitude{});
+          constexpr UnitMagnitude auto num = numerator(unit_magnitude<Ms...>{});
+          constexpr UnitMagnitude auto den = denominator(unit_magnitude<Ms...>{});
           // TODO address the below
           static_assert(ratio == num / den, "Printing rational powers not yet supported");
           return magnitude_symbol_impl<CharT, num, den, num_constants, den_constants, 0>(out, fmt);
@@ -646,141 +555,284 @@ private:
       }
     }
   }
-};
 
-template<int Num, int Den>
-[[nodiscard]] consteval auto pow_magnitude(unit_magnitude<>)
-{
-  return unit_magnitude<>{};
-}
+  // The implementation helpers below take magnitudes too, so they are hidden friends as well:
+  // with nothing of these names left at namespace scope, an ADL call on a magnitude sees exactly
+  // one candidate family. Only `empty_magnitude` and `negate_magnitude` stay outside (their
+  // bodies must name concrete `unit_magnitude` specializations, which no friend body can do),
+  // together with the element/value-level utilities that do not take a magnitude at all. Empty
+  // packs cannot be spelled as `unit_magnitude<>` parameters here for the same incompleteness
+  // reason; a `std::same_as<unit_magnitude<>>` template parameter keeps those signatures
+  // dependent instead.
 
-template<int Num, int Den, auto H, auto... Rest>
-[[nodiscard]] consteval auto pow_magnitude(unit_magnitude<H, Rest...>)
-{
-  if constexpr (is_negative_tag<decltype(H)>) {
-    // Raising (-1) to the power Num/Den (in lowest terms):
-    //  - even denominator → taking an even root of a negative number → hard error
-    //  - even numerator   → result is positive (+1), negative_tag cancels out
-    //  - odd numerator    → result is negative (-1), negative_tag is preserved
-    static_assert(ratio{Num, Den}.den % 2 == 1, "Cannot take even root of negative magnitude");
-    constexpr auto rest_powered = pow_magnitude<Num, Den>(unit_magnitude<Rest...>{});
-    if constexpr (ratio{Num, Den}.num % 2 == 0)
-      return rest_powered;
-    else
-      return unit_magnitude<H>{} * rest_powered;
-  } else {
-    // No negative_tag at front: apply power uniformly to all elements.
-    return unit_magnitude<power_v_or_T<get_base(H), get_exponent(H) * ratio{Num, Den}>(),
-                          power_v_or_T<get_base(Rest), get_exponent(Rest) * ratio{Num, Den}>()...>{};
-  }
-}
-
-[[nodiscard]] consteval auto common_magnitude(unit_magnitude<>, UnitMagnitude auto m)
-{
-  return remove_positive_powers(m);
-}
-[[nodiscard]] consteval auto common_magnitude(UnitMagnitude auto m, unit_magnitude<>)
-{
-  return remove_positive_powers(m);
-}
-[[nodiscard]] consteval auto common_magnitude(unit_magnitude<> m, unit_magnitude<>) { return m; }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// `abs_magnitude` — strips the leading negative_tag if present, leaving the absolute value.
-
-template<auto H, auto... Rest>
-[[nodiscard]] consteval auto abs_magnitude(unit_magnitude<H, Rest...>)
-{
-  if constexpr (is_negative_tag<decltype(H)>)
-    return unit_magnitude<Rest...>{};
-  else
-    return unit_magnitude<H, Rest...>{};
-}
-
-[[nodiscard]] consteval auto abs_magnitude(unit_magnitude<>) { return unit_magnitude<>{}; }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// `magnitude_is_positive` — checks whether a magnitude is positive (i.e., has no negative_tag).
-
-// Uses a consteval function rather than `std::is_same_v<decltype(M), decltype(abs_magnitude(M))>` because GCC 12
-// incorrectly evaluates the latter to `false` for genuinely positive magnitudes in some constexpr contexts.
-[[nodiscard]] consteval bool check_magnitude_is_positive(unit_magnitude<>) { return true; }
-
-template<auto H, auto... Rest>
-[[nodiscard]] consteval bool check_magnitude_is_positive(unit_magnitude<H, Rest...>)
-{
-  return !is_negative_tag<decltype(H)>;
-}
-
-template<UnitMagnitude auto M>
-constexpr bool magnitude_is_positive = check_magnitude_is_positive(M);
-
-// The largest integer which can be extracted from any magnitude with only a single basis vector.
-template<auto M>
-[[nodiscard]] consteval auto integer_part(unit_magnitude<M>)
-{
-  // The negative_tag is the integer (-1): include it in the integer part.
-  // The else is required so that the rest of the body (which calls get_exponent/get_base on M)
-  // is not instantiated for negative_tag, avoiding conflicting return type deductions.
-  if constexpr (is_negative_tag<decltype(M)>) {
-    return unit_magnitude<M>{};
-  } else {
-    constexpr auto power_num = get_exponent(M).num;
-    constexpr auto power_den = get_exponent(M).den;
-
-    if constexpr (std::is_integral_v<decltype(get_base(M))> && (power_num >= power_den)) {
-      // largest integer power
-      return unit_magnitude<power_v_or_T<get_base(M), power_num / power_den>()>{};  // Note: integer division intended
+  // The product of two non-empty magnitudes, merging the sorted packs of basis powers.
+  // `operator*` handles the empty-operand cases before delegating here.
+  template<auto H, auto... T, auto H2, auto... T2>
+  [[nodiscard]] friend consteval UnitMagnitude auto multiply_impl(unit_magnitude<H, T...>, unit_magnitude<H2, T2...>)
+  {
+    if constexpr (mag_less(H, H2)) {
+      if constexpr (sizeof...(T) == 0) {
+        // Shortcut for the "pure prepend" case, which makes it easier to implement some of the other cases.
+        return unit_magnitude<H, H2, T2...>{};
+      } else {
+        return unit_magnitude<H>{} * (unit_magnitude<T...>{} * unit_magnitude<H2, T2...>{});
+      }
+    } else if constexpr (mag_less(H2, H)) {
+      return unit_magnitude<H2>{} * (unit_magnitude<H, T...>{} * unit_magnitude<T2...>{});
     } else {
-      return unit_magnitude<>{};
+      if constexpr (std::is_same_v<decltype(get_base(H)), decltype(get_base(H2))>) {
+        constexpr auto partial_product = unit_magnitude<T...>{} * unit_magnitude<T2...>{};
+        if constexpr (is_negative_tag<decltype(get_base(H))>) {
+          // (-1) * (-1) = 1: two negatives cancel each other out
+          return partial_product;
+        } else if constexpr (get_exponent(H) + get_exponent(H2) == 0) {
+          return partial_product;
+        } else {
+          // Make a new power_v with the common base of H and H2, whose power is their powers' sum.
+          constexpr auto new_head = power_v_or_T<get_base(H), get_exponent(H) + get_exponent(H2)>();
+
+          if constexpr (get_exponent(new_head) == 0) {
+            return partial_product;
+          } else {
+            return unit_magnitude<new_head>{} * partial_product;
+          }
+        }
+      }
     }
   }
-}
 
-template<auto M>
-[[nodiscard]] consteval auto remove_positive_power(unit_magnitude<M> m)
-{
-  if constexpr (is_negative_tag<decltype(M)>)
-    return unit_magnitude<>{};  // negative_tag is a sign sentinel, not a basis element; exclude it
-  else if constexpr (get_exponent(M).num < 0) {
-    return m;
-  } else {
-    return unit_magnitude<>{};
+  template<int Num, int Den, auto... Ms>
+  [[nodiscard]] friend consteval auto pow_magnitude(unit_magnitude<Ms...> m)
+  {
+    if constexpr (sizeof...(Ms) == 0) {
+      return m;
+    } else if constexpr (is_negative_tag<decltype(first_mag_arg<Ms...>())>) {
+      // Raising (-1) to the power Num/Den (in lowest terms):
+      //  - even denominator → taking an even root of a negative number → hard error
+      //  - even numerator   → result is positive (+1), negative_tag cancels out
+      //  - odd numerator    → result is negative (-1), negative_tag is preserved
+      static_assert(ratio{Num, Den}.den % 2 == 1, "Cannot take even root of negative magnitude");
+      constexpr auto rest_powered = pow_magnitude<Num, Den>(abs_magnitude(unit_magnitude<Ms...>{}));
+      if constexpr (ratio{Num, Den}.num % 2 == 0)
+        return rest_powered;
+      else
+        return mp_units::detail::negate_magnitude(rest_powered);
+    } else {
+      // No negative_tag at front: apply power uniformly to all elements.
+      return unit_magnitude<power_v_or_T<get_base(Ms), get_exponent(Ms) * ratio{Num, Den}>()...>{};
+    }
   }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // Common Magnitude.
+  //
+  // The "common Magnitude" C, of two Magnitudes M1 and M2, is the largest Magnitude such that each of its inputs is
+  // expressible by only positive basis powers relative to C.  That is, both (M1 / C) and (M2 / C) contain only positive
+  // powers in the expansion on our basis.
+  //
+  // For rational Magnitudes (or, more precisely, Magnitudes that are rational _relative to each other_), this reduces
+  // to the familiar convention from the std::chrono library: it is the largest Magnitude C such that each input
+  // Magnitude is an _integer multiple_ of C.  The connection can be seen by considering the definition in the above
+  // paragraph, and recognizing that both the bases and the powers are all integers for rational Magnitudes.
+  //
+  // For relatively _irrational_ Magnitudes (whether from irrational bases, or fractional powers of integer bases), the
+  // notion of a "common type" becomes less important, because there is no way to preserve pure integer multiplication.
+  // When we go to retrieve our value, we'll be stuck with a floating point approximation no matter what choice we make.
+  // Thus, we make the _simplest_ choice which reproduces the correct convention in the rational case: namely, taking
+  // the minimum power for each base (where absent bases implicitly have a power of 0).
+  template<std::same_as<unit_magnitude<>> Empty, UnitMagnitude M>
+    requires(!std::same_as<M, unit_magnitude<>>)
+  [[nodiscard]] friend consteval auto common_magnitude(Empty, M m)
+  {
+    return remove_positive_powers(m);
+  }
+
+  template<UnitMagnitude M, std::same_as<unit_magnitude<>> Empty>
+    requires(!std::same_as<M, unit_magnitude<>>)
+  [[nodiscard]] friend consteval auto common_magnitude(M m, Empty)
+  {
+    return remove_positive_powers(m);
+  }
+
+  template<std::same_as<unit_magnitude<>> Empty1, std::same_as<unit_magnitude<>> Empty2>
+  [[nodiscard]] friend consteval auto common_magnitude(Empty1 m, Empty2)
+  {
+    return m;
+  }
+
+  template<auto H, auto... T, auto H2, auto... T2>
+  [[nodiscard]] friend consteval auto common_magnitude(unit_magnitude<H, T...>, unit_magnitude<H2, T2...>)
+  {
+    if constexpr (get_base_value(H) < get_base_value(H2)) {
+      // When H1 has the smaller base, prepend to result from recursion.
+      return remove_positive_power(unit_magnitude<H>{}) *
+             common_magnitude(unit_magnitude<T...>{}, unit_magnitude<H2, T2...>{});
+    } else if constexpr (get_base_value(H2) < get_base_value(H)) {
+      // When H2 has the smaller base, prepend to result from recursion.
+      return remove_positive_power(unit_magnitude<H2>{}) *
+             common_magnitude(unit_magnitude<H, T...>{}, unit_magnitude<T2...>{});
+    } else {
+      // When the bases are equal, pick whichever has the lower power.
+      constexpr auto common_tail = common_magnitude(unit_magnitude<T...>{}, unit_magnitude<T2...>{});
+      if constexpr (get_exponent(H) < get_exponent(H2)) {
+        return unit_magnitude<H>{} * common_tail;
+      } else {
+        return unit_magnitude<H2>{} * common_tail;
+      }
+    }
+  }
+
+  // `abs_magnitude` — strips the leading negative_tag if present, leaving the absolute value.
+  template<auto H, auto... Rest>
+  [[nodiscard]] friend consteval auto abs_magnitude(unit_magnitude<H, Rest...>)
+  {
+    if constexpr (is_negative_tag<decltype(H)>)
+      return unit_magnitude<Rest...>{};
+    else
+      return unit_magnitude<H, Rest...>{};
+  }
+
+  template<std::same_as<unit_magnitude<>> M>
+  [[nodiscard]] friend consteval auto abs_magnitude(M m)
+  {
+    return m;
+  }
+
+  // Whether a magnitude is positive (i.e., has no negative_tag). Uses a consteval function rather
+  // than `std::is_same_v<decltype(M), decltype(abs_magnitude(M))>` because GCC 12 incorrectly
+  // evaluates the latter to `false` for genuinely positive magnitudes in some constexpr contexts.
+  template<auto H, auto... Rest>
+  [[nodiscard]] friend consteval bool check_magnitude_is_positive(unit_magnitude<H, Rest...>)
+  {
+    return !is_negative_tag<decltype(H)>;
+  }
+
+  template<std::same_as<unit_magnitude<>> M>
+  [[nodiscard]] friend consteval bool check_magnitude_is_positive(M)
+  {
+    return true;
+  }
+
+  // The largest integer which can be extracted from any magnitude with only a single basis vector.
+  template<auto M>
+  [[nodiscard]] friend consteval auto integer_part(unit_magnitude<M> m)
+  {
+    // The negative_tag is the integer (-1): include it in the integer part.
+    // The else is required so that the rest of the body (which calls get_exponent/get_base on M)
+    // is not instantiated for negative_tag, avoiding conflicting return type deductions.
+    if constexpr (is_negative_tag<decltype(M)>) {
+      return m;
+    } else {
+      constexpr auto power_num = get_exponent(M).num;
+      constexpr auto power_den = get_exponent(M).den;
+
+      if constexpr (std::is_integral_v<decltype(get_base(M))> && (power_num >= power_den)) {
+        // largest integer power
+        return unit_magnitude<power_v_or_T<get_base(M), power_num / power_den>()>{};  // Note: integer division intended
+      } else {
+        return mp_units::detail::empty_magnitude(m);
+      }
+    }
+  }
+
+  template<auto M>
+  [[nodiscard]] friend consteval auto remove_positive_power(unit_magnitude<M> m)
+  {
+    if constexpr (is_negative_tag<decltype(M)>)
+      return mp_units::detail::empty_magnitude(m);  // negative_tag is a sign sentinel, not a basis element; exclude it
+    else if constexpr (get_exponent(M).num < 0) {
+      return m;
+    } else {
+      return mp_units::detail::empty_magnitude(m);
+    }
+  }
+
+  template<auto M>
+  [[nodiscard]] friend consteval auto remove_mag_constants(unit_magnitude<M> m)
+  {
+    if constexpr (is_negative_tag<decltype(M)>)
+      return m;  // negative_tag is a sign marker, not a mag_constant; keep it in the ratio part
+    else if constexpr (is_mag_constant<decltype(get_base(M))>)
+      return mp_units::detail::empty_magnitude(m);
+    else
+      return m;
+  }
+
+  template<auto M>
+  [[nodiscard]] friend consteval auto only_positive_mag_constants(unit_magnitude<M> m)
+  {
+    if constexpr (is_negative_tag<decltype(M)>)
+      return mp_units::detail::empty_magnitude(m);
+    else if constexpr (is_mag_constant<decltype(get_base(M))> && get_exponent(M) >= 0)
+      return m;
+    else
+      return mp_units::detail::empty_magnitude(m);
+  }
+
+  template<auto M>
+  [[nodiscard]] friend consteval auto only_negative_mag_constants(unit_magnitude<M> m)
+  {
+    if constexpr (is_negative_tag<decltype(M)>)
+      return mp_units::detail::empty_magnitude(m);
+    else if constexpr (is_mag_constant<decltype(get_base(M))> && get_exponent(M) < 0)
+      return m;
+    else
+      return mp_units::detail::empty_magnitude(m);
+  }
+
+  template<auto... Ms>
+  [[nodiscard]] friend consteval std::size_t magnitude_list_size(unit_magnitude<Ms...>)
+  {
+    return sizeof...(Ms);
+  }
+
+  template<typename CharT, std::output_iterator<CharT> Out, auto... Ms>
+    requires(sizeof...(Ms) == 0)
+  [[nodiscard]] friend constexpr auto mag_constants_text(Out out, unit_magnitude<Ms...>, const unit_symbol_formatting&,
+                                                         bool)
+  {
+    return out;
+  }
+
+  template<typename CharT, std::output_iterator<CharT> Out, auto M, auto... Rest>
+  [[nodiscard]] friend constexpr auto mag_constants_text(Out out, unit_magnitude<M, Rest...>,
+                                                         const unit_symbol_formatting& fmt, bool negative_power)
+  {
+    auto to_symbol = [&]<typename T>(T v) {
+      out = copy_symbol<CharT>(get_base(v)._symbol_, fmt.char_set, negative_power, out);
+      constexpr ratio r = get_exponent(T{});
+      return copy_symbol_exponent<CharT, detail::abs(r.num), r.den>(fmt.char_set, negative_power, out);
+    };
+    return (to_symbol(M), ..., (out = print_separator<CharT>(out, fmt), to_symbol(Rest)));
+  }
+};
+
+/**
+ * @brief  A representation for positive real numbers which optimizes taking products and rational powers.
+ *
+ * Magnitudes can be treated as values.  Each type encodes exactly one value.  Users can multiply, divide, raise to
+ * rational powers, and compare for equality.  The class itself is empty; the whole interface lives in the
+ * non-template base as hidden friends (see above).
+ */
+template<auto... Ms>
+struct unit_magnitude : unit_magnitude_interface {};
+
+template<auto... Ms>
+[[nodiscard]] consteval unit_magnitude<> empty_magnitude(unit_magnitude<Ms...>)
+{
+  return {};
 }
 
-template<auto M>
-[[nodiscard]] consteval auto remove_mag_constants(unit_magnitude<M> m)
+template<auto... Ms>
+[[nodiscard]] consteval auto negate_magnitude(unit_magnitude<Ms...> m)
 {
-  if constexpr (is_negative_tag<decltype(M)>)
-    return m;  // negative_tag is a sign marker, not a mag_constant; keep it in the ratio part
-  else if constexpr (is_mag_constant<decltype(get_base(M))>)
-    return unit_magnitude<>{};
-  else
-    return m;
+  return unit_magnitude<negative_tag{}>{} * m;
 }
 
-template<auto M>
-[[nodiscard]] consteval auto only_positive_mag_constants(unit_magnitude<M> m)
-{
-  if constexpr (is_negative_tag<decltype(M)>)
-    return unit_magnitude<>{};
-  else if constexpr (is_mag_constant<decltype(get_base(M))> && get_exponent(M) >= 0)
-    return m;
-  else
-    return unit_magnitude<>{};
-}
-
-template<auto M>
-[[nodiscard]] consteval auto only_negative_mag_constants(unit_magnitude<M> m)
-{
-  if constexpr (is_negative_tag<decltype(M)>)
-    return unit_magnitude<>{};
-  else if constexpr (is_mag_constant<decltype(get_base(M))> && get_exponent(M) < 0)
-    return m;
-  else
-    return unit_magnitude<>{};
-}
+// `magnitude_is_positive` — checks whether a magnitude is positive (i.e., has no negative_tag).
+// The initializer's unqualified call is found via ADL (the checker is a hidden friend).
+template<UnitMagnitude auto M>
+constexpr bool magnitude_is_positive = check_magnitude_is_positive(M);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // `mag()` implementation.

@@ -590,7 +590,8 @@ MP_UNITS_EXPORT template<MeasuredConstant U>
   if constexpr (requires { requires UnitMagnitude<MP_UNITS_NONCONST_TYPE(U::_relative_standard_uncertainty_)>; })
     return U::_relative_standard_uncertainty_;
   else
-    return detail::abs_magnitude(get_canonical_unit(U::_standard_uncertainty_).mag / get_canonical_unit(u).mag);
+    // unqualified on purpose: `abs_magnitude` is a hidden friend of the magnitude, found via ADL
+    return abs_magnitude(get_canonical_unit(U::_standard_uncertainty_).mag / get_canonical_unit(u).mag);
 }
 
 /**

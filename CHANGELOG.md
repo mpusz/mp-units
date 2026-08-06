@@ -20,6 +20,15 @@ This page documents the version history and changes for the **mp-units** library
       unbounded trial division (which needed ~266k `constexpr` iterations for real CODATA
       mantissas, over GCC's default loop limit). Mirrors the approach validated in Au
       (aurora-opensource/au#686); trial division remains as the last-resort fallback
+- perf: the whole `unit_magnitude` interface (operators and all queries) moved to hidden
+      friends of a new non-template `unit_magnitude_interface` base, the same shape as
+      `unit_interface` and `quantity_spec_interface`. A hidden friend of a class template
+      is redeclared by every specialization, and magnitude-heavy code instantiates
+      thousands of specializations per translation unit, so those declarations dominated
+      compile times; in a non-template base they are declared once and cost nothing while
+      keeping all hidden-friend benefits. A TU including `si` units and constants dropped
+      from ~2.6 s to ~1.6 s, and the complete `codata2022.h` from ~40 s to ~4.1 s
+      (GCC 15; Clang 21 shows 44 s -> 6.8 s)
 - (!) feat: `pi` and `π` is now a unit constant
 - (!) feat: `iau::newtonian_constant_of_gravitation` is now imported from
       `codata::newtonian_constant_of_gravitation` instead of being defined by the IAU system,
