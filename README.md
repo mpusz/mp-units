@@ -8,11 +8,11 @@
 [![Conan CI](https://img.shields.io/github/actions/workflow/status/mpusz/mp-units/ci-conan.yml?branch=master&label=Conan%20CI)](https://github.com/mpusz/mp-units/actions/workflows/ci-conan.yml)
 [![CMake CI](https://img.shields.io/github/actions/workflow/status/mpusz/mp-units/ci-test-package-cmake.yml?branch=master&label=CMake%20CI)](https://github.com/mpusz/mp-units/actions/workflows/ci-test-package-cmake.yml)
 [![Freestanding CI](https://img.shields.io/github/actions/workflow/status/mpusz/mp-units/ci-freestanding.yml?branch=master&label=Freestanding%20CI)](https://github.com/mpusz/mp-units/actions/workflows/ci-freestanding.yml)
-[![Codespaces CI](https://img.shields.io/github/actions/workflow/status/mpusz/mp-units/codespaces-test.yml?branch=master&label=CodeSpaces%20CI)](https://github.com/mpusz/mp-units/actions/workflows/codespaces-test.yml)
+[![Compile-time CI](https://img.shields.io/github/actions/workflow/status/mpusz/mp-units/ci-compile-time.yml?branch=master&label=Compile-time%20CI)](https://github.com/mpusz/mp-units/actions/workflows/ci-compile-time.yml)
 
 [![clang-tidy CI](https://img.shields.io/github/actions/workflow/status/mpusz/mp-units/ci-clang-tidy.yml?branch=master&label=clang-tidy%20CI)](https://github.com/mpusz/mp-units/actions/workflows/ci-clang-tidy.yml)
 [![Formatting CI](https://img.shields.io/github/actions/workflow/status/mpusz/mp-units/ci-formatting.yml?branch=master&label=Formatting%20CI)](https://github.com/mpusz/mp-units/actions/workflows/ci-formatting.yml)
-[![Compile-time CI](https://img.shields.io/github/actions/workflow/status/mpusz/mp-units/ci-compile-time.yml?branch=master&label=Compile-time%20CI)](https://github.com/mpusz/mp-units/actions/workflows/ci-compile-time.yml)
+[![Codespaces CI](https://img.shields.io/github/actions/workflow/status/mpusz/mp-units/codespaces-test.yml?branch=master&label=CodeSpaces%20CI)](https://github.com/mpusz/mp-units/actions/workflows/codespaces-test.yml)
 [![Documentation](https://img.shields.io/github/actions/workflow/status/mpusz/mp-units/documentation.yml?branch=master&label=Documentation)](https://github.com/mpusz/mp-units/actions/workflows/documentation.yml)
 
 [![Conan Center](https://img.shields.io/conan/v/mp-units?label=ConanCenter&color=blue)](https://conan.io/center/mp-units)
