@@ -40,6 +40,7 @@ import std;
 import mp_units;
 #else
 #include <mp-units/math.h>
+#include <mp-units/systems/codata/adopted_values.h>
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
 #endif
@@ -56,7 +57,7 @@ QUANTITY_SPEC(horizontal_length, isq::length);
 // with a constrained quantity equation
 QUANTITY_SPEC(horizontal_area, isq::area, horizontal_length* isq::width);
 
-inline constexpr auto g = 1 * si::standard_gravity;
+inline constexpr auto g = 1 * codata::standard_gravity;
 inline constexpr auto air_density = isq::mass_density(1.225 * kg / m3);
 
 class StorageTank {

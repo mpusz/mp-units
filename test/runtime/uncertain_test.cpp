@@ -286,9 +286,10 @@ TEST_CASE("measurement_of a measured constant", "[uncertain]")
 
   SECTION("conversion to SI materializes the relative uncertainty")
   {
+    // CODATA 2018: G = 6.674 30(15) x 10^-11, so u_r derives as the exact ratio of the two
     const quantity in_si = G_measured.in(m3 / kg / s2);
     CHECK_THAT(in_si.numerical_value_in(m3 / kg / s2).value(), WithinRel(6.6743e-11));
-    CHECK_THAT(in_si.numerical_value_in(m3 / kg / s2).relative_uncertainty(), WithinRel(2.2e-5));
+    CHECK_THAT(in_si.numerical_value_in(m3 / kg / s2).relative_uncertainty(), WithinRel(1.5e-15 / 6.6743e-11));
   }
 
   SECTION("cancellation against the constant unit stays symbolic and exact")
@@ -304,7 +305,7 @@ TEST_CASE("measurement_of a measured constant", "[uncertain]")
   {
     const quantity solar_mass = (1.0 * iau::nominal_solar_mass_parameter) / G_measured;
     CHECK_THAT(solar_mass.numerical_value_in(kg).value(), WithinRel(1.98841e30, 1e-4));
-    CHECK_THAT(solar_mass.numerical_value_in(kg).relative_uncertainty(), WithinRel(2.2e-5));
+    CHECK_THAT(solar_mass.numerical_value_in(kg).relative_uncertainty(), WithinRel(1.5e-15 / 6.6743e-11));
   }
 
   SECTION("a unit defined from a measured constant embeds its central value")
@@ -327,22 +328,22 @@ TEST_CASE("conversion factors built from measured constants carry their uncertai
     const quantity in_kg = value_cast<kg, uncertain<double>>(mass);
     CHECK_THAT(in_kg.numerical_value_in(kg).value(), WithinRel(3.97682e30, 1e-4));
     // solar mass = (GM)_sun/G, so the kg conversion inherits exactly G's relative uncertainty
-    CHECK_THAT(in_kg.numerical_value_in(kg).relative_uncertainty(), WithinRel(2.2e-5));
+    CHECK_THAT(in_kg.numerical_value_in(kg).relative_uncertainty(), WithinRel(1.5e-15 / 6.6743e-11));
   }
 
   SECTION("in<Rep>(unit) spells the same opt-in")
   {
     const quantity in_kg = mass.in<uncertain<double>>(kg);
     CHECK_THAT(in_kg.numerical_value_in(kg).value(), WithinRel(3.97682e30, 1e-4));
-    CHECK_THAT(in_kg.numerical_value_in(kg).relative_uncertainty(), WithinRel(2.2e-5));
+    CHECK_THAT(in_kg.numerical_value_in(kg).relative_uncertainty(), WithinRel(1.5e-15 / 6.6743e-11));
   }
 
   SECTION("an uncertain representation folds the factor in on a plain in(unit)")
   {
     const quantity counted = uncertain{2.0, 0.1} * iau::solar_mass;
     const quantity in_kg = counted.in(kg);
-    // the value's own 5% and the factor's 2.2e-5 combine in quadrature
-    CHECK_THAT(in_kg.numerical_value_in(kg).relative_uncertainty(), WithinRel(std::hypot(0.05, 2.2e-5)));
+    // the value's own 5% and the factor's u_r(G) combine in quadrature
+    CHECK_THAT(in_kg.numerical_value_in(kg).relative_uncertainty(), WithinRel(std::hypot(0.05, 1.5e-15 / 6.6743e-11)));
   }
 
   SECTION("a shared measured constant cancels, exactly as its central value does")
@@ -360,14 +361,16 @@ TEST_CASE("conversion factors built from measured constants carry their uncertai
   {
     const quantity in_kg = uncertain<double>{3.97682e30} * kg;
     const quantity in_solar_masses = in_kg.in(iau::solar_mass);
-    CHECK_THAT(in_solar_masses.numerical_value_in(iau::solar_mass).relative_uncertainty(), WithinRel(2.2e-5));
+    CHECK_THAT(in_solar_masses.numerical_value_in(iau::solar_mass).relative_uncertainty(),
+               WithinRel(1.5e-15 / 6.6743e-11));
   }
 
   SECTION("a fractional power of a measured constant scales its uncertainty contribution")
   {
     const quantity q = uncertain<double>{1.0} * sqrt(iau::newtonian_constant_of_gravitation);
     const quantity converted = q.in(sqrt(m3 / kg / s2));
-    CHECK_THAT(converted.numerical_value_in(sqrt(m3 / kg / s2)).relative_uncertainty(), WithinRel(0.5 * 2.2e-5));
+    CHECK_THAT(converted.numerical_value_in(sqrt(m3 / kg / s2)).relative_uncertainty(),
+               WithinRel(0.5 * (1.5e-15 / 6.6743e-11)));
   }
 
   SECTION("an exact representation type stays exact")
@@ -384,7 +387,7 @@ TEST_CASE("conversion factors built from measured constants carry their uncertai
     const quantity solar = uncertain<double>{1.0} * iau::solar_mass;
     const quantity in_kg = uncertain<double>{1.0e30} * kg;
     const quantity sum = solar + in_kg;
-    const auto expected_sigma = 1.98841e30 * 2.2e-5;
+    const auto expected_sigma = 1.98841e30 * (1.5e-15 / 6.6743e-11);
     CHECK_THAT(sum.numerical_value_in(kg).value(), WithinRel(2.98841e30, 1e-4));
     CHECK_THAT(sum.numerical_value_in(kg).uncertainty(), WithinRel(expected_sigma, 1e-3));
   }
@@ -396,11 +399,13 @@ TEST_CASE("SI CODATA constants carry their adjustment's uncertainty", "[uncertai
   // Since the redefinition it is measured and departs from that in the tenth digit.
   const quantity mu = measurement_of(codata::magnetic_constant).in(H / m);
   CHECK_THAT(mu.numerical_value_in(H / m).value(), WithinRel(1.25663706127e-6));
-  CHECK_THAT(mu.numerical_value_in(H / m).relative_uncertainty(), WithinRel(1.6e-10));
+  // CODATA 2022 publishes 1.256 637 061 27(20) x 10^-6, and the sigma folded into the value is
+  // exactly the published one, so u_r comes out as their ratio
+  CHECK_THAT(mu.numerical_value_in(H / m).relative_uncertainty(), WithinRel(2.0e-16 / 1.25663706127e-6));
 
   std::ostringstream os;
   os << mu;
-  CHECK(os.str() == "1.25664e-06 ± 2.01062e-16 H/m");
+  CHECK(os.str() == "1.25664e-06 ± 2e-16 H/m");
 }
 
 TEST_CASE("uncertain text output", "[uncertain]")

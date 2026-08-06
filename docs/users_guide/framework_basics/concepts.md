@@ -97,9 +97,11 @@ Such units can be passed as an argument to a `prefixed_unit` class template.
 ### `MeasuredConstant<T>` { #MeasuredConstant }
 
 `MeasuredConstant` concept is satisfied by the physical constants that are measured rather
-than exact by definition, which are the ones defined with a `relative_standard_uncertainty`
-argument to the `named_constant` class template. For such constants
-`get_relative_standard_uncertainty(constant)` returns the stored magnitude, and
+than exact by definition, which are the ones defined with a `standard_uncertainty` or a
+`relative_standard_uncertainty` argument to the `named_constant` class template. A constant
+declares exactly one of the two, whichever form its source publishes. For such constants
+`get_standard_uncertainty(constant)` and `get_relative_standard_uncertainty(constant)`
+each return the declared form or derive the other one from it, and
 `mp_units::utility::measurement_of(constant)` yields a quantity carrying that uncertainty.
 
 Constants that are exact by definition (for example, the defining constants of the SI or the

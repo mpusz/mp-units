@@ -89,7 +89,8 @@ constraints.
 Complete the implementation by defining:
 
 1. **standard_gravity** (g₀) — Define `standard_gravity` as a unit which represents
-  9.80665 m/s²  as an exact rational 980'665/100'000 (or use predefined `si::standard_gravity`)
+  9.80665 m/s²  as an exact rational 980'665/100'000 (or use predefined `codata::standard_gravity`
+  from `<mp-units/systems/codata/adopted_values.h>`)
 2. **kilogram_force** (kgf) — Define as a `named_unit` that embeds g₀: `kg × g₀`
 
 With these definitions in place, observe how:

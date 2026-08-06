@@ -292,7 +292,7 @@ template<UnitOf<isq::duration> auto To = si::second>
 quantity<To> to_isq(QuantityOf<natural::duration> auto t)
 {
   // Time: τ_SI [s] = τ_nat [GeV⁻¹] × ℏ [GeV·s]
-  constexpr double hbar = (1.0 * si::reduced_planck_constant).numerical_value_in(si::giga<si::electronvolt> * To);
+  constexpr double hbar = (1.0 * codata::reduced_planck_constant).numerical_value_in(si::giga<si::electronvolt> * To);
   return t.numerical_value_in(one / natural::gigaelectronvolt) * hbar * To;
 }
 
@@ -300,7 +300,7 @@ template<UnitOf<isq::length> auto To = si::metre>
 quantity<To> to_isq(QuantityOf<natural::length> auto l)
 {
   // Length: l_SI [m] = l_nat [GeV⁻¹] × ℏc [GeV·m]
-  constexpr double hbarc = (1.0 * si::reduced_planck_constant * si::speed_of_light_in_vacuum)
+  constexpr double hbarc = (1.0 * codata::reduced_planck_constant * si::speed_of_light_in_vacuum)
                              .numerical_value_in(si::giga<si::electronvolt> * To);
   return l.numerical_value_in(one / natural::gigaelectronvolt) * hbarc * To;
 }

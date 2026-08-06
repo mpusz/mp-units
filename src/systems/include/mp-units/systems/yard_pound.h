@@ -23,7 +23,7 @@
 #pragma once
 
 #include <mp-units/bits/module_macros.h>
-#include <mp-units/systems/si/constants.h>
+#include <mp-units/systems/codata/adopted_values.h>
 #include <mp-units/systems/si/units.h>
 
 // IWYU pragma: begin_exports
@@ -73,7 +73,7 @@ inline constexpr struct knot final : named_unit<"kn", nautical_mile / si::hour> 
 inline constexpr struct poundal final : named_unit<"pdl", pound * foot / square(si::second)> {} poundal;
 
 // https://en.wikipedia.org/wiki/Pound_(force)
-inline constexpr struct pound_force final : named_unit<"lbf", pound * si::standard_gravity> {} pound_force;
+inline constexpr struct pound_force final : named_unit<"lbf", pound * codata::standard_gravity> {} pound_force;
 
 // https://en.wikipedia.org/wiki/Kip_(unit),
 inline constexpr auto kip = si::kilo<pound_force>;

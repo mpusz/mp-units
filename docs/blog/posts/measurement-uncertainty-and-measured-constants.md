@@ -1,11 +1,10 @@
 ---
-date: 2026-08-05
+date: 2026-08-06
 authors:
  - mpusz
 categories:
  - Metrology
 comments: true
-draft: true
 ---
 
 # Measurement uncertainty and measured constants
@@ -20,8 +19,8 @@ happily prints ten significant digits of a solar mass computed from a constant t
 guarantees four.
 
 **mp-units** now models this honestly. This post introduces the `uncertain<T>` representation
-type, the `relative_standard_uncertainty` metadata for measured constants, and the
-`measurement_of` helper that connects the two.
+type, the `standard_uncertainty` and `relative_standard_uncertainty` metadata for measured
+constants, and the `measurement_of` helper that connects them.
 
 <!-- more -->
 
@@ -116,20 +115,42 @@ adjective-wrapper naming pattern as `std::optional<T>` and `std::expected<T>`.
 
 ## Measured constants carry their uncertainty
 
-A measured constant now declares its relative standard uncertainty right in its definition,
-as an exact symbolic magnitude, using the exact term the CODATA table uses:
+A measured constant now declares its standard uncertainty right in its definition, as an
+exact symbolic expression, using the exact term the CODATA table uses. This is how NIST
+publishes `G` in the machine-readable
+[CODATA 2018 table](https://physics.nist.gov/cuu/Constants/ArchiveASCII/allascii_2018.txt),
+with a quantity name, a value, a standard uncertainty, and a unit:
+
+```text
+Quantity                            Value           Uncertainty     Unit
+-----------------------------------------------------------------------------
+Newtonian constant of gravitation   6.674 30 e-11   0.000 15 e-11   m^3 kg^-1 s^-2
+```
+
+and this is how that row splits into code:
 
 ```cpp
 inline constexpr struct newtonian_constant_of_gravitation final :
     named_constant<"G", mag_ratio<667'430, 100'000> * mag_power<10, -11> * cubic(si::metre) / si::kilogram / square(si::second),
-                   relative_standard_uncertainty{mag_ratio<22, 10> * mag_power<10, -5>}> {}
+                   standard_uncertainty{mag_ratio<15, 10> * mag_power<10, -15> * cubic(si::metre) / si::kilogram / square(si::second)}> {}
 newtonian_constant_of_gravitation;
 ```
 
-The definition reads like the CODATA entry it transcribes: the value `6.674 30 × 10⁻¹¹`, and
-the relative standard uncertainty `2.2 × 10⁻⁵`. No representation type appears anywhere. The
-metadata is an annotation only. It never participates in unit equality, conversion factors,
-or symbolic simplification, so nothing about the existing constant behavior changes.
+Every column of the row lands in the definition: the value `6.674 30 × 10⁻¹¹` and the
+standard uncertainty `0.000 15 × 10⁻¹¹` digit for digit, both in the constant's own unit
+`m³ kg⁻¹ s⁻²`. Transcribing the pair verbatim matters more than it may look. NIST
+publishes the value and the uncertainty mutually rounded, each to two significant digits
+of the uncertainty, so no derived form reproduces them exactly. Storing the relative
+uncertainty instead (an earlier iteration of this design) reconstructed a σ that was off by
+6.1% for the fine-structure constant. σ is the number `uncertain<T>` carries, prints, and
+propagates, so it is the wrong number to get wrong.
+
+A second wrapper, `relative_standard_uncertainty`, remains for constants whose source
+publishes only the relative form. A measured constant declares exactly one of the two, and
+the accessors derive the missing form on demand as an exact ratio of canonical magnitudes.
+No representation type appears anywhere. The metadata is an annotation only. It never
+participates in unit equality, conversion factors, or symbolic simplification, so nothing
+about the existing constant behavior changes.
 
 Exact constants simply do not have this parameter. This makes exact-vs-measured a
 distinction the type system can see, expressed by the new `MeasuredConstant` concept.
@@ -157,8 +178,8 @@ const quantity two_suns = 2.0 * iau::unit_symbols::M_SUN;
 
 std::cout << two_suns << "\n";                                     // 2 M_☉
 std::cout << two_suns.in(kg) << "\n";                              // 3.97682e+30 kg
-std::cout << two_suns.in<uncertain<double>>(kg) << "\n";           // 3.97682e+30 ± 8.749e+25 kg
-std::cout << value_cast<kg, uncertain<double>>(two_suns) << "\n";  // 3.97682e+30 ± 8.749e+25 kg
+std::cout << two_suns.in<uncertain<double>>(kg) << "\n";           // 3.97682e+30 ± 8.93761e+25 kg
+std::cout << value_cast<kg, uncertain<double>>(two_suns) << "\n";  // 3.97682e+30 ± 8.93761e+25 kg
 ```
 
 The first two lines are exact: `two_suns` in its own unit, and the sanctioned central
@@ -175,7 +196,7 @@ const quantity two_suns = uncertain<double>{2.0} * iau::unit_symbols::M_SUN;
 
 std::cout << two_suns << "\n";                                 // 2 ± 0 M_☉
 std::cout << two_suns.in(iau::unit_symbols::M_EARTH) << "\n";  // 665892 ± 0 M_⊕
-std::cout << two_suns.in(kg) << "\n";                          // 3.97682e+30 ± 8.749e+25 kg
+std::cout << two_suns.in(kg) << "\n";                          // 3.97682e+30 ± 8.93761e+25 kg
 ```
 
 `two_suns` is exactly two suns even in an uncertainty-capable representation. Both masses
@@ -211,8 +232,8 @@ std::cout << "M_sun = " << solar_mass.in(kg) << "\n";
 ```
 
 ```text
-G = 6.6743e-11 ± 1.46835e-15 m³ kg⁻¹ s⁻²
-M_sun = 1.98841e+30 ± 4.3745e+25 kg
+G = 6.6743e-11 ± 1.5e-15 m³ kg⁻¹ s⁻²
+M_sun = 1.98841e+30 ± 4.46881e+25 kg
 ```
 
 The solar mass example is the payoff. The IAU defines the nominal solar mass parameter
@@ -249,23 +270,29 @@ both units is fully correlated with itself, and it cancels symbolically before t
 is ever applied, which is exactly why the solar-to-Earth-mass conversion reports zero rather
 than a small non-zero number.
 
-**Coverage.** `iau::G` and every measured constant in the three HEP CODATA namespaces carry
-the uncertainty published by their own release. Constants that are exact by definition carry
-nothing at all, which is what makes the distinction visible to the type system in the first
-place.
+**Coverage.** Every measured constant in the three HEP CODATA namespaces carries the
+uncertainty published by its own release. The new
+[`codata`](../../users_guide/systems/codata.md) system goes further: its headers are
+generated from the NIST tables and cover every constant of the 2014, 2018, and 2022
+adjustments (roughly 230 per adjustment), each transcribing the published value and
+standard uncertainty digit for digit, with an independent verification step recomputing
+every emitted value against its source row. `iau::G` now imports the CODATA constant
+rather than duplicating it. Constants that are exact by definition carry nothing at all,
+which is what makes the distinction visible to the type system in the first place.
 
 ## Printing what the standard prints
 
 The default text output is the `value ± σ` form, the notation engineers read every day:
 
 ```cpp
-std::cout << G.in(m3 / kg / s2) << "\n";  // 6.6743e-11 ± 1.46835e-15 m³ kg⁻¹ s⁻²
+std::cout << G.in(m3 / kg / s2) << "\n";  // 6.6743e-11 ± 1.5e-15 m³ kg⁻¹ s⁻²
 ```
 
 ISO 80000-1:2022, 7.2.4 specifies a different one. The value is quoted to the last
 significant digit of the uncertainty, and the uncertainty follows in parentheses, counted
-in units of that digit. Appending `~` to the format spec selects it. The tilde marks the
-output as an approximation, because unlike the default form this one rounds the value:
+in units of that digit. Appending `~` to the format spec selects it. Where the default form
+prints what the object holds, this one quotes the value to the precision the uncertainty
+justifies, which is how measurement results are reported:
 
 ```cpp
 std::println("{::N[~]}", G.in(m3 / kg / s2));  // 6.67430(15)e-11 m³ kg⁻¹ s⁻²
@@ -303,6 +330,9 @@ documentation:
   it: the mass of the planet from a pendulum, a radius, and `G`
 - [Faster-than-lightspeed constants](../../users_guide/framework_basics/faster_than_lightspeed_constants.md)
   explains why constants are units in the first place
+- [The CODATA system](../../users_guide/systems/codata.md) documents the generated
+  constants: one namespace and one header per adjustment, and the essential and complete
+  tiers
 - [CODATA fundamental physical constants](https://physics.nist.gov/cuu/Constants/) are the
   source of the values and uncertainties transcribed into the systems
 - [JCGM 100 (GUM)](https://www.bipm.org/en/committees/jc/jcgm/publications) is the

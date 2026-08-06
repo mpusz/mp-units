@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include <mp-units/systems/angular.h>
+#include <mp-units/systems/codata/adopted_values.h>
 #include <mp-units/systems/iau.h>
 #include <mp-units/systems/iec.h>
 #include <mp-units/systems/si.h>
@@ -279,8 +280,8 @@ static_assert(unit_symbol(radian) == "rad");
 
 // Physical constants
 static_assert(unit_symbol(speed_of_light_in_vacuum) == "c");
-static_assert(unit_symbol(gram * standard_gravity * speed_of_light_in_vacuum) == "g c g₀");
-static_assert(unit_symbol(gram / standard_gravity) == "g/g₀");
+static_assert(unit_symbol(gram * codata::standard_gravity * speed_of_light_in_vacuum) == "g₀ g c");
+static_assert(unit_symbol(gram / codata::standard_gravity) == "g/g₀");
 static_assert(unit_symbol(kilo<metre> / second / mega<iau::parsec>) == "km Mpc⁻¹ s⁻¹");
 
 }  // namespace

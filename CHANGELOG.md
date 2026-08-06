@@ -14,16 +14,51 @@ This page documents the version history and changes for the **mp-units** library
 - fix: `uncertain<T>::relative_uncertainty()` now divides by the absolute value. GUM and
       the VIM define the relative standard uncertainty as `u(x)/|x|`, so it is never
       negative; it used to come out negative for a negative central value
+- feat: compile-time factorization now handles composites of large primes: `mul_mod`
+      uses a double-wide (128-bit) product where the compiler provides one, and
+      `find_first_factor` finds factors with a batched-Brent Pollard's rho instead of
+      unbounded trial division (which needed ~266k `constexpr` iterations for real CODATA
+      mantissas, over GCC's default loop limit). Mirrors the approach validated in Au
+      (aurora-opensource/au#686); trial division remains as the last-resort fallback
+- perf: the whole `unit_magnitude` interface (operators and all queries) moved to hidden
+      friends of a new non-template `unit_magnitude_interface` base, the same shape as
+      `unit_interface` and `quantity_spec_interface`. A hidden friend of a class template
+      is redeclared by every specialization, and magnitude-heavy code instantiates
+      thousands of specializations per translation unit, so those declarations dominated
+      compile times; in a non-template base they are declared once and cost nothing while
+      keeping all hidden-friend benefits. A TU including `si` units and constants dropped
+      from ~2.6 s to ~1.6 s, and the complete `codata2022.h` from ~40 s to ~4.1 s
+      (GCC 15; Clang 21 shows 44 s -> 6.8 s)
 - (!) feat: `pi` and `π` is now a unit constant
 - (!) feat: `iau::newtonian_constant_of_gravitation` is now imported from
       `codata::newtonian_constant_of_gravitation` instead of being defined by the IAU system,
       and the `iau::codata2018` inline namespace is gone. IAU 2015 Resolution B3 asks for
       the current best estimate of G, so the value now follows whichever adjustment is
       current. The value is unchanged today, since CODATA 2022 kept G at 6.674 30(15)e-11
-- feat: CODATA fundamental physical constants added as a separate system in
-      `mp-units/systems/codata.h` (`codata::codata2014`, `codata::codata2018`, and the
-      `inline` `codata::codata2022`). Deliberately not part of `si`, so that
-      `mp-units/systems/si.h` does not carry constants most code never names
+- feat: CODATA fundamental physical constants added as a separate system with one
+      namespace and one header per adjustment (`codata::codata2014`, `codata::codata2018`,
+      and the `inline` `codata::codata2022`), GENERATED from the NIST "allascii" tables by
+      `scripts/codata_constants.py` for complete coverage (~230 constants per adjustment):
+      measured constants transcribe the published value and absolute standard uncertainty
+      digit for digit, exact non-terminating values are defined by their exact symbolic
+      relations, and an independent verification step recomputes every emitted value
+      against its source row. Each adjustment ships in two tiers:
+      `mp-units/systems/codata/codataYYYY_essential.h` (the NIST "frequently used"
+      selection, cheap to compile) and `mp-units/systems/codata/codataYYYY.h` (the complete
+      table, including the essential tier), with `mp-units/systems/codata.h` as the
+      umbrella. Deliberately not part of `si`, so that `mp-units/systems/si.h` does not
+      carry constants most code never names (#820)
+- deprecated: `si::standard_gravity`. It is not an SI defining constant but a conventional
+      value adopted by CGPM 3 (1901), which is what NIST's "adopted values" CODATA category
+      holds; its home is now `codata::standard_gravity` from
+      `<mp-units/systems/codata/adopted_values.h>`, a single adjustment-invariant entity
+      shared by all CODATA namespaces (as are the standard atmosphere, the standard-state
+      pressure, and the conventional Josephson and von Klitzing values). `yard_pound`'s
+      `pound_force` is now defined through the codata entity
+- deprecated: `si::reduced_planck_constant`. ℏ is not an SI defining constant either; its
+      home is `codata::reduced_planck_constant`, defined as the exact `h / 2π` relation in
+      the post-2019 adjustments and as the measured "Planck constant over 2 pi" in
+      `codata2014`
 - deprecated: `si::magnetic_constant`. The pre-2019 SI defined the ampere through it,
       which made it exactly 4*pi*1e-7 H/m; since the redefinition it is measured. Its
       value is unchanged, but use `codata::magnetic_constant` for the current adjustment,
@@ -54,11 +89,15 @@ This page documents the version history and changes for the **mp-units** library
 - (!) feat: IAU system definition improved
 - feat: `uncertain<T>` representation type added to `mp-units::utility` (first-order
         uncertainty propagation for independent values) (#464)
-- feat: measured constants may now declare their `relative_standard_uncertainty` (exact
-        magnitude metadata on `named_constant`); `MeasuredConstant` concept,
-        `get_relative_standard_uncertainty`, and `measurement_of` added; declared for
-        `iau::newtonian_constant_of_gravitation` and all measured constants in the three
-        `hep` CODATA namespaces (#464)
+- feat: measured constants may now declare their standard uncertainty in the form their
+        source publishes it (exact metadata on `named_constant`): `standard_uncertainty`
+        (absolute, in the constant's own dimension, transcribing the CODATA table row
+        verbatim) or `relative_standard_uncertainty` (unit-invariant, for constants whose
+        defining unit is not tabulated); `MeasuredConstant` concept,
+        `get_standard_uncertainty`, `get_relative_standard_uncertainty`, and
+        `measurement_of` added, with each accessor deriving the undeclared form on demand;
+        declared for `iau::newtonian_constant_of_gravitation` and all measured constants in
+        the three `hep` CODATA namespaces (#464, #820)
 - feat: unit conversion factors built from measured constants carry their relative standard
         uncertainty; the conversion engine folds it into representation types that opt in
         via `fold_conversion_uncertainty` (e.g., `uncertain<T>`), with measured constants

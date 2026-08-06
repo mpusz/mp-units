@@ -447,6 +447,12 @@ struct named_unit<Symbol, U, QS, PO> : decltype(U)::_base_type_ {
  * metadata only - it never participates in unit equality, conversion factors, or symbolic
  * simplification.
  *
+ * A measured constant declares exactly one of `relative_standard_uncertainty` and
+ * `standard_uncertainty` - whichever form its source publishes. The published pair is mutually
+ * rounded, so carrying both would embed a contradiction. This form is invariant under a change
+ * of unit, so it is the right choice for a constant whose defining unit has no published
+ * absolute uncertainty.
+ *
  * For example:
  *
  * @code{.cpp}
@@ -471,6 +477,44 @@ relative_standard_uncertainty(M) -> relative_standard_uncertainty<M>;
 #endif
 
 /**
+ * @brief Absolute standard uncertainty of a measured constant
+ *
+ * Wraps the standard uncertainty (GUM/CODATA `u`) of a measured constant as an exact symbolic
+ * expression of the same shape as the constant's value: a magnitude times a unit of the same
+ * dimension. Spelling the unit out makes the expression self-contained - the relative form
+ * derives as an exact ratio of two canonical magnitudes, with the units cancelling exactly.
+ * Like `relative_standard_uncertainty`, it is metadata only.
+ *
+ * A measured constant declares exactly one of the two wrappers - whichever form its source
+ * publishes. Metrology tables (e.g., CODATA) tabulate the absolute uncertainty next to the
+ * value, both rounded consistently, so a definition transcribing a table row should use this
+ * form; deriving it from a published `u_r` instead can be off by several percent in the last
+ * digit.
+ *
+ * For example:
+ *
+ * @code{.cpp}
+ * inline constexpr struct newtonian_constant_of_gravitation final :
+ *     named_constant<"G", mag_ratio<667'430, 100'000> * mag_power<10, -11> * m3 / kg / s2,
+ *                    standard_uncertainty{mag_ratio<15, 10> * mag_power<10, -15> * m3 / kg / s2}> {}
+ * newtonian_constant_of_gravitation;
+ * @endcode
+ *
+ * @tparam U a unit expression representing the standard uncertainty in the constant's dimension
+ */
+MP_UNITS_EXPORT template<Unit U>
+struct standard_uncertainty {
+  U unit;
+};
+
+#if MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
+
+template<Unit U>
+standard_uncertainty(U) -> standard_uncertainty<U>;
+
+#endif
+
+/**
  * @brief Named constant definition
  *
  * It is very similar to `named_unit` but:
@@ -489,7 +533,7 @@ struct named_constant<Symbol, U> : decltype(U)::_base_type_ {
 };
 
 /**
- * @brief Specialization for a measured constant
+ * @brief Specialization for a measured constant declaring its relative standard uncertainty
  *
  * The same as the above but additionally stores the relative standard uncertainty of a constant
  * that is measured rather than exact by definition. The value transcribes the entry published in
@@ -511,16 +555,65 @@ struct named_constant<Symbol, U, RSU> : decltype(U)::_base_type_ {
 };
 
 /**
+ * @brief Specialization for a measured constant declaring its absolute standard uncertainty
+ *
+ * The same as the above but stores the standard uncertainty in the form the source metrology
+ * table publishes it: an absolute value in a unit of the constant's own dimension. The relative
+ * form derives on demand as an exact ratio of canonical magnitudes.
+ *
+ * @tparam Symbol a short text representation of the constant
+ * @tparam Unit a unit that we use to define a constant
+ * @tparam SU the standard uncertainty of the measured value
+ */
+template<symbol_text Symbol, Unit auto U, typename SUU, standard_uncertainty<SUU> SU>
+  requires(!Symbol.empty()) && detail::is_positive_canonical_unit_mag<SUU{}> && detail::ConvertibleUnits<SUU{}, U>
+struct named_constant<Symbol, U, SU> : decltype(U)::_base_type_ {
+  using _base_type_ = named_constant;       // exposition only
+  static constexpr auto _symbol_ = Symbol;  ///< Unique constant identifier
+  static constexpr auto _standard_uncertainty_ = SUU{};
+};
+
+/**
  * @brief Returns the relative standard uncertainty of a measured constant
+ *
+ * For a constant declared with `standard_uncertainty`, the result is derived as the exact ratio
+ * of the uncertainty's canonical magnitude to the constant's one (`u_r = u(x)/|x|`, so the
+ * result never carries a sign even for a negative-valued constant).
  *
  * There is no valid result for constants that are exact by definition. Asking for one would
  * conflate "exact by definition" with "measured infinitely precisely", so it is a compile-time
  * error rather than a zero magnitude.
  */
 MP_UNITS_EXPORT template<MeasuredConstant U>
-[[nodiscard]] consteval UnitMagnitude auto get_relative_standard_uncertainty(U)
+[[nodiscard]] consteval UnitMagnitude auto get_relative_standard_uncertainty(U u)
 {
-  return U::_relative_standard_uncertainty_;
+  if constexpr (requires { requires UnitMagnitude<MP_UNITS_NONCONST_TYPE(U::_relative_standard_uncertainty_)>; })
+    return U::_relative_standard_uncertainty_;
+  else
+    // unqualified on purpose: `abs_magnitude` is a hidden friend of the magnitude, found via ADL
+    return abs_magnitude(get_canonical_unit(U::_standard_uncertainty_).mag / get_canonical_unit(u).mag);
+}
+
+/**
+ * @brief Returns the standard uncertainty of a measured constant
+ *
+ * The result is a unit expression of the constant's own dimension (constants are units in this
+ * library, and so are their uncertainties). For a constant declared with
+ * `relative_standard_uncertainty`, the result is derived by scaling the constant itself
+ * (`u(x) = u_r * |x|`, so the result is positive even for a negative-valued constant).
+ *
+ * As for `get_relative_standard_uncertainty`, there is no valid result for constants that are
+ * exact by definition.
+ */
+MP_UNITS_EXPORT template<MeasuredConstant U>
+[[nodiscard]] consteval Unit auto get_standard_uncertainty(U u)
+{
+  if constexpr (requires { requires Unit<MP_UNITS_NONCONST_TYPE(U::_standard_uncertainty_)>; })
+    return U::_standard_uncertainty_;
+  else if constexpr (detail::is_positive_canonical_unit_mag<U{}>)
+    return U::_relative_standard_uncertainty_ * u;
+  else
+    return (-U::_relative_standard_uncertainty_) * u;
 }
 
 

@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include <mp-units/compat_macros.h>
+#include <mp-units/systems/codata/adopted_values.h>
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
 #if MP_UNITS_HOSTED
@@ -179,7 +180,7 @@ static_assert(Unit<decltype(inverse(si::second))>);
 static_assert(Unit<decltype(mag<10> * si::second)>);
 static_assert(Unit<decltype(square(si::metre))>);
 static_assert(Unit<decltype(pow<2>(si::metre))>);
-static_assert(Unit<struct si::standard_gravity>);
+static_assert(Unit<struct codata::standard_gravity>);
 static_assert(Unit<scaled_unit<mag<10>, struct si::second>>);
 static_assert(Unit<derived_unit<struct si::metre, per<struct si::second>>>);
 static_assert(Unit<struct one>);
@@ -202,7 +203,7 @@ static_assert(!PrefixableUnit<decltype(inverse(si::second))>);
 static_assert(!PrefixableUnit<decltype(mag<10> * si::second)>);
 static_assert(!PrefixableUnit<decltype(square(si::metre))>);
 static_assert(!PrefixableUnit<decltype(pow<2>(si::metre))>);
-static_assert(!PrefixableUnit<struct si::standard_gravity>);
+static_assert(!PrefixableUnit<struct codata::standard_gravity>);
 static_assert(!PrefixableUnit<scaled_unit<mag<10>, struct si::second>>);
 static_assert(!PrefixableUnit<derived_unit<struct si::metre, per<struct si::second>>>);
 static_assert(!PrefixableUnit<struct one>);
@@ -225,7 +226,7 @@ static_assert(Unit<decltype(inverse(si::second))>);
 static_assert(Unit<decltype(mag<10> * si::second)>);
 static_assert(Unit<decltype(square(si::metre))>);
 static_assert(Unit<decltype(pow<2>(si::metre))>);
-static_assert(Unit<struct si::standard_gravity>);
+static_assert(Unit<struct codata::standard_gravity>);
 static_assert(Unit<scaled_unit<mag<10>, struct si::second>>);
 static_assert(Unit<derived_unit<struct si::metre, per<struct si::second>>>);
 static_assert(Unit<struct one>);

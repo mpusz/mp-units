@@ -53,11 +53,25 @@ inline constexpr struct luminous_efficacy final :
 
 }  // namespace si2019
 
+// The standard gravity is not an SI defining constant: it is a conventional value adopted by
+// CGPM 3 (1901), which is exactly what NIST's "adopted values" CODATA category holds. Its home
+// is `codata::standard_gravity` (a single adjustment-invariant entity from
+// <mp-units/systems/codata/adopted_values.h>); this duplicate stays only for compatibility.
+[[deprecated("2.6.0: Use `codata::standard_gravity` from <mp-units/systems/codata/adopted_values.h>")]]
 // clang-format off
 inline constexpr struct standard_gravity final :
   named_constant<symbol_text{u8"g₀", "g_0"}, mag_ratio<980'665, 100'000> * metre / square(second)> {} standard_gravity;
+// clang-format on
+
+// Like the standard gravity above, ℏ is not an SI defining constant; it belongs to the `codata`
+// system, which defines it as the exact `h / 2π` relation in the post-2019 adjustments and as
+// the measured "Planck constant over 2 pi" in `codata2014`.
+[[deprecated(
+  "2.6.0: Use `codata::reduced_planck_constant` from <mp-units/systems/codata.h> or one of its "
+  "per-adjustment headers")]]
+// clang-format off
 inline constexpr struct reduced_planck_constant final :
-  named_constant<symbol_text{u8"\u210f", "hbar"}, si2019::planck_constant / (mag<2> * π)> {} reduced_planck_constant;
+  named_constant<symbol_text{u8"ℏ", "hbar"}, si2019::planck_constant / (mag<2> * π)> {} reduced_planck_constant;
 // clang-format on
 
 // The value below is exact only under the pre-2019 SI, which defined the ampere through this

@@ -81,12 +81,17 @@ namespace mp_units::detail {
   }
 }
 
-// (a * b) % n.
+// (a * b) % n, reducing an overflowing product by recursive chunking.
+//
+// This is the portable fallback for compilers without a 128-bit integer type. The recursion is
+// bounded, but costs enough constexpr steps that the double-wide `mul_mod` below is strongly
+// preferred where available (`mul_mod` is the innermost operation of both the Baillie-PSW test
+// and Pollard's rho, so its cost multiplies through everything).
 //
 // Precondition: (a < n).
 // Precondition: (b < n).
 // Precondition: (n > 0).
-[[nodiscard]] consteval std::uint64_t mul_mod(std::uint64_t a, std::uint64_t b, std::uint64_t n)
+[[nodiscard]] consteval std::uint64_t mul_mod_via_chunking(std::uint64_t a, std::uint64_t b, std::uint64_t n)
 {
   MP_UNITS_PRECONDITION_DEBUG(a < n);
   MP_UNITS_PRECONDITION_DEBUG(b < n);
@@ -102,12 +107,34 @@ namespace mp_units::detail {
   return add_mod(
     // Transform into "negative space" to make the first parameter as small as possible;
     // then, transform back.
-    (n - mul_mod(n % a, num_batches, n)) % n,
+    (n - mul_mod_via_chunking(n % a, num_batches, n)) % n,
 
     // Handle the leftover product (which is guaranteed to fit in the integer type).
     (a * (b % batch_size)) % n,
 
     n);
+}
+
+// (a * b) % n.
+//
+// Precondition: (a < n).
+// Precondition: (b < n).
+// Precondition: (n > 0).
+[[nodiscard]] consteval std::uint64_t mul_mod(std::uint64_t a, std::uint64_t b, std::uint64_t n)
+{
+  MP_UNITS_PRECONDITION_DEBUG(a < n);
+  MP_UNITS_PRECONDITION_DEBUG(b < n);
+  MP_UNITS_PRECONDITION_DEBUG(n > 0u);
+
+#if defined(__SIZEOF_INT128__)
+  // forming the full-width product and reducing it in one step costs a small constant number of
+  // constexpr steps, an order of magnitude less than the chunking fallback (see the analysis in
+  // https://github.com/aurora-opensource/au/pull/686, which this mirrors)
+  __extension__ using uint128 = unsigned __int128;
+  return static_cast<std::uint64_t>(static_cast<uint128>(a) * b % n);
+#else
+  return mul_mod_via_chunking(a, b, n);
+#endif
 }
 
 // (a / 2) % n.
@@ -446,6 +473,97 @@ constexpr auto get_first_of(const Rng& rng, UnaryFunction f)
 template<std::size_t N>
 constexpr auto first_n_primes_result = first_n_primes<N>();
 
+// One run of Pollard's rho on the polynomial `x^2 + c (mod n)`, with Brent's cycle detection and
+// batched gcd checks: the |tortoise - hare| differences are accumulated as a running product
+// modulo `n`, and a single gcd is taken per batch, with a one-step replay from the batch start
+// when the batch overshoots (accumulates a multiple of every factor). Expected cost is O(n^(1/4))
+// modular multiplications. Returns a non-trivial factor of `n`, or `n` itself when this
+// parameterization fails (the caller then tries another `c`). Mirrors the design validated in Au
+// (https://github.com/aurora-opensource/au/pull/686).
+//
+// `x^2 + c (mod n)`: the iterated polynomial of Pollard's rho.
+[[nodiscard]] consteval std::uint64_t rho_advance(std::uint64_t x, std::uint64_t n, std::uint64_t c)
+{
+  return add_mod(mul_mod(x, x, n), c, n);
+}
+
+[[nodiscard]] consteval std::uint64_t rho_distance(std::uint64_t a, std::uint64_t b) { return a > b ? a - b : b - a; }
+
+// Precondition: `n` is odd and composite.
+[[nodiscard]] consteval std::uint64_t pollard_rho_attempt(std::uint64_t n, std::uint64_t c)
+{
+  MP_UNITS_PRECONDITION_DEBUG(n % 2u == 1u);
+  MP_UNITS_PRECONDITION_DEBUG(c < n);
+
+  constexpr std::uint64_t batch_size = 128u;
+
+  std::uint64_t tortoise = 2u;   // the anchor of the current power-of-two segment
+  std::uint64_t hare = 2u;       // the moving point
+  std::uint64_t backtrack = 2u;  // the hare's position at the start of the current batch
+  std::uint64_t factor = 1u;
+
+  for (std::uint64_t segment_length = 1u; factor == 1u; segment_length *= 2u) {
+    tortoise = hare;
+    for (std::uint64_t i = 0u; i < segment_length; ++i) {
+      hare = rho_advance(hare, n, c);
+    }
+    for (std::uint64_t done = 0u; done < segment_length && factor == 1u; done += batch_size) {
+      backtrack = hare;
+      std::uint64_t product = 1u;
+      const std::uint64_t steps = segment_length - done < batch_size ? segment_length - done : batch_size;
+      for (std::uint64_t i = 0u; i < steps; ++i) {
+        hare = rho_advance(hare, n, c);
+        product = mul_mod(product, rho_distance(tortoise, hare), n);
+      }
+      factor = std::gcd(product, n);
+    }
+  }
+
+  if (factor == n) {
+    // the batch overshot (its product collected a multiple of every prime factor); replay it one
+    // step at a time to catch a factor in isolation
+    do {
+      backtrack = rho_advance(backtrack, n, c);
+      factor = std::gcd(rho_distance(tortoise, backtrack), n);
+    } while (factor == 1u);
+  }
+  return factor;
+}
+
+// The smallest prime factor of a composite `n` all of whose prime factors exceed the
+// trial-division cutoff of `find_first_factor` below. Pollard's rho splits `n` recursively, with
+// Baillie-PSW certifying the leaves; the smallest leaf is the answer. Returns `0` (never a valid
+// factor) in the (never yet observed) case that every rho parameterization fails for some split.
+// A sentinel is used instead of `std::optional` because MSVC's constant evaluator rejects the
+// optional-returning recursion with a bogus "read of an uninitialized symbol" error, and the two
+// functions are mutually recursive free functions rather than a local lambda because only C++23
+// consteval propagation would let a plain lambda call `consteval` functions with its parameter.
+[[nodiscard]] consteval std::uint64_t smallest_prime_factor_of_hard_composite(std::uint64_t n);
+
+// `m` itself when it is prime, otherwise its smallest prime factor found via Pollard's rho.
+[[nodiscard]] consteval std::uint64_t smallest_prime_in(std::uint64_t m)
+{
+  return baillie_psw_probable_prime(m) ? m : smallest_prime_factor_of_hard_composite(m);
+}
+
+[[nodiscard]] consteval std::uint64_t smallest_prime_factor_of_hard_composite(std::uint64_t n)
+{
+  std::uint64_t factor = n;
+  for (std::uint64_t c = 1u; factor == n; ++c) {
+    if (c > 100u) {
+      return 0u;
+    }
+    factor = pollard_rho_attempt(n, c);
+  }
+
+  const std::uint64_t lhs = smallest_prime_in(factor);
+  const std::uint64_t rhs = smallest_prime_in(n / factor);
+  if (lhs == 0u || rhs == 0u) {
+    return 0u;
+  }
+  return lhs < rhs ? lhs : rhs;
+}
+
 [[nodiscard]] consteval std::uintmax_t find_first_factor(std::uintmax_t n)
 {
   constexpr auto first_100_primes = first_n_primes_result<100>;
@@ -464,7 +582,16 @@ constexpr auto first_n_primes_result = first_n_primes<N>();
     return n;
   }
 
-  // If we're here, we know `n` is composite, so continue with trial division for all odd numbers.
+  // `n` is composite with every prime factor above the trial-division range, so Pollard's rho
+  // finds one in ~n^(1/4) steps where trial division needs up to ~n^(1/2) iterations and can
+  // exceed compiler constexpr-loop limits (a semiprime of two ~500'000-sized primes needs ~266k
+  // iterations, over GCC's default limit of 262144; hit by real CODATA values).
+  if (const std::uint64_t factor = smallest_prime_factor_of_hard_composite(n); factor != 0u) {
+    return factor;
+  }
+
+  // Pollard's rho failed on every tried parameterization (not observed in practice for any
+  // 64-bit input); fall back to the robust trial division over all odd numbers.
   std::uintmax_t factor = first_100_primes.back() + 2u;
   while (factor * factor <= n) {
     if (n % factor == 0u) {

@@ -82,18 +82,22 @@ static_assert(std::is_same_v<decltype(std::declval<uncertain_length>() * std::de
 static_assert(std::is_same_v<decltype(std::declval<uncertain_length>() + std::declval<exact_length>()),
                              quantity<si::metre, uncertain<double>>>);
 
-// only constants defined with `relative_standard_uncertainty` are measured constants
+// only constants defined with an uncertainty wrapper (`relative_standard_uncertainty` or
+// `standard_uncertainty`) are measured constants
 static_assert(MeasuredConstant<std::remove_const_t<decltype(iau::newtonian_constant_of_gravitation)>>);
 static_assert(!MeasuredConstant<std::remove_const_t<decltype(si::si2019::speed_of_light_in_vacuum)>>);
 static_assert(!MeasuredConstant<std::remove_const_t<decltype(iau::nominal_solar_mass_parameter)>>);
 static_assert(!MeasuredConstant<std::remove_const_t<decltype(si::metre)>>);
 
-// A published `u_r` is a two-significant-digit decimal, and materializing it into a floating-point
-// type from an exact magnitude need not reproduce the literal bit for bit on every platform, so
-// these are compared with `approx_equal` rather than with `==`.
-// CODATA 2018: G = 6.674 30(15) × 10⁻¹¹ m³ kg⁻¹ s⁻², u_r = 2.2 × 10⁻⁵
-static_assert(approx_equal(
-  get_value<double>(get_relative_standard_uncertainty(iau::newtonian_constant_of_gravitation)) * one, 2.2e-5 * one));
+// CODATA 2018: G = 6.674 30(15) × 10⁻¹¹ m³ kg⁻¹ s⁻². The definition stores the published absolute
+// uncertainty, and the relative form derives from it as an exact ratio of canonical magnitudes:
+// u_r = 1.5e-15 / 6.6743e-11 = 15/66743 × 10⁻¹, so it can be compared exactly.
+static_assert(get_relative_standard_uncertainty(iau::newtonian_constant_of_gravitation) ==
+              mag_ratio<15, 66'743> * mag_power<10, -1>);
+
+// the stored absolute form is returned verbatim
+static_assert(get_standard_uncertainty(iau::newtonian_constant_of_gravitation) ==
+              mag_ratio<15, 10> * mag_power<10, -15> * cubic(si::metre) / si::kilogram / square(si::second));
 
 // `measurement_of` returns exactly 1 of the constant in an uncertainty-capable representation;
 // the uncertainty is relational and materializes only when a conversion leaves units in which
@@ -121,19 +125,26 @@ static_assert(has_relative_standard_uncertainty<iau::newtonian_constant_of_gravi
 static_assert(!has_relative_standard_uncertainty<si::si2019::speed_of_light_in_vacuum>);
 
 // HEP measured constants carry the uncertainty published by their own CODATA release, so the same
-// constant has a different one per namespace
+// constant has a different one per namespace. The derived `u_r` is the exact ratio of the two
+// published magnitudes; materializing it into a floating-point type need not reproduce a decimal
+// literal bit for bit on every platform, so these are compared with `approx_equal`.
 static_assert(MeasuredConstant<std::remove_const_t<decltype(hep::codata2018::electron_mass)>>);
 static_assert(MeasuredConstant<std::remove_const_t<decltype(hep::codata2022::electron_mass)>>);
+// CODATA 2018: 0.510 998 950 00(15) MeV/c²
 static_assert(approx_equal(get_value<double>(get_relative_standard_uncertainty(hep::codata2018::electron_mass)) * one,
-                           3.0e-10 * one));
+                           1.5e-10 / 0.51099895 * one));
+// CODATA 2022: 0.510 998 950 69(16) MeV/c²
 static_assert(approx_equal(get_value<double>(get_relative_standard_uncertainty(hep::codata2022::electron_mass)) * one,
-                           3.1e-10 * one));
+                           1.6e-10 / 0.51099895069 * one));
+// CODATA 2014: 0.510 998 9461(31) MeV/c²
 static_assert(approx_equal(get_value<double>(get_relative_standard_uncertainty(hep::codata2014::electron_mass)) * one,
-                           6.2e-9 * one));
+                           3.1e-9 / 0.5109989461 * one));
 
 // the fine-structure constant is dimensionless, so its uncertainty is still ordinary metadata
-static_assert(approx_equal(
-  get_value<double>(get_relative_standard_uncertainty(hep::codata2022::fine_structure_constant)) * one, 1.6e-10 * one));
+// (CODATA 2022: 7.297 352 5643(11) × 10⁻³)
+static_assert(
+  approx_equal(get_value<double>(get_relative_standard_uncertainty(hep::codata2022::fine_structure_constant)) * one,
+               1.1e-12 / 7.2973525643e-3 * one));
 
 // k_B is exact since the 2019 SI redefinition, so the post-2019 releases carry no uncertainty while
 // the pre-2019 one does
@@ -145,10 +156,13 @@ static_assert(!MeasuredConstant<std::remove_const_t<decltype(hep::codata2018::bo
 static_assert(!MeasuredConstant<std::remove_const_t<decltype(hep::codata2014::permeability_of_vacuum)>>);
 static_assert(MeasuredConstant<std::remove_const_t<decltype(hep::codata2018::permeability_of_vacuum)>>);
 static_assert(MeasuredConstant<std::remove_const_t<decltype(hep::codata2022::permeability_of_vacuum)>>);
-static_assert(approx_equal(
-  get_value<double>(get_relative_standard_uncertainty(hep::codata2018::permeability_of_vacuum)) * one, 1.5e-10 * one));
-static_assert(approx_equal(
-  get_value<double>(get_relative_standard_uncertainty(hep::codata2022::permeability_of_vacuum)) * one, 1.6e-10 * one));
+// CODATA 2018: 1.256 637 062 12(19) × 10⁻⁶ N/A²; CODATA 2022: 1.256 637 061 27(20) × 10⁻⁶ N/A²
+static_assert(
+  approx_equal(get_value<double>(get_relative_standard_uncertainty(hep::codata2018::permeability_of_vacuum)) * one,
+               1.9e-16 / 1.25663706212e-6 * one));
+static_assert(
+  approx_equal(get_value<double>(get_relative_standard_uncertainty(hep::codata2022::permeability_of_vacuum)) * one,
+               2.0e-16 / 1.25663706127e-6 * one));
 
 // The SI-expressed values track the same history. They are separate CODATA table entries from the
 // HEP ones above: `hep` declares its own system of quantities, so those constants are not even the
@@ -158,10 +172,10 @@ static_assert(MeasuredConstant<std::remove_const_t<decltype(codata::codata2018::
 static_assert(MeasuredConstant<std::remove_const_t<decltype(codata::codata2022::magnetic_constant)>>);
 static_assert(approx_equal(get_value<double>(get_relative_standard_uncertainty(codata::codata2018::magnetic_constant)) *
                              one,
-                           1.5e-10 * one));
+                           1.9e-16 / 1.25663706212e-6 * one));
 static_assert(approx_equal(get_value<double>(get_relative_standard_uncertainty(codata::codata2022::magnetic_constant)) *
                              one,
-                           1.6e-10 * one));
+                           2.0e-16 / 1.25663706127e-6 * one));
 
 // The newest adjustment is `inline`, so the unqualified name is the current value. `si` keeps a
 // deprecated `magnetic_constant` holding the pre-2019 exact value (not named here, since referring
@@ -188,9 +202,10 @@ static_assert(!MeasuredConstant<std::remove_const_t<decltype(hep::avogadro_const
 // `hypot` (not constexpr before C++26) and is covered by the runtime tests.
 namespace conversion_uncertainty {
 
-// u_r(solar_mass -> kg) is exactly G's contribution: (GM)ᴺ is exact, |−1| · u_r(G)
-static_assert(approx_equal(detail::conversion_relative_uncertainty(iau::solar_mass, si::kilogram) * one, 2.2e-5L * one,
-                           1e-6));
+// u_r(solar_mass -> kg) is exactly G's contribution: (GM)ᴺ is exact, |−1| · u_r(G), where
+// u_r(G) derives from the published absolute uncertainty as 1.5e-15 / 6.6743e-11
+static_assert(approx_equal(detail::conversion_relative_uncertainty(iau::solar_mass, si::kilogram) * one,
+                           1.5e-15L / 6.6743e-11L * one, 1e-6));
 
 // a constant shared by both units cancels symbolically: (GM)☉ᴺ/G vs (GM)⊕ᴺ/G
 static_assert(detail::conversion_relative_uncertainty(iau::solar_mass, iau::terrestrial_mass) == 0.0L);
@@ -207,7 +222,7 @@ static_assert(approx_equal(detail::conversion_relative_uncertainty(sqrt(iau::new
                                                                    sqrt(cubic(si::metre) / si::kilogram /
                                                                         square(si::second))) *
                              one,
-                           0.5L * 2.2e-5L * one, 1e-6));
+                           0.5L * (1.5e-15L / 6.6743e-11L) * one, 1e-6));
 
 // local constants exercising the tree-walk rules directly
 inline constexpr struct measured_base final :
@@ -240,5 +255,57 @@ static_assert(
 static_assert(detail::conversion_relative_uncertainty(measured_base / measured_base, one) == 0.0L);
 
 }  // namespace conversion_uncertainty
+
+// A constant may declare its uncertainty in either the relative or the absolute form, whichever
+// its source publishes, and each accessor derives the missing form on demand.
+namespace uncertainty_wrappers {
+
+// the absolute form derives the relative one for the RSU-declared constant above:
+// u(x) = u_r · |x| = 1e-3 · 2 m = 2e-3 m
+static_assert(equivalent(get_standard_uncertainty(conversion_uncertainty::measured_base),
+                         mag_ratio<2, 1000>* si::metre));
+
+// electron magnetic moment, CODATA 2022: −9.284 764 6917(29) × 10⁻²⁴ J/T; a negative-valued
+// constant declared with the absolute form
+inline constexpr struct electron_magnetic_moment final :
+    named_constant<symbol_text{u8"μ_e", "mu_e"},
+                   -mag_ratio<92'847'646'917, 10'000'000'000> * mag_power<10, -24> * si::joule / si::tesla,
+                   standard_uncertainty{mag_ratio<29, 10> * mag_power<10, -33> * si::joule / si::tesla}> {
+} electron_magnetic_moment;
+
+static_assert(MeasuredConstant<std::remove_const_t<decltype(electron_magnetic_moment)>>);
+
+// the declared uncertainty is returned verbatim and is positive by construction
+static_assert(get_standard_uncertainty(electron_magnetic_moment) ==
+              mag_ratio<29, 10> * mag_power<10, -33> * si::joule / si::tesla);
+
+// `u_r = u(x)/|x|` is a magnitude, never negative (GUM/VIM), and derives as the exact ratio
+// 2.9e-33 / 9.2847646917e-24 = 29/92'847'646'917
+static_assert(get_relative_standard_uncertainty(electron_magnetic_moment) == mag_ratio<29, 92'847'646'917>);
+static_assert(detail::magnitude_is_positive<get_relative_standard_uncertainty(electron_magnetic_moment)>);
+
+// a negative-valued constant declared with the relative form derives a positive absolute one:
+// u(x) = u_r · |x| = 1e-3 · 2 m = 2e-3 m
+inline constexpr struct negative_measured final :
+    named_constant<"tnm", -mag<2> * si::metre, relative_standard_uncertainty{mag_ratio<1, 1> * mag_power<10, -3>}> {
+} negative_measured;
+static_assert(equivalent(get_standard_uncertainty(negative_measured), mag_ratio<2, 1000>* si::metre));
+static_assert(detail::magnitude_is_positive<get_relative_standard_uncertainty(negative_measured)>);
+
+// the conversion engine folds the uncertainty of an absolute-form constant exactly as it does
+// for a relative-form one
+static_assert(approx_equal(detail::conversion_relative_uncertainty(electron_magnetic_moment, si::joule / si::tesla) *
+                             one,
+                           2.9e-33L / 9.2847646917e-24L * one, 1e-6));
+
+// an uncertainty of a different dimension than the constant, or a non-positive one, is not a
+// valid definition
+template<auto U, auto SU>
+concept valid_measured_constant = requires { named_constant<"test", U, standard_uncertainty{SU}>{}; };
+static_assert(valid_measured_constant<mag<2> * si::metre, mag_ratio<1, 1000> * si::metre>);
+static_assert(!valid_measured_constant<mag<2> * si::metre, mag_ratio<1, 1000> * si::second>);
+static_assert(!valid_measured_constant<mag<2> * si::metre, -mag_ratio<1, 1000> * si::metre>);
+
+}  // namespace uncertainty_wrappers
 
 }  // namespace

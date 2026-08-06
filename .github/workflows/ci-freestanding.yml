@@ -64,6 +64,11 @@ concurrency:
 jobs:
   generate-matrix:
     name: "Generate build matrix for ${{ github.workflow }}"
+    # A PR whose head branch lives in this repository is already covered by the `push` event above,
+    # whose path filters match only the commits just pushed - unlike `pull_request`, which matches
+    # them against the whole base...head diff and so re-runs everything for a docs-only push. Fork
+    # PRs never fire `push` here, so they are what this event exists to serve.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
       seed: ${{ steps.set-matrix.outputs.seed }}

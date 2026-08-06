@@ -19,6 +19,9 @@ concurrency:
 
 jobs:
   validate-citation-cff:
+    # A PR whose head branch lives in this repository is already covered by the `push` event above.
+    # Fork PRs never fire `push` here, so they are what this event exists to serve.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 10
     name: Validate CITATION.cff
