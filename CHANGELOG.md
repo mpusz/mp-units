@@ -8,6 +8,11 @@ This page documents the version history and changes for the **mp-units** library
 
 ### 2.6.0 <small>TBD</small> { id="2.6.0" }
 
+- perf: `prefixed_unit` derives from `detail::scaled_unit_impl` directly instead of
+      reaching it through `scaled_unit<M, U>::_base_type_`. The base class is unchanged —
+      it just no longer instantiates the `scaled_unit` specialization to name it, which is
+      a quarter of the cost of every prefixed symbol. A `si/unit_symbols.h` translation
+      unit drops 7.2% of its template instantiations, and `si.h` 6.5%
 - feat: unary minus on a unit magnitude (`-mag_ratio<N, D>`, `-mag<N>`), which reads the
       way a published table prints a negative constant. It yields the same type as putting
       the sign in the numerator, and a second negation cancels

@@ -640,10 +640,11 @@ MP_UNITS_EXPORT template<MeasuredConstant U>
  * @tparam U a named unit to be prefixed
  */
 MP_UNITS_EXPORT template<symbol_text Symbol, UnitMagnitude auto M, PrefixableUnit auto U>
-  requires(!Symbol.empty())
-// `PrefixableUnit` guarantees a named unit, so `M * U` always reduces to `scaled_unit<M, U>`; spelling the base
-// directly avoids instantiating the `operator*` machinery for every prefix and unit combination (e.g. unit_symbols.h)
-struct prefixed_unit : scaled_unit<M, MP_UNITS_REMOVE_CONST(decltype(U))>::_base_type_ {
+  requires(!Symbol.empty() && M != mag<1>)  // `scaled_unit` rejected a unit-magnitude prefix; keep doing so
+// `PrefixableUnit` guarantees a named unit, so `M * U` always reduces to `scaled_unit<M, U>`, whose `_base_type_` is
+// `scaled_unit_impl<M, U>`. Naming that base directly avoids instantiating the `operator*` machinery, and also the
+// `scaled_unit` specialization itself, for every prefix and unit combination (a quarter of `unit_symbols.h`).
+struct prefixed_unit : detail::scaled_unit_impl<M, MP_UNITS_REMOVE_CONST(decltype(U))> {
   using _base_type_ = prefixed_unit;  // exposition only
   static constexpr auto _symbol_ = Symbol + U._symbol_;
 };
