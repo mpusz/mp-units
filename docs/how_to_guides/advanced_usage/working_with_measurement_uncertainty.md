@@ -136,30 +136,44 @@ Physical constants in **mp-units** are units with exact symbolic magnitudes (see
 [Faster-than-lightspeed constants](../../users_guide/framework_basics/faster_than_lightspeed_constants.md)).
 For constants that are exact by definition (the SI defining constants, the IAU nominal
 values), that is the whole story. Constants that are *measured* additionally declare their
-relative standard uncertainty, transcribed from the source metrology table:
+uncertainty in one of two forms, whichever their source publishes: the absolute
+`standard_uncertainty` or the unit-invariant `relative_standard_uncertainty`. The absolute
+form is the common one, transcribed from the source metrology table:
 
 ```cpp
 // CODATA 2018: G = 6.674 30(15) × 10⁻¹¹ m³ kg⁻¹ s⁻²
-//   value:                          6.674 30 × 10⁻¹¹  -> the unit magnitude
-//   relative standard uncertainty:  2.2 × 10⁻⁵        -> the metadata below
+//   value:                 6.674 30 × 10⁻¹¹   -> the unit magnitude
+//   standard uncertainty:  0.000 15 × 10⁻¹¹   -> the metadata below
 inline constexpr struct newtonian_constant_of_gravitation final :
     named_constant<"G", mag_ratio<667'430, 100'000> * mag_power<10, -11> * cubic(si::metre) / si::kilogram / square(si::second),
-                   relative_standard_uncertainty{mag_ratio<22, 10> * mag_power<10, -5>}> {}
+                   standard_uncertainty{mag_ratio<15, 10> * mag_power<10, -15> * cubic(si::metre) / si::kilogram / square(si::second)}> {}
 newtonian_constant_of_gravitation;
 ```
 
 The `(15)` in the concise ISO 80000-6 notation is the *absolute* standard uncertainty
-(`0.000 15 × 10⁻¹¹ m³ kg⁻¹ s⁻²`). The definition instead stores the *relative* standard
-uncertainty `2.2 × 10⁻⁵`, which CODATA publishes alongside it and which describes the same
-fact (`0.000 15 / 6.674 30 = 2.2 × 10⁻⁵`). The relative form is used because it is
-unit-independent: it stays valid no matter which unit the constant is later converted to.
-An absolute uncertainty would have to be respelled for every unit.
+(`0.000 15 × 10⁻¹¹ m³ kg⁻¹ s⁻²`), and `standard_uncertainty` stores exactly that, spelled
+as a magnitude times a unit of the constant's own dimension. Transcribing the published
+pair verbatim matters: NIST rounds the value and its uncertainty consistently, both to two
+significant digits of the uncertainty, so a definition that stored only the *relative*
+form could not reproduce the published absolute one (deriving it can be off by several
+percent in the last digit, 6.1% for the fine-structure constant). The absolute form is
+what `uncertain<T>` carries, prints, and propagates, so it is the number to get right.
 
-The uncertainty is stored as an exact symbolic magnitude, so no representation type is
+A second wrapper, `relative_standard_uncertainty{mag_ratio<22, 10> * mag_power<10, -5>}`,
+remains available for the cases where the source publishes only the relative form, or
+where the constant's defining unit has no tabulated absolute uncertainty. A measured
+constant declares exactly one of the two. Declaring both is not allowed, because the
+published pair is mutually rounded and carrying both would embed a contradiction.
+
+The uncertainty is stored as an exact symbolic expression, so no representation type is
 imposed at the definition point. It is metadata only and never participates in unit
 equality, conversion factors, or symbolic simplification. Constants defined this way satisfy
 the [`MeasuredConstant`](../../users_guide/framework_basics/concepts.md#MeasuredConstant)
-concept, and `get_relative_standard_uncertainty(constant)` returns the stored magnitude.
+concept. `get_standard_uncertainty(constant)` and
+`get_relative_standard_uncertainty(constant)` each return the declared form or derive the
+other one on demand. The derivation is an exact ratio of canonical magnitudes
+(`u_r = u(x)/|x|`), so it involves no floating-point rounding, and it never carries a sign
+even for a negative-valued constant.
 
 ## Conversions materialize the uncertainty
 
@@ -179,8 +193,8 @@ const quantity two_suns = 2.0 * iau::unit_symbols::M_SUN;
 
 std::cout << two_suns << "\n";                                     // 2 M_☉
 std::cout << two_suns.in(kg) << "\n";                              // 3.97682e+30 kg
-std::cout << two_suns.in<uncertain<double>>(kg) << "\n";           // 3.97682e+30 ± 8.749e+25 kg
-std::cout << value_cast<kg, uncertain<double>>(two_suns) << "\n";  // 3.97682e+30 ± 8.749e+25 kg
+std::cout << two_suns.in<uncertain<double>>(kg) << "\n";           // 3.97682e+30 ± 8.93761e+25 kg
+std::cout << value_cast<kg, uncertain<double>>(two_suns) << "\n";  // 3.97682e+30 ± 8.93761e+25 kg
 ```
 
 The first two lines are exact: `two_suns` in its own unit, and the sanctioned central
@@ -199,7 +213,7 @@ const quantity two_suns = uncertain<double>{2.0} * iau::unit_symbols::M_SUN;
 
 std::cout << two_suns << "\n";                                 // 2 ± 0 M_☉
 std::cout << two_suns.in(iau::unit_symbols::M_EARTH) << "\n";  // 665892 ± 0 M_⊕
-std::cout << two_suns.in(kg) << "\n";                          // 3.97682e+30 ± 8.749e+25 kg
+std::cout << two_suns.in(kg) << "\n";                          // 3.97682e+30 ± 8.93761e+25 kg
 ```
 
 `two_suns` is exactly two suns even in an uncertainty-capable representation. `G` cancels
@@ -219,7 +233,7 @@ is applied.
 
 `measurement_of` is a factory function that turns a measured constant into a quantity with
 an uncertainty-capable representation. Its argument is constrained to the `MeasuredConstant`
-concept, so it accepts exactly the constants that declare a relative standard uncertainty.
+concept, so it accepts exactly the constants that declare a standard uncertainty.
 The representation's underlying numeric type defaults to `double`, consistent with the rest
 of the library, and can be chosen explicitly.
 
@@ -233,7 +247,7 @@ appears the moment the quantity leaves units in which the constant cancels:
 using mp_units::utility::measurement_of;
 
 quantity G1 = measurement_of(iau::newtonian_constant_of_gravitation);  // exactly 1 G
-quantity G2 = G1.in(m3 / kg / s2);              // 6.6743e-11 ± 1.46835e-15 m³ kg⁻¹ s⁻²
+quantity G2 = G1.in(m3 / kg / s2);              // 6.6743e-11 ± 1.5e-15 m³ kg⁻¹ s⁻²
 quantity G3 = measurement_of<float>(iau::newtonian_constant_of_gravitation);  // uncertain<float>
 ```
 
@@ -245,14 +259,14 @@ the quantity level:
 ```cpp
 const quantity G_measured = measurement_of(iau::newtonian_constant_of_gravitation);
 const quantity solar_mass = (1. * iau::nominal_solar_mass_parameter) / G_measured;
-std::cout << solar_mass.in(kg) << "\n";  // 1.98841e+30 ± 4.3745e+25 kg
+std::cout << solar_mass.in(kg) << "\n";  // 1.98841e+30 ± 4.46881e+25 kg
 ```
 
 The nominal mass parameter is exact by definition, so the result carries exactly `G`'s
-2.2 × 10⁻⁵ relative uncertainty.
+relative uncertainty (`1.5 × 10⁻¹⁵ / 6.6743 × 10⁻¹¹ ≈ 2.25 × 10⁻⁵`).
 
 This is where the `MeasuredConstant` constraint earns its keep. Calling `measurement_of` (or
-`get_relative_standard_uncertainty`) on a constant that is exact by definition does not
+either uncertainty accessor) on a constant that is exact by definition does not
 compile. "Exact by definition" and "measured infinitely precisely" are different
 metrological statements, so the library refuses to return `±0` for the former.
 
@@ -276,9 +290,10 @@ counted in units of that digit. The standard's own example reads:
     In the expression $l = 23{,}478\,2(32)\ \mathrm{m}$, $23{,}478\,2$ is the numerical
     value and $32$ represents a standard uncertainty equal to $0{,}003\,2$.
 
-Appending `~` to the `format-spec` selects it. The tilde marks the output as an
-approximation: the default form prints the value as it is, while this one rounds it to the
-precision the uncertainty justifies.
+Appending `~` to the `format-spec` selects it. Where the default form prints both
+components losslessly (the view of what the object holds), this one quotes the value to
+the precision the uncertainty justifies (the reporting view of GUM 7.2.6). For a constant
+transcribed from a metrology table the output reproduces the published notation verbatim.
 
 ```cpp
 std::cout << std::format("{:~}", uncertain{23.4782, 0.0032}) << "\n";  // 23.4782(32)

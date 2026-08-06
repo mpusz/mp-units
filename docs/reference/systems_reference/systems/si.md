@@ -110,16 +110,16 @@
 
 | Name | Symbol | unit_symbol | Definition |
 |------|:------:|:------------:|------------|
-| <span id="magnetic_constant"></span><code>magnetic_<wbr>constant</code> | μ₀ (u_0) | — | <code>mag<4> * <wbr>mag_power<10, -7> * <wbr>[π](core.md#π) * <wbr>[henry](#henry) / <wbr>[metre](#metre)</code> |
-| <span id="reduced_planck_constant"></span><code>reduced_<wbr>planck_<wbr>constant</code> | \u210f (hbar) | — | <code>[si2019::planck_<wbr>constant](#si2019-planck_constant) / <wbr>(mag<2> * <wbr>[π](core.md#π))</code> |
-| <span id="si2019-avogadro_constant"></span><code>si2019::avogadro_<wbr>constant</code> | N_A | — | <code>mag_ratio<602'214'076, 100'000'000> * <wbr>mag_power<10, 23> / <wbr>[mole](#mole)</code> |
+| <span id="magnetic_constant"></span><code>magnetic_<wbr>constant</code> | μ₀ (u_<wbr>0) | — | <code>mag<4> * <wbr>mag_power<10, -7> * <wbr>[π](core.md#π) * <wbr>[henry](#henry) / <wbr>[metre](#metre)</code> |
+| <span id="reduced_planck_constant"></span><code>reduced_<wbr>planck_<wbr>constant</code> | ℏ (hbar) | — | <code>[si2019::planck_<wbr>constant](codata.md#si2019-planck_constant) / <wbr>(mag<2> * <wbr>[π](core.md#π))</code> |
+| <span id="si2019-avogadro_constant"></span><code>si2019::avogadro_<wbr>constant</code> | N_<wbr>A | — | <code>mag_ratio<602'214'076, 100'000'000> * <wbr>mag_power<10, 23> / <wbr>[mole](#mole)</code> |
 | <span id="si2019-boltzmann_constant"></span><code>si2019::boltzmann_<wbr>constant</code> | k | — | <code>mag_ratio<1'380'649, 1'000'000> * <wbr>mag_power<10, -23> * <wbr>[joule](#joule) / <wbr>[kelvin](#kelvin)</code> |
 | <span id="si2019-elementary_charge"></span><code>si2019::elementary_<wbr>charge</code> | e | — | <code>mag_ratio<1'602'176'634, 1'000'000'000> * <wbr>mag_power<10, -19> * <wbr>[coulomb](#coulomb)</code> |
-| <span id="si2019-hyperfine_structure_transition_frequency_of_cs"></span><code>si2019::hyperfine_<wbr>structure_<wbr>transition_<wbr>frequency_<wbr>of_<wbr>cs</code> | Δν_Cs (dv_Cs) | — | <code>mag<9'192'631'770> * <wbr>[hertz](#hertz)</code> |
-| <span id="si2019-luminous_efficacy"></span><code>si2019::luminous_<wbr>efficacy</code> | K_cd | — | <code>mag<683> * <wbr>[lumen](#lumen) / <wbr>[watt](#watt)</code> |
+| <span id="si2019-hyperfine_structure_transition_frequency_of_cs"></span><code>si2019::hyperfine_<wbr>structure_<wbr>transition_<wbr>frequency_<wbr>of_<wbr>cs</code> | Δν_<wbr>Cs (dv_<wbr>Cs) | — | <code>mag<9'192'631'770> * <wbr>[hertz](#hertz)</code> |
+| <span id="si2019-luminous_efficacy"></span><code>si2019::luminous_<wbr>efficacy</code> | K_<wbr>cd | — | <code>mag<683> * <wbr>[lumen](#lumen) / <wbr>[watt](#watt)</code> |
 | <span id="si2019-planck_constant"></span><code>si2019::planck_<wbr>constant</code> | h | — | <code>mag_ratio<662'607'015, 100'000'000> * <wbr>mag_power<10, -34> * <wbr>[joule](#joule) * <wbr>[second](#second)</code> |
 | <span id="si2019-speed_of_light_in_vacuum"></span><code>si2019::speed_<wbr>of_<wbr>light_<wbr>in_<wbr>vacuum</code> | c | — | <code>mag<299'792'458> * <wbr>[metre](#metre) / <wbr>[second](#second)</code> |
-| <span id="standard_gravity"></span><code>standard_<wbr>gravity</code> | g₀ (g_0) | — | <code>mag_ratio<980'665, 100'000> * <wbr>[metre](#metre) / <wbr>square([second](#second))</code> |
+| <span id="standard_gravity"></span><code>standard_<wbr>gravity</code> | g₀ (g_<wbr>0) | — | <code>mag_ratio<980'665, 100'000> * <wbr>[metre](#metre) / <wbr>square([second](#second))</code> |
 
 !!! note "Inline Namespaces"
 

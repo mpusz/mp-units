@@ -389,9 +389,10 @@ Constants that vary by CODATA release (organized in `codata2014`,
 
 ### Measurement Uncertainty
 
-Every one of those measured constants declares the relative standard uncertainty published
-by its own CODATA release, alongside the central value. `k_B` is the exception: it became
-exact with the 2019 SI redefinition, so only the `codata2014` one is annotated.
+Every one of those measured constants declares the standard uncertainty published by its
+own CODATA release, transcribed verbatim alongside the central value. `k_B` is the
+exception: it became exact with the 2019 SI redefinition, so only the `codata2014` one is
+annotated.
 
 The uncertainty is metadata on the definition and costs nothing until asked for. With an
 [`uncertain`](../../how_to_guides/advanced_usage/working_with_measurement_uncertainty.md)
