@@ -56,6 +56,9 @@ MP_UNITS_EXPORT enum class character_set : std::int8_t {
 
 using text_encoding [[deprecated("2.5.0: Use `character_set` instead")]] = character_set;
 
+MP_UNITS_EXPORT template<std::size_t N, std::size_t M>
+class symbol_text;
+
 namespace detail {
 
 constexpr bool is_basic_literal_character_set_char(char ch)
@@ -80,8 +83,86 @@ template<std::size_t N>
 constexpr fixed_u8string<N> to_u8string(fixed_string<N> txt)
 {
   MP_UNITS_PRECONDITION(is_basic_literal_character_set(txt.begin(), txt.end()));
-  return std::bit_cast<fixed_u8string<N>>(txt);
+  // Compiler defect (gcc < 14, clang < 19): during constant evaluation `bit_cast` leaves the empty
+  // base subobject (`detail::fixed_string_iface`) uninitialized, so the result is unusable in a
+  // constant expression and every compile-time symbol becomes ill-formed. The element-wise copy is
+  // a workaround; `bit_cast` is the intended semantics.
+#if (defined MP_UNITS_COMP_GCC && MP_UNITS_COMP_GCC < 14) || (defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 19)
+  char8_t buffer[N + 1] = {};
+  for (std::size_t i = 0; i != N; ++i) buffer[i] = static_cast<char8_t>(txt[i]);
+  return fixed_u8string<N>(buffer, buffer + N);
+#else
+  using result_type = fixed_u8string<N>;
+  return std::bit_cast<result_type>(txt);
+#endif
 }
+
+// Hidden-friend interface for `symbol_text` - see `detail::fixed_string_iface` for the rationale.
+// Every unit and prefix symbol in a system header mints a `symbol_text<N, M>` specialization, and
+// concatenation widens `N`/`M`, so a derived-unit symbol walks a chain of one-off specializations.
+// Hosting the operators here declares them once rather than once per link in that chain.
+struct symbol_text_iface {
+  template<std::size_t N, std::size_t M, std::size_t N2, std::size_t M2>
+  [[nodiscard]] constexpr friend symbol_text<N + N2, M + M2> operator+(const symbol_text<N, M>& lhs,
+                                                                       const symbol_text<N2, M2>& rhs)
+  {
+    return symbol_text<N + N2, M + M2>(lhs.utf8() + rhs.utf8(), lhs.portable() + rhs.portable());
+  }
+
+  template<std::size_t N, std::size_t M, std::size_t N2, std::size_t M2>
+  [[nodiscard]] friend constexpr auto operator<=>(const symbol_text<N, M>& lhs, const symbol_text<N2, M2>& rhs) noexcept
+  {
+    MP_UNITS_DIAGNOSTIC_PUSH
+    MP_UNITS_DIAGNOSTIC_IGNORE_ZERO_AS_NULLPOINTER_CONSTANT
+    if (const auto cmp = lhs.utf8() <=> rhs.utf8(); cmp != 0) return cmp;
+    MP_UNITS_DIAGNOSTIC_POP
+    return lhs.portable() <=> rhs.portable();
+  }
+
+  template<std::size_t N, std::size_t M, std::size_t N2, std::size_t M2>
+  [[nodiscard]] friend constexpr bool operator==(const symbol_text<N, M>& lhs, const symbol_text<N2, M2>& rhs) noexcept
+  {
+    return lhs.utf8() == rhs.utf8() && lhs.portable() == rhs.portable();
+  }
+
+  // A friend declared inside the class template takes the enclosing specialization by a NON-deduced
+  // `const symbol_text&`, so the other operand could reach it through `symbol_text`'s implicit
+  // converting constructors (`sym == 'b'`, `unit._symbol_ == "km"`). Deducing both sides - which is
+  // what hosting the operator in a non-template base requires - takes that away, so the raw-operand
+  // spellings are restored explicitly here. This is the one behavioural difference the interface-base
+  // pattern is not free of; comparison is the only place mp-units relies on it.
+  // `symbol_text<N, M>` (not CTAD) is deliberate on both counts: it reproduces the original
+  // conversion target exactly - the ENCLOSING specialization, so a size mismatch stays ill-formed -
+  // and it keeps the expression dependent, which it must be, since the class template is still
+  // incomplete here and the deduction guides are not declared until after it.
+  template<std::size_t N, std::size_t M>
+  [[nodiscard]] friend constexpr bool operator==(const symbol_text<N, M>& lhs, char rhs) noexcept
+    requires requires { symbol_text<N, M>(rhs); }
+  {
+    return lhs == symbol_text<N, M>(rhs);
+  }
+
+  template<std::size_t N, std::size_t M>
+  [[nodiscard]] friend constexpr auto operator<=>(const symbol_text<N, M>& lhs, char rhs) noexcept
+    requires requires { symbol_text<N, M>(rhs); }
+  {
+    return lhs <=> symbol_text<N, M>(rhs);
+  }
+
+  template<std::size_t N, std::size_t M, std::size_t N2>
+  [[nodiscard]] friend consteval bool operator==(const symbol_text<N, M>& lhs, const char (&rhs)[N2])
+    requires requires { symbol_text<N, M>(rhs); }
+  {
+    return lhs == symbol_text<N, M>(rhs);
+  }
+
+  template<std::size_t N, std::size_t M, std::size_t N2>
+  [[nodiscard]] friend consteval auto operator<=>(const symbol_text<N, M>& lhs, const char (&rhs)[N2])
+    requires requires { symbol_text<N, M>(rhs); }
+  {
+    return lhs <=> symbol_text<N, M>(rhs);
+  }
+};
 
 }  // namespace detail
 
@@ -97,7 +178,7 @@ constexpr fixed_u8string<N> to_u8string(fixed_string<N> txt)
  * @tparam M The size of the portable symbol
  */
 MP_UNITS_EXPORT template<std::size_t N, std::size_t M>
-class symbol_text {
+class symbol_text : public detail::symbol_text_iface {
 public:
   fixed_u8string<N> utf8_;
   fixed_string<M> portable_;
@@ -146,29 +227,6 @@ public:
   {
     MP_UNITS_ASSERT_DEBUG(utf8().empty() == portable().empty());
     return utf8().empty();
-  }
-
-  template<std::size_t N2, std::size_t M2>
-  [[nodiscard]] constexpr friend symbol_text<N + N2, M + M2> operator+(const symbol_text& lhs,
-                                                                       const symbol_text<N2, M2>& rhs)
-  {
-    return symbol_text<N + N2, M + M2>(lhs.utf8() + rhs.utf8(), lhs.portable() + rhs.portable());
-  }
-
-  template<std::size_t N2, std::size_t M2>
-  [[nodiscard]] friend constexpr auto operator<=>(const symbol_text& lhs, const symbol_text<N2, M2>& rhs) noexcept
-  {
-    MP_UNITS_DIAGNOSTIC_PUSH
-    MP_UNITS_DIAGNOSTIC_IGNORE_ZERO_AS_NULLPOINTER_CONSTANT
-    if (const auto cmp = lhs.utf8() <=> rhs.utf8(); cmp != 0) return cmp;
-    MP_UNITS_DIAGNOSTIC_POP
-    return lhs.portable() <=> rhs.portable();
-  }
-
-  template<std::size_t N2, std::size_t M2>
-  [[nodiscard]] friend constexpr bool operator==(const symbol_text& lhs, const symbol_text<N2, M2>& rhs) noexcept
-  {
-    return lhs.utf8() == rhs.utf8() && lhs.portable() == rhs.portable();
   }
 };
 

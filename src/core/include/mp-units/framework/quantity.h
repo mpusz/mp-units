@@ -535,6 +535,30 @@ struct quantity_iface {
     return lhs.numerical_value_ref_in(get_unit(R1)) <=> representation_values<Rep1>::zero();
   }
 
+  // tuple-like decomposition of a vector quantity into named 1D-vector components (see
+  // framework/vector_components.h).
+  template<std::size_t Idx, auto R1, typename Rep1>
+#if !(defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17)
+    requires DecomposableIndex<get_quantity_spec(R1), Rep1, Idx>
+#endif
+  [[nodiscard]] friend constexpr Quantity auto get(const quantity<R1, Rep1>& q)
+  {
+    constexpr auto comp = vector_components<get_quantity_spec(R1)>::template axis<Idx>;
+    return component_access<Idx>(q.numerical_value_in(get_unit(R1))) * comp[get_unit(R1)];
+  }
+
+#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
+  template<auto QS, auto R1, typename Rep1>
+    requires(!std::integral<decltype(QS)>)
+#else
+  template<QuantitySpec auto QS, auto R1, typename Rep1>
+    requires DecomposableAxis<get_quantity_spec(R1), Rep1, QS>
+#endif
+  [[nodiscard]] friend constexpr Quantity auto get(const quantity<R1, Rep1>& q)
+  {
+    return get<axis_index_of<QS>(vector_components<get_quantity_spec(R1)>{})>(q);
+  }
+
 #if MP_UNITS_HOSTED
 
   template<typename CharT, typename Traits, auto R, typename Rep>
@@ -771,30 +795,6 @@ public:
     requires(get_character(quantity_spec).order >= quantity_tensor_order::vector) && detail::HasMagnitude<rep>
   {
     return ::mp_units::magnitude(numerical_value_is_an_implementation_detail_) * unit;
-  }
-
-  // tuple-like decomposition of a vector quantity into named 1D-vector components (see
-  // framework/vector_components.h).
-  template<std::size_t Idx>
-#if !(defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17)
-    requires detail::DecomposableIndex<quantity_spec, Rep, Idx>
-#endif
-  [[nodiscard]] friend constexpr Quantity auto get(const quantity& q)
-  {
-    constexpr auto comp = vector_components<quantity_spec>::template axis<Idx>;
-    return detail::component_access<Idx>(q.numerical_value_in(unit)) * comp[unit];
-  }
-
-#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
-  template<auto QS>
-    requires(!std::integral<decltype(QS)>)
-#else
-  template<QuantitySpec auto QS>
-    requires detail::DecomposableAxis<get_quantity_spec(R), Rep, QS>
-#endif
-  [[nodiscard]] friend constexpr Quantity auto get(const quantity& q)
-  {
-    return get<detail::axis_index_of<QS>(vector_components<quantity_spec>{})>(q);
   }
 
   // data access

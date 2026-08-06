@@ -182,4 +182,24 @@ static_assert(txt2.view() == "abc");
 static_assert(std::string_view(txt2).find('b') == 1);
 static_assert(txt2.view().find('b') == 1);
 
+// swap is reachable only through ADL (it is a hidden friend), which is what the
+// `using std::swap; swap(a, b);` two-step performs
+consteval bool member_swap_exchanges_contents()
+{
+  basic_fixed_string lhs("ab");
+  basic_fixed_string rhs("cd");
+  lhs.swap(rhs);
+  return lhs == "cd" && rhs == "ab";
+}
+static_assert(member_swap_exchanges_contents());
+
+consteval bool adl_swap_exchanges_contents()
+{
+  basic_fixed_string lhs("ab");
+  basic_fixed_string rhs("cd");
+  swap(lhs, rhs);
+  return lhs == "cd" && rhs == "ab";
+}
+static_assert(adl_swap_exchanges_contents());
+
 }  // namespace

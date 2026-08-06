@@ -52,6 +52,141 @@ import std;
 #endif  // MP_UNITS_HOSTED
 #endif  // MP_UNITS_IN_MODULE_INTERFACE
 
+// The forward declaration must be exported just like the definition below: in a module build an
+// unexported declaration has module linkage, and the exported definition then cannot redeclare it.
+MP_UNITS_EXPORT
+namespace mp_units {
+
+template<typename CharT, std::size_t N>
+class basic_fixed_string;
+
+}
+
+namespace mp_units {
+
+namespace detail {
+
+// Hidden-friend interface for `basic_fixed_string`. Concatenation and comparison are
+// heterogeneous in the size parameter, so they were never members to begin with; hosting them
+// in a non-template base means the whole set is declared ONCE per program instead of once per
+// `basic_fixed_string<CharT, N>` specialization. A TU that only includes an mp-units system
+// header already mints ~22 of those (98 for the full CODATA set), purely to spell unit symbols
+// - none of which ever concatenates at runtime. ADL still finds every operator, because a base
+// class is an associated class of its derived type.
+struct fixed_string_iface {
+  template<typename CharT, std::size_t N, std::size_t N2>
+  [[nodiscard]] constexpr friend basic_fixed_string<CharT, N + N2> operator+(
+    const basic_fixed_string<CharT, N>& lhs, const basic_fixed_string<CharT, N2>& rhs) noexcept
+  {
+    CharT txt[N + N2];
+    CharT* it = txt;
+    for (CharT ch : lhs) *it++ = ch;
+    for (CharT ch : rhs) *it++ = ch;
+    return basic_fixed_string<CharT, N + N2>(txt, it);
+  }
+
+  template<typename CharT, std::size_t N>
+  [[nodiscard]] constexpr friend basic_fixed_string<CharT, N + 1> operator+(const basic_fixed_string<CharT, N>& lhs,
+                                                                            CharT rhs) noexcept
+  {
+    CharT txt[N + 1];
+    CharT* it = txt;
+    for (CharT ch : lhs) *it++ = ch;
+    *it++ = rhs;
+    return basic_fixed_string<CharT, N + 1>(txt, it);
+  }
+
+  template<typename CharT, std::size_t N>
+  [[nodiscard]] constexpr friend basic_fixed_string<CharT, 1 + N> operator+(
+    const CharT lhs, const basic_fixed_string<CharT, N>& rhs) noexcept
+  {
+    CharT txt[1 + N];
+    CharT* it = txt;
+    *it++ = lhs;
+    for (CharT ch : rhs) *it++ = ch;
+    return basic_fixed_string<CharT, 1 + N>(txt, it);
+  }
+
+  template<typename CharT, std::size_t N, std::size_t N2>
+  [[nodiscard]] consteval friend basic_fixed_string<CharT, N + N2 - 1> operator+(
+    const basic_fixed_string<CharT, N>& lhs, const CharT (&rhs)[N2]) noexcept
+  {
+    MP_UNITS_PRECONDITION(rhs[N2 - 1] == CharT{});
+    CharT txt[N + N2];
+    CharT* it = txt;
+    for (CharT ch : lhs) *it++ = ch;
+    for (CharT ch : rhs) *it++ = ch;
+    return txt;
+  }
+
+  template<typename CharT, std::size_t N, std::size_t N1>
+  [[nodiscard]] consteval friend basic_fixed_string<CharT, N1 + N - 1> operator+(
+    const CharT (&lhs)[N1], const basic_fixed_string<CharT, N>& rhs) noexcept
+  {
+    MP_UNITS_PRECONDITION(lhs[N1 - 1] == CharT{});
+    CharT txt[N1 + N];
+    CharT* it = txt;
+    for (std::size_t i = 0; i != N1 - 1; ++i) *it++ = lhs[i];
+    for (CharT ch : rhs) *it++ = ch;
+    *it++ = CharT();
+    return txt;
+  }
+
+  // non-member comparison functions
+  template<typename CharT, std::size_t N, std::size_t N2>
+  [[nodiscard]] friend constexpr bool operator==(const basic_fixed_string<CharT, N>& lhs,
+                                                 const basic_fixed_string<CharT, N2>& rhs)
+  {
+    return lhs.view() == rhs.view();
+  }
+
+  template<typename CharT, std::size_t N, std::size_t N2>
+  [[nodiscard]] friend consteval bool operator==(const basic_fixed_string<CharT, N>& lhs, const CharT (&rhs)[N2])
+  {
+    MP_UNITS_PRECONDITION(rhs[N2 - 1] == CharT{});
+    return lhs.view() == std::basic_string_view<CharT>(std::cbegin(rhs), std::cend(rhs) - 1);
+  }
+
+  template<typename CharT, std::size_t N, std::size_t N2>
+  [[nodiscard]] friend constexpr auto operator<=>(const basic_fixed_string<CharT, N>& lhs,
+                                                  const basic_fixed_string<CharT, N2>& rhs)
+  {
+    return lhs.view() <=> rhs.view();
+  }
+
+  template<typename CharT, std::size_t N, std::size_t N2>
+  [[nodiscard]] friend consteval auto operator<=>(const basic_fixed_string<CharT, N>& lhs, const CharT (&rhs)[N2])
+  {
+    MP_UNITS_PRECONDITION(rhs[N2 - 1] == CharT{});
+    return lhs.view() <=> std::basic_string_view<CharT>(std::cbegin(rhs), std::cend(rhs) - 1);
+  }
+
+  // specialized algorithms
+  //
+  // A hidden friend on purpose: the customization point is meant to be reached through the
+  // `using std::swap; swap(lhs, rhs);` two-step, and hosting it here means a qualified
+  // `mp_units::swap(lhs, rhs)` - which defeats that mechanism and is never the right call -
+  // does not compile in the first place.
+  template<typename CharT, std::size_t N>
+  friend constexpr void swap(basic_fixed_string<CharT, N>& lhs, basic_fixed_string<CharT, N>& rhs) noexcept
+  {
+    lhs.swap(rhs);
+  }
+
+  // inserters and extractors
+#if MP_UNITS_HOSTED
+  template<typename CharT, std::size_t N>
+  friend std::basic_ostream<CharT>& operator<<(std::basic_ostream<CharT>& os, const basic_fixed_string<CharT, N>& str)
+  {
+    return os << str.c_str();
+  }
+#endif
+};
+
+}  // namespace detail
+
+}  // namespace mp_units
+
 MP_UNITS_EXPORT
 namespace mp_units {
 
@@ -62,7 +197,7 @@ namespace mp_units {
  * @tparam N The size of the string
  */
 template<typename CharT, std::size_t N>
-class basic_fixed_string {
+class basic_fixed_string : public detail::fixed_string_iface {
 public:
   CharT data_[N + 1] = {};  // exposition only
 
@@ -155,7 +290,16 @@ public:
   }
 
   // modifiers
-  constexpr void swap(basic_fixed_string& s) noexcept { swap_ranges(begin(), end(), s.begin()); }
+  constexpr void swap(basic_fixed_string& s) noexcept
+  {
+    // element-wise rather than `swap_ranges`: `begin()`/`end()` yield `const_iterator`, so the
+    // range algorithms cannot write through them. `data_[N]` is the terminator in both objects.
+    for (std::size_t i = 0; i != N; ++i) {
+      const CharT tmp = data_[i];
+      data_[i] = s.data_[i];
+      s.data_[i] = tmp;
+    }
+  }
 
   // string operations
   [[nodiscard]] constexpr const_pointer c_str() const noexcept { return data(); }
@@ -166,97 +310,6 @@ public:
   }
   // NOLINTNEXTLINE(*-explicit-conversions, google-explicit-constructor)
   [[nodiscard]] constexpr explicit(false) operator std::basic_string_view<CharT>() const noexcept { return view(); }
-
-  template<std::size_t N2>
-  [[nodiscard]] constexpr friend basic_fixed_string<CharT, N + N2> operator+(
-    const basic_fixed_string& lhs, const basic_fixed_string<CharT, N2>& rhs) noexcept
-  {
-    CharT txt[N + N2];
-    CharT* it = txt;
-    for (CharT ch : lhs) *it++ = ch;
-    for (CharT ch : rhs) *it++ = ch;
-    return basic_fixed_string<CharT, N + N2>(txt, it);
-  }
-
-  [[nodiscard]] constexpr friend basic_fixed_string<CharT, N + 1> operator+(const basic_fixed_string& lhs,
-                                                                            CharT rhs) noexcept
-  {
-    CharT txt[N + 1];
-    CharT* it = txt;
-    for (CharT ch : lhs) *it++ = ch;
-    *it++ = rhs;
-    return basic_fixed_string<CharT, N + 1>(txt, it);
-  }
-
-  [[nodiscard]] constexpr friend basic_fixed_string<CharT, 1 + N> operator+(const CharT lhs,
-                                                                            const basic_fixed_string& rhs) noexcept
-  {
-    CharT txt[1 + N];
-    CharT* it = txt;
-    *it++ = lhs;
-    for (CharT ch : rhs) *it++ = ch;
-    return basic_fixed_string<CharT, 1 + N>(txt, it);
-  }
-
-  template<std::size_t N2>
-  [[nodiscard]] consteval friend basic_fixed_string<CharT, N + N2 - 1> operator+(const basic_fixed_string& lhs,
-                                                                                 const CharT (&rhs)[N2]) noexcept
-  {
-    MP_UNITS_PRECONDITION(rhs[N2 - 1] == CharT{});
-    CharT txt[N + N2];
-    CharT* it = txt;
-    for (CharT ch : lhs) *it++ = ch;
-    for (CharT ch : rhs) *it++ = ch;
-    return txt;
-  }
-
-  template<std::size_t N1>
-  [[nodiscard]] consteval friend basic_fixed_string<CharT, N1 + N - 1> operator+(const CharT (&lhs)[N1],
-                                                                                 const basic_fixed_string& rhs) noexcept
-  {
-    MP_UNITS_PRECONDITION(lhs[N1 - 1] == CharT{});
-    CharT txt[N1 + N];
-    CharT* it = txt;
-    for (std::size_t i = 0; i != N1 - 1; ++i) *it++ = lhs[i];
-    for (CharT ch : rhs) *it++ = ch;
-    *it++ = CharT();
-    return txt;
-  }
-
-  // non-member comparison functions
-  template<std::size_t N2>
-  [[nodiscard]] friend constexpr bool operator==(const basic_fixed_string& lhs,
-                                                 const basic_fixed_string<CharT, N2>& rhs)
-  {
-    return lhs.view() == rhs.view();
-  }
-  template<std::size_t N2>
-  [[nodiscard]] friend consteval bool operator==(const basic_fixed_string& lhs, const CharT (&rhs)[N2])
-  {
-    MP_UNITS_PRECONDITION(rhs[N2 - 1] == CharT{});
-    return lhs.view() == std::basic_string_view<CharT>(std::cbegin(rhs), std::cend(rhs) - 1);
-  }
-
-  template<std::size_t N2>
-  [[nodiscard]] friend constexpr auto operator<=>(const basic_fixed_string& lhs,
-                                                  const basic_fixed_string<CharT, N2>& rhs)
-  {
-    return lhs.view() <=> rhs.view();
-  }
-  template<std::size_t N2>
-  [[nodiscard]] friend consteval auto operator<=>(const basic_fixed_string& lhs, const CharT (&rhs)[N2])
-  {
-    MP_UNITS_PRECONDITION(rhs[N2 - 1] == CharT{});
-    return lhs.view() <=> std::basic_string_view<CharT>(std::cbegin(rhs), std::cend(rhs) - 1);
-  }
-
-  // inserters and extractors
-#if MP_UNITS_HOSTED
-  friend std::basic_ostream<CharT>& operator<<(std::basic_ostream<CharT>& os, const basic_fixed_string& str)
-  {
-    return os << str.c_str();
-  }
-#endif
 };
 
 // deduction guides
@@ -268,13 +321,6 @@ basic_fixed_string(const CharT (&str)[N]) -> basic_fixed_string<CharT, N - 1>;
 
 template<typename CharT, std::size_t N>
 basic_fixed_string(std::from_range_t, std::array<CharT, N>) -> basic_fixed_string<CharT, N>;
-
-// specialized algorithms
-template<class CharT, std::size_t N>
-constexpr void swap(basic_fixed_string<CharT, N>& x, basic_fixed_string<CharT, N>& y) noexcept
-{
-  x.swap(y);
-}
 
 // typedef-names
 template<std::size_t N>

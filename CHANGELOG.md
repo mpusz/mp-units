@@ -44,6 +44,25 @@ This page documents the version history and changes for the **mp-units** library
       keeping all hidden-friend benefits. A TU including `si` units and constants dropped
       from ~2.6 s to ~1.6 s, and the complete `codata2022.h` from ~40 s to ~4.1 s
       (GCC 15; Clang 21 shows 44 s -> 6.8 s)
+- perf: the same interface-base treatment applied to the three remaining class templates
+      that host hidden friends and are instantiated many times per translation unit:
+      `basic_fixed_string` (10 friends, ~22 specializations in any TU that includes a
+      system header, 98 for the full CODATA set), `symbol_text` (3 friends), and the two
+      vector-component `get()` overloads on `quantity` (which cost 2 declarations per
+      `quantity` specialization — 476 in a unit-composition-heavy TU). Declarations drop
+      2.1–3.3% of all function declarations per TU. Template instantiations are unchanged
+      by construction: this is declaration cost, which no instantiation count can see
+- fix: `basic_fixed_string::swap` never compiled — it called an undeclared `swap_ranges`
+      through `begin()`/`end()`, which yield `const_iterator` and cannot be written through.
+      Nothing called it, so it was never instantiated. It now exchanges the contents
+      element-wise, and both it and the free `swap` are covered by tests
+- (!) fix: the free `swap` for `basic_fixed_string` is now a hidden friend, so it is found
+      only by ADL. `mp_units::swap(a, b)` no longer compiles; that spelling defeated the
+      `using std::swap; swap(a, b);` customization mechanism and was never correct
+- fix: `symbol_text` comparison against a raw `char` or string literal (`sym == 'b'`,
+      `unit._symbol_ == "km"`) is preserved explicitly. It previously worked as a side
+      effect of the comparison operators being members of the class template, which let
+      the other operand reach them through `symbol_text`'s converting constructors
 - (!) feat: `pi` and `π` is now a unit constant
 - (!) feat: `iau::newtonian_constant_of_gravitation` is now imported from
       `codata::newtonian_constant_of_gravitation` instead of being defined by the IAU system,
