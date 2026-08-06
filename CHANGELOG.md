@@ -14,6 +14,12 @@ This page documents the version history and changes for the **mp-units** library
 - fix: `uncertain<T>::relative_uncertainty()` now divides by the absolute value. GUM and
       the VIM define the relative standard uncertainty as `u(x)/|x|`, so it is never
       negative; it used to come out negative for a negative central value
+- feat: compile-time factorization now handles composites of large primes: `mul_mod`
+      uses a double-wide (128-bit) product where the compiler provides one, and
+      `find_first_factor` finds factors with a batched-Brent Pollard's rho instead of
+      unbounded trial division (which needed ~266k `constexpr` iterations for real CODATA
+      mantissas, over GCC's default loop limit). Mirrors the approach validated in Au
+      (aurora-opensource/au#686); trial division remains as the last-resort fallback
 - (!) feat: `pi` and `π` is now a unit constant
 - (!) feat: `iau::newtonian_constant_of_gravitation` is now imported from
       `codata::newtonian_constant_of_gravitation` instead of being defined by the IAU system,

@@ -176,4 +176,25 @@ static_assert(baillie_psw_probable_prime(9'007'199'254'740'881u), "Large known p
 
 static_assert(baillie_psw_probable_prime(18'446'744'073'709'551'557u), "Largest 64-bit prime");
 
+// The double-wide `mul_mod` and its portable chunking fallback must agree, including on the
+// operand ranges where the naive product overflows.
+static_assert(mul_mod_via_chunking(6u, 7u, 10u) == mul_mod(6u, 7u, 10u));
+static_assert(mul_mod_via_chunking(MAX_U64 / 2u, 10u, MAX_U64) == mul_mod(MAX_U64 / 2u, 10u, MAX_U64));
+static_assert(mul_mod_via_chunking(9'223'372'036'854'775'807u, 9'223'372'036'854'775'806u, MAX_U64) ==
+              mul_mod(9'223'372'036'854'775'807u, 9'223'372'036'854'775'806u, MAX_U64));
+
+// `find_first_factor` returns the smallest prime factor. The interesting inputs are composites
+// whose factors all exceed the trial-division range, where Pollard's rho does the finding:
+// unbounded trial division would need ~266k `constexpr` iterations for the first one, more than
+// GCC's default `-fconstexpr-loop-limit` (hit by the CODATA 2018 atomic unit of electric
+// potential, 27.211 386 245 988 V).
+static_assert(find_first_factor(323'945'074'357u) == 531'871u, "Semiprime of two ~5*10^5 primes");
+static_assert(find_first_factor(614'889'782'588'491'410u) == 2u, "Primorial: smallest factor first");
+static_assert(find_first_factor(3'233u * 4'933u) == 53u, "53 * 61 * 4933: smallest prime returned");
+static_assert(find_first_factor(225'653'407'801u) == 225'653'407'801u, "Large prime returns itself");
+static_assert(find_first_factor(334'524'384'739u * 2u) == 2u, "Small factor found by trial division");
+static_assert(find_first_factor(600'851'475'143u) == 71u, "Composite with several mid-size factors");
+static_assert(find_first_factor(1'000'036'000'099u) == 1'000'003u,  // 1'000'003 * 1'000'033
+              "Smallest prime reported even when rho may split off the larger one first");
+
 }  // namespace
