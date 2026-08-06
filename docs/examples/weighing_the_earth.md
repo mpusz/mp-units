@@ -144,8 +144,9 @@ Note where those two uncertainties come from. `iau::terrestrial_mass` is defined
 `(GM)⊕ᴺ/G`, so its value *in kilograms* is known only as well as `G` is, and the example
 opts into reporting that with `.in<uncertain<double>>(kg)`. The standard free-fall
 acceleration, by contrast, prints without a `±`, because `codata::standard_gravity` is an
-exact *conventional* value fixed by the CGPM rather than a measured one. It is a reference point,
-not the true local value: real free-fall acceleration ranges from about 9.78 m/s² at the
+exact *conventional* value fixed by the CGPM rather than a measured one. It is a reference
+point, not the true local value: real free-fall acceleration ranges from about 9.78 m/s² at
+the
 equator to 9.83 m/s² at the poles, a spread far wider than this experiment's uncertainty.
 
 **The budget reconciles with the result.** The contributions are independent, so they
