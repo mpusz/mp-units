@@ -52,6 +52,7 @@ add_mp_units_module(
             include/mp-units/systems/si/core.h
             include/mp-units/systems/si/prefixes.h
             include/mp-units/systems/si/unit_symbols.h
+            include/mp-units/systems/si/unit_symbols_essential.h
             include/mp-units/systems/si/units.h
             include/mp-units/systems/angular.h
             include/mp-units/systems/astronomy.h

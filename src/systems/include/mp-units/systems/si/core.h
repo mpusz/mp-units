@@ -25,8 +25,8 @@
 #include <mp-units/bits/hacks.h>
 
 // IWYU pragma: begin_exports
-#include <mp-units/systems/si/constants.h>
 #include <mp-units/systems/si/prefixes.h>
+#include <mp-units/systems/si/unit_symbols_essential.h>
 #include <mp-units/systems/si/units.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE

@@ -30,6 +30,7 @@
 #include <mp-units/systems/si/math.h>
 #include <mp-units/systems/si/prefix_utils.h>
 #endif
+#include <mp-units/systems/si/constants.h>
 #include <mp-units/systems/si/core.h>
 #include <mp-units/systems/si/unit_symbols.h>
 // IWYU pragma: end_exports

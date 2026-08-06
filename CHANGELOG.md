@@ -8,6 +8,16 @@ This page documents the version history and changes for the **mp-units** library
 
 ### 2.6.0 <small>TBD</small> { id="2.6.0" }
 
+- feat: `mp-units/systems/si/unit_symbols_essential.h` provides the SI unit symbols most
+      code actually writes: every unprefixed symbol (base units, named derived units, and
+      the non-SI units accepted for use with the SI) plus the prefixed spellings that are
+      standard practice in some domain — `fm` and `nm` in physics, `ns` in electronics,
+      `hPa` in meteorology, `MPa` in materials, `kHz`…`THz` in signals, the `pF`…`mF`
+      capacitor and `mΩ`…`GΩ` resistor decades, `µSv` in radiation protection, and so on.
+      The full `unit_symbols.h` includes it and adds the rest of the 24-prefix matrix, so
+      both spell the very same types and may be mixed freely. 218 of the 771 spellings
+      cost about a quarter of what all 771 do, because every prefixed symbol is a distinct
+      type instantiated at parse time. `si/core.h` now includes the essential header
 - perf: `prefixed_unit` derives from `detail::scaled_unit_impl` directly instead of
       reaching it through `scaled_unit<M, U>::_base_type_`. The base class is unchanged —
       it just no longer instantiates the `scaled_unit` specialization to name it, which is

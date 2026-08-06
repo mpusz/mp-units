@@ -245,4 +245,15 @@ The systems definitions can be found in the `mp-units/systems/...` subdirectory:
     are some smaller files available for explicit inclusion in the
     `mp-units/systems/si/...` subdirectory.
 
-    `mp-units/systems/si/unit_symbols.h` is the most expensive to include.
+    The unit symbols are the largest optional part of it. Every prefixed symbol is a
+    distinct type, and `mp-units/systems/si/unit_symbols.h` defines the full matrix of
+    24 prefixes over every prefixable unit, which is why it costs more than all the SI
+    unit definitions put together.
+
+    Most code needs a small part of that matrix, so it is available separately:
+    `mp-units/systems/si/unit_symbols_essential.h` provides every unprefixed symbol plus
+    the prefixed spellings that are standard practice in some domain (`nm`, `ns`, `hPa`,
+    `MPa`, `kHz`, `pF`, `kΩ`, `µSv`, and so on) for roughly a quarter of the cost. It is
+    included by `mp-units/systems/si/core.h`, so the lean include already gives you them.
+    Reach for the full header when you need an unusual prefix; both spell the same types,
+    so mixing them is fine and switching later changes nothing but compile time.

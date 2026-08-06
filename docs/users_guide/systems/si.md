@@ -340,13 +340,14 @@ individual include cost — the typical choice for `.cpp` files.
 #include <mp-units/systems/si/core.h>
 ```
 
-A lighter umbrella that includes units, prefixes, and constants but deliberately
-omits `unit_symbols.h`, `chrono.h`, `math.h`, and `prefix_utils.h`.
+A lighter umbrella that includes units, prefixes, and the essential unit symbols, but
+deliberately omits the full `unit_symbols.h`, `constants.h`, `chrono.h`, `math.h`, and
+`prefix_utils.h`.
 
 **When to use:** library headers (`.h`/`.hpp`) that use SI units internally but
-should not force `unit_symbols`, `<chrono>`, or `<cmath>` on their users. Also the
-recommended include for other system headers that build on top of SI (e.g. CGS,
-imperial) to avoid bringing in the full symbol table.
+should not force the full prefix matrix, `<chrono>`, or `<cmath>` on their users. Also
+the recommended include for other system headers that build on top of SI (e.g. CGS,
+imperial).
 
 ### Individual headers
 
@@ -387,26 +388,47 @@ Use these when you need only a specific slice of the SI system.
     #include <mp-units/systems/si/constants.h>
     ```
 
-- `<mp-units/systems/si/unit_symbols.h>`
+- `<mp-units/systems/si/unit_symbols_essential.h>`
 
     Opens `namespace mp_units::si::unit_symbols` and defines short-name `inline
-    constexpr` variables for every SI unit and all its prefixed variants
-    (`m`, `km`, `mm`, …, `Hz`, `kHz`, …).
-
-    !!! warning
-
-        This header instantiates a large number of prefixed units at parse time,
-        which is the main compile-time cost of `si.h`.
+    constexpr` variables for every unprefixed SI unit and non-SI accepted unit
+    (`m`, `s`, `kg`, `Hz`, `Pa`, `deg_C`, `h`, …), plus the prefixed spellings that
+    are standard practice in some domain — `fm` and `nm` in physics, `ns` in
+    electronics, `hPa` in meteorology, `MPa` in materials, `kHz`…`THz` in signals,
+    the `pF`…`mF` capacitor and `mΩ`…`GΩ` resistor decades, `µSv` in radiation
+    protection, and so on.
 
     ```cpp
-    #include <mp-units/systems/si/unit_symbols.h>
+    #include <mp-units/systems/si/unit_symbols_essential.h>
 
     using namespace mp_units::si::unit_symbols;
     quantity length = 5 * km;
     ```
 
-    **When to use:** `.cpp` files or translation units where the concise symbol
-    syntax is desired. Avoid in widely-included library headers.
+    **When to use:** by default, including in library headers. It is already included
+    by `si/core.h`.
+
+- `<mp-units/systems/si/unit_symbols.h>`
+
+    Includes the header above and extends it to the complete matrix of all 24 SI
+    prefixes over every prefixable unit (`qm`…`Qm`, `qkat`…`Qkat`, …).
+
+    !!! warning
+
+        Every prefixed symbol is a distinct type instantiated at parse time, and the
+        full matrix has 671 of them — more than all the SI unit definitions put
+        together, and about four times what the essential header costs.
+
+    ```cpp
+    #include <mp-units/systems/si/unit_symbols.h>
+
+    using namespace mp_units::si::unit_symbols;
+    quantity capacitance = 5 * daF;
+    ```
+
+    **When to use:** when you need a prefix the essential header does not carry. Both
+    headers spell the same types, so mixing them is fine and moving from one to the
+    other changes nothing but compile time.
 
 - `<mp-units/systems/si/chrono.h>` *(hosted only)*
 
@@ -448,17 +470,18 @@ Use these when you need only a specific slice of the SI system.
 
 ### At a glance
 
-| Header              | Units | Prefixes | Constants | Symbols | chrono | math | prefix_utils |
-|---------------------|:-----:|:--------:|:---------:|:-------:|:------:|:----:|:------------:|
-| `si.h`              |   ✓   |    ✓     |     ✓     |    ✓    |   ✓    |  ✓   |      ✓       |
-| `si/core.h`         |   ✓   |    ✓     |     ✓     |    —    |   —    |  —   |      —       |
-| `si/prefixes.h`     |   —   |    ✓     |     —     |    —    |   —    |  —   |      —       |
-| `si/units.h`        |   ✓   |    ✓     |     —     |    —    |   —    |  —   |      —       |
-| `si/constants.h`    |   ✓   |    ✓     |     ✓     |    —    |   —    |  —   |      —       |
-| `si/unit_symbols.h` |   ✓   |    ✓     |     —     |    ✓    |   —    |  —   |      —       |
-| `si/chrono.h`       |   ✓   |    ✓     |     —     |    —    |   ✓    |  —   |      —       |
-| `si/math.h`         |   ✓   |    ✓     |     —     |    —    |   —    |  ✓   |      —       |
-| `si/prefix_utils.h` |   —   |    ✓     |     —     |    —    |   —    |  ✓   |      ✓       |
+| Header                        | Units | Prefixes | Constants |  Symbols  | chrono | math | prefix_utils |
+|-------------------------------|:-----:|:--------:|:---------:|:---------:|:------:|:----:|:------------:|
+| `si.h`                        |   ✓   |    ✓     |     ✓     |    all    |   ✓    |  ✓   |      ✓       |
+| `si/core.h`                   |   ✓   |    ✓     |     —     | essential |   —    |  —   |      —       |
+| `si/prefixes.h`               |   —   |    ✓     |     —     |     —     |   —    |  —   |      —       |
+| `si/units.h`                  |   ✓   |    ✓     |     —     |     —     |   —    |  —   |      —       |
+| `si/constants.h`              |   ✓   |    ✓     |     ✓     |     —     |   —    |  —   |      —       |
+| `si/unit_symbols_essential.h` |   ✓   |    ✓     |     —     | essential |   —    |  —   |      —       |
+| `si/unit_symbols.h`           |   ✓   |    ✓     |     —     |    all    |   —    |  —   |      —       |
+| `si/chrono.h`                 |   ✓   |    ✓     |     —     |     —     |   ✓    |  —   |      —       |
+| `si/math.h`                   |   ✓   |    ✓     |     —     |     —     |   —    |  ✓   |      —       |
+| `si/prefix_utils.h`           |   —   |    ✓     |     —     |     —     |   —    |  ✓   |      ✓       |
 
 !!! note "Freestanding environments"
 

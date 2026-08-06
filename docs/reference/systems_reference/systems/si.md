@@ -18,6 +18,7 @@
 - `<mp-units/systems/si/prefix_utils.h>`
 - `<mp-units/systems/si/prefixes.h>`
 - `<mp-units/systems/si/unit_symbols.h>`
+- `<mp-units/systems/si/unit_symbols_essential.h>`
 - `<mp-units/systems/si/units.h>`
 
 ## Prefixes
