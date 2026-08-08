@@ -5,6 +5,7 @@ authors:
 categories:
  - Metrology
 comments: true
+draft: true
 ---
 
 # Introducing Photometric Conditions
