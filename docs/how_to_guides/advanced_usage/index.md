@@ -12,6 +12,7 @@ quantity calculations.
 - [Represent an Axial Vector as an Antisymmetric Tensor](tensor_representation_of_axial_vectors.md) - Model a quantity the ISQ defines as a vector (e.g. angular velocity) as a skew-symmetric tensor in your own domain, bridged to `isq::angular_velocity` with an explicit `hat`/`vee` dual
 - [Working with Polar and Spherical Coordinates](polar_and_spherical_coordinates.md) - Build vector quantities from a radius and typed angles with the `polar_vector` and `spherical_vector` conversion facades, and convert them to Cartesian for arithmetic
 - [Working with Measurement Uncertainty](working_with_measurement_uncertainty.md) - Propagate measurement uncertainty with the `uncertain<T>` representation type and materialize measured constants (CODATA, IAU) with `measurement_of`
+- [Working with Photometric Conditions](photometric_conditions.md) - Keep photopic, scotopic, mesopic, and custom (e.g. melanopic) quantities in separate kind trees so that values weighted with different spectral sensitivity functions never mix, while their quotients (like the S/P ratio) stay well-formed
 - [Ensure Ultimate Safety](ultimate_safety.md) - Combine `constrained` reps, `constraint_violation_handler`, and `check_in_range` for guaranteed bounds enforcement
 - [Working With Nondimensionalized Physics](nondimensionalization.md) - Use mp-units alongside natural units and dimensionless quantities, covering the complete scale-in/scale-out workflow and tradeoffs
 <!-- markdownlint-enable MD013 -->

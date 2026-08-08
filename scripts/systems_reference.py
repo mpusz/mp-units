@@ -57,6 +57,9 @@ class Quantity:
     secondary_namespaces: list = (
         None  # Namespaces where accessible via using declarations
     )
+    per_condition: bool = (
+        False  # Defined per photometric condition (MP_UNITS_PHOTOMETRIC_QSPEC)
+    )
 
 
 @dataclass
@@ -222,12 +225,69 @@ class SystemsParser:
         self.source_root = systems_dir.parent.parent.parent.parent.parent
 
     @staticmethod
+    def _normalize_condition_unit_templates(content: str) -> str:
+        """Rewrite per-condition unit templates into the plain named-unit form.
+
+        Units that serve several photometric conditions are defined as a class template plus an
+        `_of` variable template, with the plain name aliasing the default instantiation (see
+        `si/units.h`). They are documented as the single SI unit they are, so the definitions are
+        folded back into `inline constexpr struct NAME : named_unit<...> {} NAME;`, preferring an
+        explicit default-condition specialization over the primary template.
+        """
+        pattern = re.compile(
+            r"template<[^>\n]*>\s*\n\s*struct\s+(\w+)_(<[^>\n]*>)?(?:\s+final)?\s*:\s*"
+            r"named_unit<(.+?)>\s*\{\}\s*;",
+            re.DOTALL,
+        )
+        primary: dict[str, str] = {}
+        default_spec: dict[str, str] = {}
+        for match in pattern.finditer(content):
+            name, spec_args, definition = match.group(1), match.group(2), match.group(3)
+            # a `_of<C>` reference denotes the same entity under another condition; `kind_of`
+            # is a framework specifier and must survive
+            definition = re.sub(r"\b(?!kind_of\b)(\w+)_of<[^<>]*>", r"\1", definition)
+            definition = re.sub(r"(\w+)_<[^>]*>\{\}", r"\1", definition)
+            if spec_args:
+                default_spec[name] = definition
+            else:
+                primary[name] = definition
+        if not primary and not default_spec:
+            return content
+        content = pattern.sub("", content)
+        # drop the `_of` variable templates and forward declarations they leave behind
+        content = re.sub(
+            r"template<[^>\n]*>\s*\n\s*constexpr\s+\w+_<[^>\n]*>\s+\w+_of\s*;",
+            "",
+            content,
+        )
+        content = re.sub(r"template<[^>\n]*>\s*\n\s*struct\s+\w+_\s*;", "", content)
+
+        def fold(match: re.Match) -> str:
+            name = match.group(1)
+            definition = default_spec.get(name, primary.get(name))
+            if definition is None:
+                return match.group(0)
+            return f"inline constexpr struct {name} final : named_unit<{definition}> {{}} {name};"
+
+        return re.sub(
+            r"inline\s+constexpr\s+auto\s+(\w+)\s*=\s*\1_of<>\s*;", fold, content
+        )
+
+    @staticmethod
     def _strip_comments(content: str) -> str:
-        """Remove C++ comments (both // and /* */) from source code"""
+        """Remove C++ comments and macro definitions from source code"""
         # Remove multi-line comments /* ... */
         content = re.sub(r"/\*.*?\*/", "", content, flags=re.DOTALL)
         # Remove single-line comments //...
         content = re.sub(r"//.*?$", "", content, flags=re.MULTILINE)
+        # Remove `#define` directives (including their backslash continuations) so that
+        # macro bodies (e.g. MP_UNITS_PHOTOMETRIC_QSPEC) are never parsed as definitions
+        content = re.sub(
+            r"^[ \t]*#[ \t]*define\b(?:[^\n]*\\\n)*[^\n]*",
+            "",
+            content,
+            flags=re.MULTILINE,
+        )
         return content
 
     def parse_all_systems(self):
@@ -391,7 +451,9 @@ class SystemsParser:
             return
 
         self.parsed_files.add(header_file)
-        content = self._strip_comments(header_file.read_text())
+        content = self._normalize_condition_unit_templates(
+            self._strip_comments(header_file.read_text())
+        )
 
         # Extract namespace
         namespace_match = re.search(r"namespace\s+mp_units::(\w+)", content)
@@ -650,8 +712,13 @@ class SystemsParser:
 
     def _parse_quantities(self, content: str, system: SystemInfo, file: str):
         """Parse QUANTITY_SPEC definitions"""
-        # Use a simpler pattern and extract the full content manually
-        for match in re.finditer(r"QUANTITY_SPEC\s*\(", content):
+        # Use a simpler pattern and extract the full content manually.
+        # MP_UNITS_PHOTOMETRIC_QSPEC defines one spec per photometric condition; it is
+        # documented through its photopic default instantiation, which carries the plain name.
+        for match in re.finditer(
+            r"(MP_UNITS_PHOTOMETRIC_QSPEC|QUANTITY_SPEC)\s*\(", content
+        ):
+            per_condition = match.group(1) == "MP_UNITS_PHOTOMETRIC_QSPEC"
             # Check if this line is commented out
             line_start = content.rfind("\n", 0, match.start()) + 1
             line_prefix = content[line_start : match.start()].strip()
@@ -676,6 +743,10 @@ class SystemsParser:
             # Extract the arguments
             args_str = content[start + 1 : i - 1]
             args = self._split_macro_args(args_str)
+
+            # In condition-parameterized specs the equation refers to other quantities as
+            # `X_of<Condition>`; the photopic documentation links to their plain names
+            args = [re.sub(r"\b(\w+)_of<Condition>", r"\1", arg) for arg in args]
 
             if len(args) < 2:
                 continue
@@ -762,6 +833,7 @@ class SystemsParser:
                 file=file,
                 is_kind=is_kind,
                 non_negative=non_negative,
+                per_condition=per_condition,
             )
             system.quantities.append(quantity)
 
@@ -2433,6 +2505,28 @@ class DocumentationGenerator:
 
         return hierarchy_count
 
+    # documentation chapters explaining each trait (paths relative to `systems/<ns>.md`)
+    _TRAIT_DOCS = {
+        "kind": "../../../users_guide/framework_basics/systems_of_quantities.md#modeling-a-quantity-kind",
+        "≥ 0": "../../../users_guide/framework_basics/systems_of_quantities.md#non-negative-quantities",
+        "per condition": "../../../users_guide/systems/isq.md#photometric-conditions",
+    }
+
+    @classmethod
+    def _format_traits(
+        cls, *, is_kind: bool, non_negative: bool, per_condition: bool
+    ) -> str:
+        """Render the Traits cell, linking each trait to the chapter that explains it"""
+        return "<br>".join(
+            f"[{trait}]({cls._TRAIT_DOCS[trait]})"
+            for trait, on in (
+                ("kind", is_kind),
+                ("≥ 0", non_negative),
+                ("per condition", per_condition),
+            )
+            if on
+        )
+
     @staticmethod
     def _ns_display_name(ns: str) -> str:
         """Convert a system namespace key to a human-readable display name"""
@@ -3024,16 +3118,14 @@ class DocumentationGenerator:
                                 parent_display = "—"
 
                             qty_name_display = add_word_breaks(qty.name)
-                            traits = "<br>".join(
-                                t
-                                for t, on in (
-                                    ("kind", bool(target_qty and target_qty.is_kind)),
-                                    (
-                                        "≥ 0",
-                                        bool(target_qty and target_qty.non_negative),
-                                    ),
-                                )
-                                if on
+                            traits = self._format_traits(
+                                is_kind=bool(target_qty and target_qty.is_kind),
+                                non_negative=bool(
+                                    target_qty and target_qty.non_negative
+                                ),
+                                per_condition=bool(
+                                    target_qty and target_qty.per_condition
+                                ),
                             )
                             f.write(
                                 f'| <span id="{qty.name}"></span><code>{qty_name_display}</code> | '
@@ -3086,13 +3178,10 @@ class DocumentationGenerator:
                             else:
                                 equation = "—"
                             qty_name_display = add_word_breaks(qty.name)
-                            traits = "<br>".join(
-                                t
-                                for t, on in (
-                                    ("kind", qty.is_kind),
-                                    ("≥ 0", qty.non_negative),
-                                )
-                                if on
+                            traits = self._format_traits(
+                                is_kind=qty.is_kind,
+                                non_negative=qty.non_negative,
+                                per_condition=qty.per_condition,
                             )
                             f.write(
                                 f'| <span id="{qty.name}"></span><code>{qty_name_display}</code> | '
@@ -4292,9 +4381,13 @@ class CppMetadataExtractor:
                 return
 
             # Run and capture output
-            result = subprocess.run(
-                [str(exe_file)], capture_output=True, text=True, timeout=10
-            )
+            try:
+                result = subprocess.run(
+                    [str(exe_file)], capture_output=True, text=True, timeout=60
+                )
+            except subprocess.TimeoutExpired:
+                print("Warning: Metadata extraction program timed out")
+                return
             if result.returncode != 0:
                 print("Warning: Failed to run metadata extraction program:")
                 print(result.stderr)
@@ -4438,11 +4531,17 @@ class CppMetadataExtractor:
             is_kind = is_kind_str.strip().lower() == "true"
             non_negative = non_negative_str.strip().lower() == "true"
 
+            # Condition-parameterized specs (MP_UNITS_PHOTOMETRIC_QSPEC) have type names like
+            # `isq::luminous_flux_<mp_units::isq::photopic_vision{}>`; documentation covers their
+            # photopic default instantiation, which carries the plain name without the template
+            def strip_condition_template(type_str: str) -> str:
+                return re.sub(r"(\w+)_<.*", r"\1", type_str)
+
             # Extract kind_of from: mp_units::kind_of_<mp_units::isq::length>; std::string_view = ...
             # We want: isq::length
             kind_match = kind_of.split("mp_units::kind_of_<mp_units::")
             if len(kind_match) > 1:
-                kind_str = kind_match[1].split(">")[0]
+                kind_str = strip_condition_template(kind_match[1].split(">")[0])
             else:
                 kind_str = ""
 
@@ -4453,17 +4552,19 @@ class CppMetadataExtractor:
             else:
                 parent_match = parent.split("mp_units::")
                 if len(parent_match) > 1:
-                    parent_str = parent_match[1].split(";")[0]
+                    parent_str = strip_condition_template(parent_match[1].split(";")[0])
                 else:
-                    parent_str = parent
+                    parent_str = strip_condition_template(parent)
 
             # Extract hierarchy_root from: mp_units::isq::length; std::string_view = ...
             # We want: isq::length
             hierarchy_root_match = hierarchy_root.split("mp_units::")
             if len(hierarchy_root_match) > 1:
-                hierarchy_root_str = hierarchy_root_match[1].split(";")[0]
+                hierarchy_root_str = strip_condition_template(
+                    hierarchy_root_match[1].split(";")[0]
+                )
             else:
-                hierarchy_root_str = hierarchy_root
+                hierarchy_root_str = strip_condition_template(hierarchy_root)
 
             # Handle dimensionless specially
             if not namespace:

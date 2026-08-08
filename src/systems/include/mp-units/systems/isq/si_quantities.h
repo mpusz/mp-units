@@ -61,8 +61,8 @@ QUANTITY_SPEC(admittance, inverse(impedance), quantity_field::complex);         
 QUANTITY_SPEC(magnetic_flux_density, mass / (electric_current * pow<2>(time)), quantity_tensor_order::vector);
 
 // light_and_radiation
-QUANTITY_SPEC(luminous_flux, luminous_intensity* solid_angular_measure, non_negative);
-QUANTITY_SPEC(illuminance, luminous_flux / area, non_negative);
+MP_UNITS_PHOTOMETRIC_QSPEC(luminous_flux, luminous_intensity_of<Condition>* solid_angular_measure, non_negative);
+MP_UNITS_PHOTOMETRIC_QSPEC(illuminance, luminous_flux_of<Condition> / area, non_negative);
 
 // physical_chemistry
 QUANTITY_SPEC(catalytic_activity, amount_of_substance / time, non_negative);

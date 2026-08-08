@@ -51,7 +51,23 @@ inline constexpr auto zeroth_kelvin  = absolute_zero;
 inline constexpr struct kelvin final : named_unit<"K", kind_of<isq::thermodynamic_temperature>, absolute_zero> {} kelvin;
 
 inline constexpr struct mole final : named_unit<"mol", kind_of<isq::amount_of_substance>> {} mole;
-inline constexpr struct candela final : named_unit<"cd", kind_of<isq::luminous_intensity>> {} candela;
+
+// `cd`, `lm`, and `lx` serve every photometric condition (ISO 80000-7:2019, clauses 0.4 and 0.5).
+// A condition argument does not create a different unit of measurement (SI defines exactly one
+// candela, lumen, and lux). It only states which quantity kind the unit is associated with, which
+// preserves quantity-kind safety in simple mode where the unit is the only carrier of the quantity
+// semantics. If the condition is not specified, photopic vision is assumed.
+// `cd` is a base unit, so one instantiation has to be the anchor the others are defined in terms of
+// (`lm` and `lx` need no such step: being derived, they inherit the anchor through `cd`)
+template<isq::PhotometricCondition auto C = isq::photopic_vision>
+struct candela_;
+template<>
+struct candela_<isq::photopic_vision> final : named_unit<"cd", kind_of<isq::luminous_intensity>> {};
+template<isq::PhotometricCondition auto C>
+struct candela_ final : named_unit<"cd", candela_<>{}, kind_of<isq::luminous_intensity_of<C>>> {};
+template<isq::PhotometricCondition auto C = isq::photopic_vision>
+constexpr candela_<C> candela_of;
+inline constexpr auto candela = candela_of<>;
 
 // derived named units
 inline constexpr struct radian final : named_unit<"rad", metre / metre, kind_of<isq::angular_measure>> {} radian;
@@ -88,8 +104,18 @@ inline constexpr struct ice_point final : relative_point_origin<::mp_units::poin
 inline constexpr auto zeroth_degree_Celsius = ice_point;
 inline constexpr struct degree_Celsius final : named_unit<symbol_text{u8"℃", "`C"}, kelvin, ice_point> {} degree_Celsius;
 
-inline constexpr struct lumen final : named_unit<"lm", candela * steradian, kind_of<isq::luminous_flux>> {} lumen;
-inline constexpr struct lux final : named_unit<"lx", lumen / square(metre), kind_of<isq::illuminance>> {} lux;
+template<isq::PhotometricCondition auto C = isq::photopic_vision>
+struct lumen_ final : named_unit<"lm", candela_of<C> * steradian, kind_of<isq::luminous_flux_of<C>>> {};
+template<isq::PhotometricCondition auto C = isq::photopic_vision>
+constexpr lumen_<C> lumen_of;
+inline constexpr auto lumen = lumen_of<>;
+
+template<isq::PhotometricCondition auto C = isq::photopic_vision>
+struct lux_ final : named_unit<"lx", lumen_of<C> / square(metre), kind_of<isq::illuminance_of<C>>> {};
+template<isq::PhotometricCondition auto C = isq::photopic_vision>
+constexpr lux_<C> lux_of;
+inline constexpr auto lux = lux_of<>;
+
 inline constexpr struct becquerel final : named_unit<"Bq", one / second, kind_of<isq::activity>> {} becquerel;
 inline constexpr struct gray final : named_unit<"Gy", joule / kilogram, kind_of<isq::absorbed_dose>> {} gray;
 inline constexpr struct sievert final : named_unit<"Sv", joule / kilogram, kind_of<isq::dose_equivalent>> {} sievert;

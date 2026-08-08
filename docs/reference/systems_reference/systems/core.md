@@ -19,7 +19,7 @@
 
 | Quantity | Character | Dimension | Traits | Kind of | Parent | Equation | Hierarchy |
 |----------|:---------:|:---------:|:------:|:-------:|:------:|----------|:---------:|
-| <span id="dimensionless"></span><code>dimensionless</code> | scalar | 1 | kind | <code>[dimensionless](core.md#dimensionless)</code> | — | — | [view](../hierarchies/dimensionless.md) |
+| <span id="dimensionless"></span><code>dimensionless</code> | scalar | 1 | [kind](../../../users_guide/framework_basics/systems_of_quantities.md#modeling-a-quantity-kind) | <code>[dimensionless](core.md#dimensionless)</code> | — | — | [view](../hierarchies/dimensionless.md) |
 
 ## Units
 

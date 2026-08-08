@@ -61,4 +61,68 @@ QUANTITY_SPEC(spectral_radiant_exitance, radiant_exitance / wavelength, non_nega
 QUANTITY_SPEC(radiant_exposure, radiant_energy / area, non_negative);
 QUANTITY_SPEC(spectral_radiant_exposure, radiant_exposure / wavelength, non_negative);
 
+// luminous quantities (ISO 80000-7:2019, items 7-10 to 7-18)
+// the luminous counterparts of the radiometric quantities above with one kind tree per
+// photometric condition; `luminous_flux` and `illuminance` themselves live in `si_quantities.h`
+
+// ISO 80000 names both items "luminous efficacy" (7-11.1 <of radiation>, 7-11.4 <of a source>).
+// They share the lumen per watt, yet must not be mixed: crossing between them takes the radiant
+// efficiency of the source, so each is a distinct subkind of a common parent (like fluid and water head)
+MP_UNITS_PHOTOMETRIC_QSPEC(luminous_efficacy, luminous_flux_of<Condition> / power, non_negative);
+MP_UNITS_PHOTOMETRIC_QSPEC(luminous_efficacy_of_radiation, luminous_efficacy_of<Condition>,
+                           luminous_flux_of<Condition> / radiant_flux, is_kind, non_negative);
+MP_UNITS_PHOTOMETRIC_QSPEC(spectral_luminous_efficacy, luminous_efficacy_of_radiation_of<Condition>);
+MP_UNITS_PHOTOMETRIC_QSPEC(maximum_luminous_efficacy, luminous_efficacy_of_radiation_of<Condition>);
+MP_UNITS_PHOTOMETRIC_QSPEC(luminous_efficacy_of_source, luminous_efficacy_of<Condition>, is_kind, non_negative);
+MP_UNITS_PHOTOMETRIC_QSPEC(luminous_efficiency,
+                           luminous_efficacy_of_radiation_of<Condition> / luminous_efficacy_of_radiation_of<Condition>,
+                           non_negative);
+MP_UNITS_PHOTOMETRIC_QSPEC(spectral_luminous_efficiency, luminous_efficiency_of<Condition>);
+MP_UNITS_PHOTOMETRIC_QSPEC(luminous_energy, luminous_flux_of<Condition>* time, non_negative);
+MP_UNITS_PHOTOMETRIC_QSPEC(luminance, luminous_intensity_of<Condition> / area, non_negative);
+MP_UNITS_PHOTOMETRIC_QSPEC(luminous_exitance, luminous_flux_of<Condition> / area, non_negative);
+MP_UNITS_PHOTOMETRIC_QSPEC(luminous_exposure, illuminance_of<Condition>* time, non_negative);
+
+// photon quantities (ISO 80000-7:2019, items 7-19 to 7-25)
+QUANTITY_SPEC(photon_energy, energy);
+QUANTITY_SPEC(photon_number, dimensionless, radiant_energy / photon_energy, is_kind,
+              non_negative);  // a count of photons, so it does not mix with plain ratios
+QUANTITY_SPEC(photon_flux, photon_number / duration, non_negative);
+QUANTITY_SPEC(photon_intensity, photon_flux / solid_angular_measure, non_negative);
+QUANTITY_SPEC(photon_radiance, photon_intensity / area, non_negative);
+QUANTITY_SPEC(photon_irradiance, photon_flux / area, non_negative);
+QUANTITY_SPEC(photon_exitance, photon_flux / area, non_negative);
+QUANTITY_SPEC(photon_exposure, photon_number / area, non_negative);
+
+// colorimetry (ISO 80000-7:2019, items 7-26 to 7-29)
+// tristimulus values, colour-matching functions, and chromaticity coordinates
+// (items 7-26 to 7-28) are triples of tabulated functions or coordinates rather than scalar
+// quantities of a single kind, so they are not modelled as quantity specs
+QUANTITY_SPEC(colour_temperature, thermodynamic_temperature);
+QUANTITY_SPEC(correlated_colour_temperature, thermodynamic_temperature);
+
+// material properties for radiation and light (ISO 80000-7:2019, items 7-30 to 7-37)
+// TODO absorbance (items 7-32.1 and 7-32.2) is a logarithmic quantity and awaits the
+// logarithmic-quantities framework
+QUANTITY_SPEC(emissivity, radiant_exitance / radiant_exitance, non_negative);
+QUANTITY_SPEC(spectral_emissivity, emissivity);  // named "emissivity at a specified wavelength" in ISO 80000
+QUANTITY_SPEC(absorptance, radiant_flux / radiant_flux, non_negative);
+MP_UNITS_PHOTOMETRIC_QSPEC(luminous_absorptance, luminous_flux_of<Condition> / luminous_flux_of<Condition>,
+                           non_negative);
+QUANTITY_SPEC(reflectance, radiant_flux / radiant_flux, non_negative);
+MP_UNITS_PHOTOMETRIC_QSPEC(luminous_reflectance, luminous_flux_of<Condition> / luminous_flux_of<Condition>,
+                           non_negative);
+QUANTITY_SPEC(transmittance, radiant_flux / radiant_flux, non_negative);
+MP_UNITS_PHOTOMETRIC_QSPEC(luminous_transmittance, luminous_flux_of<Condition> / luminous_flux_of<Condition>,
+                           non_negative);
+QUANTITY_SPEC(radiance_factor, radiance / radiance, non_negative);
+MP_UNITS_PHOTOMETRIC_QSPEC(luminance_factor, luminance_of<Condition> / luminance_of<Condition>, non_negative);
+QUANTITY_SPEC(reflectance_factor, radiant_flux / radiant_flux, non_negative);
+QUANTITY_SPEC(linear_attenuation_coefficient, inverse(length), non_negative);
+QUANTITY_SPEC(linear_absorption_coefficient, linear_attenuation_coefficient, non_negative);
+QUANTITY_SPEC(mass_attenuation_coefficient, linear_attenuation_coefficient / mass_density, non_negative);
+QUANTITY_SPEC(mass_absorption_coefficient, mass_attenuation_coefficient, linear_absorption_coefficient / mass_density,
+              non_negative);
+QUANTITY_SPEC(molar_absorption_coefficient, linear_absorption_coefficient* volume / amount_of_substance, non_negative);
+
 }  // namespace mp_units::isq

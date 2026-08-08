@@ -360,6 +360,43 @@ static_assert(verify(isq::radiant_exposure, scalar, J / m2, kg / s2));
 static_assert(verify(isq::spectral_radiant_exposure, scalar, J / (m2 * nm), kg / m / s2));
 static_assert(verify(isq::luminous_flux, scalar, lm, cd* sr));
 static_assert(verify(isq::illuminance, scalar, lx, lm / m2));
+static_assert(verify(isq::luminous_efficacy, scalar, lm / W));
+static_assert(verify(isq::luminous_efficacy_of_radiation, scalar, lm / W));
+static_assert(verify(isq::spectral_luminous_efficacy, scalar, lm / W));
+static_assert(verify(isq::maximum_luminous_efficacy, scalar, lm / W));
+static_assert(verify(isq::luminous_efficacy_of_source, scalar, lm / W));
+static_assert(verify(isq::luminous_efficiency, scalar, one));
+static_assert(verify(isq::spectral_luminous_efficiency, scalar, one));
+static_assert(verify(isq::luminous_energy, scalar, lm* s));
+static_assert(verify(isq::luminance, scalar, cd / m2));
+static_assert(verify(isq::luminous_exitance, scalar, lm / m2));
+static_assert(verify(isq::luminous_exposure, scalar, lx* s));
+static_assert(verify(isq::photon_energy, scalar, J, kg* m2 / s2));
+static_assert(verify(isq::photon_number, scalar, one));
+static_assert(verify(isq::photon_flux, scalar, one / s));
+static_assert(verify(isq::photon_intensity, scalar, one / (sr * s)));
+static_assert(verify(isq::photon_radiance, scalar, one / (sr * s * m2)));
+static_assert(verify(isq::photon_irradiance, scalar, one / (s * m2)));
+static_assert(verify(isq::photon_exitance, scalar, one / (s * m2)));
+static_assert(verify(isq::photon_exposure, scalar, one / m2));
+static_assert(verify(isq::colour_temperature, scalar, K));
+static_assert(verify(isq::correlated_colour_temperature, scalar, K));
+static_assert(verify(isq::emissivity, scalar, one));
+static_assert(verify(isq::spectral_emissivity, scalar, one));
+static_assert(verify(isq::absorptance, scalar, one));
+static_assert(verify(isq::luminous_absorptance, scalar, one));
+static_assert(verify(isq::reflectance, scalar, one));
+static_assert(verify(isq::luminous_reflectance, scalar, one));
+static_assert(verify(isq::transmittance, scalar, one));
+static_assert(verify(isq::luminous_transmittance, scalar, one));
+static_assert(verify(isq::radiance_factor, scalar, one));
+static_assert(verify(isq::luminance_factor, scalar, one));
+static_assert(verify(isq::reflectance_factor, scalar, one));
+static_assert(verify(isq::linear_attenuation_coefficient, scalar, one / m));
+static_assert(verify(isq::linear_absorption_coefficient, scalar, one / m));
+static_assert(verify(isq::mass_attenuation_coefficient, scalar, m2 / kg));
+static_assert(verify(isq::mass_absorption_coefficient, scalar, m2 / kg));
+static_assert(verify(isq::molar_absorption_coefficient, scalar, m2 / mol));
 
 // physical chemistry
 static_assert(verify(isq::catalytic_activity, scalar, kat, mol / s));
@@ -402,5 +439,26 @@ static_assert(verify(isq::Hamming_distance, scalar, one));
 static_assert(verify(isq::clock_frequency, scalar, Hz));
 static_assert(verify(isq::clock_rate, scalar, Hz));
 static_assert(verify(isq::decision_content, scalar, one));
+
+// light and radiation hierarchy relations
+// attenuation is caused by absorption and scattering (ISO 80000-7, items 7-35 and 7-36), so an
+// absorption coefficient is a part of the corresponding attenuation coefficient and the two add
+static_assert(implicitly_convertible(isq::linear_absorption_coefficient, isq::linear_attenuation_coefficient));
+static_assert(implicitly_convertible(isq::mass_absorption_coefficient, isq::mass_attenuation_coefficient));
+static_assert(!implicitly_convertible(isq::linear_attenuation_coefficient, isq::linear_absorption_coefficient));
+static_assert(get_kind(isq::linear_absorption_coefficient) == get_kind(isq::linear_attenuation_coefficient));
+static_assert(requires { isq::linear_absorption_coefficient(1. / m) + isq::linear_attenuation_coefficient(1. / m); });
+static_assert(requires { isq::linear_absorption_coefficient(1. / m) < isq::linear_attenuation_coefficient(1. / m); });
+
+// the sum of absorptance, reflectance, and transmittance is one, so they have to stay mixable
+static_assert(get_kind(isq::absorptance) == get_kind(isq::reflectance));
+static_assert(get_kind(isq::reflectance) == get_kind(isq::transmittance));
+static_assert(requires { isq::absorptance(0.3 * one) + isq::reflectance(0.2 * one); });
+
+// a photon number counts photons, so it does not mix with plain ratios (as `isq::storage_capacity`)
+static_assert(get_kind(isq::photon_number) != get_kind(isq::absorptance));
+static_assert(!implicitly_convertible(isq::photon_number, dimensionless));
+static_assert(get_kind(isq::photon_flux) != get_kind(isq::frequency));
+static_assert(get_kind(isq::photon_flux) != get_kind(isq::activity));
 
 }  // namespace

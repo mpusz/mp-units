@@ -54,6 +54,7 @@ add_library(
     isq_test.cpp
     limits_test.cpp
     natural_test.cpp
+    photometric_test.cpp
     prime_test.cpp
     quantity_point_test.cpp
     quantity_spec_test.cpp

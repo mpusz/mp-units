@@ -17,6 +17,8 @@ flowchart LR
     dimensionless --- isq_Hamming_distance
     isq_Poisson_number["<b><a href="../../systems/isq/#Poisson_number" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::Poisson_number</a></b><br><i>(<a href="../../systems/isq/#width" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">width</a> / <a href="../../systems/isq/#length" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">length</a>)</i>"]
     dimensionless --- isq_Poisson_number
+    isq_absorptance["<b><a href="../../systems/isq/#absorptance" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::absorptance</a></b><br><i>(<a href="../../systems/isq/#radiant_flux" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">radiant_flux</a> / <a href="../../systems/isq/#radiant_flux" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">radiant_flux</a>)</i>"]
+    dimensionless --- isq_absorptance
     dimensionless -.- isq_angular_measure
     isq_coupling_factor["<b><a href="../../systems/isq/#coupling_factor" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::coupling_factor</a></b><br><i>(<a href="../../systems/isq/#mutual_inductance" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">mutual_inductance</a> / pow<1, 2>(pow<2>(<a href="../../systems/isq/#self_inductance" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">self_inductance</a>)))</i>"]
     dimensionless --- isq_coupling_factor
@@ -26,6 +28,10 @@ flowchart LR
     dimensionless --- isq_drag_coefficient
     isq_electric_susceptibility["<b><a href="../../systems/isq/#electric_susceptibility" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::electric_susceptibility</a></b><br><i>(<a href="../../systems/isq/#electric_polarization" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">electric_polarization</a> / <a href="../../systems/isq/#electric_constant" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">electric_constant</a> / <a href="../../systems/isq/#electric_field_strength" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">electric_field_strength</a>)</i>"]
     dimensionless --- isq_electric_susceptibility
+    isq_emissivity["<b><a href="../../systems/isq/#emissivity" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::emissivity</a></b><br><i>(<a href="../../systems/isq/#radiant_exitance" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">radiant_exitance</a> / <a href="../../systems/isq/#radiant_exitance" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">radiant_exitance</a>)</i>"]
+    dimensionless --- isq_emissivity
+    isq_spectral_emissivity["<b><a href="../../systems/isq/#spectral_emissivity" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::spectral_emissivity</a></b>"]
+    isq_emissivity --- isq_spectral_emissivity
     isq_error_probability["<b><a href="../../systems/isq/#error_probability" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::error_probability</a></b>"]
     dimensionless --- isq_error_probability
     isq_ionizing_radiation_quality_factor["<b><a href="../../systems/isq/#ionizing_radiation_quality_factor" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::ionizing_radiation_quality_factor</a></b>"]
@@ -42,6 +48,18 @@ flowchart LR
     dimensionless --- isq_loss_factor
     isq_loss_probability["<b><a href="../../systems/isq/#loss_probability" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::loss_probability</a></b>"]
     dimensionless --- isq_loss_probability
+    isq_luminance_factor["<b><a href="../../systems/isq/#luminance_factor" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::luminance_factor</a></b><br><i>(<a href="../../systems/isq/#luminance" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">luminance</a> / <a href="../../systems/isq/#luminance" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">luminance</a>)</i>"]
+    dimensionless --- isq_luminance_factor
+    isq_luminous_absorptance["<b><a href="../../systems/isq/#luminous_absorptance" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::luminous_absorptance</a></b><br><i>(<a href="../../systems/isq/#luminous_flux" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">luminous_flux</a> / <a href="../../systems/isq/#luminous_flux" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">luminous_flux</a>)</i>"]
+    dimensionless --- isq_luminous_absorptance
+    isq_luminous_efficiency["<b><a href="../../systems/isq/#luminous_efficiency" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::luminous_efficiency</a></b><br><i>(<a href="../../systems/isq/#luminous_efficacy_of_radiation" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">luminous_efficacy_of_radiation</a> / <a href="../../systems/isq/#luminous_efficacy_of_radiation" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">luminous_efficacy_of_radiation</a>)</i>"]
+    dimensionless --- isq_luminous_efficiency
+    isq_spectral_luminous_efficiency["<b><a href="../../systems/isq/#spectral_luminous_efficiency" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::spectral_luminous_efficiency</a></b>"]
+    isq_luminous_efficiency --- isq_spectral_luminous_efficiency
+    isq_luminous_reflectance["<b><a href="../../systems/isq/#luminous_reflectance" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::luminous_reflectance</a></b><br><i>(<a href="../../systems/isq/#luminous_flux" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">luminous_flux</a> / <a href="../../systems/isq/#luminous_flux" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">luminous_flux</a>)</i>"]
+    dimensionless --- isq_luminous_reflectance
+    isq_luminous_transmittance["<b><a href="../../systems/isq/#luminous_transmittance" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::luminous_transmittance</a></b><br><i>(<a href="../../systems/isq/#luminous_flux" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">luminous_flux</a> / <a href="../../systems/isq/#luminous_flux" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">luminous_flux</a>)</i>"]
+    dimensionless --- isq_luminous_transmittance
     isq_magnetic_susceptibility["<b><a href="../../systems/isq/#magnetic_susceptibility" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::magnetic_susceptibility</a></b><br><i>(<a href="../../systems/isq/#magnetization" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">magnetization</a> / <a href="../../systems/isq/#magnetic_field_strength" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">magnetic_field_strength</a>)</i>"]
     dimensionless --- isq_magnetic_susceptibility
     isq_mass_fraction_of_water["<b><a href="../../systems/isq/#mass_fraction_of_water" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::mass_fraction_of_water</a></b><br><i>(<a href="../../systems/isq/#mass_ratio_of_water_to_dry_matter" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">mass_ratio_of_water_to_dry_matter</a> / <a href="../../systems/isq/#mass_ratio_of_water_to_dry_matter" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">mass_ratio_of_water_to_dry_matter</a>)</i>"]
@@ -60,12 +78,19 @@ flowchart LR
     dimensionless --- isq_mechanical_efficiency
     isq_number_of_turns_in_a_winding["<b><a href="../../systems/isq/#number_of_turns_in_a_winding" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::number_of_turns_in_a_winding</a></b>"]
     dimensionless --- isq_number_of_turns_in_a_winding
+    dimensionless -.- isq_photon_number
     isq_power_factor["<b><a href="../../systems/isq/#power_factor" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::power_factor</a></b><br><i>(<a href="../../systems/isq/#active_power" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">active_power</a> / <a href="../../systems/isq/#apparent_power" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">apparent_power</a>)</i>"]
     dimensionless --- isq_power_factor
     isq_quality_factor["<b><a href="../../systems/isq/#quality_factor" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::quality_factor</a></b><br><i>(<a href="../../systems/isq/#reactance" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">reactance</a> / <a href="../../systems/isq/#resistance" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">resistance</a>)</i>"]
     dimensionless --- isq_quality_factor
+    isq_radiance_factor["<b><a href="../../systems/isq/#radiance_factor" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::radiance_factor</a></b><br><i>(<a href="../../systems/isq/#radiance" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">radiance</a> / <a href="../../systems/isq/#radiance" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">radiance</a>)</i>"]
+    dimensionless --- isq_radiance_factor
     isq_ratio_of_specific_heat_capacities["<b><a href="../../systems/isq/#ratio_of_specific_heat_capacities" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::ratio_of_specific_heat_capacities</a></b><br><i>(<a href="../../systems/isq/#specific_heat_capacity_at_constant_pressure" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">specific_heat_capacity_at_constant_pressure</a> / <a href="../../systems/isq/#specific_heat_capacity_at_constant_volume" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">specific_heat_capacity_at_constant_volume</a>)</i>"]
     dimensionless --- isq_ratio_of_specific_heat_capacities
+    isq_reflectance["<b><a href="../../systems/isq/#reflectance" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::reflectance</a></b><br><i>(<a href="../../systems/isq/#radiant_flux" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">radiant_flux</a> / <a href="../../systems/isq/#radiant_flux" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">radiant_flux</a>)</i>"]
+    dimensionless --- isq_reflectance
+    isq_reflectance_factor["<b><a href="../../systems/isq/#reflectance_factor" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::reflectance_factor</a></b><br><i>(<a href="../../systems/isq/#radiant_flux" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">radiant_flux</a> / <a href="../../systems/isq/#radiant_flux" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">radiant_flux</a>)</i>"]
+    dimensionless --- isq_reflectance_factor
     isq_refractive_index["<b><a href="../../systems/isq/#refractive_index" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::refractive_index</a></b><br><i>(<a href="../../systems/isq/#speed_of_light_in_vacuum" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">speed_of_light_in_vacuum</a> / <a href="../../systems/isq/#speed_of_light_in_a_medium" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">speed_of_light_in_a_medium</a>)</i>"]
     dimensionless --- isq_refractive_index
     isq_relative_humidity["<b><a href="../../systems/isq/#relative_humidity" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::relative_humidity</a></b><br><i>(<a href="../../systems/isq/#pressure" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">pressure</a> / <a href="../../systems/isq/#pressure" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">pressure</a>)</i>"]
@@ -98,6 +123,8 @@ flowchart LR
     dimensionless --- isq_strain
     isq_thermodynamic_efficiency["<b><a href="../../systems/isq/#thermodynamic_efficiency" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::thermodynamic_efficiency</a></b><br><i>(<a href="../../systems/isq/#work" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">work</a> / <a href="../../systems/isq/#heat" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">heat</a>)</i>"]
     dimensionless --- isq_thermodynamic_efficiency
+    isq_transmittance["<b><a href="../../systems/isq/#transmittance" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::transmittance</a></b><br><i>(<a href="../../systems/isq/#radiant_flux" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">radiant_flux</a> / <a href="../../systems/isq/#radiant_flux" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">radiant_flux</a>)</i>"]
+    dimensionless --- isq_transmittance
     isq_waiting_probability["<b><a href="../../systems/isq/#waiting_probability" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::waiting_probability</a></b>"]
     dimensionless --- isq_waiting_probability
     dimensionless -.- natural_angular_measure
@@ -121,6 +148,9 @@ flowchart LR
         isq_phase_angle --- isq_phase_difference
         isq_rotational_displacement["<b><a href="../../systems/isq/#rotational_displacement" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::rotational_displacement</a> | <a href="../../systems/isq/#angular_displacement" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::angular_displacement</a></b><br><i>(<a href="../../systems/isq/#path_length" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">path_length</a> / <a href="../../systems/isq/#radius" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">radius</a>)</i>"]
         isq_angular_measure --- isq_rotational_displacement
+    end
+    subgraph kind_isq_photon_number[" "]
+        isq_photon_number["<b><a href="../../systems/isq/#photon_number" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::photon_number</a></b><br><i>(<a href="../../systems/isq/#radiant_energy" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">radiant_energy</a> / <a href="../../systems/isq/#photon_energy" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">photon_energy</a>)</i>"]
     end
     subgraph kind_isq_solid_angular_measure[" "]
         isq_solid_angular_measure["<b><a href="../../systems/isq/#solid_angular_measure" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::solid_angular_measure</a></b><br><i>(<a href="../../systems/isq/#area" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">area</a> / pow<2>(<a href="../../systems/isq/#radius" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">radius</a>))</i>"]

@@ -249,6 +249,68 @@ not just their dimensions. A width cannot be used where a height is required, ev
 both are lengths.
 
 
+## Photometric Conditions
+
+ISO 80000-7 defines every luminous quantity for several photometric conditions: _photopic_
+vision (cone cells, daylight), _scotopic_ vision (rod cells, night), and _mesopic_ vision
+(both, twilight). Each condition weights the radiometric spectrum with a different spectral
+luminous efficiency function, so a photopic and a scotopic value of the same source differ
+by a spectrum-dependent factor, while both are expressed in the same units (lm, cd, lx).
+A calculation that mixes values of two conditions is wrong by a factor that depends on the
+light source, and because the units match, no dimensional analysis can catch it.
+
+This is why the library models the condition as a template argument on the luminous
+quantities and keeps every condition in its own quantity hierarchy. Following the standard,
+an unspecified condition means photopic vision, so the plain names (`isq::luminous_flux`,
+`si::lumen`) are the photopic entities and existing code works unchanged:
+
+```cpp
+quantity daylight = 1000. * si::lumen;
+quantity night = 250. * si::lumen_of<isq::scotopic_vision>;
+
+// auto sum = daylight + night;        // Compile-time error: different quantity kinds
+quantity sp_ratio = night / daylight;  // OK: the S/P ratio, 0.25 lm/lm
+```
+
+Quantities of different conditions can never be added, compared, or converted to each other
+(there is no spectrum-independent conversion factor), while their products and quotients stay
+well-formed. The set of conditions is open: users may derive their own tags (e.g. the
+CIE S 026 α-opic weightings) from `isq::photometric_condition_base`.
+
+!!! important "A condition argument on a unit does not create a different unit"
+
+    SI defines exactly one candela, lumen, and lux, and the standard distinguishes the
+    conditions by the quantity symbols, never by the units. `si::lumen_of<C>` is the SI
+    lumen: it prints as `lm`, its conversion factor to `si::lumen` is exactly one, and its
+    photopic instantiation is `si::lumen` itself. The condition argument only states which
+    quantity kind the unit is associated with. This association is what preserves
+    quantity-kind safety in simple mode, where the unit is the only carrier of the quantity
+    semantics:
+
+    ```cpp
+    quantity night = 250. * si::lumen_of<isq::scotopic_vision>;  // no quantity spec spelled
+    ```
+
+    In a quotient of two conditions the lumens deliberately do not cancel: the `lm/lm`
+    output records that quantities of two different kinds were divided, the same way the
+    SI Brochure keeps unit ratios like mg/kg on dimensionless quantities to convey
+    information about the quantities involved. When a pure number is wanted, the reduction
+    is an explicit `.in(one)`.
+
+The condition safety applies to all quantities with a dimension. The dimensionless luminous
+ratios (_luminous reflectance_, _luminous transmittance_, _luminance factor_) remain distinct
+quantity specs per condition with no implicit conversion between them, but they add and
+compare through `dimensionless` like every other efficiency or factor in the library.
+_Absorbance_ (items 7-32.1 and 7-32.2) is a logarithmic quantity and is not provided yet,
+and the colorimetric items 7-26 to 7-28 (tristimulus values, colour-matching functions,
+chromaticity coordinates) are triples of tabulated functions rather than scalar quantities
+of a single kind, so they are not modelled as quantity specs.
+
+See
+[Working with Photometric Conditions](../../how_to_guides/advanced_usage/photometric_conditions.md)
+for the recipes, including bridging between conditions with a known S/P ratio.
+
+
 ## References
 
 - [ISQ Systems Reference](../../reference/systems_reference/systems/isq.md) - Complete

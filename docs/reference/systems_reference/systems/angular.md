@@ -24,8 +24,8 @@
 
 | Quantity | Character | Dimension | Traits | Kind of | Parent | Equation | Hierarchy |
 |----------|:---------:|:---------:|:------:|:-------:|:------:|----------|:---------:|
-| <span id="angle"></span><code>angle</code> | scalar | α | kind | <code>[angle](#angle)</code> | — | — | [view](../hierarchies/angle.md) |
-| <span id="solid_angle"></span><code>solid_<wbr>angle</code> | scalar | α² | kind | <code>[solid_<wbr>angle](#solid_angle)</code> | — | <code>pow<2>([angle](#angle))</code> | [view](../hierarchies/solid_angle.md) |
+| <span id="angle"></span><code>angle</code> | scalar | α | [kind](../../../users_guide/framework_basics/systems_of_quantities.md#modeling-a-quantity-kind) | <code>[angle](#angle)</code> | — | — | [view](../hierarchies/angle.md) |
+| <span id="solid_angle"></span><code>solid_<wbr>angle</code> | scalar | α² | [kind](../../../users_guide/framework_basics/systems_of_quantities.md#modeling-a-quantity-kind) | <code>[solid_<wbr>angle](#solid_angle)</code> | — | <code>pow<2>([angle](#angle))</code> | [view](../hierarchies/solid_angle.md) |
 
 ## Units
 

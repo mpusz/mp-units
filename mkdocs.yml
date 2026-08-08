@@ -234,6 +234,7 @@ nav:
           - Represent an Axial Vector as an Antisymmetric Tensor: how_to_guides/advanced_usage/tensor_representation_of_axial_vectors.md
           - Working with Polar and Spherical Coordinates: how_to_guides/advanced_usage/polar_and_spherical_coordinates.md
           - Working with Measurement Uncertainty: how_to_guides/advanced_usage/working_with_measurement_uncertainty.md
+          - Working with Photometric Conditions: how_to_guides/advanced_usage/photometric_conditions.md
           - Ensure Ultimate Safety: how_to_guides/advanced_usage/ultimate_safety.md
           - Working With Nondimensionalized Physics: how_to_guides/advanced_usage/nondimensionalization.md
       - Integration:
@@ -378,10 +379,16 @@ nav:
               - kinematic_viscosity: reference/systems_reference/hierarchies/kinematic_viscosity.md
               - length (hep): reference/systems_reference/hierarchies/length_hep.md
               - length (isq): reference/systems_reference/hierarchies/length_isq.md
+              - linear_attenuation_coefficient: reference/systems_reference/hierarchies/linear_attenuation_coefficient.md
               - linear_density_of_electric_charge: reference/systems_reference/hierarchies/linear_density_of_electric_charge.md
               - linear_electric_current_density: reference/systems_reference/hierarchies/linear_electric_current_density.md
               - linear_expansion_coefficient: reference/systems_reference/hierarchies/linear_expansion_coefficient.md
               - linear_mass_density: reference/systems_reference/hierarchies/linear_mass_density.md
+              - luminance: reference/systems_reference/hierarchies/luminance.md
+              - luminous_efficacy: reference/systems_reference/hierarchies/luminous_efficacy.md
+              - luminous_energy: reference/systems_reference/hierarchies/luminous_energy.md
+              - luminous_exitance: reference/systems_reference/hierarchies/luminous_exitance.md
+              - luminous_exposure: reference/systems_reference/hierarchies/luminous_exposure.md
               - luminous_flux (hep): reference/systems_reference/hierarchies/luminous_flux_hep.md
               - luminous_flux (isq): reference/systems_reference/hierarchies/luminous_flux_isq.md
               - luminous_intensity (hep): reference/systems_reference/hierarchies/luminous_intensity_hep.md
@@ -397,11 +404,13 @@ nav:
               - magnetization: reference/systems_reference/hierarchies/magnetization.md
               - mass (hep): reference/systems_reference/hierarchies/mass_hep.md
               - mass (isq): reference/systems_reference/hierarchies/mass_isq.md
+              - mass_attenuation_coefficient: reference/systems_reference/hierarchies/mass_attenuation_coefficient.md
               - mass_change_rate: reference/systems_reference/hierarchies/mass_change_rate.md
               - mass_density: reference/systems_reference/hierarchies/mass_density.md
               - mass_flow: reference/systems_reference/hierarchies/mass_flow.md
               - mass_flow_rate: reference/systems_reference/hierarchies/mass_flow_rate.md
               - modulation_rate: reference/systems_reference/hierarchies/modulation_rate.md
+              - molar_absorption_coefficient: reference/systems_reference/hierarchies/molar_absorption_coefficient.md
               - moment_of_force (isq): reference/systems_reference/hierarchies/moment_of_force_isq.md
               - moment_of_force (isq_angle): reference/systems_reference/hierarchies/moment_of_force_isq_angle.md
               - moment_of_inertia (isq): reference/systems_reference/hierarchies/moment_of_inertia_isq.md
@@ -416,6 +425,12 @@ nav:
               - phase_coefficient (isq_angle): reference/systems_reference/hierarchies/phase_coefficient_isq_angle.md
               - phase_speed: reference/systems_reference/hierarchies/phase_speed.md
               - phase_speed_of_electromagnetic_waves: reference/systems_reference/hierarchies/phase_speed_of_electromagnetic_waves.md
+              - photon_exitance: reference/systems_reference/hierarchies/photon_exitance.md
+              - photon_exposure: reference/systems_reference/hierarchies/photon_exposure.md
+              - photon_flux: reference/systems_reference/hierarchies/photon_flux.md
+              - photon_intensity: reference/systems_reference/hierarchies/photon_intensity.md
+              - photon_irradiance: reference/systems_reference/hierarchies/photon_irradiance.md
+              - photon_radiance: reference/systems_reference/hierarchies/photon_radiance.md
               - power (hep): reference/systems_reference/hierarchies/power_hep.md
               - power (isq): reference/systems_reference/hierarchies/power_isq.md
               - pressure (hep): reference/systems_reference/hierarchies/pressure_hep.md

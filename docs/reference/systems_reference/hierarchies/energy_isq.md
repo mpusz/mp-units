@@ -30,6 +30,8 @@ flowchart LR
     isq_mechanical_energy --- isq_kinetic_energy
     isq_potential_energy["<b><a href="../../systems/isq/#potential_energy" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::potential_energy</a></b>"]
     isq_mechanical_energy --- isq_potential_energy
+    isq_photon_energy["<b><a href="../../systems/isq/#photon_energy" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::photon_energy</a></b>"]
+    isq_energy --- isq_photon_energy
     isq_radiant_energy["<b><a href="../../systems/isq/#radiant_energy" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::radiant_energy</a></b>"]
     isq_energy --- isq_radiant_energy
     isq_signal_energy_per_binary_digit["<b><a href="../../systems/isq/#signal_energy_per_binary_digit" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::signal_energy_per_binary_digit</a></b><br><i>(<a href="../../systems/isq/#carrier_power" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">carrier_power</a> * <a href="../../systems/isq/#period_of_binary_digits" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">period_of_binary_digits</a>)</i>"]
