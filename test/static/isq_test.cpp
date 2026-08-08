@@ -466,4 +466,16 @@ static_assert(get_kind(isq::photon_flux) != get_kind(isq::activity));
 static_assert(implicitly_convertible(isq::wave_vector, isq::angular_repetency));
 static_assert(!implicitly_convertible(isq::wave_vector, isq::repetency));
 
+// every count of discrete entities shares the `number_of_entities` root (itself a kind, so counts
+// do not mix with plain ratios), and a photon count is additionally a kind of its own below it
+static_assert(!implicitly_convertible(dimensionless, isq::number_of_entities));
+static_assert(!implicitly_convertible(isq::photon_number, isq::number_of_entities));
+static_assert(explicitly_convertible(isq::photon_number, isq::number_of_entities));
+
+// the energy densities of ISO 80000 parts 6, 7, and 8 share a common root
+static_assert(implicitly_convertible(isq::radiant_energy_density, isq::energy_density));
+static_assert(implicitly_convertible(isq::electromagnetic_energy_density, isq::energy_density));
+static_assert(get_common_quantity_spec(isq::radiant_energy_density, isq::electromagnetic_energy_density) ==
+              isq::energy_density);
+
 }  // namespace

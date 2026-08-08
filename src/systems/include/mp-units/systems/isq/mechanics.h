@@ -102,6 +102,8 @@ inline constexpr auto work = mechanical_work;
 QUANTITY_SPEC(mechanical_energy, mechanical_work, mass* pow<2>(length) / pow<2>(time));  // differs from ISO 80000
 QUANTITY_SPEC(potential_energy, mechanical_energy);                                      // differs from ISO 80000
 QUANTITY_SPEC(kinetic_energy, mechanical_energy, mass* pow<2>(speed));                   // differs from ISO 80000
+// the shared root for the energy densities of parts 6 (electromagnetic), 7 (radiant), and 8 (sound)
+QUANTITY_SPEC(energy_density, energy / volume, non_negative);  // not in ISO 80000
 QUANTITY_SPEC(mechanical_efficiency, mechanical_power / mechanical_power, non_negative);
 QUANTITY_SPEC(mass_flow, mass_density* velocity);  // vector
 QUANTITY_SPEC(mass_flow_rate, mass_flow* area, quantity_tensor_order::scalar);

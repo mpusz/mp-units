@@ -24,6 +24,7 @@
 
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/systems/isq/electromagnetism.h>
+#include <mp-units/systems/isq/shared_quantities.h>
 #include <mp-units/systems/isq/space_and_time.h>
 
 // IWYU pragma: begin_exports
@@ -41,7 +42,7 @@ QUANTITY_SPEC(speed_of_light_in_a_medium, speed);
 QUANTITY_SPEC(refractive_index, dimensionless, speed_of_light_in_vacuum / speed_of_light_in_a_medium);
 QUANTITY_SPEC(radiant_energy, energy);
 QUANTITY_SPEC(spectral_radiant_energy, radiant_energy / wavelength, non_negative);
-QUANTITY_SPEC(radiant_energy_density, radiant_energy / volume, non_negative);
+QUANTITY_SPEC(radiant_energy_density, energy_density, radiant_energy / volume);
 QUANTITY_SPEC(spectral_radiant_energy_density_in_terms_of_wavelength, radiant_energy_density / wavelength,
               non_negative);
 QUANTITY_SPEC(spectral_radiant_energy_density_in_terms_of_wavenumber, radiant_energy_density / wavenumber,
@@ -85,8 +86,7 @@ MP_UNITS_PHOTOMETRIC_QSPEC(luminous_exposure, illuminance_of<Condition>* time, n
 
 // photon quantities (ISO 80000-7:2019, items 7-19 to 7-25)
 QUANTITY_SPEC(photon_energy, energy);
-QUANTITY_SPEC(photon_number, dimensionless, radiant_energy / photon_energy, is_kind,
-              non_negative);  // a count of photons, so it does not mix with plain ratios
+QUANTITY_SPEC(photon_number, number_of_entities, radiant_energy / photon_energy, is_kind);
 QUANTITY_SPEC(photon_flux, photon_number / duration, non_negative);
 QUANTITY_SPEC(photon_intensity, photon_flux / solid_angular_measure, non_negative);
 QUANTITY_SPEC(photon_radiance, photon_intensity / area, non_negative);

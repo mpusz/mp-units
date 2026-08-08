@@ -97,7 +97,7 @@ QUANTITY_SPEC(magnetic_polarization, magnetic_flux_density, magnetic_constant* m
 QUANTITY_SPEC(magnetic_dipole_moment, magnetic_constant* magnetic_moment);                      // vector
 QUANTITY_SPEC(coercivity, magnetic_field_strength, quantity_tensor_order::scalar);
 inline constexpr auto coercive_field_strength = coercivity;
-QUANTITY_SPEC(electromagnetic_energy_density, electric_field_strength* electric_flux_density,
+QUANTITY_SPEC(electromagnetic_energy_density, energy_density, electric_field_strength* electric_flux_density,
               quantity_tensor_order::scalar);
 QUANTITY_SPEC(Poynting_vector, electric_field_strength* magnetic_field_strength);  // vector
 QUANTITY_SPEC(source_voltage, voltage);

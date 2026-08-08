@@ -12,6 +12,21 @@ This page documents the version history and changes for the **mp-units** library
       ISO 80000-3 defines the wave vector both ways (item 3-21 against item 3-22), but
       ISO 80000-12 item 12-9.1 and the relation `k = p/ħ` require `k = 2π/λ`, so the
       library sides with item 3-22
+- (!) fix: `hep::decay_constant` is no longer a child of `hep::frequency`. A decay rate
+      describes a stochastic process in which nothing oscillates, mirroring how the ISQ
+      keeps `activity` out of the frequency family; `hep::hertz` no longer measures it
+- feat: `isq::number_of_entities` (ISO 80000-9 item 9-1) is the shared root for every
+      count of discrete entities. A count is a kind of its own, so it does not mix with
+      plain dimensionless ratios. `isq::photon_number` is now an `is_kind` child of it:
+      counts of photons do not mix with counts of other entities, while every count
+      remains reachable from the shared root in generic code. The root opens the new
+      `mp-units/systems/isq/shared_quantities.h` header, which holds the parents shared
+      by quantities of more than one ISO 80000 part for the case when those parts must
+      not depend on each other
+- feat: `isq::energy_density` is the shared root for the energy densities of ISO 80000
+      parts 6, 7, and 8. `isq::electromagnetic_energy_density` and
+      `isq::radiant_energy_density` are now its children, so they compare and convert
+      through their common parent
 - fix: `get_dimension()` and `get_kind()` on a derived quantity spec were not normalized
       when a base dimension was contributed by three or more factors, so
       `get_dimension(isq::mass_density * isq::speed * isq::length / isq::dynamic_viscosity)`

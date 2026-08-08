@@ -29,6 +29,7 @@
 #include <mp-units/systems/isq/information_science_and_technology.h>
 #include <mp-units/systems/isq/light_and_radiation.h>
 #include <mp-units/systems/isq/mechanics.h>
+#include <mp-units/systems/isq/shared_quantities.h>
 #include <mp-units/systems/isq/si_quantities.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/isq/thermodynamics.h>
