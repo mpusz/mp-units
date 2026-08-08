@@ -404,7 +404,7 @@ static_assert(verify(isq::catalytic_activity, scalar, kat, mol / s));
 // atomic and nuclear physics
 static_assert(verify(isq::activity, scalar, Bq, one / s));
 static_assert(verify(isq::absorbed_dose, scalar, Gy, J / kg, m2 / s2));
-static_assert(verify(isq::quality_factor, scalar, one));
+static_assert(verify(isq::ionizing_radiation_quality_factor, scalar, one));
 static_assert(verify(isq::dose_equivalent, scalar, Sv, J / kg, m2 / s2));
 
 // information science and technology
