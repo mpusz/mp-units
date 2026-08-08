@@ -103,6 +103,7 @@ QUANTITY_SPEC_(normal_stress, stress, quantity_tensor_order::scalar);
 QUANTITY_SPEC_(strain, dimensionless, quantity_tensor_order::tensor);
 QUANTITY_SPEC_(relative_linear_strain, length / length);
 QUANTITY_SPEC_(modulus_of_elasticity, normal_stress / relative_linear_strain);
+QUANTITY_SPEC_(dynamic_viscosity, pressure* time);
 QUANTITY_SPEC_(power, force* velocity, quantity_tensor_order::scalar);
 QUANTITY_SPEC_(efficiency, power / power);
 QUANTITY_SPEC_(energy, mass * pow<2>(length) / pow<2>(time), non_negative);
@@ -332,6 +333,14 @@ static_assert(is_of_type<acceleration * mass, derived_quantity_spec<acceleration
 static_assert(is_of_type<get_dimension(acceleration* mass),
                          derived_dimension<dim_length_, dim_mass_, per<mp_units::power<dim_time_, 2>>>>);
 
+// exponents of a base dimension contributed by three or more factors (both directly and through
+// the `per<>` part of another factor's derived dimension) must consolidate
+static_assert(is_of_type<get_dimension(length* speed / pressure),
+                         derived_dimension<mp_units::power<dim_length_, 3>, dim_time_, per<dim_mass_>>>);
+// the Reynolds number equation: ρvl/η
+static_assert(is_of_type<get_dimension(mass_density * speed * length / dynamic_viscosity), dim_one_>);
+static_assert(get_dimension(mass_density * speed * length / dynamic_viscosity) == dimension_one);
+
 static_assert(is_of_type<kind_of<length> / kind_of<time>, kind_of_<derived_quantity_spec<length_, per<time_>>>>);
 static_assert(is_of_type<kind_of<length / time>, kind_of_<derived_quantity_spec<length_, per<time_>>>>);
 
@@ -472,6 +481,8 @@ static_assert(get_kind(speed) == kind_of<speed>);
 static_assert(get_kind(height / time) == kind_of<length / time>);
 static_assert(get_kind(inverse(time)) == kind_of<inverse(time)>);
 static_assert(get_kind(inverse(period_duration)) == kind_of<inverse(time)>);
+// three or more factors mapping to the same kind must consolidate
+static_assert(get_kind(width * height * path_length) == kind_of<pow<3>(length)>);
 static_assert(get_kind(frequency) == kind_of<frequency>);
 static_assert(get_kind(mass * frequency) == kind_of<mass * frequency>);
 static_assert(get_kind(moment_of_force) == kind_of<moment_of_force>);

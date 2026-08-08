@@ -256,6 +256,13 @@ struct expr_consolidate_impl<type_list<T, power<T, Ints...>, Rest...>> {
   using type = expr_consolidate_impl<type_list<power_or_T<T, power<T, Ints...>::_exponent_ + 1>, Rest...>>::type;
 };
 
+// replaces a power of a type followed by an instance of the same type with one with incremented power
+// (restores the sorted invariant transiently broken by the two-instances rule above)
+template<typename T, int... Ints, typename... Rest>
+struct expr_consolidate_impl<type_list<power<T, Ints...>, T, Rest...>> {
+  using type = expr_consolidate_impl<type_list<power_or_T<T, power<T, Ints...>::_exponent_ + 1>, Rest...>>::type;
+};
+
 // accumulates the powers of instances of the same type (removes the element in case the accumulation result is `0`)
 template<typename T, int... Ints1, int... Ints2, typename... Rest>
 struct expr_consolidate_impl<type_list<power<T, Ints1...>, power<T, Ints2...>, Rest...>> {
