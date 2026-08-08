@@ -8,6 +8,15 @@ This page documents the version history and changes for the **mp-units** library
 
 ### 2.6.0 <small>TBD</small> { id="2.6.0" }
 
+- (!) fix: `isq::wave_vector` now roots in `angular_repetency` instead of `repetency`.
+      ISO 80000-3 defines the wave vector both ways (item 3-21 against item 3-22), but
+      ISO 80000-12 item 12-9.1 and the relation `k = p/ħ` require `k = 2π/λ`, so the
+      library sides with item 3-22
+- fix: `get_dimension()` and `get_kind()` on a derived quantity spec were not normalized
+      when a base dimension was contributed by three or more factors, so
+      `get_dimension(isq::mass_density * isq::speed * isq::length / isq::dynamic_viscosity)`
+      did not equal `dimension_one`, making the canonical Reynolds equation impossible
+      to write
 - feat: `mp-units/systems/si/unit_symbols_essential.h` provides the SI unit symbols most
       code actually writes: every unprefixed symbol (base units, named derived units, and
       the non-SI units accepted for use with the SI) plus the prefixed spellings that are

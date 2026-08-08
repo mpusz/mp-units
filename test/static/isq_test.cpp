@@ -80,8 +80,8 @@ static_assert(verify(isq::angular_frequency, scalar, rad / s, one / s));
 static_assert(verify(isq::wavelength, scalar, m));
 static_assert(verify(isq::repetency, scalar, one / m));
 static_assert(verify(isq::wavenumber, scalar, one / m));
-static_assert(verify(isq::wave_vector, vector, one / m));
 static_assert(verify(isq::angular_repetency, scalar, one / m));
+static_assert(verify(isq::wave_vector, vector, one / m));
 static_assert(verify(isq::angular_wavenumber, scalar, one / m));
 static_assert(verify(isq::phase_speed, scalar, m / s));
 static_assert(verify(isq::group_speed, scalar, m / s));
@@ -460,5 +460,10 @@ static_assert(get_kind(isq::photon_number) != get_kind(isq::absorptance));
 static_assert(!implicitly_convertible(isq::photon_number, dimensionless));
 static_assert(get_kind(isq::photon_flux) != get_kind(isq::frequency));
 static_assert(get_kind(isq::photon_flux) != get_kind(isq::activity));
+
+// ISO 80000-3 item 3-22 and ISO 80000-12 item 12-9.1: k = 2π/λ, so the wave vector roots in
+// angular repetency, not repetency
+static_assert(implicitly_convertible(isq::wave_vector, isq::angular_repetency));
+static_assert(!implicitly_convertible(isq::wave_vector, isq::repetency));
 
 }  // namespace

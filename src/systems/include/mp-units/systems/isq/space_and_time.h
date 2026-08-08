@@ -91,9 +91,11 @@ QUANTITY_SPEC(angular_frequency, phase_angle / duration);
 QUANTITY_SPEC(wavelength, length);
 QUANTITY_SPEC(repetency, inverse(wavelength), non_negative);
 inline constexpr auto wavenumber = repetency;
-QUANTITY_SPEC(wave_vector, repetency, quantity_tensor_order::vector);
 QUANTITY_SPEC(angular_repetency, inverse(wavelength), non_negative);
 inline constexpr auto angular_wavenumber = angular_repetency;
+// ISO 80000-3 defines the wave vector twice (item 3-21 roots it in repetency, item 3-22 in angular
+// repetency). ISO 80000-12 item 12-9.1 and the relation k = p/ħ side with 3-22, so we root it there.
+QUANTITY_SPEC(wave_vector, angular_repetency, quantity_tensor_order::vector);
 QUANTITY_SPEC(phase_speed, angular_frequency / angular_repetency);
 QUANTITY_SPEC(group_speed, angular_frequency / angular_repetency);
 QUANTITY_SPEC(damping_coefficient, inverse(time_constant), non_negative);
