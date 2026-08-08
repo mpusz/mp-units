@@ -711,29 +711,52 @@ models this with the `non_negative` property tag:
     QUANTITY_SPEC(electric_current, dim_electric_current);
     ```
 
-### Propagation through equations
+### No propagation through equations
 
-The `non_negative` property automatically propagates through derived quantity equations.
-A derived quantity is `non_negative` when **all** factors in its defining equation are
-`non_negative`:
+The `non_negative` property does not propagate through derived quantity equations.
+The result of a quantity equation is never `non_negative`, even when every factor in
+it is:
 
 ```cpp
-// area = length² → non_negative (length is non_negative)
+// all factors are non_negative, but the derived results are not
+static_assert(!is_non_negative(pow<2>(isq::length)));
+static_assert(!is_non_negative(isq::length / isq::duration));
+static_assert(!is_non_negative(isq::energy / isq::amount_of_substance));
+```
+
+The rationale behind this is that the sign of a named quantity cannot be determined from
+its defining equation (see [P4185](https://wg21.link/p4185) for an in-depth discussion):
+
+- _reactive power_ has all-non-negative dimensional factors (V·A) yet is physically
+  signed, because the phase angle carries the sign, and that is invisible to dimensional
+  analysis,
+- the _Massieu function_ is defined with an explicit negation (`J = -A/T`) that the
+  dimensional structure does not capture,
+- _Helmholtz energy_ and _Gibbs energy_ share the dimension of energy with
+  _kinetic energy_, yet they are possibly-negative thermodynamic potentials.
+
+Since a named quantity inherits the properties of its parent, an equation result that
+claimed `non_negative` would force the guarantee on every named quantity defined over
+that equation, with no way to opt out. This is why every named quantity that should be
+non-negative states the tag explicitly in its definition, even when all factors of its
+defining equation already carry it:
+
+```cpp
+QUANTITY_SPEC(area, pow<2>(length), non_negative);
+QUANTITY_SPEC(speed, length / time, non_negative);
+QUANTITY_SPEC(energy, mass * pow<2>(length) / pow<2>(time), non_negative);
+
 static_assert(is_non_negative(isq::area));
-
-// speed = length / duration → non_negative (both are non_negative)
 static_assert(is_non_negative(isq::speed));
-
-// energy = mass * length² / duration² → non_negative (all factors are non_negative)
 static_assert(is_non_negative(isq::energy));
 ```
 
-When any factor in the equation is **not** `non_negative`, the derived quantity is not
-either:
+A named quantity that may be negative simply omits the tag. For example,
+`electric_charge` is defined as `electric_current * time`, and `electric_current` is
+signed, so its definition does not mention `non_negative`:
 
 ```cpp
-// electric_current is not non_negative, so:
-// electric_charge = electric_current * duration → not non_negative
+static_assert(!is_non_negative(isq::electric_current));
 static_assert(!is_non_negative(isq::electric_charge));
 ```
 
