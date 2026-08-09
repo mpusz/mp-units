@@ -43,6 +43,20 @@ on:
       - "example/**"
       - "scripts/**"
       - "src/systems/include/**"
+
+  # A nightly rebuild, so a scheduled blog post publishes itself.
+  #
+  # The site is static and `blog.draft_if_future_date` (mkdocs.yml) is evaluated at *build* time: a
+  # post whose `date` is still in the future is dropped from the build, and it reappears only when
+  # something builds the site again on or after that date. Without this, a post dated next Thursday
+  # sits invisible until somebody happens to push a docs change, which is exactly the manual step
+  # scheduling the post was meant to remove.
+  schedule:
+    - cron: "29 0 * * *"
+
+  # Publish on demand, without needing a dummy docs commit to trigger a push build.
+  workflow_dispatch:
+
 permissions:
   contents: write
   pages: write
