@@ -71,7 +71,12 @@ theme:
 
 # Plugins
 plugins:
-  - blog
+  # `draft_if_future_date` holds a post back until its own `date` arrives, so a finished post can be
+  # merged early instead of being carried as a `draft: true` that someone has to remember to flip.
+  # It only applies to posts with **no** `draft` key at all: an explicit `draft: false` opts the post
+  # out of the date check and publishes it immediately.
+  - blog:
+      draft_if_future_date: true
   - exclude:
       glob:
         - api_reference/src/*
