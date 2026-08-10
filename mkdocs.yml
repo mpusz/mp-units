@@ -340,6 +340,7 @@ nav:
               - cubic_expansion_coefficient: reference/systems_reference/hierarchies/cubic_expansion_coefficient.md
               - curvature: reference/systems_reference/hierarchies/curvature.md
               - damping_coefficient: reference/systems_reference/hierarchies/damping_coefficient.md
+              - decay_constant: reference/systems_reference/hierarchies/decay_constant.md
               - density_of_heat_flow_rate: reference/systems_reference/hierarchies/density_of_heat_flow_rate.md
               - dimensionless: reference/systems_reference/hierarchies/dimensionless.md
               - dose_equivalent: reference/systems_reference/hierarchies/dose_equivalent.md
@@ -361,10 +362,10 @@ nav:
               - electric_potential (hep): reference/systems_reference/hierarchies/electric_potential_hep.md
               - electric_potential (isq): reference/systems_reference/hierarchies/electric_potential_isq.md
               - electric_resistance: reference/systems_reference/hierarchies/electric_resistance.md
-              - electromagnetic_energy_density: reference/systems_reference/hierarchies/electromagnetic_energy_density.md
               - energy (hep): reference/systems_reference/hierarchies/energy_hep.md
               - energy (isq): reference/systems_reference/hierarchies/energy_isq.md
               - energy (natural): reference/systems_reference/hierarchies/energy_natural.md
+              - energy_density: reference/systems_reference/hierarchies/energy_density.md
               - energy_squared: reference/systems_reference/hierarchies/energy_squared.md
               - entropy: reference/systems_reference/hierarchies/entropy.md
               - force (hep): reference/systems_reference/hierarchies/force_hep.md
@@ -446,7 +447,6 @@ nav:
               - proper_velocity: reference/systems_reference/hierarchies/proper_velocity.md
               - protoflux: reference/systems_reference/hierarchies/protoflux.md
               - radiance: reference/systems_reference/hierarchies/radiance.md
-              - radiant_energy_density: reference/systems_reference/hierarchies/radiant_energy_density.md
               - radiant_exitance: reference/systems_reference/hierarchies/radiant_exitance.md
               - radiant_exposure: reference/systems_reference/hierarchies/radiant_exposure.md
               - radiant_intensity: reference/systems_reference/hierarchies/radiant_intensity.md

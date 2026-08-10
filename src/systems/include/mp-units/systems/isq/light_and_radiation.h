@@ -23,7 +23,6 @@
 #pragma once
 
 #include <mp-units/bits/module_macros.h>
-#include <mp-units/systems/isq/electromagnetism.h>
 #include <mp-units/systems/isq/shared_quantities.h>
 #include <mp-units/systems/isq/space_and_time.h>
 

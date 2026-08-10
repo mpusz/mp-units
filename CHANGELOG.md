@@ -15,6 +15,25 @@ This page documents the version history and changes for the **mp-units** library
 - (!) fix: `hep::decay_constant` is no longer a child of `hep::frequency`. A decay rate
       describes a stochastic process in which nothing oscillates, mirroring how the ISQ
       keeps `activity` out of the frequency family; `hep::hertz` no longer measures it
+- (!) perf: the ISQ part headers no longer pull in whole neighbouring parts to reach a
+      handful of definitions. `isq::power`, `isq::energy_density`, `isq::mass_density`
+      (with its `density` alias), and `isq::speed_of_light_in_vacuum` (with its
+      `light_speed_in_vacuum` and `luminal_speed` aliases) moved to the new
+      `mp-units/systems/isq/shared_quantities.h`, which records the owning ISO 80000
+      part for each. `isq/light_and_radiation.h` consequently includes neither
+      `isq/electromagnetism.h` nor `isq/mechanics.h`, and
+      `isq/information_science_and_technology.h` includes neither `isq/mechanics.h` nor
+      `isq/space_and_time.h`. Parsing `isq/light_and_radiation.h` costs 51% less on
+      GCC 15 and 52% less on Clang 21, `isq/electromagnetism.h` 15% less, and
+      `isq/information_science_and_technology.h` 31% less; `isq.h` itself stays within
+      2% of its old cost, since it still defines everything. Every spelling is
+      unchanged and `isq.h` still
+      provides them all, but a translation unit that included one part header and
+      reached a neighbouring part's quantity transitively now has to include that part
+      itself. `isq::energy_density` is now defined over base quantities rather than as
+      `energy / volume`, because its children are reached by unrelated equations
+      (ISO 80000-8 item 8-7 gives sound energy density as ½ρu² + ½p²/(ρc²)); every
+      equation form still converts
 - feat: `isq::number_of_entities` (ISO 80000-9 item 9-1) is the shared root for every
       count of discrete entities. A count is a kind of its own, so it does not mix with
       plain dimensionless ratios. `isq::photon_number` is now an `is_kind` child of it:

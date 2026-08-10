@@ -165,6 +165,7 @@ Alphabetical list of all quantities.
 - [`energy` (hep)](systems/hep.md#energy)
 - [`energy` (isq)](systems/isq.md#energy)
 - [`energy` (natural)](systems/natural.md#energy)
+- [`energy_density` (isq)](systems/isq.md#energy_density)
 - [`energy_squared` (natural)](systems/natural.md#energy_squared)
 - [`enthalpy` (isq)](systems/isq.md#enthalpy)
 - [`entropy` (isq)](systems/isq.md#entropy)
@@ -321,6 +322,7 @@ Alphabetical list of all quantities.
 - [`normal_stress` (isq)](systems/isq.md#normal_stress)
 - [`nuclear_interaction_length` (hep)](systems/hep.md#nuclear_interaction_length)
 - [`number_density` (hep)](systems/hep.md#number_density)
+- [`number_of_entities` (isq)](systems/isq.md#number_of_entities)
 - [`number_of_turns_in_a_winding` (isq)](systems/isq.md#number_of_turns_in_a_winding)
 - [`opening_angle` (hep)](systems/hep.md#opening_angle)
 - [`path_length` (hep)](systems/hep.md#path_length)
@@ -541,4 +543,4 @@ Alphabetical list of all quantities.
 - [`width` (isq)](systems/isq.md#width)
 - [`work` (isq)](systems/isq.md#work)
 
-**Total quantities:** 535
+**Total quantities:** 537

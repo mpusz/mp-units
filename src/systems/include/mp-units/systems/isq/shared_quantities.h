@@ -25,27 +25,38 @@
 #include <mp-units/bits/module_macros.h>
 
 // IWYU pragma: begin_exports
+#include <mp-units/systems/isq/space_and_time.h>
+
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/framework/quantity_spec.h>
 #endif
 // IWYU pragma: end_exports
 
-// Parents shared by quantities of more than one ISO 80000 part, for the case when the parts must
-// not depend on each other. A photon count (part 7) and an entity count (part 9) need the same
-// parent, yet light and radiation is not a client of physical chemistry, so the parent cannot live
-// in either part's header. This one belongs to no part in particular and depends on the framework
-// alone, so any part may include it.
-//
-// This is the last resort. A quantity that one part owns belongs in that part's header, and when a
-// part already depends on another, the shared parent belongs in that existing dependency (this is
-// why `energy_density` sits in `mechanics.h`, which parts 6, 7, and 8 already include).
+// Quantities that several ISO 80000 parts need, kept here so that a part does not have to include
+// another part's whole header to reach one definition. The motivation is compile time: every
+// `QUANTITY_SPEC` with a defining equation checks it against its parent at parse time, used or not,
+// so moving two definitions out of parts 4 and 6 halved the cost of `light_and_radiation.h`.
 
 MP_UNITS_EXPORT
 namespace mp_units::isq {
 
-// the shared parent for every count of discrete entities (photons, particles, vibrational modes,
-// ...), named after ISO 80000-9 item 9-1. A count is not a plain ratio, so it is a kind of its own,
-// and counts whose cross-addition is meaningless root their own kind below it
+// not in ISO 80000; parents of the mechanical, electromagnetic, radiant, and sound variants. Given
+// dimensionally rather than as `energy / time` and `energy / volume` because the children use
+// unrelated equations (ISO 80000-8 item 8-7 gives sound energy density as ½ρu² + ½p²/(ρc²))
+QUANTITY_SPEC(power, mass* pow<2>(length) / pow<3>(time), non_negative);
+QUANTITY_SPEC(energy_density, mass / (length * pow<2>(time)), non_negative);
+
+// ISO 80000-4 item 4-2; parents the mass concentrations of part 5, divides those of part 7
+QUANTITY_SPEC(mass_density, mass / volume, non_negative);
+inline constexpr auto density = mass_density;
+
+// ISO 80000-6 item 6-35.2; part 7 needs it for the refractive index (item 7-1.2)
+QUANTITY_SPEC(speed_of_light_in_vacuum, speed);
+inline constexpr auto light_speed_in_vacuum = speed_of_light_in_vacuum;
+inline constexpr auto luminal_speed = speed_of_light_in_vacuum;
+
+// ISO 80000-9 item 9-1; parent of every count of discrete entities. A count is not a plain ratio, so
+// it is a kind of its own, and counts that must not be added root their own kind below it
 QUANTITY_SPEC(number_of_entities, dimensionless, is_kind, non_negative);
 
 }  // namespace mp_units::isq

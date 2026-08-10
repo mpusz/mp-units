@@ -23,8 +23,8 @@
 #pragma once
 
 #include <mp-units/bits/module_macros.h>
-#include <mp-units/systems/isq/mechanics.h>
-#include <mp-units/systems/isq/space_and_time.h>
+#include <mp-units/systems/isq/shared_quantities.h>
+#include <mp-units/systems/isq/si_quantities.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/framework/dimension.h>

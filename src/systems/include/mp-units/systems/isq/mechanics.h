@@ -23,6 +23,7 @@
 #pragma once
 
 #include <mp-units/bits/module_macros.h>
+#include <mp-units/systems/isq/shared_quantities.h>
 #include <mp-units/systems/isq/space_and_time.h>
 
 // IWYU pragma: begin_exports
@@ -36,8 +37,7 @@
 MP_UNITS_EXPORT
 namespace mp_units::isq {
 
-QUANTITY_SPEC(mass_density, mass / volume, non_negative);
-inline constexpr auto density = mass_density;
+// `mass_density` (item 4-2) and its `density` alias live in `shared_quantities.h`
 QUANTITY_SPEC(specific_volume, inverse(mass_density), non_negative);
 QUANTITY_SPEC(relative_mass_density, mass_density / mass_density, non_negative);
 inline constexpr auto relative_density = relative_mass_density;
@@ -94,16 +94,13 @@ inline constexpr auto drag_factor = drag_coefficient;
 QUANTITY_SPEC(dynamic_viscosity, shear_stress* length / velocity, quantity_tensor_order::scalar);
 QUANTITY_SPEC(kinematic_viscosity, dynamic_viscosity / mass_density);
 QUANTITY_SPEC(surface_tension, force / length,
-              quantity_tensor_order::scalar);                             // TODO what is a correct equation here?
-QUANTITY_SPEC(power, mass* pow<2>(length) / pow<3>(time), non_negative);  // not in ISO 80000
+              quantity_tensor_order::scalar);  // TODO what is a correct equation here?
 QUANTITY_SPEC(mechanical_power, power, force* velocity, quantity_tensor_order::scalar);
 QUANTITY_SPEC(mechanical_work, energy, force* displacement, quantity_tensor_order::scalar);
 inline constexpr auto work = mechanical_work;
 QUANTITY_SPEC(mechanical_energy, mechanical_work, mass* pow<2>(length) / pow<2>(time));  // differs from ISO 80000
 QUANTITY_SPEC(potential_energy, mechanical_energy);                                      // differs from ISO 80000
 QUANTITY_SPEC(kinetic_energy, mechanical_energy, mass* pow<2>(speed));                   // differs from ISO 80000
-// the shared root for the energy densities of parts 6 (electromagnetic), 7 (radiant), and 8 (sound)
-QUANTITY_SPEC(energy_density, energy / volume, non_negative);  // not in ISO 80000
 QUANTITY_SPEC(mechanical_efficiency, mechanical_power / mechanical_power, non_negative);
 QUANTITY_SPEC(mass_flow, mass_density* velocity);  // vector
 QUANTITY_SPEC(mass_flow_rate, mass_flow* area, quantity_tensor_order::scalar);

@@ -7,7 +7,7 @@ This section contains all quantity hierarchy trees across all systems, grouped b
 
 ## Dimension: 1
 
-- [`dimensionless`](dimensionless.md) (71 quantities)
+- [`dimensionless`](dimensionless.md) (72 quantities)
 
 ## Dimension: A
 
@@ -120,13 +120,13 @@ This section contains all quantity hierarchy trees across all systems, grouped b
 
 ## Dimension: L⁻¹
 
-- [`isq::angular_repetency`](angular_repetency_isq.md) (1 quantity)
+- [`isq::angular_repetency`](angular_repetency_isq.md) (2 quantities)
 - [`isq::attenuation`](attenuation.md) (1 quantity)
 - [`isq::curvature`](curvature.md) (1 quantity)
 - [`isq::linear_attenuation_coefficient`](linear_attenuation_coefficient.md) (2 quantities)
 - [`isq::phase_coefficient`](phase_coefficient_isq.md) (1 quantity)
 - [`isq::propagation_coefficient`](propagation_coefficient_isq.md) (1 quantity)
-- [`isq::repetency`](repetency.md) (2 quantities)
+- [`isq::repetency`](repetency.md) (1 quantity)
 
 ## Dimension: T⁻²
 
@@ -135,7 +135,8 @@ This section contains all quantity hierarchy trees across all systems, grouped b
 ## Dimension: T⁻¹
 
 - [`hep::activity`](activity_hep.md) (1 quantity)
-- [`hep::frequency`](frequency_hep.md) (2 quantities)
+- [`hep::decay_constant`](decay_constant.md) (1 quantity)
+- [`hep::frequency`](frequency_hep.md) (1 quantity)
 - [`isq::activity`](activity_isq.md) (1 quantity)
 - [`isq::angular_frequency`](angular_frequency_isq.md) (1 quantity)
 - [`isq::angular_velocity`](angular_velocity_isq.md) (1 quantity)
@@ -397,9 +398,8 @@ This section contains all quantity hierarchy trees across all systems, grouped b
 
 ## Dimension: ML⁻¹T⁻²
 
-- [`isq::electromagnetic_energy_density`](electromagnetic_energy_density.md) (1 quantity)
+- [`isq::energy_density`](energy_density.md) (3 quantities)
 - [`isq::pressure`](pressure_isq.md) (8 quantities)
-- [`isq::radiant_energy_density`](radiant_energy_density.md) (1 quantity)
 - [`isq::spectral_radiant_exposure`](spectral_radiant_exposure.md) (1 quantity)
 
 ## Dimension: ML⁻¹T⁻³
