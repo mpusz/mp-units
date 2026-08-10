@@ -147,7 +147,9 @@ QUANTITY_SPEC(frequency, inverse(duration));
 // derived quantities using specialized quantities for enhanced type safety
 QUANTITY_SPEC(speed, length / duration);                  // scalar speed along path
 QUANTITY_SPEC(velocity, speed, displacement / duration);  // velocity  vector
-QUANTITY_SPEC(decay_constant, frequency);                 // λ = 1/τ (decay rate), a type of frequency
+// λ = 1/τ (decay rate); not a frequency (nothing oscillates), mirroring how the ISQ keeps
+// activity out of the frequency family
+QUANTITY_SPEC(decay_constant, inverse(duration));
 QUANTITY_SPEC(proper_velocity, displacement / proper_time,
               quantity_tensor_order::vector);  // four-velocity spatial part
 // Note: lorentz_factor and relativistic_beta are dimensionless but have specific physical meaning

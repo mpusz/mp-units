@@ -205,7 +205,7 @@ static_assert(!implicitly_convertible(hep::proper_time, hep::coordinate_time));
 // Derived quantities using specialized quantities
 static_assert(verify(hep::speed, scalar, m / s, cm / ns));
 static_assert(verify(hep::velocity, vector, m / s, cm / ns));
-static_assert(verify(hep::decay_constant, scalar, hep::hertz));
+static_assert(verify(hep::decay_constant, scalar, one / s));
 static_assert(verify(hep::proper_velocity, vector, m / s));
 
 // Specialized dimensionless derived quantities with physical meaning
@@ -223,8 +223,10 @@ static_assert(implicitly_convertible(hep::path_length / hep::duration, hep::spee
 // velocity is defined as displacement / duration
 static_assert(implicitly_convertible(hep::displacement / hep::duration, hep::velocity));
 
-// decay_constant is a frequency (λ = 1/τ where τ is mean_lifetime)
-static_assert(implicitly_convertible(hep::decay_constant, hep::frequency));  // child->parent
+// decay_constant (λ = 1/τ where τ is mean_lifetime) is not a frequency: nothing oscillates,
+// mirroring how the ISQ keeps activity out of the frequency family
+static_assert(!implicitly_convertible(hep::decay_constant, hep::frequency));
+static_assert(!implicitly_convertible(hep::frequency, hep::decay_constant));
 static_assert(implicitly_convertible(inverse(hep::mean_lifetime), hep::frequency));
 
 // lorentz_factor and relativistic_beta are distinct dimensionless kinds
