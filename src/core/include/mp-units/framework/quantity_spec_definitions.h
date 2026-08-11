@@ -344,6 +344,13 @@ inline constexpr struct is_kind {
 inline constexpr struct non_negative {
 } non_negative;
 
+// Cancels the `non_negative` a real-scalar child would otherwise inherit from its parent. Needed
+// where a quantity shares its parent's kind (and therefore its units) but not its domain: ISO
+// 80000-12 item 12-30 gives an effective mass that is negative near a band maximum, and it must
+// still be expressed in kilograms, which only a quantity of the mass kind may do.
+inline constexpr struct possibly_negative {
+} possibly_negative;
+
 /**
  * @brief Quantity Specification
  *
@@ -416,6 +423,9 @@ struct quantity_spec<Self, Dim, Args...> : detail::quantity_spec_interface<Self>
   static constexpr quantity_character _character_ = detail::quantity_character_init<Args...>(quantity_character{});
   static_assert(!mp_units::contains<struct non_negative, Args...>() || _character_ == quantity_character{},
                 "non_negative can only be applied to real scalar quantities");
+  static_assert(!(mp_units::contains<struct non_negative, Args...>() &&
+                  mp_units::contains<struct possibly_negative, Args...>()),
+                "non_negative and possibly_negative are mutually exclusive");
   static constexpr bool _is_non_negative_ = mp_units::contains<struct non_negative, Args...>();
 
   [[deprecated("2.6.0: use `get_dimension(qs)` instead")]] static constexpr detail::BaseDimension auto dimension =
@@ -465,6 +475,9 @@ struct quantity_spec<Self, Eq, Args...> : detail::quantity_spec_interface<Self> 
   static constexpr quantity_character _character_ = detail::quantity_character_init<Args...>(get_character(Eq));
   static_assert(!mp_units::contains<struct non_negative, Args...>() || _character_ == quantity_character{},
                 "non_negative can only be applied to real scalar quantities");
+  static_assert(!(mp_units::contains<struct non_negative, Args...>() &&
+                  mp_units::contains<struct possibly_negative, Args...>()),
+                "non_negative and possibly_negative are mutually exclusive");
   static constexpr bool _is_non_negative_ = mp_units::contains<struct non_negative, Args...>();
 
   [[deprecated("2.6.0: use `get_dimension(qs)` instead")]] static constexpr Dimension auto dimension = _dimension_;
@@ -525,8 +538,12 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
   static constexpr quantity_character _character_ = detail::quantity_character_init<Args...>(get_character(QS));
   static_assert(!mp_units::contains<struct non_negative, Args...>() || _character_ == quantity_character{},
                 "non_negative can only be applied to real scalar quantities");
+  static_assert(!(mp_units::contains<struct non_negative, Args...>() &&
+                  mp_units::contains<struct possibly_negative, Args...>()),
+                "non_negative and possibly_negative are mutually exclusive");
   static constexpr bool _is_non_negative_ =
-    mp_units::contains<struct non_negative, Args...>() || (_character_ == quantity_character{} && QS._is_non_negative_);
+    mp_units::contains<struct non_negative, Args...>() || (!mp_units::contains<struct possibly_negative, Args...>() &&
+                                                           _character_ == quantity_character{} && QS._is_non_negative_);
 
   [[deprecated("2.6.0: use `get_dimension(qs)` instead")]] static constexpr Dimension auto dimension = _dimension_;
   [[deprecated("2.6.0: use `get_character(qs)` instead")]] static constexpr quantity_character character = _character_;
@@ -580,8 +597,12 @@ struct quantity_spec<Self, QS, Eq, Args...> : detail::quantity_spec_interface<Se
   static constexpr quantity_character _character_ = detail::quantity_character_init<Args...>(get_character(Eq));
   static_assert(!mp_units::contains<struct non_negative, Args...>() || _character_ == quantity_character{},
                 "non_negative can only be applied to real scalar quantities");
+  static_assert(!(mp_units::contains<struct non_negative, Args...>() &&
+                  mp_units::contains<struct possibly_negative, Args...>()),
+                "non_negative and possibly_negative are mutually exclusive");
   static constexpr bool _is_non_negative_ =
-    mp_units::contains<struct non_negative, Args...>() || (_character_ == quantity_character{} && QS._is_non_negative_);
+    mp_units::contains<struct non_negative, Args...>() || (!mp_units::contains<struct possibly_negative, Args...>() &&
+                                                           _character_ == quantity_character{} && QS._is_non_negative_);
 
   [[deprecated("2.6.0: use `get_dimension(qs)` instead")]] static constexpr Dimension auto dimension = _dimension_;
   [[deprecated("2.6.0: use `get_character(qs)` instead")]] static constexpr quantity_character character = _character_;

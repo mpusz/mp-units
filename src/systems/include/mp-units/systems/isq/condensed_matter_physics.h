@@ -99,18 +99,13 @@ QUANTITY_SPEC(Thomson_coefficient, Seebeck_coefficient,
               heat_flow_rate / (electric_current * thermodynamic_temperature));  // 12-23
 
 // electronic structure (ISO 80000-12:2019, items 12-24 to 12-31)
-// TODO ISO explicitly allows negative values for items 12-25, 12-27.1, 12-30, and 12-34 (an
-// electron affinity of a repulsive state, a Fermi energy measured from a chosen reference, an
-// effective mass near a band maximum, an antiferromagnetic exchange integral). They nevertheless
-// inherit `non_negative` from `energy` and `mass`, because a signed child of a non-negative parent
-// cannot be expressed yet. Do not construct these from `quantity_point`s until that exists.
-QUANTITY_SPEC(work_function, energy);      // 12-24.1
-QUANTITY_SPEC(ionization_energy, energy);  // 12-24.2
-QUANTITY_SPEC(electron_affinity, energy);  // 12-25
+QUANTITY_SPEC(work_function, energy, non_negative);      // 12-24.1
+QUANTITY_SPEC(ionization_energy, energy, non_negative);  // 12-24.2
+QUANTITY_SPEC(electron_affinity, energy);                // 12-25
 QUANTITY_SPEC(Richardson_constant, electric_current_density / pow<2>(thermodynamic_temperature),
               quantity_tensor_order::scalar);                 // 12-26
 QUANTITY_SPEC(Fermi_energy, energy);                          // 12-27.1
-QUANTITY_SPEC(gap_energy, energy);                            // 12-27.2
+QUANTITY_SPEC(gap_energy, energy, non_negative);              // 12-27.2
 QUANTITY_SPEC(Fermi_temperature, thermodynamic_temperature);  // 12-28
 // not in ISO 80000; items 12-29.1 to 12-29.5 each divide a count of entities by a volume, and
 // `n * p == pow<2>(n_i)` relates them across species, so they share one kind
@@ -120,7 +115,9 @@ QUANTITY_SPEC(hole_density, number_density);                                    
 QUANTITY_SPEC(intrinsic_carrier_density, number_density, pow<1, 2>(electron_density* hole_density));  // 12-29.3
 QUANTITY_SPEC(donor_density, number_density);                                                         // 12-29.4
 QUANTITY_SPEC(acceptor_density, number_density);                                                      // 12-29.5
-QUANTITY_SPEC(effective_mass, mass);                                                                  // 12-30
+// negative near a band maximum (ISO 80000-12 item 12-30 note), yet expressed in kilograms, which
+// only a quantity of the mass kind may be, so it shares the kind and cancels the inherited domain
+QUANTITY_SPEC(effective_mass, mass, possibly_negative);  // 12-30
 // TODO item 12-31 (mobility ratio) divides two mobilities of ISO 80000-10 item 10-61, which is not
 // modelled yet
 

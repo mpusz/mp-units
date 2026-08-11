@@ -15,6 +15,24 @@ This page documents the version history and changes for the **mp-units** library
 - (!) fix: `hep::decay_constant` is no longer a child of `hep::frequency`. A decay rate
       describes a stochastic process in which nothing oscillates, mirroring how the ISQ
       keeps `activity` out of the frequency family; `hep::hertz` no longer measures it
+- (!) fix: `isq::energy` and `isq::power` no longer carry `non_negative`. Thermodynamic
+      potentials, work done against a force, released heat, and exported electrical power
+      are all negative, so tagging the two roots was wrong and every energy and power
+      inherited the error. P4185 states this for `energy` explicitly. The genuinely
+      non-negative members now carry the tag individually: `isq::kinetic_energy`,
+      `isq::photon_energy`, `isq::radiant_energy`, `isq::radiant_flux`,
+      `isq::work_function`, `isq::ionization_energy`, `isq::gap_energy` (and through it
+      `isq::superconductor_energy_gap`), `isq::carrier_power`,
+      `isq::quantizing_distortion_power`, and `isq::signal_energy_per_binary_digit`.
+      `isq::latent_heat` is deliberately signed, since ISO 80000-5 item 5-6.2 defines it
+      as energy released *or* absorbed
+- feat: `possibly_negative` cancels the `non_negative` a real-scalar child would otherwise
+      inherit from its parent. It is needed where a quantity shares its parent's kind, and
+      therefore its units, but not its domain. ISO 80000-12 item 12-30 is the motivating
+      case: an effective mass is negative near a band maximum, yet it must be expressed in
+      kilograms, and only a quantity of the mass kind may be. Rooting it elsewhere loses
+      the kilogram, so the two properties could not be modeled together before.
+      `isq::effective_mass` now uses it. The tag and `non_negative` are mutually exclusive
 - feat: ISO 80000-12 (condensed matter physics) is modeled in the new
       `mp-units/systems/isq/condensed_matter_physics.h`, covering 58 of the standard's 60
       items: the crystal lattice, lattice dynamics, electron transport, electronic

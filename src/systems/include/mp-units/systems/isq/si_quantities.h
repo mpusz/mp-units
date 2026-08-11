@@ -49,7 +49,9 @@ inline constexpr auto period = period_duration;
 QUANTITY_SPEC(frequency, inverse(period_duration), non_negative);
 
 // mechanics
-QUANTITY_SPEC(energy, mass* pow<2>(length) / pow<2>(time), non_negative);  // differs from ISO 80000
+// not non_negative: thermodynamic potentials, work done against a force, and released heat are all
+// negative, so the genuinely non-negative energies carry the tag individually instead
+QUANTITY_SPEC(energy, mass* pow<2>(length) / pow<2>(time), possibly_negative);  // differs from ISO 80000
 QUANTITY_SPEC(force, mass* length / pow<2>(time), quantity_tensor_order::vector);
 QUANTITY_SPEC(pressure, force / area, quantity_tensor_order::scalar);
 

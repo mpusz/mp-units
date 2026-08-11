@@ -39,14 +39,14 @@ namespace mp_units::isq {
 
 QUANTITY_SPEC(speed_of_light_in_a_medium, speed);
 QUANTITY_SPEC(refractive_index, dimensionless, speed_of_light_in_vacuum / speed_of_light_in_a_medium);
-QUANTITY_SPEC(radiant_energy, energy);
+QUANTITY_SPEC(radiant_energy, energy, non_negative);
 QUANTITY_SPEC(spectral_radiant_energy, radiant_energy / wavelength, non_negative);
 QUANTITY_SPEC(radiant_energy_density, energy_density, radiant_energy / volume);
 QUANTITY_SPEC(spectral_radiant_energy_density_in_terms_of_wavelength, radiant_energy_density / wavelength,
               non_negative);
 QUANTITY_SPEC(spectral_radiant_energy_density_in_terms_of_wavenumber, radiant_energy_density / wavenumber,
               non_negative);
-QUANTITY_SPEC(radiant_flux, power, radiant_energy / time);
+QUANTITY_SPEC(radiant_flux, power, radiant_energy / time, non_negative);
 inline constexpr auto radiant_power = radiant_flux;
 QUANTITY_SPEC(spectral_radiant_flux, radiant_flux / wavelength, non_negative);
 inline constexpr auto spectral_radiant_power = spectral_radiant_flux;
@@ -84,7 +84,7 @@ MP_UNITS_PHOTOMETRIC_QSPEC(luminous_exitance, luminous_flux_of<Condition> / area
 MP_UNITS_PHOTOMETRIC_QSPEC(luminous_exposure, illuminance_of<Condition>* time, non_negative);
 
 // photon quantities (ISO 80000-7:2019, items 7-19 to 7-25)
-QUANTITY_SPEC(photon_energy, energy);
+QUANTITY_SPEC(photon_energy, energy, non_negative);
 QUANTITY_SPEC(photon_number, number_of_entities, radiant_energy / photon_energy, is_kind);
 QUANTITY_SPEC(photon_flux, photon_number / duration, non_negative);
 QUANTITY_SPEC(photon_intensity, photon_flux / solid_angular_measure, non_negative);

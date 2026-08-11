@@ -43,7 +43,8 @@ namespace mp_units::isq {
 // not in ISO 80000; parents of the mechanical, electromagnetic, radiant, and sound variants. Given
 // dimensionally rather than as `energy / time` and `energy / volume` because the children use
 // unrelated equations (ISO 80000-8 item 8-7 gives sound energy density as ½ρu² + ½p²/(ρc²))
-QUANTITY_SPEC(power, mass* pow<2>(length) / pow<3>(time), non_negative);
+// not non_negative: a load absorbs power while a source delivers it, so the sign records direction
+QUANTITY_SPEC(power, mass* pow<2>(length) / pow<3>(time), possibly_negative);
 QUANTITY_SPEC(energy_density, mass / (length * pow<2>(time)), non_negative);
 
 // ISO 80000-4 item 4-2; parents the mass concentrations of part 5, divides those of part 7
