@@ -15,6 +15,19 @@ This page documents the version history and changes for the **mp-units** library
 - (!) fix: `hep::decay_constant` is no longer a child of `hep::frequency`. A decay rate
       describes a stochastic process in which nothing oscillates, mirroring how the ISQ
       keeps `activity` out of the frequency family; `hep::hertz` no longer measures it
+- feat: ISO 80000-12 (condensed matter physics) is modeled in the new
+      `mp-units/systems/isq/condensed_matter_physics.h`, covering 58 of the standard's 60
+      items: the crystal lattice, lattice dynamics, electron transport, electronic
+      structure, carrier dynamics, and the magnetic and superconducting transitions.
+      Item 12-2.1 (angular reciprocal lattice vector) is a `wave_vector`, so Bloch's
+      theorem adding it to a wave vector type-checks. The carrier densities of item
+      12-29 share one kind, because item 12-29.3 relates them across species as
+      `n * p == pow<2>(n_i)`. Item 12-31 (mobility ratio) and item 12-33 (diffusion
+      length) wait for ISO 80000-10 item 10-61 and ISO 80000-9 item 9-39, and item 12-14
+      (Grüneisen parameter) carries no defining equation until the logarithmic-quantities
+      framework lands. ISO permits negative values for items 12-25, 12-27.1, 12-30, and
+      12-34, but they still inherit `non_negative` from `energy` and `mass` until a
+      signed child of a non-negative parent can be expressed
 - (!) perf: the ISQ part headers no longer pull in whole neighbouring parts to reach a
       handful of definitions. `isq::power`, `isq::energy_density`, `isq::mass_density`
       (with its `density` alias), and `isq::speed_of_light_in_vacuum` (with its

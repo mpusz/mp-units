@@ -7,7 +7,7 @@ This section contains all quantity hierarchy trees across all systems, grouped b
 
 ## Dimension: 1
 
-- [`dimensionless`](dimensionless.md) (72 quantities)
+- [`dimensionless`](dimensionless.md) (82 quantities)
 
 ## Dimension: A
 
@@ -31,11 +31,11 @@ This section contains all quantity hierarchy trees across all systems, grouped b
 ## Dimension: L
 
 - [`hep::length`](length_hep.md) (16 quantities)
-- [`isq::length`](length_isq.md) (14 quantities)
+- [`isq::length`](length_isq.md) (26 quantities)
 
 ## Dimension: M
 
-- [`isq::mass`](mass_isq.md) (1 quantity)
+- [`isq::mass`](mass_isq.md) (2 quantities)
 
 ## Dimension: N
 
@@ -49,12 +49,12 @@ This section contains all quantity hierarchy trees across all systems, grouped b
 ## Dimension: T
 
 - [`hep::duration`](duration_hep.md) (7 quantities)
-- [`isq::duration`](duration_isq.md) (5 quantities)
+- [`isq::duration`](duration_isq.md) (7 quantities)
 
 ## Dimension: Θ
 
 - [`hep::temperature`](temperature.md) (1 quantity)
-- [`isq::thermodynamic_temperature`](thermodynamic_temperature.md) (4 quantities)
+- [`isq::thermodynamic_temperature`](thermodynamic_temperature.md) (10 quantities)
 
 ## Dimension: α
 
@@ -116,11 +116,12 @@ This section contains all quantity hierarchy trees across all systems, grouped b
 
 ## Dimension: L⁻³
 
-- [`hep::number_density`](number_density.md) (1 quantity)
+- [`hep::number_density`](number_density_hep.md) (1 quantity)
+- [`isq::number_density`](number_density_isq.md) (6 quantities)
 
 ## Dimension: L⁻¹
 
-- [`isq::angular_repetency`](angular_repetency_isq.md) (2 quantities)
+- [`isq::angular_repetency`](angular_repetency_isq.md) (6 quantities)
 - [`isq::attenuation`](attenuation.md) (1 quantity)
 - [`isq::curvature`](curvature.md) (1 quantity)
 - [`isq::linear_attenuation_coefficient`](linear_attenuation_coefficient.md) (2 quantities)
@@ -138,7 +139,7 @@ This section contains all quantity hierarchy trees across all systems, grouped b
 - [`hep::decay_constant`](decay_constant.md) (1 quantity)
 - [`hep::frequency`](frequency_hep.md) (1 quantity)
 - [`isq::activity`](activity_isq.md) (1 quantity)
-- [`isq::angular_frequency`](angular_frequency_isq.md) (1 quantity)
+- [`isq::angular_frequency`](angular_frequency_isq.md) (2 quantities)
 - [`isq::angular_velocity`](angular_velocity_isq.md) (1 quantity)
 - [`isq::call_intensity`](call_intensity.md) (2 quantities)
 - [`isq::damping_coefficient`](damping_coefficient.md) (1 quantity)
@@ -241,6 +242,10 @@ This section contains all quantity hierarchy trees across all systems, grouped b
 ## Dimension: QT⁻¹
 
 - [`hep::electric_current`](electric_current_hep.md) (1 quantity)
+
+## Dimension: TL⁻³
+
+- [`isq::density_of_vibrational_states`](density_of_vibrational_states.md) (1 quantity)
 
 ## Dimension: αL⁻¹
 
@@ -346,7 +351,7 @@ This section contains all quantity hierarchy trees across all systems, grouped b
 
 ## Dimension: L²MT⁻²
 
-- [`isq::energy`](energy_isq.md) (15 quantities)
+- [`isq::energy`](energy_isq.md) (22 quantities)
 - [`isq::moment_of_force`](moment_of_force_isq.md) (2 quantities)
 
 ## Dimension: L²MT⁻³
@@ -380,13 +385,17 @@ This section contains all quantity hierarchy trees across all systems, grouped b
 
 - [`hep::illuminance`](illuminance_hep.md) (1 quantity)
 
+## Dimension: IL⁻²Θ⁻²
+
+- [`isq::Richardson_constant`](Richardson_constant.md) (1 quantity)
+
 ## Dimension: LΘT²M⁻¹
 
 - [`isq::Joule_Thomson_coefficient`](Joule_Thomson_coefficient.md) (1 quantity)
 
 ## Dimension: MI⁻¹T⁻²
 
-- [`isq::magnetic_flux_density`](magnetic_flux_density.md) (2 quantities)
+- [`isq::magnetic_flux_density`](magnetic_flux_density.md) (6 quantities)
 
 ## Dimension: ML⁻²T⁻²
 
@@ -444,6 +453,14 @@ This section contains all quantity hierarchy trees across all systems, grouped b
 - [`isq::specific_gas_constant`](specific_gas_constant.md) (1 quantity)
 - [`isq::specific_heat_capacity`](specific_heat_capacity.md) (4 quantities)
 
+## Dimension: L³I⁻¹T⁻¹
+
+- [`isq::Hall_coefficient`](Hall_coefficient.md) (1 quantity)
+
+## Dimension: T²L⁻⁵M⁻¹
+
+- [`isq::energy_density_of_states`](energy_density_of_states.md) (1 quantity)
+
 ## Dimension: JT³L⁻²M⁻¹
 
 - [`isq::luminous_efficacy`](luminous_efficacy.md) (5 quantities)
@@ -464,7 +481,7 @@ This section contains all quantity hierarchy trees across all systems, grouped b
 
 ## Dimension: L²MI⁻¹T⁻³
 
-- [`isq::electric_potential`](electric_potential_isq.md) (6 quantities)
+- [`isq::electric_potential`](electric_potential_isq.md) (8 quantities)
 
 ## Dimension: L²MΘ⁻¹T⁻²
 
@@ -488,7 +505,7 @@ This section contains all quantity hierarchy trees across all systems, grouped b
 
 ## Dimension: L³MI⁻²T⁻³
 
-- [`isq::resistivity`](resistivity.md) (1 quantity)
+- [`isq::resistivity`](resistivity.md) (2 quantities)
 
 ## Dimension: L³MI⁻¹T⁻²
 
@@ -523,4 +540,12 @@ This section contains all quantity hierarchy trees across all systems, grouped b
 
 - [`isq::pressure_coefficient`](pressure_coefficient.md) (1 quantity)
 
-**Total hierarchies:** 191
+## Dimension: L²MI⁻¹Θ⁻¹T⁻³
+
+- [`isq::Seebeck_coefficient`](Seebeck_coefficient.md) (2 quantities)
+
+## Dimension: L⁴M²I⁻²Θ⁻²T⁻⁶
+
+- [`isq::Lorenz_coefficient`](Lorenz_coefficient.md) (1 quantity)
+
+**Total hierarchies:** 198

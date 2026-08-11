@@ -8,8 +8,18 @@
 ```mermaid
 flowchart LR
     isq_energy["<b><a href="../../systems/isq/#energy" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::energy</a></b><br><i>(<a href="../../systems/isq/#mass" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">mass</a> * pow<2>(<a href="../../systems/isq/#length" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">length</a>) / pow<2>(<a href="../../systems/isq/#time" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">time</a>))</i>"]
+    isq_Fermi_energy["<b><a href="../../systems/isq/#Fermi_energy" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::Fermi_energy</a></b>"]
+    isq_energy --- isq_Fermi_energy
     isq_active_energy["<b><a href="../../systems/isq/#active_energy" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::active_energy</a></b><br><i>(<a href="../../systems/isq/#instantaneous_power" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">instantaneous_power</a> * <a href="../../systems/isq/#time" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">time</a>)</i>"]
     isq_energy --- isq_active_energy
+    isq_electron_affinity["<b><a href="../../systems/isq/#electron_affinity" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::electron_affinity</a></b>"]
+    isq_energy --- isq_electron_affinity
+    isq_exchange_integral["<b><a href="../../systems/isq/#exchange_integral" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::exchange_integral</a></b>"]
+    isq_energy --- isq_exchange_integral
+    isq_gap_energy["<b><a href="../../systems/isq/#gap_energy" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::gap_energy</a></b>"]
+    isq_energy --- isq_gap_energy
+    isq_superconductor_energy_gap["<b><a href="../../systems/isq/#superconductor_energy_gap" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::superconductor_energy_gap</a></b>"]
+    isq_gap_energy --- isq_superconductor_energy_gap
     isq_internal_energy["<b><a href="../../systems/isq/#internal_energy" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::internal_energy</a> | <a href="../../systems/isq/#thermodynamic_energy" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::thermodynamic_energy</a></b>"]
     isq_energy --- isq_internal_energy
     isq_Helmholtz_energy["<b><a href="../../systems/isq/#Helmholtz_energy" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::Helmholtz_energy</a> | <a href="../../systems/isq/#Helmholtz_function" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::Helmholtz_function</a></b>"]
@@ -22,6 +32,8 @@ flowchart LR
     isq_internal_energy --- isq_heat
     isq_latent_heat["<b><a href="../../systems/isq/#latent_heat" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::latent_heat</a></b>"]
     isq_heat --- isq_latent_heat
+    isq_ionization_energy["<b><a href="../../systems/isq/#ionization_energy" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::ionization_energy</a></b>"]
+    isq_energy --- isq_ionization_energy
     isq_mechanical_work["<b><a href="../../systems/isq/#mechanical_work" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::mechanical_work</a> | <a href="../../systems/isq/#work" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::work</a></b><br><i>(<a href="../../systems/isq/#force" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">force</a> * <a href="../../systems/isq/#displacement" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">displacement</a>)</i>"]
     isq_energy --- isq_mechanical_work
     isq_mechanical_energy["<b><a href="../../systems/isq/#mechanical_energy" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::mechanical_energy</a></b><br><i>(<a href="../../systems/isq/#mass" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">mass</a> * pow<2>(<a href="../../systems/isq/#length" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">length</a>) / pow<2>(<a href="../../systems/isq/#time" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">time</a>))</i>"]
@@ -36,4 +48,6 @@ flowchart LR
     isq_energy --- isq_radiant_energy
     isq_signal_energy_per_binary_digit["<b><a href="../../systems/isq/#signal_energy_per_binary_digit" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::signal_energy_per_binary_digit</a></b><br><i>(<a href="../../systems/isq/#carrier_power" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">carrier_power</a> * <a href="../../systems/isq/#period_of_binary_digits" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">period_of_binary_digits</a>)</i>"]
     isq_energy --- isq_signal_energy_per_binary_digit
+    isq_work_function["<b><a href="../../systems/isq/#work_function" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::work_function</a></b>"]
+    isq_energy --- isq_work_function
 ```

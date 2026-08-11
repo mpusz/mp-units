@@ -302,10 +302,14 @@ nav:
           - Point Origins: reference/systems_reference/point_origins_index.md
           - Quantity Hierarchies:
               - Quantity Hierarchies: reference/systems_reference/hierarchies/index.md
+              - Hall_coefficient: reference/systems_reference/hierarchies/Hall_coefficient.md
               - Joule_Thomson_coefficient: reference/systems_reference/hierarchies/Joule_Thomson_coefficient.md
+              - Lorenz_coefficient: reference/systems_reference/hierarchies/Lorenz_coefficient.md
               - Massieu_function: reference/systems_reference/hierarchies/Massieu_function.md
               - Planck_function: reference/systems_reference/hierarchies/Planck_function.md
               - Poynting_vector: reference/systems_reference/hierarchies/Poynting_vector.md
+              - Richardson_constant: reference/systems_reference/hierarchies/Richardson_constant.md
+              - Seebeck_coefficient: reference/systems_reference/hierarchies/Seebeck_coefficient.md
               - absorbed_dose (hep): reference/systems_reference/hierarchies/absorbed_dose_hep.md
               - absorbed_dose (isq): reference/systems_reference/hierarchies/absorbed_dose_isq.md
               - acceleration: reference/systems_reference/hierarchies/acceleration.md
@@ -342,6 +346,7 @@ nav:
               - damping_coefficient: reference/systems_reference/hierarchies/damping_coefficient.md
               - decay_constant: reference/systems_reference/hierarchies/decay_constant.md
               - density_of_heat_flow_rate: reference/systems_reference/hierarchies/density_of_heat_flow_rate.md
+              - density_of_vibrational_states: reference/systems_reference/hierarchies/density_of_vibrational_states.md
               - dimensionless: reference/systems_reference/hierarchies/dimensionless.md
               - dose_equivalent: reference/systems_reference/hierarchies/dose_equivalent.md
               - duration (hep): reference/systems_reference/hierarchies/duration_hep.md
@@ -366,6 +371,7 @@ nav:
               - energy (isq): reference/systems_reference/hierarchies/energy_isq.md
               - energy (natural): reference/systems_reference/hierarchies/energy_natural.md
               - energy_density: reference/systems_reference/hierarchies/energy_density.md
+              - energy_density_of_states: reference/systems_reference/hierarchies/energy_density_of_states.md
               - energy_squared: reference/systems_reference/hierarchies/energy_squared.md
               - entropy: reference/systems_reference/hierarchies/entropy.md
               - force (hep): reference/systems_reference/hierarchies/force_hep.md
@@ -423,7 +429,8 @@ nav:
               - moment_of_inertia (isq_angle): reference/systems_reference/hierarchies/moment_of_inertia_isq_angle.md
               - momentum (hep): reference/systems_reference/hierarchies/momentum_hep.md
               - momentum (isq): reference/systems_reference/hierarchies/momentum_isq.md
-              - number_density: reference/systems_reference/hierarchies/number_density.md
+              - number_density (hep): reference/systems_reference/hierarchies/number_density_hep.md
+              - number_density (isq): reference/systems_reference/hierarchies/number_density_isq.md
               - permeability: reference/systems_reference/hierarchies/permeability.md
               - permeance: reference/systems_reference/hierarchies/permeance.md
               - permittivity: reference/systems_reference/hierarchies/permittivity.md

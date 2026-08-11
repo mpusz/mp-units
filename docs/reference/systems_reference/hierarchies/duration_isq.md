@@ -18,4 +18,8 @@ flowchart LR
     isq_period_duration --- isq_period_of_data_elements
     isq_time_constant["<b><a href="../../systems/isq/#time_constant" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::time_constant</a></b>"]
     isq_duration --- isq_time_constant
+    isq_carrier_lifetime["<b><a href="../../systems/isq/#carrier_lifetime" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::carrier_lifetime</a></b>"]
+    isq_time_constant --- isq_carrier_lifetime
+    isq_relaxation_time["<b><a href="../../systems/isq/#relaxation_time" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::relaxation_time</a></b>"]
+    isq_time_constant --- isq_relaxation_time
 ```

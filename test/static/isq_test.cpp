@@ -440,6 +440,74 @@ static_assert(verify(isq::clock_frequency, scalar, Hz));
 static_assert(verify(isq::clock_rate, scalar, Hz));
 static_assert(verify(isq::decision_content, scalar, one));
 
+// condensed matter physics
+static_assert(verify(isq::lattice_vector, vector, m));
+static_assert(verify(isq::fundamental_lattice_vector, vector, m));
+static_assert(verify(isq::angular_reciprocal_lattice_vector, vector, one / m));
+static_assert(verify(isq::fundamental_reciprocal_lattice_vector, vector, one / m));
+static_assert(verify(isq::lattice_plane_spacing, scalar, m));
+static_assert(verify(isq::Bragg_angle, scalar, one, rad));
+static_assert(verify(isq::short_range_order_parameter, scalar, one));
+static_assert(verify(isq::long_range_order_parameter, scalar, one));
+static_assert(verify(isq::atomic_scattering_factor, complex_scalar, one));
+static_assert(verify(isq::structure_factor, complex_scalar, one));
+static_assert(verify(isq::Burgers_vector, vector, m));
+static_assert(verify(isq::particle_position_vector, vector, m));
+static_assert(verify(isq::equilibrium_position_vector, vector, m));
+static_assert(verify(isq::atomic_displacement_vector, vector, m));
+static_assert(verify(isq::Debye_Waller_factor, scalar, one));
+static_assert(verify(isq::Fermi_angular_wavenumber, scalar, one / m));
+static_assert(verify(isq::Fermi_angular_repetency, scalar, one / m));
+static_assert(verify(isq::Debye_angular_wavenumber, scalar, one / m));
+static_assert(verify(isq::Debye_angular_repetency, scalar, one / m));
+static_assert(verify(isq::Debye_angular_frequency, scalar, one / s, rad / s));
+static_assert(verify(isq::Debye_temperature, scalar, K));
+static_assert(verify(isq::number_of_vibrational_modes, scalar, one));
+static_assert(verify(isq::number_of_states, scalar, one));
+static_assert(verify(isq::density_of_vibrational_states, scalar, s / m3));
+static_assert(verify(isq::thermodynamic_Gruneisen_parameter, scalar, one));
+static_assert(verify(isq::Gruneisen_parameter, scalar, one));
+static_assert(verify(isq::mean_free_path, scalar, m));
+static_assert(verify(isq::mean_free_path_of_phonons, scalar, m));
+static_assert(verify(isq::mean_free_path_of_electrons, scalar, m));
+static_assert(verify(isq::energy_density_of_states, scalar, one / (m3 * J)));
+static_assert(verify(isq::residual_resistivity, scalar, ohm* m));
+static_assert(verify(isq::Lorenz_coefficient, scalar, V* V / (K * K)));
+static_assert(verify(isq::Hall_coefficient, scalar, m3 / C));
+static_assert(verify(isq::thermoelectric_voltage, scalar, V));
+static_assert(verify(isq::Seebeck_coefficient, scalar, V / K));
+static_assert(verify(isq::thermoelectric_power, scalar, V / K));
+static_assert(verify(isq::Peltier_coefficient, scalar, V));
+static_assert(verify(isq::Thomson_coefficient, scalar, V / K));
+static_assert(verify(isq::work_function, scalar, J));
+static_assert(verify(isq::ionization_energy, scalar, J));
+static_assert(verify(isq::electron_affinity, scalar, J));
+static_assert(verify(isq::Richardson_constant, scalar, A / (m2 * K * K)));
+static_assert(verify(isq::Fermi_energy, scalar, J));
+static_assert(verify(isq::gap_energy, scalar, J));
+static_assert(verify(isq::Fermi_temperature, scalar, K));
+static_assert(verify(isq::number_density, scalar, one / m3));
+static_assert(verify(isq::electron_density, scalar, one / m3));
+static_assert(verify(isq::hole_density, scalar, one / m3));
+static_assert(verify(isq::intrinsic_carrier_density, scalar, one / m3));
+static_assert(verify(isq::donor_density, scalar, one / m3));
+static_assert(verify(isq::acceptor_density, scalar, one / m3));
+static_assert(verify(isq::effective_mass, scalar, kg));
+static_assert(verify(isq::relaxation_time, scalar, s));
+static_assert(verify(isq::carrier_lifetime, scalar, s));
+static_assert(verify(isq::exchange_integral, scalar, J));
+static_assert(verify(isq::critical_thermodynamic_temperature, scalar, K));
+static_assert(verify(isq::Curie_temperature, scalar, K));
+static_assert(verify(isq::Neel_temperature, scalar, K));
+static_assert(verify(isq::superconduction_transition_temperature, scalar, K));
+static_assert(verify(isq::critical_magnetic_flux_density, scalar, T));
+static_assert(verify(isq::thermodynamic_critical_magnetic_flux_density, scalar, T));
+static_assert(verify(isq::lower_critical_magnetic_flux_density, scalar, T));
+static_assert(verify(isq::upper_critical_magnetic_flux_density, scalar, T));
+static_assert(verify(isq::superconductor_energy_gap, scalar, J));
+static_assert(verify(isq::London_penetration_depth, scalar, m));
+static_assert(verify(isq::coherence_length, scalar, m));
+
 // light and radiation hierarchy relations
 // attenuation is caused by absorption and scattering (ISO 80000-7, items 7-35 and 7-36), so an
 // absorption coefficient is a part of the corresponding attenuation coefficient and the two add
@@ -477,5 +545,38 @@ static_assert(implicitly_convertible(isq::radiant_energy_density, isq::energy_de
 static_assert(implicitly_convertible(isq::electromagnetic_energy_density, isq::energy_density));
 static_assert(get_common_quantity_spec(isq::radiant_energy_density, isq::electromagnetic_energy_density) ==
               isq::energy_density);
+
+// condensed matter physics hierarchy relations
+// Bloch's theorem adds a reciprocal lattice vector to a wave vector, so item 12-2.1 has to be a
+// wave vector; both scale with 2π, which is why the wave vector roots in angular repetency
+static_assert(implicitly_convertible(isq::angular_reciprocal_lattice_vector, isq::wave_vector));
+static_assert(get_kind(isq::angular_reciprocal_lattice_vector) == get_kind(isq::wave_vector));
+static_assert(implicitly_convertible(isq::Fermi_angular_wavenumber, isq::angular_repetency));
+static_assert(!implicitly_convertible(isq::Fermi_angular_wavenumber, isq::repetency));
+
+// the carrier densities of item 12-29 share one kind, because `n * p == pow<2>(n_i)` relates them
+// across species (ISO 80000-12 item 12-29.3)
+static_assert(get_common_quantity_spec(isq::electron_density, isq::hole_density) == isq::number_density);
+static_assert(implicitly_convertible(isq::electron_density * isq::hole_density, pow<2>(isq::number_density)));
+static_assert(explicitly_convertible(pow<1, 2>(isq::electron_density * isq::hole_density),
+                                     isq::intrinsic_carrier_density));
+
+// vibrational modes and electronic states are both counts, but adding one to the other is
+// meaningless, so each is a kind of its own below the shared count parent
+static_assert(!implicitly_convertible(isq::number_of_states, isq::number_of_vibrational_modes));
+static_assert(!implicitly_convertible(dimensionless, isq::number_of_states));
+static_assert(explicitly_convertible(isq::number_of_states, isq::number_of_entities));
+
+// an atomic scattering factor is an amplitude relative to a single electron, not a ratio of two
+// quantities of the same kind
+static_assert(!implicitly_convertible(dimensionless, isq::atomic_scattering_factor));
+static_assert(implicitly_convertible(isq::structure_factor, isq::atomic_scattering_factor));
+
+// the transition temperatures and critical flux densities compare through their shared parents
+static_assert(get_common_quantity_spec(isq::Curie_temperature, isq::Neel_temperature) ==
+              isq::critical_thermodynamic_temperature);
+static_assert(get_common_quantity_spec(isq::lower_critical_magnetic_flux_density,
+                                       isq::upper_critical_magnetic_flux_density) ==
+              isq::critical_magnetic_flux_density);
 
 }  // namespace
