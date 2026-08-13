@@ -6,7 +6,6 @@ categories:
  - Best Practices
  - Why Great C++ Libraries Fail
 comments: true
-draft: true
 ---
 
 # Documentation is prose, not a Doxygen dump

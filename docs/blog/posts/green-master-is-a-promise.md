@@ -6,7 +6,6 @@ categories:
  - Best Practices
  - Why Great C++ Libraries Fail
 comments: true
-draft: true
 ---
 
 # A green master is a promise to your users

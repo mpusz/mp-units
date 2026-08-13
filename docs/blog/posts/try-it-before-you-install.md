@@ -6,7 +6,6 @@ categories:
  - Best Practices
  - Why Great C++ Libraries Fail
 comments: true
-draft: true
 ---
 
 # Let them try it before they install anything

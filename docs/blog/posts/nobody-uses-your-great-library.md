@@ -6,7 +6,6 @@ categories:
  - Best Practices
  - Why Great C++ Libraries Fail
 comments: true
-draft: true
 ---
 
 # Your library is great. Nobody uses it. Here's why

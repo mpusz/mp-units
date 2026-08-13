@@ -6,7 +6,6 @@ categories:
  - Best Practices
  - Why Great C++ Libraries Fail
 comments: true
-draft: true
 ---
 
 # If they can't find you, the code doesn't matter
