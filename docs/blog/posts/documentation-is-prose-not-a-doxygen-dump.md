@@ -1,5 +1,5 @@
 ---
-date: 2026-09-10
+date: 2026-09-24
 authors:
  - mpusz
 categories:
