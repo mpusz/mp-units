@@ -1,9 +1,10 @@
 ---
-date: 2026-06-26
+date: 2026-09-10
 authors:
  - mpusz
 categories:
  - Best Practices
+ - Why Great C++ Libraries Fail
 comments: true
 draft: true
 ---
@@ -15,6 +16,15 @@ license fits. Then you go looking for the documentation, and there is none. Ther
 `README`, a little longer than most, and after that, you are on your own.
 
 <!-- more -->
+
+!!! info "Part of a series: Why Great C++ Libraries Fail"
+
+    This post is part of a
+    [series](../../../../category/why-great-c-libraries-fail/)
+    based on my using std::cpp 2026 talk on why technically excellent C++ libraries fail to
+    get adopted. It covers the **Understanding** stage of the six-stage library journey: can
+    people actually learn your library once they trust it? New here? Start with
+    [the overview](nobody-uses-your-great-library.md).
 
 This is the most common failure, and it is worse than a clumsy documentation site.
 Some of the most technically impressive C++ libraries of the last decade do exactly this.
@@ -159,7 +169,8 @@ reference for the people who already know, and runnable for everyone. For most p
 users, the documentation is the first thing they judge, long before they read a single
 line of your code.
 
-This is one piece of a longer talk on why technically excellent C++ libraries fail to get
-adopted, and how to fix it. The extended two-hour version is my upcoming keynote at
-Meeting C++ 2026. The full checklist and the slides are in
-[the using std::cpp 2026 conference deck](https://github.com/train-it-eu/conf-slides/tree/master/2026.03%20-%20using%20std_cpp).
+These tips come from my talk on why technically excellent C++ libraries fail to get
+adopted, and how to fix it. You can
+[watch the using std::cpp 2026 version](https://www.youtube.com/watch?v=DWXlyOd_z88), or
+browse [the slides](https://github.com/train-it-eu/conf-slides/tree/master/2026.03%20-%20using%20std_cpp).
+An expanded version is coming as a keynote at Meeting C++ 2026.
