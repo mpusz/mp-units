@@ -188,19 +188,28 @@ it is non-negotiable: require reviews and passing CI, and allow no direct pushes
 For a solo maintainer, opening a pull request to review your own typo fix is mostly ceremony.
 
 I will be plain about my own workflow, because the practice-what-you-preach rule demands it.
-I write the large majority of mp-units myself, and I push to master after testing locally,
-with no branch protection. What keeps that honest is a local mirror of the CI matrix,
+I write the large majority of mp-units myself, and the workflow splits by the size of the
+change. Anything substantial goes through a pull request, where the full CI matrix runs
+before anything merges. Simple, low-risk changes go straight to master after a local mirror
+of the CI matrix,
 [`check_all.sh`](https://github.com/mpusz/mp-units/blob/master/.devcontainer/check_all.sh),
-run before I push, plus pre-commit hooks for formatting. The principle is "master is always
-green." The mechanism scales from a solo script today to full branch protection the day a
-second regular contributor arrives.
+plus pre-commit hooks for formatting. Either way the principle is the same: "master is always
+green."
+
+One part of branch protection is not a choice a solo maintainer gets to make. GitHub does not
+let you approve your own pull request, so "require one approving review" is not a rule I am
+skipping, it is one I cannot satisfy: switch it on alone and every change has to land through
+an admin override, which is a rule that exists only to be bypassed. What a solo maintainer
+*can* require is passing CI, and that is the part worth enforcing. The review requirement
+stops being theater the day a second regular contributor arrives, and that is the day to turn
+it on.
 
 That same solo reality is where mp-units is weakest at this stage, and it would be dishonest
-to hide it behind the strong CI. With no required review and, most of the time, no second
-pair of eyes, a mistake I do not catch locally can reach master, and the bus factor is low.
-The
-automated gate is genuinely strong. The human review process, today, is mostly just me, and
-that is a real limit, not a humble-brag.
+to hide it behind the strong CI. The gap is not the automated gate, which runs on the pull
+request either way; it is human review. With no second pair of eyes on most changes, a design
+mistake a reviewer would have questioned lands on master unchallenged, and the bus factor is
+low. The automated gate is genuinely strong. The human review process, today, is mostly just
+me, and that is a real limit, not a humble-brag.
 
 These tips come from my talk on why technically excellent C++ libraries fail to get
 adopted, and how to fix it. You can
