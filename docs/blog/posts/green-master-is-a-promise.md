@@ -196,20 +196,20 @@ of the CI matrix,
 plus pre-commit hooks for formatting. Either way the principle is the same: "master is always
 green."
 
-One part of branch protection is not a choice a solo maintainer gets to make. GitHub does not
-let you approve your own pull request, so "require one approving review" is not a rule I am
-skipping, it is one I cannot satisfy: switch it on alone and every change has to land through
-an admin override, which is a rule that exists only to be bypassed. What a solo maintainer
-*can* require is passing CI, and that is the part worth enforcing. The review requirement
-stops being theater the day a second regular contributor arrives, and that is the day to turn
-it on.
+One part of branch protection is not a choice a solo maintainer gets to make. GitHub does
+not let you approve your own pull request, so "require one approving review" is not a rule
+I am skipping, it is one I cannot satisfy: switch it on alone and every change has to land
+through an admin override, which is a rule that exists only to be bypassed. What a solo
+maintainer *can* require is passing CI, and that is the part worth enforcing. The review
+requirement stops being theater the day a second regular contributor arrives, and that is
+the day to turn it on.
 
-That same solo reality is where mp-units is weakest at this stage, and it would be dishonest
-to hide it behind the strong CI. The gap is not the automated gate, which runs on the pull
-request either way; it is human review. With no second pair of eyes on most changes, a design
-mistake a reviewer would have questioned lands on master unchallenged, and the bus factor is
-low. The automated gate is genuinely strong. The human review process, today, is mostly just
-me, and that is a real limit, not a humble-brag.
+That same solo reality is where mp-units is weakest at this stage, and it would be
+dishonest to hide it behind the strong CI. The gap is not the automated gate, which runs
+on the pull request either way; it is human review. With no second pair of eyes on most
+changes, a design mistake a reviewer would have questioned lands on master unchallenged,
+and the bus factor is low. The automated gate is genuinely strong. The human review
+process, today, is mostly just me, and that is a real limit, not a humble-brag.
 
 These tips come from my talk on why technically excellent C++ libraries fail to get
 adopted, and how to fix it. You can

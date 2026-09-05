@@ -90,7 +90,7 @@ Four things earn that second look:
    seconds, with nothing to install.
 
 <figure markdown="span">
-  ![The mp-units README front page, annotated with the four five-second signals](README.png){ width="90%" }
+  ![mp-units README front page, annotated with four signals](README.png){ width="90%" }
   <figcaption>
     The four signals a visitor judges in about five seconds.
   </figcaption>
