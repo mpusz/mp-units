@@ -233,6 +233,12 @@ Examples of quantities with same dimension but different kinds:
 - **Plane angle (rad)** and **Solid angle (sr)**: Both dimensionless
 - **Area (m²)** and **Fuel consumption (L/100km)**: Both `length²` (dimension L²)
 
+Naming the **unit** is enough only where a named unit carries a kind of its own, as `Gy` and
+`Sv` do. Everywhere else the **quantity type** is what asserts the kind, which is why
+`40 * N * m + 40 * J` compiles while adding an `isq::torque` to an `isq::mechanical_work`
+does not. See
+[Why can I add newton metres to joules?](faq.md#why-can-i-add-newton-metres-to-joules).
+
 !!! important
 
     **mp-units is the only C++ library implementing quantity kind safety.** It fully

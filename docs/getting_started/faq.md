@@ -112,6 +112,66 @@ in order to form a quantity.
     to use as a reference point.
 
 
+## Why can I add newton metres to joules?
+
+Because `40 * N * m` never claimed to be a _moment of force_. It provides a unit, and with
+it a dimension, but it does not name a quantity:
+
+```cpp
+quantity sum = 40 * N * m + 40 * J;   // OK
+```
+
+A quantity created from units alone converts down to the quantity it is combined with, so
+the same operand is accepted on either side of the collision:
+
+```cpp
+quantity T = isq::torque(40 * N * m);
+quantity W = isq::mechanical_work(40 * J);
+
+quantity a = T + 40 * N * m;   // OK, converts down to isq::torque
+quantity b = W + 40 * N * m;   // OK, converts down to isq::mechanical_work
+```
+
+The joule does not behave that way, because it is a named unit constrained to _energy_:
+
+```cpp
+// auto T2 = isq::torque(40 * J);   // Compile-time error: J is constrained to energy
+```
+
+So the asymmetry is not an oversight. `N * m` cannot be constrained, because newton times
+metre is exactly what the joule expands to, and a quantity spelled that way has to remain
+usable for every quantity of that dimension.
+
+This is also what makes a strict interface free for the caller. A function template may
+constrain its parameter as tightly as `QuantityOf<isq::torque>` while the call site still
+passes a plain `40 * N * m`.
+
+The kind check fires as soon as both operands name their quantity:
+
+```cpp
+// auto sum = T + W;   // Compile-time error: quantities of different kinds
+```
+
+_Work_ and _moment of force_ have different defining equations and sit in different quantity
+trees, so they are quantities of different kinds, and no conversion between them exists.
+
+!!! note
+
+    Some units do restrict the kind on their own, and for those the units alone are enough to
+    reject the operation. `Gy` is `kind_of<isq::absorbed_dose>` while `Sv` is
+    `kind_of<isq::dose_equivalent>`, so `1.5 * Gy + 2.0 * Sv` is ill-formed even though both
+    are defined as `J / kg`. The same holds for `Hz` and `Bq`. `J` is restricted this way too,
+    to _energy_, which is why `40 * J` above is an _energy_ rather than an unnamed quantity of
+    that dimension. `N * m` is not a named unit at all, so nothing restricts it.
+
+!!! note
+
+    More information can be found in
+    [the Simple and Typed Quantities chapter](../users_guide/framework_basics/simple_and_typed_quantities.md)
+    and in
+    [the Systems of Quantities chapter](../users_guide/framework_basics/systems_of_quantities.md).
+
+
 ## Why a Dimensionless Quantity Is Not Just a Fundamental Arithmetic Type
 
 In the initial design of this library, the resulting type of division of two quantities was
