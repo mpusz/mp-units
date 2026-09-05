@@ -1,0 +1,54 @@
+\begin{theindex}
+\rSecindex{general}{A}
+
+  \item absolute origin, \hyperindexformat{\see{origin, absolute}}{61}
+
+  \indexspace
+\rSecindex{general}{D}
+
+  \item definitions, \hyperpage{3}
+
+  \indexspace
+\rSecindex{general}{M}
+
+  \item module
+    \subitem mp-units, \hyperpage{4}
+  \item mp-units library, \hyperpage{1}
+
+  \indexspace
+\rSecindex{general}{N}
+
+  \item named quantity, \hyperindexformat{\see{quantity, named}}{24}
+  \item named unit, \hyperindexformat{\see{unit, named}}{34}
+
+  \indexspace
+\rSecindex{general}{O}
+
+  \item origin, \hyperpage{61}
+    \subitem absolute, \hyperpage{61}
+    \subitem relative, \hyperpage{61}
+
+  \indexspace
+\rSecindex{general}{Q}
+
+  \item quantity
+    \subitem named, \hyperpage{24}
+
+  \indexspace
+\rSecindex{general}{R}
+
+  \item references, \hyperpage{2}
+  \item relative origin, \hyperindexformat{\see{origin, relative}}{61}
+
+  \indexspace
+\rSecindex{general}{S}
+
+  \item scope, \hyperpage{1}
+
+  \indexspace
+\rSecindex{general}{U}
+
+  \item unit
+    \subitem named, \hyperpage{34}
+
+\end{theindex}
