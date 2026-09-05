@@ -27,9 +27,14 @@
 //
 // GLM evaluates eagerly (its operators return concrete `glm::vec`, not expression templates), so
 // no `representation_canonical_type` specialization is needed, and `glm::vec` already exposes a
-// `value_type` member that `representation_underlying_type` detects automatically. The only thing
-// missing is the Euclidean magnitude: GLM spells it `glm::length()` rather than `norm()`, so this
-// header adds a `magnitude()` overload (found by ADL) that the library's `magnitude()` CPO picks up.
+// `value_type` member that `representation_underlying_type` detects automatically. Two things are
+// missing. First, the Euclidean magnitude: GLM spells it `glm::length()` rather than `norm()`, so
+// this header adds a `magnitude()` overload (found by ADL) that the library's `magnitude()` CPO
+// picks up. Second, the tuple protocol: unlike `Eigen` (whose fixed-size vectors get it from the
+// mp-units plugin) and `blaze::StaticVector` (which ships its own), a `glm::vec` states its length
+// only through the static `length()`, so this header maps it onto `std::tuple_size` and adds the
+// matching `std::tuple_element` and `get<I>`. That makes a GLM vector structured-bindings friendly
+// and lets a vector quantity backed by one decompose into its components.
 //
 // The whole header is inert unless GLM is actually available, so it is always safe to include.
 //
@@ -43,10 +48,19 @@
 #include <mp-units/bits/module_macros.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
+// The GLM headers come first and the `import std;` last: GLM includes `<cmath>` and friends
+// textually, and libstdc++ requires every textual standard-library include to precede the import.
 #include <glm/geometric.hpp>  // glm::length
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
+#include <cstddef>
+#include <tuple>
+#include <type_traits>
+#endif
 #endif
 
 namespace glm {
@@ -57,6 +71,36 @@ MP_UNITS_EXPORT template<length_t L, typename T, qualifier Q>
   return length(v);
 }
 
+MP_UNITS_EXPORT template<std::size_t Idx, length_t L, typename T, qualifier Q>
+  requires(Idx < static_cast<std::size_t>(L))
+[[nodiscard]] constexpr decltype(auto) get(vec<L, T, Q>&& v)
+{
+  return std::move(v)[static_cast<length_t>(Idx)];
+}
+
+MP_UNITS_EXPORT template<std::size_t Idx, length_t L, typename T, qualifier Q>
+  requires(Idx < static_cast<std::size_t>(L))
+[[nodiscard]] constexpr decltype(auto) get(vec<L, T, Q>& v)
+{
+  return v[static_cast<length_t>(Idx)];
+}
+
+MP_UNITS_EXPORT template<std::size_t Idx, length_t L, typename T, qualifier Q>
+  requires(Idx < static_cast<std::size_t>(L))
+[[nodiscard]] constexpr decltype(auto) get(const vec<L, T, Q>& v)
+{
+  return v[static_cast<length_t>(Idx)];
+}
+
 }  // namespace glm
+
+template<glm::length_t L, typename T, glm::qualifier Q>
+struct std::tuple_size<glm::vec<L, T, Q>> : std::integral_constant<std::size_t, static_cast<std::size_t>(L)> {};
+
+template<std::size_t Idx, glm::length_t L, typename T, glm::qualifier Q>
+  requires(Idx < static_cast<std::size_t>(L))
+struct std::tuple_element<Idx, glm::vec<L, T, Q>> {
+  using type = std::remove_cv_t<T>;
+};
 
 #endif  // __has_include(<glm/geometric.hpp>)

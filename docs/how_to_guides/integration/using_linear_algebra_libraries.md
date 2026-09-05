@@ -146,6 +146,55 @@ Five things vary between libraries:
     };
     ```
 
+Two further requirements are not customization points but constraints on how the library's
+own operations are written. They cost nothing for a library whose scalar side is pinned to
+its own element type (as Eigen, GLM, and Blaze all are), and they bite a library that
+templates it generically.
+
+- **Scaling operators must be constrained on element validity, and must not accept a
+  _quantity_ or a _reference_ (which includes a bare unit).** A generic
+  `operator*(const your_vector&, const auto&)` swallows types it cannot handle.
+
+    First, require that the element multiplication is valid, with
+    `requires(const T& t, const U& u) { t * u; }`. This is basic hygiene, since without it
+    the operator is selected for arguments its own body cannot compile. It also settles
+    [unit magnitudes](../../users_guide/framework_basics/concepts.md#UnitMagnitude) for
+    free, because `element * magnitude` is ill-formed, so a constrained operator is never
+    mistaken for one providing
+    [magnitude-aware scaling](../../users_guide/framework_basics/representation_types.md#unit-magnitude-aware-scaling).
+    An *unconstrained* one is, and the type must then answer what `element * magnitude`
+    produces and is restricted to truncating conversions, when the built-in floating-point
+    path would have handled it.
+
+    Second, exclude `Reference` and `Quantity` explicitly. Element validity cannot catch
+    these, because `element * unit` and `element * quantity` are both valid and simply
+    yield a _quantity_. A number-vector multiplied by a unit or by a scalar _quantity_ has
+    to become a _vector quantity_ (`quantity<unit, your_vector>`), never a vector of
+    quantities, so the framework's own `Rep * Reference` and `quantity * Value` operators
+    must win.
+
+    `cartesian_vector` shows the guard:
+
+    ```cpp
+    template<typename T, std::size_t N, typename U>
+      requires(!Reference<U>) && (!Quantity<U>) && requires(const T& t, const U& u) { t * u; }
+    [[nodiscard]] friend constexpr auto operator*(const cartesian_vector<T, N>& lhs, const U& rhs);
+    ```
+
+- **`magnitude()` must state its requirements as constraints, never as an internal
+  `static_assert`.** The library asks "is `magnitude(v)` valid?" whenever it classifies a
+  representation, and with a deduced return type that question instantiates the body. An
+  assertion inside then fires as a hard error instead of a clean "no", which takes down an
+  unrelated probe and points at the wrong place. Anything that decides *whether* the operation
+  applies (a rank or shape requirement, for instance) belongs in the signature:
+
+    ```cpp
+    // not: auto magnitude(const your_matrix auto& m) { static_assert(is_vector(m)); ... }
+    template<typename T>
+      requires /* T is a vector-shaped matrix of yours */
+    [[nodiscard]] constexpr auto magnitude(const T& m);
+    ```
+
 !!! warning "Element-wise `operator==` is disqualifying"
 
     [Armadillo](https://arma.sourceforge.net) is the notable type that does **not** qualify: its

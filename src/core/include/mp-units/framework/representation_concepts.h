@@ -308,9 +308,22 @@ concept UnitMagnitudeScalable =
 // A type that exposes an L2 magnitude (the `magnitude` CPO) and is scalable by it. This is the
 // container algebra a vector or tensor needs on top of being regularly addable; for an order-0
 // scalar the analogous contracts live in `RealScalar` / `ComplexScalar`.
+//
+// A representation stores numbers and the unit lives in the `quantity` wrapping it, so a magnitude
+// that is itself a quantity means the type is a container *of quantities*, which is never a valid
+// representation (`disable_representation` rejects one outright whenever its element type is
+// visible). That check has to come first, and not merely for a better diagnostic: `ScalableWith<T, Q>`
+// probes `v * q`, which makes `quantity`'s own `operator*(const Value&, const quantity&)` a candidate,
+// and that operator's constraint asks whether the product is a valid representation of the spec - the
+// very question being answered here. Evaluating it is a satisfaction cycle rather than a `false`.
+// Requirements are checked in lexical order and stop at the first failure, so this guard keeps
+// `ScalableWith` from ever being formed for such a type. It stays message-free deliberately, since
+// this concept is also a query: `Vector` / `Tensor` classify arbitrary types and have to be able to
+// answer "no".
 template<typename T>
 concept HasMagnitude = requires(const T& v) {
   ::mp_units::magnitude(v);
+  requires !is_quantity_abstraction<decltype(::mp_units::magnitude(v))>;
   requires ScalableWith<T, decltype(::mp_units::magnitude(v))>;
 };
 

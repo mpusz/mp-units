@@ -100,6 +100,7 @@ function(add_polar_spherical_integration_test backend)
 endfunction()
 
 add_polar_spherical_integration_test(eigen)
+add_polar_spherical_integration_test(glm)
 add_polar_spherical_integration_test(blaze)
 
 # The built-in `cartesian_vector` backend ships with `mp-units::mp-units` (no third-party dependency

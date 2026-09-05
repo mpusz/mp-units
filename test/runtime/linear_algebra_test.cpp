@@ -146,6 +146,11 @@ static_assert(!RepresentationOf<decltype(make_vec3(0, 0, 0) * isq::velocity[m / 
 // `magnitude()` of a vector quantity is a scalar quantity in the same unit.
 static_assert(QuantityOf<decltype(magnitude(make_vec3(3, 4, 0) * isq::velocity[m / s])), isq::speed>);
 
+// The backend models the tuple protocol: element access plus a length known at compile time.
+// `cartesian_vector` and `blaze::StaticVector` ship it themselves, while the Eigen and GLM plugins
+// add it from each library's own compile-time shape.
+static_assert(std::tuple_size_v<vec3> == 3);
+
 }  // namespace
 
 TEST_CASE("linear algebra type as a quantity representation")

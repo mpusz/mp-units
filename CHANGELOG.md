@@ -8,6 +8,20 @@ This page documents the version history and changes for the **mp-units** library
 
 ### 2.6.0 <small>TBD</small> { id="2.6.0" }
 
+- feat: the GLM integration models the tuple protocol for `glm::vec`. GLM states a
+      vector's length only through its static `length()`, so the plugin maps that onto
+      `std::tuple_size` and adds the matching `std::tuple_element` and `get<I>`. A GLM
+      vector is now structured-bindings friendly, and the `polar_vector` /
+      `spherical_vector` facades accept one as a Cartesian source, which previously only
+      `cartesian_vector`, `blaze::StaticVector`, and the Eigen plugin could do
+- fix: classifying a container of quantities as a representation no longer risks a
+      constraint-satisfaction cycle. `HasMagnitude` rejects a magnitude that is itself a
+      quantity before probing scalability, which `quantity`'s own
+      `operator*(const Value&, const quantity&)` would otherwise turn into a recursive
+      question about the very property being classified
+- fix: the GLM integration header no longer breaks an `import std;` build. Its own GLM
+      includes now precede the standard-library import, since GLM pulls in `<cmath>`
+      textually and libstdc++ requires every such include to come first
 - (!) fix: `isq::wave_vector` now roots in `angular_repetency` instead of `repetency`.
       ISO 80000-3 defines the wave vector both ways (item 3-21 against item 3-22), but
       ISO 80000-12 item 12-9.1 and the relation `k = p/ħ` require `k = 2π/λ`, so the

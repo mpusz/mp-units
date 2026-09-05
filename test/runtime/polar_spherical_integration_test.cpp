@@ -29,6 +29,14 @@
 #if __has_include(<Eigen/Core>)
 #include <Eigen/Core>
 #define MP_UNITS_PS_EIGEN
+#elif __has_include(<glm/vec2.hpp>)
+// `<glm/geometric.hpp>` is what the GLM plugin needs for `glm::length`, and it is included here
+// rather than left to the plugin because it pulls in `<cmath>` textually: every such include has to
+// precede the `import std;` below.
+#include <glm/geometric.hpp>
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+#define MP_UNITS_PS_GLM
 #elif __has_include(<blaze/math/StaticVector.h>)
 #include <blaze/math/StaticVector.h>
 #define MP_UNITS_PS_BLAZE
@@ -52,6 +60,8 @@ import std;
 #include <mp-units/utility/spherical_vector.h>
 #if defined(MP_UNITS_PS_EIGEN)
 #include <mp-units/integrations/eigen.h>
+#elif defined(MP_UNITS_PS_GLM)
+#include <mp-units/integrations/glm.h>
 #elif defined(MP_UNITS_PS_BLAZE)
 #include <mp-units/integrations/blaze.h>
 #endif
@@ -66,6 +76,10 @@ namespace {
 inline constexpr const char* backend = "Eigen";
 using vec2 = Eigen::Vector2d;
 using vec3 = Eigen::Vector3d;
+#elif defined(MP_UNITS_PS_GLM)
+inline constexpr const char* backend = "GLM";
+using vec2 = glm::dvec2;
+using vec3 = glm::dvec3;
 #elif defined(MP_UNITS_PS_BLAZE)
 inline constexpr const char* backend = "Blaze";
 using vec2 = blaze::StaticVector<double, 2>;
