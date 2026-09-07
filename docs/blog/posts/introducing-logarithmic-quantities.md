@@ -687,6 +687,17 @@ level unit, the one with the smaller reference (preventing truncation, the same 
 picks `mW` over `W`), and the reference levels cancel to leave a gain.
 `point<dBm>(40.0) - point<dBW>(0.0)` is `10 dB`.
 
+This automatic conversion is also a constraint on how a scale may be modeled, and it is
+worth stating once. Two scales belong in one kind only when their references differ by a
+fixed factor in the linear domain, because that factor is precisely what `.in()` applies.
+`dBm` and `dBW` qualify (1 mW against 1 W), and so do `dB SPL` in air and in water
+(20 µPa against 1 µPa). Two different *measurands* do not, even when they share a
+dimension and a coefficient: what separates them is a property of the signal rather than
+of the units, so they have to be modeled as separate kinds, or the framework will convert
+between them with a constant it has no business choosing. The peak and RMS scales in
+[Digital audio full scale](#digital-audio-full-scale-dbfs-dbov) are the case where this
+bites.
+
 `point_for(origin)` and `delta_from(origin)` rebase a level within its origin tree:
 `delta_from(nominal_tx)` expresses a _power_ level as a backoff from the nominal transmit
 level, which is the natural way to print "minus 33 dB relative to nominal". What
@@ -903,8 +914,9 @@ omitted for brevity, or the category for the domain-typed neper):
 | Voltage level           | `dBV`            | `voltage`                | level | 1 V               | 10         | 20   |
 | Sound pressure level    | `dB SPL`         | `sound_pressure`         | level | 20 µPa (air)      | 10         | 20   |
 | Sound pressure level    | `dB SPL (water)` | `sound_pressure`         | level | 1 µPa             | 10         | 20   |
+| Digital level (peak)    | `dBFS (peak)`    | `peak_sample_level`      | level | full scale        | 10         | 20   |
+| Digital level (RMS)     | `dBFS (RMS)`     | `rms_sample_level`       | level | full-scale sine   | 10         | 20   |
 | Digital level           | `dBov`           | `digital_level`          | level | full scale        | 10         | 20   |
-| Digital level           | `dBFS (AES17)`   | `digital_level`          | level | full-scale sine   | 10         | 20   |
 | Transfer function level | `dB(V/Pa)`       | `voltage/sound_pressure` | level | 1 V/Pa            | 10         | 20   |
 | Antenna gain            | `dBi`            | `dimensionless`          | level | isotropic         | 10         | 10   |
 | Antenna gain            | `dBd`            | `dimensionless`          | level | dipole (2.15 dBi) | 10         | 10   |
@@ -932,52 +944,66 @@ ratio.
 ### Digital audio full scale (`dBFS`, `dBov`)
 
 Digital audio references a sample level to the converter's full scale rather than to a
-physical unit, and `dBFS` is not one convention but three usages. Sorting them on two
-axes, the reference they are measured against and the quantity that is measured, is what
-makes them tractable:
+physical unit. There are two full-scale definitions, and each of them can be applied to a
+peak sample value or to an RMS value, which is the structure Paweł Trella
+[laid out](https://github.com/mpusz/mp-units/discussions/827#discussioncomment-18331239)
+in the comments. The two axes are independent:
 
-| Usage                 | Reference                              | Measured          |
-|:----------------------|:---------------------------------------|:------------------|
-| `dBFS` on a DAW meter | full scale                             | peak sample value |
-| `dBFS` per AES17      | RMS of a full-scale sine (FS/$\sqrt2$)  | RMS               |
-| `dBov`                | RMS of a full-scale square (FS)        | RMS               |
+| Full-scale definition   | Peak measurement | RMS measurement |
+|:------------------------|:-----------------|:----------------|
+| full-scale sine (AES17) | FS               | FS/$\sqrt2$      |
+| full-scale square       | FS               | FS              |
 
-Two distinct references, so two units, with AES17 sitting 3.01 dB below the other. This is
-the `dBi` and `dBd` shape again, two origins on one scale:
+A full-scale sine's peak *is* full scale, so the two definitions agree on a peak reading
+and differ by 3.01 dB on an RMS one. That single cell is the whole confusion: an RMS figure
+labeled `dBFS` and one labeled `dBov` are 3.01 dB apart, while the peak figures are the
+same number. Which symbol goes with which definition is settled practice rather than our
+choice: `dBFS` is the sine definition, which more standards follow (AES17 among them), and
+`dBov` names the square definition explicitly.
+
+The reference belongs to the unit, and the statistic has to be a *kind*, so the four cells
+come out as three units over two kinds:
 
 ```cpp
 // a digital sample level is a root-power quantity of its own dimensionless kind
 inline constexpr struct digital_level : quantity_spec<dimensionless, is_kind, log_coefficient<2>> {} digital_level;
+// the statistic is its own kind (the coefficient comes from the parent), because the peak
+// and the RMS of one signal differ by its crest factor, which is not a fixed offset
+inline constexpr struct peak_sample_level : quantity_spec<digital_level, is_kind> {} peak_sample_level;
+inline constexpr struct rms_sample_level : quantity_spec<digital_level, is_kind> {} rms_sample_level;
 
-// 0 dBov is full scale itself (the RMS of a full-scale square wave)
-inline constexpr struct dBov : named_unit<"dBov", dB<digital_level>, one> {} dBov;
-// AES17 puts 0 dB FS at the RMS of a full-scale sine, 3.01 dB below full scale
-inline constexpr struct dBFS_AES17 : named_unit<"dBFS (AES17)", dBov, mag_power<2, -1, 2>> {} dBFS_AES17;
+// one unit per cell: the sine definition agrees with the square one on a peak value and
+// sits 3.01 dB lower on an RMS one
+inline constexpr struct dBFS_peak : named_unit<"dBFS (peak)", dB<peak_sample_level>, one> {} dBFS_peak;
+inline constexpr struct dBFS_rms : named_unit<"dBFS (RMS)", dB<rms_sample_level>, mag_power<2, -1, 2>> {} dBFS_rms;
+inline constexpr struct dBov : named_unit<"dBov", dB<rms_sample_level>, one> {} dBov;
 
-quantity lvl = point<dBFS_AES17>(-6.0).in(dBov);   // -9.01 dBov
+quantity lvl = point<dBFS_rms>(-6.0).in(dBov);   // -9.01 dBov
 ```
 
+The symbols carry the statistic, in the same way that `dB SPL (water)` carries its medium,
+because the two origins are 3.01 dB apart and a bare `dBFS` on a printed value would not
+say which one it came from. Only three units appear because the peak column of the table
+is one cell in practice: both definitions reference full scale there, so `dBFS (peak)`
+serves them both, and `dBov` is left where it is actually used, on RMS values.
+
+The `is_kind` on the two statistics is what keeps the framework from
+[converting](#conversions-within-the-log-domain) a peak figure into an RMS one by adding
+3.01 dB. Those two differ by the signal's crest factor, which is 3.01 dB for a sine and
+anything at all for music, so the crest factor stays where it belongs, in a measurement the
+user makes.
+
 Because every real signal is at or below full scale, a `dBov` reading is never positive,
-while an AES17 reading of a full-scale square wave is `+3.01 dB FS`, which is the offset
-that makes the two conventions worth separating in the first place.
+while an RMS reading of a full-scale square wave is `+3.01 dBFS`, which is the offset that
+makes the two definitions worth separating in the first place.
 
 The sample level is dimensionless, so it needs a kind of its own to carry the coefficient:
 the plain `dimensionless` decibel is a _power_ ratio (factor 10), while a sample value is
 an amplitude (factor 20).
 
-The peak usage in the first row is not a third unit. Its reference is full scale, the same
-origin `dBov` has, and what differs is the quantity: a peak sample value and an RMS sample
-value are two quantities of one kind, so they share the unit and the library cannot tell
-them apart unless you name both. That is the general rule for this axis. The reference
-belongs to the unit, and what was measured belongs to the quantity spec.
-
-We deliberately do not define a bare `dBFS`. The symbol means the AES17 scale on a piece
-of test equipment and the peak scale on a DAW meter, and a library that silently picks one
-reintroduces exactly the class of bug this article is about. An application that only ever
-uses one of them can say so in one line, `inline constexpr auto dBFS = dBFS_AES17;`, and
-that alias is then a statement about that codebase rather than a guess by us. We are least
-sure of this one, so if you work with digital audio daily: is refusing the bare symbol too
-purist, and if we did define it, which of the two origins should it carry?
+None of this is legible from a bare number. Software that reports "dB" against an
+unstated full scale, which is common, cannot be reconciled with either column of the table
+above, and no type system recovers what the producer did not record.
 
 ### Antenna gain (RF link budgets)
 
@@ -1281,6 +1307,25 @@ it correctly. The way the same calculation is written in an audio lab is a log-d
 once the `20 µPa` reference is accounted for. That is `level + level` across two
 *different* kinds.
 
+Real chains are longer than one stage. Paweł Trella's example is a digital signal driving
+a smart amplifier driving a loudspeaker, where what you want is the level in the air at a
+given distance:
+
+```cpp
+quantity digital = point<dBFS_peak>(-20.0);           // -20 dBFS
+quantity amp     = point<dB_VFS>(20.0);               // 10 V out at full scale
+quantity spk     = point<dB_PaV>(86.0);               // 86 dB SPL at 1 m for 1 V in
+quantity at_1m   = digital + amp + spk;               // 86 dB SPL
+quantity at_4m   = at_1m + spreading_loss(4.0 * m);   // 74 dB SPL, a -12.04 dB gain
+```
+
+Every kind cancels along the way, `FS` against `V/FS` against `20 µPa/V`, leaving
+_sound pressure_ referenced to `20 µPa`, which is `dB SPL`. Two details in that snippet
+come from the same source. A loudspeaker's sensitivity is quoted as a level, "86 dB SPL at
+1 m", and is really a transfer function with the reference `20 µPa/V`, which is why it
+composes here at all. And the amplifier's `dB(V/FS)` is a sensitivity in the other
+direction from the microphone's `dB(V/Pa)`, which is the point below about defining both.
+
 The [correlation argument](#arithmetic) that makes same-kind `level + level` ill-formed
 does not reach this case. It governs *superposition*, where two sources of one kind add in
 the linear domain and the result depends on their phase relationship. This is a
@@ -1304,9 +1349,9 @@ the question is which reading the notation invites, not which one the mathematic
   `dBm + dB SPL` compiles while being physically pointless, in the same way that `W * Pa`
   compiles in the linear domain.
 
-The multiplier constraint is not decoration. The microphone chain satisfies it, because
-_sound pressure_ (20), _sensitivity_ (20 by the §5.2 convention), and _voltage_ (20) agree.
-A _voltage_ level plus a _current_ level does not:
+The multiplier constraint is not decoration, and the chains above pass it: every stage,
+digital level, both sensitivities, and _sound pressure_, is root-power, so all the
+multipliers are 20. A _voltage_ level plus a _current_ level does not pass:
 
 ```text
 10 V -> 20 dBV,  2 A -> 6.02 dB(A),   sum: 26.02
@@ -1320,10 +1365,13 @@ returns neither operand's sum, which is worse than not offering it. Constraining
 to equal multipliers keeps `+` a true addition and rejects this case at compile time,
 where the linear crossing is the honest way to write it.
 
-Either way a second operation is missing. `dB(V/Pa)` and `dB(Pa/V)` are reciprocal kinds,
-and inverting a sensitivity (negate the log-domain value, invert the kind) has no spelling
-today, although chaining in both directions is routine work for anyone calibrating
-microphones and loudspeakers.
+We also asked whether an inversion operation is needed, since `dB(V/Pa)` and `dB(Pa/V)`
+are reciprocal kinds and negating the value while inverting the kind has no spelling today.
+The answer from practice is that it is not the priority: which direction you need depends
+on whether the device is an input or an output, a microphone or a loudspeaker, an ADC or a
+DAC, so being able to *define* both directions as first-class units beats deriving one from
+the other. The design already allows that, and an inversion operator would be a
+convenience rather than a requirement.
 
 We do not have a preference we trust here, and this is the question we would most like a
 transducer-calibration practitioner to answer. Does the log-domain chain earn an operator,
@@ -1334,7 +1382,7 @@ because it makes the multiplication visible?
 ### 8. Should a gain carry its domain?
 
 [Gains carry their domain](#gains-carry-their-domain) is the departure we flagged as most
-in need of scrutiny, and the first reader to arrive went straight at it. Pawel Trella, who
+in need of scrutiny, and the first reader to arrive went straight at it. Paweł Trella, who
 works on acoustic measurements, wrote the corrected opening example with a domain-less
 `6.0 * dB` in both lines and
 [suggested](https://github.com/mpusz/mp-units/discussions/827#discussioncomment-18145547)
@@ -1343,8 +1391,9 @@ a gain domain-less and let the level it is applied to supply the domain.
 
 The case for it is that a gain's dB figure is domain-invariant. `+6 dB` is `+6 dB` whether
 it doubles a _voltage_ or quadruples a _power_, so `level + gain` is unambiguous even when
-the gain carries no domain: the level supplies it. The ambiguity is confined to one place,
-calling `.linear()` on a gain that is not attached to a level.
+the gain carries no domain: the level supplies it. The ambiguity is confined to the
+crossings, calling `.linear()` on a gain that is not attached to a level, and changing
+base, as spelled out under the options below.
 
 - **Domain on the gain (Option A, the design above).** Good parts: `.linear()` is always
   correct with nothing to spell, the neper matches the standard, and a gain from one domain
@@ -1360,10 +1409,49 @@ calling `.linear()` on a gain that is not attached to a level.
   domain argument reappears at every `.linear()` call site, which is exactly where the
   `3.98`-versus-`2.0` bug lives.
 
-Author preference is Option A, on the grounds that the one place Option B stays ambiguous
-is also the one place the classic bug occurs. We are genuinely unsure, and the deciding
-evidence is not ours to supply: if your code stores gains and applies them later, tell us
-whether naming the domain at construction is a help or an obstacle.
+- **Both forms, with the domain kept wherever it is known (Option C).** A domain-typed
+  gain and an unclassified one coexist. Subtracting two levels yields the typed form,
+  because there the domain is not a guess, while a literal `3 * dB` yields the unclassified
+  form that adds to any level and must be given a domain to linearize. Good parts: nothing
+  that the types already knew is thrown away, and a gain in a config file has one type.
+  Drawbacks: two gain types and a conversion between them, and users have to know which
+  one they are holding. This option only exists if the classification can be absent, which
+  is [Option B of Question 6](#6-should-the-classification-have-a-default).
+
+Paweł Trella
+[answered](https://github.com/mpusz/mp-units/discussions/827#discussioncomment-18331239)
+Option B, wanting a gain that is "a plain `log<dimensionless>` which could be reused across
+different domains". That is the practitioner's reading of an operation the standard treats
+as domain-invariant, and it carries weight here.
+
+One cost of Option B reaches further than `.linear()`, and it lands on the syntax. The
+base change between `dB` and `Np` needs the classification too: one neper is `8.686 dB`
+over a root-power quantity and `4.343 dB` over a _power_ quantity. So an unclassified gain
+cannot be converted at all, and there is no unit to hang the missing information on:
+
+```cpp
+quantity gain = 6.0 * dB;      // unclassified under Option B
+// auto np    = gain.in(Np);   // ill-formed: 8.686 or 4.343? nothing in the expression says
+```
+
+There are two ways to complete that call and we can offer neither. One is a second
+argument, `gain.in(Np, isq::voltage)`, a conversion API that no other unit in the library
+needs and that `.linear()` would have to grow as well. The other is a reinterpretation from
+the unclassified gain to a classified one, which is a forcing cast, and a needed forcing
+cast means the model is wrong rather than the syntax missing. Option B does not remove the
+classification, it defers it to the crossings, and the deferral has no spelling.
+
+Option C is not free of this either, because a gain that genuinely arrived without a domain
+still cannot change base. What it changes is the remedy. There, the honest move is to build
+the typed gain from the number, `6.0 * dB<isq::voltage>`, which is ordinary construction
+rather than a cast, and every gain that came from subtracting two levels already carries
+what the conversion needs.
+
+Author preference was Option A, and the feedback so far argues for Option B. Our current
+lean is the hybrid, Option C, because it gives the reusable gain without discarding a
+domain the types had already established. What would settle it is more reports of the kind
+above: if your code stores gains and applies them later, tell us whether naming the domain
+at construction is a help or an obstacle.
 
 ## How to give feedback
 
@@ -1389,8 +1477,8 @@ please do not be shy.
     6. Classification default: power, or an explicit `unclassified`. (power)
     7. Chaining transfer functions: linear crossing only, or cross-kind `level + level`
        with matching multipliers. (no preference, we are asking)
-    8. Gains: domain on the gain, or domain resolved at the point of application.
-       (domain on the gain)
+    8. Gains: domain on the gain, domain resolved at the point of application, or both
+       forms coexisting. (leaning to both, after the first round of feedback)
 
 ## Conclusion
 
@@ -1414,10 +1502,10 @@ Special thanks to **Roth Michaels**, who helped draft the initial design. He arr
 the same affine point/delta model independently, pushed for domain-carrying gains, and
 contributed the digital-audio perspective behind the `log(0)` question.
 
-Thanks also to the reviewers who improved the article after publication: **Pawel Trella**,
+Thanks also to the reviewers who improved the article after publication: **Paweł Trella**,
 whose acoustic-measurement practice is behind the opening example, the correlation
 argument for an ill-formed `level + level`, the full-scale conventions in
-[Digital audio full scale](#digital-audio-full-scale-dbfs-dbov), and Open Questions
-[7](#7-chaining-transfer-functions-in-the-log-domain) and
-[8](#8-should-a-gain-carry-its-domain), and **Chip Hogg**,
+[Digital audio full scale](#digital-audio-full-scale-dbfs-dbov), the loudspeaker chain in
+[Open Question 7](#7-chaining-transfer-functions-in-the-log-domain), and
+[Open Question 8](#8-should-a-gain-carry-its-domain), and **Chip Hogg**,
 who caught that the nholthaus survey described a version the library had moved past.
