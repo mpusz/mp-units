@@ -102,6 +102,13 @@ Without that pressure I would have committed a design that merely worked, far in
 what I eventually shipped once writing the docs forced the rethink. Better docs produce a
 better API, because writing them puts you in the user's shoes before release, not after.
 
+Real documentation sites also outgrow the four quadrants, and that is fine. A getting-started
+ramp, worked examples that solve a whole problem, migration guides from the library you are
+replacing, and, for a standards-track project, a bibliography of the papers and standards
+behind it all earn their own space. What keeps any of it honest is to treat documentation
+as code: it lives in the repository, it changes in the same pull request as the code it
+describes, and a feature is not finished until its prose is.
+
 ## Make the examples runnable, not just readable
 
 Engineers would rather play with a tool than read about it, and they are lazy: if trying

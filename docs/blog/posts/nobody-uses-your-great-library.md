@@ -83,13 +83,15 @@ There are three ways to read what follows:
 - **If you evaluate and adopt libraries**, treat it as a map of what good ones do, and a fair
   warning about what the absence of these signals is telling you.
 - **If you are a developer** asking "which project should I contribute to in order to learn
-  modern C++?", these are the green flags worth looking for.
+  modern C++?", these are the green flags worth looking for, the same signals this series
+  builds, read from the other side of the table.
 
 One last thing, and it is the honest reason this series lives on the mp-units blog rather
 than somewhere neutral. If you already use mp-units, the single most useful thing you can
 do is tell me where it sits on this map: which stage nearly made you give up, and what you
-wished had been there. That kind of feedback is genuinely hard to come by, and it shapes both
-the library and its path into the C++ standard.
+wished had been there. The boring complaints count most, compile time, header bloat, the paper
+cut you stopped noticing, because that is the real production signal, and it is genuinely
+hard to come by. It shapes both the library and its path into the C++ standard.
 
 ## The posts in this series
 

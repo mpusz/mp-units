@@ -62,6 +62,16 @@ question, and complaint is production feedback you would otherwise have to pay f
 over ego is not politeness for its own sake, it is how a first-time contributor decides whether
 there will be a second time.
 
+One kind of communication happens before anyone files anything: the issues you open for them.
+A bare `good first issue` label looks welcoming, but on its own it leaves the newcomer as
+stuck as before, with no idea which change to make, where, or whether anyone will actually
+help. A real one is a small spec, what to change and where, why it matters, what the
+contributor will learn, roughly how long it should take, and a named mentor assigned to see
+them through the pull request. The mentor is the part that matters most: a person's name on
+the issue is a commitment to help, not a hope that someone eventually will.
+That takes ten minutes to write, and it removes the decision paralysis that stops a first-timer
+cold. It is the difference between a label and an invitation.
+
 ## Provide the environment, do not describe it
 
 Now the setup barrier. Picture the contributor with a small first change, a one-line fix to

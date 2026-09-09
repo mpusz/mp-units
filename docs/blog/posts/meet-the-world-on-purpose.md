@@ -37,7 +37,9 @@ of letting the world set the terms.
 
 Language models are genuinely useful to a maintainer and to a contributor. They draft prose,
 they generate the tedious half of a test suite, they are a decent rubber duck for a design
-question. Banning them is both futile and wasteful. But left unmanaged they produce exactly
+question. The most underused case is documentation: hand the model your headers and design
+notes and a blank page becomes a draft you correct in ten minutes instead of writing over
+two hours. Banning them is both futile and wasteful. But left unmanaged they produce exactly
 the pull request above: plausible, voluminous, and subtly wrong, optimized to look like a
 good contribution rather than to be one. The whole review cost lands on you, and at scale
 it can bury the maintainer who is the one thing keeping the library coherent.
@@ -89,8 +91,27 @@ exactly the people who will one day depend on it. Each of those is a door back t
 A talk that helps someone becomes a reason to try the library. A post that solves a real
 problem becomes a search result that keeps finding new users for years.
 
+For a niche library there is a multiplier on top: education. Most C++ developers do not think
+about dimensional analysis on an ordinary day, so the writing that lands is not "here is the
+API" but "here is why mixing up units is dangerous, and here is how the type system makes
+that mistake impossible." Teach the domain first, and the library follows it in.
+
 But there is an honest limit to evangelism, and it is the note this whole series has been
 building toward. Evangelism brings users. It does not, on its own, bring maintainers.
+
+## Sustain the maintainer, not just the project
+
+All of it, the policy, the outreach, the releases, the reviews, lands on one person, and the
+failure at the end of the journey is rarely a bad release. It is a burned-out maintainer who
+quietly stops. So the last part of keeping a project alive is protecting the person keeping
+it alive, and two habits do most of the work. Automate the boring: let CI run the tests, let
+the formatter end style arguments before they start, let a bot close stale issues, let a
+script or a model draft the changelog, so your scarce hours go to the work only you can do.
+And empower others: give triage rights to the contributors who keep showing up, write down
+how you make decisions so someone else can make them too, and get comfortable saying "not
+for this release." It helps to know what you are aiming at, production adoption, a place in
+the standard, or simply a healthy community, because that is what tells you which of these
+tips deserves your limited time next.
 
 ## Where mp-units actually is, and the honest gap
 
