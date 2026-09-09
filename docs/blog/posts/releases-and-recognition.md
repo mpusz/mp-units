@@ -111,5 +111,5 @@ get adopted, and how to fix it. You can
 [watch the recording](https://www.youtube.com/watch?v=DWXlyOd_z88), which won best talk at
 using std::cpp 2026, and read
 [the slides](https://github.com/train-it-eu/conf-slides/tree/master/2026.03%20-%20using%20std_cpp).
-I am giving a shorter version at CppCon 2026, and the full two-hour keynote at Meeting C++
-2026.
+I am giving an updated version of it at CppCon 2026, and the full, extended two-hour keynote
+at Meeting C++ 2026.

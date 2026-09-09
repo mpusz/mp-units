@@ -98,8 +98,10 @@ stages at a time, each one standing on its own. As each post goes live it will a
 and under the
 [*Why Great C++ Libraries Fail*](../../../../category/why-great-c-libraries-fail/) category.
 
-These tips come from my talk on why technically excellent C++ libraries fail to get
-adopted, and how to fix it. You can
-[watch the using std::cpp 2026 version](https://www.youtube.com/watch?v=DWXlyOd_z88), or
-browse [the slides](https://github.com/train-it-eu/conf-slides/tree/master/2026.03%20-%20using%20std_cpp).
-An expanded version is coming as a keynote at Meeting C++ 2026.
+These tips come from my conference talk on why technically excellent C++ libraries fail to
+get adopted, and how to fix it. You can
+[watch the recording](https://www.youtube.com/watch?v=DWXlyOd_z88), which won best talk at
+using std::cpp 2026, and read
+[the slides](https://github.com/train-it-eu/conf-slides/tree/master/2026.03%20-%20using%20std_cpp).
+I am giving an updated version of it at CppCon 2026, and the full, extended two-hour keynote
+at Meeting C++ 2026.

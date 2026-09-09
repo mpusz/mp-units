@@ -123,8 +123,10 @@ toolchain and assert they match, and it is currently an open good-first-issue
 ([#804](https://github.com/mpusz/mp-units/issues/804)). So for now the guarantee is shown
 and checked by eye, not gated by CI. The proof is real. The automation is still on the list.
 
-These tips come from my talk on why technically excellent C++ libraries fail to get
-adopted, and how to fix it. You can
-[watch the using std::cpp 2026 version](https://www.youtube.com/watch?v=DWXlyOd_z88), or
-browse [the slides](https://github.com/train-it-eu/conf-slides/tree/master/2026.03%20-%20using%20std_cpp).
-An expanded version is coming as a keynote at Meeting C++ 2026.
+These tips come from my conference talk on why technically excellent C++ libraries fail to
+get adopted, and how to fix it. You can
+[watch the recording](https://www.youtube.com/watch?v=DWXlyOd_z88), which won best talk at
+using std::cpp 2026, and read
+[the slides](https://github.com/train-it-eu/conf-slides/tree/master/2026.03%20-%20using%20std_cpp).
+I am giving an updated version of it at CppCon 2026, and the full, extended two-hour keynote
+at Meeting C++ 2026.

@@ -66,6 +66,14 @@ None of this is a purity test. It is a way to keep the review cost on the side t
 it, and to protect the one thing a model cannot supply: the design integrity that makes the
 library worth depending on in the first place.
 
+There is a second half to this, and it is newer. A policy is guidance a human reads; an agent
+does not. As more of the typing is done by tools, the same guidance has to live where the
+tool will see it, in a machine-readable brief at the root of the repository. mp-units keeps
+an `AGENTS.md` (with a one-line `CLAUDE.md` that points to it, and a private local overlay
+per maintainer) that hands an agent the build, the test commands, and the house conventions
+up front. It does not replace the policy or the review, but it steers a well-intentioned tool
+toward a good contribution instead of a confident guess.
+
 ## Do not wait to be discovered
 
 Now the offensive half. Even a perfect library, with clean CI, real documentation, and a
@@ -125,5 +133,5 @@ get adopted, and how to fix it. You can
 [watch the recording](https://www.youtube.com/watch?v=DWXlyOd_z88), which won best talk at
 using std::cpp 2026, and read
 [the slides](https://github.com/train-it-eu/conf-slides/tree/master/2026.03%20-%20using%20std_cpp).
-I am giving a shorter version at CppCon 2026, and the full two-hour keynote at Meeting C++
-2026.
+I am giving an updated version of it at CppCon 2026, and the full, extended two-hour keynote
+at Meeting C++ 2026.
