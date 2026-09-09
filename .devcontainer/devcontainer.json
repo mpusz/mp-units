@@ -54,19 +54,17 @@
         "xaver.clang-format",
         "bierner.markdown-mermaid",
         "darkriszty.markdown-table-prettify",
-        "DavidAnson.vscode-markdownlint",
-        "ms-vscode.vscode-json",
+        "davidanson.vscode-markdownlint",
         "redhat.vscode-yaml",
         "ms-python.python",
         "ms-python.isort",
         "ms-python.black-formatter",
         "hbenl.vscode-test-explorer",
         "mhutchie.git-graph",
-        "Gruntfuggly.todo-tree",
+        "gruntfuggly.todo-tree",
         "streetsidesoftware.code-spell-checker",
         "vivaxy.vscode-conventional-commits",
         "github.vscode-github-actions",
-        "github.copilot",
         "github.copilot-chat",
         "ms-vsliveshare.vsliveshare"
       ]
@@ -76,7 +74,7 @@
     "--init"
   ],
   "updateContentCommand": "sudo mkdir -p /workspaces/api_reference_deps && sudo chown -R ubuntu:ubuntu /workspaces/api_reference_deps",
-  "postCreateCommand": "bash -c 'pipx upgrade-all && .devcontainer/validate_environment.sh && .devcontainer/check_all.sh -d ${CI_NEVER_BUILD:+-n} install && .devcontainer/api_reference.sh -s'",
+  "postCreateCommand": "bash -c 'bash .devcontainer/install_extensions.sh && pipx upgrade-all && .devcontainer/validate_environment.sh && .devcontainer/check_all.sh -d ${CI_NEVER_BUILD:+-n} install && .devcontainer/api_reference.sh -s'",
   "postStartCommand": "echo '🚀 mp-units development environment ready!' && echo '🧪 Use `.devcontainer/check_all.sh [-d] build` to test all compiler configurations.' && echo '📖 Use `.devcontainer/api_reference.sh` to generate the API reference documentation.'",
   "forwardPorts": [
     8000
