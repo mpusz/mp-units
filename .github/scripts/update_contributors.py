@@ -1,13 +1,24 @@
 #!/usr/bin/env python3
-"""
-Update CONTRIBUTORS.md with current GitHub contributors
-This script fetches contributor information from GitHub API and updates the contributors list
+"""Update the community contributor list in CONTRIBUTORS.md.
+
+Contributors are gathered from two sources and merged:
+
+- the GitHub contributors API, which reports everyone holding a commit on the default branch
+- the ``[@handle](profile)`` credits in CHANGELOG.md, which catch the people who contributed
+  something other than a commit and are therefore invisible to the API
+
+No per-person contribution counts are published. A commit count measures how a change
+happened to be squashed rather than what it was worth, and it cannot see reviews, bug
+reports, or design discussions at all. Individual work is credited by name in CHANGELOG.md
+and in the release notes instead.
 """
 
-import subprocess
+import os
+import re
 import sys
+from datetime import date
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, Tuple
 
 try:
     import requests
@@ -15,248 +26,175 @@ except ImportError:
     print("Error: requests library not found. Install with: pip install requests")
     sys.exit(1)
 
+DEFAULT_REPO = "mpusz/mp-units"
+CONTRIBUTORS_FILE = Path("CONTRIBUTORS.md")
+CHANGELOG_FILE = Path("CHANGELOG.md")
 
-class ContributorUpdater:
-    """Manages updating the contributors list"""
+# Listed by hand in the "Core Team" section, so kept out of the generated list
+CORE_TEAM = {"mpusz", "johelegp", "chiphogg"}
 
-    def __init__(self, repo_owner: str, repo_name: str, token: Optional[str] = None):
-        self.repo_owner = repo_owner
-        self.repo_name = repo_name
-        self.token = token
-        self.headers = {}
-        if token:
-            self.headers["Authorization"] = f"token {token}"
+# GitHub matches a commit to an account through the e-mail address the commit carries.
+# Anybody whose address is not registered with their account stays invisible to the
+# contributors API, which reports them as "Anonymous" only when asked with `anon=1` and even
+# then without a handle to link to. The table below maps such a commit e-mail (or the author
+# name, for a commit carrying no address) to the handle that opened the pull request the work
+# arrived in. Add an entry whenever this script reports an unresolved contributor.
+ANONYMOUS_ALIASES = {
+    "me@radnyx.com": "Radnyx",  # PR #730, #731
+    "raporter@microsoft.com": "Radnyx",  # PR #730, second address of the same person
+    "oliver@openbrackets.net": "oschonrock",
+    "nbresler@anduril.com": "NoahBres",  # PR #563
+    "elepain@scitec.com": "EALePain",  # PR #708
+    "Cazadorro": "Cazadorro",  # PR #446, the commits carry no address at all
+}
 
-    def fetch_contributors(self) -> List[Dict]:
-        """Fetch contributors from GitHub API"""
-        url = f"https://api.github.com/repos/{self.repo_owner}/{self.repo_name}/contributors"
+# The mirror image of the problem: an account holding an address that somebody else committed
+# with, and so credited by the API for work it never contributed
+MISATTRIBUTED_ACCOUNTS = {
+    "mikeford1": "mikeford3",  # holds the commit address, but PR #112 - #265 are mikeford3
+}
 
-        all_contributors = []
-        page = 1
+START_MARKER = "<!-- CONTRIBUTORS_START -->"
+END_MARKER = "<!-- CONTRIBUTORS_END -->"
 
-        while True:
-            params = {"page": page, "per_page": 100}
-            response = requests.get(url, headers=self.headers, params=params)
+# "[@handle](https://github.com/handle)" as used by the changelog entries
+CREDIT_PATTERN = re.compile(
+    r"\[@([A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?)\]\((https://github\.com/[^)\s]+)\)"
+)
 
-            if response.status_code != 200:
-                print(f"Error fetching contributors: {response.status_code}")
-                print(response.text)
-                break
+# Lowercased handle -> (handle as displayed, profile URL)
+Contributors = Dict[str, Tuple[str, str]]
 
-            contributors = response.json()
-            if not contributors:
-                break
 
-            all_contributors.extend(contributors)
-            page += 1
+def add(contributors: Contributors, handle: str, profile: str = "") -> None:
+    """Record a contributor under their lowercased handle."""
+    contributors[handle.lower()] = (handle, profile or f"https://github.com/{handle}")
 
-        return all_contributors
 
-    def get_contributor_details(self, username: str) -> Dict:
-        """Get detailed information about a contributor"""
-        url = f"https://api.github.com/users/{username}"
-        response = requests.get(url, headers=self.headers)
+def fetch_api_contributors(repo: str, headers: Dict[str, str]) -> Contributors:
+    """Fetch every non-bot committer, including the ones GitHub cannot match to an account."""
+    url = f"https://api.github.com/repos/{repo}/contributors"
+    contributors: Contributors = {}
+    unresolved = []
+    page = 1
 
-        if response.status_code == 200:
-            return response.json()
+    while True:
+        response = requests.get(
+            url,
+            headers=headers,
+            params={"page": page, "per_page": 100, "anon": 1},
+            timeout=30,
+        )
+        response.raise_for_status()
+
+        batch = response.json()
+        if not batch:
+            break
+
+        for entry in batch:
+            if entry.get("type") == "Bot":
+                continue
+
+            if entry.get("type") == "Anonymous":
+                handle = ANONYMOUS_ALIASES.get(
+                    entry.get("email", "")
+                ) or ANONYMOUS_ALIASES.get(entry.get("name", ""))
+                if handle:
+                    add(contributors, handle)
+                else:
+                    unresolved.append(f"{entry.get('name')} <{entry.get('email')}>")
+                continue
+
+            login = entry["login"]
+            replacement = MISATTRIBUTED_ACCOUNTS.get(login.lower())
+            if replacement:
+                add(contributors, replacement)
+            else:
+                add(contributors, login, entry["html_url"])
+
+        page += 1
+
+    for author in unresolved:
+        print(
+            f"Warning: no GitHub account known for {author}, add it to ANONYMOUS_ALIASES"
+        )
+
+    return contributors
+
+
+def fetch_changelog_credits(path: Path = CHANGELOG_FILE) -> Contributors:
+    """Collect everyone thanked by name in the changelog."""
+    if not path.exists():
+        print(f"Warning: {path} not found, skipping changelog credits.")
         return {}
 
-    def categorize_contributors(
-        self, contributors: List[Dict]
-    ) -> Dict[str, List[Dict]]:
-        """Categorize contributors by contribution level"""
-        # Core team members (manually maintained)
-        core_team = {"mpusz", "JohelEGP", "chiphogg"}
-        core_team_lower = {name.lower() for name in core_team}
-
-        # Categorize by contribution count
-        major_contributors = []  # 50+ contributions
-        regular_contributors = []  # 10-49 contributions
-        occasional_contributors = []  # 1-9 contributions
-
-        for contributor in contributors:
-            username = contributor["login"]
-            contributions = contributor["contributions"]
-
-            # Skip core team members (handled separately)
-            if username.lower() in core_team_lower:
-                continue
-
-            # Skip bots
-            if contributor.get("type") == "Bot":
-                continue
-
-            if contributions >= 50:
-                major_contributors.append(contributor)
-            elif contributions >= 10:
-                regular_contributors.append(contributor)
-            else:
-                occasional_contributors.append(contributor)
-
-        return {
-            "major": major_contributors,
-            "regular": regular_contributors,
-            "occasional": occasional_contributors,
-        }
-
-    def generate_contributor_section(
-        self, contributors: List[Dict], include_contributions: bool = True
-    ) -> str:
-        """Generate markdown for a list of contributors"""
-        if not contributors:
-            return "*No contributors in this category yet.*\n"
-
-        lines = []
-        for contributor in contributors:
-            username = contributor["login"]
-            profile_url = contributor["html_url"]
-            contributions = contributor["contributions"]
-
-            if include_contributions:
-                line = (
-                    f"- **[{username}]({profile_url})** ({contributions} contributions)"
-                )
-            else:
-                line = f"- **[{username}]({profile_url})**"
-
-            lines.append(line)
-
-        return "\n".join(lines) + "\n"
-
-    def update_contributors_file(self, contributors: List[Dict]):
-        """Update the CONTRIBUTORS.md file"""
-        contributors_file = Path("CONTRIBUTORS.md")
-
-        if not contributors_file.exists():
-            print("CONTRIBUTORS.md not found!")
-            return
-
-        # Read current content
-        content = contributors_file.read_text()
-
-        # Categorize contributors
-        categorized = self.categorize_contributors(contributors)
-
-        # Generate new contributor sections
-        major_section = self.generate_contributor_section(categorized["major"])
-        regular_section = self.generate_contributor_section(categorized["regular"])
-        occasional_section = self.generate_contributor_section(
-            categorized["occasional"], include_contributions=False
-        )
-
-        # Generate statistics (excluding core team)
-        core_team = {"mpusz", "JohelEGP", "chiphogg"}
-        core_team_lower = {name.lower() for name in core_team}
-        non_core_contributors = [
-            c
-            for c in contributors
-            if c["login"].lower() not in core_team_lower and c.get("type") != "Bot"
-        ]
-        total_contributors = len(non_core_contributors)
-        total_contributions = sum(c["contributions"] for c in non_core_contributors)
-
-        stats_section = f"""## Statistics
-
-- **Total Contributors**: {total_contributors}
-- **Total Contributions**: {total_contributions}
-- **Major Contributors** (50+ contributions): {len(categorized['major'])}
-- **Regular Contributors** (10-49 contributions): {len(categorized['regular'])}
-- **Occasional Contributors** (1-9 contributions): {len(categorized['occasional'])}
-
-_Last updated: {self.get_current_date()}_
-"""
-
-        # Update the contributors section
-        # Look for the CONTRIBUTORS_START/END markers
-        start_marker = "<!-- CONTRIBUTORS_START -->"
-        end_marker = "<!-- CONTRIBUTORS_END -->"
-
-        if start_marker in content and end_marker in content:
-            # Replace the content between markers
-            before = content.split(start_marker)[0]
-            after = content.split(end_marker)[1]
-
-            new_content = f"""{before}{start_marker}
-
-{stats_section}
-
-### Major Contributors
-
-_50+ contributions_
-
-{major_section}
-
-### Regular Contributors
-
-_10-49 contributions_
-
-{regular_section}
-
-### All Contributors
-
-_Everyone who has contributed to mp-units_
-
-{occasional_section}
-
-{end_marker}{after}"""
-
-            contributors_file.write_text(new_content)
-            print(f"Updated CONTRIBUTORS.md with {total_contributors} contributors")
-        else:
-            print("Could not find contributor markers in CONTRIBUTORS.md")
-
-    def get_current_date(self) -> str:
-        """Get current date in a readable format"""
-        from datetime import datetime
-
-        return datetime.now().strftime("%Y-%m-%d")
+    credits: Contributors = {}
+    for handle, profile in CREDIT_PATTERN.findall(path.read_text()):
+        replacement = MISATTRIBUTED_ACCOUNTS.get(handle.lower())
+        if replacement:
+            handle, profile = replacement, ""
+        if handle.lower() not in credits:
+            add(credits, handle, profile)
+    return credits
 
 
-def get_github_token() -> Optional[str]:
-    """Try to get GitHub token from various sources"""
-    import os
+def collect_contributors(repo: str, headers: Dict[str, str]) -> Contributors:
+    """Merge both sources, then drop the separately listed core team."""
+    contributors = fetch_changelog_credits()
+    # the API spells the handle the way its owner does, so let it win over the changelog
+    contributors.update(fetch_api_contributors(repo, headers))
 
-    # Try environment variable
+    for member in CORE_TEAM:
+        contributors.pop(member, None)
+
+    return contributors
+
+
+def render_list(contributors: Contributors) -> str:
+    """Render the contributors alphabetically, without ranking anybody."""
+    if not contributors:
+        return "_The list is being rebuilt, please check back shortly._"
+
+    entries = sorted(contributors.values(), key=lambda entry: entry[0].lower())
+    return "\n".join(f"- **[{handle}]({profile})**" for handle, profile in entries)
+
+
+def update_contributors_file(
+    contributors: Contributors, path: Path = CONTRIBUTORS_FILE
+) -> None:
+    """Replace the generated block of CONTRIBUTORS.md in place."""
+    if not path.exists():
+        sys.exit(f"{path} not found!")
+
+    content = path.read_text()
+    if START_MARKER not in content or END_MARKER not in content:
+        sys.exit(f"Could not find the contributor markers in {path}!")
+
+    before = content.split(START_MARKER)[0]
+    after = content.split(END_MARKER)[1]
+    stamp = date.today().isoformat()
+    block = (
+        f"{START_MARKER}\n\n{render_list(contributors)}\n\n"
+        f"_{len(contributors)} people, last updated {stamp}._\n\n{END_MARKER}"
+    )
+
+    path.write_text(f"{before}{block}{after}")
+    print(f"Updated {path} with {len(contributors)} community contributors")
+
+
+def main() -> None:
+    repo = os.getenv("GITHUB_REPOSITORY", DEFAULT_REPO)
     token = os.getenv("GITHUB_TOKEN")
-    if token:
-        return token
-
-    # Try git config
-    try:
-        result = subprocess.run(
-            ["git", "config", "--get", "github.token"], capture_output=True, text=True
-        )
-        if result.returncode == 0:
-            return result.stdout.strip()
-    except Exception:
-        pass
-
-    return None
-
-
-def main():
-    """Main function"""
-    # Get GitHub token (optional but recommended to avoid rate limits)
-    token = get_github_token()
     if not token:
-        print("Warning: No GitHub token found. You may hit API rate limits.")
-        print("Set GITHUB_TOKEN environment variable for better performance.")
+        print("Warning: no GITHUB_TOKEN set, API requests may be rate limited.")
 
-    # Initialize updater
-    updater = ContributorUpdater("mpusz", "units", token)
+    headers = {"Authorization": f"token {token}"} if token else {}
 
     try:
-        # Fetch contributors
-        print("Fetching contributors from GitHub...")
-        contributors = updater.fetch_contributors()
-        print(f"Found {len(contributors)} contributors")
-
-        # Update contributors file
-        updater.update_contributors_file(contributors)
-
-    except Exception as e:
-        print(f"Error updating contributors: {e}")
-        sys.exit(1)
+        print(f"Fetching contributors of {repo}...")
+        update_contributors_file(collect_contributors(repo, headers))
+    except requests.RequestException as error:
+        sys.exit(f"Error fetching contributors: {error}")
 
 
 if __name__ == "__main__":
