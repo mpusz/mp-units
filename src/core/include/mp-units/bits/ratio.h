@@ -65,8 +65,7 @@ namespace mp_units::detail {
  * This class is really similar to @c std::ratio.  An important difference is the fact that the objects of that class
  * are used as class NTTPs rather then a type template parameter kind.
  */
-// TODO This probably should not be exported but is used in chrono.h
-MP_UNITS_EXPORT struct ratio {
+struct ratio {
   std::intmax_t num;
   std::intmax_t den;
 
