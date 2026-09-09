@@ -11,7 +11,8 @@ CMake-based projects:
 
 - **_./src_**
 
-    - header-only project containing whole **mp-units** library
+    - project containing the whole **mp-units** library, usable either as headers or as
+      C++20 modules
     - _./src/CMakeLists.txt_ file is intended as an **entry point for library users**
     - in case this library becomes part of the C++ standard, it will have no external
       dependencies but until then, it depends on the following:
