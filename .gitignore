@@ -58,6 +58,7 @@ CMakeUserPresets.json
 # Generated website files
 site/
 
-# AI coding assistant context files (local, not shared)
-/CLAUDE.md
+# AI coding assistant context files
+# CLAUDE.md and AGENTS.md are shared (committed); personal overlays are not
+/CLAUDE.local.md
 /.claude
