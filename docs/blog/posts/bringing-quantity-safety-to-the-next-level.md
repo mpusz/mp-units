@@ -615,9 +615,10 @@ plain `quantity` as an **absolute** (anchored at physical zero) or inside a
 `quantity<point<...>>` wrapper for full affine-space operations. It is _not_ restricted
 exclusively to `quantity_point`.
 
-Question #2: `isq::height` is the **delta** counterpart of `isq::altitude` — it appears in
-both regular quantities (as a signed change in height) and as the delta type returned when
-subtracting two _altitude_ points. No restriction to `quantity` only is needed.
+As for question #2, `isq::height` is the **delta** counterpart of `isq::altitude`. It
+appears in both regular quantities (as a signed change in height) and as the delta type
+returned when subtracting two _altitude_ points. No restriction to `quantity` only is
+needed.
 
 ### Opening can of worms
 

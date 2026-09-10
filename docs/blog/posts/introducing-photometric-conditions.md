@@ -14,8 +14,8 @@ night. The number on both boxes is a _photopic_ value: it weights the lamp's spe
 $V(\lambda)$, the spectral sensitivity of the eye's cone cells, which drive vision in
 daylight. At night, rod cells take over, the sensitivity curve shifts towards blue
 ($V'(\lambda)$), and the same two lamps deliver roughly 2000 and 250 _scotopic_ lumens
-respectively. Both figures are luminous fluxes. Both are expressed in lumens. And a program
-that adds or compares them computes a result that is wrong by up to a factor of eight:
+respectively. Both figures are luminous fluxes expressed in lumens, and a program that
+adds or compares them computes a result that is wrong by up to a factor of eight:
 
 ```cpp
 auto led = 1000. * lm;     // photopic value from the datasheet
@@ -122,12 +122,12 @@ at the first `quantity q = 250. * lm;`.
 ## The unit ratio is information
 
 In a quotient of two conditions the lumens do not cancel symbolically, so the S/P ratio
-above comes out as `0.25 lm/lm`. This is not a limitation, it is the form worth keeping. The
-unit ratio records that quantities of two different kinds were divided, the same way the SI
-Brochure keeps unit ratios like mg/kg on dimensionless quantities to convey information
-about the quantities involved. Such a ratio behaves like a plain number in arithmetic
-anyway, so reducing it with `.in(one)` belongs where a bare figure is wanted, typically in
-text output.
+above comes out as `0.25 lm/lm`. This is the form worth keeping. The unit ratio records
+that quantities of two different kinds were divided, the same way the SI Brochure keeps
+unit ratios like mg/kg on dimensionless quantities to convey information about the
+quantities involved. Such a ratio behaves like a plain number in arithmetic anyway, so
+reducing it with `.in(one)` belongs where a bare figure is wanted, typically in text
+output.
 
 It also makes the ratio a working conversion factor. Model the datasheet S/P value with its
 unit ratio, and converting a photopic measurement is a plain multiplication in which the
@@ -159,8 +159,8 @@ take_scotopic_flux(sp_ratio * led);     // OK
 // take_scotopic_flux(inverted * led);  // Compile-time error
 ```
 
-The same applies to a typed variable or a function return type. Nothing here needed a
-hand-written check: the quantity kinds of the two lumens do the work.
+The same applies to a typed variable or a function return type. None of this needs a
+hand-written check. The quantity kinds of the two lumens do the work.
 
 ## Subkinds inside one condition
 
@@ -168,8 +168,8 @@ Separating the conditions is only half of the safety. Within a single condition,
 names two different quantities "luminous efficacy": *of radiation* (item 7-11.1,
 $K = \Phi_\mathrm{v} / \Phi_\mathrm{e}$) and *of a source* (item 7-11.4,
 $\eta_\mathrm{v} = \Phi_\mathrm{v} / P$, against the power the source consumes). Both are
-lm/W. A lamp quoted at 400 lm/W of radiation and 120 lm/W as a device is not contradicting
-itself, it is reporting two quantities, and code that adds or compares them is wrong.
+lm/W. A lamp quoted at 400 lm/W of radiation and 120 lm/W as a device reports two different
+quantities, and code that adds or compares them is wrong.
 
 We model them the way the library already models *fluid head* and *water head*: distinct
 subkinds of a common parent, sharing its unit but isolated from each other, with the physics
@@ -194,7 +194,7 @@ and compare as members of one hierarchy.
 
 ## What we do not guard
 
-Honesty about the boundaries:
+The boundaries are worth stating:
 
 - **Dimensionless luminous ratios.** _Luminous reflectance_, _luminous transmittance_, and
   _luminance factor_ are quotients of two quantities of the same condition, so their
@@ -222,7 +222,6 @@ model, and the
 recipes.
 
 We are not aware of another units library that models photometric conditions in the type
-system, which is precisely why we want scrutiny. If you design lighting, work in photometry
-or colorimetry, or maintain code that mixes radiometric and photometric data, we would love
-to hear where this design helps you and where it gets in your way. Please share your
-feedback in the comments below.
+system, so we want scrutiny. If you work in lighting design, photometry, or colorimetry, or
+maintain code that mixes radiometric and photometric data, we would like to hear how this
+design works for you. Please share your feedback in the comments below.

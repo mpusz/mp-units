@@ -13,10 +13,8 @@ It has been 1.5 years since the last major update on the ISO C++ standardization
 progress here. It is not that I got lazy :wink:, but there was really not much
 to share.
 
-This time, things were different. We achieved a nearly unprecedented
-success — one probably not even expected by most, definitely not by me! 🎉
-
-Keep reading to learn more...
+This time, things were different. We achieved a nearly unprecedented success.
+Probably not many people expected it, and I definitely did not! 🎉
 
 <!-- more -->
 
@@ -34,7 +32,7 @@ or we were just focusing on the initial review and feedback that would allow me
 to improve the paper so it would be in the best shape when we start talking about C++29.
 
 
-## Initial Review Complete: Advancing to LEWG
+## Advancing to LEWG
 
 We have been reviewing the [P3045: Quantities and units library](https://wg21.link/p3045)
 in LEWG Incubator (SG18) and Numerics (SG6) study groups for more than three
@@ -55,31 +53,31 @@ community and how we build our products worldwide.
 
 Some of the headline features include:
 
-- **Contracts** ([P2900](https://wg21.link/p2900)) — preconditions, postconditions, and
+- **Contracts** ([P2900](https://wg21.link/p2900)): preconditions, postconditions, and
   assertions as first-class language features
-- **Reflection** ([P2996](https://wg21.link/p2996)) — compile-time introspection and
+- **Reflection** ([P2996](https://wg21.link/p2996)): compile-time introspection and
   manipulation of program entities
-- **Expansion statements** ([P1306](https://wg21.link/p1306)) — `template for` to iterate
+- **Expansion statements** ([P1306](https://wg21.link/p1306)): `template for` to iterate
   over compile-time ranges like tuples and reflection results
-- **`std::execution`** ([P2300](https://wg21.link/p2300)) — a framework for asynchronous
+- **`std::execution`** ([P2300](https://wg21.link/p2300)): a framework for asynchronous
   and parallel execution (senders/receivers)
-- **`std::simd`** ([P1928](https://wg21.link/p1928)) — portable data-parallel types
-- **`std::inplace_vector`** ([P0843](https://wg21.link/p0843)) — a dynamically-resizable
+- **`std::simd`** ([P1928](https://wg21.link/p1928)): portable data-parallel types
+- **`std::inplace_vector`** ([P0843](https://wg21.link/p0843)): a dynamically-resizable
   vector with fixed capacity and no heap allocation
-- **`#embed`** ([P1967](https://wg21.link/p1967)) — binary resource embedding in source code
-- **`constexpr` exceptions** ([P3068](https://wg21.link/p3068)) — throwing and catching
+- **`#embed`** ([P1967](https://wg21.link/p1967)): binary resource embedding in source code
+- **`constexpr` exceptions** ([P3068](https://wg21.link/p3068)): throwing and catching
   exceptions at compile time
-- **`std::hive`** ([P0447](https://wg21.link/p0447)) — a bucket-based container that
+- **`std::hive`** ([P0447](https://wg21.link/p0447)): a bucket-based container that
   reuses memory from erased elements
-- **`std::linalg`** ([P1673](https://wg21.link/p1673)) — a free function linear algebra
+- **`std::linalg`** ([P1673](https://wg21.link/p1673)): a free function linear algebra
   interface based on the BLAS
 - **Hazard pointers and RCU** ([P2530](https://wg21.link/p2530),
-  [P2545](https://wg21.link/p2545)) — concurrent data structure building blocks
-- **Standard library hardening** ([P3471](https://wg21.link/p3471)) — bounds-checking
+  [P2545](https://wg21.link/p2545)): concurrent data structure building blocks
+- **Standard library hardening** ([P3471](https://wg21.link/p3471)): bounds-checking
   and other safety checks for standard containers
 
 
-## Day Zero: Evening Session on Quantities and Units
+## The Evening Session on Quantities and Units
 
 On Monday, the very first day of the WG21 meeting, right after plenary,
 I was informed that LEWG will start discussing C++29 features and will have time
@@ -109,7 +107,7 @@ provided will need to stay stable for ages.
 .md-button }
 
 
-## First LEWG Review: Unanimous Support
+## The First LEWG Review
 
 The next morning, we had the very first LEWG discussion about
 [P3045: Quantities and Units Library](https://wg21.link/p3045). I had been dreading this
@@ -175,7 +173,7 @@ to finish its implementation, rewrite lots of documentation, and deliver the rel
 *[LWG]: Library Working Group
 
 
-## Your Support Matters
+## Supporting the Project
 
 With the above in mind, if you care about the project and would like to see quantities and
 units landing in C++29 on time, please consider supporting the project.
@@ -187,10 +185,10 @@ training career to make a living.
 
 By this I mean various ways of support:
 
-- ⭐ **GitHub Sponsors** — <https://github.com/sponsors/mpusz>
-- 💻 **Book a training** — C++ hands-on workshops by the author of mp-units (<https://train-it.eu>)
-- 🛠️ **Contribute** — report issues, submit PRs, help with documentation or test cases
-- 🗣️ **Spread the word** — try the library, give feedback, share with colleagues
+- ⭐ **GitHub Sponsors**: <https://github.com/sponsors/mpusz>
+- 💻 **Book a training**: C++ hands-on workshops by the author of mp-units (<https://train-it.eu>)
+- 🛠️ **Contribute**: report issues, submit PRs, help with documentation or test cases
+- 🗣️ **Spread the word**: try the library, give feedback, share with colleagues
 
 Thank You! 🙏
 

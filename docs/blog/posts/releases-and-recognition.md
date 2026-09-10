@@ -10,11 +10,10 @@ comments: true
 
 # Releases and recognition are how a project grows up
 
-A library you depend on ships a new version. You go looking for what changed and find a git
-tag, `v2.0`, and a changelog that is a list of commit subjects. Did anything break? What is
-worth upgrading for? Do you need to touch your own code? You cannot tell, so you either pin
-the old version forever or spend an afternoon reading diffs. A release is a conversation with
-your users, and most projects refuse to have it.
+A library you depend on ships a new version. You go looking for what changed and find a
+git tag, `v2.0`, and a changelog that is a list of commit subjects. Did anything break?
+What is worth upgrading for? Do you need to touch your own code? You cannot tell, so you
+either pin the old version forever or spend an afternoon reading diffs.
 
 <!-- more -->
 
@@ -27,8 +26,8 @@ your users, and most projects refuse to have it.
     Start with [the overview](nobody-uses-your-great-library.md).
 
 Two things turn a project from one person's repository into something that outlives them:
-releases that actually communicate, and recognition that makes people want to stay. Neither
-is about code. Both are about the people on the other side of it.
+releases that actually communicate, and recognition that makes people want to stay.
+Neither of them is about code. Both are about the people on the other side of it.
 
 ## A release is a marketing event, not a git tag
 
@@ -43,50 +42,49 @@ a real release post, and make it answer three questions:
 - **The breaking changes.** Tell users exactly how to migrate, with before and after code.
 
 That last one is where C++ is unusually treacherous, because "breaking" is often invisible
-until a user's build fails. A refined concept, an added template parameter, a renamed entity:
-none of it looks dramatic in a diff, and all of it can stop downstream code from compiling.
-So communicate breakage in two places. In the code, `[[deprecated]]` carries the migration
-path straight into the compiler warning:
+until a user's build fails. A refined concept, an added template parameter, or a renamed
+entity does not look dramatic in a diff, and any of them can stop downstream code from
+compiling. So communicate breakage in two places. In the code, `[[deprecated]]` carries
+the migration path straight into the compiler warning:
 
 ```cpp
 [[deprecated("2.3.0: Use `mag<pi>` instead")]]
 inline constexpr UnitMagnitude auto mag_pi = mag<pi_c>;
 ```
 
-The version in the message tells the user how long the name has been on notice, the message
-itself tells them the fix, and they see both without opening any docs. Back that with a
-simple, stated rule for *when* deprecated names actually disappear, tied to your versioning.
-The cleanest one is to remove them only at the next major release, so no minor upgrade can
-ever break a build and a user always has a whole major cycle to migrate. In the release post,
-then mark every breaking change clearly and show the before and after side by side. mp-units'
-release posts do this, so a user can scan one in two minutes and know precisely which changes
-touch them. Then distribute it, on LinkedIn, on r/cpp, wherever your users actually are. A
-release post nobody reads helps nobody.
+The version in the message tells the user how long the name has been on notice, the
+message itself tells them the fix, and they see both without opening any docs. Back that
+with a simple, stated rule for *when* deprecated names actually disappear, tied to your
+versioning. The cleanest one is to remove them only at the next major release, so no minor
+upgrade can ever break a build and a user always has a whole major cycle to migrate. In
+the release post, then mark every breaking change clearly and show the before and after
+side by side. mp-units' release posts do this, so a user can scan one in two minutes and
+know precisely which changes touch them. Then distribute it, on LinkedIn, on r/cpp,
+wherever your users actually are.
 
-## Recognition is the fuel open source runs on
+## Recognition
 
-Nobody contributing to your project is paid. In practice the people who show up are your own
-users, someone who hit a rough edge and fixed it, or people who care about the domain itself,
-about getting units and quantities right in C++. A few are also there for the resume line
-or the chance to learn bleeding-edge C++ on a real codebase. Whatever brings them, there are
-never many, so your job is to make contributing rewarding enough that the ones who do arrive
-want to stay. It costs little and it compounds.
+Nobody contributing to your project is paid. In practice the people who show up are your
+own users, someone who hit a rough edge and fixed it, or people who care about the domain
+itself, about getting units and quantities right in C++. A few are also there for the
+resume line or the chance to learn bleeding-edge C++ on a real codebase. Whatever brings
+them, there are never many, so your job is to make contributing rewarding enough that the
+ones who do arrive want to stay.
 
-Start with a `CONTRIBUTORS.md` that lists everyone with a link to their profile. It is fine
-for this to be generated, mp-units builds the list automatically from contribution history,
-so nobody is forgotten and it never goes stale. Then put the specific, personal credit where
-it carries the most weight: in the release post, name the people whose work shipped in that
-version, where their whole professional network will see it. That is the multiplier. You
-credit someone, they share it, their network discovers the project, and some of those people
-become users and contributors in turn. It is free reach, and you start it by being generous
-first.
+Start with a `CONTRIBUTORS.md` that lists everyone with a link to their profile. It is
+fine for this to be generated, mp-units builds the list automatically from contribution
+history, so nobody is forgotten and it never goes stale. Then put the specific, personal
+credit where it carries the most weight: in the release post, name the people whose work
+shipped in that version, where their whole professional network will see it. You credit
+someone, they share it, their network discovers the project, and some of those people
+become users and contributors in turn. It is free reach.
 
 The advanced tier costs more time and creates lifelong advocates. Help a contributor write
 up their work. Invite them to co-present. Write them a reference letter when they job-hunt.
 "I contributed to mp-units, a C++ standardization candidate" is a line that wins interviews,
 and the person who got that from you will talk about your project for years.
 
-## Where mp-units actually is, and the honest gap
+## Where mp-units actually is
 
 The release side is a genuine strength. The
 [release posts](https://mpusz.github.io/mp-units/latest/blog/category/releases/) are prose,
@@ -94,17 +92,16 @@ not changelogs: they explain the why, walk through breaking changes with migrati
 and mark each one clearly. Deprecations carry their replacement in the message. And getting
 a release in front of people, on r/cpp and LinkedIn, is the part I never struggle with.
 
-Two honest gaps remain, and both come back to scale. First, the releases have grown large.
-2.6.0, the last before the 3.0 rework, kept accreting features until it was a lot to absorb
-in one post, and in hindsight I should have split it into smaller, more frequent releases
+Two gaps remain, and both come back to scale. First, the releases have grown large. 2.6.0,
+the last before the 3.0 rework, kept accreting features until it was a lot to absorb in
+one post, and in hindsight I should have split it into smaller, more frequent releases
 that are easier to read and to adopt. Second, the recognition rituals beyond the release
-post, contributor spotlights, co-presenting invitations, reference letters, stay sparse. The
-honest reason is not that I am too busy for them, it is that there are so few contributors
-to celebrate in the first place, the same shortage the Contribution post ended on. The hardest
-version of recognition, turning a regular contributor into a co-maintainer who genuinely
-shares the load, is the one that would break that cycle. mp-units has had that before and
-could not keep it, which is the harder half of the problem and the one the final post takes
-up. Growing up is not an act you perform once and check off.
+post, contributor spotlights, co-presenting invitations, reference letters, stay sparse.
+The reason is not that I am too busy for them. There are simply very few contributors to
+celebrate, the same shortage the Contribution post ended on. The hardest version of
+recognition, turning a regular contributor into a co-maintainer who genuinely shares the
+load, is the one that would break that cycle. mp-units has had that before and could not
+keep it, which is the harder half of the problem and the one the final post takes up.
 
 These tips come from my conference talk on why technically excellent C++ libraries fail to
 get adopted, and how to fix it. You can

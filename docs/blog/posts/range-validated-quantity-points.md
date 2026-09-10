@@ -9,24 +9,21 @@ comments: true
 
 # Range-Validated Quantity Points
 
-Physical units libraries have always been very good at preventing dimensional
-errors and unit mismatches. But there is a category of correctness that they have
-universally ignored: **domain constraints on quantity point values**.
+Physical units libraries are good at preventing dimensional errors and unit
+mismatches. They have not addressed a different category of correctness:
+domain constraints on quantity point values.
 
 A _latitude_ is not just a _length_ divided by a _radius_. It is a value that lives in
-$[-90°, +90°]$; anything outside that range is physically meaningless. An angle
-used in bearing navigation wraps cyclically around a circle; treating it as an
+$[-90°, +90°]$, and anything outside that range is physically meaningless. An angle
+used in bearing navigation wraps cyclically around a circle, and treating it as an
 unbounded real number ignores a fundamental property of the domain. A clinical
 body-temperature sensor should reject a reading of $44\ \mathrm{°C}$ at the API
-boundary, not silently pass it downstream.
+boundary rather than silently pass it downstream.
 
 Type-level constraint enforcement for quantity points with this level of
 flexibility is a relatively unexplored area in mainstream physical units libraries.
-The approach we present here is novel and experimental — we are certain there are
-edge cases and design considerations we haven't yet discovered.
-
-This article describes the motivation in depth, the design we arrived at, and
-the open questions we would love the community's help to answer.
+The approach described here is experimental, and there are certainly edge cases
+and design considerations we have not discovered yet.
 
 <!-- more -->
 
@@ -45,16 +42,16 @@ who works with geodetic coordinate systems:
     units, we've not found it possible to use practically with basically anything
     that deals with world coordinates/orientation and coordinate-based angles of measure.
 
-**mp-units** alone — like every other units library — had no way to encode the
+**mp-units** alone, like every other units library, had no way to encode the
 different wrapping disciplines that coordinate angles require.
 
 In brief, the three families of domain constraint they needed are:
 
 | Domain                                      | Rule                                      | Behavior when violated             |
 |---------------------------------------------|-------------------------------------------|------------------------------------|
-| _Latitude_ / _elevation_ on a sphere        | $[-90°, +90°]$ — _reflected_ at the poles | $91° \to 89°$, $270° \to -90°$ ¹   |
-| _Longitude_ / _azimuth_ (signed convention) | $(-180°, +180°]$ — _wraps_ cyclically     | $200° \to -160°$, $-200° \to 160°$ |
-| _Longitude_ (positive-only convention)      | $[0°, 360°)$ — _wraps_ cyclically         | $370° \to 10°$                     |
+| _Latitude_ / _elevation_ on a sphere        | $[-90°, +90°]$, _reflected_ at the poles  | $91° \to 89°$, $270° \to -90°$ ¹   |
+| _Longitude_ / _azimuth_ (signed convention) | $(-180°, +180°]$, _wraps_ cyclically      | $200° \to -160°$, $-200° \to 160°$ |
+| _Longitude_ (positive-only convention)      | $[0°, 360°)$, _wraps_ cyclically          | $370° \to 10°$                     |
 
 ¹ **Simplified.** True geodetic latitude reflection also requires shifting
 longitude by 180° (crossing a pole puts you on the opposite side of the globe).
@@ -62,8 +59,9 @@ We discuss this coupled-axis limitation in
 [Polar coordinates and coupled constraints](#polar-coordinates-and-coupled-constraints)
 below.
 
-These three rows are genuinely distinct behaviors — reflect, wrap with a signed
-interval, wrap with an unsigned interval — not the same rule in different units.
+These three rows are genuinely distinct behaviors: reflect, wrap with a signed
+interval, and wrap with an unsigned interval. They are not the same rule in
+different units.
 On top of that, mixed _azimuth_/_bearing_ systems require a numeric offset
 between reference frames (_heading_ $= 90° -$ _geometric azimuth_), which is
 handled by `relative_point_origin`, while the _range enforcement_ on each origin
@@ -86,9 +84,9 @@ Geodesy is far from the only domain. Some representative examples:
 | Particle _phase angle_  | any reference          | reflect at $[-π, +π]$                               |
 | _Heading_ / _bearing_   | geographic north       | wrap to $(-180°, 180°]$ _or_ $[0°, 360°)$           |
 
-What all of these have in common is:
+All of these share three things:
 
-1. There is an **origin** — a reference point that defines the frame of
+1. There is an **origin**, a reference point that defines the frame of
    measurement.
 2. The _displacement_ from that origin is **physically bounded**.
 3. The policy for handling out-of-bound values differs per domain: sometimes
@@ -103,16 +101,16 @@ enforce it automatically.
 
 ## The Design
 
-### Bounds live on the origin, not on the type
+### Where the bounds live
 
-The key design decision is that bounds are a property of the **origin**, not of
-the (quantity, unit, rep) triple. This follows from the observation that the
-numerical displacement from an origin is bounded by the physics of that origin's
-frame, not by the choice of unit or representation.
+Bounds are a property of the **origin** rather than of the (quantity, unit, rep)
+triple. The numerical displacement from an origin is bounded by the physics of
+that origin's frame, and the choice of unit or representation does not change
+that.
 
 !!! note
 
-    Strictly speaking, a bounded domain is not a true affine space — an affine
+    Strictly speaking, a bounded domain is not a true affine space: an affine
     space has no notion of "out of range."  The `quantity_point` abstraction is
     still modelled on the affine-space pattern (origin + displacement), but the
     bounds enforcement is an additional layer on top of it.  Think of it as an
@@ -126,26 +124,25 @@ inline constexpr struct horizon :
 ```
 
 Because the bounds are a non-type template parameter, they add no runtime
-storage — the only runtime cost is the enforcement call itself.
+storage. The only runtime cost is the enforcement call itself.
 
-### Bounds values are deltas, not points
+### Bounds values are deltas
 
-A natural question to ask is: should the bounds be expressed as `quantity_point`
-values (absolute positions) or as `quantity` values (displacements)?
-
-They are displacements. The reason is architectural:
+The bounds could be expressed as `quantity_point` values (absolute positions) or
+as `quantity` values (displacements). They are displacements, for two
+architectural reasons:
 
 - The bounds enforcement machinery operates on a `quantity<R, Rep>` (the displacement
   `quantity_from(origin)`) and returns a corrected one. Using point values would
   require embedding a reference origin in the bounds object, entangling the policy
   with the origin hierarchy it is being applied to.
 - Relative origins whose bounds are expressed relative to the offset also use
-  displacements naturally — there is no notion of "absolute position" in a frame
-  that is defined by its offset from a parent.
+  displacements naturally, because there is no notion of "absolute position" in a
+  frame that is defined by its offset from a parent.
 
 ### Six policies
 
-Six concrete policies ship out of the box; all live in
+Six concrete policies come with the library. All of them live in
 `<mp-units/overflow_policies.h>`.
 
 Four two-sided policies operate on a closed interval `[min, max]`:
@@ -207,7 +204,7 @@ callable that takes and returns a `Quantity`, users can write their own.
 
 **Half-line bounds.** Not every constraint is a closed interval. A hydraulic
 system that must maintain at least 50 bar above ambient needs only a lower
-bound; a sensor with a ceiling and no floor needs only an upper bound:
+bound. A sensor with a ceiling and no floor needs only an upper bound:
 
 ```cpp
 // lower bound only; upper end is unconstrained
@@ -284,10 +281,10 @@ inline constexpr struct ac_setpoint :
 The library validates bounds at the point where the origin is first
 instantiated by enforcing the following, in order:
 
-1. The bounds object has at least one of `.min` or `.max` — a bare `{}` is
+1. The bounds object has at least one of `.min` or `.max`. A bare `{}` is
    rejected.
 2. For relative origins, if the parent has bounds: the relative bounds (translated
-   by the cumulative offset) must nest strictly inside the parent’s range.
+   by the cumulative offset) must nest strictly inside the parent's range.
 
 Both checks are **compile-time** `static_assert`s. They fire exactly once per
 origin definition regardless of how many `quantity_point` variables are constructed.
@@ -325,7 +322,7 @@ inline constexpr auto mp_units::quantity_bounds<prime_meridian> =
 
     The `reflect_in_range` policy on _latitude_ is a single-axis approximation.
     In true geodesy, reflecting _latitude_ at a pole also requires shifting
-    _longitude_ by 180° — the two axes are coupled.  The current per-origin
+    _longitude_ by 180°, because the two axes are coupled.  The current per-origin
     bounds model cannot express this; see
     [Polar coordinates and coupled constraints](#polar-coordinates-and-coupled-constraints)
     for discussion.
@@ -388,34 +385,34 @@ which in release builds may be compiled out entirely. In that configuration the
 function has a narrow contract: the caller is responsible for providing in-range
 values, and the library merely helps catch mistakes during development.
 
-For safety-critical code you need **guaranteed enforcement** — a violation that
+For safety-critical code you need **guaranteed enforcement**: a violation that
 always fires, independent of build flags. When a representation type *does*
 provide a `constraint_violation_handler` (see below), the behavior is
 unconditional: the function has a wide contract and always reports
 out-of-range values through the handler. There is no precondition to check
 because the policy itself defines what happens on violation.
 
-The `constrained<T, ErrorPolicy>` wrapper, provided in `<mp-units/constrained.h>`,
-is the answer. It is a thin, transparent value wrapper around `T` that carries
+The `constrained<T, ErrorPolicy>` wrapper, provided in `<mp-units/utility/constrained.h>`,
+does that. It is a thin, transparent value wrapper around `T` that carries
 an error policy as a type parameter. It satisfies `std::regular`, forwards all
 arithmetic to `T`, and implicitly converts to and from `T` so it fits where `T`
 would.
 
-Two built-in policies ship out of the box:
+Two built-in policies are provided:
 
 | Policy             | Effect on violation        | Availability             |
 |--------------------|----------------------------|--------------------------|
 | `throw_policy`     | throws `std::domain_error` | hosted environments only |
 | `terminate_policy` | calls `std::abort()`       | freestanding and hosted  |
 
-On hosted targets `throw_policy` is the default; on freestanding targets
+On hosted targets `throw_policy` is the default. On freestanding targets
 `terminate_policy` is the default.
 
 The connection to `check_in_range` is made through the
 `constraint_violation_handler` customization point. **mp-units** ships a
 specialization for `constrained<T, EP>` that delegates directly to
 `EP::on_constraint_violation()`. This means that whenever `check_in_range`
-would fire a contract violation it instead calls the EP — regardless of
+would fire a contract violation it instead calls the EP, regardless of
 `MP_UNITS_EXPECTS` settings:
 
 ```cpp
@@ -426,17 +423,17 @@ struct constraint_violation_handler<constrained<T, ErrorPolicy>> {
 };
 ```
 
-A concrete usage example — a body-temperature sensor that must always throw on
-an out-of-range reading, even in a release build.
+Here is a concrete usage example: a body-temperature sensor that must always
+throw on an out-of-range reading, even in a release build.
 
-The key design choice here is to define `clinical_zero` as a
+The design choice here is to define `clinical_zero` as a
 `relative_point_origin` anchored to `si::ice_point` at offset 0 °C rather than
 as a bare `absolute_point_origin`. This keeps the origin in the same hierarchy
 as the rest of the Celsius/Kelvin/Fahrenheit scale, so a `safe_temp` value can
 still be converted to Kelvin or Fahrenheit normally. At the same time the bounds
 are attached only to `clinical_zero`, so an ordinary
 `quantity_point<deg_C, si::ice_point>` for everyday Celsius temperatures is
-completely unaffected — the library enforces the 35–42 °C constraint only where
+completely unaffected. The library enforces the 35–42 °C constraint only where
 the type says so.
 
 ```cpp
@@ -462,9 +459,9 @@ safe_temp fever   = clinical_zero + delta<deg_C>(44.0);  // throws std::domain_e
 ```
 
 Because `clinical_zero` is rooted in `ice_point`, `reading.quantity_from_zero()`
-and `reading.in(deg_F)` both work — the conversion offsets are known. The bounds, however,
-only guard `safe_temp`; a plain `quantity_point<deg_C, si::ice_point>` used elsewhere in
-the codebase is unconstrained.
+and `reading.in(deg_F)` both work, because the conversion offsets are known. The bounds,
+however, only guard `safe_temp`. A plain `quantity_point<deg_C, si::ice_point>` used
+elsewhere in the codebase is unconstrained.
 
 Because the bounds object carries `double`-backed quantities and `constrained<double>`
 satisfies the same `Quantity` concept requirements, the unit-flexibility
@@ -475,7 +472,7 @@ bounds definition on the origin.
 ### Non-negative quantity annotations
 
 [Absolute quantities](introducing-absolute-quantities.md) are quantities that
-live on a ratio scale — always measured from a natural zero — such as _mass_,
+live on a ratio scale, always measured from a natural zero, such as _mass_,
 _duration_, or _electric charge magnitude_. Non-negativity is the canonical
 constraint for all of them, and **mp-units** now implements it at the
 quantity-specification level.
@@ -491,11 +488,11 @@ static_assert(is_non_negative(isq::speed));      // ✅ explicit tag in ISQ defi
 static_assert(!is_non_negative(isq::velocity));  // ❌ vector character — excluded
 ```
 
-The flag is **never inferred automatically** from equation factors — even when all
+The flag is **never inferred automatically** from equation factors. Even when all
 factors are non-negative, the defining equation captures only dimensional relationships,
 not the full sign domain of the physical quantity. For example, _reactive power_ is
-defined via $Q = U \cdot I \cdot \sin\varphi$, and the _Massieu function_ as $J = -A/T$
-— both have all-non-negative dimensional factors yet can take negative values in practice:
+defined via $Q = U \cdot I \cdot \sin\varphi$, and the _Massieu function_ as $J = -A/T$.
+Both have all-non-negative dimensional factors yet can take negative values in practice:
 
 ```cpp
 // All dimensional factors are non-negative, yet the quantities are NOT non_negative:
@@ -516,7 +513,7 @@ static_assert(!is_non_negative(isq::Massieu_function)); // signed: J = −A/T
 
 When a `quantity_point` uses a `natural_point_origin` whose quantity spec is
 non-negative, the library **automatically attaches `check_non_negative`** as the
-bounds policy — no explicit bounds definition is needed. The
+bounds policy. No explicit bounds definition is needed. The
 default can always be overridden by defining a custom origin with different bounds:
 
 ```cpp
@@ -534,26 +531,26 @@ inline constexpr struct clamped_length_origin :
 For `clamp_to_range` the answer is obvious. For `wrap_to_range` it is less
 clear: semantically the value lives on a circle so `min()` and `max()` together
 define the interval, but calling either one for comparison purposes may be
-misleading (there is no "smallest" longitude on a wrapped circle; they're all
+misleading (there is no "smallest" longitude on a wrapped circle, and they are all
 equivalent modulo 360°). The current implementation does return `min` and `max`
 for all policy types that expose these members.
 
-### Why the Checking Policy Is Not Part of the `quantity_point` Type
+### Why the checking policy is not part of the `quantity_point` type
 
-One might ask: why not make the checking policy a template parameter of
-`quantity_point` itself, so that the same origin can be used with different
-policies in different parts of a program?
+The checking policy could have been a template parameter of `quantity_point`
+itself, so that the same origin could be used with different policies in
+different parts of a program.
 
-The reason is the **container allocator trap**: two `quantity_point` types
+It is not, because of the **container allocator trap**: two `quantity_point` types
 that differ only in their checking policy would be distinct, incompatible types.
 Assigning between them, comparing them, or passing them through generic code
-would require explicit conversions and propagation strategies — the same
-ergonomic burden that `std::vector<T, Allocator>` inflicts when two allocator
+would require explicit conversions and propagation strategies, the same
+ergonomic burden that `std::vector<T, Allocator>` imposes when two allocator
 types differ.  The interop machinery needed to make this seamless would add
 substantial complexity with limited benefit.
 
-The current approach — tying enforcement to the representation type
-(`T` vs. `constrained<T>`) — keeps all `quantity_point` values with the same
+The current approach, tying enforcement to the representation type
+(`T` vs. `constrained<T>`), keeps all `quantity_point` values with the same
 origin interoperable regardless of whether they are checked.  A GUI front-end
 that uses `constrained<double>` and a solver back-end that uses plain `double`
 can exchange values through `constrained<double>` conversion operators without
@@ -563,7 +560,7 @@ any special machinery.
 
 Some domains have constraints that **couple multiple axes**. A prominent
 example is geodetic latitude: reflecting at a pole also requires shifting
-longitude by 180° — the two coordinates are not independent, and a naive
+longitude by 180°. The two coordinates are not independent, and a naive
 single-axis `reflect_in_range` on an `equator` origin would be incorrect.
 Similarly, polar coordinates in general couple $r \geq 0$ with
 angular constraints such as $0 \leq \theta < 2\pi$ or
@@ -571,7 +568,7 @@ $-\pi < \theta \leq \pi$.
 
 The per-origin bounds model enforces each axis independently and cannot express
 inter-axis coupling through the single-value `operator()` interface alone.
-However, this does not require library-level support — it is naturally handled
+However, this does not require library-level support. It is naturally handled
 by a **composite type** whose constructor enforces the coupled invariant, much
 like `std::complex` enforces its own invariants across two components:
 
@@ -595,10 +592,9 @@ public:
 };
 ```
 
-In this design, `equator` does **not** use `reflect_in_range` — the coupled
+In this design, `equator` does **not** use `reflect_in_range`. The coupled
 reflection lives in `position`'s constructor. Longitude's `wrap_to_range` on
-`prime_meridian` still handles the independent cyclic wrapping as usual. The
-single-axis policies and the composite type each do what they are good at.
+`prime_meridian` still handles the independent cyclic wrapping as usual.
 
 A complete, working implementation ships with the **mp-units** examples in
 [`example/include/geographic.h`](https://github.com/mpusz/mp-units/blob/master/example/include/geographic.h).
@@ -616,17 +612,17 @@ current design.
 
 Beyond the automatic non-negativity enforcement described above, do you see real
 use cases for attaching _application-specific_ range bounds to absolute quantities
-directly — for example, clamping a sensor's _mass_ reading to its physical
+directly, for example clamping a sensor's _mass_ reading to its physical
 measurement range, or bounding a _duration_ to a maximum scheduling window?
 
 ---
 
-## We Want Your Feedback
+## We want your feedback
 
-This feature is novel in the units-library space. No prior mainstream library
-that we know of provides this capability, so the solution is not yet proven in
-production. We have tried to make the design principled and composable, but
-there are certainly use cases we have not thought of.
+No prior mainstream library that we know of provides this capability, so the
+solution is not yet proven in production. We have tried to make the design
+principled and composable, but there are certainly use cases we have not
+thought of.
 
 If you work with geodetic coordinates, sensor data pipelines, game physics,
 audio DSP, or any domain where your quantity points live in a bounded or periodic
@@ -663,11 +659,11 @@ under _Range-Validated Quantity Points_.
 ## References
 
 <!-- markdownlint-disable MD013 -->
-- [The Affine Space — Range-Validated Quantity Points](../../users_guide/framework_basics/the_affine_space.md#range-validated-quantity-points) — user guide section that documents the feature in full
-- [Ensure Ultimate Safety](../../how_to_guides/advanced_usage/ultimate_safety.md) — how-to guide on combining `constrained<T, EP>` with `safe_int` for defence-in-depth
-- [Introducing Absolute Quantities](introducing-absolute-quantities.md) — the companion blog post on ratio-scale non-negativity and `absolute_point_origin`
-- [`safe_int<T>`](../../users_guide/framework_basics/safe_int.md) — overflow-safe integer arithmetic reference
-- [Preventing Integer Overflow in Physical Computations](preventing-integer-overflow.md) — in-depth narrative on automatic scaling overflow and how `safe_int<T>` composes with origin bounds policies
-- [Understanding Safety Levels](understanding-safety-levels.md) — in-depth survey of all six safety levels; Level 6 covers mathematical space safety
-- [GitHub Discussion #782](https://github.com/mpusz/mp-units/discussions/782) — the original user report on geodetic bounds that triggered this work
+- [The Affine Space — Range-Validated Quantity Points](../../users_guide/framework_basics/the_affine_space.md#range-validated-quantity-points) is the user guide section that documents the feature in full
+- [Ensure Ultimate Safety](../../how_to_guides/advanced_usage/ultimate_safety.md) is the how-to guide on combining `constrained<T, EP>` with `safe_int` for defence-in-depth
+- [Introducing Absolute Quantities](introducing-absolute-quantities.md) is the companion blog post on ratio-scale non-negativity and `absolute_point_origin`
+- [`safe_int<T>`](../../users_guide/framework_basics/safe_int.md) is the reference for overflow-safe integer arithmetic
+- [Preventing Integer Overflow in Physical Computations](preventing-integer-overflow.md) covers automatic scaling overflow in depth, and how `safe_int<T>` composes with origin bounds policies
+- [Understanding Safety Levels](understanding-safety-levels.md) surveys all six safety levels, of which Level 6 covers mathematical space safety
+- [GitHub Discussion #782](https://github.com/mpusz/mp-units/discussions/782) is the original user report on geodetic bounds that triggered this work
 <!-- markdownlint-enable MD013 -->

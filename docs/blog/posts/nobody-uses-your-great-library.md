@@ -17,34 +17,34 @@ actually use it.
 
 <!-- more -->
 
-That gap is the whole problem. Stars are easy to count, and they do measure something real:
-reach, discoverability, the fact that people keep finding you. What they do not measure is
-adoption. Users are nearly invisible. They surface only when something breaks: a bug report,
-a terse question, a one-line "does this work with my compiler?", and then silence again. For
-every one of those, some unknown number of people tried the library, hit a wall, and left
-without a word. You never see them. You just watch the number that is easy to measure and
-quietly hope it stands in for the one that matters.
+That gap is the whole problem. Stars are easy to count, and they do measure something
+real: reach, discoverability, the fact that people keep finding you. What they do not
+measure is adoption. Users are nearly invisible. They surface only when something breaks:
+a bug report, a terse question, a one-line "does this work with my compiler?", and then
+silence again. For every one of those, some unknown number of people tried the library,
+hit a wall, and left without a word. You never see them, so you end up watching the number
+you can count and hoping it says something about the one you cannot.
 
-Here is the uncomfortable part. It is tempting to believe a technically excellent library
-earns its users on merit. It does not. Technical excellence is not the same thing as project
-excellence, and the two are genuinely different skills. I have watched dozens of brilliant
-C++ libraries sit at three users and no contributors, written by people who understand their
-domain far better than I understand mine. The code was never the problem.
+It is tempting to believe a technically excellent library earns its users on merit. It
+does not. Technical excellence is not the same thing as project excellence, and the two
+are genuinely different skills. I have watched dozens of brilliant C++ libraries sit at
+three users and no contributors, written by people who understand their domain far better
+than I understand mine. The code was never the problem.
 
 ## The fortress
 
 The failure is consistent enough to have a shape. Call it the fortress: a library that is
 hard to enter ("first, install Clang 18 and CMake 3.28"), hard to understand ("read the
 source"), and hard to contribute to, with no guide, no first issues, and a maintainer who
-answers questions as if they were an imposition. Every one of those is a wall, and every
-wall is a person who quietly turns around. Some write their own version instead. Some move
-to an ecosystem that made them feel welcome. The result is the same, and it is the real
-tragedy: the technical excellence goes unused.
+answers questions as if they were an imposition. Every one of those walls is a person who
+quietly turns around. Some write their own version instead, and some move to an ecosystem
+that made them feel welcome. The result is the same, and it is the real tragedy: the
+technical excellence goes unused.
 
-Getting out of the fortress starts with understanding the journey every potential user takes,
-because each step is a place you can lose them. There are six.
+Getting out of the fortress starts with understanding the six stages of the journey every
+potential user takes, because each one is a place you can lose them.
 
-## The six stages every library must survive
+## The six stages of the user journey
 
 - **Discovery.** Can they even find you? Most of that decision is made before they read a
   single line of your code.
@@ -60,21 +60,21 @@ because each step is a place you can lose them. There are six.
   without drowning.
 
 This post opens a series that walks those six stages, built around eleven concrete tips:
-the actual engineering decisions that move someone from one stage to the next instead of out
-the door. Naming and README structure. CI signals. Documentation that is prose, not a
+the actual engineering decisions that move someone from one stage to the next instead of
+out the door. Naming and README structure. CI signals. Documentation that is prose, not a
 Doxygen dump. Compiler Explorer and one-click dev environments. Contribution that takes
 minutes to start. Release blogs, a culture of appreciation, and an AI contribution policy.
-None of it is exotic. All of it is the difference between a repo and a product. The posts
-that follow take these on a few at a time, and each one stands on its own.
+None of it is exotic, and all of it is what turns a repo into a product. The posts that
+follow take these on a few at a time, and each one stands on its own.
 
-## mp-units is the specimen, not the trophy
+## mp-units as the worked example
 
 I use mp-units as the worked example throughout, including the parts where it still falls
 short of its own advice. It is a high-visibility, standards-track library with more stars
 than any other C++ units library, and it still does not convert that visibility into the
-adoption it could have. That is exactly what makes it an honest specimen rather than a
-trophy. Every stage in this series is one I have gotten wrong, fixed late, or am still fixing
-in public, and I will say so plainly wherever mp-units does not practice what I preach.
+adoption it could have. That is what makes it an honest example. Every stage in this
+series is one I have gotten wrong, fixed late, or am still fixing in public, and I will
+say so plainly wherever mp-units does not practice what I preach.
 
 There are three ways to read what follows:
 
@@ -86,12 +86,12 @@ There are three ways to read what follows:
   modern C++?", these are the green flags worth looking for, the same signals this series
   builds, read from the other side of the table.
 
-One last thing, and it is the honest reason this series lives on the mp-units blog rather
-than somewhere neutral. If you already use mp-units, the single most useful thing you can
-do is tell me where it sits on this map: which stage nearly made you give up, and what you
-wished had been there. The boring complaints count most, compile time, header bloat, the paper
-cut you stopped noticing, because that is the real production signal, and it is genuinely
-hard to come by. It shapes both the library and its path into the C++ standard.
+One last thing, and it is the reason this series lives on the mp-units blog rather than
+somewhere neutral. If you already use mp-units, the single most useful thing you can do is
+tell me where it sits on this map: which stage nearly made you give up, and what you
+wished had been there. The boring complaints count most, compile time, header bloat, the
+paper cut you stopped noticing, because that is the real production signal, and it is
+genuinely hard to come by. It shapes both the library and its path into the C++ standard.
 
 ## The posts in this series
 

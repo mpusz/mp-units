@@ -9,9 +9,9 @@ comments: true
 
 # New Systems Documentation Generator
 
-We're excited to announce a major enhancement to the **mp-units** documentation: an
-automated systems reference generator that extracts and documents all quantities, units,
-dimensions, and their relationships directly from the library's C++ source code.
+The **mp-units** documentation now has an automated systems reference generator. It
+extracts all quantities, units, dimensions, and their relationships directly from the
+library's C++ source code and documents them.
 
 <!-- more -->
 
@@ -27,38 +27,37 @@ dimensions, and their relationships directly from the library's C++ source code.
 - **5+ point origins** for affine space quantities (temperature, coordinates, etc.)
 - **32 prefixes** for scaling units
 
-Manually documenting this vast ecosystem would be error-prone and quickly become outdated
-as the library evolves. We needed an automated solution that could extract information
-directly from the source code and generate comprehensive, accurate, and always up-to-date
-reference documentation.
+Documenting all of this by hand would be error-prone and would quickly get out of date as
+the library evolves. We needed to generate the reference documentation directly from the
+source code instead.
 
 
 ## Why Not Doxygen
 
-You might wonder: "Why not just use Doxygen or a similar tool?" While Doxygen excels at
-extracting API documentation from comments and generating reference pages for classes and
-functions, it falls short for our specific needs:
+Doxygen extracts API documentation from comments and generates reference pages for classes
+and functions. That is not what we needed here:
 
 **Limited semantic understanding**: Doxygen treats C++ code as text to parse for structure,
 but doesn't understand the *meaning* of our domain-specific definitions. It can't recognize
-that `speed : quantity_spec<length / time>` represents a physical quantity defined
-as the ratio of _length_ to _time_.
+that `speed : quantity_spec<length / time>` represents a physical quantity defined as the
+ratio of _length_ to _time_.
 
-**No cross-correlation**: Doxygen can't automatically discover and document the relationships
-between quantities, units, and dimensions. It won't understand that the unit `newton`
-relates to the quantity `force`, which in turn is derived from `mass`, `length`, and `time`.
+**No cross-correlation**: Doxygen can't automatically discover and document the
+relationships between quantities, units, and dimensions. It won't understand that the unit
+`newton` relates to the quantity `force`, which in turn is derived from `mass`, `length`,
+and `time`.
 
-**Can't extract metadata**: The rich semantic information encoded in our template parameters—
-like `kind_of<isq::length>` indicating a quantity hierarchy, or `mag<1'000>` indicating
-a scaling factor—is invisible to Doxygen. It would simply render these as template syntax
-without extracting their meaning.
+**Can't extract metadata**: The rich semantic information encoded in our template
+parameters, like `kind_of<isq::length>` indicating a quantity hierarchy or `mag<1'000>`
+indicating a scaling factor, is invisible to Doxygen. It would simply render these as
+template syntax without extracting their meaning.
 
-**Can't associate unit symbols**: Doxygen can't recognize that an object in the `unit_symbol`
-namespace represents the symbol for a unit defined elsewhere. For example, it wouldn't
-understand that `unit_symbol::m` (the symbol object) corresponds to the `metre` unit,
-or that `unit_symbol::kg` relates to `kilogram`. These are separate C++ entities that
-only become connected through the library's type system—a connection that requires
-type introspection to discover.
+**Can't associate unit symbols**: Doxygen can't recognize that an object in the
+`unit_symbol` namespace represents the symbol for a unit defined elsewhere. For example, it
+wouldn't understand that `unit_symbol::m` (the symbol object) corresponds to the `metre`
+unit, or that `unit_symbol::kg` relates to `kilogram`. These are separate C++ entities that
+only become connected through the library's type system, and discovering that connection
+requires type introspection.
 
 **No custom views**: We needed specialized views like:
 
@@ -67,15 +66,13 @@ type introspection to discover.
 - Unit tables providing information about the symbols and definition details
 - Cross-references linking units, quantities, and dimensions
 
-Doxygen's output is optimized for API documentation, not for generating a physics-aware
-systems reference with interactive hierarchies and rich cross-linking.
-
-We needed a tool that could *understand* the domain model encoded in our C++20 definitions
-and generate documentation that reflects the structure of physical quantities and units,
-not just the structure of C++ classes.
+Doxygen's output is optimized for API documentation. We needed a tool that could
+*understand* the domain model encoded in our C++20 definitions and generate documentation
+reflecting the structure of physical quantities and units rather than the structure of C++
+classes.
 
 
-## The Solution: Code as Documentation
+## Code as Documentation
 
 Thanks to **mp-units**' use of modern C++20 features, particularly class types as
 non-type template parameters (NTTPs), the library's definitions are remarkably terse
@@ -154,9 +151,9 @@ Global indexes provide different views of the entire library:
 
 ### Quantity Hierarchies
 
-One of the most powerful features is the **quantity hierarchy visualization**. For quantities
-that have parent-child relationships (e.g., _height_ is a kind of _length_), the generator
-creates interactive Mermaid diagrams showing the complete hierarchy.
+The generator also produces a **quantity hierarchy visualization**. For quantities that
+have parent-child relationships (e.g., _height_ is a kind of _length_), it creates
+interactive Mermaid diagrams showing the complete hierarchy.
 
 For example, the [energy hierarchy](../../reference/systems_reference/hierarchies/energy_isq.md)
 shows how various energy-related quantities relate to the base `energy` concept:
@@ -186,9 +183,9 @@ flowchart LR
     isq_energy --- isq_radiant_energy
 ```
 
-These hierarchies are essential for understanding how **mp-units** achieves strong type safety
-—`kinetic_energy` cannot be used where `potential_energy` is expected, even though both are
-forms of mechanical energy.
+These hierarchies are essential for understanding how **mp-units** achieves strong type
+safety. `kinetic_energy` cannot be used where `potential_energy` is expected, even though
+both are forms of mechanical energy.
 
 
 ## Interactive and Linkified
@@ -197,7 +194,7 @@ Every piece of generated documentation is fully **cross-linked**:
 
 - Quantity definitions link to their parent quantities
 - Unit definitions link to the quantities they measure (if specified)
-- Equations are linkified—click on any identifier to jump to its definition
+- Equations are linkified: click on any identifier to jump to its definition
 - External references link to source systems (ISQ quantities, SI base units, etc.)
 
 The hierarchies themselves are interactive: hover over nodes, zoom, pan, and click on
@@ -232,8 +229,8 @@ The documentation generation is seamlessly integrated into the MkDocs build proc
   and links
 5. **MkDocs integration**: Generated files are automatically included in the site navigation
 
-The generator uses **change detection**—it only regenerates documentation when source files
-have been modified, keeping builds fast during development.
+The generator uses **change detection**: it only regenerates documentation when source
+files have been modified, which keeps builds fast during development.
 
 ### Running the Generator
 
@@ -271,7 +268,7 @@ consistent styling throughout the documentation.
 
 While most information can be parsed directly from C++ source, quantity relationships and
 character deduction require type introspection. We use a hybrid approach: compile small
-C++ programs to extract metadata  and other reflection-like features, then combine with
+C++ programs to extract metadata and other reflection-like features, then combine with
 parsed information.
 
 ### 4. mkdocs.yml Integration
@@ -284,14 +281,14 @@ pages, ensuring everything is properly indexed and searchable.
 
 This automated documentation system ensures that as **mp-units** continues to grow and evolve:
 
-- Documentation stays **in sync** with the code—no drift or outdated information
+- Documentation stays **in sync** with the code, with no drift or outdated information
 - New systems, quantities, and units are **automatically documented**
 - Refactoring and reorganization don't break documentation
 - The **15+ systems, 400+ quantities, and 200+ units** are all properly cross-referenced
 
-The generator demonstrates how modern C++ features enable not just better library APIs,
-but also better tooling and documentation ecosystems. By making definitions parse-friendly
-and metadata-rich, we can build powerful automation around them.
+Modern C++ features are what made this generator possible. Because the library's
+definitions are terse, parse-friendly, and rich in metadata, a script can read them and
+build the documentation from them.
 
 
 ## Try It Out
@@ -310,14 +307,14 @@ The complete source code for the generator is available in
 [`scripts/systems_reference.py`](https://github.com/mpusz/mp-units/blob/master/scripts/systems_reference.py).
 
 
-## Bonus Content: Behind the Scenes
+## Behind the Scenes
 
-You're still with me? Great, thank you! 😊 Want to hear the real story of how this was implemented?
+You are still with me? Great, thank you! 😊 Want to hear the real story of how this was implemented?
 
 ### Yes, It Was Generated by AI
 
-I'm quite proficient in C++ but know very little about Python—there's no way I could have
-written such a complex 3,400+ line script in just two days. I had invaluable help from
+I am quite proficient in C++ but know very little about Python. There is no way I could
+have written such a complex 3,400+ line script in just two days. I had invaluable help from
 Claude Sonnet 4.5 working through the GitHub Copilot agents in VS Code.
 
 However, even though I didn't write a single line of Python code myself, the AI couldn't
@@ -327,7 +324,7 @@ knowledge autonomously when solving a coding task. The context window and token 
 are simply too constraining.
 
 This is why, as an engineer, **you need to guide the tool** and prevent it from making
-mistakes—some minor, some catastrophic. And yes, those mistakes *will* happen, sooner
+mistakes. Some of them are minor and some are catastrophic, and they *will* happen sooner
 or later.
 
 ### The Morning We Lost Half a Day
@@ -370,32 +367,30 @@ clickable between entities, the AI made... let's call it a "creative editing dec
 
     ...
 
-... and that's how we lost a few hours of work. 😢
+... and that is how we lost a few hours of work. 😢
 
-The lesson? **Always use version control.** Git saved us from complete disaster—we could
-revert the changes and start again from the last checkpoint. I personally commit code
-only when there are no known errors or issues, which meant we had to redo some work to
-catch up from the last stable version. It was a painful reminder that AI is a powerful
-assistant, not an infallible oracle. You need to review changes, test frequently, and be
-ready to roll back when things go sideways.
+The lesson: **always use version control**. Git saved us here. We could revert the changes
+and start again from the last checkpoint. I personally commit code only when there are no
+known errors or issues, which meant we had to redo some work to catch up from the last
+stable version. You need to review the changes, test frequently, and be ready to roll
+back.
 
-Despite the occasional mishap, the AI partnership proved incredibly productive. What would
-have taken me weeks—or more likely, never happened at all due to my Python skills and
-free time limitations—was completed in two days. The key is maintaining the right balance:
-let the AI handle the heavy lifting of code generation while keeping your engineering
-judgment engaged to guide the process and catch errors.
+Despite the occasional mishap, working with the AI was productive. What would have taken me
+weeks, or more likely would never have happened at all given the limits of my Python skills
+and my free time, was completed in two days. Let the AI do the code generation, and keep your
+engineering judgment engaged to guide the process and catch the errors.
 
 
-!!! info "I bet you're thinking about this now 😉"
+!!! info "I bet you are thinking about this now 😉"
 
-    I don't use AI to generate my C++ code. Not a single line of C++ code I've committed
+    I don't use AI to generate my C++ code. Not a single line of C++ code I have committed
     to **mp-units** was AI-generated. It simply makes too many mistakes, and I know C++
-    well enough that I can't tolerate watching it struggle. But documentation? That's a
-    completely different story. AI excels as a documentation assistant—it helps with
-    structure, clarity, and completeness without the precision requirements of production
-    C++ code. Know the strengths and limitations of your tools, and use them where they
-    shine! ✨
+    well enough that I can't tolerate watching it struggle. But documentation is a
+    completely different story. AI works well as a documentation assistant. It helps with
+    structure, clarity, and completeness, and documentation doesn't carry the precision
+    requirements of production C++ code. Know the strengths and the limitations of your
+    tools.
 
-!!! info "Maybe you're also wondering about this? 😉"
+!!! info "Maybe you are also wondering about this? 😉"
 
     Yes, I asked GitHub Copilot to edit and improve this chapter as his atonement 😛

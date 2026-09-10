@@ -28,10 +28,10 @@ from the noise.
     people even find your project? New here? Start with
     [the overview](nobody-uses-your-great-library.md).
 
-Discovery is the first filter, and it is brutal. Before anyone reads your code, runs your
-benchmarks, or admires your API, they have to find you and then decide, in a few seconds,
-that you are worth a closer look. Most projects lose people right here without ever knowing
-it, because the ones who leave at this stage leave no trace. Here is how to stop losing them.
+Discovery is the first filter. Before anyone reads your code or tries your API, they have
+to find you and then decide, in a few seconds, that you are worth a closer look. Most
+projects lose people right here without ever knowing it, because the ones who leave at
+this stage leave no trace.
 
 ## A name is a technical decision
 
@@ -62,20 +62,19 @@ Conan package:  mp-units
 Include path:   <mp-units/systems/si.h>
 ```
 
-Same string, top to bottom. When a user searches "mp-units cmake" or "mp-units conan," they
-find one unambiguous answer instead of guessing.
+The same string appears top to bottom, so a user searching for "mp-units cmake" or
+"mp-units conan" finds one unambiguous answer instead of guessing.
 
 ## Do not bury your library in a committee repo
 
 There is a specific version of this problem I see constantly from people on the C++
 committee, and it quietly kills good work. The reference implementation lives as a
 subdirectory inside a generic `wg21` or `proposals` repository. It cannot be found by a
-search for what it actually does, it cannot be starred or watched on its own, and it signals
-"academic exercise" rather than "production library." If you want adoption, and adoption is
-exactly what strengthens a standardization proposal, give the library its own repository with
-its own name and keep the paper separate. mp-units had real users and production feedback
-before it was ever a standardization candidate. That order is not an accident; it is the
-point.
+search for what it actually does, it cannot be starred or watched on its own, and it
+signals "academic exercise" rather than "production library." If you want adoption, and
+adoption is exactly what strengthens a standardization proposal, give the library its own
+repository with its own name and keep the paper separate. mp-units had real users and
+production feedback before it was ever a standardization candidate.
 
 ## The five-second README test
 
@@ -96,7 +95,7 @@ Four things earn that second look:
   </figcaption>
 </figure>
 
-## Say what you do, and be specific
+## The pitch
 
 The pitch is where most projects waste their five seconds.
 
@@ -116,13 +115,12 @@ Every claim in the good version is specific and falsifiable: "compile-time" (ver
 assembly), "quantity kind safety" (it distinguishes quantities that share a dimension but
 not a meaning), "ISO 80000" (a real, citable standard), "candidate for C++29" (a paper you
 can read). Specific, verifiable claims build trust before anyone clones the repository.
-Vague ones build nothing.
 
 ## Stars are a discovery signal, not a vanity metric
 
-The overview post in this series made the case that stars do not measure adoption, and they
-do not. But they are not noise either. Stars measure reach and discoverability, the simple
-fact that people keep finding you, and the *shape* of the curve is feedback you can act on.
+The overview post in this series made the case that stars do not measure adoption. They
+are not noise either. Stars measure reach and discoverability, the simple fact that people
+keep finding you, and the *shape* of the curve is feedback you can act on.
 
 Track your star history against your competitors, not for ego, but as market research, and
 embed the live chart so it tells the story at a glance:
@@ -144,16 +142,16 @@ Two files that most maintainers skip are invisible to you and decisive to someon
   a vulnerability report instead of opening a public issue.
 
 A technical lead can fall in love with your library and still be overruled. Legal and
-security teams hold a veto, and they will use it when these files are missing, because their
-default answer to ambiguity is no. Three minutes of work removes that veto and unlocks an
-entire class of adopters who will never tell you they bounced.
+security teams hold a veto, and they will use it when these files are missing. Three
+minutes of work removes that veto and unlocks an entire class of adopters who will never
+tell you they bounced.
 
 A cheaper-still signal for a different audience: a `CITATION.cff` file. mp-units ships
 one, so GitHub shows a "Cite this repository" button and researchers can quote your work
 in the right format without asking. For a library that turns up in papers and lectures,
 that small file says the project expects to be cited and intends to stick around.
 
-## Where mp-units actually is, and where it still falls short
+## Where mp-units actually is
 
 Discovery is the stage mp-units now mostly gets right. The naming is consistent, the README
 leads with a specific pitch, there is a code sample on the first screen and a Compiler
@@ -163,16 +161,15 @@ Explorer link beside it. But it earned that the hard way, and it is not finished
   early name cost real discoverability, and while the GitHub rename itself was cheap, it
   forced a breaking change on every user and broke old documentation links. Naming it well
   on day one would have avoided all of that.
-- It shipped without a `SECURITY.md` for far too long. Writing this post is what finally pushed
-  me to add one, which is the practice-what-you-preach loop working exactly as it should.
+- It shipped without a `SECURITY.md` for far too long. Writing this post is what finally
+  pushed me to add one.
 - Its source headers still carry the full MIT license text rather than a one-line SPDX
-  identifier. That one is deliberate, not laziness: mp-units is likely to move to a more
+  identifier. That one is deliberate: mp-units is likely to move to a more
   permissive license so standard-library vendors can reuse the code
   ([#778](https://github.com/mpusz/mp-units/issues/778)), so the header cleanup waits
   for the 3.0 release rather than rewriting every file twice.
 
-So: strong on naming and the README, the `SECURITY.md` gap now closed, and the license-header
-tidy-up deliberately parked until 3.0. Hold me to the rest.
+Those are the gaps I know about. Hold me to the rest.
 
 These tips come from my conference talk on why technically excellent C++ libraries fail to
 get adopted, and how to fix it. You can

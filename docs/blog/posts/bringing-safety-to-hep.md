@@ -10,14 +10,13 @@ comments: true
 
 # Bringing Safety to HEP
 
-High-Energy Physics software is routinely trusted with complex detector
-geometries spanning millions of volumes, critical tracking and reconstruction
-algorithms, and multi-day simulations running on the Grid. A single silent unit
-mismatch in a `double` can invalidate an entire analysis or produce detector
-geometry that is 10× the wrong size. This post shows how **mp-units** can bring
-compile-time safety to HEP codebases (including a dedicated HEP system of
-quantities and units) and how large projects like ATLAS can adopt it
-incrementally without requiring a big-bang rewrite.
+High-Energy Physics software runs detector geometries spanning millions of
+volumes, tracking and reconstruction algorithms, and multi-day simulations on
+the Grid. A single silent unit mismatch in a `double` can invalidate an entire
+analysis or produce detector geometry that is 10× the wrong size. This post
+shows how **mp-units** can bring compile-time safety to HEP codebases (including
+a dedicated HEP system of quantities and units) and how large projects like
+ATLAS can adopt it incrementally.
 
 <!-- more -->
 
@@ -141,9 +140,9 @@ The need for compile-time dimensional analysis in HEP was recognized early.
 Walter Brown presented ["SI Library of Unit-Based Computation"](https://digital.library.unt.edu/ark:/67531/metadc668099)
 at CHEP '98 (International Conference in High Energy Physics, Chicago, IL,
 August 31 - September 4, 1998), **the first systematic approach to
-compile-time dimensional analysis in C++**. Nearly three decades later, the
-fundamental problems remain: most HEP code still uses raw `double` values,
-making dimensional errors invisible to the compiler.
+compile-time dimensional analysis in C++**. Nearly three decades later, most
+HEP code still uses raw `double` values, and dimensional errors are still
+invisible to the compiler.
 
 ---
 
@@ -551,7 +550,8 @@ quantity_point z_decay_g4 = decay_vertex_position(point<mm>(150), 25 * mm, 18 * 
 quantity_point z_decay_root = decay_vertex_position(point<cm>(15), 2.5 * cm, 0.314 * hep::radian);
 ```
 
-**Benefits:** Zero conversion overhead, natural units preserved, type-safe.
+This preserves the caller's units, adds no conversion overhead, and stays
+type-safe.
 
 ### Strongly-Typed Dimensionless Quantities
 
@@ -578,7 +578,8 @@ quantity res = compute_yield(trigger_eff, event_count(1'000'000));
 // compute_yield(BR_Hgg, event_count(1'000'000));  // ❌ Compile error!
 ```
 
-Also useful for: purity, asymmetries, χ²/ndf, ratios, confidence levels.
+The same approach works for purity, asymmetries, χ²/ndf, ratios, and
+confidence levels.
 
 ### Faster-than-Lightspeed Constants
 
@@ -747,7 +748,7 @@ CODATA releases and live directly in the `hep` namespace.
 
 ## Interoperability and Migration
 
-ATLAS Athena has 2.5 million lines of code. It cannot be rewritten overnight.
+ATLAS Athena has 2.5 million lines of code and cannot be rewritten overnight.
 The migration strategy is evolutionary: inside-out, driven by normal development
 rather than a big-bang rewrite.
 
@@ -790,9 +791,9 @@ void processParticle(double energy_MeV, double length_mm);  // units in comments
 processParticle(particle_energy, track_length);  // passes 50000.0, 2500.0
 ```
 
-This pattern has four structural weaknesses (no dimensional safety, API
-ambiguity, conversion confusion, and silent misunit bugs), none of which the
-compiler can detect.
+The pattern gives no dimensional safety, leaves the API ambiguous, invites
+conversion mistakes, and lets misunit bugs pass silently. The compiler cannot
+detect any of it.
 
 ### Seven-Phase Migration
 
@@ -888,8 +889,7 @@ G4Tubs g4Tube("Tube", 0,
 ```
 
 State the target unit at each boundary and the conversion is handled for you.
-Existing legacy signatures stay untouched. Only the call sites become
-self-documenting.
+Existing legacy signatures stay untouched, and only the call sites change.
 
 #### Phase 5: Wrap Existing Interfaces with Type-Safe Overloads
 
@@ -1039,9 +1039,8 @@ known.
 The entire proposed scope of **P3045** has been **unanimously accepted by LEWG**
 (the Library Evolution Working Group), with **mp-units** serving as the reference
 implementation for the discussion, and it is now a **priority for C++29**.
-Adopting **mp-units** today means investing in skills and idioms that
-will become part of the standard library, and benefiting from broad community
-review of the design along the way.
+Using **mp-units** today means working with the idioms that are being
+standardized, and with a design that has had broad community review.
 
 ---
 
@@ -1057,8 +1056,8 @@ review of the design along the way.
 | Performance overhead                |            —             | ✅ Zero (same assembly)  |
 | Migration of 2.5M-line codebases    |            —             | ✅ Incremental, 7 phases |
 
-The compiler can protect scientific integrity, if we give it the information.
-The **mp-units** HEP system provides exactly that information, built in.
+None of this works unless the compiler is given the information it needs, and
+that is what the **mp-units** HEP system provides.
 
 ---
 

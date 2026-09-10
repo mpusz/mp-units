@@ -9,8 +9,8 @@ comments: true
 
 # Units Meet Linear Algebra: Two Approaches, Two Problems
 
-How do units and linear algebra fit together? We get that question often. The honest
-answer is that two different questions hide inside it, and they have different solutions.
+How do units and linear algebra fit together? We get that question often. Two different
+questions hide inside it, and they have different solutions.
 The occasion for answering now is concrete: **mp-units** ships opt-in integrations that let
 mainstream linear algebra libraries ([Eigen](https://eigen.tuxfamily.org),
 [GLM](https://github.com/g-truc/glm), and [Blaze](https://bitbucket.org/blaze-lib/blaze))
@@ -101,7 +101,7 @@ still works. The
 guide covers how to form the hierarchy, what the representation must provide, and the
 `tuple_size` / `tuple_element` protocol for compile-time code.
 
-### A V2 limitation worth knowing
+### A V2 limitation
 
 There is a rough edge in this release, and it is worth being explicit about. **mp-units**
 can attach a unit to a vector representation, but the V2 type system cannot always name the
@@ -116,11 +116,10 @@ quantity speed = magnitude(velocity);   // 50 km/h
 but the result deliberately drops the precise _quantity spec_ down to the unit's **kind**.
 The type V2 *should* produce (a dedicated scalar-magnitude _quantity spec_, for example
 `vec_mag<isq::force>` with scalar character) cannot be expressed yet. The consequence is
-subtle but real. When the unit derives purely from scalar base units (`km/h` →
-_length/time_) the result collapses to a clean scalar character. But for a unit tied to a
-vector _quantity spec_ (`N` is `kind_of<isq::force>`) the result **keeps vector
-character**, so technically you could take the magnitude of a magnitude. That is a known
-limitation, not a feature.
+subtle. When the unit derives purely from scalar base units (`km/h` → _length/time_) the
+result collapses to a clean scalar character. But for a unit tied to a vector _quantity
+spec_ (`N` is `kind_of<isq::force>`) the result **keeps vector character**, so technically
+you could take the magnitude of a magnitude. That is a known limitation.
 
 !!! info "Why no quantity-level `scalar_product()` / `vector_product()` in V2?"
 
@@ -172,11 +171,11 @@ hit the wall that every general-purpose linear algebra library shares:
 
 > **A matrix demands a single, homogeneous element type.**
 
-That constraint is not an oversight. It is what makes a contiguous, cache-friendly, SIMD-able
-buffer possible. So storing per-element units inside the matrix is a non-starter for the
-mainstream libraries.
+That constraint is what makes a contiguous, cache-friendly, SIMD-able buffer possible. So
+storing per-element units inside the matrix is a non-starter for the mainstream
+libraries.
 
-### The missing piece: typed indices
+### Typed indices
 
 The way out is to move the type information **out of the storage and onto the indices**. If
 row $i$ and column $j$ each carry a compile-time type, then element $(i,j)$ has a *derived*
@@ -198,9 +197,9 @@ element types and you get a matrix whose every cell is a strongly-typed quantity
 Kalman filter case is handled properly, with the underlying buffer still a plain
 homogeneous array.
 
-This is young, promising work that deserves more eyes and feedback. If the "vector of quantities"
-problem is yours, go try it, file issues, and help it grow. It solves a problem that the big
-libraries structurally cannot.
+This is young, promising work that deserves more eyes and feedback. If the "vector of
+quantities" problem is yours, try it out and file issues. It addresses a problem the big
+linear algebra libraries structurally cannot solve.
 
 ## Which one do I want?
 
@@ -212,10 +211,9 @@ libraries structurally cannot.
 | Example | drone velocity, EM field                       | Kalman state & covariance, Jacobians       |
 | Today   | built-in `cartesian_vector` or Eigen/GLM/Blaze | **mp-units** elements + TypedLinearAlgebra |
 
-Both are valid and both are first-class use cases. They simply answer different questions.
-The mistake is trying to force one tool to do the other's job: a vector quantity is not the
-place for a heterogeneous state vector, and a typed matrix is overkill for a single
-velocity.
+Both are valid, first-class use cases that answer different questions. The mistake is to
+force one tool to do the other's job: a vector quantity is not the place for a
+heterogeneous state vector, and a typed matrix is overkill for a single velocity.
 
 ## Try it
 

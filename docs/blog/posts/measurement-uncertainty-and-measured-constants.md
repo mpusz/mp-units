@@ -9,22 +9,21 @@ comments: true
 
 # Measurement uncertainty and measured constants
 
-When you write `constexpr double G = 6.674e-11;` in your code, the type system makes a claim
-that is not true. It claims the value is exact. It is not. The Newtonian constant of
-gravitation is one of the least precisely known constants in physics. CODATA 2018 lists it
-as `6.674 30(15) × 10⁻¹¹ m³ kg⁻¹ s⁻²`, and the `(15)` means the fifth significant digit is
-already uncertain. Only four digits of `G` are actually known. Every result derived from
-that `double` inherits an uncertainty that the program neither tracks nor reports. The code
-happily prints ten significant digits of a solar mass computed from a constant that
-guarantees four.
+When you write `constexpr double G = 6.674e-11;` in your code, the type says the value is
+exact, and it is not. The Newtonian constant of gravitation is one of the least precisely
+known constants in physics. CODATA 2018 lists it as `6.674 30(15) × 10⁻¹¹ m³ kg⁻¹ s⁻²`, and
+the `(15)` means the fifth significant digit is already uncertain. Only four digits of `G`
+are actually known. Every result derived from that `double` inherits an uncertainty that the
+program neither tracks nor reports, and nothing stops it from printing ten significant
+digits of a solar mass computed from a constant that guarantees four.
 
-**mp-units** now models this honestly. This post introduces the `uncertain<T>` representation
+**mp-units** now has a way to model this. This post introduces the `uncertain<T>` representation
 type, the `standard_uncertainty` and `relative_standard_uncertainty` metadata for measured
 constants, and the `measurement_of` helper that connects them.
 
 <!-- more -->
 
-## Constants are units, and that is not going to change
+## Constants are units
 
 Since the beginning of the V2 design, physical constants in **mp-units** are units. This is
 the [Faster-than-lightspeed constants](../../users_guide/framework_basics/faster_than_lightspeed_constants.md)
@@ -38,41 +37,43 @@ feature. The central value of a constant lives in the unit's exact symbolic magn
 It turns out this design also matches metrological practice. The IAU 2015 Resolution B3
 nominal solar and planetary constants are *exact by definition* precisely so that they can
 serve as conversion units. The seven defining constants of the 2019 SI are exact as well.
-For all of those, an exact unit is not an approximation of the truth. It is the truth.
+For all of those, an exact unit stores the defined value rather than an approximation of it.
 
-The gap was elsewhere. Some constants are *measured*, not defined. `G`, the particle masses
-in the HEP system, the fine-structure constant. For those, the CODATA table publishes two
-numbers: the central value and the relative standard uncertainty. The unit magnitude stores
-the first one. The second one had nowhere to live. This gap was first reported in
+The gap was elsewhere. Some constants are *measured* rather than defined, such as `G`, the
+particle masses in the HEP system, and the fine-structure constant. For those, the CODATA
+table publishes two numbers: the central value and the relative standard uncertainty. The
+unit magnitude stores the central value, and until now there was no place to keep the
+uncertainty. This gap was first reported in
 [#464](https://github.com/mpusz/mp-units/issues/464), and
 [Ralph Steinhagen](https://github.com/RalphSteinhagen) explored a full uncertainty-propagation
 type in that discussion back in 2023.
 
-## Where should uncertainty live?
+## Where the uncertainty is stored
 
 We considered three options.
 
-**Inside unit magnitudes?** No. Unit equality compares canonical magnitudes, and a
-conversion factor is a ratio of them, so both are arithmetic on magnitudes and both depend
-on the operands being exact numbers. A "unit of G ± σ" could not produce a well-defined
-conversion factor or a decidable equality. This is not a limitation to lift someday.
-Exactness is what makes constants-as-units work at all.
+**Inside unit magnitudes.** This does not work. Unit equality compares canonical
+magnitudes, and a conversion factor is a ratio of them, so both are arithmetic on
+magnitudes and both depend on the operands being exact numbers. A "unit of G ± σ" could
+not produce a well-defined conversion factor or a decidable equality. Exactness is what
+makes constants-as-units work at all, so this is not a limitation that can be lifted
+later.
 
-**Constants as quantities?** Also no. A quantity constant like
+**Constants as quantities.** This does not work either. A quantity constant like
 `inline constexpr quantity G = 6.674e-11 * si::metre * ...;` forces a representation type
 on every user. A `float` codebase would silently promote to `double`. It also gives up exact
 cancellation.
 
-**Declared in the constant, tracked by the representation.** This is the one, and it is not
-a single place. A measured constant's definition carries both numbers CODATA publishes: the
+**Declared in the constant, tracked by the representation.** This is what we did, and it
+puts the two numbers in two different places. A measured constant's definition carries both
+numbers CODATA publishes: the
 central value becomes the unit's exact symbolic magnitude, and the relative standard
 uncertainty sits right next to it as metadata. The *magnitude* stays exact, which is what
 keeps unit equality and conversion-factor arithmetic working. The *constant* does not claim
-to be exact anymore: its definition now states openly that the value is measured, and how
-well. Tracking is a separate job with a separate home. A dedicated representation type carries
-uncertainty through arithmetic, and the conversion engine materializes the declared one
-whenever a conversion factor depends on the constant. Each number lands in the layer that
-can handle it correctly.
+to be exact anymore: its definition now states that the value is measured, and states its
+uncertainty. Tracking that uncertainty through arithmetic is a separate job. A dedicated
+representation type does it, and the conversion engine materializes the declared
+uncertainty whenever a conversion factor depends on the constant.
 
 ## `uncertain<T>`
 
@@ -100,7 +101,7 @@ so mixing `uncertain` and plain representations in one expression works as expec
 
 The name follows the VIM (International Vocabulary of Metrology) terminology on purpose.
 A *measurement* is the process, and a measurement result is a value with an uncertainty
-*and a unit*. A bare `{value, σ}` pair with no unit attached is neither. It is just an
+*and a unit*. A bare `{value, σ}` pair with no unit attached is neither of those, just an
 uncertain number, so the type is called `uncertain`, and it follows the same
 adjective-wrapper naming pattern as `std::optional<T>` and `std::expected<T>`.
 
@@ -142,8 +143,8 @@ standard uncertainty `0.000 15 × 10⁻¹¹` digit for digit, both in the consta
 publishes the value and the uncertainty mutually rounded, each to two significant digits
 of the uncertainty, so no derived form reproduces them exactly. Storing the relative
 uncertainty instead (an earlier iteration of this design) reconstructed a σ that was off by
-6.1% for the fine-structure constant. σ is the number `uncertain<T>` carries, prints, and
-propagates, so it is the wrong number to get wrong.
+6.1% for the fine-structure constant. σ is the number `uncertain<T>` carries and
+propagates, so an error there shows up in every result that depends on it.
 
 A second wrapper, `relative_standard_uncertainty`, remains for constants whose source
 publishes only the relative form. A measured constant declares exactly one of the two, and
@@ -158,8 +159,8 @@ Previously that distinction lived only in comments.
 
 ## Conversions materialize the uncertainty
 
-Working through the design surfaced a fact that shaped everything else: the uncertainty of
-a measured constant is *relational*. In its own unit the constant is exactly `1`. "Two
+The uncertainty of a measured constant is *relational*, and that shaped the rest of the
+design. In its own unit the constant is exactly `1`. "Two
 solar masses" is an exact statement even though `iau::solar_mass` is defined through `G`,
 and it stays exact in an uncertainty-capable representation too: `uncertain<double>{2.0} *
 iau::unit_symbols::M_SUN` prints `2 ± 0 M_☉`. What is uncertain is the *conversion factor*
@@ -204,9 +205,9 @@ are defined as `(GM)ᴺ/G`, so `G` cancels in the conversion to Earth masses and
 uncertainty stays exactly zero there too. Only in kilograms does it survive, and since the
 representation type can hold it, no explicit opt-in is needed anymore.
 
-That cancellation is something no value-level scheme can get right. Once an uncertainty is
-baked into a number, propagating it through a solar-to-Earth-mass conversion double-counts
-what the symbolic form knows how to cancel.
+A value-level scheme cannot get that cancellation right. Once an uncertainty is baked into
+a number, propagating it through a solar-to-Earth-mass conversion double-counts what the
+symbolic form cancels.
 
 ## `measurement_of`
 
@@ -236,12 +237,12 @@ G = 6.6743e-11 ± 1.5e-15 m³ kg⁻¹ s⁻²
 M_sun = 1.98841e+30 ± 4.46881e+25 kg
 ```
 
-The solar mass example is the payoff. The IAU defines the nominal solar mass parameter
+The IAU defines the nominal solar mass parameter
 `(GM)☉ᴺ` as exact, so the entire uncertainty of the derived solar mass comes from `G`, and
 the result correctly reports it: `1.98841 × 10³⁰ kg`, known precisely as well as `G` itself
 and no better, which is what the IAU intended when it switched to nominal values in 2015.
 
-This is where that `MeasuredConstant` constraint earns its keep. Asking for the measurement
+This is what the `MeasuredConstant` constraint is for. Asking for the measurement
 of a constant that is exact by definition does not compile:
 
 ```cpp
@@ -253,7 +254,7 @@ The rationale behind this is that:
 - "exact by definition" and "measured infinitely precisely" are different metrological
   statements, and returning `±0` would conflate them,
 - asking for the *measurement* of a defined constant is a category error, and we prefer to
-  break at compile time, not at runtime.
+  break at compile time rather than at runtime.
 
 ## Limits
 
@@ -290,17 +291,16 @@ std::cout << G.in(m3 / kg / s2) << "\n";  // 6.6743e-11 ± 1.5e-15 m³ kg⁻¹ s
 
 ISO 80000-1:2022, 7.2.4 specifies a different one. The value is quoted to the last
 significant digit of the uncertainty, and the uncertainty follows in parentheses, counted
-in units of that digit. Appending `~` to the format spec selects it. Where the default form
-prints what the object holds, this one quotes the value to the precision the uncertainty
-justifies, which is how measurement results are reported:
+in units of that digit. Appending `~` to the format spec selects it. The default form prints
+what the object holds. This one quotes the value to the precision the uncertainty justifies,
+which is how measurement results are reported:
 
 ```cpp
 std::println("{::N[~]}", G.in(m3 / kg / s2));  // 6.67430(15)e-11 m³ kg⁻¹ s⁻²
 ```
 
-That is character for character how CODATA publishes the value, which is the point. A
-constant transcribed from a published table now prints back in the notation of the table it
-came from.
+That is character for character how CODATA publishes the value, so a constant transcribed
+from a published table prints back in the notation of the table it came from.
 
 The standard is also not neutral between the two forms:
 
@@ -313,11 +313,11 @@ The standard is also not neutral between the two forms:
     may be confused with expanded uncertainty".
 
 The `±` form nevertheless remains the default, because the concise form has to round the
-value to the precision of the uncertainty, and a default that silently discards digits is
-the wrong default. The recommendation applies to published results, and that is exactly
-where reaching for `~` costs one character.
+value to the precision of the uncertainty, and a default should not silently discard
+digits. The recommendation applies to published results, and there reaching for `~` costs
+one character.
 
-## Further Reading
+## Further reading
 
 This post covers the design and the reasoning behind it. The working details live in the
 documentation:

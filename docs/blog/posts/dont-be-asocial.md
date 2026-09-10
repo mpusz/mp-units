@@ -27,12 +27,11 @@ people do: you reach for another library, or you write your own.
     **Integration** stage of the six-stage library journey: can people actually use it? New
     here? Start with [the overview](nobody-uses-your-great-library.md).
 
-I think of a library that refuses to integrate with the ecosystem around it as **asocial**,
-a framing I owe to David Sankel's C++Now 2015 talk,
-[Big Projects, and CMake, and Git, Oh My!](https://www.youtube.com/watch?v=3eH4hMKl7XE). The
-fix is to be social: provide the integration you wished existed when you were the one trying
-to adopt a dependency. The rule of thumb is blunt, every consumption path you do not support
-is a reason for someone to say no.
+I think of a library that refuses to integrate with the ecosystem around it as
+**asocial**, a framing I owe to David Sankel's C++Now 2015 talk, [Big Projects, and CMake,
+and Git, Oh My!](https://www.youtube.com/watch?v=3eH4hMKl7XE). The fix is to be social:
+provide the integration you wished existed when you were the one trying to adopt a
+dependency. Every consumption path you do not support is a reason for someone to say no.
 
 ## The asocial checklist
 
@@ -45,8 +44,8 @@ A library is asocial when it makes you work to consume it at all. The warning si
 - hardcoded compiler flags that override the ones you chose,
 - a bespoke build script you are expected to run and trust.
 
-Any one of these is friction. All of them together is a fortress. The social version is the
-opposite at every point, and most of it is ordinary build hygiene rather than heroic effort.
+Any one of these is friction. All of them together is a fortress. The social version is
+the opposite at every point, and most of it is ordinary build hygiene.
 
 ## Modern CMake: targets, not variables
 
@@ -84,12 +83,12 @@ Conan resolves the right version, configures CMake, and pulls in transitive depe
 and the library's feature flags (formatting backend, contracts library, modules, freestanding)
 become Conan options the user sets without touching your source.
 
-## Meet users where they are
+## Support several consumption paths
 
-Not everyone lives in a modern package-manager world, and that is fine. Air-gapped networks
-cannot reach a registry. Large monorepos vendor everything. Some teams are on CMake's built-in
-fetching, or on Bazel or Meson. Each environment you ignore is another "no," so support as
-many consumption paths as you reasonably can:
+Not everyone lives in a modern package-manager world, and that is fine. Air-gapped
+networks cannot reach a registry, large monorepos vendor everything, and some teams are on
+CMake's built-in fetching, or on Bazel or Meson. Each environment you ignore is another
+"no," so support as many consumption paths as you reasonably can:
 
 - a package manager (Conan, and ideally vcpkg too),
 - CPM or CMake's `FetchContent`, which need no extra tooling,
@@ -98,9 +97,8 @@ many consumption paths as you reasonably can:
 
 The good news is that most of these come almost for free once your CMake is clean. Proper
 install rules give you `find_package`. A tidy `src/` subtree gives you `add_subdirectory`.
-CPM and `FetchContent` work because the targets are well defined. mp-units documents Conan,
-`find_package`, CPM and `FetchContent`, and `add_subdirectory`. The more paths you support,
-the fewer reasons anyone has to walk away.
+CPM and `FetchContent` work because the targets are well defined. mp-units documents
+Conan, `find_package`, CPM and `FetchContent`, and `add_subdirectory`.
 
 ## Depend on as little as possible
 
@@ -112,12 +110,11 @@ So treat your dependency footprint as a feature to keep small.
 mp-units has **no mandatory external dependencies**. The only two it can use, a GSL
 implementation for contract checking and `{fmt}` for formatting, are optional, selected
 through Conan options, and exist purely to backfill features the standard library does not
-provide everywhere yet. These are stopgaps. As the standard and, just as importantly, every
-compiler it supports catch up (`std::format` usable across the whole matrix, contracts in
-C++26), the dependencies go away entirely. "Low adoption cost" is not a slogan on the README,
-it is a design constraint.
+provide everywhere yet. These are stopgaps. As the standard and, just as importantly,
+every compiler it supports catch up (`std::format` usable across the whole matrix,
+contracts in C++26), the dependencies go away entirely.
 
-## Wide compatibility: your users are spread across every cell of the build matrix
+## Wide compatibility
 
 "Modern C++" is not one thing, even at a fixed standard version. `std::format` (C++20) and
 `import std` (C++23) each showed up in real compilers years after the paper, modules land
@@ -143,13 +140,12 @@ mandatory dependencies, and verifies its wide compiler support in CI rather than
 it. It is also installable through both major package managers, Conan Center and vcpkg,
 each at the current release.
 
-The one honest nuance is who keeps those running. I maintain the Conan packaging myself,
-because Conan is the ecosystem I actually know. The vcpkg port is community-maintained, and
-the people who own it keep it current, the version on vcpkg today matches the latest release.
-I am grateful for that, and I will also be honest that it is a path my users depend on which
-I do not control and could not quickly fix if it ever lapsed. That a third party maintains
-it at all is a good sign, a library only earns that when it is worth the effort, but it is
-worth watching rather than taking for granted.
+One nuance is who keeps those running. I maintain the Conan packaging myself, because
+Conan is the ecosystem I actually know. The vcpkg port is community-maintained, and the
+people who own it keep it current, the version on vcpkg today matches the latest release.
+I am grateful for that, and I will also be honest that it is a path my users depend on
+which I do not control and could not quickly fix if it ever lapsed. That a third party
+maintains it at all is a good sign, but it is worth watching.
 
 These tips come from my conference talk on why technically excellent C++ libraries fail to
 get adopted, and how to fix it. You can

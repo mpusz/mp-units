@@ -10,13 +10,13 @@ comments: true
 # Report from the Brno 2026 ISO C++ Committee meeting
 
 The Brno 2026 ISO C++ Committee meeting has just finished. It was the first
-meeting of the C++29 cycle, and a surprising amount already landed in the working
-draft. Below I share the highlights voted in during the closing plenary, followed
-by an update on the quantities and units standardization effort.
+meeting of the C++29 cycle, and quite a lot already landed in the working draft.
+Below are the highlights voted in during the closing plenary and an update on the
+quantities and units standardization effort.
 
 <!-- more -->
 
-## What Was Voted In
+## What was voted in
 
 The meeting closed with the usual Saturday plenary, where the Core Language
 Working Group (CWG) and the Library Working Group (LWG) forwarded a long list of
@@ -26,17 +26,19 @@ refinements, but a few stand out. Here are my personal highlights.
 ### Core Language (CWG)
 
 - "Undefined Behavior and IFNDR Annexes" ([P3596R3](https://wg21.link/p3596)): the
-  big one. It adds two annexes that catalog, in a single place, every case of
-  undefined behavior and every case of ill-formed, no diagnostic required (IFNDR) in
-  the language. That information was previously scattered across the whole document,
-  so nobody could see the full surface of ways a program can silently go wrong. The
-  annexes are a non-normative reference that links back to the normative wording, and
-  every entry carries a stable name (for example, `lifetime.outside.pointer.delete`)
-  so the main text and the annex cross-link, and so other efforts gain a shared
-  vocabulary for talking about a specific hazard. This is foundational safety work:
-  you cannot systematically reduce, diagnose, or build tooling against undefined
-  behavior you have not first enumerated, and the mitigation catalog in
-  [P3100](https://wg21.link/p3100) already builds on these names.
+  most important one on this list. It adds two annexes that catalog, in a single
+  place, every case of undefined behavior and every case of ill-formed, no
+  diagnostic required (IFNDR) in the language. That information was previously
+  scattered across the whole document, so nobody could see the full set of ways a program
+  can silently go wrong. The annexes are a non-normative reference that
+  links back to the normative wording, and every entry carries a stable name (for
+  example, `lifetime.outside.pointer.delete`) so the main text and the annex
+  cross-link, and so other efforts gain a shared vocabulary for talking about a
+  specific hazard. This matters for safety work, because you cannot systematically
+  reduce, diagnose, or build tooling against undefined behavior that has never been
+  enumerated, and the
+  mitigation catalog in [P3100](https://wg21.link/p3100) already builds on these
+  names.
 - "Contracts for C++: Virtual functions" ([P3097R3](https://wg21.link/p3097)):
   extends the brand-new C++26 contracts facility to virtual functions, closing one
   of the most controversial gaps in the feature.
@@ -52,7 +54,7 @@ refinements, but a few stand out. Here are my personal highlights.
 
 - "Fix the default floating-point representation in `std::format`"
   ([P3505R4](https://wg21.link/p3505)): corrects the default formatting of
-  floating-point values so the output matches expectations - this directly improves
+  floating-point values so the output matches expectations. This directly improves
   how most quantities will be printed (`double` is used by default).
 - "Deprecating signed character types in iostreams"
   ([P3154R3](https://wg21.link/p3154)): deprecates streaming `signed char` and
@@ -69,26 +71,25 @@ refinements, but a few stand out. Here are my personal highlights.
   `has_error()` member function to `std::expected` to complement the existing
   `has_value()` functionality.
 
-This is only a small, opinionated selection. Plenty of other defect reports and
-fixes were adopted as well.
+This is only a small selection. Plenty of other defect reports and fixes were
+adopted as well.
 
-## Quantities and Units Progress
+## Quantities and units progress
 
-This was a productive meeting for the quantities and units effort, and I left Brno
-encouraged. The headline is that [P3045](https://wg21.link/p3045), the core library
-proposal, cleared SG6 (Numerics) and was forwarded to LEWG, so the design now moves
-into the main library evolution track. Alongside it,
-[P4185](https://wg21.link/p4185) (the mathematical model, including the new absolute
-quantities) earned good feedback and a clear encouragement to do more work,
-[P3094](https://wg21.link/p3094) (`std::basic_fixed_string`), a small building block
-the library leans on, had its design reviewed in LEWG, and SG20 (Education) walked
-through the quantities and units teaching material.
+This was a productive meeting for the quantities and units effort.
+[P3045](https://wg21.link/p3045), the core library proposal, cleared SG6 (Numerics)
+and was forwarded to LEWG, so the design now moves into the main library evolution
+track. Alongside it, [P4185](https://wg21.link/p4185) (the mathematical model,
+including the new absolute quantities) earned good feedback and a clear
+encouragement to do more work, [P3094](https://wg21.link/p3094)
+(`std::basic_fixed_string`), a small building block the library leans on, had its
+design reviewed in LEWG, and SG20 (Education) walked through the quantities and
+units teaching material.
 
 C++29 is still the target. There is real work left before the library is ready to
-land in the standard, but every session pushed it forward. Below I share what
-happened in each room.
+land in the standard.
 
-### SG6 (Numerics): Representation Types and Forwarding to LEWG
+### SG6 (Numerics): representation types
 
 On Tuesday I presented [P3045R9](https://wg21.link/p3045) to SG6 (Numerics). We
 reviewed a new chapter added in this revision,
@@ -155,10 +156,10 @@ Three polls were taken:
 The third poll forwarded the paper to LEWG 🎉, which means we will discuss the
 library design details in the evolution group in Brazil.
 
-### SG6 (Numerics): Absolute Quantities
+### SG6 (Numerics): absolute quantities
 
-[P4185](https://wg21.link/p4185) is the home of the design I am personally most
-excited, and most nervous, about. I have been sketching the **mp-units** V3 design
+[P4185](https://wg21.link/p4185) contains the design I am most excited about, and
+the one that makes me most nervous. I have been sketching the **mp-units** V3 design
 for quite a while now, and this paper describes its highlights. We discussed it in
 SG6 on both Tuesday and Thursday.
 
@@ -187,10 +188,10 @@ This was, as expected, the most debated part of my week:
 - **Teachability and scope.** One SG6 member pushed back that three kinds of
   quantities, each with its own rules and tables, is a lot of mental complexity for
   an already complex field, and was unconvinced it is needed beyond temperature.
-- **Strong support too.** Others took the opposite view, roughly "you've nailed
-  this; get it right, take your time, and ship it." It was also noted that absolute
-  quantities fill a real logical hole: most scalar quantities truly _are_ an amount
-  of something.
+- **Support.** Others took the opposite view, roughly "you've nailed this; get it
+  right, take your time, and ship it." It was also noted that absolute quantities
+  fill a real logical hole: most scalar quantities truly _are_ an amount of
+  something.
 - **Worked examples.** Some SG6 experts raised averaging a set of temperatures and
   computing a center of mass, which led to a good discussion of how those
   operations live in the delta domain (formally subtracting the domain's zero), and
@@ -221,12 +222,12 @@ Two polls were taken on Thursday:
     |:-----------------:|:--------:|:-------:|:-------:|:----------------:|
     |         3         |    5     |    1    |    1    |        0         |
 
-This is exactly the feedback I was hoping for: clear encouragement to keep building
-absolute quantities, and a concrete plan to factor out range validation. I aim to
+This is the feedback I was hoping for. SG6 encouraged more work on absolute
+quantities and encouraged a split of range validation into its own paper. I aim to
 have absolute quantities implemented in **mp-units** and shipped as V3 before the
 next meeting in Brazil.
 
-### SG20 (Education): Teaching Quantities and Units
+### SG20 (Education): teaching quantities and units
 
 Also on Thursday, I presented [P3045](https://wg21.link/p3045) to SG20 (Education),
 walking the group through the whole story: a quick domain introduction based on
@@ -236,11 +237,11 @@ this room, the teaching material and per-audience guidance in the paper.
 
 The discussion was lively and the feedback was excellent. A few themes stood out:
 
-- **The compiler is the teacher.** A recurring observation was that students are
+- **Guidance from the compiler.** A recurring observation was that students are
   guided by the compiler. A wrong mental model simply does not compile, which is
-  exactly the moment they come to the tutor and learn _why_. You teach the syntax
+  the moment they come to the tutor and learn _why_. The teacher covers the syntax
   and the basics, and the type system enforces the semantics.
-- **Safety motivation resonates.** The classic cautionary tales, the Mars Climate
+- **Safety motivation.** The classic cautionary tales, the Mars Climate
   Orbiter and the Ariane 5 integer-overflow loss, were called out as great
   motivating examples for students.
 - **Beyond physics.** I was asked whether the library is limited to physical units
@@ -261,13 +262,14 @@ which was wonderful to hear. No polls were taken.
 ### LEWG (Library Evolution): `std::basic_fixed_string`
 
 Additionally, on Wednesday, LEWG reviewed [P3094](https://wg21.link/p3094)
-(`std::basic_fixed_string`). This one rarely makes the headlines, but the library
-leans on it directly. I use a fixed-size string to encode the symbols of dimensions
-and units (the `"m"` of metre, the `"kg"` of kilogram, and so on) as compile-time
-constants that travel through the type system. Without a string type usable as a
-non-type template parameter, those symbols cannot live in types at all.
+(`std::basic_fixed_string`). This paper gets far less attention than the main one,
+but the library depends on it directly. I use a fixed-size string to encode the
+symbols of dimensions and units (the `"m"` of metre, the `"kg"` of kilogram, and so
+on) as compile-time constants carried in the type system. Without a string type
+usable as a non-type template parameter, those symbols cannot be encoded in types
+at all.
 
-The first thing I stressed is what the type is and is not. `std::basic_fixed_string`
+The first thing I stressed is what the type actually is. `std::basic_fixed_string`
 is a fixed-_size_ string, not a fixed-_capacity_ one. It is used broadly, not only
 in compile-time programming. As proposed today, it is a non-mutating type with no
 `string`-like interface. Rather than duplicate that whole API, it exposes
@@ -304,17 +306,15 @@ Two polls were taken:
     |:-----------------:|:--------:|:-------:|:-------:|:----------------:|
     |         0         |    2     |    7    |    7    |        5         |
 
-The two poll outcomes point at a small, concrete change rather than a redesign. A single
+Together the two poll outcomes point to a small change rather than a redesign. A single
 non-`const` `operator[]` returning a `char&` and non-const `begin()/end()` member
 functions should satisfy the first poll, and the type stays nul-terminated. That is
-the minimal form I will pursue in the next revision.
+what I will pursue in the next revision.
 
 One thread is still open. A group of authors proposes `cstring_view` (null-terminated
 `string_view`) for C++29 in [P3655](http://wg21.link/p3655). If it gets accepted, it
 might be a better view to convert to (`fixed_string` is always null terminated).
 I have to explore this option as well.
-
-More to come. Stay tuned!
 
 *[CWG]: Core Language Working Group
 *[LWG]: Library Working Group

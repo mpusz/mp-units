@@ -10,10 +10,10 @@ comments: true
 
 # A green master is a promise to your users
 
-A stranger found your library. They have not read a line of your code yet. What they do next
-is glance at the CI badge and the date of the last commit, and in about thirty seconds decide
+A stranger found your library. They have not read a line of your code yet. They glance at
+the CI badge and the date of the last commit, and in about thirty seconds they decide
 whether the project is alive and safe to depend on. A red badge, or a master branch last
-touched two years ago, and they are gone, without ever telling you they were there.
+touched two years ago, and they leave. You will not hear from them about it.
 
 <!-- more -->
 
@@ -25,18 +25,16 @@ touched two years ago, and they are gone, without ever telling you they were the
     covers the **Evaluation** stage of the six-stage library journey: do they trust it
     works? New here? Start with [the overview](nobody-uses-your-great-library.md).
 
-Trust is fragile, and it is cheap to lose. One broken build on your main branch reads as
-"abandoned" or "amateur," and that judgment is made in seconds by people who will never open
-an issue about it. This stage is about the signals that turn a curious visitor into a
-confident adopter, and the first of them is simple to state and hard to keep: your master
-branch always works.
+One broken build on your main branch reads as "abandoned" or "amateur," and that judgment
+is made in seconds by people who will never open an issue about it. This stage is about the
+signals a visitor uses to decide whether to trust the project, and the first of them is
+that your master branch always works.
 
-## A green master is a promise
+## Keeping master green
 
-A green master is not a vanity metric. It is a promise you make to a stranger: this compiles
-and passes its tests, in environments like yours, and the maintainer keeps it that way on
-every commit. Portability is not a goal you get to later. It is a property you verify daily,
-or it quietly rots while you are not looking.
+A green master is a promise you make to a stranger: this compiles and passes its tests, in
+environments like yours, and the maintainer keeps it that way on every commit. Portability
+has to be verified every day, or it rots without anyone noticing.
 
 <figure markdown="span">
   ![The mp-units CI badges, all green](green-lights.png){ width="90%" }
@@ -56,8 +54,9 @@ each one catches a different class of bug:
 - freestanding surfaces an accidental `#include <iostream>`,
 - the oldest supported compiler surfaces a too-new feature you reached for without noticing.
 
-Testing the full cross-product is hundreds of jobs: slow, and quick to exhaust your CI quota.
-So most projects test one or two configurations and hope the rest hold. They do not.
+Testing the full cross-product is hundreds of jobs, which is slow and quick to exhaust your
+CI quota. So most projects test one or two configurations and hope the rest hold, which they
+often do not.
 
 ## Fuzz your build matrix
 
@@ -88,8 +87,8 @@ and the sampling is driven by a seed. The seed is a workflow input (see the `mat
 parameter in
 [`ci-conan.yml`](https://github.com/mpusz/mp-units/blob/master/.github/workflows/ci-conan.yml)):
 pass a specific seed to reproduce an exact failing configuration, or pass `0` to roll a fresh
-matrix and keep exploring the space. Random, but reproducible, which is the property that
-makes a failure actionable instead of a mystery.
+matrix and keep exploring the space. The sampling is random but reproducible, so a failing
+configuration can be replayed instead of guessed at.
 
 <figure markdown="span">
   ![The Run workflow dialog with the matrix-seed input](ci-matrix-seed.png){ width="70%" }
@@ -98,9 +97,8 @@ makes a failure actionable instead of a mystery.
   </figcaption>
 </figure>
 
-The mindset shift is the lesson: you are not testing everything every time, you are exploring
-the configuration space intelligently and reproducibly, the same way property-based testing
-explores an input space.
+The point is that you do not test everything every time. You explore the configuration space
+in a way you can repeat, much like property-based testing explores an input space.
 
 ## Green means more than "it compiled"
 
@@ -113,11 +111,10 @@ A trustworthy master is gated in layers, and a change merges only when all of th
 - **Integration tests** consume the library the way a user will: `find_package`, a Conan
   package, a documentation build, a freestanding build.
 
-Each layer catches what the others cannot. One honest caveat on sanitizers, since every CI
+Each layer catches what the others cannot. One caveat on sanitizers, since every CI
 checklist lists them: for a compile-time library like mp-units there is little runtime for
 ASan or UBSan to find. They earn their place in runtime-heavy code, so I run them where they
-pay off rather than as ritual. Naming where a standard practice does not apply is part of
-doing it honestly.
+pay off.
 
 ## Be the most restrictive user of your own library
 
@@ -126,7 +123,7 @@ flags, not yours, and many run far stricter sets: `-Wall -Wextra -Wpedantic`, of
 `-Wconversion`, `-Wshadow`, or `-Wold-style-cast`, frequently with `-Werror`, and on MSVC
 with `/W4 /permissive-`. If your code only compiles clean under `-Wall`, the first thing
 those users see is a wall of warnings from inside *your* library, on their machine, in their
-build. That is a terrible first impression, and you never get to explain it.
+build. That is a terrible first impression.
 
 The fix is to hold yourself to a stricter standard than any user will reach. Turn on a broad
 warning set, treat warnings as errors in CI, and a warning that would have surprised a user
@@ -134,8 +131,8 @@ fails your build first instead. mp-units compiles under
 [a deliberately aggressive set](https://github.com/mpusz/mp-units/blob/master/cmake/warnings.cmake):
 `-Wall -Wextra -Wpedantic` plus `-Wconversion`, `-Wsign-conversion`, `-Wshadow`,
 `-Wold-style-cast`, `-Wcast-qual`, `-Wnull-dereference`, and more, with `/W4 /permissive-`
-on MSVC, all as errors. The rule is simple: be the most restrictive user of your own
-library, so that no real user is ever stricter than you are.
+on MSVC, all as errors. The goal is that no real user ever compiles the library under
+stricter settings than I do.
 
 ## What "all checks passed" says to a stranger
 
@@ -143,21 +140,17 @@ When a potential user sees a green check on your latest commit, they read three 
 it without consciously noticing: the project is actively maintained, because CI ran on this
 change; it works in their environment, because their compiler and platform were in the
 matrix; and it will not quietly break their build, because warnings are treated as errors.
-That is trust earned by testing, not claimed by marketing copy. It is also why the work above
-is worth it: the payoff is a stranger deciding, in their thirty seconds, that you are safe
-to build on.
 
-## Proving performance, honestly
+## Proving performance
 
-Correctness is what CI proves well. Performance is harder, and pretending otherwise is its
-own kind of dishonesty, so let me be concrete about what mp-units measures and what it does
-not.
+CI proves correctness well. Performance is harder, so let me be concrete about what mp-units
+measures and what it does not.
 
-mp-units is a compile-time library, so its runtime promise is narrow and absolute: zero
-overhead. The abstraction should compile to exactly the code you would have written by hand,
-and the honest proof of that is not a benchmark, it is the generated assembly. You drop the
-code into Compiler Explorer and show the output is identical to the hand-written version,
-which is deterministic and impossible to fake. Automating that as a CI gate, instead of
+mp-units is a compile-time library, so its runtime promise is a narrow one: zero overhead.
+The abstraction should compile to exactly the code you would have written by hand, and the
+proof of that is the generated assembly rather than a benchmark. You drop the code into
+Compiler Explorer and show the output is identical to the hand-written version, which is
+deterministic and impossible to fake. Automating that as a CI gate, instead of
 checking it by eye, is harder than it sounds and is tracked as an open issue
 ([#804](https://github.com/mpusz/mp-units/issues/804)). The assembly proof gets its own
 post later in this series. I
@@ -169,9 +162,9 @@ change in the same job so the noise cancels, or through a service like
 [CodSpeed](https://codspeed.io/), whose instrumentation mode measures C++ on GitHub Actions
 with variance under one percent.
 
-The performance cost that actually bites a heavy template library is not runtime at all, it
-is compile time. That is the honest weak spot here, the first thing users feel, and the one
-I do not track rigorously, because it is genuinely hard to gate. Wall-clock compile time is
+The performance cost that actually bites a heavy template library is compile time, not
+runtime. That is the weak spot here, and the one I do not track rigorously, because it is
+genuinely hard to gate. Wall-clock compile time is
 as noisy on shared runners as any runtime benchmark, and the machine-independent proxies
 (template instantiation counts and binary size) move with every new feature and refactor,
 so a fail-on-change gate would fire constantly on a library that is still growing.
@@ -181,35 +174,32 @@ a build feels slower, or before a release, run Clang's `-ftime-trace` through
 [ClangBuildAnalyzer](https://github.com/aras-p/ClangBuildAnalyzer) to find the worst
 template instantiation hot spots and fix those. For now that stays a manual discipline.
 
-## The solo exception, and where mp-units falls short
+## Branch protection for a solo maintainer
 
-Branch protection deserves an honest answer, because it is not one size fits all. For a team
+Branch protection depends on the size of the project. For a team
 it is non-negotiable: require reviews and passing CI, and allow no direct pushes to main.
 For a solo maintainer, opening a pull request to review your own typo fix is mostly ceremony.
 
-I will be plain about my own workflow, because the practice-what-you-preach rule demands it.
-I write the large majority of mp-units myself, and the workflow splits by the size of the
-change. Anything substantial goes through a pull request, where the full CI matrix runs
-before anything merges. Simple, low-risk changes go straight to master after a local mirror
-of the CI matrix,
+I will be plain about my own workflow. I write the large majority of mp-units myself,
+and the workflow splits by the size of the change. Anything substantial goes through a
+pull request, where the full CI matrix runs before anything merges. Simple, low-risk
+changes go straight to master after a local mirror of the CI matrix,
 [`check_all.sh`](https://github.com/mpusz/mp-units/blob/master/.devcontainer/check_all.sh),
-plus pre-commit hooks for formatting. Either way the principle is the same: "master is always
-green."
+plus pre-commit hooks for formatting. Either way the principle is the same: "master is
+always green."
 
 One part of branch protection is not a choice a solo maintainer gets to make. GitHub does
-not let you approve your own pull request, so "require one approving review" is not a rule
-I am skipping, it is one I cannot satisfy: switch it on alone and every change has to land
-through an admin override, which is a rule that exists only to be bypassed. What a solo
-maintainer *can* require is passing CI, and that is the part worth enforcing. The review
-requirement stops being theater the day a second regular contributor arrives, and that is
-the day to turn it on.
+not let you approve your own pull request, so "require one approving review" is a rule I
+cannot satisfy rather than one I am skipping: switch it on alone and every change has to
+land through an admin override. What a solo maintainer *can* require is passing CI, and
+that is the part worth enforcing. The review requirement becomes useful when a second
+regular contributor arrives, and that is when to turn it on.
 
-That same solo reality is where mp-units is weakest at this stage, and it would be
-dishonest to hide it behind the strong CI. The gap is not the automated gate, which runs
-on the pull request either way; it is human review. With no second pair of eyes on most
-changes, a design mistake a reviewer would have questioned lands on master unchallenged,
-and the bus factor is low. The automated gate is genuinely strong. The human review
-process, today, is mostly just me, and that is a real limit, not a humble-brag.
+That same solo reality is where mp-units is weakest at this stage. The gap is not the
+automated gate, which runs on the pull request either way, but human review. With no second
+pair of eyes on most changes, a design mistake a reviewer would have questioned lands on
+master unchallenged, and the bus factor is low. The review process today is mostly just me,
+and that is a real limit.
 
 These tips come from my conference talk on why technically excellent C++ libraries fail to
 get adopted, and how to fix it. You can

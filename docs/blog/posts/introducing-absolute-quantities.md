@@ -9,20 +9,21 @@ comments: true
 
 # Introducing Absolute Quantities
 
-Until now, **mp-units** forced users to choose between points (no arithmetic) and deltas
-(no physical semantics) — missing the most common case: a non-negative absolute amount.
+Until now, **mp-units** forced users to choose between points, which do not provide
+arithmetic, and deltas, which do not provide physical semantics. Neither of them covers
+the most common case, which is a non-negative absolute amount.
 
-An **absolute quantity** represents an **absolute amount** of a physical property —
+An **absolute quantity** represents an **absolute amount** of a physical property,
 measured from a true, physically meaningful zero. Examples include _mass_ in kilograms,
 _temperature_ in Kelvin, or _length_ in meters (as a size, not a position). Such
-quantities live on a **ratio scale** and are anchored at a physically meaningful zero;
-negative values are typically meaningless.
+quantities live on a **ratio scale** and are anchored at a physically meaningful zero.
+Negative values are typically meaningless.
 
 Absolute quantities stand in contrast to:
 
-- **Affine points** (e.g., $20\ \mathrm{°C}$, $100\ \mathrm{m}\ \mathrm{AMSL}$) — values
+- **Affine points** (e.g., $20\ \mathrm{°C}$, $100\ \mathrm{m}\ \mathrm{AMSL}$) are values
   measured relative to an arbitrary or conventional origin.
-- **Deltas** (e.g., $10\ \mathrm{K}$, $–5\ \mathrm{kg}$) — differences between two values.
+- **Deltas** (e.g., $10\ \mathrm{K}$, $–5\ \mathrm{kg}$) are differences between two values.
 
 Arithmetic on absolute quantities behaves like ordinary algebra: addition, subtraction,
 and scaling are well-defined and map naturally to physical reasoning. This article
@@ -31,13 +32,13 @@ reflecting how scientists express equations in practice.
 
 ---
 
-_Note: Revised on May 12, 2026 for clarity, accuracy, and completeness._
+_Note: Revised on May 12, 2026._
 
 <!-- more -->
 
 ## Background
 
-### Affine Space Recap
+### Affine space recap
 
 Until now, **mp-units** modeled two fundamental abstractions:
 
@@ -49,11 +50,12 @@ Until now, **mp-units** modeled two fundamental abstractions:
     More information on this subject can be found in
     [the Affine Space chapter](../../users_guide/framework_basics/the_affine_space.md).
 
-This design works but is sometimes awkward: users often misuse `quantity_point` to
-represent absolute magnitudes (e.g., total mass), losing arithmetic and printability.
-Conversely, using deltas everywhere hides physical intent and allows nonsensical operations.
+This design works but is sometimes awkward. Users often misuse `quantity_point` to
+represent absolute magnitudes (e.g., total mass), which loses arithmetic and
+printability. Using deltas everywhere hides physical intent and allows nonsensical
+operations.
 
-The new **absolute quantity** abstraction aims to bridge that gap.
+The new **absolute quantity** abstraction is meant to fill that gap.
 
 ### Quantity abstractions in physics
 
@@ -72,17 +74,9 @@ Below is a summary table comparing the three main quantity abstractions:
 | **A + Delta**            |                   ✅ Point (shift)                   |                   ✅ Absolute                    |               ✅ Delta               |
 | **API**                  |               `quantity<point<...>>`                |                 `quantity<...>`                 |       `quantity<delta<...>>`        |
 
-This table summarizes the key differences in semantics, API, and physical meaning for each
-abstraction. Use it as a quick reference when deciding which concept to use in your code.
-
-
 ## Motivation
 
-This section explains the driving reasons for introducing absolute quantities. It
-highlights the practical pain points, limitations, and sources of confusion in the
-current model, motivating the need for a new abstraction.
-
-### Current Pain Points
+### Current pain points
 
 1. **Limited arithmetic for points** – Points can’t be multiplied, divided, or accumulated.
    This often forces the users to convert the quantity point to a delta with either
@@ -101,8 +95,7 @@ current model, motivating the need for a new abstraction.
    and are numerically interchangeable. A function accepting `quantity<K>` will silently
    accept `20 * deg_C`, using the numeric value `20` instead of `293.15`. Thermodynamic
    expressions such as Carnot efficiency will then produce results that are off by a factor
-   of roughly 15, with no compiler warning and no runtime error — the bug is invisible until
-   you check the numbers.
+   of roughly 15, with no compiler warning and no runtime error.
 
 ### Example
 
@@ -162,11 +155,7 @@ In the above example:
 
 ## Semantics
 
-This section details the semantics of absolute quantities, their relationship to other
-abstractions, and how they interact in code and mathematics. It clarifies the rules,
-conversions, and algebraic properties that underpin the new model.
-
-### Position of Absolute Quantities Among Abstractions
+### Position of absolute quantities among abstractions
 
 | Feature                     |      Point      |       Absolute        |   Delta   |
 |-----------------------------|:---------------:|:---------------------:|:---------:|
@@ -181,8 +170,7 @@ conversions, and algebraic properties that underpin the new model.
 | Text output                 |        ✗        |           ✓           |     ✓     |
 
 Absolute quantities sit logically between points and deltas: they behave like deltas
-algebraically, yet conceptually reference a true zero. This design simplifies arithmetic,
-improves printing, and preserves physical meaning.
+algebraically, yet conceptually reference a true zero.
 
 As we can see above, absolute quantities have only two limitations, and both are connected
 to the use of offset units. They can't use those because they must remain absolute
@@ -229,9 +217,6 @@ static_assert(std::is_same_v<decltype(q2), quantity<delta<kg>>>);
 static_assert(std::is_same_v<decltype(q3), quantity<point<kg>>>);
 ```
 
-This mirrors the way physicists write equations: absolute values by default, with explicit
-Δ when needed.
-
 
 ### Alignment with scientific practice
 
@@ -244,24 +229,19 @@ engineering textbooks:
   relative to an origin.
 - **Deltas** (differences) are the result of subtracting two points or two absolutes.
 
-The following table maps each abstraction to its measurement scale, mathematical structure,
-physical meaning, and typical C++ representation:
+The following table summarizes those abstractions:
 
 | Concept      | Measurement Scale  | Mathematical Structure    | Physical Meaning                       | Example                                                                                                        |
 |:-------------|:-------------------|:--------------------------|:---------------------------------------|:---------------------------------------------------------------------------------------------------------------|
 | **Point**    | **Interval Scale** | **Affine Space**          | A location on a scale or in space.     | `point<mass>`, `point<time>`, `point<altitude>`, `point<position_vector>` (vector), `point<velocity>` (vector) |
-| **Delta**    | —                  | **Vector Space**          | A change, displacement, or interval.   | `delta<mass>`, `delta<duration>`, `delta<height>`, `displacement` (vector), `velocity` (vector)                |
+| **Delta**    | N/A                | **Vector Space**          | A change, displacement, or interval.   | `delta<mass>`, `delta<duration>`, `delta<height>`, `displacement` (vector), `velocity` (vector)                |
 | **Absolute** | **Ratio Scale**    | **Convex Cone** ($\ge 0$) | A magnitude measured from a true zero. | `mass`, `duration`, `height`, `distance` (scalar), `speed` (scalar)                                            |
 
-This correspondence ensures that code written with **mp-units** is not only type-safe,
-but also directly maps to the equations and reasoning found in scientific literature.
-This makes code easier to review, verify, and maintain.
 
+### Scalar and vector quantities
 
-### Scalar and Vector Quantities
-
-Absolute quantities are always **scalar**. Vector quantities — those with direction —
-are inherently signed and therefore always modeled as **deltas** in **mp-units**.
+Absolute quantities are always **scalar**. Vector quantities have a direction, so they
+are inherently signed and are always modeled as **deltas** in **mp-units**.
 There is no such thing as an "absolute vector quantity".
 
 Named vector quantities such as `displacement` and `velocity` are already deltas by
@@ -271,7 +251,7 @@ their physical nature, so the `delta<>` wrapper is neither needed nor used for t
 |:-------------|:--------------------------------------------------|:-----------------------------------------------------------|
 | **Point**    | `point<time>`, `point<altitude>`, `point<mass>`   | `point<position_vector>`, `point<velocity>`                |
 | **Delta**    | `delta<duration>`, `delta<height>`, `delta<mass>` | `displacement`, `velocity` *(no `delta<>` wrapper needed)* |
-| **Absolute** | `duration`, `height`, `mass`                      | *(none — use `norm()` to obtain a scalar absolute)*        |
+| **Absolute** | `duration`, `height`, `mass`                      | *(none, use `norm()` to obtain a scalar absolute)*         |
 
 To obtain a scalar absolute from a vector delta, take its norm:
 
@@ -289,7 +269,7 @@ quantity d2 = abs(d1);               // scalar absolute — same as d1.absolute(
 ```
 
 
-### Conversions Between Abstractions
+### Conversions between abstractions
 
 As absolute quantities share properties of both deltas and points with implicit point
 origins, they should be explicitly convertible to those:
@@ -321,7 +301,7 @@ quantity<kg> q4 = q2.absolute();  // may fail the pre-condition check if negativ
 
 It is important to note that conversions between absolute quantities and points should
 be available only when there is no point origin specified for a point (the point uses
-an implicit point origin — no explicit origin).
+an implicit point origin rather than an explicit one).
 
 If the user provided an explicit origin, then such a quantity can only be used as a delta:
 
@@ -352,7 +332,7 @@ To summarize:
 |    **Delta** |                   origin + delta → point                    |                 `.absolute()` (precondition: non-negative);<br>always safe: `abs()`, `norm()`, or `modulus()`                 |                       Identity                        |
 
 
-### Arithmetic Semantics
+### Arithmetic semantics
 
 Affine space arithmetic is well-defined and commonly used in physics and engineering.
 With the introduction of absolute quantities, it is important to clarify the meaning
@@ -368,8 +348,8 @@ measured from the true zero of the physical property.
 yields an absolute quantity. The zero-anchor principle applies: a signed delta shifts the
 value but does not destroy the true-zero anchor, so the result remains an absolute.
 For quantity specs marked `non_negative` (e.g., `isq::mass`), a runtime contract check
-fires if the result would be negative — the check fires at the arithmetic operation site,
-not at a later conversion step.
+fires if the result would be negative. The check happens at the arithmetic operation
+site, and not at a later conversion step.
 
 **Adding an absolute quantity or delta to a point** yields a point shifted by the given
 amount.
@@ -425,8 +405,8 @@ a signed result that may go negative, demote the absolute to a delta first:
 **subtracting a point from an absolute** quantity is not meaningful.
 
 **Subtracting an absolute quantity from a delta** (e.g., $2\ \mathrm{kg} - 10\ \mathrm{kg}$)
-also yields a delta. The result has no guarantee of positivity — the library cannot
-determine at compile time whether the delta exceeds the absolute — so the type
+also yields a delta. The result has no guarantee of positivity, because the library
+cannot determine at compile time whether the delta exceeds the absolute, so the type
 conservatively remains a delta.
 
 Here is a summary of all of the subtraction operations
@@ -453,7 +433,7 @@ Here is a summary of all of the subtraction operations
     quantity res5 = d - abs;                   // Delta
     ```
 
-#### Magnitude and Ratio Operations
+#### Magnitude and ratio operations
 
 Beyond addition and subtraction, the following table summarises the multiplication,
 division, and magnitude operations involving absolute quantities and deltas:
@@ -463,7 +443,7 @@ division, and magnitude operations involving absolute quantities and deltas:
 | `Absolute × Absolute`    | Absolute | A product of two absolute quantities (e.g., `energy = power × time`).           |
 | `Absolute × Scalar`      | Absolute | Rescaling by a dimensionless factor (e.g., `2 × mass` stays absolute mass).     |
 | `Absolute × Delta`       | Delta    | Absolute scaled by a displacement (e.g., `area × delta_height → delta_volume`). |
-| `Delta × Absolute`       | Delta    | Same as `Absolute × Delta` — multiplication is commutative.                     |
+| `Delta × Absolute`       | Delta    | Same as `Absolute × Delta`. Multiplication is commutative.                      |
 | `Delta × Scalar`         | Delta    | Rescaling a signed difference (factor preserves delta category).                |
 | `Absolute / Absolute`    | Absolute | A physical ratio (e.g., _efficiency_, _strain_, _density_).                     |
 | `Absolute / Delta`       | Delta    | Rate of an absolute with respect to a signed step.                              |
@@ -475,9 +455,9 @@ division, and magnitude operations involving absolute quantities and deltas:
 
 The last two rows highlight the two pathways from a **delta** to an **absolute**:
 
-- For **scalar deltas**: `abs(d)` or equivalently `d.absolute()` — both check the
-  non-negativity precondition at runtime.
-- For **vector deltas**: `norm(v)` — the Euclidean norm, which is always non-negative
+- For **scalar deltas**: `abs(d)` or equivalently `d.absolute()`, both of which check
+  the non-negativity precondition at runtime.
+- For **vector deltas**: `norm(v)`, the Euclidean norm, which is always non-negative
   by definition.
 
 #### Interpolation
@@ -506,26 +486,26 @@ of a physical quantity. Many physically signed quantities have equations where e
 factor is non-negative (e.g., thermal expansion coefficient, reactive power, Massieu
 function), so inferring sign from the equation would silently misclassify them.
 Instead, every non-negative root derived quantity carries an explicit `non_negative`
-tag at its definition. Named children inherit the tag from their parent; ad-hoc
+tag at its definition. Named children inherit the tag from their parent. Ad-hoc
 anonymous composed specs (e.g., `isq::length / isq::time`) are never non-negative
 unless they resolve to a named quantity that carries the tag.
 
 The `non_negative` precondition is checked at three sites:
 
-1. **Construction** — building an absolute from a literal or from a delta value.
-2. **`.absolute()` conversion** — promoting a delta or point to an absolute.
-3. **`Absolute ± Delta` arithmetic** — at the arithmetic site, before the result is stored.
+1. **Construction**, when building an absolute from a literal or from a delta value.
+2. **`.absolute()` conversion**, when promoting a delta or point to an absolute.
+3. **`Absolute ± Delta` arithmetic**, at the arithmetic site, before the result is stored.
 
 One important subtlety: `kind_of<QS>` is **never** `non_negative`, even when `QS` carries
-the tag. Kind-erased quantities can represent any quantity of that kind — some of which are
-signed — so the constraint is intentionally dropped.
+the tag. Kind-erased quantities can represent any quantity of that kind, and some of
+those are signed, so the constraint is intentionally dropped.
 
 Unary negation of a `non_negative` absolute is an open design question: the two candidate
 behaviors are a compile-time error (safest) or implicit demotion to a delta (most
 convenient). Either way, the result is never an absolute.
 
 
-### Interesting Quantity Types
+### Interesting quantity types
 
 #### Time
 
@@ -584,7 +564,7 @@ with each object having its own _length_ measurement origin.
     confused with code representing positions. For example, `quantity<m>` is used
     for the _length_ of a rod, not its _position_ in space.
 
-#### Electric Current
+#### Electric current
 
 _Electric current_ is the only ISQ base quantity that has a well defined zero point
 (no _current_ flow in the wire), but its values can be both positive and negative
@@ -603,10 +583,10 @@ As we pointed out before, it will be possible to form absolute quantities of _te
 but only when the unit is (potentially prefixed) Kelvin. For offset units like degree
 Celsius, it will not be possible.
 
-The reason runs deeper than a mere unit-system rule. Kelvin temperature encodes
-_thermodynamic energy content_: the mean molecular kinetic energy of an ideal gas is
-proportional to $k_B T$, where $T$ must be an absolute temperature. This makes Kelvin a
-**ratio scale** quantity — ratios and products involving $T$ are physically meaningful
+Kelvin temperature encodes _thermodynamic energy content_: the mean molecular kinetic
+energy of an ideal gas is proportional to $k_B T$, where $T$ must be an absolute
+temperature. This makes Kelvin a
+**ratio scale** quantity. Ratios and products involving $T$ are physically meaningful
 ($T_h / T_c$ in the Carnot efficiency, $nRT$ in the ideal gas law). Degree Celsius, by
 contrast, is an **interval scale**: only _differences_ of Celsius temperatures are
 physically meaningful, not their ratios or products. A Celsius value of $20\ ^\circ\mathrm{C}$
@@ -614,9 +594,10 @@ is not "twice as hot" as $10\ ^\circ\mathrm{C}$.
 
 This distinction is exactly what the Point/Absolute split captures:
 
-- `quantity<K>` — **Absolute**: ratio-scale magnitude, safe in multiplicative expressions.
-- `quantity<point<deg_C>>` — **Point**: interval-scale location, blocked in multiplicative
-  expressions by the type system.
+- `quantity<K>` is an **Absolute**: a ratio-scale magnitude, safe in multiplicative
+  expressions.
+- `quantity<point<deg_C>>` is a **Point**: an interval-scale location, blocked in
+  multiplicative expressions by the type system.
 
 If the user has a temperature point in Celsius and wants to treat it as an absolute
 quantity and pass it to some quantity equation, then such point first needs to
@@ -633,7 +614,7 @@ programmer consciously acknowledges the shift from an interval-scale location to
 ratio-scale magnitude, preventing the silent `20` vs. `293.15` error described in the
 [Current Pain Points](#current-pain-points) section above.
 
-### Which Quantity Abstraction Should I Use?
+### Which quantity abstraction should I use?
 
 The decision tree below provides guidance on choosing the appropriate quantity abstraction
 for a specific use case. Start with the first question and follow the path based on your
@@ -659,25 +640,20 @@ flowchart TD
     class ask_point,ask_delta questionStyle
 ```
 
-### Bug Prevention and Safety Benefits
+### Bug prevention and safety benefits
 
 The new model eliminates a class of subtle bugs that arise from conflating positions,
 sizes, and differences. For example:
 
-- **No accidental addition of positions**
-    - the type system prevents adding two `point<m>` objects, which is physically
-      meaningless
-- **No silent sign errors**
-    - subtracting two absolute quantities always yields a delta, so negative results are
-      explicit and must be handled intentionally
-- **No misuse of offset units**
-    - absolute quantities cannot be constructed with offset units (like Celsius),
-      preventing incorrect temperature calculations
-- **Compile‑time enforcement**
-    - most mistakes caught before runtime
+- the type system prevents adding two `point<m>` objects, which is physically meaningless,
+- subtracting two absolute quantities always yields a delta, so negative results are
+  explicit and must be handled intentionally,
+- absolute quantities cannot be constructed with offset units (like Celsius), which
+  prevents incorrect temperature calculations,
+- most such mistakes are caught at compile time.
 
 
-### Revised Example
+### Revised example
 
 Let's revisit our initial example. Here is what it can look like with the absolute
 quantities usage:
@@ -717,11 +693,11 @@ quantities usage:
     7. Test output works.
     8. Type safe!
 
-This version is concise, physically sound, and type‑safe. Function arguments can't be reordered
-and non‑negativity guarantees remove the need for manual runtime checks.
+Function arguments can't be reordered and non‑negativity guarantees remove the need for
+manual runtime checks.
 
 
-## Migration and Backward Compatibility
+## Migration and backward compatibility
 
 Although the theory in the chapters above may seem intimidating, users will not be
 significantly affected by the changes in **mp-units** V3.
@@ -807,7 +783,7 @@ construct such absolute quantities (e.g., $300 \times \mathrm{K}$).
 Last, but not least, the `quantity_point<...>` class template will be replaced with
 `quantity<point<...>>` syntax.
 
-### Key Migration Rules
+### Key migration rules
 
 | V2 Pattern                            | V3 Equivalent                                | Notes                                        |
 |---------------------------------------|----------------------------------------------|----------------------------------------------|
@@ -823,11 +799,7 @@ conversions where needed.
 
 ## Rationale
 
-Here we discuss the rationale behind the proposed changes, including the design philosophy,
-alignment with scientific practice, and the benefits for standardization and future
-extensibility.
-
-### Non-negativity in Physical Equations vs API Design
+### Non-negativity in physical equations vs API design
 
 In most physical equations, the quantities we work with are expected to be
 **_non-negative amounts_**. For example, _mass_, _energy_, _distance_, and _duration_
@@ -887,8 +859,7 @@ non-negative quantities:
     ```
 
 This approach ensures that only non-negative values can be passed, preventing negative
-_durations_ or _distances_ from entering your calculations. This reduces the risk of bugs,
-makes your code more robust, and better reflects the intent of most physical equations.
+_durations_ or _distances_ from entering your calculations.
 
 
 ### New opportunities
@@ -920,7 +891,7 @@ quantity carnot_eff_2 = (temp_hot - temp_cold) / temp_hot.quantity_from_zero();
 It worked, but was far from being physically pure and pretty.
 
 
-### Why Obvious Workarounds Fall Short
+### Workarounds available today
 
 Two workaround approaches exist, each with its own caveat.
 
@@ -934,9 +905,8 @@ thermodynamic temperature:
 point<K>(294.15).quantity_from_zero();  // 294.15 K ✓
 ```
 
-For Celsius, however, the unit's origin is `si::ice_point` — the _ice point_.
-The function therefore returns the displacement from the ice point, not from absolute
-zero:
+For Celsius, however, the unit's origin is `si::ice_point`. The function therefore
+returns the displacement from the ice point, not from absolute zero:
 
 ```cpp
 point<deg_C>(21).quantity_from_zero();  // 21 ℃ — displacement from ice point, not 294.15 K!
@@ -973,40 +943,40 @@ ideal gas law, `p` will come out in a scaled variant of `Pa` rather than `Pa` it
 it will convert automatically on the first assignment to a typed quantity such as
 `quantity<Pa>`.
 
-#### The bottom line
+#### Comparing the two approaches
 
 Both approaches work correctly when used with care. `quantity_from_zero()` is concise but
-requires the point to already be in Kelvin; subtraction from `si::absolute_zero` is
-always safe but carries an `mK` unit until rescaled. In either case, the right idiom —
-`.in(K).quantity_from_zero()` — must be remembered and applied at every call site, and
+requires the point to already be in Kelvin. Subtraction from `si::absolute_zero` is
+always safe but carries an `mK` unit until rescaled. In either case, the right idiom,
+`.in(K).quantity_from_zero()`, must be remembered and applied at every call site, and
 there is no way to enforce it through the type system.
 
 V3 Absolute Quantities address this: `300 * K` is already an Absolute Quantity, directly
 usable in any multiplicative expression. When an offset-unit point must enter a
 thermodynamic equation, the explicit `.in(K).absolute()` chain makes the conversion
-visible and type-safe — exactly once, at the boundary.
+visible and type-safe, exactly once, at the boundary.
 
 
-### Design Philosophy and Standardization
+### Design philosophy and standardization
 
 Absolute quantities make physical semantics explicit while simplifying common use cases.
-They expose existing conceptual complexity rather than adding new layers. The design is:
+They expose existing conceptual complexity rather than adding new layers. The design:
 
-- **Consistent with ISQ** – mirrors the distinction between displacement, position, and
-  difference.
-- **Predictable** – clear subtraction and conversion rules.
-- **Scalable** – a single `quantity` class handles all variants via wrappers.
-- **Safe** – non‑negativity and offset‑unit rules prevent misuse.
-- **Extensible** – additional quantity abstractions may be added in the future by simply
+- is consistent with the ISQ, and mirrors the distinction between displacement, position,
+  and difference,
+- has clear subtraction and conversion rules,
+- handles all variants with a single `quantity` class and a set of wrappers,
+- prevents misuse through non‑negativity and offset‑unit rules,
+- may be extended in the future with additional quantity abstractions by simply
   introducing a new wrapper.
 
-For standardization, this model brings three tangible benefits:
+For standardization, this model brings the following benefits:
 
 1. **Closer alignment with physical reasoning** used by scientists and engineers.
 2. **Improved readability and verification** in generic C++ code.
-3. **Zero runtime overhead** — all checks are compile‑time or lightweight preconditions.
+3. **Zero runtime overhead**, as all checks are compile‑time or lightweight preconditions.
 
-#### Mathematical Grounding: Ratio Scale and Convex Sets
+#### Ratio scale and convex cone
 
 The term **Ratio Scale** used throughout this article comes from _measurement theory_
 (Stevens, 1946) and is standard in metrology (VIM) and physics. A ratio scale has a true
@@ -1016,33 +986,31 @@ as $20\ ^\circ\mathrm{C}$.
 
 **Convex Cone** is the corresponding _mathematical structure_: the set of all admissible
 values of a ratio-scale quantity is the non-negative half-line $[0, +\infty)$, which is a
-convex cone — it is closed under addition and under multiplication by a non-negative
-scalar. Requests for a "validator" or "convex space" abstraction in quantities libraries
-are describing exactly this property.
+convex cone, because it is closed under addition and under multiplication by a
+non-negative scalar. Requests for a "validator" or "convex space" abstraction in
+quantities libraries are describing exactly this property.
 
 The two terms therefore describe the same thing from two complementary angles:
 _Ratio Scale_ is the measurement-theory characterisation (what operations are physically
 meaningful), while _Convex Cone_ is the algebraic-structure characterisation (what set the
-values live in). Both appear in the literature and both are correct; the
+values live in). Both appear in the literature and both are correct. The
 [Alignment with scientific practice](#alignment-with-scientific-practice) table in the
 Semantics section shows all three columns side-by-side.
 
 The `.absolute()` conversion method is the explicit, type-safe crossing from an
 Interval-Scale Affine Space (Points) or an unrestricted Vector Space (Deltas) into the
 Ratio-Scale Convex Cone (Absolutes). Rather than relying on a separate validation layer or
-runtime validators, the type system itself encodes the constraint — providing the
-mathematical rigor that metrology and physics demand.
+runtime validators, the type system itself encodes the constraint.
 
 
-## Frequently Asked Questions: The V3 Physical Model
+## Frequently asked questions
 
 As **mp-units** moves toward a more rigorous modeling of physical spaces, several questions
 arise regarding the distinction between **Points**, **Deltas**, and **Absolute Quantities**.
-This Q&A addresses the most common technical and philosophical inquiries.
 
 ---
 
-### 1. Why do we need "Absolute Quantities" if we already have "Delta Quantities"?
+### 1. Why do we need absolute quantities if we already have delta quantities?
 
 While both can share the same underlying representation (e.g., `double`), they represent
 different **mathematical structures**.
@@ -1054,13 +1022,12 @@ different **mathematical structures**.
 
 Without the Absolute abstraction, the library cannot distinguish between a
 **Change in Temperature** ($\Delta 20\text{ K}$) and a **State of Temperature**
-($20\text{ K}$ absolute). This leads to the "Offset Unit Trap," where a user might
-accidentally plug $20^\circ\text{C}$ (a delta) into an ideal gas law equation, yielding
-a result off by a factor of 15.
+($20\text{ K}$ absolute). This is how a user can accidentally plug $20^\circ\text{C}$
+(a delta) into an ideal gas law equation and get a result off by a factor of roughly 15.
 
 ---
 
-### 2. Is Velocity a Delta or an Absolute Quantity?
+### 2. Is velocity a delta or an absolute quantity?
 
 **Velocity is a Delta Quantity (Vector).** It represents a displacement over time and
 carries direction (or a sign in 1-D).
@@ -1076,13 +1043,13 @@ Absolute-Scalar space.
 ### 3. Why does `Absolute ± Delta` result in an `Absolute`?
 
 One might expect that, since a delta can be negative, the result of `Absolute ± Delta`
-should be conservatively typed as a `Delta`. This was the initial design — but it was
+should be conservatively typed as a `Delta`. This was the initial design, but it was
 rejected in favour of the **zero-anchor principle**.
 
-The key insight is that the category of a quantity describes _where it lives_, not _what
-sign it has_. A delta has no fixed origin; an absolute is anchored at a physically
-meaningful true zero. Adding or subtracting a signed displacement does not destroy that
-anchor — the result is still measured from the same true zero:
+The category of a quantity says where it lives, not what sign it has. A delta has no
+fixed origin. An absolute is anchored at a physically meaningful true zero. Adding or
+subtracting a signed displacement does not destroy that anchor, so the result is still
+measured from the same true zero:
 
 - `tank(500 kg, absolute) + refuel(200 kg, delta)` → 700 kg (absolute)
 - `tank(500 kg, absolute) - burn(600 kg, delta)` → −100 kg (absolute)
@@ -1090,7 +1057,7 @@ anchor — the result is still measured from the same true zero:
 The second case is a **value-range violation**, not a type-category error. For quantity
 specs marked `non_negative` (e.g., `isq::mass`), a runtime contract check fires at the `±`
 operation site when the result would be negative. To intentionally work in the signed
-domain — for example, to represent a deficit that may go negative — demote first:
+domain (for example, to represent a deficit that may go negative), demote first:
 `fuel.delta() - burn` produces `delta<mass>: −100 kg` with no check.
 
 This rule is also consistent with `Absolute × Scalar → Absolute`: multiplying by a
@@ -1100,18 +1067,18 @@ demotions.
 
 ---
 
-### 4. Why is `Absolute × Delta` a Delta, but `Absolute ± Delta` an Absolute?
+### 4. Why is `Absolute × Delta` a delta, but `Absolute ± Delta` an absolute?
 
 Both rules follow the same **zero-anchor principle**, which asks: does the operation
 preserve the true-zero anchor?
 
-**Addition/subtraction** — translating a zero-anchored value up or down does not move
+**Addition and subtraction.** Translating a zero-anchored value up or down does not move
 the anchor. The result is still measured from the same physical zero, so it remains an
 absolute:
 
 $$\text{tank} + \Delta\text{refuel} = \text{new tank level, still measured from 0 kg}$$
 
-**Multiplication** — when you multiply an absolute by a delta, you are combining _two
+**Multiplication.** When you multiply an absolute by a delta, you are combining _two
 different quantities_ into a _third_ (e.g., `power × time → energy`, or
 `area × delta_height → delta_volume`). The delta carries orientation-awareness (it can
 be negative). The resulting derived quantity inherits that orientation-awareness:
@@ -1138,7 +1105,7 @@ quantity vol_delta = area * dh;                    // delta: 30 m³ (delta, not 
 For quantity specs marked `non_negative`, the contract fires whenever an `Absolute ± Delta`
 result would go below zero. Two escape hatches exist:
 
-**Demote before the operation** — convert the absolute to a delta first. The result is a
+**Demote before the operation.** Convert the absolute to a delta first. The result is a
 `delta` with no invariant, so the deficit is representable without a contract violation:
 
 ```cpp
@@ -1151,7 +1118,7 @@ if (balance < delta<isq::mass[kg]>(0)) {
 }
 ```
 
-**Model consumption as an absolute** — fuel consumption is a non-negative amount burned,
+**Model consumption as an absolute.** Fuel consumption is a non-negative amount burned,
 so it is physically better typed as an absolute. Subtracting two absolutes yields a delta
 via `Absolute − Absolute → Delta` (the affine-space rule), with no check required:
 
@@ -1170,12 +1137,12 @@ delivers the signed balance naturally.
 
 ---
 
-### 6. Should Time Points be treated the same as Position Points?
+### 6. Should time points be treated the same as position points?
 
 Mathematically, both are **Affine Spaces**. However, they differ in dimensionality:
 
-- **Position** exists in a 3-D space; its "Deltas" are **Vectors** ($\vec{r}$).
-- **Time** exists in a 1-D space; its "Deltas" are **Signed Scalars**.
+- **Position** exists in a 3-D space, and its "Deltas" are **Vectors** ($\vec{r}$).
+- **Time** exists in a 1-D space, and its "Deltas" are **Signed Scalars**.
 
 V3 respects this by allowing 1-D deltas to carry a sign bit (direction), whereas
 Absolute Quantities (like Age or Duration-amount) are strictly non-negative. Treating
@@ -1204,7 +1171,7 @@ be non-negative.
 
 ---
 
-### 8. Why is `Quantity` the default for Absolute in V3?
+### 8. Why is `Quantity` the default for absolute in V3?
 
 It aligns the library with how physics is taught. In V2, the most "natural" syntax
 (`quantity<K>`) was often used to represent deltas, forcing users to use more complex
@@ -1214,8 +1181,8 @@ syntax for absolute states. In V3, we align the library with physics textbooks:
 - **V3 Code:** `(P * V) / (n * T)` (Uses `quantity<K>`, which is Absolute by default).
 
 By making **Absolute** the default, the most common physics equations become the easiest
-to write and the safest to execute. If you need a point or a delta, you wrap it; if you
-have a magnitude, you just use it.
+to write. If you need a point or a delta, you wrap it. If you have a magnitude, you just
+use it.
 
 ---
 
@@ -1231,16 +1198,15 @@ It prevents the silent bug of dividing two "points" and getting a meaningless ra
 ### 10. Is the 3-category model too complex for users?
 
 It has a learning curve, but it maps more closely to how we think. We don't think of
-"The distance to the moon" as a "Delta of Position" in daily life; we think of it as
+"The distance to the moon" as a "Delta of Position" in daily life. We think of it as
 a magnitude. By providing the Absolute category, we give users a name for the
 "buckets of stuff" they are actually measuring.
 
 
 ## Conclusion
 
-Adding **absolute quantities** elevates **mp-units** from a dimensional analysis tool to
-a true **physical reasoning framework**. The proposal clarifies semantics, improves
-safety, and aligns code directly with equations found in textbooks. This is not extra
-complexity—it's the formalization of the real structure of physical space in C++ types.
+Adding **absolute quantities** makes **mp-units** more than a dimensional analysis tool.
+The proposal clarifies semantics, improves safety, and aligns code directly with the
+equations found in textbooks.
 
 We plan to deliver this as part of **mp-units V3** and welcome community and WG21 feedback.

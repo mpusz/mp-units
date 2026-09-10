@@ -13,7 +13,7 @@ comments: true
 You found a promising library. To actually try it, you clone the repository, install a
 toolchain it expects, wire it into your build system, and resolve its dependencies. One
 hour later, before you have written a single line of your own, you are debugging someone
-else's CMake. Most people do not get that far. They close the tab.
+else's CMake. Most people never get that far and simply close the tab.
 
 <!-- more -->
 
@@ -25,12 +25,11 @@ else's CMake. Most people do not get that far. They close the tab.
     **Integration** stage of the six-stage library journey: can people actually use it? New
     here? Start with [the overview](nobody-uses-your-great-library.md).
 
-The gap between "this looks interesting" and "I tried it" is where you lose people who were
-ready to adopt you. Every setup step is another chance for them to give up. The single most
-effective thing you can do about it is let a stranger run your code in a browser, before they
-install anything at all.
+The gap between "this looks interesting" and "I tried it" is where you lose people who
+were ready to adopt you. Every setup step is another chance for them to give up, so let a
+stranger run your code in a browser before they install anything at all.
 
-## Compiler Explorer is the onramp
+## Compiler Explorer
 
 [Compiler Explorer](https://godbolt.org), by [Matt Godbolt](https://xania.org), is arguably
 the most important C++ tool of the last decade, and most projects use a fraction of what it
@@ -57,21 +56,20 @@ The same link pays off at almost every stage of a project, not just the first de
 
 ## Show the assembly, do not claim zero overhead
 
-This is the use that matters most for a library that promises performance, and it is the proof
-I promised back in the Evaluation post. "Zero overhead" is easy to assert and easy to doubt.
-So do not assert it. Show the generated assembly.
+This is the use that matters most for a library that promises performance, and it is the
+proof I promised back in the Evaluation post. "Zero overhead" is easy to claim, so show
+the generated assembly instead of claiming it.
 
 The editor below holds two functions that do the same thing: one on raw `double`s, one on
 fully type-checked mp-units quantities. Check the assembly pane for yourself.
 
 <iframe width="100%" height="350px" src="https://godbolt.org/e#g:!((g:!((g:!((h:codeEditor,i:(filename:'1',fontScale:16,fontUsePx:'0',j:1,lang:c%2B%2B,selection:(endColumn:2,endLineNumber:14,positionColumn:2,positionLineNumber:14,selectionStartColumn:2,selectionStartLineNumber:14,startColumn:2,startLineNumber:14),source:'%23include+%3Cmp-units/systems/si.h%3E%0A%0Ausing+namespace+mp_units%3B%0Ausing+namespace+mp_units::si::unit_symbols%3B%0A%0Adouble+ttg_s(double+d_m,+double+v_mps)%0A%7B%0A++return+d_m+/+v_mps%3B%0A%7D%0A%0Aquantity%3Cs%3E+ttg(quantity%3Cm%3E+d,+quantity%3Cm/s%3E+v)%0A%7B%0A++return+d+/+v%3B%0A%7D'),l:'5',n:'0',o:'C%2B%2B+source+%231',t:'0')),k:50,l:'4',n:'0',o:'',s:0,t:'0'),(g:!((h:compiler,i:(compiler:clang2110,filters:(b:'0',binary:'1',binaryObject:'1',commentOnly:'0',debugCalls:'1',demangle:'0',directives:'0',execute:'1',intel:'0',libraryCode:'0',trim:'1',verboseDemangling:'0'),flagsViewOpen:'1',fontScale:16,fontUsePx:'0',j:1,lang:c%2B%2B,libs:!((name:mp-units,ver:trunk)),options:'-std%3Dc%2B%2B23+-O3+-DNDEBUG',overrides:!(),selection:(endColumn:1,endLineNumber:1,positionColumn:1,positionLineNumber:1,selectionStartColumn:1,selectionStartLineNumber:1,startColumn:1,startLineNumber:1),source:1),l:'5',n:'0',o:'+x86-64+clang+21.1.0+(Editor+%231)',t:'0')),k:50,l:'4',m:100,n:'0',o:'',s:0,t:'0')),l:'2',n:'0',o:'',t:'0')),version:4"></iframe>
 
-Both reduce to a single `divsd` and a `ret`, identical to the hand-written version. The type
-safety and dimensional analysis are gone by the time the compiler is done, with nothing left
-to pay for at runtime. "I see no extra generated code" is more convincing than any benchmark
-I could publish, because the reader verifies it themselves in thirty seconds, on the compiler
-they care about, without trusting me at all. That is the honest way to make a performance
-claim: hand the skeptic the means to check it.
+Both reduce to a single `divsd` and a `ret`, identical to the hand-written version. The
+type safety and dimensional analysis are gone by the time the compiler is done, with
+nothing left to pay for at runtime. "I see no extra generated code" is more convincing
+than any benchmark I could publish, because the reader verifies it themselves in thirty
+seconds, on the compiler they care about, without trusting me at all.
 
 ## Make it real for your library
 
@@ -107,7 +105,7 @@ it is real source it can be extracted and compiled in CI, so it cannot silently 
 the API. Change the block and the embed changes with it. The
 [interactive tutorials](../../tutorials/index.md) use this throughout.
 
-## Where mp-units actually is, and one honest gap
+## Where mp-units actually is
 
 This is a stage mp-units gets right. It is on Compiler Explorer, the README opens with a "Try
 it live" badge, the tutorials embed interactive examples, and the bug report form asks for
@@ -118,10 +116,10 @@ The honest gap is the zero-overhead proof itself. Today it is demonstrated, not 
 I verify the assembly by eye on Compiler Explorer, not in CI. Automating it is harder than
 it sounds, because the same source compiles to different but equally optimal instructions
 across compilers and flags, so a stored golden file would be brittle. The robust approach
-is differential: compile the mp-units version next to a hand-written baseline under the same
-toolchain and assert they match, and it is currently an open good-first-issue
+is differential: compile the mp-units version next to a hand-written baseline under the
+same toolchain and assert they match, and it is currently an open good-first-issue
 ([#804](https://github.com/mpusz/mp-units/issues/804)). So for now the guarantee is shown
-and checked by eye, not gated by CI. The proof is real. The automation is still on the list.
+and checked by eye, not gated by CI.
 
 These tips come from my conference talk on why technically excellent C++ libraries fail to
 get adopted, and how to fix it. You can

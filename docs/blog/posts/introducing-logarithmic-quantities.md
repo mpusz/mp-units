@@ -27,11 +27,10 @@ against this design, cite them throughout, and call out the one place we knowing
 from them ([Open Question 5](#5-reference-in-the-unit-or-on-the-quantity)).
 
 This post describes the design in full, from the quantity spec to the named units, the
-arithmetic, the conversions, and every domain we surveyed (audio, RF, acoustics,
-chemistry, astronomy, music, information theory). Then it lays out the
-[open questions](#open-questions), each with every alternative we
-considered and our current preference. Before we implement any of this in **mp-units**, we
-want the people who use these quantities daily to tell us where we are wrong.
+arithmetic, the conversions, and every domain we surveyed. Then it lays out the
+[open questions](#open-questions), each with the alternatives we considered and our
+current preference. Before we implement any of this in **mp-units**, we want the people
+who work with these quantities to tell us where we are wrong.
 
 <!-- more -->
 
@@ -59,9 +58,10 @@ auto my_voltage = (0.5 * V) * (6.0 * dB).linear();  // 0.5 V * 3.98 ≈ 1.99 V, 
                                                     // "+6 dB on a voltage" means *2 -> 1.0 V
 ```
 
-The same expression and the same `6.0 * dB`, correct for the watt and wrong for the volt.
-The design below fixes it by putting the domain on the gain, and we come back to these two
-lines in [Gains carry their domain](#gains-carry-their-domain).
+Both lines use the same expression and the same `6.0 * dB`, but the result is right for
+the watt and wrong for the volt. The design below fixes it by putting the domain on the
+gain, and we come back to these two lines in
+[Gains carry their domain](#gains-carry-their-domain).
 
 The second failure is more obvious once stated. A plain-number `dBm` lets you write
 `10 dBm + 10 dBm` and get `20 dBm`, which is `100 mW` and not any combination of the
@@ -72,13 +72,12 @@ and subtract two levels to get a gain, but `level + level` is not one operation:
 `13 dBm` above assumes the sources are incoherent, and coherent ones combine differently
 (see [Arithmetic](#arithmetic)). A number type that permits `+` silently picks one answer.
 
-These are not exotic corner cases. They are the everyday arithmetic of the people who use
-decibels for a living. This is why getting the type system right matters here as much as
-it does for dimensions.
+Both mistakes belong to the everyday arithmetic of people working with decibels, which is
+why getting the type system right matters here as much as it does for dimensions.
 
 ## Points and deltas
 
-The good news is that we do not need a fourth abstraction. Logarithmic quantities fit the
+We do not need a fourth abstraction here. Logarithmic quantities fit the
 three-abstraction model (point, absolute, delta) that we introduced in the
 [absolute quantities article](introducing-absolute-quantities.md), specialized to the
 logarithmic domain.
@@ -114,10 +113,9 @@ The logarithm maps all of the real line onto $(0, +\infty)$, so the non-negativi
 underlying _power_ is guaranteed by the domain of the log function, not by a runtime
 check.
 
-That point/delta split is the foundation for everything that follows. Logarithmic
-quantities use two of the linear model's three abstractions, the point and the delta;
-there is no logarithmic *absolute*, because an absolute is measured from the natural zero
-and $\log(0) = -\infty$. Lifted into the log domain, the mapping is:
+Logarithmic quantities use two of the linear model's three abstractions, the point and
+the delta; there is no logarithmic *absolute*, because an absolute is measured from the
+natural zero and $\log(0) = -\infty$. Lifted into the log domain, the mapping is:
 
 | Spec             | Mathematical space        | Zero element                      | Example          |
 |:-----------------|:--------------------------|:----------------------------------|:-----------------|
@@ -160,7 +158,7 @@ quantity exactly like the decibel, differing only in its base (`e`) and its base
 
 ## Prior art
 
-We try to be fair to prior work, so here is what we found, with the receipts. If we have
+We try to be fair to prior work, so here is what we found, with references. If we have
 mischaracterized any of these, please correct us in the comments and we will fix this
 section.
 
@@ -170,8 +168,8 @@ ship ad-hoc helpers (for example, JUCE provides a `Decibels` utility with `gainT
 and `decibelsToGain`), but these are conversion functions over `float`, not a type that
 participates in dimensional analysis or affine arithmetic.
 
-**The nholthaus units library has decibel support, and it is instructive about why this is
-hard.** Nic Holthaus's library provides a `UNIT_ADD_DECIBEL` macro that creates types such
+**The nholthaus units library has decibel support.** Nic Holthaus's library provides a
+`UNIT_ADD_DECIBEL` macro that creates types such
 as `dBW_t` and `dBm_t` on a non-linear `decibel_scale`. It gets one thing right:
 `operator+` adds the values in the logarithmic domain, so applying a gain to a level and
 composing two gains both work. In the 2.x series, which is the state we surveyed when
@@ -225,8 +223,8 @@ units: the docs say they "behave much like those described in Temperature conver
 There is no separate level-versus-gain (point versus delta) type, so the affine rule "you
 may not add two levels" is not expressed by the types. Support is also marked Beta.
 
-**C#'s UnitsNet takes a third route, and it is close to what many reach for first.** It
-models logarithmic quantities as their own types, `PowerRatio` (`dBW`/`dBm`, factor `10`)
+**C#'s UnitsNet takes a third route.** It models logarithmic quantities as their own
+types, `PowerRatio` (`dBW`/`dBm`, factor `10`)
 and a separate `AmplitudeRatio` (`dBV`, factor `20`), rather than as units of the linear
 `Power` and `ElectricPotential` types. Equality and summation are evaluated in the linear
 domain, so combining two `10 dBm` sources correctly gives `13 dBm`, and converting a
@@ -446,7 +444,7 @@ inline constexpr struct hydrogen_ion_concentration :
     quantity_spec<isq::concentration, is_kind, log_coefficient<-1>> {} hydrogen_ion_concentration;
 ```
 
-**The cost, stated plainly.** A kind specifier means classifying the library's kinds: a
+**The cost.** A kind specifier means classifying the library's kinds: a
 one-time audit deciding, for each kind (including subkinds like `sound_pressure`), its
 coefficient: power by default, root-power, or a custom value. The coefficient then rides
 along on the quantity spec unconditionally, including for the many users who never take a
@@ -462,8 +460,7 @@ would linearize as a power ratio ($\approx 3.98$) instead of the correct root-po
 
 ### Gains carry their domain
 
-This is the one place our design departs from what you might write first, and the place we
-most want scrutiny.
+This is the least obvious part of our design, and the place we most want scrutiny.
 
 A gain produced by subtracting two levels keeps the domain of those levels. `point<dBV>`
 minus `point<dBV>` is the ordinary affine identity (point minus point equals delta) with
@@ -486,12 +483,12 @@ quantity my_power   = (0.5 * W) * (6.0 * dB<isq::power>).linear();    // 0.5 W *
 quantity my_voltage = (0.5 * V) * (6.0 * dB<isq::voltage>).linear();  // 0.5 V * 2.0 = 1.0 V
 ```
 
-It turns out this is not a new feature we are bolting on. It is what our own affine model
-already implies. The level type is `point<log<QS>>`, so `point<log<QS>>` minus
-`point<log<QS>>` is a `log<QS>` delta by the same rule that makes `point<m>` minus
-`point<m>` a `delta<m>`. Collapsing that to a dimensionless decibel would be the mistake.
-We use the notation `dB<QS>` throughout to mean a `log<QS>` gain. Every such unit still
-prints `"dB"`. The type, not the symbol, carries the domain.
+We did not bolt this on. It follows from the affine model already in place: the level
+type is `point<log<QS>>`, so `point<log<QS>>` minus `point<log<QS>>` is a `log<QS>` delta
+by the same rule that makes `point<m>` minus `point<m>` a `delta<m>`. Collapsing that to a
+dimensionless decibel would lose the domain. We use the notation `dB<QS>` throughout to
+mean a `log<QS>` gain. Every such unit still prints `"dB"`, so the domain is carried by
+the type and not by the symbol.
 
 The same reasoning fixes a conformance subtlety. IEC 80000-15:2026 defines the neper
 through the *amplitude* ratio $Q_A = \ln(A_2/A_1)$ Np (eq 7). An amplitude is a root-power
@@ -506,8 +503,8 @@ neper is normally used with.
 
 ### No universal decibel
 
-Domain-typed gains have a cost, and we state it plainly. There is **no neutral,
-domain-less decibel** that adds to any level. A `+3 dB` _power_ gain moves a _power_
+Domain-typed gains have a cost. There is **no neutral, domain-less decibel** that adds to
+any level. A `+3 dB` _power_ gain moves a _power_
 level. To move a _voltage_ level you need a `+3 dB` _voltage_ gain, and the type system
 enforces the match:
 
@@ -860,7 +857,8 @@ quantity Vc    = std::complex{3.0, 4.0} * V;   // a voltage phasor: |Vc| = 5 V, 
 quantity level = abs(Vc).log_in(dBV);          // ≈ 14 dBV from |Vc|; the phase stays in Vc
 ```
 
-Phase, and signal correlation with it, lives in the representation, not the unit.
+Both the phase and the signal correlation that depends on it live in the representation
+rather than in the unit.
 
 A custom representation joins by supplying the math functions through argument-dependent
 lookup, the same idiom `math.h` already uses
@@ -898,10 +896,10 @@ into the log domain for free.
 
 ## The domains
 
-The design above is general. Here is how it lands on each domain we surveyed. The breadth
-is the point: these are the communities whose feedback we are asking for. The whole
-catalog at a glance (the `Underlying QS` column gives the `isq::` quantity spec, prefix
-omitted for brevity, or the category for the domain-typed neper):
+The design above is general. Here is how it applies to each domain we surveyed. We covered
+this many domains because these are the communities whose feedback we are asking for. The
+whole catalog (the `Underlying QS` column gives the `isq::` quantity spec, prefix omitted
+for brevity, or the category for the domain-typed neper):
 
 | Quantity                | Symbol           | Underlying QS            | Type  | Reference         | Base       | Mult |
 |:------------------------|:-----------------|:-------------------------|:------|:------------------|:-----------|:-----|
@@ -955,10 +953,11 @@ in the comments. The two axes are independent:
 | full-scale square       | FS               | FS              |
 
 A full-scale sine's peak *is* full scale, so the two definitions agree on a peak reading
-and differ by 3.01 dB on an RMS one. That single cell is the whole confusion: an RMS figure
-labeled `dBFS` and one labeled `dBov` are 3.01 dB apart, while the peak figures are the
-same number. Which symbol goes with which definition is settled practice rather than our
-choice: `dBFS` is the sine definition, which more standards follow (AES17 among them), and
+and differ by 3.01 dB on an RMS one. That single cell is where the confusion comes from:
+an RMS figure labeled `dBFS` and one labeled `dBov` are 3.01 dB apart, while the peak
+figures are the same number. Which symbol goes with which definition is settled practice
+rather than our choice: `dBFS` is the sine definition, which more standards follow (AES17
+among them), and
 `dBov` names the square definition explicitly.
 
 The reference belongs to the unit, and the statistic has to be a *kind*, so the four cells
@@ -1003,7 +1002,7 @@ an amplitude (factor 20).
 
 None of this is legible from a bare number. Software that reports "dB" against an
 unstated full scale, which is common, cannot be reconciled with either column of the table
-above, and no type system recovers what the producer did not record.
+above, and the missing reference cannot be recovered afterwards.
 
 ### Antenna gain (RF link budgets)
 
@@ -1043,8 +1042,8 @@ inline constexpr struct dB_VPa : named_unit<"dB(V/Pa)", dB<sensitivity>, V / Pa>
 A measured transfer function is complex (magnitude and phase). The dB level reads the
 magnitude, and the phase rides on the [representation](#representation-types).
 
-Defining the units is the easy half. Applying one is a multiplication in the linear
-domain, and the design gives you the crossing for it:
+Defining the units is only half of the work. Applying one is a multiplication in the
+linear domain, and the design gives you the crossing for it:
 
 ```cpp
 quantity spl  = point<dB_SPL>(94.0);   // 1 Pa
@@ -1052,7 +1051,8 @@ quantity sens = point<dB_VPa>(-40.0);  // 10 mV/Pa
 quantity out  = (spl.linear().absolute() * sens.linear().absolute()).log_in(dBV);  // -40 dBV
 ```
 
-That is correct, and it is not how the measurement is written down. On paper the chain is
+That is correct, but it is not how the measurement is usually written down. On paper the
+chain is
 a log-domain sum, and whether the library should offer that is
 [Open Question 7](#7-chaining-transfer-functions-in-the-log-domain).
 
@@ -1123,10 +1123,10 @@ explicitly defer them:
 
 ## Open questions
 
-This is the section we are writing the article for. Each question lists the alternatives
-we weighed, with an honest good-parts and drawbacks breakdown, and our current preference.
-We will not finalize any of these until we have heard from people who use these quantities
-daily.
+This section is the main reason for writing the article. Each question lists the
+alternatives we weighed, with their good parts and drawbacks, and our current preference.
+We will not finalize any of these until we have heard from practitioners in these
+fields.
 
 ### 1. The spec template name
 
@@ -1184,7 +1184,7 @@ is why we keep it open rather than settling on functions-only.
 
 `.in(dBm)` converts a `dBW` level to `dBm` and changes two things together: the display
 unit *and* the embedded reference origin (a value measured from 1 W becomes the same power
-measured from 1 mW). That is the behavior you want.
+measured from 1 mW). That is the intended behavior.
 
 The affine helper `point_for(origin)` is different. It rebases a point onto a given origin
 while leaving the unit alone. For a linear quantity that is harmless, because the unit
@@ -1349,7 +1349,7 @@ the question is which reading the notation invites, not which one the mathematic
   `dBm + dB SPL` compiles while being physically pointless, in the same way that `W * Pa`
   compiles in the linear domain.
 
-The multiplier constraint is not decoration, and the chains above pass it: every stage,
+The multiplier constraint matters, and the chains above pass it: every stage,
 digital level, both sensitivities, and _sound pressure_, is root-power, so all the
 multipliers are 20. A _voltage_ level plus a _current_ level does not pass:
 
@@ -1373,8 +1373,8 @@ DAC, so being able to *define* both directions as first-class units beats derivi
 the other. The design already allows that, and an inversion operator would be a
 convenience rather than a requirement.
 
-We do not have a preference we trust here, and this is the question we would most like a
-transducer-calibration practitioner to answer. Does the log-domain chain earn an operator,
+We do not have a preference we trust here, and we would like a transducer-calibration
+practitioner to answer it. Does the log-domain chain earn an operator,
 knowing that `+` then reads as superposition to one group of users and as a transfer
 function to another? Or is the explicit crossing to linear the better answer precisely
 because it makes the multiplication visible?
@@ -1437,9 +1437,10 @@ quantity gain = 6.0 * dB;      // unclassified under Option B
 There are two ways to complete that call and we can offer neither. One is a second
 argument, `gain.in(Np, isq::voltage)`, a conversion API that no other unit in the library
 needs and that `.linear()` would have to grow as well. The other is a reinterpretation from
-the unclassified gain to a classified one, which is a forcing cast, and a needed forcing
-cast means the model is wrong rather than the syntax missing. Option B does not remove the
-classification, it defers it to the crossings, and the deferral has no spelling.
+the unclassified gain to a classified one, which is a forcing cast, and needing a forcing
+cast suggests the model is wrong rather than the syntax missing. Option B does not remove
+the classification, it defers it to the crossings, and we have no good spelling for that
+deferral.
 
 Option C is not free of this either, because a gain that genuinely arrived without a domain
 still cannot change base. What it changes is the remedy. There, the honest move is to build
@@ -1455,8 +1456,8 @@ at construction is a help or an obstacle.
 
 ## How to give feedback
 
-This article exists to gather as much expert feedback as we can before implementation, so
-please do not be shy.
+We wrote this article to gather as much expert feedback as we can before
+implementation.
 
 - The **comments section below** (powered by GitHub Discussions) is the best place for
   detailed arguments, corrections to the prior-art survey, and answers to the open
@@ -1482,7 +1483,7 @@ please do not be shy.
 
 ## Conclusion
 
-Logarithmic quantities did not need a new abstraction. They are the affine point/delta
+Logarithmic quantities did not need a new abstraction. They fit the affine point/delta
 model we already adopted for absolute quantities, specialized to a domain where the origin
 is a reference level and the displacement is a gain. Modeling them this way makes
 `level - level` a gain, `level + gain` a level, and `level + level` a compile-time error,
@@ -1493,8 +1494,8 @@ either hardcodes 10 or leaves the choice to the user. The same machinery covers 
 acoustics, music, information theory, chemistry, and astronomy, because each is the same
 structure over a different quantity kind.
 
-We believe this is correct, and we believe it is novel. That combination is why we are
-publishing the design before writing the code. Tell us where we are wrong.
+We think this design is correct, and we are not aware of another library that does the
+same. That is why we publish it before writing the code, and why we ask for corrections.
 
 ## Acknowledgments
 

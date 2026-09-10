@@ -10,11 +10,11 @@ comments: true
 
 # Make it a five-minute yes to contribute
 
-Someone hits a small bug in your library and has a one-line fix they would happily send you.
-They want to help. Then they read your `CONTRIBUTING.md`: install Clang 18, CMake 3.28, Ninja,
-Conan 2.0, configure three presets, wait for a build. Twenty minutes later, before they have
-changed a single character, they give up. The willing contributor is the rarest thing your
-project has, and you lost them at setup.
+Someone hits a small bug in your library and has a one-line fix they would happily send
+you. They want to help. Then they read your `CONTRIBUTING.md`: install Clang 18, CMake
+3.28, Ninja, Conan 2.0, configure three presets, wait for a build. Twenty minutes later,
+before they have changed a single character, they give up. Willing contributors are rare,
+and that one was lost at setup.
 
 <!-- more -->
 
@@ -26,9 +26,8 @@ project has, and you lost them at setup.
     **Contribution** stage of the six-stage library journey: do they want to help? New here?
     Start with [the overview](nobody-uses-your-great-library.md).
 
-A satisfied user is your best potential contributor, but only if saying yes is cheap. Two
-things decide whether it is: how you handle their first message, and how much setup stands
-between them and a working change. Get both wrong and even eager people quietly walk away.
+A satisfied user is your best potential contributor, but only if saying yes is cheap. Two things decide whether it is: how you handle their first message, and how
+much setup stands between them and a working change.
 
 ## Communication is a feature of your library
 
@@ -51,34 +50,33 @@ up front: operating system, compiler and version, C++ standard, library version,
 Compiler Explorer link that reproduces the problem. mp-units' bug report form asks for
 exactly that, so the first response can be an answer instead of an interrogation.
 
-Finally, tone, because in an issue tracker it is half the product. Open every reply with a
-thank-you, even for a duplicate, even when the report turns out to be user error, because
-that person spent their time on your project. Assume good faith, and never that the user is
-simply holding it wrong. When someone does hit a real mistake, the interesting question is
-what let them make it: a confusing name, an unstated precondition, a gap in the docs. Treat
-that as a bug in the library rather than in the user, and fix the thing that misled them.
-Every issue,
-question, and complaint is production feedback you would otherwise have to pay for. Empathy
-over ego is not politeness for its own sake, it is how a first-time contributor decides whether
-there will be a second time.
+Tone matters as well. Open every reply with a thank-you, even for a duplicate, even when
+the report turns out to be user error, because that person spent their time on your
+project. Assume good faith, and never that the user is simply holding it wrong. When
+someone does hit a real mistake, the interesting question is what let them make it: a
+confusing name, an unstated precondition, a gap in the docs. Treat that as a bug in the
+library rather than in the user, and fix the thing that misled them. Every issue,
+question, and complaint is production feedback you would otherwise have to pay for.
+Empathy over ego is how a first-time contributor decides whether there will be a second
+time.
 
-One kind of communication happens before anyone files anything: the issues you open for them.
-A bare `good first issue` label looks welcoming, but on its own it leaves the newcomer as
-stuck as before, with no idea which change to make, where, or whether anyone will actually
-help. A real one is a small spec, what to change and where, why it matters, what the
-contributor will learn, roughly how long it should take, and a named mentor assigned to see
-them through the pull request. The mentor is the part that matters most: a person's name on
-the issue is a commitment to help, not a hope that someone eventually will.
-That takes ten minutes to write, and it removes the decision paralysis that stops a first-timer
-cold. It is the difference between a label and an invitation.
+One kind of communication happens before anyone files anything: the issues you open for
+them. A bare `good first issue` label looks welcoming, but on its own it leaves the
+newcomer as stuck as before, with no idea which change to make, where, or whether anyone
+will actually help. A real one is a small spec, what to change and where, why it matters,
+what the contributor will learn, roughly how long it should take, and a named mentor
+assigned to see them through the pull request. The mentor is the part that matters most: a
+person's name on the issue is a commitment to help. That takes ten minutes to write, and
+it removes the decision paralysis that stops a first-timer cold. That is not just a label.
+That is an invitation.
 
-## Provide the environment, do not describe it
+## Provide the environment
 
-Now the setup barrier. Picture the contributor with a small first change, a one-line fix to
-behavior, staring at a page of toolchain instructions before they can even build to test it.
+The second barrier is setup. A contributor with a small first change, a one-line fix to
+behavior, faces a page of toolchain instructions before they can even build to test it.
 Every step is a chance to give up, and documentation-only setup guides rot the moment a
-version bumps. The fix is to stop describing the environment and start handing it over, as
-a container.
+version bumps. The fix is to stop describing the environment and hand it over as a
+container.
 
 GitHub Codespaces makes the environment a container the contributor never has to build. They
 click "Open in Codespaces," and a few minutes later they are editing in a browser with every
@@ -88,37 +86,37 @@ ships this from the README, and the environment is defined once in `devcontainer
 pointing at a prebuilt image (`trainiteu/mp-units:latest`) that carries the compiler matrix,
 Conan, the analysis tools, and the docs toolchain.
 
-That one definition has several front doors. A contributor who prefers a local editor opens
-the identical container in VS Code with the Dev Containers extension, and anyone can just
-`docker pull` the image to get the exact toolchain on the command line. Codespaces, a local
-dev container, or a plain Docker image: same environment, nothing for a contributor to
-assemble, nothing to fall out of date.
+That one definition has several front doors. A contributor who prefers a local editor
+opens the identical container in VS Code with the Dev Containers extension, and anyone can
+just `docker pull` the image to get the exact toolchain on the command line. Codespaces, a
+local dev container, and a plain Docker image all give the same environment, with nothing
+for a contributor to assemble.
 
-The same container pays off well beyond the drive-by contributor, which is the part people
-miss. It is one shared environment for everyone who touches the project. A new team member
-is productive on day one instead of losing it to installing toolchains, and because the image
-carries the compilers the project targets, anyone can build against a representative set of
+The same container pays off well beyond the drive-by contributor. It is one shared
+environment for everyone who touches the project. A new team member is productive on day
+one instead of losing it to installing toolchains, and because the image carries the
+compilers the project targets, anyone can build against a representative set of
 configurations locally with
 [`check_all.sh`](https://github.com/mpusz/mp-units/blob/master/.devcontainer/check_all.sh)
-and catch the obvious breakages before pushing, rather than waiting for the full, larger CI
-matrix to find them. Everyone working in it is on the same toolchains, so "works on my machine"
-stops being a sentence between contributors, and a dedicated CI job rebuilds the container
-on every change so it never quietly drifts.
+and catch the obvious breakages before pushing, rather than waiting for the full, larger
+CI matrix to find them. Everyone working in it is on the same toolchains, so "works on my
+machine" stops being a sentence between contributors, and a dedicated CI job rebuilds the
+container on every change so it never quietly drifts.
 
-## Where mp-units actually is, and the honest gap
+## Where mp-units actually is
 
 This is a stage mp-units gets right. Issues and discussions are separated, the bug form
 demands a reproduction, and a contributor can go from "I would like to help" to a working,
 CI-compatible environment in minutes without installing anything.
 
-The honest gap is not the infrastructure, and it is not responsiveness either. Questions
-usually get an answer the same day, and small fixes are merged within days. The gap is that
-there are still very few contributors. A one-person project can be welcoming and fast and
-still not have grown the handful of regulars who share the review and mentoring load, and
-now and then a large in-progress change holds the tree long enough that a good pull request
-has to wait for it to land. The machinery makes contributing easy. Turning that ease into
-a steady stream of contributors is the same bus-factor problem the Evaluation post admitted,
-wearing different clothes, and it is the thread the next post picks up.
+The gap is neither the infrastructure nor the responsiveness. Questions usually get an
+answer the same day, and small fixes are merged within days. The gap is that there are
+still very few contributors. A one-person project can be welcoming and fast and still not
+have grown the handful of regulars who share the review and mentoring load, and now and
+then a large in-progress change holds the tree long enough that a good pull request has to
+wait for it to land. The machinery makes contributing easy. Turning that ease into a
+steady stream of contributors is the same bus-factor problem the Evaluation post admitted,
+and the next post picks it up.
 
 These tips come from my conference talk on why technically excellent C++ libraries fail to
 get adopted, and how to fix it. You can
