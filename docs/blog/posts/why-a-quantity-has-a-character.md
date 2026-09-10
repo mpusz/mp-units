@@ -515,11 +515,11 @@ needs the override.
 
 ## The dead ends
 
-Much of this design was worked out in conversation with an AI, which I leaned on to
-reason about the physics and mathematics where my own footing is least sure:
+Much of this design was worked out in conversation with an AI, leaned on not to write the
+code but to reason about the physics and mathematics where my own footing is least sure:
 geometric algebra, complex analysis, the corners of ISO 80000. Even there it was a good
-measure of how subtle the space is. The intuitive answer is reliably the wrong one, and the
-plausible-but-wrong model kept resurfacing, in its suggestions and in my own, until a
+measure of how subtle the space is. The intuitive answer is reliably the wrong one, and
+the plausible-but-wrong model kept resurfacing, in its suggestions and in my own, until a
 concrete engineering scenario or an ISO clause settled it. What matters is _where_ it
 stumbled, because those are the same places a human designer slips. Each dead end left us
 with a principle.
