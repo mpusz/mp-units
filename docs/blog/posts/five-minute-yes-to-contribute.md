@@ -26,8 +26,9 @@ and that one was lost at setup.
     **Contribution** stage of the six-stage library journey: do they want to help? New here?
     Start with [the overview](nobody-uses-your-great-library.md).
 
-A satisfied user is your best potential contributor, but only if saying yes is cheap. Two things decide whether it is: how you handle their first message, and how
-much setup stands between them and a working change.
+A satisfied user is your best potential contributor, but only if saying yes is cheap. Two
+things decide whether it is: how you handle their first message, and how much setup stands
+between them and a working change.
 
 ## Communication is a feature of your library
 
