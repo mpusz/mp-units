@@ -12,7 +12,7 @@ comments: true
 
 A library you depend on ships a new version. You go looking for what changed and find a
 git tag, `v2.0`, and a changelog that is a list of commit subjects. Did anything break?
-What is worth upgrading for? Do you need to touch your own code? You cannot tell, so you
+What is worth upgrading for? Do you need to touch your own code? You can't tell, so you
 either pin the old version forever or spend an afternoon reading diffs.
 
 <!-- more -->
@@ -43,7 +43,7 @@ a real release post, and make it answer three questions:
 
 That last one is where C++ is unusually treacherous, because "breaking" is often invisible
 until a user's build fails. A refined concept, an added template parameter, or a renamed
-entity does not look dramatic in a diff, and any of them can stop downstream code from
+entity doesn't look dramatic in a diff, and any of them can stop downstream code from
 compiling. So communicate breakage in two places. In the code, `[[deprecated]]` carries
 the migration path straight into the compiler warning:
 
@@ -97,7 +97,7 @@ the last before the 3.0 rework, kept accreting features until it was a lot to ab
 one post, and in hindsight I should have split it into smaller, more frequent releases
 that are easier to read and to adopt. Second, the recognition rituals beyond the release
 post, contributor spotlights, co-presenting invitations, reference letters, stay sparse.
-The reason is not that I am too busy for them. There are simply very few contributors to
+The reason isn't that I am too busy for them. There are simply very few contributors to
 celebrate, the same shortage the Contribution post ended on. The hardest version of
 recognition, turning a regular contributor into a co-maintainer who genuinely shares the
 load, is the one that would break that cycle. mp-units has had that before and could not

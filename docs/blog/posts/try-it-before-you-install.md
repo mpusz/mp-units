@@ -47,7 +47,7 @@ The same link pays off at almost every stage of a project, not just the first de
 - **Design discussion.** Send a link that compiles instead of a wall of code and "apply this
   patch, build with these flags."
 - **Bug reports.** Require a Compiler Explorer reproduction link in your issue template, and
-  the "it does not work on my machine" loop simply ends. mp-units' bug report form asks for
+  the "it doesn't work on my machine" loop simply ends. mp-units' bug report form asks for
   exactly this.
 - **Documentation.** "Try it" links and embedded, editable examples turn passive readers into
   people who change a unit and watch what the compiler says.
@@ -78,7 +78,7 @@ seconds, on the compiler they care about, without trusting me at all.
   For header-only libraries it is a small change, and the maintainers are helpful.
 - **Put a "Try it" link on every example.** mp-units leads its README with a live Compiler
   Explorer badge, so the first thing a visitor can do is run the code.
-- **Generate embeds from real code, do not hand-paste them.** A pasted Compiler Explorer
+- **Generate embeds from real code, don't hand-paste them.** A pasted Compiler Explorer
   iframe, like the one above, freezes its source inside the URL, so it drifts out of date
   exactly like a deep link the moment the API moves. Generating the embed from an ordinary
   code block instead keeps it current (see below).
@@ -101,7 +101,7 @@ turns every such block into a live Compiler Explorer iframe when the page loads.
 The point is that the code is a normal code block, the single source of truth. It renders
 as plain, readable code even with JavaScript off, it is the text the reader copies, and
 because
-it is real source it can be extracted and compiled in CI, so it cannot silently rot against
+it is real source it can be extracted and compiled in CI, so it can't silently rot against
 the API. Change the block and the embed changes with it. The
 [interactive tutorials](../../tutorials/index.md) use this throughout.
 

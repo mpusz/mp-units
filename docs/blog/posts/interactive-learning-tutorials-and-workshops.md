@@ -99,7 +99,7 @@ Where to start depends on what you already know:
 
 ### For Beginners
 
-1. Start with [Tutorials](../../tutorials/index.md): complete all 14 lessons (~3.5 hours)
+1. Start with [Tutorials](../../tutorials/index.md): complete all 17 lessons (~4 hours)
 2. Try the [Foundation Workshops](../../workshops/index.md): practice refactoring patterns
 3. Explore [Examples](../../examples/index.md): study complete applications
 4. Dive into specific topics in the [User's Guide](../../users_guide/index.md) as needed
@@ -122,7 +122,7 @@ Where to start depends on what you already know:
 
 ## Tutorials
 
-The **14 step-by-step tutorials** (~3.5 hours in total) start at "Hello World" and cover
+The **17 step-by-step tutorials** (~4 hours in total) start at "Hello World" and cover
 the core features of the library. Each tutorial is meant to:
 
 - **Build progressively**: each lesson builds on the previous one
@@ -170,7 +170,7 @@ How compile-time dimensional analysis works:
 
     Developers who want to eliminate runtime errors and write self-documenting code.
 
-#### 4. Affine Space (~55 minutes)
+#### 4. Affine Space (~90 minutes)
 
 The distinction between points and quantities:
 
@@ -178,6 +178,9 @@ The distinction between points and quantities:
 - [**Point Origins**](../../tutorials/affine_space/point_origins.md): work with multiple reference frames
 - [**Temperature Handling**](../../tutorials/affine_space/temperature_handling.md): handle absolute vs relative temperatures correctly
 - [**Temperature Applications**](../../tutorials/affine_space/temperature_applications.md): apply affine space concepts to real problems
+- [**Bounded Quantity Points**](../../tutorials/affine_space/bounded_quantity_points.md): attach domain constraints to origins
+- [**Custom Contract Handlers**](../../tutorials/affine_space/custom_contract_handlers.md): handle constraint violations the way a production system needs
+- [**Frame Projections**](../../tutorials/affine_space/frame_projections.md): convert between independent reference frames
 
 !!! success "Who it is for"
 
@@ -186,7 +189,7 @@ The distinction between points and quantities:
 
 ## Workshops
 
-After the tutorials there are **14 workshops**. Each one presents a coding challenge taken
+After the tutorials there are **15 workshops**. Each one presents a coding challenge taken
 from a real-world scenario and requires you to apply concepts from the
 [User's Guide](../../users_guide/index.md) to solve it.
 
@@ -235,6 +238,7 @@ Create domain-specific systems of quantities and units:
 
 More advanced patterns:
 
+- [**Bounds Validation**](../../workshops/advanced/bounds_validation.md): implement production-ready bounds validation with custom contract handlers
 - [**Strongly-Typed Counts**](../../workshops/advanced/strongly_typed_counts.md): use dimensionless quantities for graphics coordinates and buffer indices
 - [**Faster-than-Lightspeed Constants**](../../workshops/advanced/faster_than_lightspeed_constants.md): implement physical constants as compile-time units with automatic cancellation
 - [**Incremental Migration**](../../workshops/advanced/incremental_migration.md): gradually adopt **mp-units** in legacy projects

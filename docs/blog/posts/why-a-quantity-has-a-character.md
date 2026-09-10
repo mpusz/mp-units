@@ -379,7 +379,7 @@ says scalar and a scalar slot does not take an order-1 representation.
 ### What Eigen and Blaze actually expose
 
 Even when the representation is a richer type, its surface is not a reliable indicator of
-its character. This is what the two most popular C++ linear algebra libraries actually do.
+its character. This is what two widely used C++ linear algebra libraries actually do.
 
 - **Eigen and Blaze expose `real()` and `imag()` on their _real_ matrices and vectors**,
   because a real value is a degenerate complex one. If you detect "complex" by the

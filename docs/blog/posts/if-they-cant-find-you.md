@@ -69,8 +69,8 @@ The same string appears top to bottom, so a user searching for "mp-units cmake" 
 
 There is a specific version of this problem I see constantly from people on the C++
 committee, and it quietly kills good work. The reference implementation lives as a
-subdirectory inside a generic `wg21` or `proposals` repository. It cannot be found by a
-search for what it actually does, it cannot be starred or watched on its own, and it
+subdirectory inside a generic `wg21` or `proposals` repository. It can't be found by a
+search for what it actually does, it can't be starred or watched on its own, and it
 signals "academic exercise" rather than "production library." If you want adoption, and
 adoption is exactly what strengthens a standardization proposal, give the library its own
 repository with its own name and keep the paper separate. mp-units had real users and
@@ -118,7 +118,7 @@ can read). Specific, verifiable claims build trust before anyone clones the repo
 
 ## Stars are a discovery signal, not a vanity metric
 
-The overview post in this series made the case that stars do not measure adoption. They
+The overview post in this series made the case that stars don't measure adoption. They
 are not noise either. Stars measure reach and discoverability, the simple fact that people
 keep finding you, and the *shape* of the curve is feedback you can act on.
 
@@ -155,7 +155,7 @@ that small file says the project expects to be cited and intends to stick around
 
 Discovery is the stage mp-units now mostly gets right. The naming is consistent, the README
 leads with a specific pitch, there is a code sample on the first screen and a Compiler
-Explorer link beside it. But it earned that the hard way, and it is not finished:
+Explorer link beside it. But it earned that the hard way, and it isn't finished:
 
 - It started life as the generic `units` and only became mp-units with the 2.0 release. The
   early name cost real discoverability, and while the GitHub rename itself was cheap, it

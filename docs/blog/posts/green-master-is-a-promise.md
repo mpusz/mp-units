@@ -13,7 +13,7 @@ comments: true
 A stranger found your library. They have not read a line of your code yet. They glance at
 the CI badge and the date of the last commit, and in about thirty seconds they decide
 whether the project is alive and safe to depend on. A red badge, or a master branch last
-touched two years ago, and they leave. You will not hear from them about it.
+touched two years ago, and they leave. You won't hear from them about it.
 
 <!-- more -->
 
@@ -56,7 +56,7 @@ each one catches a different class of bug:
 
 Testing the full cross-product is hundreds of jobs, which is slow and quick to exhaust your
 CI quota. So most projects test one or two configurations and hope the rest hold, which they
-often do not.
+often don't.
 
 ## Fuzz your build matrix
 
@@ -97,7 +97,7 @@ configuration can be replayed instead of guessed at.
   </figcaption>
 </figure>
 
-The point is that you do not test everything every time. You explore the configuration space
+The point is that you don't test everything every time. You explore the configuration space
 in a way you can repeat, much like property-based testing explores an input space.
 
 ## Green means more than "it compiled"
@@ -111,7 +111,7 @@ A trustworthy master is gated in layers, and a change merges only when all of th
 - **Integration tests** consume the library the way a user will: `find_package`, a Conan
   package, a documentation build, a freestanding build.
 
-Each layer catches what the others cannot. One caveat on sanitizers, since every CI
+Each layer catches what the others can't. One caveat on sanitizers, since every CI
 checklist lists them: for a compile-time library like mp-units there is little runtime for
 ASan or UBSan to find. They earn their place in runtime-heavy code, so I run them where they
 pay off.
@@ -139,12 +139,12 @@ stricter settings than I do.
 When a potential user sees a green check on your latest commit, they read three things from
 it without consciously noticing: the project is actively maintained, because CI ran on this
 change; it works in their environment, because their compiler and platform were in the
-matrix; and it will not quietly break their build, because warnings are treated as errors.
+matrix; and it won't quietly break their build, because warnings are treated as errors.
 
 ## Proving performance
 
 CI proves correctness well. Performance is harder, so let me be concrete about what mp-units
-measures and what it does not.
+measures and what it doesn't.
 
 mp-units is a compile-time library, so its runtime promise is a narrow one: zero overhead.
 The abstraction should compile to exactly the code you would have written by hand, and the
@@ -154,21 +154,21 @@ deterministic and impossible to fake. Automating that as a CI gate, instead of
 checking it by eye, is harder than it sounds and is tracked as an open issue
 ([#804](https://github.com/mpusz/mp-units/issues/804)). The assembly proof gets its own
 post later in this series. I
-do not run runtime micro-benchmarks in CI, and for a library like this that is a deliberate
+don't run runtime micro-benchmarks in CI, and for a library like this that is a deliberate
 choice rather than a gap: shared runners vary by 10 to 20 percent between identical runs,
-so a number that noisy is not evidence. When you do need real runtime figures, measure them
+so a number that noisy isn't evidence. When you do need real runtime figures, measure them
 where the variance is controlled: on a self-hosted runner, by running the baseline and the
 change in the same job so the noise cancels, or through a service like
 [CodSpeed](https://codspeed.io/), whose instrumentation mode measures C++ on GitHub Actions
 with variance under one percent.
 
 The performance cost that actually bites a heavy template library is compile time, not
-runtime. That is the weak spot here, and the one I do not track rigorously, because it is
+runtime. That is the weak spot here, and the one I don't track rigorously, because it is
 genuinely hard to gate. Wall-clock compile time is
 as noisy on shared runners as any runtime benchmark, and the machine-independent proxies
 (template instantiation counts and binary size) move with every new feature and refactor,
 so a fail-on-change gate would fire constantly on a library that is still growing.
-CodSpeed, the service above, measures runtime, not compile time, so it does not rescue this
+CodSpeed, the service above, measures runtime, not compile time, so it doesn't rescue this
 either. What works is to treat compile time as something you profile rather than gate: when
 a build feels slower, or before a release, run Clang's `-ftime-trace` through
 [ClangBuildAnalyzer](https://github.com/aras-p/ClangBuildAnalyzer) to find the worst
@@ -188,14 +188,14 @@ changes go straight to master after a local mirror of the CI matrix,
 plus pre-commit hooks for formatting. Either way the principle is the same: "master is
 always green."
 
-One part of branch protection is not a choice a solo maintainer gets to make. GitHub does
+One part of branch protection isn't a choice a solo maintainer gets to make. GitHub does
 not let you approve your own pull request, so "require one approving review" is a rule I
-cannot satisfy rather than one I am skipping: switch it on alone and every change has to
+can't satisfy rather than one I am skipping: switch it on alone and every change has to
 land through an admin override. What a solo maintainer *can* require is passing CI, and
 that is the part worth enforcing. The review requirement becomes useful when a second
 regular contributor arrives, and that is when to turn it on.
 
-That same solo reality is where mp-units is weakest at this stage. The gap is not the
+That same solo reality is where mp-units is weakest at this stage. The gap isn't the
 automated gate, which runs on the pull request either way, but human review. With no second
 pair of eyes on most changes, a design mistake a reviewer would have questioned lands on
 master unchallenged, and the bus factor is low. The review process today is mostly just me,

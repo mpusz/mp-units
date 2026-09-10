@@ -12,21 +12,21 @@ comments: true
 
 I can tell you exactly how many stars mp-units has. The number is right there on the GitHub
 page and on my docs site, it updates in real time, and I can plot it against every competing
-units library on a single chart. What I cannot tell you, even roughly, is how many people
+units library on a single chart. What I can't tell you, even roughly, is how many people
 actually use it.
 
 <!-- more -->
 
 That gap is the whole problem. Stars are easy to count, and they do measure something
-real: reach, discoverability, the fact that people keep finding you. What they do not
+real: reach, discoverability, the fact that people keep finding you. What they don't
 measure is adoption. Users are nearly invisible. They surface only when something breaks:
 a bug report, a terse question, a one-line "does this work with my compiler?", and then
 silence again. For every one of those, some unknown number of people tried the library,
 hit a wall, and left without a word. You never see them, so you end up watching the number
-you can count and hoping it says something about the one you cannot.
+you can count and hoping it says something about the one you can't.
 
 It is tempting to believe a technically excellent library earns its users on merit. It
-does not. Technical excellence is not the same thing as project excellence, and the two
+doesn't. Technical excellence isn't the same thing as project excellence, and the two
 are genuinely different skills. I have watched dozens of brilliant C++ libraries sit at
 three users and no contributors, written by people who understand their domain far better
 than I understand mine. The code was never the problem.
@@ -71,10 +71,10 @@ follow take these on a few at a time, and each one stands on its own.
 
 I use mp-units as the worked example throughout, including the parts where it still falls
 short of its own advice. It is a high-visibility, standards-track library with more stars
-than any other C++ units library, and it still does not convert that visibility into the
+than any other C++ units library, and it still doesn't convert that visibility into the
 adoption it could have. That is what makes it an honest example. Every stage in this
 series is one I have gotten wrong, fixed late, or am still fixing in public, and I will
-say so plainly wherever mp-units does not practice what I preach.
+say so plainly wherever mp-units doesn't practice what I preach.
 
 There are three ways to read what follows:
 

@@ -44,8 +44,8 @@ form itself tells them they are doing something wrong. mp-units disables blank i
 points questions at [GitHub Discussions](https://github.com/mpusz/mp-units/discussions), so
 asking never feels like cluttering the tracker.
 
-Then kill the "it does not work" loop before it starts. Without structure, a vague report
-turns into five rounds of "what does not work?" and "what thing?", after which the reporter
+Then kill the "it doesn't work" loop before it starts. Without structure, a vague report
+turns into five rounds of "what doesn't work?" and "what thing?", after which the reporter
 gives up and you never learn why. An issue template ends that by requiring the specifics
 up front: operating system, compiler and version, C++ standard, library version, and a
 Compiler Explorer link that reproduces the problem. mp-units' bug report form asks for
@@ -68,7 +68,7 @@ will actually help. A real one is a small spec, what to change and where, why it
 what the contributor will learn, roughly how long it should take, and a named mentor
 assigned to see them through the pull request. The mentor is the part that matters most: a
 person's name on the issue is a commitment to help. That takes ten minutes to write, and
-it removes the decision paralysis that stops a first-timer cold. That is not just a label.
+it removes the decision paralysis that stops a first-timer cold. That isn't just a label.
 That is an invitation.
 
 ## Provide the environment

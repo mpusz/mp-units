@@ -37,7 +37,8 @@ ATLAS can adopt it incrementally.
 
 ### "Argument Soup"
 
-The root cause is that everything in HEP code is a raw `double`. Consider the
+The root cause is that most HEP code passes physical values around as raw
+`double` values. Consider the
 Geant4 `G4Trap` constructor:
 
 ```cpp
@@ -139,8 +140,8 @@ physical quantity, regardless of its dimension, is represented the same way.
 The need for compile-time dimensional analysis in HEP was recognized early.
 Walter Brown presented ["SI Library of Unit-Based Computation"](https://digital.library.unt.edu/ark:/67531/metadc668099)
 at CHEP '98 (International Conference in High Energy Physics, Chicago, IL,
-August 31 - September 4, 1998), **the first systematic approach to
-compile-time dimensional analysis in C++**. Nearly three decades later, most
+August 31 - September 4, 1998), **the first such library presented to the HEP
+community**. Nearly three decades later, most
 HEP code still uses raw `double` values, and dimensional errors are still
 invisible to the compiler.
 
@@ -213,7 +214,7 @@ inline constexpr struct luminous_intensity : quantity_spec<dim_luminous_intensit
 ### Commonly Used Units in HEP
 
 The HEP system provides units that match the conventions used by CLHEP, Gaudi,
-and Geant4, the majority of the CERN ecosystem. **Unlike some libraries,
+and Geant4, much of the CERN ecosystem. **Unlike some libraries,
 mp-units does not force conversion to privileged "base units"**, quantities can
 natively store values in any unit without automatic conversion. The units listed
 below simply reflect common HEP practice for numerical convenience:

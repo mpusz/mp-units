@@ -94,7 +94,7 @@ Below is a summary table comparing the three main quantity abstractions:
    because it compiles silently. In V2, both `quantity<K>` and `quantity<deg_C>` are deltas
    and are numerically interchangeable. A function accepting `quantity<K>` will silently
    accept `20 * deg_C`, using the numeric value `20` instead of `293.15`. Thermodynamic
-   expressions such as Carnot efficiency will then produce results that are off by a factor
+   expressions such as the ideal gas law will then produce results that are off by a factor
    of roughly 15, with no compiler warning and no runtime error.
 
 ### Example
@@ -947,7 +947,8 @@ it will convert automatically on the first assignment to a typed quantity such a
 
 Both approaches work correctly when used with care. `quantity_from_zero()` is concise but
 requires the point to already be in Kelvin. Subtraction from `si::absolute_zero` is
-always safe but carries an `mK` unit until rescaled. In either case, the right idiom,
+always safe but carries the common unit of both operands (`1/20 K` in the example above) until
+rescaled. In either case, the right idiom,
 `.in(K).quantity_from_zero()`, must be remembered and applied at every call site, and
 there is no way to enforce it through the type system.
 
@@ -987,8 +988,8 @@ as $20\ ^\circ\mathrm{C}$.
 **Convex Cone** is the corresponding _mathematical structure_: the set of all admissible
 values of a ratio-scale quantity is the non-negative half-line $[0, +\infty)$, which is a
 convex cone, because it is closed under addition and under multiplication by a
-non-negative scalar. Requests for a "validator" or "convex space" abstraction in
-quantities libraries are describing exactly this property.
+non-negative scalar. A request from an ISO C++ committee member for a "validator" or
+"convex space" abstraction in quantities libraries described exactly this property.
 
 The two terms therefore describe the same thing from two complementary angles:
 _Ratio Scale_ is the measurement-theory characterisation (what operations are physically

@@ -100,7 +100,7 @@ Harvard Bridge length = 364.4 smoot (2034.6 ft, 620.14 m) ± 1 εar
     - **Success stories** – Real-world testimonials from production deployments, research projects, or educational use
     - **Feedback** – Practical insights from developers, academics, and organizations using the library
 
-    Your experience—whether from production systems, research applications, or teaching—provides
+    Your experience, whether from production systems, research applications, or teaching, provides
     invaluable evidence for standardization and helps other potential users evaluate the library.
 
     [![Share Your Experience](https://img.shields.io/badge/Share_Your-Usage_Experience-blue?style=for-the-badge&labelColor=black&label=🌟%20Share%20Your)](https://github.com/mpusz/mp-units/issues/new?template=usage_experience.yml)

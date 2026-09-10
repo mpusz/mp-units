@@ -31,7 +31,7 @@ I think of a library that refuses to integrate with the ecosystem around it as
 **asocial**, a framing I owe to David Sankel's C++Now 2015 talk, [Big Projects, and CMake,
 and Git, Oh My!](https://www.youtube.com/watch?v=3eH4hMKl7XE). The fix is to be social:
 provide the integration you wished existed when you were the one trying to adopt a
-dependency. Every consumption path you do not support is a reason for someone to say no.
+dependency. Every consumption path you don't support is a reason for someone to say no.
 
 ## The asocial checklist
 
@@ -59,19 +59,19 @@ target_link_libraries(my_app PRIVATE mp-units::mp-units)
 
 That is the whole integration. A proper namespaced target (`mp-units::mp-units`) carries its
 include paths, its compile features, and its transitive dependencies with it, so the consumer
-does not configure any of that by hand. The `PRIVATE`/`PUBLIC`/`INTERFACE` distinction means
-your implementation details do not leak into their build graph.
+doesn't configure any of that by hand. The `PRIVATE`/`PUBLIC`/`INTERFACE` distinction means
+your implementation details don't leak into their build graph.
 
-The anti-patterns are the mirror image. Do not call `include_directories()`, which pollutes
-every target globally. Do not set `CMAKE_CXX_FLAGS` or force warning and ABI flags onto the
+The anti-patterns are the mirror image. Don't call `include_directories()`, which pollutes
+every target globally. Don't set `CMAKE_CXX_FLAGS` or force warning and ABI flags onto the
 consumer, because that silently overrides choices that are theirs to make. The complexity
 belongs inside your targets, not in their `CMakeLists.txt`.
 
 ## Be on a package manager
 
-If your library is not installable through a package manager, a large class of users simply
-cannot adopt it. Corporate security teams block arbitrary vendoring, and "just copy these
-headers in" is not an answer they will accept. mp-units is on
+If your library isn't installable through a package manager, a large class of users simply
+can't adopt it. Corporate security teams block arbitrary vendoring, and "just copy these
+headers in" isn't an answer they will accept. mp-units is on
 [Conan Center](https://conan.io/center/mp-units), so the requirement is one line:
 
 ```text
@@ -86,7 +86,7 @@ become Conan options the user sets without touching your source.
 ## Support several consumption paths
 
 Not everyone lives in a modern package-manager world, and that is fine. Air-gapped
-networks cannot reach a registry, large monorepos vendor everything, and some teams are on
+networks can't reach a registry, large monorepos vendor everything, and some teams are on
 CMake's built-in fetching, or on Bazel or Meson. Each environment you ignore is another
 "no," so support as many consumption paths as you reasonably can:
 
@@ -103,20 +103,20 @@ Conan, `find_package`, CPM and `FetchContent`, and `add_subdirectory`.
 ## Depend on as little as possible
 
 Every dependency you add is an adoption barrier for someone: another thing their security
-team must clear, another version to reconcile, another package an air-gapped build cannot
+team must clear, another version to reconcile, another package an air-gapped build can't
 fetch.
 So treat your dependency footprint as a feature to keep small.
 
 mp-units has **no mandatory external dependencies**. The only two it can use, a GSL
 implementation for contract checking and `{fmt}` for formatting, are optional, selected
-through Conan options, and exist purely to backfill features the standard library does not
+through Conan options, and exist purely to backfill features the standard library doesn't
 provide everywhere yet. These are stopgaps. As the standard and, just as importantly,
 every compiler it supports catch up (`std::format` usable across the whole matrix,
 contracts in C++26), the dependencies go away entirely.
 
 ## Wide compatibility
 
-"Modern C++" is not one thing, even at a fixed standard version. `std::format` (C++20) and
+"Modern C++" isn't one thing, even at a fixed standard version. `std::format` (C++20) and
 `import std` (C++23) each showed up in real compilers years after the paper, modules land
 unevenly, and the explicit object parameter arrives at different versions again. Your users
 are spread across every cell of that matrix, and you have three ways to deal with it. Require
@@ -144,7 +144,7 @@ One nuance is who keeps those running. I maintain the Conan packaging myself, be
 Conan is the ecosystem I actually know. The vcpkg port is community-maintained, and the
 people who own it keep it current, the version on vcpkg today matches the latest release.
 I am grateful for that, and I will also be honest that it is a path my users depend on
-which I do not control and could not quickly fix if it ever lapsed. That a third party
+which I don't control and could not quickly fix if it ever lapsed. That a third party
 maintains it at all is a good sign, but it is worth watching.
 
 These tips come from my conference talk on why technically excellent C++ libraries fail to

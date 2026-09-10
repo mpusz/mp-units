@@ -1036,7 +1036,7 @@ $$|\vec{M}| = |\vec{r}||\vec{F}|\sin\theta_r$$
 
 `operator*` on two scalar quantities cannot represent either of these correctly. The angle
 and the distinction between $\vec{d}$ and $\vec{r}$ are both lost. The result is just a
-product of magnitudes that is dimensionally valid for any of the four quantities:
+product of magnitudes that is dimensionally valid for every one of these quantities:
 
 ```cpp
 namespace bu = boost::units;
@@ -1585,8 +1585,8 @@ The following table compares safety features across major C++ units libraries:
 
 ### Cross-Language Libraries
 
-According to [star-history.com](https://www.star-history.com),
-**mp-units** directly competes with industry-leading units libraries from other languages.
+The [star-history.com](https://www.star-history.com) chart below puts **mp-units** alongside
+the leading units libraries from other languages.
 We compare against: [Pint](https://github.com/hgrecco/pint) (Python),
 [JSR-385](https://github.com/unitsofmeasurement/unit-api) (Java),
 [UOM](https://github.com/iliekturtles/uom) (Rust),
