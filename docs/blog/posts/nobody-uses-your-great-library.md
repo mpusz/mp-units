@@ -1,5 +1,6 @@
 ---
 date: 2026-09-03
+slug: your-library-is-great-nobody-uses-it-heres-why
 authors:
  - mpusz
 categories:
@@ -8,7 +9,7 @@ categories:
 comments: true
 ---
 
-# Your library is great. Nobody uses it. Here's why
+# Your library is great and nobody uses it
 
 I can tell you exactly how many stars mp-units has. The number is right there on the GitHub
 page and on my docs site, it updates in real time, and I can plot it against every competing
