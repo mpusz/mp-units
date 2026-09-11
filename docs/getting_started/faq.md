@@ -138,9 +138,10 @@ The joule does not behave that way, because it is a named unit constrained to _e
 // auto T2 = isq::torque(40 * J);   // Compile-time error: J is constrained to energy
 ```
 
-So the asymmetry is not an oversight. `N * m` cannot be constrained, because newton times
-metre is exactly what the joule expands to, and a quantity spelled that way has to remain
-usable for every quantity of that dimension.
+So the asymmetry is not an oversight. A kind rides on a unit's *name*, not on what the unit
+expands to: `Gy` and `Sv` are both `joule / kilogram` and still refuse each other.
+`N * m` has no name of its own, it is the product of two units, so a quantity spelled
+that way names no quantity and has to remain usable for every quantity of that dimension.
 
 This is also what makes a strict interface free for the caller. A function template may
 constrain its parameter as tightly as `QuantityOf<isq::torque>` while the call site still
