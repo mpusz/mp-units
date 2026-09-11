@@ -154,7 +154,7 @@ final result would fit perfectly in the representation type.
 
     - **Linear** (m ↔ ft): scaling factor 1,250
     - **Areas** (m² ↔ ft²): scaling factor (1,250)² = 1,562,500
-    - **Volumes** (m³ ↔ ft³): scaling factor (1,250)³ ≈ 1,953,125
+    - **Volumes** (m³ ↔ ft³): scaling factor (1,250)³ = 1,953,125,000
 
     We use meters/feet throughout this article because the more modest linear factor (1,250) makes
     these progressions easier to follow.
