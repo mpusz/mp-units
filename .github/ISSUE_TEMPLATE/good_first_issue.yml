@@ -2,7 +2,6 @@ name: 🛠️ [MAINTAINERS ONLY] Good First Issue Template
 description: "⚠️ For project maintainers creating curated onboarding tasks. Contributors: use Bug Report or Feature Request instead."
 title: "Good First Issue: "
 labels: ["good first issue"]
-assignees: ["mpusz"]
 body:
   - type: markdown
     attributes:
@@ -26,6 +25,12 @@ body:
         - Learning objectives
         - Time estimation
 
+        **Before filing, check the task against "What makes a good first issue here" in
+        `CLAUDE.md`.** In short: no ISQ modeling, no paywalled standard, no domain expertise the
+        issue cannot supply, and nothing blocked on a decision that has not been made yet.
+
+        Issue #831 is a worked example of the shape below.
+
   - type: textarea
     id: what
     attributes:
@@ -34,10 +39,15 @@ body:
         Clear, specific description of the task.
         Include file paths, function names, or specific deliverables.
       placeholder: |
-        Create a new example in `example/temperature_conversion.cpp` that demonstrates:
-        - Converting between Celsius and Fahrenheit using affine space
-        - Using `quantity_point` for absolute temperatures
-        - Using `quantity` for temperature differences
+        `scripts/codata_constants.py` generates nine headers from the NIST tables checked in under
+        `scripts/codata/`, and already knows how to verify itself:
+
+        ```bash
+        python3 scripts/codata_constants.py --check
+        ```
+
+        Nothing calls it. Add it to `.pre-commit-config.yaml` as a `repo: local` hook so it runs on
+        every commit and in CI.
     validations:
       required: true
 
@@ -49,11 +59,11 @@ body:
         Explain the rationale and impact of this work.
         Why does this task matter? What problem does it solve?
       placeholder: |
-        Temperature conversion is a common use case that confuses new users.
-        This example will:
-        - Clarify the distinction between absolute and relative temperatures
-        - Demonstrate a practical application of affine space
-        - Improve discoverability of quantity_point API
+        These headers are generated, checked in, and unverified. A hand edit to one of them, or a
+        change to the generator that nobody reruns, passes CI today without complaint.
+
+        State the limits too, so the contributor knows what the work is worth: the numeric check
+        never reads the checked-in files, and the NIST tables are themselves checked in.
     validations:
       required: true
 
@@ -75,12 +85,10 @@ body:
         What will the contributor learn by completing this task?
         List specific concepts, APIs, or techniques.
       placeholder: |
-        - C++20 concepts and constraints
-        - mp-units API design patterns
-        - Affine space modeling
-        - Writing clear example code
-        - Documenting code and examples
-        - Contributing to open source projects
+        - How a repository with generated sources stays consistent: generate, check in, verify
+        - Writing a `pre-commit` hook, including the settings that decide when it runs
+        - How the formatting CI job turns a local hook into a pull-request gate
+        - Reading a code generator well enough to know what its check does and does not prove
     validations:
       required: true
 
@@ -106,10 +114,12 @@ body:
         Optional: Provide specific guidance on how to begin.
         Link to relevant docs, similar examples, or key files to review.
       placeholder: |
-        1. Review the existing examples in `example/` directory, especially `measurement.cpp`
-        2. Read the [Affine Space](https://mpusz.github.io/mp-units/latest/users_guide/framework_basics/concepts/#affine-space) documentation
-        3. Look at `include/mp-units/systems/si/units.h` for reference on how `kelvin` and `degree_Celsius` are defined
-        4. Start by copying `example/hello_units.cpp` as a template
+        1. Install the tooling: `pip install -U pre-commit` (see `CONTRIBUTING.md`), then run the
+           check and confirm it passes, so you start from green
+        2. Break it deliberately, watch it fail, then revert. Knowing the failure mode comes first
+        3. Read `.pre-commit-config.yaml`, and the pre-commit docs on repository-local hooks
+        4. Name the trap they will hit: the `meta` hooks include `check-hooks-apply`, which fails a
+           hook whose `files` pattern matches nothing
 
   - type: textarea
     id: acceptance_criteria
@@ -119,12 +129,10 @@ body:
         Optional: Define when this task is complete.
         Be specific about expected behavior, test cases, or documentation.
       placeholder: |
-        - [ ] Example compiles without warnings on GCC 12+ and Clang 16+
-        - [ ] Demonstrates both `quantity_point` and `quantity` for temperatures
-        - [ ] Includes comments explaining the affine space concept
-        - [ ] Passes pre-commit formatting checks
-        - [ ] Listed in `example/CMakeLists.txt`
-        - [ ] Described in the documentation under "Examples"
+        - [ ] `pre-commit run --all-files` runs the new check
+        - [ ] It fails when a generated header is edited by hand, and passes once it is reverted
+        - [ ] The `files` pattern covers everything it depends on, naming each path explicitly
+        - [ ] `pre-commit run --all-files` passes on a clean checkout
 
   - type: textarea
     id: additional_context

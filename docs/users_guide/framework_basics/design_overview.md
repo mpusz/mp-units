@@ -250,6 +250,20 @@ inline constexpr struct speed_of_light_in_vacuum : named_constant<"c", mag<299'7
 The [unit equation](../../reference/glossary.md#unit-equation) of `si::metre / si::second`
 results in the `derived_unit<si::metre, per<si::second>>` type.
 
+!!! note
+
+    Never spell such a type yourself. `derived_unit` and the other `derived_XXX` class
+    templates are how the library represents the result of a unit equation, not a spelling
+    you are meant to write. Write the equation and let it name the type:
+
+    ```cpp
+    constexpr auto u = si::metre / si::second;
+    ```
+
+    Written out by hand the above fails to compile, because `si::metre` and `si::second`
+    name objects rather than types, so they have to be spelled `struct si::metre` and
+    `struct si::second` in a template argument list.
+
 
 ## Quantity reference
 
