@@ -46,12 +46,13 @@ namespace mp_units {
 
 // NOLINTNEXTLINE(readability-enum-initial-value)
 MP_UNITS_EXPORT enum class character_set : std::int8_t {
-  utf8,  // µs; m³;  L²MT⁻³
-  unicode [[deprecated("2.4.0: Use `utf8` instead")]] = utf8,
-  portable,  // us; m^3; L^2MT^-3
-  ascii [[deprecated("2.4.0: Use `portable` instead")]] = portable,
-  default_character_set = utf8,
-  default_encoding [[deprecated("2.5.0: Use `default_character_set` instead")]] = default_character_set
+  unicode,  // µs; m³;  L²MT⁻³
+  utf8 [[deprecated("2.6.0: Use `unicode` instead")]] = unicode,
+  basic,  // us; m^3; L^2MT^-3
+  portable [[deprecated("2.6.0: Use `basic` instead")]] = basic,
+  ascii [[deprecated("2.4.0: Use `basic` instead")]] = basic,
+  default_character_set [[deprecated("2.6.0: Name the character set explicitly, e.g. `unicode`")]] = unicode,
+  default_encoding [[deprecated("2.5.0: Name the character set explicitly, e.g. `unicode`")]] = unicode
 };
 
 using text_encoding [[deprecated("2.5.0: Use `character_set` instead")]] = character_set;

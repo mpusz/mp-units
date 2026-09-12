@@ -210,9 +210,9 @@ MP_UNITS_EXPORT_BEGIN
 struct dimension_symbol_formatting {
 #if MP_UNITS_COMP_CLANG
   // TODO prevents the deprecated usage in implicit copy constructor warning
-  character_set char_set = character_set::default_character_set;
+  character_set char_set = character_set::unicode;
 #else
-  [[deprecated("2.5.0: Use `char_set` instead")]] character_set encoding = character_set::default_character_set;
+  [[deprecated("2.5.0: Use `char_set` instead")]] character_set encoding = character_set::unicode;
   MP_UNITS_DIAGNOSTIC_PUSH
   MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
   character_set char_set = encoding;
@@ -357,7 +357,7 @@ class MP_UNITS_STD_FMT::formatter<D, Char> {
 
     if (it = mp_units::utility::at_most_one_of(begin, end, "UAP"); it != end)
       // TODO 'A' stands for an old and deprecated ASCII encoding
-      specs_.char_set = (*it == 'U') ? mp_units::character_set::utf8 : mp_units::character_set::portable;
+      specs_.char_set = (*it == 'U') ? mp_units::character_set::unicode : mp_units::character_set::basic;
 
     return end;
   }

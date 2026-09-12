@@ -271,9 +271,9 @@ template<typename CharT, std::output_iterator<CharT> Out>
 [[nodiscard]] constexpr Out print_separator(Out out, const unit_symbol_formatting& fmt)
 {
   if (fmt.separator == unit_symbol_separator::half_high_dot) {
-    if (fmt.char_set != character_set::utf8)
+    if (fmt.char_set != character_set::unicode)
       MP_UNITS_THROW(
-        std::invalid_argument("'unit_symbol_separator::half_high_dot' can be only used with 'character_set::utf8'"));
+        std::invalid_argument("'unit_symbol_separator::half_high_dot' can be only used with 'character_set::unicode'"));
     const std::string_view dot = "⋅" /* U+22C5 DOT OPERATOR */;
     out = detail::copy(dot.begin(), dot.end(), out);
   } else {

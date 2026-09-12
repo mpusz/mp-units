@@ -8,6 +8,21 @@ This page documents the version history and changes for the **mp-units** library
 
 ### 2.6.0 <small>TBD</small> { id="2.6.0" }
 
+- (!) refactor: `character_set` enumerators renamed back to `unicode` and `basic`,
+      following SG16 review of [P3045](https://wg21.link/p3045). The enumeration names a
+      *character set*, not an encoding, so `utf8` was the wrong name: UTF-8 is one
+      encoding of Unicode, and which encoding is used is decided by the output type rather
+      than by this selector. `utf8` and `portable` remain as deprecated aliases with
+      unchanged values, as does `ascii`
+- (!) refactor: every `default_*` enumerator is deprecated, again following SG16 review of
+      [P3045](https://wg21.link/p3045): `character_set::default_character_set`,
+      `unit_symbol_solidus::default_solidus` and
+      `unit_symbol_separator::default_separator` (and the older
+      `character_set::default_encoding`). A name that tracks the default silently changes
+      meaning whenever the default moves, so spell the value you want.
+      `unit_symbol_formatting` and `dimension_symbol_formatting` now initialize their
+      members with the concrete values those defaults pointed at, so behaviour is
+      unchanged
 - feat: the GLM integration models the tuple protocol for `glm::vec`. GLM states a
       vector's length only through its static `length()`, so the plugin maps that onto
       `std::tuple_size` and adds the matching `std::tuple_element` and `get<I>`. A GLM
@@ -22,6 +37,21 @@ This page documents the version history and changes for the **mp-units** library
 - fix: the GLM integration header no longer breaks an `import std;` build. Its own GLM
       includes now precede the standard-library import, since GLM pulls in `<cmath>`
       textually and libstdc++ requires every such include to come first
+- feat: vector quantity decomposition added. A vector quantity splits into 1D-vector
+      component quantities through `get<Idx>`, `std::tuple_size` / `std::tuple_element`, and
+      structured bindings, provided its representation offers element access (`get<I>` or
+      `operator[]`) and states its length through `std::tuple_size`. Declaring the component
+      axes with the `vector_components` customization point and `vector_axes` makes every
+      component a distinct kind, reachable as `get<Axis>` and rejected in cross-axis
+      arithmetic. The inverse is a component-wise constructor
+      (`quantity<flight_velocity[km / h], vec3> v = {fwd, lat, vert}`), which checks each
+      argument against the axis declared for its position, so a swapped pair of axis-typed
+      arguments does not compile (a simple quantity fits every axis, as everywhere else in
+      the library, and forfeits that check). Without such a declaration both directions
+      remain available, with each component carrying the whole's *kind* and positions no
+      longer told apart. The kind is what an undeclared decomposition actually knows: a
+      component belongs to the whole's kind without being the whole, and since a kind now
+      admits every character, the component keeps its vector character all the same
 - (!) fix: `isq::wave_vector` now roots in `angular_repetency` instead of `repetency`.
       ISO 80000-3 defines the wave vector both ways (item 3-21 against item 3-22), but
       ISO 80000-12 item 12-9.1 and the relation `k = p/ħ` require `k = 2π/λ`, so the

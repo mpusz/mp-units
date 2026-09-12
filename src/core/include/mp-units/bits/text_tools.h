@@ -102,7 +102,7 @@ template<std::intmax_t Value>
 template<typename CharT, std::size_t N, std::size_t M, std::output_iterator<CharT> Out>
 [[nodiscard]] constexpr Out copy(const symbol_text<N, M>& txt, character_set char_set, Out out)
 {
-  if (char_set == character_set::utf8) {
+  if (char_set == character_set::unicode) {
     if constexpr (std::is_same_v<CharT, char8_t>)
       return ::mp_units::detail::copy(txt.utf8().begin(), txt.utf8().end(), out);
     else if constexpr (std::is_same_v<CharT, char>) {

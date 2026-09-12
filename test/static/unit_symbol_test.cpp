@@ -49,59 +49,59 @@ static_assert(unit_symbol(metre) == "m");
 static_assert(unit_symbol(second) == "s");
 static_assert(unit_symbol(joule) == "J");
 static_assert(unit_symbol(degree_Celsius) == "\u2103");
-static_assert(unit_symbol<usf{.char_set = portable}>(degree_Celsius) == "`C");
+static_assert(unit_symbol<usf{.char_set = basic}>(degree_Celsius) == "`C");
 static_assert(unit_symbol(kilogram) == "kg");
 static_assert(unit_symbol(hour) == "h");
 
 // prefixed units
 static_assert(unit_symbol(quecto<ohm>) == "qΩ");
-static_assert(unit_symbol<usf{.char_set = portable}>(quecto<ohm>) == "qohm");
+static_assert(unit_symbol<usf{.char_set = basic}>(quecto<ohm>) == "qohm");
 static_assert(unit_symbol(ronto<ohm>) == "rΩ");
-static_assert(unit_symbol<usf{.char_set = portable}>(ronto<ohm>) == "rohm");
+static_assert(unit_symbol<usf{.char_set = basic}>(ronto<ohm>) == "rohm");
 static_assert(unit_symbol(yocto<ohm>) == "yΩ");
-static_assert(unit_symbol<usf{.char_set = portable}>(yocto<ohm>) == "yohm");
+static_assert(unit_symbol<usf{.char_set = basic}>(yocto<ohm>) == "yohm");
 static_assert(unit_symbol(zepto<ohm>) == "zΩ");
-static_assert(unit_symbol<usf{.char_set = portable}>(zepto<ohm>) == "zohm");
+static_assert(unit_symbol<usf{.char_set = basic}>(zepto<ohm>) == "zohm");
 static_assert(unit_symbol(atto<ohm>) == "aΩ");
-static_assert(unit_symbol<usf{.char_set = portable}>(atto<ohm>) == "aohm");
+static_assert(unit_symbol<usf{.char_set = basic}>(atto<ohm>) == "aohm");
 static_assert(unit_symbol(femto<ohm>) == "fΩ");
-static_assert(unit_symbol<usf{.char_set = portable}>(femto<ohm>) == "fohm");
+static_assert(unit_symbol<usf{.char_set = basic}>(femto<ohm>) == "fohm");
 static_assert(unit_symbol(pico<ohm>) == "pΩ");
-static_assert(unit_symbol<usf{.char_set = portable}>(pico<ohm>) == "pohm");
+static_assert(unit_symbol<usf{.char_set = basic}>(pico<ohm>) == "pohm");
 static_assert(unit_symbol(nano<ohm>) == "nΩ");
-static_assert(unit_symbol<usf{.char_set = portable}>(nano<ohm>) == "nohm");
+static_assert(unit_symbol<usf{.char_set = basic}>(nano<ohm>) == "nohm");
 static_assert(unit_symbol(micro<ohm>) == "µΩ");
-static_assert(unit_symbol<usf{.char_set = portable}>(micro<ohm>) == "uohm");
+static_assert(unit_symbol<usf{.char_set = basic}>(micro<ohm>) == "uohm");
 static_assert(unit_symbol(milli<ohm>) == "mΩ");
-static_assert(unit_symbol<usf{.char_set = portable}>(milli<ohm>) == "mohm");
+static_assert(unit_symbol<usf{.char_set = basic}>(milli<ohm>) == "mohm");
 static_assert(unit_symbol(centi<ohm>) == "cΩ");
-static_assert(unit_symbol<usf{.char_set = portable}>(centi<ohm>) == "cohm");
+static_assert(unit_symbol<usf{.char_set = basic}>(centi<ohm>) == "cohm");
 static_assert(unit_symbol(deci<ohm>) == "dΩ");
-static_assert(unit_symbol<usf{.char_set = portable}>(deci<ohm>) == "dohm");
+static_assert(unit_symbol<usf{.char_set = basic}>(deci<ohm>) == "dohm");
 static_assert(unit_symbol(deca<ohm>) == "daΩ");
-static_assert(unit_symbol<usf{.char_set = portable}>(deca<ohm>) == "daohm");
+static_assert(unit_symbol<usf{.char_set = basic}>(deca<ohm>) == "daohm");
 static_assert(unit_symbol(hecto<ohm>) == "hΩ");
-static_assert(unit_symbol<usf{.char_set = portable}>(hecto<ohm>) == "hohm");
+static_assert(unit_symbol<usf{.char_set = basic}>(hecto<ohm>) == "hohm");
 static_assert(unit_symbol(kilo<ohm>) == "kΩ");
-static_assert(unit_symbol<usf{.char_set = portable}>(kilo<ohm>) == "kohm");
+static_assert(unit_symbol<usf{.char_set = basic}>(kilo<ohm>) == "kohm");
 static_assert(unit_symbol(mega<ohm>) == "MΩ");
-static_assert(unit_symbol<usf{.char_set = portable}>(mega<ohm>) == "Mohm");
+static_assert(unit_symbol<usf{.char_set = basic}>(mega<ohm>) == "Mohm");
 static_assert(unit_symbol(giga<ohm>) == "GΩ");
-static_assert(unit_symbol<usf{.char_set = portable}>(giga<ohm>) == "Gohm");
+static_assert(unit_symbol<usf{.char_set = basic}>(giga<ohm>) == "Gohm");
 static_assert(unit_symbol(tera<ohm>) == "TΩ");
-static_assert(unit_symbol<usf{.char_set = portable}>(tera<ohm>) == "Tohm");
+static_assert(unit_symbol<usf{.char_set = basic}>(tera<ohm>) == "Tohm");
 static_assert(unit_symbol(peta<ohm>) == "PΩ");
-static_assert(unit_symbol<usf{.char_set = portable}>(peta<ohm>) == "Pohm");
+static_assert(unit_symbol<usf{.char_set = basic}>(peta<ohm>) == "Pohm");
 static_assert(unit_symbol(exa<ohm>) == "EΩ");
-static_assert(unit_symbol<usf{.char_set = portable}>(exa<ohm>) == "Eohm");
+static_assert(unit_symbol<usf{.char_set = basic}>(exa<ohm>) == "Eohm");
 static_assert(unit_symbol(zetta<ohm>) == "ZΩ");
-static_assert(unit_symbol<usf{.char_set = portable}>(zetta<ohm>) == "Zohm");
+static_assert(unit_symbol<usf{.char_set = basic}>(zetta<ohm>) == "Zohm");
 static_assert(unit_symbol(yotta<ohm>) == "YΩ");
-static_assert(unit_symbol<usf{.char_set = portable}>(yotta<ohm>) == "Yohm");
+static_assert(unit_symbol<usf{.char_set = basic}>(yotta<ohm>) == "Yohm");
 static_assert(unit_symbol(ronna<ohm>) == "RΩ");
-static_assert(unit_symbol<usf{.char_set = portable}>(ronna<ohm>) == "Rohm");
+static_assert(unit_symbol<usf{.char_set = basic}>(ronna<ohm>) == "Rohm");
 static_assert(unit_symbol(quetta<ohm>) == "QΩ");
-static_assert(unit_symbol<usf{.char_set = portable}>(quetta<ohm>) == "Qohm");
+static_assert(unit_symbol<usf{.char_set = basic}>(quetta<ohm>) == "Qohm");
 
 static_assert(unit_symbol(kibi<bit>) == "Kibit");
 static_assert(unit_symbol(mebi<bit>) == "Mibit");
@@ -114,13 +114,13 @@ static_assert(unit_symbol(yobi<bit>) == "Yibit");
 
 // scaled units
 static_assert(unit_symbol(mag<100> * metre) == "(100 m)");
-static_assert(unit_symbol<usf{.char_set = portable}>(mag<100> * metre) == "(100 m)");
+static_assert(unit_symbol<usf{.char_set = basic}>(mag<100> * metre) == "(100 m)");
 static_assert(unit_symbol(mag<1000> * metre) == "(10³ m)");
 static_assert(unit_symbol(mag_power<10, 3> * metre) == "(10³ m)");
-static_assert(unit_symbol<usf{.char_set = portable}>(mag<1000> * metre) == "(10^3 m)");
+static_assert(unit_symbol<usf{.char_set = basic}>(mag<1000> * metre) == "(10^3 m)");
 static_assert(unit_symbol(mag<6000> * metre) == "(6 × 10³ m)");
 static_assert(unit_symbol(mag<6> * mag_power<10, 3> * metre) == "(6 × 10³ m)");
-static_assert(unit_symbol<usf{.char_set = portable}>(mag<6000> * metre) == "(6 x 10^3 m)");
+static_assert(unit_symbol<usf{.char_set = basic}>(mag<6000> * metre) == "(6 x 10^3 m)");
 static_assert(unit_symbol(mag<10'600> * metre) == "(10600 m)");
 static_assert(unit_symbol(mag<60> * second) == "(60 s)");
 static_assert(unit_symbol(mag_ratio<1, 18> * metre / second) == "(1/18 m)/s");
@@ -129,18 +129,18 @@ static_assert(unit_symbol(mag_ratio<1, 1800> * metre / second) == "(1/1800 m)/s"
 static_assert(unit_symbol(mag_ratio<1, 1800> * (metre / second)) == "(1/1800 m/s)");
 static_assert(unit_symbol(mag_ratio<1, 18'000> * metre / second) == "(1/18 × 10⁻³ m)/s");
 static_assert(unit_symbol(mag_ratio<1, 18'000> * (metre / second)) == "(1/18 × 10⁻³ m/s)");
-static_assert(unit_symbol<usf{.char_set = portable}>(mag_ratio<1, 18'000> * metre / second) == "(1/18 x 10^-3 m)/s");
-static_assert(unit_symbol<usf{.char_set = portable}>(mag_ratio<1, 18'000> * (metre / second)) == "(1/18 x 10^-3 m/s)");
+static_assert(unit_symbol<usf{.char_set = basic}>(mag_ratio<1, 18'000> * metre / second) == "(1/18 x 10^-3 m)/s");
+static_assert(unit_symbol<usf{.char_set = basic}>(mag_ratio<1, 18'000> * (metre / second)) == "(1/18 x 10^-3 m/s)");
 
 // TODO implement all the below
 // static_assert(unit_symbol(mag_power<2, 1, 2> * one) == "(2^(1/2))");
-// static_assert(unit_symbol<usf{.char_set = portable}>(mag_power<2, 1, 2> * one) == "(2^(1/2))");
+// static_assert(unit_symbol<usf{.char_set = basic}>(mag_power<2, 1, 2> * one) == "(2^(1/2))");
 // static_assert(unit_symbol(mag_power<2, 1, 2> * m) == "(2^(1/2) m)");
-// static_assert(unit_symbol<usf{.char_set = portable}>(mag_power<2, 1, 2> * m) == "(2^(1/2) m)");
+// static_assert(unit_symbol<usf{.char_set = basic}>(mag_power<2, 1, 2> * m) == "(2^(1/2) m)");
 // static_assert(unit_symbol(mag<1> / mag_power<2, 1, 2> * one) == "(1/2^(1/2))");
-// static_assert(unit_symbol<usf{.char_set = portable}>(mag<1> / mag_power<2, 1, 2> * one) == "(1/2^(1/2))");
+// static_assert(unit_symbol<usf{.char_set = basic}>(mag<1> / mag_power<2, 1, 2> * one) == "(1/2^(1/2))");
 // static_assert(unit_symbol(mag<1> / mag_power<2, 1, 2> * m) == "(1/2^(1/2) m)");
-// static_assert(unit_symbol<usf{.char_set = portable}>(mag<1> / mag_power<2, 1, 2> * m) == "(1/2^(1/2) m)");
+// static_assert(unit_symbol<usf{.char_set = basic}>(mag<1> / mag_power<2, 1, 2> * m) == "(1/2^(1/2) m)");
 
 // magnitude constants
 #if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 18
@@ -152,48 +152,48 @@ inline constexpr struct e final : mag_constant<"e", std::numbers::e_v<long doubl
 } e;
 
 static_assert(unit_symbol(mag<pi_c> * one) == "(π)");
-static_assert(unit_symbol<usf{.char_set = portable}>(mag<pi_c> * one) == "(pi)");
+static_assert(unit_symbol<usf{.char_set = basic}>(mag<pi_c> * one) == "(pi)");
 static_assert(unit_symbol(mag<pi_c> * metre) == "(π m)");
-static_assert(unit_symbol<usf{.char_set = portable}>(mag<pi_c> * metre) == "(pi m)");
+static_assert(unit_symbol<usf{.char_set = basic}>(mag<pi_c> * metre) == "(pi m)");
 static_assert(unit_symbol(mag<2> * mag<pi_c> * metre) == "(2 π m)");
-static_assert(unit_symbol<usf{.char_set = portable}>(mag<2> * mag<pi_c> * metre) == "(2 pi m)");
+static_assert(unit_symbol<usf{.char_set = basic}>(mag<2> * mag<pi_c> * metre) == "(2 pi m)");
 static_assert(unit_symbol<usf{.separator = half_high_dot}>(mag<2> * mag<pi_c> * metre) == "(2⋅π m)");
 
 static_assert(unit_symbol(mag<1> / mag<pi_c> * one) == "(1/π)");
-static_assert(unit_symbol<usf{.char_set = portable}>(mag<1> / mag<pi_c> * one) == "(1/pi)");
+static_assert(unit_symbol<usf{.char_set = basic}>(mag<1> / mag<pi_c> * one) == "(1/pi)");
 static_assert(unit_symbol<usf{.solidus = never}>(mag<1> / mag<pi_c> * one) == "(π⁻¹)");
-static_assert(unit_symbol<usf{.char_set = portable, .solidus = never}>(mag<1> / mag<pi_c> * one) == "(pi^-1)");
+static_assert(unit_symbol<usf{.char_set = basic, .solidus = never}>(mag<1> / mag<pi_c> * one) == "(pi^-1)");
 
 static_assert(unit_symbol(mag<1> / mag<pi_c> * metre) == "(1/π m)");
-static_assert(unit_symbol<usf{.char_set = portable}>(mag<1> / mag<pi_c> * metre) == "(1/pi m)");
+static_assert(unit_symbol<usf{.char_set = basic}>(mag<1> / mag<pi_c> * metre) == "(1/pi m)");
 static_assert(unit_symbol<usf{.solidus = never}>(mag<1> / mag<pi_c> * metre) == "(π⁻¹ m)");
-static_assert(unit_symbol<usf{.char_set = portable, .solidus = never}>(mag<1> / mag<pi_c> * metre) == "(pi^-1 m)");
+static_assert(unit_symbol<usf{.char_set = basic, .solidus = never}>(mag<1> / mag<pi_c> * metre) == "(pi^-1 m)");
 
 static_assert(unit_symbol(mag<2> / mag<pi_c> * metre) == "(2/π m)");
-static_assert(unit_symbol<usf{.char_set = portable}>(mag<2> / mag<pi_c> * metre) == "(2/pi m)");
+static_assert(unit_symbol<usf{.char_set = basic}>(mag<2> / mag<pi_c> * metre) == "(2/pi m)");
 static_assert(unit_symbol<usf{.solidus = never}>(mag<2> / mag<pi_c> * metre) == "(2 π⁻¹ m)");
-static_assert(unit_symbol<usf{.char_set = portable, .solidus = never}>(mag<2> / mag<pi_c> * metre) == "(2 pi^-1 m)");
+static_assert(unit_symbol<usf{.char_set = basic, .solidus = never}>(mag<2> / mag<pi_c> * metre) == "(2 pi^-1 m)");
 static_assert(unit_symbol<usf{.solidus = never, .separator = half_high_dot}>(mag<2> / mag<pi_c> * metre) ==
               "(2⋅π⁻¹ m)");
 
 static_assert(unit_symbol(mag<1> / (mag<2> * mag<pi_c>)*metre) == "(2⁻¹ π⁻¹ m)");
 static_assert(unit_symbol<usf{.solidus = always}>(mag<1> / (mag<2> * mag<pi_c>)*metre) == "(1/(2 π) m)");
-static_assert(unit_symbol<usf{.char_set = portable, .solidus = always}>(mag<1> / (mag<2> * mag<pi_c>)*metre) ==
+static_assert(unit_symbol<usf{.char_set = basic, .solidus = always}>(mag<1> / (mag<2> * mag<pi_c>)*metre) ==
               "(1/(2 pi) m)");
 static_assert(unit_symbol(mag_ratio<1, 2> / mag<pi_c> * metre) == "(2⁻¹ π⁻¹ m)");
 static_assert(unit_symbol<usf{.solidus = always}>(mag_ratio<1, 2> / mag<pi_c> * metre) == "(1/(2 π) m)");
-static_assert(unit_symbol<usf{.char_set = portable, .solidus = always}>(mag_ratio<1, 2> / mag<pi_c> * metre) ==
+static_assert(unit_symbol<usf{.char_set = basic, .solidus = always}>(mag_ratio<1, 2> / mag<pi_c> * metre) ==
               "(1/(2 pi) m)");
 static_assert(unit_symbol(mag_ratio<1, 2> * mag<pi_c> * metre) == "(π/2 m)");
 
 static_assert(unit_symbol(mag_power<pi_c, 2> * one) == "(π²)");
-static_assert(unit_symbol<usf{.char_set = portable}>(mag_power<pi_c, 2> * one) == "(pi^2)");
+static_assert(unit_symbol<usf{.char_set = basic}>(mag_power<pi_c, 2> * one) == "(pi^2)");
 static_assert(unit_symbol(mag_power<pi_c, 1, 2> * metre) == "(π^(1/2) m)");
-static_assert(unit_symbol<usf{.char_set = portable}>(mag_power<pi_c, 1, 2> * metre) == "(pi^(1/2) m)");
+static_assert(unit_symbol<usf{.char_set = basic}>(mag_power<pi_c, 1, 2> * metre) == "(pi^(1/2) m)");
 
 static_assert(unit_symbol(mag<pi_c> * mag<e> * one) == "(e π)");
 static_assert(unit_symbol(mag<e> * mag<pi_c> * one) == "(e π)");
-static_assert(unit_symbol<usf{.char_set = portable}>(mag<pi_c> * mag<e> * one) == "(e pi)");
+static_assert(unit_symbol<usf{.char_set = basic}>(mag<pi_c> * mag<e> * one) == "(e pi)");
 static_assert(unit_symbol(mag<pi_c> / mag<e> * one) == "(π/e)");
 static_assert(unit_symbol(mag<1> / mag<e> * mag<pi_c> * one) == "(π/e)");
 static_assert(unit_symbol<usf{.solidus = never}>(mag<pi_c> / mag<e> * one) == "(π e⁻¹)");
@@ -218,51 +218,49 @@ static_assert(unit_symbol(get_common_unit(radian, degree)) == "[(1/π°), (1/180
 static_assert(unit_symbol(one) == "");  // NOLINT(readability-container-size-empty)
 static_assert(unit_symbol(percent) == "%");
 static_assert(unit_symbol(per_mille) == "‰");
-static_assert(unit_symbol<usf{.char_set = portable}>(per_mille) == "%o");
+static_assert(unit_symbol<usf{.char_set = basic}>(per_mille) == "%o");
 static_assert(unit_symbol(parts_per_million) == "ppm");
 static_assert(unit_symbol(square(metre)) == "m²");
-static_assert(unit_symbol<usf{.char_set = portable}>(square(metre)) == "m^2");
+static_assert(unit_symbol<usf{.char_set = basic}>(square(metre)) == "m^2");
 static_assert(unit_symbol(cubic(metre)) == "m³");
-static_assert(unit_symbol<usf{.char_set = portable}>(cubic(metre)) == "m^3");
+static_assert(unit_symbol<usf{.char_set = basic}>(cubic(metre)) == "m^3");
 static_assert(unit_symbol(kilo<metre> * metre) == "km m");
 static_assert(unit_symbol<usf{.separator = half_high_dot}>(kilo<metre> * metre) == "km⋅m");
 static_assert(unit_symbol(metre / metre) == "");  // NOLINT(readability-container-size-empty)
 static_assert(unit_symbol(kilo<metre> / metre) == "km/m");
 static_assert(unit_symbol<usf{.solidus = never}>(kilo<metre> / metre) == "km m⁻¹");
-static_assert(unit_symbol<usf{.char_set = portable, .solidus = never}>(kilo<metre> / metre) == "km m^-1");
+static_assert(unit_symbol<usf{.char_set = basic, .solidus = never}>(kilo<metre> / metre) == "km m^-1");
 static_assert(unit_symbol(metre / second) == "m/s");
 static_assert(unit_symbol<usf{.solidus = always}>(metre / second) == "m/s");
 static_assert(unit_symbol<usf{.solidus = never}>(metre / second) == "m s⁻¹");
-static_assert(unit_symbol<usf{.char_set = portable, .solidus = never}>(metre / second) == "m s^-1");
+static_assert(unit_symbol<usf{.char_set = basic, .solidus = never}>(metre / second) == "m s^-1");
 static_assert(unit_symbol<usf{.solidus = never, .separator = half_high_dot}>(metre / second) == "m⋅s⁻¹");
 static_assert(unit_symbol(metre / square(second)) == "m/s²");
-static_assert(unit_symbol<usf{.char_set = portable}>(metre / square(second)) == "m/s^2");
+static_assert(unit_symbol<usf{.char_set = basic}>(metre / square(second)) == "m/s^2");
 static_assert(unit_symbol<usf{.solidus = always}>(metre / square(second)) == "m/s²");
-static_assert(unit_symbol<usf{.char_set = portable, .solidus = always}>(metre / square(second)) == "m/s^2");
+static_assert(unit_symbol<usf{.char_set = basic, .solidus = always}>(metre / square(second)) == "m/s^2");
 static_assert(unit_symbol<usf{.solidus = never}>(metre / square(second)) == "m s⁻²");
-static_assert(unit_symbol<usf{.char_set = portable, .solidus = never}>(metre / square(second)) == "m s^-2");
+static_assert(unit_symbol<usf{.char_set = basic, .solidus = never}>(metre / square(second)) == "m s^-2");
 static_assert(unit_symbol<usf{.solidus = never, .separator = half_high_dot}>(metre / square(second)) == "m⋅s⁻²");
 static_assert(unit_symbol(kilogram * metre / square(second)) == "kg m/s²");
 static_assert(unit_symbol<usf{.separator = half_high_dot}>(kilogram * metre / square(second)) == "kg⋅m/s²");
-static_assert(unit_symbol<usf{.char_set = portable}>(kilogram * metre / square(second)) == "kg m/s^2");
+static_assert(unit_symbol<usf{.char_set = basic}>(kilogram * metre / square(second)) == "kg m/s^2");
 static_assert(unit_symbol<usf{.solidus = always}>(kilogram * metre / square(second)) == "kg m/s²");
-static_assert(unit_symbol<usf{.char_set = portable, .solidus = always}>(kilogram * metre / square(second)) ==
-              "kg m/s^2");
+static_assert(unit_symbol<usf{.char_set = basic, .solidus = always}>(kilogram * metre / square(second)) == "kg m/s^2");
 static_assert(unit_symbol<usf{.solidus = never}>(kilogram * metre / square(second)) == "kg m s⁻²");
-static_assert(unit_symbol<usf{.char_set = portable, .solidus = never}>(kilogram * metre / square(second)) ==
-              "kg m s^-2");
+static_assert(unit_symbol<usf{.char_set = basic, .solidus = never}>(kilogram * metre / square(second)) == "kg m s^-2");
 static_assert(unit_symbol<usf{.solidus = never, .separator = half_high_dot}>(kilogram * metre / square(second)) ==
               "kg⋅m⋅s⁻²");
 static_assert(unit_symbol(one / metre / square(second)) == "m⁻¹ s⁻²");
 static_assert(unit_symbol<usf{.solidus = always}>(one / metre / square(second)) == "1/(m s²)");
 static_assert(unit_symbol(kilogram / metre / square(second)) == "kg m⁻¹ s⁻²");
 static_assert(unit_symbol<usf{.separator = half_high_dot}>(kilogram / metre / square(second)) == "kg⋅m⁻¹⋅s⁻²");
-static_assert(unit_symbol<usf{.char_set = portable}>(kilogram / metre / square(second)) == "kg m^-1 s^-2");
+static_assert(unit_symbol<usf{.char_set = basic}>(kilogram / metre / square(second)) == "kg m^-1 s^-2");
 static_assert(unit_symbol<usf{.solidus = always}>(kilogram / metre / square(second)) == "kg/(m s²)");
-static_assert(unit_symbol<usf{.char_set = portable, .solidus = always}>(kilogram / metre / square(second)) ==
+static_assert(unit_symbol<usf{.char_set = basic, .solidus = always}>(kilogram / metre / square(second)) ==
               "kg/(m s^2)");
 static_assert(unit_symbol<usf{.solidus = never}>(kilogram / metre / square(second)) == "kg m⁻¹ s⁻²");
-static_assert(unit_symbol<usf{.char_set = portable, .solidus = never}>(kilogram / metre / square(second)) ==
+static_assert(unit_symbol<usf{.char_set = basic, .solidus = never}>(kilogram / metre / square(second)) ==
               "kg m^-1 s^-2");
 static_assert(unit_symbol<usf{.solidus = never, .separator = half_high_dot}>(kilogram / metre / square(second)) ==
               "kg⋅m⁻¹⋅s⁻²");

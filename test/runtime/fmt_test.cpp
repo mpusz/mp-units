@@ -66,7 +66,7 @@ TEST_CASE("dimension_symbol", "[dimension][symbol]")
 
   SECTION("Portable mode")
   {
-    os << dimension_symbol<dimension_symbol_formatting{.char_set = portable}>(get_dimension(isq::power));
+    os << dimension_symbol<dimension_symbol_formatting{.char_set = basic}>(get_dimension(isq::power));
     CHECK(os.str() == "L^2MT^-3");
   }
 }
@@ -87,7 +87,7 @@ TEST_CASE("unit_symbol", "[unit][symbol]")
 
   SECTION("Portable mode")
   {
-    os << unit_symbol<unit_symbol_formatting{.char_set = portable}>(m / s2);
+    os << unit_symbol<unit_symbol_formatting{.char_set = basic}>(m / s2);
     CHECK(os.str() == "m/s^2");
   }
 
@@ -308,7 +308,7 @@ TEST_CASE("unit formatting error handling", "[unit][fmt][exception]")
     }
   }
 
-  SECTION("half_high_dot separator requested for portable encoding should throw")
+  SECTION("half_high_dot separator requested for basic encoding should throw")
   {
     REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:dPa}", MP_UNITS_STD_FMT::make_format_args(m)),
                            MP_UNITS_STD_FMT::format_error,

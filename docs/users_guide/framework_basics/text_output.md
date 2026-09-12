@@ -90,25 +90,27 @@ composes to express dimensions and units of derived quantities.
 
 ## Symbols for derived entities
 
-### `text_encoding`
+### `character_set`
 
 [ISQ](../../reference/glossary.md#isq) and [SI](../../reference/glossary.md#si) standards
-always specify symbols using UTF-8 encoding. This is why it is a default and primary
-target for text output. However, in some applications or environments, a standard portable
-text output using only the characters from the
-[basic literal character set](https://en.cppreference.com/w/cpp/language/charset) can be
-preferred by users.
+always specify symbols using Unicode characters. This is why it is the default and primary
+target for text output. However, in some applications or environments, output limited to
+the [basic literal character set](https://en.cppreference.com/w/cpp/language/charset) can
+be preferred by users.
 
-This is why the library provides an option to change the default encoding to the
-portable one with:
+This is why the library lets you select the character set to render a symbol in:
 
 ```cpp
-enum class text_encoding : std::int8_t {
-  utf8,       // µs; m³;  L²MT⁻³
-  portable,   // us; m^3; L^2MT^-3
-  default_encoding = utf8
+enum class character_set : std::int8_t {
+  unicode,  // µs; m³;  L²MT⁻³
+  basic     // us; m^3; L^2MT^-3
 };
 ```
+
+!!! note
+
+    This names a *character set*, not an encoding. It says which characters a symbol may use,
+    and leaves how they are encoded to the output type.
 
 ### Symbols of derived dimensions
 
@@ -119,29 +121,25 @@ algorithm.
 
 ```cpp
 struct dimension_symbol_formatting {
-  text_encoding encoding = text_encoding::default_encoding;
+  character_set char_set = character_set::unicode;
 };
 ```
 
 #### `dimension_symbol()`
 
-Returns a `std::string_view` with the symbol of a dimension for the provided configuration:
+Returns a `std::basic_string_view<CharT>` with the symbol of a dimension for the provided
+configuration:
 
 ```cpp
 template<dimension_symbol_formatting fmt = dimension_symbol_formatting{}, typename CharT = char, Dimension D>
-[[nodiscard]] consteval std::string_view dimension_symbol(D);
+[[nodiscard]] consteval std::basic_string_view<CharT> dimension_symbol(D);
 ```
 
 For example:
 
 ```cpp
-static_assert(dimension_symbol<{.encoding = text_encoding::portable}>(get_dimension(isq::power)) == "L^2MT^-3");
+static_assert(dimension_symbol<{.char_set = character_set::basic}>(get_dimension(isq::power)) == "L^2MT^-3");
 ```
-
-!!! note
-
-    `std::string_view` is returned only when C++23 is available. Otherwise, an instance of a
-    `basic_fixed_string` is being returned.
 
 #### `dimension_symbol_to()`
 
@@ -149,14 +147,15 @@ Inserts the generated dimension symbol into the output text iterator at runtime.
 
 ```cpp
 template<typename CharT = char, std::output_iterator<CharT> Out, Dimension D>
-constexpr Out dimension_symbol_to(Out out, D d, dimension_symbol_formatting fmt = dimension_symbol_formatting{});
+constexpr Out dimension_symbol_to(Out out, D d,
+                                  const dimension_symbol_formatting& fmt = dimension_symbol_formatting{});
 ```
 
 For example:
 
 ```cpp
 std::string txt;
-dimension_symbol_to(std::back_inserter(txt), get_dimension(isq::power), {.encoding = text_encoding::portable});
+dimension_symbol_to(std::back_inserter(txt), get_dimension(isq::power), {.char_set = character_set::basic});
 std::cout << txt << "\n";
 ```
 
@@ -178,20 +177,18 @@ algorithm. It contains three orthogonal fields, each with a default value.
 enum class unit_symbol_solidus : std::int8_t {
   one_denominator,  // m/s;   kg m⁻¹ s⁻¹
   always,           // m/s;   kg/(m s)
-  never,            // m s⁻¹; kg m⁻¹ s⁻¹
-  default_solidus = one_denominator
+  never             // m s⁻¹; kg m⁻¹ s⁻¹
 };
 
 enum class unit_symbol_separator : std::int8_t {
   space,          // kg m²/s²
-  half_high_dot,  // kg⋅m²/s²  (valid only for utf8 encoding)
-  default_separator = space
+  half_high_dot   // kg⋅m²/s²  (valid only for the `unicode` character set)
 };
 
 struct unit_symbol_formatting {
-  text_encoding encoding = text_encoding::default_encoding;
-  unit_symbol_solidus solidus = unit_symbol_solidus::default_solidus;
-  unit_symbol_separator separator = unit_symbol_separator::default_separator;
+  character_set char_set = character_set::unicode;
+  unit_symbol_solidus solidus = unit_symbol_solidus::one_denominator;
+  unit_symbol_separator separator = unit_symbol_separator::space;
 };
 ```
 
@@ -204,11 +201,12 @@ other. By default, the space (' ') will be used as a separator.
 
 #### `unit_symbol()`
 
-Returns a `std::string_view` with the symbol of a unit for the provided configuration:
+Returns a `std::basic_string_view<CharT>` with the symbol of a unit for the provided
+configuration:
 
 ```cpp
 template<unit_symbol_formatting fmt = unit_symbol_formatting{}, typename CharT = char, Unit U>
-[[nodiscard]] consteval std::string_view unit_symbol(U);
+[[nodiscard]] consteval std::basic_string_view<CharT> unit_symbol(U);
 ```
 
 For example:
@@ -224,7 +222,7 @@ Inserts the generated unit symbol into the output text iterator at runtime.
 
 ```cpp
 template<typename CharT = char, std::output_iterator<CharT> Out, Unit U>
-constexpr Out unit_symbol_to(Out out, U u, unit_symbol_formatting fmt = unit_symbol_formatting{});
+constexpr Out unit_symbol_to(Out out, U u, const unit_symbol_formatting& fmt = unit_symbol_formatting{});
 ```
 
 For example:
@@ -453,9 +451,9 @@ In the above grammar:
 
 - `fill-and-align` and `width` tokens are defined in the [format.string.std](https://wg21.link/format.string.std)
   chapter of the C++ standard specification,
-- `character-set` token specifies the symbol text encoding:
-    - `U` (default) uses the **UTF-8** symbols defined by [@ISO80000] (e.g., `LT⁻²`),
-    - `P` forces non-standard **portable** output (e.g., `LT^-2`).
+- `character-set` token selects the character set the symbol is rendered in:
+    - `U` (default) uses the **Unicode** symbols defined by [@ISO80000] (e.g., `LT⁻²`),
+    - `P` restricts output to the **basic** character set (e.g., `LT^-2`).
 
 Dimension symbols of some quantities are specified to use Unicode signs by the
 [ISQ](../../reference/glossary.md#isq) (e.g., `Θ` symbol for the _thermodynamic temperature_

@@ -277,7 +277,7 @@ class MP_UNITS_STD_FMT::formatter<U, Char> {
 
     if (it = mp_units::utility::at_most_one_of(begin, end, "UAP"); it != end)
       // TODO 'A' stands for an old and deprecated ASCII encoding
-      specs_.char_set = (*it == 'U') ? mp_units::character_set::utf8 : mp_units::character_set::portable;
+      specs_.char_set = (*it == 'U') ? mp_units::character_set::unicode : mp_units::character_set::basic;
     if (it = mp_units::utility::at_most_one_of(begin, end, "1an"); it != end) {
       switch (*it) {
         case '1':
@@ -292,7 +292,7 @@ class MP_UNITS_STD_FMT::formatter<U, Char> {
       }
     }
     if (it = mp_units::utility::at_most_one_of(begin, end, "sd"); it != end) {
-      if (*it == 'd' && specs_.char_set == mp_units::character_set::portable)
+      if (*it == 'd' && specs_.char_set == mp_units::character_set::basic)
         throw MP_UNITS_STD_FMT::format_error("half_high_dot unit separator allowed only for UTF-8 encoding");
       specs_.separator =
         (*it == 's') ? mp_units::unit_symbol_separator::space : mp_units::unit_symbol_separator::half_high_dot;

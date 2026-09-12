@@ -39,15 +39,14 @@ static_assert(dimension_symbol(dimension_one) == "1");
 // base dimensions
 static_assert(dimension_symbol(isq::dim_length) == "L");
 static_assert(dimension_symbol(isq::dim_thermodynamic_temperature) == "Θ");
-static_assert(dimension_symbol<dimension_symbol_formatting{.char_set = portable}>(isq::dim_thermodynamic_temperature) ==
+static_assert(dimension_symbol<dimension_symbol_formatting{.char_set = basic}>(isq::dim_thermodynamic_temperature) ==
               "O");
 
 // derived dimensions
 static_assert(dimension_symbol(get_dimension(isq::speed)) == "LT⁻¹");
-static_assert(dimension_symbol<dimension_symbol_formatting{.char_set = portable}>(get_dimension(isq::speed)) ==
-              "LT^-1");
+static_assert(dimension_symbol<dimension_symbol_formatting{.char_set = basic}>(get_dimension(isq::speed)) == "LT^-1");
 static_assert(dimension_symbol(get_dimension(isq::power)) == "L²MT⁻³");
-static_assert(dimension_symbol<dimension_symbol_formatting{.char_set = portable}>(get_dimension(isq::power)) ==
+static_assert(dimension_symbol<dimension_symbol_formatting{.char_set = basic}>(get_dimension(isq::power)) ==
               "L^2MT^-3");
 
 static_assert(dimension_symbol(pow<123>(isq::dim_length)) == "L¹²³");

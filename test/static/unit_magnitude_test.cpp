@@ -627,9 +627,9 @@ static_assert(mag_symbol<pow<-1>(mag<pi_c>)>() == "1/π");
 static_assert(mag_symbol<pow<-1>(mag<pi_c>), usf{.solidus = never}>() == "π⁻¹");
 
 // Portable charset: ASCII symbols and exponents
-static_assert(mag_symbol<mag<pi_c>, usf{.char_set = portable}>() == "pi");
-static_assert(mag_symbol<pow<2>(mag<pi_c>), usf{.char_set = portable}>() == "pi^2");
-static_assert(mag_symbol<pow<-1>(mag<pi_c>), usf{.char_set = portable, .solidus = never}>() == "pi^-1");
+static_assert(mag_symbol<mag<pi_c>, usf{.char_set = basic}>() == "pi");
+static_assert(mag_symbol<pow<2>(mag<pi_c>), usf{.char_set = basic}>() == "pi^2");
+static_assert(mag_symbol<pow<-1>(mag<pi_c>), usf{.char_set = basic, .solidus = never}>() == "pi^-1");
 
 // Two-constant denominator: solidus=one_denominator, den_size>1 → negative powers (no slash)
 // mag<1/(2*pi)> = pow<-1>(mag<2>) * pow<-1>(mag<pi_c>)

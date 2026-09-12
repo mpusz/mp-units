@@ -43,30 +43,30 @@ enum class unit_symbol_solidus : std::int8_t {
   one_denominator,  // m/s;   kg m⁻¹ s⁻¹
   always,           // m/s;   kg/(m s)
   never,            // m s⁻¹; kg m⁻¹ s⁻¹
-  default_solidus = one_denominator
+  default_solidus [[deprecated("2.6.0: Name the value explicitly, e.g. `one_denominator`")]] = one_denominator
 };
 
 // NOLINTNEXTLINE(readability-enum-initial-value)
 enum class unit_symbol_separator : std::int8_t {
   space,          // kg m²/s²
-  half_high_dot,  // kg⋅m²/s²  (valid only for utf8 encoding)
-  default_separator = space
+  half_high_dot,  // kg⋅m²/s²  (valid only for the `unicode` character set)
+  default_separator [[deprecated("2.6.0: Name the value explicitly, e.g. `space`")]] = space
 };
 
 struct unit_symbol_formatting {
 #if MP_UNITS_COMP_CLANG
   // TODO prevents the deprecated usage in implicit copy constructor warning
-  character_set char_set = character_set::default_character_set;
+  character_set char_set = character_set::unicode;
 #else
-  [[deprecated("2.5.0: Use `char_set` instead")]] character_set encoding = character_set::default_character_set;
+  [[deprecated("2.5.0: Use `char_set` instead")]] character_set encoding = character_set::unicode;
   MP_UNITS_DIAGNOSTIC_PUSH
   MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
   character_set char_set = encoding;
   MP_UNITS_DIAGNOSTIC_POP
 #endif
 
-  unit_symbol_solidus solidus = unit_symbol_solidus::default_solidus;
-  unit_symbol_separator separator = unit_symbol_separator::default_separator;
+  unit_symbol_solidus solidus = unit_symbol_solidus::one_denominator;
+  unit_symbol_separator separator = unit_symbol_separator::space;
 };
 
 }  // namespace mp_units
