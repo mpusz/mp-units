@@ -353,3 +353,46 @@ This is why our projects have two entry points:
     For more details on this please refer to the
     [CMake + Conan: 3 Years Later - Mateusz Pusz](https://youtu.be/mrSwJBJ-0z8?t=1931)
     lecture that Mateusz Pusz gave at the C++Now 2021 conference.
+
+
+## Why can't I convert a `double&` to a `quantity&`?
+
+You might have a `double` and want to treat it as a `quantity` of the same
+representation:
+
+```cpp
+double d = 5.0;
+quantity<si::metre, double>& q = reinterpret_cast<quantity<si::metre, double>&>(d);  // undefined behavior
+```
+
+This is undefined behavior. The object at that address has dynamic type `double`,
+and no `quantity` object was ever created there. The type-access rule forbids
+accessing it as a `quantity`, and object lifetime is what decides that no
+exception applies. The compiler is allowed to assume the two references point
+to different objects and may reorder or optimize reads and writes.
+
+There is no standards-compliant way to perform this conversion for that direction.
+
+!!! note
+
+    `numerical_value_ref_in()` serves the opposite direction: it hands out a
+    reference to the numerical value of a `quantity` you already hold.
+
+    ```cpp
+    quantity<si::metre, double> q = 5.0 * m;
+    double& d = q.numerical_value_ref_in(si::metre);  // OK
+    ```
+
+Reusing the storage would mean ending the `double`'s lifetime and putting a
+`quantity` there. This requires C++23 facilities such as `std::start_lifetime_as`,
+and it only applies if the `double` is not needed afterwards. For most cases —
+including linear algebra storage — this is not viable.
+
+Restructuring your code so that the `quantity` is the stored type avoids the
+problem instead of working around it:
+
+```cpp
+quantity<si::metre, double> storage = 5.0 * m;  // OK
+```
+
+_This entry is based on discussion [#779](https://github.com/mpusz/mp-units/discussions/779)._
