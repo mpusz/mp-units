@@ -362,7 +362,7 @@ representation:
 
 ```cpp
 double d = 5.0;
-quantity<si::metre, double>& q = reinterpret_cast<quantity<si::metre, double>&>(d);  // undefined behavior
+quantity& q = reinterpret_cast<quantity<si::metre, double>&>(d);  // undefined behavior
 ```
 
 This is undefined behavior. The object at that address has dynamic type `double`,
