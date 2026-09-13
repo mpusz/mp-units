@@ -1,0 +1,132 @@
+%% main file for the C++ standard.
+%%
+
+%%--------------------------------------------------
+%% basics
+\documentclass[a4paper,10pt,oneside,openany,final]{memoir}
+
+\usepackage[american]
+           {babel}        % needed for iso dates
+\usepackage[iso,american]
+           {isodate}      % use iso format for dates
+\usepackage[final]
+           {listings}     % code listings
+\usepackage{longtable}    % auto-breaking tables
+\usepackage{ltcaption}    % fix captions for long tables
+\usepackage{caption}      % caption style
+\usepackage{relsize}      % provide relative font size changes
+\usepackage{textcomp}     % provide \text{l,r}angle
+\usepackage{underscore}   % remove special status of '_' in ordinary text
+\usepackage{parskip}      % handle non-indented paragraphs "properly"
+\usepackage{array}        % new column definitions for tables
+\usepackage[normalem]{ulem}
+\usepackage{enumitem}
+\usepackage{color}        % define colors for strikeouts and underlines
+\usepackage{amsmath}      % additional math symbols
+\usepackage{mathrsfs}     % mathscr font
+\usepackage[final]{microtype}
+\usepackage[splitindex,original]{imakeidx}
+\usepackage{multicol}
+\usepackage{lmodern}
+\usepackage{xcolor}
+\usepackage[T1]{fontenc}
+\usepackage[pdftex, final]{graphicx}
+\usepackage[pdftex]{hyperref}
+\hypersetup{pdftitle={mp-units Library},
+            pdfsubject={mp-units_reference_documentations},
+            pdfcreator={github-actions},
+            bookmarksnumbered=true,
+            pdfpagemode=UseOutlines,
+            pdfstartview=FitH,
+            linktocpage=true,
+            colorlinks=true,
+            linkcolor=blue,
+            plainpages=false}
+\usepackage{memhfixc}     % fix interactions between hyperref and memoir
+\usepackage[active,header=false,handles=false,copydocumentclass=false,generate=std-gram.ext,extract-cmdline={gramSec},extract-env={bnf,simplebnf}]{extract} % Grammar extraction
+\usepackage{expl3}
+\usepackage{xparse}
+\usepackage{xstring}
+
+\pdfminorversion=5
+\pdfcompresslevel=9
+\pdfobjcompresslevel=2
+
+\renewcommand\RSsmallest{5.5pt}  % smallest font size for relsize
+
+\input{layout}
+\input{styles}
+\input{macros}
+\input{tables}
+
+\makeindex[name=generalindex,options=-s generalindex.ist,title=Index]
+\makeindex[name=grammarindex,title=Index of grammar productions]
+\makeindex[name=headerindex,title=Index of library headers]
+\makeindex[name=moduleindex,title=Index of library modules]
+\makeindex[name=libraryindex,options=-s libraryindex.ist,title=Index of library names]
+\makeindex[name=conceptindex,title=Index of library concepts]
+\makeindex[name=impldefindex,title=Index of implementation-defined behavior]
+\makeglossary[xrefindex]
+\makeglossary[xrefdelta]
+
+%%--------------------------------------------------
+%% fix interaction between hyperref and other
+%% commands
+\pdfstringdefDisableCommands{\def\smaller#1{#1}}
+\pdfstringdefDisableCommands{\def\textbf#1{#1}}
+\pdfstringdefDisableCommands{\def\raisebox#1{}}
+\pdfstringdefDisableCommands{\def\hspace#1{}}
+\pdfstringdefDisableCommands{\def\frenchspacing{}}
+
+%%--------------------------------------------------
+%% add special hyphenation rules
+\hyphenation{tem-plate ex-am-ple in-put-it-er-a-tor name-space name-spaces non-zero cus-tom-i-za-tion im-ple-men-ted}
+
+%%--------------------------------------------------
+%% turn off all ligatures inside \texttt
+\DisableLigatures{encoding = T1, family = tt*}
+
+\begin{document}
+\chapterstyle{cppstd}
+\pagestyle{cpppage}
+
+%%--------------------------------------------------
+%% configuration
+\input{config}
+
+%%--------------------------------------------------
+%% front matter
+\frontmatter
+\include{front}
+
+%%--------------------------------------------------
+%% main body of the document
+\mainmatter
+\setglobalstyles
+
+\include{intro}
+\include{quantities}
+
+%%--------------------------------------------------
+%% appendices
+\appendix
+
+% \include and \addtocontents don't mix; see
+% https://tex.stackexchange.com/questions/13914/toc-numbering-problem
+\makeatletter
+\immediate\write\@auxout{\noexpand\@writefile{toc}{\noexpand\let\noexpand\chapternumberlinebox\noexpand\annexnumberlinebox}}
+\makeatother
+
+\numberwithin{table}{chapter}
+
+
+
+%%--------------------------------------------------
+%% back matter
+\backmatter
+\include{back}
+
+
+%%--------------------------------------------------
+%% End of document
+\end{document}
