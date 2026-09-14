@@ -48,6 +48,15 @@ repos:
     rev: 7.3.0
     hooks:
       - id: flake8
+  - repo: local
+    hooks:
+      - id: codata-check
+        name: codata generator check
+        description: verify the generated CODATA headers match scripts/codata_constants.py
+        entry: python3 scripts/codata_constants.py --check
+        language: system
+        pass_filenames: false
+        files: ^(scripts/codata_constants\.py|scripts/codata/allascii_.*\.txt|src/systems/include/mp-units/systems/codata\.h|src/systems/include/mp-units/systems/codata/.*\.h)$
   - repo: https://github.com/DavidAnson/markdownlint-cli2
     rev: v0.22.1
     hooks:
