@@ -84,13 +84,14 @@ intended.
 - **[reneparis](https://github.com/reneparis)**
 - **[rothmichaels](https://github.com/rothmichaels)**
 - **[sohamroy19](https://github.com/sohamroy19)**
+- **[soheilnasr625](https://github.com/soheilnasr625)**
 - **[TheCoconutChef](https://github.com/TheCoconutChef)**
 - **[tobylorenz](https://github.com/tobylorenz)**
 - **[Twon](https://github.com/Twon)**
 - **[uilianries](https://github.com/uilianries)**
 - **[yasamoka](https://github.com/yasamoka)**
 
-_43 people, last updated 2026-09-09._
+_44 people, last updated 2026-09-14._
 
 <!-- CONTRIBUTORS_END -->
 
