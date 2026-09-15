@@ -70,7 +70,7 @@ consteval auto first_mag_arg()
 }
 
 template<typename M>
-constexpr bool is_negative_tag = std::is_same_v<MP_UNITS_REMOVE_CONST(M), negative_tag>;
+constexpr bool is_negative_tag = std::is_same_v<M, negative_tag>;
 
 /**
  * @brief  Any type which can be used as a basis vector in a power_v.

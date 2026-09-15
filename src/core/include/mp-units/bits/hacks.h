@@ -112,16 +112,6 @@
 #define MP_UNITS_NONCONST_TYPE(expr) std::remove_const_t<decltype(expr)>
 #endif
 
-#if MP_UNITS_COMP_GCC
-
-#define MP_UNITS_REMOVE_CONST(expr) std::remove_const_t<expr>
-
-#else
-
-#define MP_UNITS_REMOVE_CONST(expr) expr
-
-#endif
-
 // The type of a non-type template parameter, as a plain value type. `decltype(V)` names the template
 // parameter object, and compilers disagree on what that yields once `V` has been forwarded into a
 // nested concept: GCC reports the const the object really has, Clang 23 additionally binds a
