@@ -82,6 +82,7 @@ fi
 # Conan profiles live in the invoking (non-root) user's home, not root's.
 TARGET_USER="${SUDO_USER:-$(id -un)}"
 TARGET_HOME="$(getent passwd "$TARGET_USER" | cut -d: -f6)"
+fail=0
 PROFILES_DIR="${CONAN_HOME:-$TARGET_HOME/.conan2}/profiles"
 
 # ---------------------------------------------------------------------------
@@ -200,11 +201,24 @@ for v in "${APT_CLANG_VERSIONS[@]}"; do
   echo "  📦 clang-$v: downloading libc++/libc++abi/libunwind -dev .debs..."
   tmp="$(mktemp -d)"
   chmod 755 "$tmp"          # let the unprivileged _apt user read the downloads
+  # Pin to the installed clang's own package version. apt.llvm.org's snapshot
+  # suites (22+) rotate daily, so an unpinned download pairs today's libc++ with
+  # whichever clang happens to be installed. Fall back unpinned where no such
+  # version exists, which is what a distro package with a differing revision does.
+  pin="$(dpkg-query -W -f='=${Version}' "clang-$v" 2>/dev/null || true)"
   ( cd "$tmp"
-    apt-get download "libc++-$v-dev" "libc++abi-$v-dev" "libunwind-$v-dev"
+    apt-get download "libc++-$v-dev$pin" "libc++abi-$v-dev$pin" "libunwind-$v-dev$pin" 2>/dev/null ||
+      apt-get download "libc++-$v-dev" "libc++abi-$v-dev" "libunwind-$v-dev"
     mkdir extracted
     for d in *.deb; do dpkg-deb -x "$d" extracted; done )
   src="$tmp/extracted/usr/lib/llvm-$v"
+
+  # Check the replacement is on disk BEFORE removing what is installed: a partial
+  # download must not leave the compiler with no libc++ headers at all.
+  if [[ ! -d "$src/include/c++/v1" ]]; then
+    echo "  ❌ clang-$v: downloaded .debs carry no libc++ headers -- keeping the existing tree" >&2
+    rm -rf "$tmp"; fail=1; continue
+  fi
 
   echo "  🚚 clang-$v: installing version-matched libc++..."
   mkdir -p "$dest/include/c++"
@@ -246,7 +260,11 @@ for v in "${ALL_CLANG[@]}"; do
   # Release-tarball libc++.a does NOT, so provide a libc++.so linker script that
   # makes `-lc++` statically pull abi + unwind as well (compile-safe -- unlike an
   # -lc++abi config arg, a linker script is only read at link time).
-  if ! nm "$libdir/libc++.a" 2>/dev/null | grep -q "T __cxa_throw"; then
+  # `grep -q` exits on its first match, so `nm` dies of SIGPIPE (141) and
+  # `pipefail` reports the whole pipeline as failed -- which fired this branch for
+  # every clang, writing the linker script exactly where apt's self-contained
+  # libc++.a must not have one. Absorb `nm`'s status so only `grep` decides.
+  if ! { nm "$libdir/libc++.a" 2>/dev/null || true; } | grep -q "T __cxa_throw"; then
     printf 'INPUT(%s/libc++.a %s/libc++abi.a %s/libunwind.a)\n' "$libdir" "$libdir" "$libdir" > "$libdir/libc++.so"
     echo "  🧩 clang-$v: libc++.so linker script (static abi + unwind)"
   fi
@@ -297,7 +315,7 @@ fi
 # ---------------------------------------------------------------------------
 echo ""
 echo "🔎 Verifying toolchains..."
-t="$(mktemp --suffix=.cpp)"; out="$(mktemp -u)"; fail=0
+t="$(mktemp --suffix=.cpp)"; out="$(mktemp -u)"
 printf '#include <vector>\n#include <string>\nint main(){std::string s="x";std::vector<int> v{1,2,3};return (int)v.size()-3;}\n' > "$t"
 
 for v in "${GCC_VERSIONS[@]}"; do
