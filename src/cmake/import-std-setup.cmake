@@ -41,9 +41,11 @@ if(MSVC)
     # with `/utf-8` would mismatch a BMI built without it.
     add_compile_options(/utf-8)
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    # Workaround for CMake 4.3 + Clang 21 incompatibility:
-    # Clang 21 reports `export module std;` in libc++'s std.cppm as
-    # `-Wreserved-module-identifier` (now default-on), because CMake compiles
-    # the stdlib module with the project's compiler flags.
-    add_compile_options(-Wno-error=reserved-module-identifier)
+    # Clang reports `export module std;` in libc++'s own std.cppm and
+    # std.compat.cppm as `-Wreserved-module-identifier` (default-on since
+    # Clang 21), because CMake compiles the stdlib module with the project's
+    # compiler flags. The name is reserved for exactly this declaration, so the
+    # diagnostic is noise here and is silenced rather than merely downgraded
+    # from an error - nothing the project itself declares can trigger it.
+    add_compile_options(-Wno-reserved-module-identifier)
 endif()
