@@ -1,0 +1,13 @@
+# Compiler versions newer than the Conan release CI installs.
+#
+# Conan validates `-s compiler.version` against its own settings.yml, whose Clang list
+# ends at 22 as of Conan 2.32.0 (the latest release). Without this the clang-23 jobs fail
+# before they build anything:
+#
+#   ERROR: Invalid setting '23' is not a valid 'settings.compiler.version' value.
+#
+# Conan merges this file into settings.yml, appending to the existing lists. Drop the
+# entries here once a Conan release knows these versions on its own.
+compiler:
+    clang:
+        version: ["23"]

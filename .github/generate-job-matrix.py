@@ -165,7 +165,7 @@ toolchains = {
     for t in [make_gcc_config(ver) for ver in [12, 13, 14, 15, 16]]
     + [
         make_clang_config(ver, architecture)
-        for ver in [16, 17, 18, 20, 21]
+        for ver in [16, 17, 18, 20, 21, 23]
         for architecture in ["x86-64", "arm64"]
         # arm64 runners are expensive; only consider one version
         if ver == 18 or architecture != "arm64"

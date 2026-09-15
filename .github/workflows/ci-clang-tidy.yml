@@ -163,6 +163,8 @@ jobs:
         shell: bash
         run: |
           conan profile detect --force
+          # Conan 2.32 does not know Clang 23 yet; this appends it to its settings list.
+          cp .github/conan/settings_user.yml "$(conan config home)/"
           conan profile show -pr default
       - name: Install Conan dependencies
         shell: bash

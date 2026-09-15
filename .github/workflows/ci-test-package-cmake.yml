@@ -182,6 +182,8 @@ jobs:
         shell: bash
         run: |
           conan profile detect --force
+          # Conan 2.32 does not know Clang 23 yet; this appends it to its settings list.
+          cp .github/conan/settings_user.yml "$(conan config home)/"
           conan remote add artifactory https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
           echo 'tools.cmake.cmake_layout:build_folder_vars=["settings.compiler", "settings.compiler.version", "settings.compiler.cppstd"]' >> ~/.conan2/global.conf
           conan profile show -pr default
