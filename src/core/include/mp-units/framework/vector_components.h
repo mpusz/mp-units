@@ -102,7 +102,7 @@ concept ValidVectorAxes =
   ((sizeof...(Axes) >= 2) || unsatisfied<"a vector decomposition needs at least two component axes">()) &&
   ((... && (get_character(Axes).order == quantity_tensor_order::vector)) ||
    unsatisfied<"every component axis must be a vector quantity">()) &&
-  ((... && !QuantityKindSpec<MP_UNITS_REMOVE_CONST(decltype(Axes))>) ||
+  ((... && !QuantityKindSpec<MP_UNITS_NTTP_TYPE(Axes)>) ||
    unsatisfied<"a component axis cannot be a kind_of<> quantity kind">()) &&
   ((... && (count_equal<get_hierarchy_root(Axes), get_hierarchy_root(Axes)...>() == sizeof...(Axes))) ||
    unsatisfied<"all component axes must share a common hierarchy root (be the same kind of quantity)">()) &&
@@ -177,7 +177,7 @@ template<QuantitySpec auto QS, QuantitySpec auto... Axes>
 // constrained `auto` is not allowed on a concept's own template parameter.
 template<auto QS, typename Rep>
 concept Decomposable =
-  QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> && requires { vector_components<QS>::size; } &&
+  QuantitySpec<MP_UNITS_NTTP_TYPE(QS)> && requires { vector_components<QS>::size; } &&
   (is_derived_from_specialization_of_v<vector_components<QS>, vector_axes> ||
    unsatisfied<"vector_components must inherit from a vector_axes specialization">()) &&
   (requires(const Rep& r) { component_access<0>(r); } ||
@@ -195,7 +195,7 @@ template<auto QS, typename Rep, std::size_t Idx>
 concept DecomposableIndex = Decomposable<QS, Rep> && (Idx < vector_components<QS>::size);
 
 template<auto QS, typename Rep, auto Axis>
-concept DecomposableAxis = Decomposable<QS, Rep> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(Axis))> &&
+concept DecomposableAxis = Decomposable<QS, Rep> && QuantitySpec<MP_UNITS_NTTP_TYPE(Axis)> &&
                            (axis_index_of<Axis>(vector_components<QS>{}) < vector_components<QS>::size);
 
 }  // namespace detail

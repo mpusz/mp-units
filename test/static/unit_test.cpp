@@ -43,8 +43,8 @@ using percent_ = struct percent;
 // prefixes
 template<PrefixableUnit U> struct milli_  final : prefixed_unit<"m", mag_power<10, -3>, U{}> {};
 template<PrefixableUnit U> struct kilo_   final : prefixed_unit<"k", mag_power<10, 3>, U{}> {};
-template<PrefixableUnit auto U> constexpr milli_<MP_UNITS_REMOVE_CONST(decltype(U))> milli;
-template<PrefixableUnit auto U> constexpr kilo_<MP_UNITS_REMOVE_CONST(decltype(U))> kilo;
+template<PrefixableUnit auto U> constexpr milli_<MP_UNITS_NTTP_TYPE(U)> milli;
+template<PrefixableUnit auto U> constexpr kilo_<MP_UNITS_NTTP_TYPE(U)> kilo;
 
 // base units
 inline constexpr struct second_ final : named_unit<"s", kind_of<isq::duration>> {} second;
@@ -373,7 +373,7 @@ static_assert(get_canonical_unit(helion_g_factor).mag == mag<-ratio{4'255'250'61
 // object construction forces the class template to be complete, so constraint failure on every
 // `named_unit` specialization is detected (the primary template is declared but never defined)
 template<auto U>
-concept valid_named_unit = Unit<MP_UNITS_REMOVE_CONST(decltype(U))> && requires { named_unit<"tst", U>{}; };
+concept valid_named_unit = Unit<MP_UNITS_NTTP_TYPE(U)> && requires { named_unit<"tst", U>{}; };
 
 static_assert(valid_named_unit<metre / second>);
 static_assert(valid_named_unit<mag<-1> * helion_g_factor>);  // two sign flips cancel

@@ -67,7 +67,7 @@ concept PrefixableUnit = Unit<T> && is_derived_from_specialization_of_v<T, named
  */
 MP_UNITS_EXPORT template<typename U, auto QS>
 concept UnitOf =
-  Unit<U> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> &&
+  Unit<U> && QuantitySpec<MP_UNITS_NTTP_TYPE(QS)> &&
   (mp_units::implicitly_convertible(get_quantity_spec(U{}), QS) ||
    (unsatisfied<"Unit '{}' is associated with quantity of kind '{}' which is not convertible to the '{}' quantity">(
      U{}, type_name(get_quantity_spec(U{})._quantity_spec_), type_name(QS))));
@@ -92,10 +92,9 @@ concept ConvertibleUnits =
 
 template<typename U1, auto U2>
 concept UnitConvertibleTo =
-  Unit<U1> && Unit<MP_UNITS_REMOVE_CONST(decltype(U2))> &&
-  ((U1{} == U2) ||
-   ((!Unit<U1> || !Unit<MP_UNITS_REMOVE_CONST(decltype(U2))> || UnitsOfCompatibleQuantities<U1{}, U2>) &&
-    ConvertibleUnits<U1{}, U2>));
+  Unit<U1> && Unit<MP_UNITS_NTTP_TYPE(U2)> &&
+  ((U1{} == U2) || ((!Unit<U1> || !Unit<MP_UNITS_NTTP_TYPE(U2)> || UnitsOfCompatibleQuantities<U1{}, U2>) &&
+                    ConvertibleUnits<U1{}, U2>));
 
 template<typename T>
 concept OffsetUnit = Unit<T> && requires { T::_point_origin_; };

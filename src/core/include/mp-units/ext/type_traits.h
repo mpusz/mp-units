@@ -126,7 +126,7 @@ constexpr bool is_scoped_enum_v = is_scoped_enum<T>::value;
 template<typename T, auto... Vs>
 [[nodiscard]] consteval bool contains()
 {
-  return (false || ... || std::is_same_v<MP_UNITS_REMOVE_CONST(decltype(Vs)), T>);
+  return (false || ... || std::is_same_v<MP_UNITS_NTTP_TYPE(Vs), T>);
 }
 
 // the first list element is mandatory to disambiguate from the empty-pack case of the
@@ -158,7 +158,7 @@ template<typename T, std::same_as<T> auto V>
 template<typename T, auto V1, auto V2, auto... Vs>
 [[nodiscard]] consteval auto get()
 {
-  if constexpr (std::is_same_v<T, MP_UNITS_REMOVE_CONST(decltype(V1))>)
+  if constexpr (std::is_same_v<T, MP_UNITS_NTTP_TYPE(V1)>)
     return V1;
   else
     return get<T, V2, Vs...>();

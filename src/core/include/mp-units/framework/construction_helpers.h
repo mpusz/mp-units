@@ -58,13 +58,13 @@ struct point_ {
 MP_UNITS_EXPORT_BEGIN
 
 template<Reference auto R>
-constexpr delta_<MP_UNITS_REMOVE_CONST(decltype(R))> delta{};
+constexpr delta_<MP_UNITS_NTTP_TYPE(R)> delta{};
 
 template<Reference auto R>
-constexpr point_<MP_UNITS_REMOVE_CONST(decltype(R))> point{};
+constexpr point_<MP_UNITS_NTTP_TYPE(R)> point{};
 
 template<Reference auto R>
-[[deprecated("2.5.0: Use `point` instead")]] constexpr point_<MP_UNITS_REMOVE_CONST(decltype(R))> absolute{};
+[[deprecated("2.5.0: Use `point` instead")]] constexpr point_<MP_UNITS_NTTP_TYPE(R)> absolute{};
 
 MP_UNITS_EXPORT_END
 

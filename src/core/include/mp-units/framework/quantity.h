@@ -117,7 +117,7 @@ concept ScalarRepConvertible =
      type_name<Rep>(), type_name<T>()));
 
 template<auto R>
-concept UnitOne = Reference<MP_UNITS_REMOVE_CONST(decltype(R))> &&
+concept UnitOne = Reference<MP_UNITS_NTTP_TYPE(R)> &&
                   (equivalent(get_unit(R), one) && detail::get_associated_quantity(get_unit(R)) == dimensionless);
 
 template<auto R>
@@ -134,13 +134,13 @@ concept ImplicitFromNumberQuantity = Quantity<Q> && ImplicitFromNumber<Q::refere
 // expression-template results (e.g. Eigen, Blaze) are checked and stored as their evaluated
 // concrete type rather than the lazy proxy type.
 template<auto QS, typename Func, typename T, typename U>
-concept InvokeResultOf = QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> && std::regular_invocable<Func, T, U> &&
+concept InvokeResultOf = QuantitySpec<MP_UNITS_NTTP_TYPE(QS)> && std::regular_invocable<Func, T, U> &&
                          RepresentationOf<representation_canonical_type_t<std::invoke_result_t<Func, T, U>>, QS>;
 
 template<typename Func, typename Q1, typename Q2,
          auto QS = std::invoke_result_t<Func, MP_UNITS_NONCONST_TYPE(Q1::quantity_spec),
                                         MP_UNITS_NONCONST_TYPE(Q2::quantity_spec)>{}>
-concept InvocableQuantities = QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> && Quantity<Q1> && Quantity<Q2> &&
+concept InvocableQuantities = QuantitySpec<MP_UNITS_NTTP_TYPE(QS)> && Quantity<Q1> && Quantity<Q2> &&
                               InvokeResultOf<QS, Func, typename Q1::rep, typename Q2::rep>;
 
 // A representation whose tensor order is that of a vector or tensor (order >= 1). Written as a nested
@@ -158,11 +158,11 @@ concept OrderRaisingRepresentation = requires { requires tensor_order<T> >= 1; }
 // a real->complex field mismatch is not bridged either.
 template<auto QS>
 concept ScalarCharacterSpec =
-  QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> && (get_character(QS).order == quantity_tensor_order::scalar);
+  QuantitySpec<MP_UNITS_NTTP_TYPE(QS)> && (get_character(QS).order == quantity_tensor_order::scalar);
 
 template<auto QS, typename Func, typename T, typename U>
 concept ScalableResultOf =
-  QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> && std::regular_invocable<Func, T, U> &&
+  QuantitySpec<MP_UNITS_NTTP_TYPE(QS)> && std::regular_invocable<Func, T, U> &&
   (RepresentationOf<representation_canonical_type_t<std::invoke_result_t<Func, T, U>>, QS> ||
    (ScalarCharacterSpec<QS> &&
     OrderRaisingRepresentation<representation_canonical_type_t<std::invoke_result_t<Func, T, U>>> &&

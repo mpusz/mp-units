@@ -85,6 +85,6 @@ MP_UNITS_EXPORT template<QuantitySpec From, QuantitySpec To>
  */
 MP_UNITS_EXPORT template<typename T, auto QS>
 concept QuantitySpecOf =
-  QuantitySpec<T> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> && (mp_units::implicitly_convertible(T{}, QS));
+  QuantitySpec<T> && QuantitySpec<MP_UNITS_NTTP_TYPE(QS)> && (mp_units::implicitly_convertible(T{}, QS));
 
 }  // namespace mp_units

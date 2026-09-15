@@ -416,7 +416,7 @@ constexpr quantity<R, Rep> enforce_bounds(quantity<R, Rep> q)
 struct quantity_point_iface {
   // operator+ (qp + q)
   template<auto R1, auto PO1, typename Rep1, auto R2, typename Rep2>
-    requires ReferenceOf<MP_UNITS_REMOVE_CONST(decltype(R2)), get_quantity_spec(PO1)>
+    requires ReferenceOf<MP_UNITS_NTTP_TYPE(R2), get_quantity_spec(PO1)>
   [[nodiscard]] friend constexpr QuantityPoint auto operator+(const quantity_point<R1, PO1, Rep1>& qp,
                                                               const quantity<R2, Rep2>& q)
     requires requires { qp.quantity_ref_from(PO1) + q; }
@@ -426,7 +426,7 @@ struct quantity_point_iface {
 
   // operator+ (q + qp)
   template<auto R1, typename Rep1, auto R2, auto PO2, typename Rep2>
-    requires ReferenceOf<MP_UNITS_REMOVE_CONST(decltype(R1)), get_quantity_spec(PO2)>
+    requires ReferenceOf<MP_UNITS_NTTP_TYPE(R1), get_quantity_spec(PO2)>
   [[nodiscard]] friend constexpr QuantityPoint auto operator+(const quantity<R1, Rep1>& q,
                                                               const quantity_point<R2, PO2, Rep2>& qp)
     requires requires { q + qp.quantity_ref_from(PO2); }
@@ -436,7 +436,7 @@ struct quantity_point_iface {
 
   // operator- (qp - q)
   template<auto R1, auto PO1, typename Rep1, auto R2, typename Rep2>
-    requires ReferenceOf<MP_UNITS_REMOVE_CONST(decltype(R2)), get_quantity_spec(PO1)>
+    requires ReferenceOf<MP_UNITS_NTTP_TYPE(R2), get_quantity_spec(PO1)>
   [[nodiscard]] friend constexpr QuantityPoint auto operator-(const quantity_point<R1, PO1, Rep1>& qp,
                                                               const quantity<R2, Rep2>& q)
     requires requires { qp.quantity_ref_from(PO1) - q; }
@@ -459,7 +459,7 @@ struct quantity_point_iface {
   // operator- (qp - po)
   template<auto R1, auto PO1, typename Rep1, PointOrigin PO2>
     requires QuantityPointOf<quantity_point<R1, PO1, Rep1>, PO2{}> &&
-             ReferenceOf<MP_UNITS_REMOVE_CONST(decltype(R1)), get_quantity_spec(PO2{})>
+             ReferenceOf<MP_UNITS_NTTP_TYPE(R1), get_quantity_spec(PO2{})>
   [[nodiscard]] friend constexpr Quantity auto operator-(const quantity_point<R1, PO1, Rep1>& qp, PO2 po)
   {
     if constexpr (PO1 == po)
@@ -481,7 +481,7 @@ struct quantity_point_iface {
   // operator- (po - qp)
   template<PointOrigin PO1, auto R2, auto PO2, typename Rep2>
     requires QuantityPointOf<quantity_point<R2, PO2, Rep2>, PO1{}> &&
-             ReferenceOf<MP_UNITS_REMOVE_CONST(decltype(R2)), get_quantity_spec(PO1{})>
+             ReferenceOf<MP_UNITS_NTTP_TYPE(R2), get_quantity_spec(PO1{})>
   [[nodiscard]] friend constexpr Quantity auto operator-(PO1 po, const quantity_point<R2, PO2, Rep2>& qp)
   {
     return -(qp - po);

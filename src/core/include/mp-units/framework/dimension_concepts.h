@@ -66,6 +66,6 @@ concept BaseDimension = Dimension<T> && is_derived_from_specialization_of_v<T, b
  * Satisfied when both argument satisfy a `Dimension` concept and when they compare equal.
  */
 MP_UNITS_EXPORT template<typename T, auto D>
-concept DimensionOf = Dimension<T> && Dimension<MP_UNITS_REMOVE_CONST(decltype(D))> && (T{} == D);
+concept DimensionOf = Dimension<T> && Dimension<MP_UNITS_NTTP_TYPE(D)> && (T{} == D);
 
 }  // namespace mp_units

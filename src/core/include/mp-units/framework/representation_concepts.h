@@ -388,10 +388,10 @@ MP_UNITS_DIAGNOSTIC_PUSH
 MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
 template<typename T, auto V>
 concept RepresentationOfCharacter =
-  (std::same_as<MP_UNITS_REMOVE_CONST(decltype(V)), quantity_tensor_order> && RepresentationOfOrder<T, V>) ||
-  (std::same_as<MP_UNITS_REMOVE_CONST(decltype(V)), quantity_field> && RepresentationOfField<T, V>) ||
-  ((std::same_as<MP_UNITS_REMOVE_CONST(decltype(V)), quantity_character> ||
-    std::same_as<MP_UNITS_REMOVE_CONST(decltype(V)), quantity_character_legacy>) &&
+  (std::same_as<MP_UNITS_NTTP_TYPE(V), quantity_tensor_order> && RepresentationOfOrder<T, V>) ||
+  (std::same_as<MP_UNITS_NTTP_TYPE(V), quantity_field> && RepresentationOfField<T, V>) ||
+  ((std::same_as<MP_UNITS_NTTP_TYPE(V), quantity_character> ||
+    std::same_as<MP_UNITS_NTTP_TYPE(V), quantity_character_legacy>) &&
    RepresentationOfOrder<T, order_of(V)> && RepresentationOfField<T, field_of(V)>);
 MP_UNITS_DIAGNOSTIC_POP
 
@@ -400,21 +400,20 @@ MP_UNITS_DIAGNOSTIC_POP
 #ifdef MP_UNITS_XCODE15_HACKS
 MP_UNITS_EXPORT template<typename T, auto V>
 concept RepresentationOf =
-  detail::SomeRepresentation<T> && ((QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(V))> &&
-                                     (detail::QuantityKindSpec<MP_UNITS_REMOVE_CONST(decltype(V))> ||
-                                      (detail::RepresentationOfOrder<T, detail::order_of(get_character(V))> &&
-                                       detail::RepresentationOfField<T, detail::field_of(get_character(V))>))) ||
-                                    detail::RepresentationOfCharacter<T, V>);
+  detail::SomeRepresentation<T> &&
+  ((QuantitySpec<MP_UNITS_NTTP_TYPE(V)> && (detail::QuantityKindSpec<MP_UNITS_NTTP_TYPE(V)> ||
+                                            (detail::RepresentationOfOrder<T, detail::order_of(get_character(V))> &&
+                                             detail::RepresentationOfField<T, detail::field_of(get_character(V))>))) ||
+   detail::RepresentationOfCharacter<T, V>);
 
 #else
 
 MP_UNITS_EXPORT template<typename T, auto V>
-concept RepresentationOf =
-  (QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(V))> &&
-   ((detail::QuantityKindSpec<MP_UNITS_REMOVE_CONST(decltype(V))> && detail::SomeRepresentation<T>) ||
-    (detail::RepresentationOfOrder<T, detail::order_of(get_character(V))> &&
-     detail::RepresentationOfField<T, detail::field_of(get_character(V))>))) ||
-  detail::RepresentationOfCharacter<T, V>;
+concept RepresentationOf = (QuantitySpec<MP_UNITS_NTTP_TYPE(V)> &&
+                            ((detail::QuantityKindSpec<MP_UNITS_NTTP_TYPE(V)> && detail::SomeRepresentation<T>) ||
+                             (detail::RepresentationOfOrder<T, detail::order_of(get_character(V))> &&
+                              detail::RepresentationOfField<T, detail::field_of(get_character(V))>))) ||
+                           detail::RepresentationOfCharacter<T, V>;
 #endif
 
 }  // namespace mp_units

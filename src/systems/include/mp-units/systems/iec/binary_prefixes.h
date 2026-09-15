@@ -42,14 +42,14 @@ template<PrefixableUnit U> struct yobi_ final : prefixed_unit<"Yi", mag_power<2,
 
 MP_UNITS_EXPORT_BEGIN
 
-template<PrefixableUnit auto U> constexpr kibi_<MP_UNITS_REMOVE_CONST(decltype(U))> kibi;
-template<PrefixableUnit auto U> constexpr mebi_<MP_UNITS_REMOVE_CONST(decltype(U))> mebi;
-template<PrefixableUnit auto U> constexpr gibi_<MP_UNITS_REMOVE_CONST(decltype(U))> gibi;
-template<PrefixableUnit auto U> constexpr tebi_<MP_UNITS_REMOVE_CONST(decltype(U))> tebi;
-template<PrefixableUnit auto U> constexpr pebi_<MP_UNITS_REMOVE_CONST(decltype(U))> pebi;
-template<PrefixableUnit auto U> constexpr exbi_<MP_UNITS_REMOVE_CONST(decltype(U))> exbi;
-template<PrefixableUnit auto U> constexpr zebi_<MP_UNITS_REMOVE_CONST(decltype(U))> zebi;
-template<PrefixableUnit auto U> constexpr yobi_<MP_UNITS_REMOVE_CONST(decltype(U))> yobi;
+template<PrefixableUnit auto U> constexpr kibi_<MP_UNITS_NTTP_TYPE(U)> kibi;
+template<PrefixableUnit auto U> constexpr mebi_<MP_UNITS_NTTP_TYPE(U)> mebi;
+template<PrefixableUnit auto U> constexpr gibi_<MP_UNITS_NTTP_TYPE(U)> gibi;
+template<PrefixableUnit auto U> constexpr tebi_<MP_UNITS_NTTP_TYPE(U)> tebi;
+template<PrefixableUnit auto U> constexpr pebi_<MP_UNITS_NTTP_TYPE(U)> pebi;
+template<PrefixableUnit auto U> constexpr exbi_<MP_UNITS_NTTP_TYPE(U)> exbi;
+template<PrefixableUnit auto U> constexpr zebi_<MP_UNITS_NTTP_TYPE(U)> zebi;
+template<PrefixableUnit auto U> constexpr yobi_<MP_UNITS_NTTP_TYPE(U)> yobi;
 // clang-format on
 
 MP_UNITS_EXPORT_END

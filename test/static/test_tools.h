@@ -50,7 +50,7 @@ constexpr bool approx_equal(Quantity auto q1, Quantity auto q2,
 }
 
 template<auto V, typename T>
-constexpr bool is_of_type = std::is_same_v<MP_UNITS_REMOVE_CONST(decltype(V)), T>;
+constexpr bool is_of_type = std::is_same_v<MP_UNITS_NTTP_TYPE(V), T>;
 
 // NOLINTBEGIN(cppcoreguidelines-macro-usage)
 #if MP_UNITS_API_NO_CRTP

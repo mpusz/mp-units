@@ -866,7 +866,7 @@ constexpr auto prime_factorization_v = prime_factorization<N>::value;
 template<MagArg auto V>
 [[nodiscard]] consteval UnitMagnitude auto make_magnitude()
 {
-  using mag_arg_type = MP_UNITS_REMOVE_CONST(decltype(V));
+  using mag_arg_type = MP_UNITS_NTTP_TYPE(V);
 
   if constexpr (is_mag_constant<mag_arg_type>)
     return unit_magnitude<V>{};

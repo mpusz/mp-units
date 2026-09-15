@@ -722,14 +722,14 @@ struct kind_of_<Q> : quantity_spec<kind_of_<Q>, Q{}>::_base_type_ {
 
 MP_UNITS_EXPORT template<QuantitySpec auto Q>
   requires requires { typename kind_of_<decltype(Q)>; }
-constexpr kind_of_<MP_UNITS_REMOVE_CONST(decltype(Q))> kind_of;
+constexpr kind_of_<MP_UNITS_NTTP_TYPE(Q)> kind_of;
 
 namespace detail {
 
 template<QuantitySpec auto... From, QuantitySpec Q>
 [[nodiscard]] consteval QuantitySpec auto clone_kind_of(Q q)
 {
-  if constexpr ((... && QuantityKindSpec<MP_UNITS_REMOVE_CONST(decltype(From))>))
+  if constexpr ((... && QuantityKindSpec<MP_UNITS_NTTP_TYPE(From)>))
     return kind_of<Q{}>;
   else
     return q;

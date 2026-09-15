@@ -122,6 +122,25 @@
 
 #endif
 
+// The type of a non-type template parameter, as a plain value type. `decltype(V)` names the template
+// parameter object, and compilers disagree on what that yields once `V` has been forwarded into a
+// nested concept: GCC reports the const the object really has, Clang 23 additionally binds a
+// reference (`const T&`), while Clang up to 22 and MSVC report the bare type. Each branch strips
+// only what its own compiler adds, so one that gets this right instantiates no trait at all.
+#if MP_UNITS_COMP_CLANG >= 23
+
+#define MP_UNITS_NTTP_TYPE(V) std::remove_cvref_t<decltype(V)>
+
+#elif MP_UNITS_COMP_GCC
+
+#define MP_UNITS_NTTP_TYPE(V) std::remove_const_t<decltype(V)>
+
+#else
+
+#define MP_UNITS_NTTP_TYPE(V) decltype(V)
+
+#endif
+
 #if !defined __cpp_lib_ranges_to_container
 
 namespace std {

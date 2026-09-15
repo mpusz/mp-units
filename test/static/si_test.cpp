@@ -62,8 +62,7 @@ static_assert(1 * Qm == 1'000'000'000'000'000'000 * Tm);
 
 // check for invalid prefixes
 template<template<typename U> typename prefix, auto V1>
-concept can_not_be_prefixed =
-  Unit<MP_UNITS_REMOVE_CONST(decltype(V1))> && !requires { typename prefix<MP_UNITS_REMOVE_CONST(decltype(V1))>; };
+concept can_not_be_prefixed = Unit<MP_UNITS_NTTP_TYPE(V1)> && !requires { typename prefix<MP_UNITS_NTTP_TYPE(V1)>; };
 
 static_assert(can_not_be_prefixed<si::milli_, si::kilogram>);
 static_assert(can_not_be_prefixed<si::milli_, si::hectare>);

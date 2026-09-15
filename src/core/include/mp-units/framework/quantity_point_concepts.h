@@ -83,7 +83,7 @@ struct relative_point_origin;
  * Satisfied by all quantity point origins that are defined using a provided quantity specification.
  */
 MP_UNITS_EXPORT template<typename T, auto QS>
-concept PointOriginFor = PointOrigin<T> && QuantitySpecOf<MP_UNITS_REMOVE_CONST(decltype(QS)), T::_quantity_spec_>;
+concept PointOriginFor = PointOrigin<T> && QuantitySpecOf<MP_UNITS_NTTP_TYPE(QS), T::_quantity_spec_>;
 
 MP_UNITS_EXPORT template<Reference auto R, PointOriginFor<get_quantity_spec(R)> auto PO,
                          RepresentationOf<get_quantity_spec(R)> Rep>
@@ -121,7 +121,7 @@ template<PointOrigin PO1, PointOrigin PO2>
 
 template<typename T, auto V>
 concept SameAbsolutePointOriginAs =
-  PointOrigin<T> && PointOrigin<MP_UNITS_REMOVE_CONST(decltype(V))> && same_absolute_point_origins(T{}, V);
+  PointOrigin<T> && PointOrigin<MP_UNITS_NTTP_TYPE(V)> && same_absolute_point_origins(T{}, V);
 
 }  // namespace detail
 
@@ -154,8 +154,8 @@ namespace detail {
 
 template<auto From, auto To>
 concept HasFrameProjection =
-  AbsolutePointOrigin<MP_UNITS_REMOVE_CONST(decltype(From))> &&
-  AbsolutePointOrigin<MP_UNITS_REMOVE_CONST(decltype(To))> && utility::specified<decltype(frame_projection<From, To>)>;
+  AbsolutePointOrigin<MP_UNITS_NTTP_TYPE(From)> && AbsolutePointOrigin<MP_UNITS_NTTP_TYPE(To)> &&
+  utility::specified<decltype(frame_projection<From, To>)>;
 
 }  // namespace detail
 
