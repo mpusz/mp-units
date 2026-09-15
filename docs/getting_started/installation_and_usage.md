@@ -116,8 +116,8 @@ If you obtain them differently you may need to adjust some CMake files.
         is automatically included by `find_package(mp-units)` (both Conan-generated and
         bundled config paths). It applies the compiler-specific compile options the
         implicit `std` module BMI needs to match consumer translation units — currently
-        `/utf-8` on MSVC and `-Wno-error=reserved-module-identifier` on Clang 21. You
-        don't add anything for that; `find_package` picks it up.
+        `/utf-8` on MSVC and `-Wno-reserved-module-identifier` on Clang. You don't add
+        anything for that; `find_package` picks it up.
 
         **Caveat for vendored builds:** if you embed mp-units via
         `add_subdirectory(third_party/mp-units/src)` rather than `find_package`, the
