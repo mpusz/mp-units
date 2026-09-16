@@ -1,0 +1,92 @@
+%!TEX root = std.tex
+
+% Begin bibliography.
+
+% End bibliography.
+
+% FIXME: For unknown reasons, hanging paragraphs are not indented within our
+% glossaries by default.
+\let\realglossitem\glossitem
+\renewcommand{\glossitem}[4]{\hangpara{4em}{1}\realglossitem{#1}{#2}{#3}{#4}}
+
+\clearpage
+\renewcommand{\glossaryname}{Cross-references}
+\renewcommand{\preglossaryhook}{Each clause and subclause label is listed below along with the
+corresponding clause or subclause number and page number, in alphabetical order by label.\\}
+\twocolglossary
+\renewcommand{\leftmark}{\glossaryname}
+{
+\raggedright
+\printglossary[xrefindex]
+}
+
+\clearpage
+\input{xrefdelta}
+\renewcommand{\glossaryname}{Cross-references from ISO \CppXXIII{}}
+\renewcommand{\preglossaryhook}{All clause and subclause labels from
+ISO \CppXXIII{} (ISO/IEC 14882:2023, \doccite{Programming Languages --- \Cpp{}})
+are present in this document, with the exceptions described below.\\}
+\renewcommand{\leftmark}{\glossaryname}
+{
+\raggedright
+\printglossary[xrefdelta]
+}
+
+\clearpage
+\renewcommand{\leftmark}{\indexname}
+\renewcommand{\preindexhook}{Constructions whose name appears in \exposid{monospaced italics} are for exposition only.\\}
+{
+\raggedright
+\printindex[generalindex]
+}
+
+\clearpage
+\renewcommand{\preindexhook}{The first bold page number for each entry is the page in the
+general text where the grammar production is defined. The second bold page number is the
+corresponding page in the Grammar summary\iref{gram}. Other page numbers refer to pages where the grammar production is mentioned in the general text.\\}
+{
+\raggedright
+\printindex[grammarindex]
+}
+
+\clearpage
+\renewcommand{\preindexhook}{The bold page number for each entry refers to
+the page where the synopsis of the header is shown.\\}
+{
+\raggedright
+\printindex[headerindex]
+}
+
+\clearpage
+\renewcommand{\preindexhook}{The bold page number for each entry refers to
+the page where the synopsis of the module is shown.\\}
+{
+\raggedright
+\printindex[moduleindex]
+}
+
+\clearpage
+\renewcommand{\preindexhook}{Constructions whose name appears in \exposid{italics} are for exposition only.\\}
+{
+\raggedright
+\printindex[libraryindex]
+}
+
+\clearpage
+\renewcommand{\preindexhook}{The bold page number for each entry is the page
+where the concept is defined.
+Other page numbers refer to pages where the concept is mentioned in the general text.
+Concepts whose name appears in \exposid{italics} are for exposition only.\\}
+{
+\raggedright
+\printindex[conceptindex]
+}
+
+\clearpage
+\renewcommand{\preindexhook}{The entries in this index are rough descriptions; exact
+specifications are at the indicated page in the general text.\\}
+\renewcommand{\leftmark}{Index of impl.-def. behavior}
+{
+\raggedright
+\printindex[impldefindex]
+}

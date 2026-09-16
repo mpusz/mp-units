@@ -1,0 +1,7 @@
+This is makeindex, version 2.17 [TeX Live 2023] (kpathsea + Thai support).
+Scanning style file ./generalindex.ist...done (3 attributes redefined, 0 ignored).
+Scanning input file std-generalindex.idx....done (17 entries accepted, 0 rejected).
+Sorting entries....done (75 comparisons).
+Generating output file std-generalindex.ind....done (54 lines written, 0 warnings).
+Output written in std-generalindex.ind.
+Transcript written in std-generalindex.ilg.

@@ -1,0 +1,808 @@
+%!TEX root = std.tex
+
+% Definitions and redefinitions of special commands
+%
+% For macros that are likely to appear inside code blocks, we may provide a
+% "macro length" correction value, which can be used to determine the effective
+% column number where an emitted character appears, by adding the macro length,
+% plus 2 for the escape-'@'s, plus 2 for the braces, to the real column number.
+%
+% For example:
+%
+% \newcommand{\foo[1]{#1}  % macro length: 4
+%
+% \begin{codeblock}
+% int a = 10;         // comment on column 20
+% int b = @\foo{x}@;          // comment also on effective column 20
+%
+% Here the real column of the second comment start is offset by 8 (4 + macro length).
+
+%%--------------------------------------------------
+%% Difference markups
+%%--------------------------------------------------
+\definecolor{addclr}{rgb}{0,.6,.6}
+\definecolor{remclr}{rgb}{1,0,0}
+\definecolor{noteclr}{rgb}{0,0,1}
+
+\renewcommand{\added}[1]{\textcolor{addclr}{\uline{#1}}}
+\newcommand{\removed}[1]{\textcolor{remclr}{\sout{#1}}}
+\renewcommand{\changed}[2]{\removed{#1}\added{#2}}
+
+\newcommand{\nbc}[1]{[#1]\ }
+\newcommand{\addednb}[2]{\added{\nbc{#1}#2}}
+\newcommand{\removednb}[2]{\removed{\nbc{#1}#2}}
+\newcommand{\changednb}[3]{\removednb{#1}{#2}\added{#3}}
+\newcommand{\remitem}[1]{\item\removed{#1}}
+
+\newcommand{\ednote}[1]{\textcolor{noteclr}{[Editor's note: #1] }}
+
+\newenvironment{addedblock}{\color{addclr}}{\color{black}}
+\newenvironment{removedblock}{\color{remclr}}{\color{black}}
+
+%%--------------------------------------------------
+%% Grammar extraction.
+%%--------------------------------------------------
+\def\gramSec[#1]#2{}
+
+\makeatletter
+\newcommand{\FlushAndPrintGrammar}{%
+\immediate\closeout\XTR@out%
+\immediate\openout\XTR@out=std-gram-dummy.tmp%
+\def\gramSec[##1]##2{\rSec1[##1]{##2}}%
+\input{std-gram.ext}%
+}
+\makeatother
+
+%%--------------------------------------------------
+% Escaping for index entries. Replaces ! with "! throughout its argument.
+%%--------------------------------------------------
+\def\indexescape#1{\doindexescape#1\stopindexescape!\doneindexescape}
+\def\doindexescape#1!{#1"!\doindexescape}
+\def\stopindexescape#1\doneindexescape{}
+
+%%--------------------------------------------------
+%% Cross-references.
+%%--------------------------------------------------
+\newcommand{\addxref}[1]{%
+ \hypertarget{#1}{}%
+ \glossary[xrefindex]{\indexescape{#1}}{(\ref{\indexescape{#1}})}%
+}
+
+%%--------------------------------------------------
+%% Sectioning macros.
+% Each section has a depth, an automatically generated section
+% number, a name, and a short tag.  The depth is an integer in
+% the range [0,5].  (If it proves necessary, it wouldn't take much
+% programming to raise the limit from 5 to something larger.)
+%%--------------------------------------------------
+
+% Set the xref label for a clause to be "Clause n", not just "n".
+\makeatletter
+\newcommand{\customlabel}[3]{%
+\@bsphack \protected@write\@auxout{}{\string\newlabel{#1}{{#3}{\thepage}{}{#2.\thechapter}{}}} \@esphack%
+}
+\makeatother
+\newcommand{\clauselabel}[1]{\customlabel{#1}{chapter}{Clause \thechapter}}
+\newcommand{\annexlabel}[1]{\customlabel{#1}{appendix}{Annex \thechapter}}
+
+% Use prefix "Annex" in the table of contents
+\newcommand{\annexnumberlinebox}[2]{Annex #2\space}
+
+% The basic sectioning command.  Example:
+%    \Sec1[intro.scope]{Scope}
+% defines a first-level section whose name is "Scope" and whose short
+% tag is intro.scope.  The square brackets are mandatory.
+\def\Sec#1[#2]#3{%
+\addxref{#2}%
+\ifcase#1\let\s=\chapter\let\l=\clauselabel
+      \or\let\s=\section\let\l=\label
+      \or\let\s=\subsection\let\l=\label
+      \or\let\s=\subsubsection\let\l=\label
+      \or\let\s=\paragraph\let\l=\label
+      \or\let\s=\subparagraph\let\l=\label
+      \fi%
+\s[#3]{#3\hfill[#2]}\l{#2}%
+}
+
+% A convenience feature (mostly for the convenience of the Project
+% Editor, to make it easy to move around large blocks of text):
+% the \rSec macro is just like the \Sec macro, except that depths
+% relative to a global variable, SectionDepthBase.  So, for example,
+% if SectionDepthBase is 1,
+%   \rSec1[temp.arg.type]{Template type arguments}
+% is equivalent to
+%   \Sec2[temp.arg.type]{Template type arguments}
+\newcounter{SectionDepthBase}
+\newcounter{SectionDepth}
+
+\def\rSec#1[#2]#3{%
+\setcounter{SectionDepth}{#1}
+\addtocounter{SectionDepth}{\value{SectionDepthBase}}
+\Sec{\arabic{SectionDepth}}[#2]{#3}}
+
+%%--------------------------------------------------
+% Bibliography
+%%--------------------------------------------------
+\newcommand{\supercite}[1]{\textsuperscript{\cite{#1}}}
+
+%%--------------------------------------------------
+% Indexing
+%%--------------------------------------------------
+
+% Layout of general index
+\newcommand{\rSecindex}[2]{\section*{#2}\pdfbookmark[1]{#2}{pdf.idx.#1.#2}\label{idx.#1.#2}}
+
+% locations
+\newcommand{\indextext}[1]{\index[generalindex]{#1}}
+\newcommand{\indexlibrary}[1]{\index[libraryindex]{#1}}
+\newcommand{\indexhdr}[1]{\index[headerindex]{\idxhdr{#1}}}
+\newcommand{\indexmdl}[1]{\index[moduleindex]{\idxmdl{#1}}}
+\newcommand{\indexconcept}[1]{\index[conceptindex]{#1}}
+\newcommand{\indexgram}[1]{\index[grammarindex]{#1}}
+
+% Collation helper: When building an index key, replace all macro definitions
+% in the key argument with a no-op for purposes of collation.
+\newcommand{\nocode}[1]{#1}
+\newcommand{\idxmname}[1]{\_\_#1\_\_}
+\newcommand{\idxCpp}{C++}
+
+% \indeximpldef synthesizes a collation key from the argument; that is, an
+% invocation \indeximpldef{arg} emits an index entry `key@arg`, where `key`
+% is derived from `arg` by replacing the folowing list of commands with their
+% bare content. This allows, say, collating plain text and code.
+\newcommand{\indeximpldef}[1]{%
+\let\otextup\textup%
+\let\textup\nocode%
+\let\otcode\tcode%
+\let\tcode\nocode%
+\let\oexposid\exposid%
+\let\exposid\nocode%
+\let\ogrammarterm\grammarterm%
+\let\grammarterm\nocode%
+\let\omname\mname%
+\let\mname\idxmname%
+\let\oCpp\Cpp%
+\let\Cpp\idxCpp%
+\let\oBreakableUnderscore\BreakableUnderscore%  See the "underscore" package.
+\let\BreakableUnderscore\textunderscore%
+\edef\x{#1}%
+\let\tcode\otcode%
+\let\exposid\oexposid%
+\let\grammarterm\gterm%
+\let\mname\omname%
+\let\Cpp\oCpp%
+\let\BreakableUnderscore\oBreakableUnderscore%
+\index[impldefindex]{\x@#1}%
+\let\grammarterm\ogrammarterm%
+\let\textup\otextup%
+}
+
+\newcommand{\indexdefn}[1]{\indextext{#1}}
+\newcommand{\idxbfpage}[1]{\textbf{\hyperpage{#1}}}
+\newcommand{\indexgrammar}[1]{\indextext{#1}\indexgram{#1|idxbfpage}}
+% This command uses the "cooked" \indeximpldef command to emit index
+% entries; thus they only work for simple index entries that do not contain
+% special indexing instructions.
+\newcommand{\impldef}[1]{\indeximpldef{#1}imple\-men\-ta\-tion-defined}
+% \impldefplain passes the argument directly to the index, allowing you to
+% use special indexing instructions (!, @, |).
+\newcommand{\impldefplain}[1]{\index[impldefindex]{#1}implementation-defined}
+
+% appearance
+% avoid \tcode to avoid falling victim of \tcode redefinition in CodeBlockSetup
+\newcommand{\idxcode}[1]{#1@\CodeStylex{#1}}
+\newcommand{\idxconcept}[1]{#1@\CodeStylex{#1}}
+\newcommand{\idxexposconcept}[1]{#1@\CodeStylex{\placeholder{#1}}}
+\newcommand{\idxhdr}[1]{#1@\CodeStylex{<#1>}}
+\newcommand{\idxmdl}[1]{#1@\CodeStylex{#1}}
+\newcommand{\idxgram}[1]{#1@\gterm{#1}}
+\newcommand{\idxterm}[1]{#1@\term{#1}}
+\newcommand{\idxxname}[1]{__#1@\xname{#1}}
+
+% library index entries
+\newcommand{\indexlibraryglobal}[1]{\indexlibrary{\idxcode{#1}}}
+\newcommand{\indexlibrarymisc}[2]{\indexlibrary{#1!#2}}
+\newcommand{\indexlibraryctor}  [1]{\indexlibrarymisc{\idxcode{#1}}{constructor}}
+\newcommand{\indexlibrarydtor}  [1]{\indexlibrarymisc{\idxcode{#1}}{destructor}}
+\newcommand{\indexlibraryzombie}[1]{\indexlibrarymisc{\idxcode{#1}}{zombie}}
+
+% class member library index
+\newcommand{\indexlibraryboth}[2]{\indexlibrarymisc{#1}{#2}\indexlibrarymisc{#2}{#1}}
+\newcommand{\indexlibrarymember}[2]{\indexlibraryboth{\idxcode{#1}}{\idxcode{#2}}}
+\newcommand{\indexlibrarymemberexpos}[2]{\indexlibraryboth{\idxcode{#1}}{#2@\exposid{#2}}}
+\newcommand{\indexlibrarymemberx}[2]{\indexlibrarymisc{\idxcode{#1}}{\idxcode{#2}}}
+
+\newcommand{\libglobal}[1]{\indexlibraryglobal{#1}#1}
+\newcommand{\libmember}[2]{\indexlibrarymember{#1}{#2}#1}
+\newcommand{\libspec}[2]{\indexlibrarymemberx{#1}{#2}#1}
+
+% index for library headers
+\newcommand{\libheader}[1]{\indexhdr{#1}\tcode{<#1>}}
+\newcommand{\indexheader}[1]{\index[headerindex]{\idxhdr{#1}|idxbfpage}}
+\newcommand{\libheaderdef}[1]{\indexheader{#1}\tcode{<#1>}}
+\newcommand{\libnoheader}[1]{\indextext{\idxhdr{#1}!absence thereof}\tcode{<#1>}}
+\newcommand{\libheaderrefx}[2]{\libheader{#1}\iref{#2}}
+\newcommand{\libheaderref}[1]{\libheaderrefx{#1}{#1.syn}}
+\newcommand{\libdeprheaderref}[1]{\libheaderrefx{#1}{depr.#1.syn}}
+
+% index for library modules
+\newcommand{\libmodule}[1]{\indexmdl{#1}\tcode{#1}}
+\newcommand{\indexmodule}[1]{\index[moduleindex]{\idxmdl{#1}|idxbfpage}}
+\newcommand{\libmoduledef}[1]{\indexmodule{#1}\tcode{#1}}
+\newcommand{\libmodulerefx}[2]{\libmodule{#1}\iref{#2}}
+
+%%--------------------------------------------------
+% General code style
+%%--------------------------------------------------
+\newcommand{\CodeStyle}{\ttfamily}
+\newcommand{\CodeStylex}[1]{\texttt{\protect\frenchspacing #1}}
+
+\definecolor{grammar-gray}{gray}{0.2}
+
+% General grammar style
+\newcommand{\GrammarStylex}[1]{\textcolor{grammar-gray}{\textsf{\textit{#1}}}}
+
+% Code and definitions embedded in text.
+\newcommand{\tcode}[1]{\CodeStylex{#1}}
+\newcommand{\term}[1]{\textit{#1}}
+\newcommand{\gterm}[1]{\GrammarStylex{#1}}
+\newcommand{\fakegrammarterm}[1]{\gterm{#1}}
+\newcommand{\keyword}[1]{\texorpdfstring{\tcode{#1}\protect\indextext{\idxcode{#1}!keyword}}{#1}}                % macro length: 8
+\newcommand{\grammarterm}[1]{\texorpdfstring{\protect\indexgram{\idxgram{#1}}\gterm{#1}}{#1}}
+\newcommand{\grammartermnc}[1]{\indexgram{\idxgram{#1}}\gterm{#1\nocorr}}
+\newcommand{\regrammarterm}[1]{\textit{#1}}
+\newcommand{\placeholder}[1]{\textit{#1}}                                   % macro length: 12
+\newcommand{\placeholdernc}[1]{\textit{#1\nocorr}}                          % macro length: 14
+\newcommand{\exposid}[1]{\tcode{\placeholder{#1}}}                          % macro length: 8
+\newcommand{\exposidnc}[1]{\tcode{\placeholdernc{#1}}\itcorr[-1]}           % macro length: 10
+\newcommand{\defnxname}[1]{\indextext{\idxxname{#1}}\xname{#1}}
+\newcommand{\defnlibxname}[1]{\indexlibrary{\idxxname{#1}}\xname{#1}}
+
+% Non-compound defined term.
+\newcommand{\defn}[1]{\defnx{#1}{#1}}
+% Defined term with different index entry.
+\newcommand{\defnx}[2]{\indexdefn{#2}\textit{#1}}
+% Compound defined term with 'see' for primary term.
+% Usage: \defnadj{trivial}{class}
+\newcommand{\defnadj}[2]{\indextext{#1 #2|see{#2, #1}}\indexdefn{#2!#1}\textit{#1 #2}}
+% Compound defined term with a different form for the primary noun.
+% Usage: \defnadjx{scalar}{types}{type}
+\newcommand{\defnadjx}[3]{\indextext{#1 #3|see{#3, #1}}\indexdefn{#3!#1}\textit{#1 #2}}
+
+% Macros used for the grammar of std::format format specifications.
+% FIXME: For now, keep the format grammar productions out of the index, since
+% they conflict with the main grammar.
+% Consider renaming these en masse (to fmt-* ?) to avoid this problem.
+\newcommand{\fmtnontermdef}[1]{{\BnfNontermshape#1\itcorr}\textnormal{:}}
+\newcommand{\fmtgrammarterm}[1]{\gterm{#1}}
+
+%%--------------------------------------------------
+%% allow line break if needed for justification
+%%--------------------------------------------------
+\newcommand{\brk}{\discretionary{}{}{}}
+
+%%--------------------------------------------------
+%% Macros for funky text
+%%--------------------------------------------------
+\newcommand{\Cpp}{\texorpdfstring{C\kern-0.05em\protect\raisebox{.35ex}{\textsmaller[2]{+\kern-0.05em+}}}{C++}}
+\newcommand{\CppIII}{\Cpp{} 2003}
+\newcommand{\CppXI}{\Cpp{} 2011}
+\newcommand{\CppXIV}{\Cpp{} 2014}
+\newcommand{\CppXVII}{\Cpp{} 2017}
+\newcommand{\CppXX}{\Cpp{} 2020}
+\newcommand{\CppXXIII}{\Cpp{} 2023}
+\newcommand{\CppXXVI}{\Cpp{} 2026}
+\newcommand{\IsoCUndated}{ISO/IEC 9899}
+\newcommand{\IsoC}{\IsoCUndated{}:2018}
+\newcommand{\opt}[1]{#1\ensuremath{_\mathit{\color{black}opt}}}
+\newcommand{\bigoh}[1]{\ensuremath{\mathscr{O}(#1)}}
+
+% Make all tildes a little larger to avoid visual similarity with hyphens.
+\renewcommand{\~}{\textasciitilde}
+\let\OldTextAsciiTilde\textasciitilde
+\renewcommand{\textasciitilde}{\protect\raisebox{-0.17ex}{\larger\OldTextAsciiTilde}}
+\newcommand{\caret}{\char`\^}
+
+%%--------------------------------------------------
+%% States and operators
+%%--------------------------------------------------
+\newcommand{\state}[2]{\tcode{#1}\ensuremath{_{#2}}}
+\newcommand{\bitand}{\ensuremath{\mathbin{\mathsf{bitand}}}}
+\newcommand{\bitor}{\ensuremath{\mathbin{\mathsf{bitor}}}}
+\newcommand{\xor}{\ensuremath{\mathbin{\mathsf{xor}}}}
+\newcommand{\rightshift}{\ensuremath{\mathbin{\mathsf{rshift}}}}
+\newcommand{\leftshift}[1]{\ensuremath{\mathbin{\mathsf{lshift}_{#1}}}}
+
+%% Notes and examples
+\newcommand{\noteintro}[1]{[\textit{#1}:}
+\newcommand{\noteoutro}[1]{\textit{\,---\,#1}\kern.5pt]}
+
+% \newnoteenvironment{ENVIRON}{BEGIN TEXT}{END TEXT}
+% Creates a note-like environment beginning with BEGIN TEXT and
+% ending with END TEXT. A counter with name ENVIRON indicates the
+% number of this kind of note / example that has occurred in this
+% subclause.
+% Use tailENVIRON to avoid inserting a \par at the end.
+\newcommand{\newnoteenvironment}[3]{
+\newsubclausecounter{#1}
+\newenvironment{tail#1}
+{\par\small\stepcounter{#1}\noteintro{#2}}
+{\noteoutro{#3}}
+\newenvironment{#1}
+{\begin{tail#1}}
+% \small\par is for C++20 post-DIS compatibility
+{\end{tail#1}\small\par\penalty -200}
+
+}
+
+\newnoteenvironment{note}{Note \arabic{note}}{end note}
+\newnoteenvironment{example}{Example \arabic{example}}{end example}
+
+\makeatletter
+\let\footnote\@undefined
+\global\newsavebox{\@tempfootboxa}   % must be global, to escape tables/figures
+\newsavebox{\@templfootbox}
+\newenvironment{footnote}{%
+  \unskip\footnotemark%    no space before the mark
+  \normalfont%
+  \footnotesize%           text size for rendering the footnote text
+  \begin{lrbox}{\@templfootbox}%       temporarily save to local box
+}{%
+  \end{lrbox}%
+  \global\setbox\@tempfootboxa\hbox{\unhbox\@templfootbox}%  copy to global box
+  \footnotetext{\unhbox\@tempfootboxa}%
+}
+\makeatother
+
+%% Library function descriptions
+\newcommand{\Fundescx}[1]{\textit{#1}}
+\newcommand{\Fundesc}[1]{\Fundescx{#1}:\space}
+\newcommand{\recommended}{\Fundesc{Recommended practice}}
+\newcommand{\required}{\Fundesc{Required behavior}}
+\newcommand{\constraints}{\Fundesc{Constraints}}
+\newcommand{\mandates}{\Fundesc{Mandates}}
+\newcommand{\expects}{\Fundesc{Preconditions}}
+\newcommand{\effects}{\Fundesc{Effects}}
+\newcommand{\ensures}{\Fundesc{Postconditions}}
+\newcommand{\returns}{\Fundesc{Returns}}
+\newcommand{\throws}{\Fundesc{Throws}}
+\newcommand{\default}{\Fundesc{Default behavior}}
+\newcommand{\complexity}{\Fundesc{Complexity}}
+\newcommand{\remarks}{\Fundesc{Remarks}}
+\newcommand{\errors}{\Fundesc{Error conditions}}
+\newcommand{\sync}{\Fundesc{Synchronization}}
+\newcommand{\implimits}{\Fundesc{Implementation limits}}
+\newcommand{\replaceable}{\Fundesc{Replaceable}}
+\newcommand{\result}{\Fundesc{Result}}
+\newcommand{\returntype}{\Fundesc{Return type}}
+\newcommand{\ctype}{\Fundesc{Type}}
+\newcommand{\templalias}{\Fundesc{Alias template}}
+
+%% Cross-reference
+\newcommand{\xref}{\textsc{See also:}\space}
+\newcommand{\xrefc}[1]{\xref{} \IsoC{}, #1}
+\newcommand{\termref}[3]{\textit{#2}{#3}\iref{#1}} % in Clause 3
+
+%% Inline comma-separated parenthesized references
+\ExplSyntaxOn
+\NewDocumentCommand \iref { m } {
+  \clist_set:Nx \l_tmpa_clist { #1 }
+  \nolinebreak[3] ~ (
+  \clist_map_inline:Nn \l_tmpa_clist {
+    \clist_put_right:Nn \g_tmpa_clist { \ref{##1} }
+  }
+  \clist_use:Nn \g_tmpa_clist { ,~ }
+  )
+  \clist_clear:N \g_tmpa_clist
+}
+\ExplSyntaxOff
+
+%% Inline non-parenthesized table reference (override memoir's \tref)
+\renewcommand{\tref}[1]{\hyperref[tab:#1]{\tablerefname \nolinebreak[3] \ref*{tab:#1}}}
+%% Inline non-parenthesized figure reference (override memoir's \fref)
+\renewcommand{\fref}[1]{\hyperref[fig:#1]{\figurerefname \nolinebreak[3] \ref*{fig:#1}}}
+
+%% NTBS, etc.
+\verbtocs{\StrTextsmaller}|\textsmaller[1]{|
+\verbtocs{\StrTextsc}|\textsc{|
+\verbtocs{\StrClosingbrace}|}|
+\newcommand{\ucode}[1]{%
+  \textsc{u}%
+  \textsmaller[2]{\kern-0.05em\protect\raisebox{.25ex}{+}}%
+  \begingroup%
+  \def\temp{#1}%
+  \StrSubstitute{\temp}{0}{X0Z}[\temp]%
+  \StrSubstitute{\temp}{1}{X1Z}[\temp]%
+  \StrSubstitute{\temp}{2}{X2Z}[\temp]%
+  \StrSubstitute{\temp}{3}{X3Z}[\temp]%
+  \StrSubstitute{\temp}{4}{X4Z}[\temp]%
+  \StrSubstitute{\temp}{5}{X5Z}[\temp]%
+  \StrSubstitute{\temp}{6}{X6Z}[\temp]%
+  \StrSubstitute{\temp}{7}{X7Z}[\temp]%
+  \StrSubstitute{\temp}{8}{X8Z}[\temp]%
+  \StrSubstitute{\temp}{9}{X9Z}[\temp]%
+  \StrSubstitute{\temp}{a}{YaZ}[\temp]%
+  \StrSubstitute{\temp}{b}{YbZ}[\temp]%
+  \StrSubstitute{\temp}{c}{YcZ}[\temp]%
+  \StrSubstitute{\temp}{d}{YdZ}[\temp]%
+  \StrSubstitute{\temp}{e}{YeZ}[\temp]%
+  \StrSubstitute{\temp}{f}{YfZ}[\temp]%
+  \StrSubstitute{\temp}{X}{\StrTextsmaller}[\temp]%
+  \StrSubstitute{\temp}{Y}{\StrTextsc}[\temp]%
+  \StrSubstitute{\temp}{Z}{\StrClosingbrace}[\temp]%
+  \tokenize\temp{\temp}%
+  \temp%
+  \endgroup%
+}
+\newcommand{\uname}[1]{\textsc{#1}}
+\newcommand{\unicode}[2]{\ucode{#1} \uname{#2}}
+\newcommand{\UAX}[1]{\texorpdfstring{UAX~\textsmaller[1]{\raisebox{0.35ex}{\#}}#1}{UAX \##1}}
+\newcommand{\NTS}[1]{\textsc{#1}}
+\newcommand{\ntbs}{\NTS{ntbs}}
+\newcommand{\ntmbs}{\NTS{ntmbs}}
+% The following are currently unused:
+% \newcommand{\ntwcs}{\NTS{ntwcs}}
+% \newcommand{\ntcxvis}{\NTS{ntc16s}}
+% \newcommand{\ntcxxxiis}{\NTS{ntc32s}}
+
+%% Code annotations
+\newcommand{\EXPO}[1]{\textit{#1}}
+\newcommand{\expos}{\EXPO{exposition only}}
+\newcommand{\impdef}{\EXPO{implementation-defined}}
+\newcommand{\impdefnc}{\EXPO{implementation-defined\nocorr}}
+\newcommand{\impdefx}[1]{\indeximpldef{#1}\EXPO{implementation-defined}}
+\newcommand{\notdef}{\EXPO{not defined}}
+
+\newcommand{\UNSP}[1]{\textit{\texttt{#1}}}
+\newcommand{\UNSPnc}[1]{\textit{\texttt{#1}\nocorr}}
+\newcommand{\unspec}{\UNSP{unspecified}}
+\newcommand{\unspecnc}{\UNSPnc{unspecified}}
+\newcommand{\unspecbool}{\UNSP{unspecified-bool-type}}
+\newcommand{\seebelow}{\UNSP{see below}}      % macro length: 0
+\newcommand{\seebelownc}{\UNSPnc{see below}}  % macro length: 2
+\newcommand{\unspecuniqtype}{\UNSP{unspecified unique type}}
+\newcommand{\unspecalloctype}{\UNSP{unspecified allocator type}}
+
+%% Manual insertion of italic corrections, for aligning in the presence
+%% of the above annotations.
+\newlength{\itcorrwidth}
+\newlength{\itletterwidth}
+\newcommand{\itcorr}[1][]{%
+ \settowidth{\itcorrwidth}{\textit{x\/}}%
+ \settowidth{\itletterwidth}{\textit{x\nocorr}}%
+ \addtolength{\itcorrwidth}{-1\itletterwidth}%
+ \makebox[#1\itcorrwidth]{}%
+}
+
+%% Double underscore
+\newcommand{\ungap}{\kern.5pt}
+\newcommand{\unun}{\textunderscore\ungap\textunderscore}
+\newcommand{\xname}[1]{\tcode{\unun\ungap#1}}
+\newcommand{\mname}[1]{\tcode{\unun\ungap#1\ungap\unun}}
+
+%% An elided code fragment, /* ... */, that is formatted as code.
+%% (By default, listings typeset comments as body text.)
+%% Produces 9 output characters.
+\newcommand{\commentellip}{\tcode{/* ...\ */}}
+
+%% Concepts
+\newcommand{\oldconceptname}[1]{Cpp17#1}
+\newcommand{\oldconcept}[1]{\textit{\oldconceptname{#1}}}
+\newcommand{\defnoldconcept}[1]{\indexdefn{\idxoldconcept{#1}}\oldconcept{#1}}
+\newcommand{\idxoldconcept}[1]{\oldconceptname{#1}@\oldconcept{#1}}
+% FIXME: A "new" oldconcept (added after C++17),
+% which doesn't get a Cpp17 prefix.
+\newcommand{\newoldconcept}[1]{\textit{#1}}
+\newcommand{\defnnewoldconcept}[1]{\indexdefn{\idxnewoldconcept{#1}}\newoldconcept{#1}}
+\newcommand{\idxnewoldconcept}[1]{#1@\newoldconcept{#1}}
+
+\newcommand{\cname}[1]{\tcode{#1}}
+\newcommand{\ecname}[1]{\tcode{\placeholder{#1}}}
+\newcommand{\libconceptx}[2]{\cname{#1}\indexconcept{\idxconcept{#2}}}
+\newcommand{\libconcept}[1]{\libconceptx{#1}{#1}}
+\newcommand{\deflibconcept}[1]{\cname{#1}\indexlibrary{\idxconcept{#1}}\indexconcept{\idxconcept{#1}|idxbfpage}}
+\newcommand{\exposconcept}[1]{\ecname{#1}\indexconcept{\idxexposconcept{#1}}}
+\newcommand{\exposconceptx}[2]{\ecname{#1}\indexconcept{\idxexposconcept{#2}}}
+\newcommand{\exposconceptnc}[1]{\indexconcept{\idxexposconcept{#1}}\ecname{#1}\itcorr[-1]}               % macro length: 15
+\newcommand{\defexposconcept}[1]{\ecname{#1}\indexconcept{\idxexposconcept{#1}|idxbfpage}}               % macro length: 16
+\newcommand{\defexposconceptnc}[1]{\ecname{#1}\indexconcept{\idxexposconcept{#1}|idxbfpage}\itcorr[-1]}  % macro length: 18
+
+%% Ranges
+\newcommand{\Range}[4]{\ensuremath{#1}\tcode{#3}\ensuremath{,}\,\penalty2000{}\tcode{#4}\ensuremath{#2}}
+\newcommand{\crange}[2]{\Range{[}{]}{#1}{#2}}
+\newcommand{\brange}[2]{\Range{(}{]}{#1}{#2}}
+\newcommand{\orange}[2]{\Range{(}{)}{#1}{#2}}
+\newcommand{\range}[2]{\Range{[}{)}{#1}{#2}}
+\newcommand{\countedrange}[2]{$\tcode{#1} + \range{0}{#2}$}
+
+%% Change descriptions
+\newcommand{\diffhead}[1]{\textbf{#1:}\space}
+\newcommand{\diffdef}[1]{\ifvmode\else\hfill\break\fi\diffhead{#1}}
+\ExplSyntaxOn
+\NewDocumentCommand \diffref { m } {
+  \clist_set:Nx \l_tmpa_clist { #1 }
+  \pnum
+  \int_compare:nTF { \clist_count:N \l_tmpa_clist < 2 } {
+    \textbf{Affected~subclause:} ~
+  } {
+    \textbf{Affected~subclauses:} ~
+  }
+  \clist_map_inline:Nn \l_tmpa_clist {
+    \clist_put_right:Nn \g_tmpa_clist { \ref{##1} }
+  }
+  \clist_use:Nnnn \g_tmpa_clist { ~and~ } { ,~ } { ,~and~ }
+  \clist_clear:N \g_tmpa_clist
+}
+\cs_set_eq:NN \diffrefs \diffref
+\ExplSyntaxOff
+% \nodiffref swallows a following \change and removes the preceding line break.
+\def\nodiffref\change{\pnum
+\diffhead{Change}}
+\newcommand{\change}{\diffdef{Change}}
+\newcommand{\rationale}{\diffdef{Rationale}}
+\newcommand{\effect}{\diffdef{Effect on original feature}}
+\newcommand{\effectafteritemize}{\diffhead{Effect on original feature}}
+\newcommand{\difficulty}{\diffdef{Difficulty of converting}}
+\newcommand{\howwide}{\diffdef{How widely used}}
+
+%% Miscellaneous
+\newcommand{\stage}[1]{\item[Stage #1:]}
+\newcommand{\doccite}[1]{\textit{#1}}
+\newcommand{\cvqual}[1]{\textit{#1}}
+\newcommand{\cv}{\ifmmode\mathit{cv}\else\cvqual{cv}\fi}
+\newcommand{\numconst}[1]{\textsl{#1}}
+\newcommand{\logop}[1]{\textsc{#1}}
+
+%%--------------------------------------------------
+%% Environments for code listings.
+%%--------------------------------------------------
+
+% We use the 'listings' package, with some small customizations.
+% The most interesting customization: all TeX commands are available
+% within comments. Comments are set in italics, keywords and strings
+% don't get special treatment.
+
+\lstset{language=C++,
+        basicstyle=\small\CodeStyle,
+        keywordstyle=,
+        stringstyle=,
+        xleftmargin=1em,
+        showstringspaces=false,
+        commentstyle=\itshape\rmfamily,
+        columns=fullflexible,
+        keepspaces=true,
+        texcl=true}
+
+% Our usual abbreviation for 'listings'.  Comments are in
+% italics.  Arbitrary TeX commands can be used if they're
+% surrounded by @ signs.
+\newcommand{\CodeBlockSetup}{%
+\lstset{escapechar=@, aboveskip=\parskip, belowskip=0pt,
+        midpenalty=500, endpenalty=-50,
+        emptylinepenalty=-250, semicolonpenalty=0,upquote=true}%
+\renewcommand{\tcode}[1]{\textup{\CodeStylex{##1}}}
+\renewcommand{\term}[1]{\textit{##1}}%
+\renewcommand{\grammarterm}[1]{\gterm{##1}}%
+}
+
+\lstnewenvironment{codeblock}{\CodeBlockSetup}{}
+
+% Left-align listings titles
+\makeatletter
+\def\lst@maketitle{\@makeleftcaption\lstdropdelim}
+\long\def\@makeleftcaption#1#2{%
+  \vskip\abovecaptionskip
+  \sbox\@tempboxa{#1: #2}%
+  \ifdim \wd\@tempboxa >\hsize
+    #1: #2\par
+  \else
+    \global \@minipagefalse
+    \hb\hsize{%\hfil -- REMOVED
+    \box\@tempboxa\hfil}%
+  \fi
+  \vskip\belowcaptionskip}%
+\makeatother
+
+\lstnewenvironment{codeblocktu}[1]{%
+\lstset{title={%\parabullnum{Bullets1}{0pt}
+#1:}}\CodeBlockSetup}{}
+
+% An environment for command / program output that is not C++ code.
+\lstnewenvironment{outputblock}{\lstset{language=}}{}
+
+% A code block in which single-quotes are digit separators
+% rather than character literals.
+\lstnewenvironment{codeblockdigitsep}{
+ \CodeBlockSetup
+ \lstset{deletestring=[b]{'}}
+}{}
+
+% Permit use of '@' inside codeblock blocks (don't ask)
+\makeatletter
+\newcommand{\atsign}{@}
+\makeatother
+
+%%--------------------------------------------------
+%% Indented text
+%%--------------------------------------------------
+\newenvironment{indented}[1][]
+{\begin{indenthelper}[#1]\item\relax}
+{\end{indenthelper}}
+
+%%--------------------------------------------------
+%% Library item descriptions
+%%--------------------------------------------------
+\lstnewenvironment{itemdecl}
+{
+ \lstset{escapechar=@,
+ xleftmargin=0em,
+ midpenalty=500,
+ semicolonpenalty=-50,
+ endpenalty=3000,
+ aboveskip=2ex,
+ belowskip=0ex	% leave this alone: it keeps these things out of the
+				% footnote area
+ }%
+ \renewcommand{\tcode}[1]{\textup{\CodeStylex{##1}}}
+}
+{
+}
+
+\newenvironment{itemdescr}
+{
+ \begin{indented}[beginpenalty=3000, endpenalty=-300]}
+{
+ \end{indented}
+}
+
+
+%%--------------------------------------------------
+%% Bnf environments
+%%--------------------------------------------------
+\newlength{\BnfIndent}
+\setlength{\BnfIndent}{\leftmargini}
+\newlength{\BnfInc}
+\setlength{\BnfInc}{\BnfIndent}
+\newlength{\BnfRest}
+\setlength{\BnfRest}{2\BnfIndent}
+\newcommand{\BnfNontermshape}{\small\color{grammar-gray}\sffamily\itshape}
+\newcommand{\BnfReNontermshape}{\small\rmfamily\itshape}
+\newcommand{\BnfTermshape}{\small\ttfamily\upshape}
+
+\newenvironment{bnfbase}
+ {
+ \newcommand{\nontermdef}[1]{{\BnfNontermshape##1\itcorr}\indexgrammar{\idxgram{##1}}\textnormal{:}}
+ \newcommand{\terminal}[1]{{\BnfTermshape ##1}}
+ \renewcommand{\keyword}[1]{\terminal{##1}\indextext{\idxcode{##1}!keyword}}
+ \renewcommand{\exposid}[1]{\terminal{\textit{##1}}}
+ \renewcommand{\placeholder}[1]{\textrm{\textit{##1}}}
+ \newcommand{\descr}[1]{\textnormal{##1}}
+ \newcommand{\bnfindent}{\hspace*{\bnfindentfirst}}
+ \newcommand{\bnfindentfirst}{\BnfIndent}
+ \newcommand{\bnfindentinc}{\BnfInc}
+ \newcommand{\bnfindentrest}{\BnfRest}
+ \newcommand{\br}{\hfill\\*}
+ \widowpenalties 1 10000
+ \frenchspacing
+ }
+ {
+ \nonfrenchspacing
+ }
+
+\newenvironment{simplebnf}
+{
+ \begin{bnfbase}
+ \BnfNontermshape
+ \begin{indented}[before*=\setlength{\rightmargin}{-\leftmargin}]
+}
+{
+ \end{indented}
+ \end{bnfbase}
+}
+
+\newenvironment{bnf}
+{
+ \begin{bnfbase}
+ \begin{bnflist}
+ \BnfNontermshape
+ \item\relax
+}
+{
+ \end{bnflist}
+ \end{bnfbase}
+}
+
+\newenvironment{ncrebnf}
+{
+ \begin{bnfbase}
+ \newcommand{\renontermdef}[1]{{\BnfReNontermshape##1\itcorr}\,\textnormal{::}}
+ \begin{bnflist}
+ \BnfReNontermshape
+ \item\relax
+}
+{
+ \end{bnflist}
+ \end{bnfbase}
+}
+
+% non-copied versions of bnf environments
+\let\ncsimplebnf\simplebnf
+\let\endncsimplebnf\endsimplebnf
+\let\ncbnf\bnf
+\let\endncbnf\endbnf
+
+%%--------------------------------------------------
+%% Environment for imported graphics
+%%--------------------------------------------------
+% usage: \begin{importgraphic}{CAPTION}{TAG}{FILE}\end{importgraphic}
+%        \importexample[VERTICAL OFFESET]{FILE}
+%
+% The filename is relative to the source/assets directory.
+
+\newenvironment{importgraphic}[3]
+{%
+\newcommand{\cptn}{#1}
+\newcommand{\lbl}{#2}
+\begin{figure}[htp]\centering%
+\includegraphics[scale=.35]{assets/#3}
+}
+{
+\caption{\cptn \quad [fig:\lbl]}\label{fig:\lbl}%
+\end{figure}}
+
+\newcommand{\importexample}[2][-0.9pt]{\raisebox{#1}{\includegraphics{assets/#2}}}
+
+%%--------------------------------------------------
+%% Definitions section for "Terms and definitions"
+%%--------------------------------------------------
+\newcommand{\nocontentsline}[3]{}
+\newcommand{\definition}[2]{%
+\addxref{#2}%
+\let\oldcontentsline\addcontentsline%
+\let\addcontentsline\nocontentsline%
+\ifcase\value{SectionDepth}
+         \let\s=\section
+      \or\let\s=\subsection
+      \or\let\s=\subsubsection
+      \or\let\s=\paragraph
+      \or\let\s=\subparagraph
+      \fi%
+\s[#1]{\hfill[#2]}\vspace{-.3\onelineskip}\label{#2} \textbf{#1}\\*%
+\let\addcontentsline\oldcontentsline%
+}
+\newcommand{\defncontext}[1]{\textlangle#1\textrangle}
+\newnoteenvironment{defnote}{Note \arabic{defnote} to entry}{end note}
+
+% Begin macro extensions.
+\newcommand{\IsoCpp}{N4971}
+
+\newcommand{\txtrm}[1]{\textnormal{\textrm{#1}}}
+
+\newcommand{\stdconcept}[1]{#1}
+
+\newcommand{\indexlibraryglobalexpos}[1]{\indexlibrary{#1@\exposid{#1}}}
+\newcommand{\indexlibraryctorexpos}[1]{\indexlibrarymisc{#1@\exposid{#1}}{constructor}}
+\newcommand{\indexlibraryexposmemberexpos}[2]{\indexlibraryboth{#1@\exposid{#1}}{#2@\exposid{#2}}}
+
+%% Inline non-parenthesized C++ reference
+\newcommand{\refcpp}[1]{\href{https://wg21.link/#1}{\IsoCpp{}, [#1]}}
+\newcommand{\irefcpp}[1]{\nolinebreak[3] (\refcpp{#1})}
+\newcommand{\refcppx}[2]{\href{https://wg21.link/#1\##2}{\IsoCpp{}, [#1]}}
+\newcommand{\irefcppx}[2]{\nolinebreak[3] (\refcppx{#1}{#2})}
+
+%% Inline IEV reference
+\newcommand{\refiev}[1]{\href{https://www.electropedia.org/iev/iev.nsf/display?openform&ievref=#1}{IEC 60050, #1}}
+\ExplSyntaxOn
+\NewDocumentCommand \irefiev { m } {
+  \clist_set:Nx \l_tmpa_clist { #1 }
+  \nolinebreak[3] ~ (
+  \clist_map_inline:Nn \l_tmpa_clist {
+    \clist_put_right:Nn \g_tmpa_clist { \refiev{##1} }
+  }
+  \clist_use:Nn \g_tmpa_clist { ,~ }
+  )
+  \clist_clear:N \g_tmpa_clist
+}
+\ExplSyntaxOff
+
+% End macro extensions.

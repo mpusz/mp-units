@@ -1,0 +1,519 @@
+%!TEX root = std.tex
+% Definitions of table environments
+
+%%--------------------------------------------------
+%% Table environments
+
+% Set parameters for floating tables
+\setcounter{totalnumber}{10}
+
+% Base definitions for tables
+\newenvironment{TableBase}
+{
+ \renewcommand{\tcode}[1]{\CodeStylex{##1}}
+ \newcommand{\topline}{\hline}
+ \newcommand{\capsep}{\hline\hline}
+ \newcommand{\rowsep}{\hline}
+ \newcommand{\bottomline}{\hline}
+
+%% vertical alignment
+ \newcommand{\rb}[1]{\raisebox{1.5ex}[0pt]{##1}}	% move argument up half a row
+
+%% header helpers
+ \newcommand{\hdstyle}[1]{\textbf{##1}}				% set header style
+ \newcommand{\Head}[3]{\multicolumn{##1}{##2}{\hdstyle{##3}}}	% add title spanning multiple columns
+ \newcommand{\lhdrx}[2]{\Head{##1}{|c}{##2}}		% set header for left column spanning #1 columns
+ \newcommand{\chdrx}[2]{\Head{##1}{c}{##2}}			% set header for center column spanning #1 columns
+ \newcommand{\rhdrx}[2]{\Head{##1}{c|}{##2}}		% set header for right column spanning #1 columns
+ \newcommand{\ohdrx}[2]{\Head{##1}{|c|}{##2}}		% set header for only column spanning #1 columns
+ \newcommand{\lhdr}[1]{\lhdrx{1}{##1}}				% set header for single left column
+ \newcommand{\chdr}[1]{\chdrx{1}{##1}}				% set header for single center column
+ \newcommand{\rhdr}[1]{\rhdrx{1}{##1}}				% set header for single right column
+ \newcommand{\ohdr}[1]{\ohdrx{1}{##1}}
+ \newcommand{\br}{\hfill\break}						% force newline within table entry
+
+%% column styles
+ \newcolumntype{x}[1]{>{\raggedright\let\\=\tabularnewline}p{##1}}      % word-wrapped ragged-right
+                                                                        % column, width specified by #1
+
+  % do not number bullets within tables
+  \renewcommand{\labelitemi}{---}
+  \renewcommand{\labelitemii}{---}
+  \renewcommand{\labelitemiii}{---}
+  \renewcommand{\labelitemiv}{---}
+}
+{
+}
+
+% floattablebase without TableBase, used for lib2dtab2base
+\newenvironment{floattablebasex}[4]
+{
+ \begin{table}[#4]
+ \caption{\label{tab:#2}#1 \quad [tab:#2]}
+ \begin{center}
+ \begin{tabular}{|#3|}
+}
+{
+ \bottomline
+ \end{tabular}
+ \end{center}
+ \end{table}
+}
+
+
+% General Usage: TITLE is the title of the table, XREF is the
+% cross-reference for the table. LAYOUT is a sequence of column
+% type specifiers (e.g., cp{1.0}c), without '|' for the left edge
+% or right edge.
+
+% usage: \begin{floattablebase}{TITLE}{XREF}{LAYOUT}{PLACEMENT}
+% produces floating table, location determined within limits
+% by LaTeX.
+\newenvironment{floattablebase}[4]
+{
+ \begin{TableBase}
+ \begin{floattablebasex}{#1}{#2}{#3}{#4}
+}
+{
+ \end{floattablebasex}
+ \end{TableBase}
+}
+
+% usage: \begin{floattable}{TITLE}{XREF}{LAYOUT}
+% produces floating table, location determined within limits
+% by LaTeX.
+\newenvironment{floattable}[3]
+{
+ \begin{floattablebase}{#1}{#2}{#3}{htbp}
+}
+{
+ \end{floattablebase}
+}
+
+% a column in a multicolfloattable (internal)
+\newenvironment{mcftcol}{%
+ \renewcommand{\columnbreak}{%
+  \end{mcftcol} &
+  \begin{mcftcol}
+ }%
+ \setlength{\tabcolsep}{0pt}%
+ \begin{tabular}[t]{l}
+}{
+ \end{tabular}
+}
+
+% usage: \begin{multicolfloattable}{TITLE}{XREF}{LAYOUT}
+% produces floating table, location determined within limits
+% by LaTeX.
+\newenvironment{multicolfloattable}[3]
+{
+ \begin{floattable}{#1}{#2}{#3}
+ \topline
+ \begin{mcftcol}
+}
+{
+ \end{mcftcol} \\
+ \end{floattable}
+}
+
+% usage: \begin{tokentable}{TITLE}{XREF}{HDR1}{HDR2}
+% produces six-column table used for lists of replacement tokens;
+% the columns are in pairs -- left-hand column has header HDR1,
+% right hand column has header HDR2; pairs of columns are separated
+% by vertical lines. Used in the "Alternative tokens" table.
+\newenvironment{tokentable}[4]
+{
+ \begin{floattablebase}{#1}{#2}{cc|cc|cc}{htbp}
+ \topline
+ \hdstyle{#3}   &   \hdstyle{#4}    &
+ \hdstyle{#3}   &   \hdstyle{#4}    &
+ \hdstyle{#3}   &   \hdstyle{#4}    \\ \capsep
+}
+{
+ \end{floattablebase}
+}
+
+% usage: \begin{libsumtabbase}{TITLE}{XREF}{HDR1}{HDR2}
+% produces three-column table with column headers HDR1 and HDR2.
+% Used in "Library Categories" table in standard, and used as
+% base for other library summary tables.
+\newenvironment{libsumtabbase}[5]
+{
+ \begin{floattable}{#2}{#3}{ll#1}
+ \topline
+ & \hdstyle{#4}	&	\hdstyle{#5}	\\ \capsep
+}
+{
+ \end{floattable}
+}
+
+% usage: \begin{libsumtab}[LASTCOLUMN]{TITLE}{XREF}
+% produces three-column table with column headers "Subclause" and "Header(s)".
+% Used in "C++ Headers for Freestanding Implementations" table in standard.
+\newenvironment{libsumtab}[3][l]
+{
+ \begin{libsumtabbase}{#1}{#2}{#3}{Subclause}{Header}
+}
+{
+ \end{libsumtabbase}
+}
+
+\newenvironment{modularlibsumtab}[3][l]
+{
+ \begin{libsumtabbase}{#1}{#2}{#3}{Subclause}{Module}
+}
+{
+ \end{libsumtabbase}
+}
+
+% usage: \begin{concepttable}{TITLE}{XREF}{LAYOUT}
+% produces table at current location
+\newenvironment{concepttable}[3]
+{
+ \begin{floattablebase}{#1}{#2}{#3}{!htb}
+}
+{
+ \end{floattablebase}
+}
+
+% usage: \begin{oldconcepttable}{NAME}{EXTRA}{XREF}{LAYOUT}
+% produces table at current location
+\newenvironment{oldconcepttable}[4]
+{
+ \indextext{\idxoldconcept{#1}}%
+ \begin{concepttable}{\oldconcept{#1} requirements#2}{#3}{#4}
+}
+{
+ \end{concepttable}
+}
+
+% usage: \begin{simpletypetable}{TITLE}{XREF}{LAYOUT}
+% produces table at current location
+\newenvironment{simpletypetable}[3]
+{
+ \begin{floattablebase}{#1}{#2}{#3}{!htb}
+}
+{
+ \end{floattablebase}
+}
+
+% usage: \begin{LongTable}{TITLE}{XREF}{LAYOUT}
+% produces table that handles page breaks sensibly.
+% WARNING: Putting two of these on the same page
+% does not break sensibly. Avoid this for short tables.
+\newenvironment{LongTable}[3]
+{
+ \newcommand{\continuedcaption}{\caption[]{#1 (continued)}}
+ \begin{TableBase}
+ \begin{longtable}{|#3|}
+ \caption{#1 \quad [tab:#2]}\label{tab:#2}
+}
+{
+ \bottomline
+ \end{longtable}
+ \end{TableBase}
+}
+
+% usage: \begin{libreqtabN}{TITLE}{XREF}
+% produces an N-column breakable table. Used in
+% most of the library Clauses for requirements tables.
+% Example at "Position type requirements" in the standard.
+
+\newenvironment{libreqtab2}[2]
+{
+ \begin{LongTable}
+ {#1}{#2}
+ {lx{.55\hsize}}
+}
+{
+ \end{LongTable}
+}
+
+\newenvironment{shortlibreqtab2}[2]
+{
+ \begin{floattable}
+ {#1}{#2}
+ {lx{.55\hsize}}
+}
+{
+ \end{floattable}
+}
+
+\newenvironment{libreqtab2a}[2]
+{
+ \begin{LongTable}
+ {#1}{#2}
+ {x{.30\hsize}x{.64\hsize}}
+}
+{
+ \end{LongTable}
+}
+
+\newenvironment{libreqtab3}[2]
+{
+ \begin{LongTable}
+ {#1}{#2}
+ {x{.28\hsize}x{.18\hsize}x{.43\hsize}}
+}
+{
+ \end{LongTable}
+}
+
+\newenvironment{libreqtab3a}[2]
+{
+ \begin{LongTable}
+ {#1}{#2}
+ {x{.28\hsize}x{.33\hsize}x{.29\hsize}}
+}
+{
+ \end{LongTable}
+}
+
+\newenvironment{libreqtab3b}[2]
+{
+ \begin{LongTable}
+ {#1}{#2}
+ {x{.40\hsize}x{.25\hsize}x{.25\hsize}}
+}
+{
+ \end{LongTable}
+}
+
+\newenvironment{libreqtab3e}[2]
+{
+ \begin{LongTable}
+ {#1}{#2}
+ {x{.38\hsize}x{.27\hsize}x{.25\hsize}}
+}
+{
+ \end{LongTable}
+}
+
+\newenvironment{libreqtab3f}[2]
+{
+ \begin{LongTable}
+ {#1}{#2}
+ {x{.35\hsize}x{.28\hsize}x{.29\hsize}}
+}
+{
+ \end{LongTable}
+}
+
+\newenvironment{libreqtab4a}[2]
+{
+ \begin{LongTable}
+ {#1}{#2}
+ {x{.14\hsize}x{.30\hsize}x{.30\hsize}x{.14\hsize}}
+}
+{
+ \end{LongTable}
+}
+
+\newenvironment{libreqtab4b}[3][LongTable]
+{
+ \def\libreqtabenv{#1}
+ \begin{\libreqtabenv}
+ {#2}{#3}
+ {x{.13\hsize}x{.15\hsize}x{.29\hsize}x{.27\hsize}}
+}
+{
+ \end{\libreqtabenv}
+}
+
+\newenvironment{libreqtab4c}[2]
+{
+ \begin{LongTable}
+ {#1}{#2}
+ {x{.16\hsize}x{.21\hsize}x{.21\hsize}x{.30\hsize}}
+}
+{
+ \end{LongTable}
+}
+
+\newenvironment{libreqtab4d}[2]
+{
+ \begin{LongTable}
+ {#1}{#2}
+ {x{.22\hsize}x{.22\hsize}x{.30\hsize}x{.15\hsize}}
+}
+{
+ \end{LongTable}
+}
+
+\newenvironment{libreqtab5}[2]
+{
+ \begin{LongTable}
+ {#1}{#2}
+ {x{.14\hsize}x{.14\hsize}x{.20\hsize}x{.20\hsize}x{.14\hsize}}
+}
+{
+ \end{LongTable}
+}
+
+% usage: \begin{libtab2}{TITLE}{XREF}{LAYOUT}{HDR1}{HDR2}
+% produces two-column table with column headers HDR1 and HDR2.
+% Used in "seekoff positioning" in the standard.
+\newenvironment{libtab2}[5]
+{
+ \begin{floattable}
+ {#1}{#2}{#3}
+ \topline
+ \lhdr{#4}	&	\rhdr{#5}	\\ \capsep
+}
+{
+ \end{floattable}
+}
+
+% usage: \begin{longlibtab2}{TITLE}{XREF}{LAYOUT}{HDR1}{HDR2}
+% produces two-column table with column headers HDR1 and HDR2.
+\newenvironment{longlibtab2}[5]
+{
+ \begin{LongTable}{#1}{#2}{#3}
+ \\ \topline
+ \lhdr{#4}	&	\rhdr{#5}	\\ \capsep
+ \endfirsthead
+ \continuedcaption\\
+ \topline
+ \lhdr{#4}	&	\rhdr{#5}	\\ \capsep
+ \endhead
+}
+{
+  \end{LongTable}
+}
+
+% usage: \begin{LibEffTab}{TITLE}{XREF}{HDR2}{WD2}
+% produces a two-column table with left column header "Element"
+% and right column header HDR2, right column word-wrapped with
+% width specified by WD2.
+\newenvironment{LibEffTab}[4]
+{
+ \begin{libtab2}{#1}{#2}{lp{#4}}{Element}{#3}
+}
+{
+ \end{libtab2}
+}
+
+% Same as LibEffTab except that it uses a long table.
+\newenvironment{longLibEffTab}[4]
+{
+ \begin{longlibtab2}{#1}{#2}{lp{#4}}{Element}{#3}
+}
+{
+ \end{longlibtab2}
+}
+
+% usage: \begin{libefftab}{TITLE}{XREF}
+% produces a two-column effects table with right column
+% header "Effect(s) if set", width 4.5 in. Used in "fmtflags effects"
+% table in standard.
+\newenvironment{libefftab}[2]
+{
+ \begin{LibEffTab}{#1}{#2}{Effect(s) if set}{4.5in}
+}
+{
+ \end{LibEffTab}
+}
+
+% Same as libefftab except that it uses a long table.
+\newenvironment{longlibefftab}[2]
+{
+ \begin{longLibEffTab}{#1}{#2}{Effect(s) if set}{4.5in}
+}
+{
+ \end{longLibEffTab}
+}
+
+% usage: \begin{libefftabmean}{TITLE}{XREF}
+% produces a two-column effects table with right column
+% header "Meaning", width 4.5 in. Used in "seekdir effects"
+% table in standard.
+\newenvironment{libefftabmean}[2]
+{
+ \begin{LibEffTab}{#1}{#2}{Meaning}{4.5in}
+}
+{
+ \end{LibEffTab}
+}
+
+% usage: \begin{libefftabvalue}{TITLE}{XREF}
+% produces a two-column effects table with right column
+% header "Value", width 3 in. Used in "basic_ios::init() effects"
+% table in standard.
+\newenvironment{libefftabvalue}[2]
+{
+ \begin{LibEffTab}{#1}{#2}{Value}{3in}
+}
+{
+ \end{LibEffTab}
+}
+
+% Same as libefftabvalue except that it uses a long table and a
+% slightly wider column.
+\newenvironment{longlibefftabvalue}[2]
+{
+ \begin{longLibEffTab}{#1}{#2}{Value}{3.5in}
+}
+{
+ \end{longLibEffTab}
+}
+
+% usage: \begin{liberrtab}{TITLE}{XREF} produces a two-column table
+% with left column header ``Value'' and right header "Error
+% condition", width 4.5 in. Used in regex Clause in the TR.
+
+\newenvironment{liberrtab}[2]
+{
+ \begin{libtab2}{#1}{#2}{lp{4.5in}}{Value}{Error condition}
+}
+{
+ \end{libtab2}
+}
+
+% Like liberrtab except that it uses a long table.
+\newenvironment{longliberrtab}[2]
+{
+ \begin{longlibtab2}{#1}{#2}{lp{4.5in}}{Value}{Error condition}
+}
+{
+ \end{longlibtab2}
+}
+
+% usage: \begin{lib2dtab2base}{TITLE}{XREF}{HDR1}{HDR2}{WID1}{WID2}{WID3}
+% produces a table with one heading column followed by 2 data columns.
+% used for 2D requirements tables, such as optional::operator= effects
+% tables.
+\newenvironment{lib2dtab2base}[7]
+{
+ %% no lines in the top-left cell, and leave a gap around the headers
+ %% FIXME: I tried to use hhline here, but it doesn't appear to support
+ %% the join between the leftmost top header and the topmost left header,
+ %% so we fake it with an empty row and column.
+ \newcommand{\topline}{\cline{3-4}}
+ \newcommand{\rowsep}{\cline{1-1}\cline{3-4}}
+ \newcommand{\capsep}{
+  \topline
+  \multicolumn{4}{c}{}\\[-0.8\normalbaselineskip]
+  \rowsep
+ }
+ \newcommand{\bottomline}{\rowsep}
+ \newcommand{\hdstyle}[1]{\textbf{##1}}
+ \newcommand{\rowhdr}[1]{\hdstyle{##1}&}
+ \newcommand{\colhdr}[1]{\multicolumn{1}{|>{\centering}m{#6}|}{\hdstyle{##1}}}
+ \begin{floattablebasex}
+ {#1}{#2}
+ {>{\centering}m{#5}|@{}p{0.2\normalbaselineskip}@{}|m{#6}|m{#7} }
+ {htbp}
+ %% table header
+ \topline
+ \multicolumn{1}{c}{}&&\colhdr{#3}&\colhdr{#4}\\
+ \capsep
+}
+{
+ \end{floattablebasex}
+}
+
+\newenvironment{lib2dtab2}[4]{
+ \begin{lib2dtab2base}{#1}{#2}{#3}{#4}{1.2in}{1.8in}{1.8in}
+}{
+ \end{lib2dtab2base}
+}
