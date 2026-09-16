@@ -686,7 +686,7 @@ struct unit_magnitude_interface {
   template<auto H, auto... Rest>
   [[nodiscard]] friend consteval auto abs_magnitude(unit_magnitude<H, Rest...>)
   {
-    if constexpr (is_negative_tag<decltype(H)>)
+    if constexpr (is_negative_tag<MP_UNITS_NTTP_TYPE(H)>)
       return unit_magnitude<Rest...>{};
     else
       return unit_magnitude<H, Rest...>{};
@@ -704,7 +704,7 @@ struct unit_magnitude_interface {
   template<auto H, auto... Rest>
   [[nodiscard]] friend consteval bool check_magnitude_is_positive(unit_magnitude<H, Rest...>)
   {
-    return !is_negative_tag<decltype(H)>;
+    return !is_negative_tag<MP_UNITS_NTTP_TYPE(H)>;
   }
 
   template<std::same_as<unit_magnitude<>> M>
@@ -720,7 +720,7 @@ struct unit_magnitude_interface {
     // The negative_tag is the integer (-1): include it in the integer part.
     // The else is required so that the rest of the body (which calls get_exponent/get_base on M)
     // is not instantiated for negative_tag, avoiding conflicting return type deductions.
-    if constexpr (is_negative_tag<decltype(M)>) {
+    if constexpr (is_negative_tag<MP_UNITS_NTTP_TYPE(M)>) {
       return m;
     } else {
       constexpr auto power_num = get_exponent(M).num;
@@ -738,7 +738,7 @@ struct unit_magnitude_interface {
   template<auto M>
   [[nodiscard]] friend consteval auto remove_positive_power(unit_magnitude<M> m)
   {
-    if constexpr (is_negative_tag<decltype(M)>)
+    if constexpr (is_negative_tag<MP_UNITS_NTTP_TYPE(M)>)
       return mp_units::detail::empty_magnitude(m);  // negative_tag is a sign sentinel, not a basis element; exclude it
     else if constexpr (get_exponent(M).num < 0) {
       return m;
@@ -750,7 +750,7 @@ struct unit_magnitude_interface {
   template<auto M>
   [[nodiscard]] friend consteval auto remove_mag_constants(unit_magnitude<M> m)
   {
-    if constexpr (is_negative_tag<decltype(M)>)
+    if constexpr (is_negative_tag<MP_UNITS_NTTP_TYPE(M)>)
       return m;  // negative_tag is a sign marker, not a mag_constant; keep it in the ratio part
     else if constexpr (is_mag_constant<decltype(get_base(M))>)
       return mp_units::detail::empty_magnitude(m);
@@ -761,7 +761,7 @@ struct unit_magnitude_interface {
   template<auto M>
   [[nodiscard]] friend consteval auto only_positive_mag_constants(unit_magnitude<M> m)
   {
-    if constexpr (is_negative_tag<decltype(M)>)
+    if constexpr (is_negative_tag<MP_UNITS_NTTP_TYPE(M)>)
       return mp_units::detail::empty_magnitude(m);
     else if constexpr (is_mag_constant<decltype(get_base(M))> && get_exponent(M) >= 0)
       return m;
@@ -772,7 +772,7 @@ struct unit_magnitude_interface {
   template<auto M>
   [[nodiscard]] friend consteval auto only_negative_mag_constants(unit_magnitude<M> m)
   {
-    if constexpr (is_negative_tag<decltype(M)>)
+    if constexpr (is_negative_tag<MP_UNITS_NTTP_TYPE(M)>)
       return mp_units::detail::empty_magnitude(m);
     else if constexpr (is_mag_constant<decltype(get_base(M))> && get_exponent(M) < 0)
       return m;
