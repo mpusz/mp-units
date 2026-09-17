@@ -12,8 +12,12 @@ repos:
         args: [--markdown-linebreak-ext=md]
         # the NIST CODATA tables are checked in byte-verbatim; nothing may rewrite them
         exclude: ^scripts/codata/
+        # both fixers edit bytes, not lines: on a PNG they strip or append bytes past the
+        # IEND chunk and corrupt the image (the docs/blog/posts/*.png screenshots)
+        exclude_types: [binary]
       - id: end-of-file-fixer
         exclude: ^scripts/codata/
+        exclude_types: [binary]
       - id: check-yaml
         args: [--unsafe] # mkdocs.yml uses !ENV and !!python/name: tags
       - id: check-json
