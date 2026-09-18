@@ -1,0 +1,9 @@
+{{!--
+    Admonition rendered as a GFM blockquote admonition.
+    Parameters:
+        kind: lowercase admonition kind ("note", "warning", "tip", ...).
+              GFM expects upper-cased kind in the marker.
+--}}
+> [!{{upper kind}}]
+> {{> @partial-block }}
+

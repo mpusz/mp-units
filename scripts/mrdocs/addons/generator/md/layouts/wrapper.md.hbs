@@ -1,0 +1,21 @@
+{{~#if @root.config.multipage~}}
+---
+title: "{{> symbol/qualified-name-text symbol }}"
+---
+
+{{! The heading is a code span on purpose. A qualified name such as
+    `mp_units::si::henry` contains `:si:`, which Material's emoji extension
+    turns into a Slovenian flag; emoji shortcodes are not expanded inside
+    code. Front matter is not Markdown, so `title` stays plain for the nav. }}
+# `{{> symbol/qualified-name-text symbol }}`
+
+{{{contents}}}
+{{~else~}}
+---
+title: "API Reference"
+---
+
+# API Reference
+
+{{{contents}}}
+{{~/if~}}

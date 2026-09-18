@@ -1,0 +1,14 @@
+{{!--
+    A members table.
+
+    Wrapped in a scrolling div rather than making the table itself
+    `display: block`: a block-level table stops its cells filling the width, so
+    the header shading covers only part of the row.
+--}}
+
+<div class="mrdocs-table-wrap" markdown="0"><table class="mrdocs-table">
+{{#if headers}}<thead><tr>{{#each headers}}<th>{{this}}</th>{{/each}}</tr></thead>{{/if}}
+<tbody>
+{{#each items as | row |}}<tr>{{#each ../columns as | col |}}<td>{{> markup/cell (lookup row col)}}</td>{{/each}}</tr>
+{{/each}}</tbody>
+</table></div>
