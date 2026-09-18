@@ -10,7 +10,7 @@
 ```mermaid
 flowchart LR
     isq_length["<b><a href="../../systems/isq/#length" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::length</a></b>"]
-    isq_altitude["<b><a href="../../systems/isq/#altitude" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::altitude</a></b>"]
+    isq_altitude["<b><a href="../../systems/isq/#altitude" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::altitude</a></b><br><i>(possibly_negative)</i>"]
     isq_length --- isq_altitude
     isq_height["<b><a href="../../systems/isq/#height" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::height</a></b>"]
     isq_altitude --- isq_height

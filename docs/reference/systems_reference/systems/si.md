@@ -107,6 +107,48 @@
 
     These units are defined in the `mp_units::non_si` namespace and are made available in the `mp_units::si` namespace through a using-directive.
 
+## Prefixed unit symbols
+
+Not every unit has a symbol for every prefix. A combination that is
+not listed here does not exist, however reasonable it looks.
+
+| Unit | Essential header | Full header adds |
+|------|------------------|------------------|
+| <a href="#ampere"><code>ampere</code></a> | `fA` `pA` `nA` `uA` `µA` `mA` `kA` | `qA` `rA` `yA` `zA` `aA` `cA` `dA` `daA` `hA` `MA` `GA` `TA` `PA` `EA` `ZA` `YA` `RA` `QA` |
+| <a href="#becquerel"><code>becquerel</code></a> | `mBq` `kBq` `MBq` `GBq` `TBq` `PBq` | `qBq` `rBq` `yBq` `zBq` `aBq` `fBq` `pBq` `nBq` `uBq` `µBq` `cBq` `dBq` `daBq` `hBq` `EBq` `ZBq` `YBq` `RBq` `QBq` |
+| <a href="#candela"><code>candela</code></a> | `mcd` | `qcd` `rcd` `ycd` `zcd` `acd` `fcd` `pcd` `ncd` `ucd` `µcd` `ccd` `dcd` `dacd` `hcd` `kcd` `Mcd` `Gcd` `Tcd` `Pcd` `Ecd` `Zcd` `Ycd` `Rcd` `Qcd` |
+| <a href="#coulomb"><code>coulomb</code></a> | `pC` `nC` `uC` `µC` `mC` | `qC` `rC` `yC` `zC` `aC` `fC` `cC` `dC` `daC` `hC` `kC` `MC` `GC` `TC` `PC` `EC` `ZC` `YC` `RC` `QC` |
+| <a href="#farad"><code>farad</code></a> | `fF` `pF` `nF` `uF` `µF` `mF` | `qF` `rF` `yF` `zF` `aF` `cF` `dF` `daF` `hF` `kF` `MF` `GF` `TF` `PF` `EF` `ZF` `YF` `RF` `QF` |
+| <a href="#gram"><code>gram</code></a> | `fg` `pg` `ng` `ug` `µg` `mg` `Mg` | `qg` `rg` `yg` `zg` `ag` `cg` `dg` `dag` `hg` `Gg` `Tg` `Pg` `Eg` `Zg` `Yg` `Rg` `Qg` |
+| <a href="#gray"><code>gray</code></a> | `uGy` `µGy` `mGy` `cGy` `kGy` | `qGy` `rGy` `yGy` `zGy` `aGy` `fGy` `pGy` `nGy` `dGy` `daGy` `hGy` `MGy` `GGy` `TGy` `PGy` `EGy` `ZGy` `YGy` `RGy` `QGy` |
+| <a href="#henry"><code>henry</code></a> | `nH` `uH` `µH` `mH` | `qH` `rH` `yH` `zH` `aH` `fH` `pH` `cH` `dH` `daH` `hH` `kH` `MH` `GH` `TH` `PH` `EH` `ZH` `YH` `RH` `QH` |
+| <a href="#hertz"><code>hertz</code></a> | `nHz` `uHz` `µHz` `mHz` `kHz` `MHz` `GHz` `THz` `PHz` | `qHz` `rHz` `yHz` `zHz` `aHz` `fHz` `pHz` `cHz` `dHz` `daHz` `hHz` `EHz` `ZHz` `YHz` `RHz` `QHz` |
+| <a href="#joule"><code>joule</code></a> | `aJ` `fJ` `pJ` `nJ` `uJ` `µJ` `mJ` `kJ` `MJ` `GJ` `TJ` `PJ` `EJ` `ZJ` | `qJ` `rJ` `yJ` `zJ` `cJ` `dJ` `daJ` `hJ` `YJ` `RJ` `QJ` |
+| <a href="#katal"><code>katal</code></a> | `nkat` `ukat` `µkat` | `qkat` `rkat` `ykat` `zkat` `akat` `fkat` `pkat` `mkat` `ckat` `dkat` `dakat` `hkat` `kkat` `Mkat` `Gkat` `Tkat` `Pkat` `Ekat` `Zkat` `Ykat` `Rkat` `Qkat` |
+| <a href="#kelvin"><code>kelvin</code></a> | `pK` `nK` `uK` `µK` `mK` `MK` | `qK` `rK` `yK` `zK` `aK` `fK` `cK` `dK` `daK` `hK` `kK` `GK` `TK` `PK` `EK` `ZK` `YK` `RK` `QK` |
+| <a href="#lumen"><code>lumen</code></a> | `klm` | `qlm` `rlm` `ylm` `zlm` `alm` `flm` `plm` `nlm` `ulm` `µlm` `mlm` `clm` `dlm` `dalm` `hlm` `Mlm` `Glm` `Tlm` `Plm` `Elm` `Zlm` `Ylm` `Rlm` `Qlm` |
+| <a href="#lux"><code>lux</code></a> | `mlx` `klx` | `qlx` `rlx` `ylx` `zlx` `alx` `flx` `plx` `nlx` `ulx` `µlx` `clx` `dlx` `dalx` `hlx` `Mlx` `Glx` `Tlx` `Plx` `Elx` `Zlx` `Ylx` `Rlx` `Qlx` |
+| <a href="#metre"><code>metre</code></a> | `fm` `pm` `nm` `um` `µm` `mm` `cm` `dm` `km` | `qm` `rm` `ym` `zm` `am` `dam` `hm` `Mm` `Gm` `Tm` `Pm` `Em` `Zm` `Ym` `Rm` `Qm` |
+| <a href="#mole"><code>mole</code></a> | `fmol` `pmol` `nmol` `umol` `µmol` `mmol` `cmol` `kmol` | `qmol` `rmol` `ymol` `zmol` `amol` `dmol` `damol` `hmol` `Mmol` `Gmol` `Tmol` `Pmol` `Emol` `Zmol` `Ymol` `Rmol` `Qmol` |
+| <a href="#newton"><code>newton</code></a> | `pN` `nN` `uN` `µN` `mN` `cN` `daN` `kN` `MN` | `qN` `rN` `yN` `zN` `aN` `fN` `dN` `hN` `GN` `TN` `PN` `EN` `ZN` `YN` `RN` `QN` |
+| <a href="#ohm"><code>ohm</code></a> | `uohm` `µΩ` `mohm` `mΩ` `kohm` `kΩ` `Mohm` `MΩ` `Gohm` `GΩ` `Tohm` `TΩ` | `qohm` `qΩ` `rohm` `rΩ` `yohm` `yΩ` `zohm` `zΩ` `aohm` `aΩ` `fohm` `fΩ` `pohm` `pΩ` `nohm` `nΩ` `cohm` `cΩ` `dohm` `dΩ` `daohm` `daΩ` `hohm` `hΩ` `Pohm` `PΩ` `Eohm` `EΩ` `Zohm` `ZΩ` `Yohm` `YΩ` `Rohm` `RΩ` `Qohm` `QΩ` |
+| <a href="#pascal"><code>pascal</code></a> | `uPa` `µPa` `mPa` `daPa` `hPa` `kPa` `MPa` `GPa` `TPa` | `qPa` `rPa` `yPa` `zPa` `aPa` `fPa` `pPa` `nPa` `cPa` `dPa` `PPa` `EPa` `ZPa` `YPa` `RPa` `QPa` |
+| <a href="#radian"><code>radian</code></a> | `nrad` `urad` `µrad` `mrad` | `qrad` `rrad` `yrad` `zrad` `arad` `frad` `prad` `crad` `drad` `darad` `hrad` `krad` `Mrad` `Grad` `Trad` `Prad` `Erad` `Zrad` `Yrad` `Rrad` `Qrad` |
+| <a href="#second"><code>second</code></a> | `as` `fs` `ps` `ns` `us` `µs` `ms` `ks` | `qs` `rs` `ys` `zs` `cs` `ds` `das` `hs` `Ms` `Gs` `Ts` `Ps` `Es` `Zs` `Ys` `Rs` `Qs` |
+| <a href="#siemens"><code>siemens</code></a> | `pS` `nS` `uS` `µS` `mS` `dS` `MS` | `qS` `rS` `yS` `zS` `aS` `fS` `cS` `daS` `hS` `kS` `GS` `TS` `PS` `ES` `ZS` `YS` `RS` `QS` |
+| <a href="#sievert"><code>sievert</code></a> | `nSv` `uSv` `µSv` `mSv` | `qSv` `rSv` `ySv` `zSv` `aSv` `fSv` `pSv` `cSv` `dSv` `daSv` `hSv` `kSv` `MSv` `GSv` `TSv` `PSv` `ESv` `ZSv` `YSv` `RSv` `QSv` |
+| <a href="#steradian"><code>steradian</code></a> | `msr` | `qsr` `rsr` `ysr` `zsr` `asr` `fsr` `psr` `nsr` `usr` `µsr` `csr` `dsr` `dasr` `hsr` `ksr` `Msr` `Gsr` `Tsr` `Psr` `Esr` `Zsr` `Ysr` `Rsr` `Qsr` |
+| <a href="#tesla"><code>tesla</code></a> | `fT` `pT` `nT` `uT` `µT` `mT` | `qT` `rT` `yT` `zT` `aT` `cT` `dT` `daT` `hT` `kT` `MT` `GT` `TT` `PT` `ET` `ZT` `YT` `RT` `QT` |
+| <a href="#volt"><code>volt</code></a> | `nV` `uV` `µV` `mV` `kV` `MV` | `qV` `rV` `yV` `zV` `aV` `fV` `pV` `cV` `dV` `daV` `hV` `GV` `TV` `PV` `EV` `ZV` `YV` `RV` `QV` |
+| <a href="#watt"><code>watt</code></a> | `pW` `nW` `uW` `µW` `mW` `kW` `MW` `GW` `TW` `PW` | `qW` `rW` `yW` `zW` `aW` `fW` `cW` `dW` `daW` `hW` `EW` `ZW` `YW` `RW` `QW` |
+| <a href="#weber"><code>weber</code></a> | — | `qWb` `rWb` `yWb` `zWb` `aWb` `fWb` `pWb` `nWb` `uWb` `µWb` `mWb` `cWb` `dWb` `daWb` `hWb` `kWb` `MWb` `GWb` `TWb` `PWb` `EWb` `ZWb` `YWb` `RWb` `QWb` |
+
+!!! note "Two headers"
+
+    The essential symbols come from `<mp-units/systems/si/unit_symbols_essential.h>`. The rest need
+    `<mp-units/systems/si/unit_symbols.h>`, which is more expensive to compile, so include it
+    only when you need an unusual prefix.
+
 ## Constants
 
 | Name | Symbol | unit_symbol | Definition |
