@@ -18,6 +18,9 @@ watch:
 # Hooks
 hooks:
   - scripts/systems_reference.py
+  # Navigation, cross-references and synopsis highlighting for the API
+  # reference that `scripts/mrdocs/run.sh` generates.
+  - scripts/mrdocs_xref.py
 
 # Configuration
 theme:
@@ -32,6 +35,10 @@ theme:
     - content.code.copy
     # - navigation.expand
     - navigation.indexes
+    # Renders only the branch around the active page. The API reference has
+    # ~5300 pages; `scripts/mrdocs_xref.py` grafts the one being viewed onto
+    # its namespace, and this keeps the rest out of every page.
+    - navigation.prune
     # - navigation.sections
     - navigation.tabs
     - navigation.footer
@@ -120,6 +127,7 @@ extra:
 
 extra_css:
   - stylesheets/extra.css
+  - stylesheets/mrdocs.css
 
 extra_javascript:
   - javascripts/ce_embed.js
