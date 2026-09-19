@@ -1,0 +1,3 @@
+headings_flag 1
+heading_prefix "\\rSecindex{general}{"
+heading_suffix "}\n"

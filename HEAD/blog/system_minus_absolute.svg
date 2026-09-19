@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="1110"
+   height="300"
+   version="1.1"
+   id="svg7"
+   sodipodi:docname="system_minus_absolute.svg"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs7" />
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="1.5683756"
+     inkscape:cx="534.94839"
+     inkscape:cy="246.43332"
+     inkscape:window-width="2560"
+     inkscape:window-height="1369"
+     inkscape:window-x="2552"
+     inkscape:window-y="790"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg7" />
+  <!-- Centered group -->
+  <g
+     id="g2"
+     transform="translate(0,120)">
+    <rect
+       x="804.98956"
+       y="-64"
+       width="200"
+       height="120"
+       fill="#4f81bd"
+       stroke="#222222"
+       stroke-width="4"
+       id="rect1-9" />
+    <text
+       x="904.98956"
+       y="0.359375"
+       font-size="48px"
+       fill="#ffffff"
+       text-anchor="middle"
+       alignment-baseline="middle"
+       dominant-baseline="middle"
+       id="text1-4">A</text>
+    <text
+       x="508.11398"
+       y="-0.71289062"
+       font-size="72px"
+       fill="#222222"
+       text-anchor="middle"
+       alignment-baseline="middle"
+       dominant-baseline="middle"
+       id="text2-8">-</text>
+    <rect
+       x="551.21753"
+       y="-64"
+       width="160"
+       height="120"
+       fill="#f79646"
+       stroke="#222222"
+       stroke-width="4"
+       id="rect2-8" />
+    <text
+       x="629.823"
+       y="0.359375"
+       font-size="48px"
+       fill="#ffffff"
+       text-anchor="middle"
+       alignment-baseline="middle"
+       dominant-baseline="middle"
+       id="text3-2">B</text>
+    <text
+       x="758.11401"
+       y="-0.71289062"
+       font-size="72px"
+       fill="#222222"
+       text-anchor="middle"
+       alignment-baseline="middle"
+       dominant-baseline="middle"
+       id="text4-4">=</text>
+    <rect
+       x="105.01044"
+       y="-64"
+       width="200"
+       height="120"
+       fill="#4f81bd"
+       stroke="#222222"
+       stroke-width="4"
+       id="rect4-5" />
+    <rect
+       x="304.98956"
+       y="-64"
+       width="160"
+       height="120"
+       fill="#f79646"
+       stroke="#222222"
+       stroke-width="4"
+       id="rect5-5" />
+    <text
+       x="205.01044"
+       y="0.35938454"
+       font-size="48px"
+       fill="#ffffff"
+       text-anchor="middle"
+       alignment-baseline="middle"
+       dominant-baseline="middle"
+       id="text5-1">A</text>
+    <text
+       x="383.59503"
+       y="0.35938454"
+       font-size="48px"
+       fill="#ffffff"
+       text-anchor="middle"
+       alignment-baseline="middle"
+       dominant-baseline="middle"
+       id="text6-7">B</text>
+  </g>
+  <!-- Type signature -->
+  <text
+     x="554.96875"
+     y="254"
+     font-size="32px"
+     fill="#222222"
+     text-anchor="middle"
+     id="text7">absolute - absolute → absolute</text>
+</svg>

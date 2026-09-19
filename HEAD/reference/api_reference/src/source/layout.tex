@@ -1,0 +1,83 @@
+%!TEX root = std.tex
+%% layout.tex -- set overall page appearance
+
+%%--------------------------------------------------
+%%  set page size, type block size, type block position
+
+\setlrmarginsandblock{2.245cm}{2.245cm}{*}
+\setulmarginsandblock{2.5cm}{2.5cm}{*}
+
+%%--------------------------------------------------
+%%  set header and footer positions and sizes
+
+\setheadfoot{\onelineskip}{2\onelineskip}
+\setheaderspaces{*}{2\onelineskip}{*}
+
+%%--------------------------------------------------
+%%  make miscellaneous adjustments, then finish the layout
+\setmarginnotes{7pt}{7pt}{0pt}
+\checkandfixthelayout
+
+%%--------------------------------------------------
+%% If there is insufficient stretchable vertical space on a page,
+%% TeX will not properly consider penalties for a good page break,
+%% even if \raggedbottom (default for oneside, not for twoside)
+%% is in effect.
+\raggedbottom
+\addtolength{\topskip}{0pt plus 20pt}
+
+%%--------------------------------------------------
+%% Place footnotes at the bottom of the page, rather
+%% than immediately following the main text.
+\feetatbottom
+
+%%--------------------------------------------------
+%% Paragraph and bullet numbering
+
+% create a new counter that resets for each new subclause
+\newcommand{\newsubclausecounter}[1]{
+\newcounter{#1}
+\counterwithin{#1}{chapter}
+\counterwithin{#1}{section}
+\counterwithin{#1}{subsection}
+\counterwithin{#1}{subsubsection}
+\counterwithin{#1}{paragraph}
+\counterwithin{#1}{subparagraph}
+}
+
+\newsubclausecounter{Paras}
+\newcounter{Bullets1}[Paras]
+\newcounter{Bullets2}[Bullets1]
+\newcounter{Bullets3}[Bullets2]
+\newcounter{Bullets4}[Bullets3]
+
+\makeatletter
+\newcommand{\parabullnum}[2]{%
+\stepcounter{#1}%
+\noindent\makebox[0pt][l]{\makebox[#2][r]{%
+\scriptsize\raisebox{.7ex}%
+{%
+\ifnum \value{Paras}>0
+\ifnum \value{Bullets1}>0 (\fi%
+                          \arabic{Paras}%
+\ifnum \value{Bullets1}>0 .\arabic{Bullets1}%
+\ifnum \value{Bullets2}>0 .\arabic{Bullets2}%
+\ifnum \value{Bullets3}>0 .\arabic{Bullets3}%
+\fi\fi\fi%
+\ifnum \value{Bullets1}>0 )\fi%
+\fi%
+}%
+\hspace{\@totalleftmargin}\quad%
+}}}
+\makeatother
+
+% Register our intent to number the next paragraph. Don't actually number it
+% yet, because we might have a paragraph break before we see its contents (for
+% example, if the paragraph begins with a note or example).
+\def\pnum{%
+\global\def\maybeaddpnum{\global\def\maybeaddpnum{}\parabullnum{Paras}{0pt}}%
+\everypar=\expandafter{\the\everypar\maybeaddpnum}%
+}
+
+% Leave more room for section numbers in TOC
+\cftsetindents{section}{1.5em}{3.0em}
