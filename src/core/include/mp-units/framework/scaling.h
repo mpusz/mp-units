@@ -80,9 +80,11 @@ template<typename T>
 }
 
 template<typename T>
+// Deferred reason 4: reached from `div_round` during constant evaluation.
 [[nodiscard]] constexpr T get_one(const T& value)
+  MP_UNITS_PRE_DEFERRED(value != get_zero(value))
 {
-  MP_UNITS_PRECONDITION(value != get_zero(value));
+  MP_UNITS_PRE_DEFERRED_COMPAT(value != get_zero(value));
   return value / value;
 }
 
@@ -90,9 +92,12 @@ template<typename T>
  * @brief Integer division with the quotient rounded according to @c Mode
  */
 template<rounding_mode Mode, typename T, typename D>
+// Deferred reason 2: deduced return type. The `auto` is load-bearing - the quotient type is derived
+// from the operands.
 [[nodiscard]] constexpr auto div_round(const T& dividend, const D& divisor)
+  MP_UNITS_PRE_DEFERRED(divisor > get_zero(divisor))  // unit magnitude denominators are always positive
 {
-  MP_UNITS_PRECONDITION(divisor > get_zero(divisor));  // unit magnitude denominators are always positive
+  MP_UNITS_PRE_DEFERRED_COMPAT(divisor > get_zero(divisor));
   using quot_type = std::remove_const_t<decltype(dividend / divisor)>;
   const quot_type quot = dividend / divisor;
   if constexpr (Mode == rounding_mode::truncated)

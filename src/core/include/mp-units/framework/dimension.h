@@ -268,9 +268,10 @@ template<typename CharT, std::output_iterator<CharT> Out, typename... Nums, type
 template<typename CharT, std::output_iterator<CharT> Out, typename... Expr>
 [[nodiscard]] constexpr Out dimension_symbol_impl(Out out, const derived_dimension_impl<Expr...>&,
                                                   const dimension_symbol_formatting& fmt, bool negative_power)
+  MP_UNITS_PRE(negative_power == false)
 {
   (void)negative_power;
-  MP_UNITS_PRECONDITION(negative_power == false);
+  MP_UNITS_EXPECTS(negative_power == false);
   return dimension_symbol_impl<CharT>(out, typename derived_dimension_impl<Expr...>::_num_{},
                                       typename derived_dimension_impl<Expr...>::_den_{}, fmt);
 }

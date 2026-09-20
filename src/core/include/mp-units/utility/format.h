@@ -159,8 +159,9 @@ template<typename Char>
 // Casts a nonnegative integer to unsigned.
 template<typename Int>
 [[nodiscard]] constexpr std::make_unsigned_t<Int> to_unsigned(Int value)
+  MP_UNITS_PRE(std::is_unsigned_v<Int> || value >= 0)
 {
-  MP_UNITS_PRECONDITION(std::is_unsigned_v<Int> || value >= 0);
+  MP_UNITS_EXPECTS(std::is_unsigned_v<Int> || value >= 0);
   return static_cast<std::make_unsigned_t<Int>>(value);
 }
 
@@ -233,8 +234,9 @@ MP_UNITS_DIAGNOSTIC_POP
 // that the range is non-empty and the first character is a digit.
 template<std::forward_iterator It>
 [[nodiscard]] constexpr int parse_nonnegative_int(It& begin, It end, int error_value)
+  MP_UNITS_PRE(begin != end && '0' <= *begin && *begin <= '9')
 {
-  MP_UNITS_PRECONDITION(begin != end && '0' <= *begin && *begin <= '9');
+  MP_UNITS_EXPECTS(begin != end && '0' <= *begin && *begin <= '9');
   unsigned value = 0, prev = 0;
   auto pos = begin;
   do {
@@ -296,8 +298,9 @@ template<std::forward_iterator It, typename Handler>
 
 template<std::forward_iterator It, typename Handler>
 [[nodiscard]] constexpr It parse_arg_id(It begin, It end, Handler& handler)
+  MP_UNITS_PRE(begin != end)
 {
-  MP_UNITS_PRECONDITION(begin != end);
+  MP_UNITS_EXPECTS(begin != end);
   auto ch = *begin;
   if (ch != '}' && ch != ':') return detail::do_parse_arg_id(begin, end, handler);
   handler.on_auto();
@@ -345,8 +348,9 @@ struct dynamic_spec_id_handler {
 MP_UNITS_EXPORT template<std::forward_iterator It, typename Char = std::iter_value_t<It>>
 [[nodiscard]] constexpr It parse_dynamic_spec(It begin, It end, int& value, fmt_arg_ref<Char>& ref,
                                               MP_UNITS_STD_FMT::basic_format_parse_context<Char>& ctx)
+  MP_UNITS_PRE(begin != end)
 {
-  MP_UNITS_PRECONDITION(begin != end);
+  MP_UNITS_EXPECTS(begin != end);
   if ('0' <= *begin && *begin <= '9') {
     const int val = parse_nonnegative_int(begin, end, -1);
     if (val != -1)
@@ -398,8 +402,9 @@ MP_UNITS_EXPORT template<std::forward_iterator It>
 // Parses fill and alignment.
 MP_UNITS_EXPORT template<std::forward_iterator It, typename Specs>
 [[nodiscard]] constexpr It parse_align(It begin, It end, Specs& specs, fmt_align default_align = fmt_align::none)
+  MP_UNITS_PRE(begin != end)
 {
-  MP_UNITS_PRECONDITION(begin != end);
+  MP_UNITS_EXPECTS(begin != end);
   auto align = fmt_align::none;
   auto pos = begin + detail::code_point_length(begin);
   if (end - pos <= 0) pos = begin;

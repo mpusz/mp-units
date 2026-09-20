@@ -140,10 +140,14 @@ public:
    * @param err The absolute standard uncertainty (must be non-negative)
    */
   // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-  [[nodiscard]] constexpr explicit uncertain(value_type val, value_type err) :
-      value_(std::move(val)), uncertainty_(std::move(err))
+  // The predicate names the parameter, not the member: a constructor's contract is checked before
+  // the member initializers run, and naming `uncertainty_` there is ill-formed ("'this' required
+  // when accessing a member").
+  [[nodiscard]] constexpr explicit uncertain(value_type val, value_type err)
+    MP_UNITS_PRE(!(err < representation_values<value_type>::zero()))
+      : value_(std::move(val)), uncertainty_(std::move(err))
   {
-    MP_UNITS_PRECONDITION(uncertainty_ >= representation_values<value_type>::zero());
+    MP_UNITS_EXPECTS(!(err < representation_values<value_type>::zero()));
   }
 
   /// @brief Returns the central value
