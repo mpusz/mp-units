@@ -44,6 +44,21 @@ on:
       - "scripts/**"
       - "src/systems/include/**"
 
+  # The same paths on a pull request, so `link-check` (below) reports a broken link while it can
+  # still be fixed in the branch rather than after it is published.
+  pull_request:
+    paths:
+      - "docs/**"
+      - ".github/workflows/documentation.yml"
+      - "CHANGELOG.md"
+      - "CONTRIBUTING.md"
+      - "CONTRIBUTORS.md"
+      - "LICENSE.md"
+      - "mkdocs.yml"
+      - "example/**"
+      - "scripts/**"
+      - "src/systems/include/**"
+
   # A nightly rebuild, so a scheduled blog post publishes itself.
   #
   # The site is static and `blog.draft_if_future_date` (mkdocs.yml) is evaluated at *build* time: a
@@ -62,19 +77,61 @@ permissions:
   pages: write
   id-token: write
 
-# Serialize all documentation publishes into a single queue. The publish step
-# force-pushes a rewritten (squashed) gh-pages branch, so concurrent runs for
-# different refs (e.g. a tag release and a master push) must not overlap or they
-# would clobber each other. Do not cancel in-progress runs: every deploy must
-# complete so its version is recorded.
+# Supersede an earlier run of the same pull request; a push keeps every run, because the
+# publish queue below is what orders those.
 concurrency:
-  group: ${{ github.workflow }}-publish
-  cancel-in-progress: false
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  # MkDocs logs a broken link and carries on, so a build is green with dead links in it. This job
+  # rejects them: before a pull request merges, and before `deploy` can publish them.
+  link-check:
+    name: Check links
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          # The RSS plugin dates each post from its git history and warns when it cannot, which
+          # `--strict` would turn into a failure that has nothing to do with links.
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: 3.x
+      - name: Installing pip dependencies
+        # No API reference toolchain here. It generates into
+        # `docs/reference/api_reference/gen`, which nothing links into: every reference goes
+        # through the checked-in `reference/api_reference.md` wrapper page, and that page is
+        # checked like any other.
+        run: |
+          pip install mkdocs-material mkdocs-rss-plugin mkdocs-exclude
+      - name: Building the site with every link checked
+        env:
+          # Check a scheduled post's links now, rather than the morning it publishes itself.
+          MP_UNITS_BLOG_DRAFT_IF_FUTURE_DATE: false
+          MP_UNITS_SOCIAL_CARDS: false
+        # `--strict` is what makes the `validation:` warnings in `mkdocs.yml` exit non-zero.
+        # Without the raised levels there it would still pass: a dead `#fragment` is reported at
+        # INFO, which strict mode does not act on.
+        run: |
+          mkdocs build --strict
+
   deploy:
+    needs: link-check
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    # Serialize all documentation publishes into a single queue. The publish step
+    # force-pushes a rewritten (squashed) gh-pages branch, so concurrent runs for
+    # different refs (e.g. a tag release and a master push) must not overlap or they
+    # would clobber each other. Do not cancel in-progress runs: every deploy must
+    # complete so its version is recorded.
+    concurrency:
+      group: ${{ github.workflow }}-publish
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v5
         with:

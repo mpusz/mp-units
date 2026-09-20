@@ -69,14 +69,30 @@ theme:
     text: Roboto
     code: Roboto Mono
 
+# A broken link still builds a page, so it is found by a reader rather than by CI. Only
+# `links.not_found` warns by default; a dead `#fragment` and a link MkDocs cannot resolve
+# are reported at INFO, which is why they accumulated through green builds. Raised to
+# warnings, `mkdocs build --strict` rejects them - see the `link-check` job in
+# `.github/workflows/documentation.yml`.
+validation:
+  links:
+    anchors: warn
+    absolute_links: warn
+    unrecognized_links: warn
+
 # Plugins
 plugins:
   # `draft_if_future_date` holds a post back until its own `date` arrives, so a finished post can be
   # merged early instead of being carried as a `draft: true` that someone has to remember to flip.
   # It only applies to posts with **no** `draft` key at all: an explicit `draft: false` opts the post
   # out of the date check and publishes it immediately.
+  #
+  # A drafted post is dropped from the build, and its links go with it: nine dead links once rode a
+  # scheduled post all the way to publication this way. Setting the variable below to `false` builds
+  # those posts, so the `link-check` job can check one before its date arrives. Only that job sets
+  # it; a publishing build leaves the default alone.
   - blog:
-      draft_if_future_date: true
+      draft_if_future_date: !ENV [MP_UNITS_BLOG_DRAFT_IF_FUTURE_DATE, true]
   - exclude:
       glob:
         - api_reference/src/*
@@ -88,8 +104,11 @@ plugins:
         - categories
         - tags
   - search
+  # Social cards need the imaging toolchain and render nothing a link check reads, so the
+  # `link-check` job turns them off with the first variable. `!ENV` takes the last entry as the
+  # default, so everything else keeps following `CI` as before.
   - social:
-      enabled: !ENV [CI, false]
+      enabled: !ENV [MP_UNITS_SOCIAL_CARDS, CI, false]
       cards_layout_options:
         background_color: "#00599c"
   - tags
