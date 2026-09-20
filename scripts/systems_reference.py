@@ -3468,6 +3468,31 @@ class DocumentationGenerator:
                             )
                     # Note: Last section, no need_separator update needed
 
+    @staticmethod
+    def _unit_anchor_prefix(unit: Unit) -> str | None:
+        """Sub-namespace an anchor for `unit` is qualified with, or `None`.
+
+        Every place that emits or resolves a unit anchor has to agree on this, or a
+        reference points at an anchor no page defines.
+        """
+        if unit.subnamespace and unit.is_alias:
+            # Imported unit in a subnamespace - the sub-namespace declaring it here is
+            # the one the row is anchored under, not the one it was imported from.
+            return unit.subnamespace
+        if unit.origin_namespace:
+            # Extract subnamespace from origin_namespace (e.g., "mp_units::si::si2019" -> "si2019")
+            parts = unit.origin_namespace.replace("mp_units::", "").split("::")
+            if len(parts) > 1:  # Has a subnamespace
+                return parts[-1]  # Last component is the subnamespace
+            return None
+        return unit.subnamespace
+
+    @classmethod
+    def _unit_anchor(cls, unit: Unit) -> str:
+        """Anchor ID of `unit` on the page of the system declaring it"""
+        subns_prefix = cls._unit_anchor_prefix(unit)
+        return f"{subns_prefix}-{unit.name}" if subns_prefix else unit.name
+
     def _write_unit_row(self, f, unit: Unit, system: SystemInfo):
         """Write a unit table row"""
 
@@ -3478,26 +3503,14 @@ class DocumentationGenerator:
             return name
 
         # Determine the subnamespace prefix to display
-        # For imported units in subnamespaces, use subnamespace field
-        # For units defined with origin_namespace (like si2019), extract from origin_namespace
-        subns_prefix = None
-        if unit.subnamespace and unit.is_alias:
-            # Imported unit in a subnamespace - use subnamespace for display
-            subns_prefix = unit.subnamespace
-        elif unit.origin_namespace:
-            # Extract subnamespace from origin_namespace (e.g., "mp_units::si::si2019" -> "si2019")
-            parts = unit.origin_namespace.replace("mp_units::", "").split("::")
-            if len(parts) > 1:  # Has a subnamespace
-                subns_prefix = parts[-1]  # Last component is the subnamespace
-        elif unit.subnamespace:
-            subns_prefix = unit.subnamespace
+        subns_prefix = self._unit_anchor_prefix(unit)
 
         # Show namespace prefix if it exists
         unit_display = f"{subns_prefix}::{unit.name}" if subns_prefix else unit.name
         unit_display_with_breaks = add_word_breaks(unit_display)
 
         # Anchor ID should include subnamespace to avoid conflicts
-        anchor_id = f"{subns_prefix}-{unit.name}" if subns_prefix else unit.name
+        anchor_id = self._unit_anchor(unit)
 
         if unit.alias_target:
             # This is an alias - show reference to original (linkified). The symbol comes from
@@ -3736,35 +3749,17 @@ class DocumentationGenerator:
                     imported_system = self.parser.systems[imported_sys]
                     for unit in imported_system.units:
                         if not unit.is_alias:
-                            subns_prefix = None
-                            if unit.origin_namespace:
-                                parts = unit.origin_namespace.replace(
-                                    "mp_units::", ""
-                                ).split("::")
-                                if len(parts) > 1:
-                                    subns_prefix = parts[-1]
-                            elif unit.subnamespace:
-                                subns_prefix = unit.subnamespace
-                            anchor_id = (
-                                f"{subns_prefix}-{unit.name}"
-                                if subns_prefix
-                                else unit.name
+                            priority_refs[unit.name] = (
+                                imported_sys,
+                                self._unit_anchor(unit),
                             )
-                            priority_refs[unit.name] = (imported_sys, anchor_id)
 
         for sys_ns, system in self.parser.systems.items():
             # Add units
             for unit in system.units:
-                # Compute anchor ID the same way as in the unit table generation
-                subns_prefix = None
-                if unit.origin_namespace:
-                    parts = unit.origin_namespace.replace("mp_units::", "").split("::")
-                    if len(parts) > 1:
-                        subns_prefix = parts[-1]
-                elif unit.subnamespace:
-                    subns_prefix = unit.subnamespace
-
-                anchor_id = f"{subns_prefix}-{unit.name}" if subns_prefix else unit.name
+                # Anchor ID and sub-namespace, computed exactly as the unit table does
+                subns_prefix = self._unit_anchor_prefix(unit)
+                anchor_id = self._unit_anchor(unit)
 
                 # Determine which system this unit should link to for unqualified references
                 # For aliases (imported units), unqualified refs link to the origin system
@@ -3955,6 +3950,20 @@ class DocumentationGenerator:
                 identifier.split("::")[-1] if "::" in identifier else identifier
             )
 
+            # A reference qualified with a system (e.g. `si::si2019::planck_constant`) names
+            # the system that declares the entity. Resolve it there: this page may carry an
+            # alias row for the same name, and that row is anchored under its own
+            # sub-namespace, so linking locally would point at the alias, not the definition.
+            if "::" in identifier:
+                parts = identifier.split("::")
+                if len(parts) > 1 and parts[0] in self.parser.systems:
+                    qualified_key = f"{parts[0]}::{parts[-1]}"
+                    if qualified_key in all_refs:
+                        target_sys, anchor = all_refs[qualified_key]
+                        if target_sys == current_system.namespace:
+                            return make_link(display_text, f"#{anchor}")
+                        return make_link(display_text, f"{target_sys}.md#{anchor}")
+
             # Special handling for sub-namespace references (e.g., non_si::day)
             # Look for units where origin_namespace matches the namespace prefix
             if "::" in identifier:
@@ -3962,31 +3971,22 @@ class DocumentationGenerator:
                 if len(parts) == 2:
                     potential_origin_ns = parts[0]
                     entity_name = parts[1]
-                    # Check all systems for a unit with this origin_namespace
+                    # Check all systems for a unit with this origin_namespace. An alias
+                    # re-declares a name the sub-namespace does not own, so it never answers
+                    # for it here.
                     for sys_ns, system in self.parser.systems.items():
                         for unit in system.units:
                             # origin_namespace contains full path like "mp_units::non_si"
                             # Check if it ends with the potential_origin_ns
                             if (
                                 unit.name == entity_name
+                                and not unit.is_alias
                                 and unit.origin_namespace
                                 and unit.origin_namespace.endswith(potential_origin_ns)
                             ):
-                                # Compute anchor ID with subnamespace prefix
-                                subns_prefix = None
-                                if unit.origin_namespace:
-                                    ns_parts = unit.origin_namespace.replace(
-                                        "mp_units::", ""
-                                    ).split("::")
-                                    if len(ns_parts) > 1:
-                                        subns_prefix = ns_parts[-1]
-                                elif unit.subnamespace:
-                                    subns_prefix = unit.subnamespace
-                                anchor_id = (
-                                    f"{subns_prefix}-{unit.name}"
-                                    if subns_prefix
-                                    else unit.name
-                                )
+                                anchor_id = self._unit_anchor(unit)
+                                if sys_ns == current_system.namespace:
+                                    return make_link(display_text, f"#{anchor_id}")
                                 return make_link(
                                     display_text, f"{sys_ns}.md#{anchor_id}"
                                 )

@@ -91,17 +91,17 @@
 |-----------|:------:|:-----------:|------------|
 | <span id="arcminute"></span><code>arcminute</code> | ′ (') | `arcmin` | <code>mag_ratio<1, 60> * <wbr>[degree](#degree)</code> |
 | <span id="arcsecond"></span><code>arcsecond</code> | ″ ('') | `arcsec` | <code>mag_ratio<1, 60> * <wbr>[arcminute](#arcminute)</code> |
-| <span id="are"></span><code>are</code> | a | `a` | <code>square([deca](#deca)<[metre](si.md#metre)>)</code> |
-| <span id="astronomical_unit"></span><code>astronomical_<wbr>unit</code> | au | `au` | <code>mag<149'597'870'700> * <wbr>[metre](si.md#metre)</code> |
-| <span id="dalton"></span><code>dalton</code> | Da | `Da` | <code>mag_ratio<16'605'390'666'050, 10'000'000'000'000> * <wbr>mag_power<10, -27> * <wbr>[kilogram](si.md#kilogram)</code> |
+| <span id="are"></span><code>are</code> | a | `a` | <code>square([deca](#deca)<[metre](#metre)>)</code> |
+| <span id="astronomical_unit"></span><code>astronomical_<wbr>unit</code> | au | `au` | <code>mag<149'597'870'700> * <wbr>[metre](#metre)</code> |
+| <span id="dalton"></span><code>dalton</code> | Da | `Da` | <code>mag_ratio<16'605'390'666'050, 10'000'000'000'000> * <wbr>mag_power<10, -27> * <wbr>[kilogram](#kilogram)</code> |
 | <span id="day"></span><code>day</code> | d | `d` | <code>mag<24> * <wbr>[hour](#hour)</code> |
-| <span id="degree"></span><code>degree</code> | ° (deg) | `deg` | <code>mag_ratio<1, 180> * <wbr>[π](core.md#π) * <wbr>[radian](si.md#radian)</code> |
-| <span id="electronvolt"></span><code>electronvolt</code> | eV | `eV` | <code>mag_ratio<1'602'176'634, 1'000'000'000> * <wbr>mag_power<10, -19> * <wbr>[joule](si.md#joule)</code> |
+| <span id="degree"></span><code>degree</code> | ° (deg) | `deg` | <code>mag_ratio<1, 180> * <wbr>[π](core.md#π) * <wbr>[radian](#radian)</code> |
+| <span id="electronvolt"></span><code>electronvolt</code> | eV | `eV` | <code>mag_ratio<1'602'176'634, 1'000'000'000> * <wbr>mag_power<10, -19> * <wbr>[joule](#joule)</code> |
 | <span id="hectare"></span><code>hectare</code> | — | `ha` | <code>[hecto](#hecto)<[are](#are)></code> |
 | <span id="hour"></span><code>hour</code> | h | `h` | <code>mag<60> * <wbr>[minute](#minute)</code> |
-| <span id="litre"></span><code>litre</code> | L | `l`, `L` | <code>cubic([deci](#deci)<[metre](si.md#metre)>)</code> |
-| <span id="minute"></span><code>minute</code> | min | `min` | <code>mag<60> * <wbr>[second](si.md#second)</code> |
-| <span id="tonne"></span><code>tonne</code> | t | `t` | <code>mag<1000> * <wbr>[kilogram](si.md#kilogram)</code> |
+| <span id="litre"></span><code>litre</code> | L | `l`, `L` | <code>cubic([deci](#deci)<[metre](#metre)>)</code> |
+| <span id="minute"></span><code>minute</code> | min | `min` | <code>mag<60> * <wbr>[second](#second)</code> |
+| <span id="tonne"></span><code>tonne</code> | t | `t` | <code>mag<1000> * <wbr>[kilogram](#kilogram)</code> |
 
 !!! note "Namespace"
 
@@ -112,7 +112,7 @@
 | Name | Symbol | unit_symbol | Definition |
 |------|:------:|:------------:|------------|
 | <span id="magnetic_constant"></span><code>magnetic_<wbr>constant</code> | μ₀ (u_<wbr>0) | — | <code>mag<4> * <wbr>mag_power<10, -7> * <wbr>[π](core.md#π) * <wbr>[henry](#henry) / <wbr>[metre](#metre)</code> |
-| <span id="reduced_planck_constant"></span><code>reduced_<wbr>planck_<wbr>constant</code> | ℏ (hbar) | — | <code>[si2019::planck_<wbr>constant](codata.md#si2019-planck_constant) / <wbr>(mag<2> * <wbr>[π](core.md#π))</code> |
+| <span id="reduced_planck_constant"></span><code>reduced_<wbr>planck_<wbr>constant</code> | ℏ (hbar) | — | <code>[si2019::planck_<wbr>constant](#si2019-planck_constant) / <wbr>(mag<2> * <wbr>[π](core.md#π))</code> |
 | <span id="si2019-avogadro_constant"></span><code>si2019::avogadro_<wbr>constant</code> | N_<wbr>A | — | <code>mag_ratio<602'214'076, 100'000'000> * <wbr>mag_power<10, 23> / <wbr>[mole](#mole)</code> |
 | <span id="si2019-boltzmann_constant"></span><code>si2019::boltzmann_<wbr>constant</code> | k | — | <code>mag_ratio<1'380'649, 1'000'000> * <wbr>mag_power<10, -23> * <wbr>[joule](#joule) / <wbr>[kelvin](#kelvin)</code> |
 | <span id="si2019-elementary_charge"></span><code>si2019::elementary_<wbr>charge</code> | e | — | <code>mag_ratio<1'602'176'634, 1'000'000'000> * <wbr>mag_power<10, -19> * <wbr>[coulomb](#coulomb)</code> |
