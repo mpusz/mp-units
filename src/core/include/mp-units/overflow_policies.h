@@ -45,7 +45,7 @@ namespace mp_units {
 // enforces those bounds on a quantity of compatible type.
 //
 // Available policies:
-//   1. check_in_range       - Error reporting via constraint_violation_handler or MP_UNITS_PRECONDITION
+//   1. check_in_range       - Error reporting via constraint_violation_handler or MP_UNITS_ASSERT
 //   2. clamp_to_range       - Saturate to boundaries (error correction)
 //   3. wrap_to_range        - Modulo wrapping to [min, max)
 //   4. reflect_in_range     - Bounce/fold at boundaries (physics)
@@ -70,13 +70,13 @@ namespace mp_units {
  *
  * If the quantity's representation type has a `constraint_violation_handler` specialization,
  * the handler's `on_violation()` is called on out-of-bounds values (providing guaranteed
- * enforcement regardless of build mode). Otherwise, falls back to `MP_UNITS_PRECONDITION`,
+ * enforcement regardless of build mode). Otherwise, falls back to `MP_UNITS_ASSERT`,
  * which may be disabled in release builds.
  *
  * Example:
  * @code{cpp}
  * // With constrained<double, throw_policy> rep → throws std::domain_error on violation
- * // With plain double rep → asserts via MP_UNITS_PRECONDITION (may be no-op in release)
+ * // With plain double rep → asserts via MP_UNITS_ASSERT (may be no-op in release)
  * inline constexpr struct equator :
  *     absolute_point_origin<geo_latitude, check_in_range{-90 * deg, 90 * deg}> {} equator;
  * @endcode
@@ -86,6 +86,13 @@ struct check_in_range {
   Q min;
   Q max;
 
+  // Deliberately not a precondition. This policy is invoked by `enforce_bounds` on whatever value
+  // reached a `quantity_point` constructor, and it exists precisely because that value may be out
+  // of range: nobody is at fault when the check fires, so there is no caller obligation to state.
+  // It is validation with a pluggable reporting policy, and the handler branch is its honest
+  // implementation; the assertion is the degraded substitute for a representation that has no
+  // handler. The same reasoning applies to `check_non_negative`, and is why `clamp_to_range` and
+  // the other correcting policies in this file carry no contract either.
   template<Quantity V>
   constexpr V operator()(V v) const
   {
@@ -94,7 +101,7 @@ struct check_in_range {
     if constexpr (detail::HasConstraintViolationHandler<typename V::rep>) {
       if (v < vmin || v > vmax) constraint_violation_handler<typename V::rep>::on_violation("value out of bounds");
     } else {
-      MP_UNITS_PRECONDITION(v >= vmin && v <= vmax);
+      MP_UNITS_ASSERT(v >= vmin && v <= vmax);
     }
     return v;
   }
@@ -265,7 +272,7 @@ struct zero_quantity_t {
  *
  * If the quantity's representation type has a `constraint_violation_handler` specialization,
  * the handler's `on_violation()` is called on negative values (providing guaranteed
- * enforcement regardless of build mode). Otherwise, falls back to `MP_UNITS_PRECONDITION`,
+ * enforcement regardless of build mode). Otherwise, falls back to `MP_UNITS_ASSERT`,
  * which may be disabled in release builds.
  */
 MP_UNITS_EXPORT struct check_non_negative {
@@ -274,6 +281,7 @@ MP_UNITS_EXPORT struct check_non_negative {
   // (no unit scaling needed); this member exists solely for the numeric_limits interface.
   detail::zero_quantity_t min;
 
+  // Validation, not a precondition - see `check_in_range`.
   template<Quantity V>
   constexpr V operator()(V v) const
   {
@@ -281,7 +289,7 @@ MP_UNITS_EXPORT struct check_non_negative {
     if constexpr (detail::HasConstraintViolationHandler<typename V::rep>) {
       if (v < vzero) constraint_violation_handler<typename V::rep>::on_violation("value must be non-negative");
     } else {
-      MP_UNITS_PRECONDITION(v >= vzero);
+      MP_UNITS_ASSERT(v >= vzero);
     }
     return v;
   }
