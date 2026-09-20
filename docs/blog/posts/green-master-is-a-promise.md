@@ -20,7 +20,7 @@ touched two years ago, and they leave. You won't hear from them about it.
 !!! info "Part of a series: Why Great C++ Libraries Fail"
 
     This post is part of a
-    [series](../../../../category/why-great-c-libraries-fail/) based on my using
+    [series](../category/why-great-c-libraries-fail.md) based on my using
     std::cpp 2026 talk on why technically excellent C++ libraries fail to get adopted. It
     covers the **Evaluation** stage of the six-stage library journey: do they trust it
     works? New here? Start with [the overview](nobody-uses-your-great-library.md).

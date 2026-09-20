@@ -19,7 +19,7 @@ license fits. Then you go looking for the documentation, and the only thing you 
 !!! info "Part of a series: Why Great C++ Libraries Fail"
 
     This post is part of a
-    [series](../../../../category/why-great-c-libraries-fail/)
+    [series](../category/why-great-c-libraries-fail.md)
     based on my using std::cpp 2026 talk on why technically excellent C++ libraries fail to
     get adopted. It covers the **Understanding** stage of the six-stage library journey: can
     people actually learn your library once they trust it? New here? Start with

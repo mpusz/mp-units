@@ -20,7 +20,7 @@ either pin the old version forever or spend an afternoon reading diffs.
 !!! info "Part of a series: Why Great C++ Libraries Fail"
 
     This post is part of a
-    [series](../../../../category/why-great-c-libraries-fail/) based on my using std::cpp 2026
+    [series](../category/why-great-c-libraries-fail.md) based on my using std::cpp 2026
     talk on why technically excellent C++ libraries fail to get adopted. It covers the
     **Community** stage of the six-stage library journey: does it sustain itself? New here?
     Start with [the overview](nobody-uses-your-great-library.md).

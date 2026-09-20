@@ -99,7 +99,7 @@ genuinely hard to come by. It shapes both the library and its path into the C++ 
 This is the opening post. The rest of the series publishes over time, a few of the six
 stages at a time, each one standing on its own. As each post goes live it will appear here
 and under the
-[*Why Great C++ Libraries Fail*](../../../../category/why-great-c-libraries-fail/) category.
+[*Why Great C++ Libraries Fail*](../category/why-great-c-libraries-fail.md) category.
 
 These tips come from my conference talk on why technically excellent C++ libraries fail to
 get adopted, and how to fix it. You can

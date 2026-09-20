@@ -115,9 +115,8 @@ Where to start depends on what you already know:
 
 ### For Migration
 
-1. Read the relevant [Migration Guide](../../how_to_guides/migration/index.md)
-2. Complete the [Workshop: Incremental Migration](../../workshops/advanced/incremental_migration.md)
-3. Reference [Interoperability guides](../../how_to_guides/integration/index.md) as needed
+1. Complete the [Workshop: Incremental Migration](../../workshops/advanced/incremental_migration.md)
+2. Reference [Interoperability guides](../../how_to_guides/integration/index.md) as needed
 
 
 ## Tutorials

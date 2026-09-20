@@ -818,8 +818,7 @@ uncertainty, so the hook belongs to the conversion rather than to the value. See
 The library enforces character at compile-time: vector quantities require
 `scalar_product()` or `vector_product()` instead of `*`; complex quantities restrict
 `real()`, `imag()`, and `modulus()` to quantities of the correct character. See
-[Character of a Quantity](character_of_a_quantity.md#character-specific-operations) for
-full details and examples.
+[Character of a Quantity](character_of_a_quantity.md) for full details and examples.
 
 
 ## Decomposing a Vector Quantity { #decomposing-a-vector-quantity }

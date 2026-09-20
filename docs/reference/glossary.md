@@ -294,8 +294,8 @@ the
 :   - Mathematical relation between [dimensions](#dimension) in a given
       [system of quantities](#system-of-quantities), independent of [measure­ment units](#unit).
 
-[`quantity kind hierarchy, quantity hierarchy`](#quantity-hierarchy){ #quantity-hierarchy
-}
+<!-- markdownlint-disable-next-line MD013 -->
+[`quantity kind hierarchy, quantity hierarchy`](#quantity-hierarchy){ #quantity-hierarchy }
 
 :   - [Quantities of the same kind](#kind) form a hierarchy that determines their:
         - convertibility (e.g. every width is a length, but width should not be
