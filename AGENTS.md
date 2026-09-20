@@ -148,6 +148,31 @@ code:
       evaluation semantic per translation unit, not per contract, so there is no way to say
       "check this one only in a debug build" on a declaration. Moving a `_DEBUG` check
       to a signature would silently start paying for it in release.
+- **Negate the forbidden condition; never assert the required one.** Write `!(v < 0)`, not
+  `v >= 0`. Every comparison with a NaN is false, so the positive form reports a NaN as
+  negative, and on a `quantity` it is worse than it looks: `>=` rewrites to
+  `(lhs <=> rhs) >= 0`, and `partial_ordering::unordered >= 0` is false too. `abs` of a NaN
+  is a NaN and has to pass. Not hypothetical: `uncertain`'s constructor was written
+  `err >= 0`, and because the propagation operators build their results through that
+  constructor, multiplying two legally constructed values aborted inside `operator*`.
+    - A predicate that is not well-formed for every accepted representation is made
+      **total** first, as `detail::value_is_non_negative` is, because a declaration
+      contract cannot be wrapped in `if constexpr`. `abs` and `sqrt` both accept a
+      complex `quantity`, which has no ordering, and an unguarded predicate makes
+      those a hard compile error.
+    - **Every such contract gets a NaN-propagation test, tagged `[nan]`.** The
+      predicate reads equally well either way round, so nothing but a test stops the
+      next person from "simplifying" `!(v < 0)` back into `v >= 0`. The test asserts
+      the NaN comes back out, and fails when the predicate is flipped.
+    - **A predicate written twice can drift, and each copy is live on only some
+      backends.** Flipping the `MP_UNITS_PRE` copy is invisible on a GSL backend,
+      where it expands to nothing, and flipping the `MP_UNITS_EXPECTS` copy is
+      invisible on the native one. A run against a single backend exercises half of
+      what you wrote, so the contract tests have to run under every configured
+      backend to mean anything.
+    - The deliberate exception is a **validation** policy such as `check_in_range`, whose
+      job is to reject a value that is in no range at all. Its NaN test pins the opposite
+      direction, and says why.
 - **Express preconditions as constraints, never as a hard `static_assert`.** A `static_assert`
   inside an instantiation hard-errors, so it cannot be SFINAE-probed and the misuse it guards
   becomes untestable. To keep a good diagnostic on a constraint, use

@@ -744,3 +744,77 @@ TEST_CASE("math operations", "[math]")
     }
   }
 }
+
+// Every contract in this library that can meet a NaN is spelled `!(v < 0)` and not `v >= 0`. Both
+// read the same, so nothing but a test stops the next person from "simplifying" one into the other;
+// every comparison with a NaN is false, so the positive form reports a NaN as negative, and on a
+// `quantity` it is worse than it looks - `>=` rewrites to `(lhs <=> rhs) >= 0` and
+// `partial_ordering::unordered >= 0` is false too. These sections fail loudly when a predicate is
+// flipped.
+TEST_CASE("'abs()' and 'sqrt()' postconditions accept what they must", "[math][nan]")
+{
+  const auto nan = std::numeric_limits<double>::quiet_NaN();
+
+  SECTION("a NaN propagates through abs")
+  {
+    REQUIRE(isnan(abs(nan * isq::length[m])));
+  }
+
+  SECTION("a NaN propagates through sqrt")
+  {
+    REQUIRE(isnan(sqrt(nan * isq::area[m2])));
+  }
+
+  SECTION("sqrt of a negative gives a NaN rather than a violation")
+  {
+    REQUIRE(isnan(sqrt(-4.0 * isq::area[m2])));
+  }
+
+  // The predicate is made total through `detail::value_is_non_negative` rather than guarded at the
+  // call site, because a declaration contract cannot be wrapped in `if constexpr`. A complex
+  // representation has no ordering, and both functions support one, so an unguarded predicate turns
+  // these into hard compile errors.
+  SECTION("a complex representation is still accepted")
+  {
+    REQUIRE(abs(quantity{std::complex<double>{3.0, -4.0}, m}).numerical_value_in(m) ==
+            std::complex<double>{5.0, 0.0});
+    (void)sqrt(quantity{std::complex<double>{-4.0, 0.0}, m2});
+  }
+}
+
+// `round` breaks a tie by testing the parity of the lower candidate, which casts it to
+// `std::int64_t`. Once the ULP reaches 1 the value is already integral, the two candidates compare
+// equal, and the difference test reports a tie that is not one - so a huge value took the tie path
+// and cast 1e300 to an integer, which is undefined and which `-fsanitize=float-cast-overflow`
+// reports. That sanitizer is not part of `-fsanitize=undefined`.
+TEST_CASE("'round()' on values it cannot round", "[math][round][nan]")
+{
+  const auto nan = std::numeric_limits<double>::quiet_NaN();
+  const auto inf = std::numeric_limits<double>::infinity();
+
+  SECTION("a NaN propagates")
+  {
+    REQUIRE(isnan(round<si::metre>(nan * isq::length[m])));
+    REQUIRE(isnan(floor<si::metre>(nan * isq::length[m])));
+    REQUIRE(isnan(ceil<si::metre>(nan * isq::length[m])));
+  }
+
+  SECTION("an infinity propagates") { REQUIRE(round<si::metre>(inf * isq::length[m]) == inf * isq::length[m]); }
+
+  SECTION("a value too large for the tie-break cast is its own rounding")
+  {
+    REQUIRE(round<si::metre>(1e300 * isq::length[m]) == 1e300 * isq::length[m]);
+    REQUIRE(round<si::metre>(-1e300 * isq::length[m]) == -1e300 * isq::length[m]);
+  }
+
+  SECTION("ties still round to even")
+  {
+    REQUIRE(round<si::metre>(0.5 * isq::length[m]) == 0 * isq::length[m]);
+    REQUIRE(round<si::metre>(1.5 * isq::length[m]) == 2 * isq::length[m]);
+    REQUIRE(round<si::metre>(2.5 * isq::length[m]) == 2 * isq::length[m]);
+    REQUIRE(round<si::metre>(3.5 * isq::length[m]) == 4 * isq::length[m]);
+    REQUIRE(round<si::metre>(-1.5 * isq::length[m]) == -2 * isq::length[m]);
+    REQUIRE(round<si::metre>(-2.5 * isq::length[m]) == -2 * isq::length[m]);
+  }
+}
+
