@@ -474,6 +474,12 @@ TEST_CASE("math operations", "[math]")
       REQUIRE(hypot(3. * isq::length[km], 4000. * isq::length[m]) == 5. * isq::length[km]);
       REQUIRE(hypot(2. * isq::length[km], 3000. * isq::length[m], 6. * isq::length[km]) == 7. * isq::length[km]);
     }
+    SECTION("hypot should use the common unit of every argument, whatever their order")
+    {
+      REQUIRE(hypot(2 * isq::length[km], 6 * isq::length[km], 3000 * isq::length[m]) == 7000 * isq::length[m]);
+      REQUIRE(hypot(2 * isq::length[km], 3000 * isq::length[m], 6 * isq::length[km]) == 7000 * isq::length[m]);
+      REQUIRE(hypot(3000 * isq::length[m], 2 * isq::length[km], 6 * isq::length[km]) == 7000 * isq::length[m]);
+    }
   }
 
   SECTION("lerp functions")

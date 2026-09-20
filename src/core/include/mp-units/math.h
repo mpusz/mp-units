@@ -634,7 +634,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2, auto R3, typename Rep3>
 [[nodiscard]] constexpr QuantityOf<get_quantity_spec(get_common_reference(R1, R2, R3))> auto hypot(
   const quantity<R1, Rep1>& x, const quantity<R2, Rep2>& y, const quantity<R3, Rep3>& z) noexcept
 {
-  constexpr auto ref = get_common_reference(R1, R2);
+  constexpr auto ref = get_common_reference(R1, R2, R3);
   constexpr auto unit = get_unit(ref);
 #if MP_UNITS_HOSTED
   using std::hypot;
