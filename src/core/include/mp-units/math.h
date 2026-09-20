@@ -71,11 +71,14 @@ template<auto R, typename Rep>
            || requires(Rep v) { std::abs(v); }
 #endif
 [[nodiscard]] constexpr quantity<R, Rep> abs(const quantity<R, Rep>& q) noexcept
+  MP_UNITS_POST(r: detail::value_is_non_negative(r.numerical_value_ref_in(r.unit)))
 {
 #if MP_UNITS_HOSTED || __cpp_lib_freestanding_cstdlib >= 202306L
   using std::abs;
 #endif
-  return {static_cast<Rep>(abs(q.numerical_value_ref_in(q.unit))), R};
+  const quantity<R, Rep> result{static_cast<Rep>(abs(q.numerical_value_ref_in(q.unit))), R};
+  MP_UNITS_POST_COMPAT(detail::value_is_non_negative(result.numerical_value_ref_in(result.unit)));
+  return result;
 }
 
 /**
@@ -128,11 +131,14 @@ template<auto R, typename Rep>
            || requires(Rep v) { std::sqrt(v); }
 #endif
 [[nodiscard]] constexpr quantity<sqrt(R), Rep> sqrt(const quantity<R, Rep>& q) noexcept
+  MP_UNITS_POST(r: detail::value_is_non_negative(r.numerical_value_ref_in(r.unit)))
 {
 #if MP_UNITS_HOSTED
   using std::sqrt;
 #endif
-  return {static_cast<Rep>(sqrt(q.numerical_value_ref_in(q.unit))), sqrt(R)};
+  const quantity<sqrt(R), Rep> result{static_cast<Rep>(sqrt(q.numerical_value_ref_in(q.unit))), sqrt(R)};
+  MP_UNITS_POST_COMPAT(detail::value_is_non_negative(result.numerical_value_ref_in(result.unit)));
+  return result;
 }
 
 /**
@@ -540,6 +546,13 @@ template<Unit auto To, auto R, typename Rep>
   const auto diff0 = q - res_low;
   const auto diff1 = res_high - q;
   if (diff0 == diff1) {
+    // The parity test casts to `std::int64_t`, which is undefined when the value does not fit, and
+    // that is reachable rather than theoretical. At a magnitude where the ULP is already at least 1
+    // the value is integral, `res_high` compares equal to `res_low`, and the difference test above
+    // reports a tie that is not one: `round<si::metre>(1e300 * m)` arrives here and casts 1e300 to
+    // an integer. Such a value is its own rounding, so return it instead of asking which of two
+    // equal answers is even.
+    if (!detail::value_fits_in<std::int64_t>(res_low.numerical_value_ref_in(To))) return res_low;
     // TODO How to extend this to custom representation types?
     if (static_cast<std::int64_t>(res_low.numerical_value_ref_in(To)) & 1) return res_high;
     return res_low;
@@ -571,6 +584,14 @@ template<Unit auto To, auto R, auto PO, typename Rep>
   const auto diff0 = qp - res_low;
   const auto diff1 = res_high - qp;
   if (diff0 == diff1) {
+    // The parity test casts to `std::int64_t`, which is undefined when the value does not fit, and
+    // that is reachable rather than theoretical. At a magnitude where the ULP is already at least 1
+    // the value is integral, `res_high` compares equal to `res_low`, and the difference test above
+    // reports a tie that is not one: `round<si::metre>(1e300 * m)` arrives here and casts 1e300 to
+    // an integer. Such a value is its own rounding, so return it instead of asking which of two
+    // equal answers is even.
+    if (!detail::value_fits_in<std::int64_t>(res_low.quantity_from_zero().numerical_value_ref_in(To)))
+      return res_low;
     // TODO How to extend this to custom representation types?
     if (static_cast<std::int64_t>(res_low.quantity_from_zero().numerical_value_ref_in(To)) & 1) return res_high;
     return res_low;
