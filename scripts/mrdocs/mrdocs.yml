@@ -46,6 +46,32 @@ implementation-defined:
   - "mp_units::detail"
   - "mp_units::**::detail"
 
+## The `unit_symbols` namespaces are the short identifiers you write in code
+## (`si::unit_symbols::km`). Every one of them is a one-line alias, and there
+## are 1057 of them, which buries the rest of the reference.
+##
+## They are documented in the Systems Reference instead, per unit and per
+## prefix, which is the only place that can say which prefix/unit combinations
+## exist - and that is the question a reader actually has.
+##
+## The pattern is deliberately `**`, matching any depth: a system added later
+## gets the same treatment without anyone editing this file. Nothing else here
+## names a system either - the inputs are directories, so a new header is
+## picked up by the scan on its own.
+##
+## Per-system trimming was considered and rejected. `codata` and `hep` hold
+## nothing but definitions the Systems Reference covers far better, so dropping
+## them would save ~1655 pages, but `isq` and `si` hold the same kind of
+## content *plus* something unique (`isq::PhotometricCondition`, `si`'s
+## `sin`/`cos`/`tan` and `prefix_range`), and splitting a namespace needs
+## filtering by symbol kind. `exclude-symbols` matches names, not kinds, and a
+## corpus transform does not finish on a corpus this size. Any list of systems
+## to trim would therefore be hand-maintained and would silently go stale the
+## first time someone adds a system.
+exclude-symbols:
+  - "mp_units::**::unit_symbols"
+  - "mp_units::**::unit_symbols::**"
+
 addons-supplemental:
   - ./addons
 
