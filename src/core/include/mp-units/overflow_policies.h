@@ -68,15 +68,18 @@ namespace mp_units {
 /**
  * @brief Policy that checks the value is within [min, max] and reports violations.
  *
- * If the quantity's representation type has a `constraint_violation_handler` specialization,
- * the handler's `on_violation()` is called on out-of-bounds values (providing guaranteed
- * enforcement regardless of build mode). Otherwise, falls back to `MP_UNITS_ASSERT`,
- * which may be disabled in release builds.
+ * The two branches differ in how a violation is *reported*, not in whether it is detected. If the
+ * representation has a `constraint_violation_handler` specialization, the handler's
+ * `on_violation()` is called, so the reporting is the representation's own (throwing, say).
+ * Otherwise `MP_UNITS_ASSERT` reports it, which on every contracts backend fires in release builds
+ * too - `NDEBUG` does not disable it. Both are silent only when contract checking is compiled out
+ * altogether with `MP_UNITS_API_CONTRACTS=0`, which is an explicit opt-out rather than a build
+ * mode.
  *
  * Example:
  * @code{cpp}
  * // With constrained<double, throw_policy> rep → throws std::domain_error on violation
- * // With plain double rep → asserts via MP_UNITS_ASSERT (may be no-op in release)
+ * // With plain double rep → reported via MP_UNITS_ASSERT
  * inline constexpr struct equator :
  *     absolute_point_origin<geo_latitude, check_in_range{-90 * deg, 90 * deg}> {} equator;
  * @endcode
@@ -276,10 +279,9 @@ struct zero_quantity_t {
  * _duration_). Automatically applied to `natural_point_origin<QS>` when `QS` is tagged
  * `non_negative` in the ISQ.
  *
- * If the quantity's representation type has a `constraint_violation_handler` specialization,
- * the handler's `on_violation()` is called on negative values (providing guaranteed
- * enforcement regardless of build mode). Otherwise, falls back to `MP_UNITS_ASSERT`,
- * which may be disabled in release builds.
+ * As with `check_in_range`, the two branches differ in how a violation is reported, not in whether
+ * it is detected: `MP_UNITS_ASSERT` fires in release builds too, and both are silent only when
+ * contract checking is compiled out with `MP_UNITS_API_CONTRACTS=0`.
  */
 MP_UNITS_EXPORT struct check_non_negative {
   // Lower domain bound: zero in any unit.  Consumed by quantity_point::min() and

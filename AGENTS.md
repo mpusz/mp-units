@@ -144,6 +144,22 @@ code:
       expressed on a declaration *at all*: a predicate that is well-formed for only some of
       the accepted representations, since a declaration contract cannot be wrapped in
       `if constexpr`. No plain precondition in the library needs them today.
+    - **A contract on a `consteval` function checks nothing today.** GCC 16 does not
+      evaluate a contract inside a `static_assert` at all - the assertion simply
+      passes - while the same call initializing a `constexpr` variable is diagnosed,
+      and a runtime call is enforced normally. Three lines show it:
+
+      ```cpp
+      consteval int f(int x) pre(x > 0) { return x; }
+      static_assert(f(-1) == -1);   // compiles; the precondition was never evaluated
+      ```
+
+      This library's static test suite is built almost entirely out of `static_assert`,
+      so the contracts on `fixed_string`, `symbol_text`, `prime.h` and
+      `constexpr_math.h` are inert in exactly the context those functions live in.
+      Keep writing them - they are correct, they cost nothing, and they start working
+      the day the compiler does - but do not mistake a green static suite for evidence
+      that any of them holds.
     - **A `_DEBUG` contract stays in the body, always.** C++26 chooses a contract's
       evaluation semantic per translation unit, not per contract, so there is no way to say
       "check this one only in a debug build" on a declaration. Moving a `_DEBUG` check
