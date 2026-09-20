@@ -44,8 +44,10 @@ TAGFILE = "reference.tag.xml"
 # the generated one (the whole corpus flattened onto a single page).
 LANDING = "reference/api_reference/overview.md"
 
-# The committed `nav` entry the generated subtree replaces.
-REPLACES = "reference/api_reference.md"
+# The committed `nav` entry the generated subtree replaces. It points at the
+# landing page, which becomes the subtree's first child, so the committed nav
+# still names a real file and `--strict` stays happy without this hook.
+REPLACES = LANDING
 
 # A reference-style link whose label looks like a qualified C++ name.
 _REF = re.compile(r"\]\[([A-Za-z_][\w:]*(?:::[\w:~+\-*/%^&|!=<>\[\]()]+)+)\]")

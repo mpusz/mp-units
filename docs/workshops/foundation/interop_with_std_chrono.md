@@ -229,7 +229,7 @@ int main()
 ## References
 
 - [User's Guide: Converting to and from External Quantity Types](../../how_to_guides/integration/converting_external_quantity_types.md)
-- [API Reference](../../reference/api_reference.md)
+- [API Reference](../../reference/api_reference/overview.md)
 
 
 ## Takeaways

@@ -4,5 +4,4 @@ identify
 mkdocs-material
 mkdocs-rss-plugin
 mkdocs-material[imaging]
-mkdocs-exclude
 mike
