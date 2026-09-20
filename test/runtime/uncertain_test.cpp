@@ -510,3 +510,40 @@ TEST_CASE("uncertain text output", "[uncertain]")
     CHECK(MP_UNITS_STD_FMT::format("{::N[~]}", G) == "6.67430(15)e-11 m³ kg⁻¹ s⁻²");
   }
 }
+
+// The constructor's precondition is `!(err < 0)` and not `err >= 0`. Every comparison with a NaN is
+// false, so the positive form rejects a NaN uncertainty - and the propagation operators build their
+// results by calling this constructor, so `uncertain{NaN, 1.0} * uncertain{2.0, 0.5}` computed a
+// NaN uncertainty and aborted inside `operator*`, on two values this class had itself handed out.
+// Rewriting the predicate the positive way makes this abort again.
+TEST_CASE("uncertain does not reject a NaN uncertainty", "[uncertain][nan]")
+{
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+
+  SECTION("a NaN uncertainty is constructible")
+  {
+    const uncertain value{1.0, nan};
+    REQUIRE(std::isnan(value.uncertainty()));
+  }
+
+  SECTION("a NaN value propagates through multiplication")
+  {
+    REQUIRE(std::isnan((uncertain{nan, 1.0} * uncertain{2.0, 0.5}).value()));
+  }
+
+  SECTION("a NaN value propagates through addition")
+  {
+    REQUIRE(std::isnan((uncertain{nan, 1.0} + uncertain{2.0, 0.5}).value()));
+  }
+
+  SECTION("ordinary values are unaffected") { REQUIRE(uncertain{2.0, 0.5}.uncertainty() == 0.5); }
+
+  // `relative_uncertainty` divides by the central value. That is undefined for an integral
+  // representation and merely an infinity for a floating-point one, so the precondition is a
+  // disjunction rather than an unconditional check.
+  SECTION("a zero central value is an infinity, not a violation, for a floating-point rep")
+  {
+    REQUIRE(std::isinf(uncertain{0.0, 0.5}.relative_uncertainty()));
+  }
+}
+
