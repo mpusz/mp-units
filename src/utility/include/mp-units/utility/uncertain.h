@@ -161,8 +161,15 @@ public:
   /// The absolute value follows GUM and the VIM: a relative standard uncertainty is a magnitude
   /// and is never negative, while the central value may well be (CODATA publishes negative
   /// magnetic moments and g-factors).
+  // A zero central value is only a problem for an integral representation, where the division is
+  // undefined; `uncertain<int>` is a supported instantiation. For a floating-point one the result
+  // is an infinity, which is the honest answer for a relative uncertainty about zero. Written as a
+  // disjunction rather than an `if constexpr` so it can sit on the declaration.
   [[nodiscard]] constexpr value_type relative_uncertainty() const
+    MP_UNITS_PRE(treat_as_floating_point<value_type> || value() != representation_values<value_type>::zero())
   {
+    MP_UNITS_EXPECTS(treat_as_floating_point<value_type> ||
+                     value() != representation_values<value_type>::zero());
     using std::abs;
     return uncertainty() / abs(value());
   }

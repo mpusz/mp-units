@@ -25,6 +25,7 @@
 #include <mp-units/bits/requires_hosted.h>
 //
 #include <mp-units/bits/module_macros.h>
+#include <mp-units/ext/contracts.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/framework/customization_points.h>
@@ -296,14 +297,29 @@ public:
     return magnitude();
   }
 
+  // A zero vector has no direction, and dividing by its norm manufactures a NaN in every component
+  // out of entirely finite input. That is not a NaN propagating, it is one being created, and it
+  // spreads into whatever consumes the result with nothing pointing back here.
   [[nodiscard]] constexpr cartesian_vector unit() const
     requires treat_as_floating_point<T>
+    MP_UNITS_PRE(norm() != T{})
   {
+    MP_UNITS_EXPECTS(norm() != T{});
     return *this / norm();
   }
 
-  [[nodiscard]] constexpr T& operator[](std::size_t i) { return _coordinates_[i]; }
-  [[nodiscard]] constexpr const T& operator[](std::size_t i) const { return _coordinates_[i]; }
+  // Bounds-checked the same way as `basic_fixed_string::operator[]`. The parameter is unsigned, so
+  // a negative index does not read just before the array, it wraps to an enormous offset.
+  [[nodiscard]] constexpr T& operator[](std::size_t index) MP_UNITS_PRE(index < N)
+  {
+    MP_UNITS_EXPECTS(index < N);
+    return _coordinates_[index];
+  }
+  [[nodiscard]] constexpr const T& operator[](std::size_t index) const MP_UNITS_PRE(index < N)
+  {
+    MP_UNITS_EXPECTS(index < N);
+    return _coordinates_[index];
+  }
 
   // Component-wise real and imaginary parts, present only for complex elements. Their existence is
   // what marks this type as a complex (rather than real) representation through the `real`/`imag`

@@ -99,7 +99,13 @@ struct check_in_range {
     const V vmin{min};
     const V vmax{max};
     if constexpr (detail::HasConstraintViolationHandler<typename V::rep>) {
-      if (v < vmin || v > vmax) constraint_violation_handler<typename V::rep>::on_violation("value out of bounds");
+      // `!(v >= vmin) || !(v <= vmax)` and not `v < vmin || v > vmax`: the latter is false for a
+      // NaN, so the handler was never called for one, while the assertion below rejects it. The
+      // same policy answered differently for the same value depending on whether the
+      // representation happened to carry a handler. Both reject it now, which is what a policy
+      // whose job is to report out-of-bounds values should do with a value that is in no range.
+      if (!(v >= vmin) || !(v <= vmax))
+        constraint_violation_handler<typename V::rep>::on_violation("value out of bounds");
     } else {
       MP_UNITS_ASSERT(v >= vmin && v <= vmax);
     }
@@ -287,7 +293,9 @@ MP_UNITS_EXPORT struct check_non_negative {
   {
     const V vzero{V::zero()};
     if constexpr (detail::HasConstraintViolationHandler<typename V::rep>) {
-      if (v < vzero) constraint_violation_handler<typename V::rep>::on_violation("value must be non-negative");
+      // See `check_in_range`: `v < vzero` is false for a NaN, so the handler branch used to accept
+      // what the assertion branch rejected.
+      if (!(v >= vzero)) constraint_violation_handler<typename V::rep>::on_violation("value must be non-negative");
     } else {
       MP_UNITS_ASSERT(v >= vzero);
     }
