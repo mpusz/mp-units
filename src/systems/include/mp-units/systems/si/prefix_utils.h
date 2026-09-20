@@ -23,6 +23,8 @@
 #pragma once
 
 #include <mp-units/bits/module_macros.h>
+#include <mp-units/ext/contracts.h>
+#include <mp-units/framework/scaling.h>
 #include <mp-units/systems/si/prefixes.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
@@ -76,16 +78,29 @@ template<Quantity Q, std::invocable<Q> Func, PrefixableUnit U, auto Character = 
              requires requires { log10(v); } || requires { std::log10(v); };
              requires requires { floor(v); } || requires { std::floor(v); };
            }
+// Deferred reason 2: deduced return type.
 constexpr decltype(auto) invoke_with_prefixed(Func func, Q q, U u, prefix_range range = prefix_range::engineering,
                                               int min_integral_digits = 1)
+  MP_UNITS_PRE_DEFERRED(min_integral_digits >= 1)
 {
+  // Documented as a minimum digit count and never enforced. At zero or below, `exponent` is shifted
+  // up and the function silently picks a different prefix than the one it describes.
+  MP_UNITS_PRE_DEFERRED_COMPAT(min_integral_digits >= 1);
   if (q == 0) return func(q.in(u));
 
   using std::abs, std::log10, std::floor;
 
   // Calculate the order of magnitude to determine appropriate prefix
   const auto value = q.numerical_value_in(u);
-  const auto mag = static_cast<int>(floor(log10(abs(value))));
+  const auto order = floor(log10(abs(value)));
+  // `log10` of a NaN is a NaN and of an infinity is an infinity, and `static_cast<int>` of either
+  // is undefined - `-fsanitize=float-cast-overflow` reports it on exactly this cast. A precondition
+  // would be the wrong tool: a NaN reaching a formatting helper is not a caller error, and aborting
+  // would be worse behavior than today's. They take the same pass-through the zero above already
+  // had. Comparing against the `int` bounds rather than calling `isfinite` catches an
+  // absurd-but-finite magnitude in the same test and asks nothing new of the representation.
+  if (!detail::value_fits_in<int>(order)) return func(q.in(u));
+  const auto mag = static_cast<int>(order);
 
   // Exponent ensures value has at least min_integral_digits in integral part
   // For min_integral_digits=1: select prefix giving value in [1, base) where base is 1000 or 10
