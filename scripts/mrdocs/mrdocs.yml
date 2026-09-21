@@ -1,5 +1,5 @@
-## MrDocs POC configuration.
-## Paths are relative to this file; see run.sh for how it is invoked.
+## MrDocs configuration for the mp-units API reference.
+## Paths are relative to this file; run.py invokes it.
 ##
 ## Modelled on the config the MrDocs maintainers use for the mp-units demo
 ## (examples/third-party/mp-units/docs/mrdocs.yml in their repo), extended from
@@ -29,7 +29,7 @@ include-symbols:
 
 ## Makes the "Declared in <...>" path a link to the file and line on GitHub,
 ## joined with each symbol's path relative to `source-root` (which is `src/`).
-## run.sh overrides this with the exact tag or commit being documented; the
+## run.py overrides this with the exact tag or commit being documented; the
 ## value here is only a fallback for running mrdocs by hand.
 base-url: https://github.com/mpusz/mp-units/blob/master/src/
 

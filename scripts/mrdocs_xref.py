@@ -102,7 +102,7 @@ class _Corpus:
     def page_uri(self, base: str) -> str:
         """Where a scope's page lives.
 
-        `run.sh` moves a namespace page inside its own directory, so that
+        run.py moves a namespace page inside its own directory, so that
         `navigation.indexes` folds it into its section instead of rendering the
         namespace twice. Everything else stays beside its directory.
         """

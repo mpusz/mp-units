@@ -4,10 +4,11 @@
     python scripts/mrdocs/run.py
 
 Runs the same way from cmd.exe, PowerShell, Git Bash and a Unix shell, needing
-nothing beyond the Python that MkDocs already requires. Doing this in a shell
-script meant a POSIX shell on Windows, plus `unzip` (which Git for Windows does
-not ship), `cygpath` and a PowerShell fallback for checksums; `zipfile`,
-`tarfile`, `hashlib` and `urllib` are all standard library.
+nothing beyond the Python that MkDocs already requires. Python rather than a
+shell script because Windows would otherwise need a POSIX shell, `unzip` (which
+Git for Windows does not ship), `cygpath`, and a PowerShell fallback for
+checksums - where `zipfile`, `tarfile`, `hashlib` and `urllib` are all standard
+library.
 
 The pinned MrDocs build is downloaded and cached on first use. Set MRDOCS to
 use a different binary, or MRDOCS_CACHE_DIR to move the cache.
