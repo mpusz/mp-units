@@ -31,6 +31,7 @@ import std;
 #include <limits>
 #include <numbers>
 #include <sstream>
+#include <string>
 #include <type_traits>
 #endif
 #ifdef MP_UNITS_MODULES
@@ -543,7 +544,10 @@ TEST_CASE("uncertain does not reject a NaN uncertainty", "[uncertain][nan]")
   // disjunction rather than an unconditional check.
   SECTION("a zero central value is an infinity, not a violation, for a floating-point rep")
   {
-    REQUIRE(std::isinf(uncertain{0.0, 0.5}.relative_uncertainty()));
+    // The zero comes through a variable rather than a literal on purpose: with a literal, MSVC
+    // constant-propagates it into the division inside the header and reports C4723, which that
+    // build treats as an error.
+    const double zero = std::stod("0.0");
+    REQUIRE(std::isinf(uncertain{zero, 0.5}.relative_uncertainty()));
   }
 }
-

@@ -71,7 +71,7 @@ template<auto R, typename Rep>
            || requires(Rep v) { std::abs(v); }
 #endif
 [[nodiscard]] constexpr quantity<R, Rep> abs(const quantity<R, Rep>& q) noexcept
-  MP_UNITS_POST(r: detail::value_is_non_negative(r.numerical_value_ref_in(r.unit)))
+  MP_UNITS_POST(r : detail::value_is_non_negative(r.numerical_value_ref_in(r.unit)))
 {
 #if MP_UNITS_HOSTED || __cpp_lib_freestanding_cstdlib >= 202306L
   using std::abs;
@@ -131,12 +131,16 @@ template<auto R, typename Rep>
            || requires(Rep v) { std::sqrt(v); }
 #endif
 [[nodiscard]] constexpr quantity<sqrt(R), Rep> sqrt(const quantity<R, Rep>& q) noexcept
-  MP_UNITS_POST(r: detail::value_is_non_negative(r.numerical_value_ref_in(r.unit)))
+  MP_UNITS_POST(r : detail::value_is_non_negative(r.numerical_value_ref_in(r.unit)))
 {
 #if MP_UNITS_HOSTED
   using std::sqrt;
 #endif
-  const quantity<sqrt(R), Rep> result{static_cast<Rep>(sqrt(q.numerical_value_ref_in(q.unit))), sqrt(R)};
+  // `sqrt(R)` is bound once. Naming `quantity<sqrt(R), Rep>` here, or letting CTAD deduce it from
+  // `quantity{value, sqrt(R)}`, evaluates it again, and `sqrt` on a reference computes a canonical
+  // unit; either form showed up on the `isq/fractional_exponents` compile-cost benchmark.
+  constexpr auto to = sqrt(R);
+  const quantity<to, Rep> result{static_cast<Rep>(sqrt(q.numerical_value_ref_in(q.unit))), to};
   MP_UNITS_POST_COMPAT(detail::value_is_non_negative(result.numerical_value_ref_in(result.unit)));
   return result;
 }
@@ -590,8 +594,7 @@ template<Unit auto To, auto R, auto PO, typename Rep>
     // reports a tie that is not one: `round<si::metre>(1e300 * m)` arrives here and casts 1e300 to
     // an integer. Such a value is its own rounding, so return it instead of asking which of two
     // equal answers is even.
-    if (!detail::value_fits_in<std::int64_t>(res_low.quantity_from_zero().numerical_value_ref_in(To)))
-      return res_low;
+    if (!detail::value_fits_in<std::int64_t>(res_low.quantity_from_zero().numerical_value_ref_in(To))) return res_low;
     // TODO How to extend this to custom representation types?
     if (static_cast<std::int64_t>(res_low.quantity_from_zero().numerical_value_ref_in(To)) & 1) return res_high;
     return res_low;
