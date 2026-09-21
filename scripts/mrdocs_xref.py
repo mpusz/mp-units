@@ -27,6 +27,7 @@ known.
 
 from __future__ import annotations
 
+import importlib.util
 import posixpath
 import re
 import xml.etree.ElementTree as ET
@@ -401,8 +402,31 @@ def _definitions(markdown: str, src_uri: str) -> str:
 # --------------------------------------------------------------------------
 
 
+def _generate_api_reference(docs_dir: Path) -> None:
+    """Regenerate the MrDocs output, unless nothing it depends on changed.
+
+    Loaded by path rather than imported, because scripts/ is not a package and
+    MkDocs runs a hook from wherever it was launched.
+
+    This has to happen in `on_config` rather than the more natural
+    `on_pre_build`: MkDocs fires `on_config` first, and the tagfile is read
+    below.
+    """
+    run_py = docs_dir.parent / "scripts" / "mrdocs" / "run.py"
+    if not run_py.is_file():
+        return
+
+    spec = importlib.util.spec_from_file_location("mrdocs_run", run_py)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    if module.generate_if_needed() != 0:
+        raise SystemExit("mrdocs: generating the API reference failed")
+
+
 def on_config(config, **kwargs):
     _corpus.reset(config["docs_dir"])
+    _generate_api_reference(_corpus.docs_dir)
     if not (_corpus.docs_dir / API_DIR).is_dir():
         return config
 

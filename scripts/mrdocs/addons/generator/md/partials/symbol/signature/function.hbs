@@ -1,0 +1,57 @@
+{{!--
+    A function signature, laid out the way the declaration is written in the
+    header rather than one element per line.
+
+    The bundled partial gives `[[nodiscard]]`, `constexpr`, the return type and
+    the name a line each, so a constrained member runs to eleven lines and a
+    reader has to reassemble it. Only the template head and the requires-clause
+    earn their own lines. The rest belongs on one, as in the source.
+
+    This is the fallback. scripts/mrdocs/run.py normally lays the synopses out
+    with the project's own clang-format afterwards, which supersedes whatever
+    this partial decides, so it matters only where clang-format is missing.
+--}}
+{{#if template}}{{>template/head template}}
+{{/if~}}
+{{#if isFriend}}friend
+{{/if~}}
+{{#if attributes}}{{#unless isFriend}}{{>symbol/signature/attributes}} {{/unless}}{{/if~}}
+{{#if constexpr}}{{constexpr}} {{/if~}}
+{{#if storageClass}}{{storageClass}} {{/if~}}
+{{#if isVirtual}}virtual {{/if~}}
+{{#if explicit}}{{explicit}} {{/if~}}
+{{#if (eq funcClass "normal")}}{{>type/declarator-prefix returnType}} {{/if~}}
+{{~#if force-link~}}
+{{>symbol/name symbol }}
+{{~else if (eq funcClass "conversion")~}}
+{{>symbol/name symbol }}
+{{~else if template.primary~}}
+{{>symbol/name (@root.mrdocs.corpus.get template.primary) ~}}{{>template/args-text args=template.args ~}}
+{{~else~}}
+{{>symbol/name-text symbol }}
+{{~/if~}}
+({{#if isExplicitObjectMemberFunction}}this {{/if}}{{#each params}}{{#unless (and @first @last)}}
+    {{/unless}}{{>type/declarator type decl-name=name~}}
+    {{#if default}} = {{default}}{{/if~}}
+    {{#unless @last}},{{/unless~}}
+{{/each~}}{{#if isVariadic}}{{#if params}}, {{/if}}{{ str "..." }}{{/if}})
+{{~#if isConst}} const{{/if~}}
+{{#if isVolatile}} volatile{{/if~}}
+{{#if refQualifier}} {{refQualifier}}{{/if~}}
+{{~#if noexcept~}}
+    {{~! Specs whose full "noexcept(...)" string is longer than the
+         noexcept-see-below-limit option (the active generator's
+         generator-options.<id>, exposed as generatorConfig; default 50) are
+         rendered with the see-below placeholder plus a dedicated specification
+         section; shorter ones are shown inline. ~}}
+    {{~#if (gt (len noexcept) (or @root.generatorConfig.[noexcept-see-below-limit] 50))}} noexcept({{> symbol/signature/see-below}}){{else}} {{noexcept}}{{/if~}}
+{{~/if~}}
+{{#if (eq funcClass "normal")}}{{>type/declarator-suffix returnType}}{{/if~}}
+{{#if requires}}
+
+requires {{requires}}{{/if~}}
+{{#if hasOverrideAttr}} override{{/if~}}
+{{#if isFinal}} final{{/if~}}
+{{#if isPure}} = 0{{/if~}}
+{{#if isDeleted}} = delete{{/if~}}
+{{#if isDefaulted}} = default{{/if}};

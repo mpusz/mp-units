@@ -1,5 +1,9 @@
 conan
 pre-commit
+# Lays out the API reference synopses. Keep the version in step with the
+# clang-format hook in .pre-commit-config.yaml, or the docs and the sources
+# get formatted by different rules.
+clang-format==21.1.8
 identify
 mkdocs-material
 mkdocs-rss-plugin

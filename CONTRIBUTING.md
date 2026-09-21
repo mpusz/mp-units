@@ -197,9 +197,17 @@ For more, see the [official documentation](https://mpusz.github.io/mp-units) and
     generated pages land in _docs/reference/api_reference/mrdocs/_ and are not
     committed.
 
-    `mkdocs serve` and `mkdocs build` read whatever was generated last, so run
-    the script again after changing a header whose documentation you want to
-    see. It takes about a minute for the whole library.
+    Running it by hand is optional: `mkdocs serve` and `mkdocs build` call it
+    themselves. Either way it regenerates only when something it depends on
+    changed, which takes about a minute for the whole library, and otherwise
+    costs a hash of the inputs. Pass `--force` to regenerate regardless.
+
+    The synopses are laid out with clang-format, using the project's own
+    _.clang-format_ so that a declaration breaks where it would in a header.
+    The version is pinned in _requirements.txt_ to match the clang-format
+    hook in _.pre-commit-config.yaml_. Keep the two in step. Without
+    clang-format on `PATH` the pages are still generated, with the layout
+    MrDocs produced.
 
     Two environment variables are worth knowing:
 

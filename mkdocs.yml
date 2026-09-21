@@ -19,7 +19,10 @@ watch:
 hooks:
   - scripts/systems_reference.py
   # Navigation, cross-references and synopsis highlighting for the API
-  # reference that `scripts/mrdocs/run.sh` generates.
+  # reference. Also regenerates it, from `on_config` rather than the more
+  # natural `on_pre_build`, because the tagfile is read during `on_config`.
+  # Regeneration is skipped unless a header, the MrDocs configuration, a
+  # template or the clang-format style changed.
   - scripts/mrdocs_xref.py
 
 # Configuration
