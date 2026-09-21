@@ -215,11 +215,10 @@ def _load_categories(corpus: _Corpus) -> None:
 def _namespace_tree(corpus: _Corpus) -> list:
     """A `nav` subtree of namespaces, nested by qualified name.
 
-    Two levels per namespace on purpose: an outer group, and inside it a section
-    holding just the namespace page. `navigation.indexes` folds the page into
-    that inner section, so the inner row renders as the page's own link and the
-    page's categories - and the symbol branch grafted on per render - nest
-    underneath it, while the child namespaces stay at the outer level.
+    One level per namespace, its page leading the section. `navigation.indexes`
+    folds that page in, so the row is a link to the namespace with a chevron
+    beside it, and the page's categories - and the symbol branch grafted on per
+    render - nest underneath alongside the child namespaces.
     """
     tree: dict = {}
     for uri, name in sorted(corpus.namespaces.items(), key=lambda kv: kv[1]):
@@ -236,8 +235,7 @@ def _namespace_tree(corpus: _Corpus) -> list:
             entry = node[key]
             if not entry["page"]:
                 continue
-            inner = {key: [{key: entry["page"]}]}
-            out.append({key: [inner] + render(entry["children"])})
+            out.append({key: [entry["page"]] + render(entry["children"])})
         return out
 
     subtree = render(tree)
