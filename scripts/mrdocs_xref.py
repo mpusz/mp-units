@@ -142,6 +142,7 @@ class _Graft:
     section: Any
     nodes: list[Any]
     pages: list[Any] = field(default_factory=list)
+    opened: list[Any] = field(default_factory=list)
 
     def undo(self) -> None:
         for node in self.nodes:
@@ -149,6 +150,8 @@ class _Graft:
                 self.section.children.remove(node)
         for page in self.pages:
             page.parent = None
+        for node in self.opened:
+            _set_active(node, False)
 
 
 _graft: _Graft | None = None
@@ -381,6 +384,32 @@ def _category_nodes(corpus: _Corpus, ns_uri: str, active: str, node) -> list:
     return nodes
 
 
+def _set_active(section, value: bool) -> None:
+    """Set a section's active flag without touching its ancestors.
+
+    `Section.active` is a property that assigns to the parent as well, so
+    clearing it again would switch off the whole chain above it.
+    """
+    section._Section__active = value
+
+
+def _open_namespaces(section) -> list:
+    """Let the namespaces list open on a page that is not inside it.
+
+    `navigation.prune` renders an inactive branch as a plain link, and the
+    chevron Material draws beside it is decorative, so on a namespace's own
+    page the `Namespaces` row could only be followed and not opened. From a
+    page inside a child namespace it behaves, because then it is on the
+    active path, which is why it starts refusing and later works.
+    """
+    opened = []
+    for child in section.children:
+        if getattr(child, "holds_namespaces", False) and not child.active:
+            _set_active(child, True)
+            opened.append(child)
+    return opened
+
+
 def _insert(section, nodes: list, pages: list) -> _Graft:
     """Add nodes after the section's own page and its child namespaces."""
     position = 0
@@ -572,6 +601,7 @@ def on_page_context(context, page, config, nav, **kwargs):
             ],
             [],
         )
+        _graft.opened = _open_namespaces(section)
         return context
 
     if page.parent is not None:
@@ -590,6 +620,7 @@ def on_page_context(context, page, config, nav, **kwargs):
         node.children[0].parent = node
 
     _graft = _insert(section, _category_nodes(_corpus, ns_uri, category, node), touched)
+    _graft.opened = _open_namespaces(section)
     # Re-assert: mkdocs set this before the page had a parent, so the activation
     # never propagated up the tree.
     page.active = True
