@@ -31,7 +31,6 @@
 
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/framework/representation_concepts.h>
-#include <mp-units/framework/scaling.h>
 
 namespace mp_units::utility {
 
@@ -68,18 +67,5 @@ concept Vector = ::mp_units::detail::Vector<T>;
 /// @brief A second-order tensor (or a lower-order type filling its slot).
 MP_UNITS_EXPORT template<typename T>
 concept Tensor = ::mp_units::detail::Tensor<T>;
-
-/// @brief Is `value` still representable in `To` after truncation?
-///
-/// Answers `true` for any pair the question does not apply to, which is every case except a
-/// floating-point source with an integral target. That case is the one where the conversion is
-/// undefined rather than merely lossy, and it is not what `std::in_range` answers: its *Mandates*
-/// require both types to be standard or extended integer types, so a floating-point source is
-/// ill-formed there.
-MP_UNITS_EXPORT template<typename To, typename From>
-[[nodiscard]] constexpr bool value_fits_in(const From& value)
-{
-  return ::mp_units::detail::value_fits_in<To>(value);
-}
 
 }  // namespace mp_units::utility
