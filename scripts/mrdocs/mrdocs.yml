@@ -92,4 +92,19 @@ legible-names: true
 non-standard-attributes: false
 output: ../../docs/reference/api_reference/mrdocs
 warn-if-undocumented: false
+
+## Both of these ask for the kind of comment this project does not write. A
+## `@param q` on `quantity_cast(FwdQ&& q)`, or a line against each of
+## `quantity_field`'s two enumerators, restates the declaration directly above
+## it. CONTRIBUTING asks for the why, not the what, so 83 parameter and return
+## warnings and 32 enum-value ones are a standing demand to add noise. Turn
+## either back on when auditing a header's documentation.
+warn-no-paramdoc: false
+warn-if-undoc-enum-val: false
+
+## Left on deliberately: these catch a comment that is wrong rather than one
+## that is absent.  `warn-if-doc-error` is currently reporting an unclosed
+## <table> in libstdc++'s <bits/random.h>, which the `random.h` wrappers
+## derive from. There is no way to limit warnings to the configured `input`,
+## so that one is noise we carry.
 report: 2
