@@ -127,8 +127,7 @@ public:
   template<typename... Args>
     requires std::constructible_from<T, Args...>
   // Deferred reason 3: reached by the compile-time symbol machinery.
-  constexpr reference emplace_back(Args&&... args)
-    MP_UNITS_PRE_DEFERRED(size() < capacity())
+  constexpr reference emplace_back(Args&&... args) MP_UNITS_PRE_DEFERRED(size() < capacity())
   {
     MP_UNITS_PRE_DEFERRED_COMPAT(size() < capacity());
     auto ptr = try_emplace_back(std::forward<Args>(args)...);

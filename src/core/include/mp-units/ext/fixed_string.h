@@ -240,8 +240,7 @@ public:
 
   template<std::input_iterator It, std::sentinel_for<It> S>
     requires std::same_as<std::iter_value_t<It>, CharT>
-  [[nodiscard]] constexpr basic_fixed_string(It begin, S end)
-    MP_UNITS_PRE(std::distance(begin, end) == N)
+  [[nodiscard]] constexpr basic_fixed_string(It begin, S end) MP_UNITS_PRE(std::distance(begin, end) == N)
   {
     MP_UNITS_EXPECTS(std::distance(begin, end) == N);
     for (auto it = data_; begin != end; ++begin, ++it) *it = *begin;
@@ -249,8 +248,7 @@ public:
 
   template<std::ranges::input_range R>
     requires std::same_as<std::ranges::range_value_t<R>, CharT>
-  [[nodiscard]] constexpr basic_fixed_string(std::from_range_t, R&& r)
-    MP_UNITS_PRE(std::ranges::size(r) == N)
+  [[nodiscard]] constexpr basic_fixed_string(std::from_range_t, R&& r) MP_UNITS_PRE(std::ranges::size(r) == N)
   {
     MP_UNITS_EXPECTS(std::ranges::size(r) == N);
     for (auto it = data_; auto&& v : std::forward<R>(r)) *it++ = std::forward<decltype(v)>(v);

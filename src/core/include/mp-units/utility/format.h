@@ -297,8 +297,7 @@ template<std::forward_iterator It, typename Handler>
 }
 
 template<std::forward_iterator It, typename Handler>
-[[nodiscard]] constexpr It parse_arg_id(It begin, It end, Handler& handler)
-  MP_UNITS_PRE(begin != end)
+[[nodiscard]] constexpr It parse_arg_id(It begin, It end, Handler& handler) MP_UNITS_PRE(begin != end)
 {
   MP_UNITS_EXPECTS(begin != end);
   auto ch = *begin;

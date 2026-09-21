@@ -194,17 +194,16 @@ public:
   // member initializers run.
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   [[nodiscard]] constexpr explicit(false) symbol_text(char ch)
-    MP_UNITS_PRE_DEFERRED(detail::is_basic_literal_character_set_char(ch))
-      : utf8_(static_cast<char8_t>(ch)), portable_(ch)
+    MP_UNITS_PRE_DEFERRED(detail::is_basic_literal_character_set_char(ch)) :
+      utf8_(static_cast<char8_t>(ch)), portable_(ch)
   {
     MP_UNITS_PRE_DEFERRED_COMPAT(detail::is_basic_literal_character_set_char(ch));
   }
 
   // NOLINTNEXTLINE(*-avoid-c-arrays, google-explicit-constructor, hicpp-explicit-conversions)
-  [[nodiscard]] consteval explicit(false) symbol_text(const char (&txt)[N + 1])
-    MP_UNITS_PRE_DEFERRED(txt[N] == char{})
-    MP_UNITS_PRE_DEFERRED(detail::is_basic_literal_character_set(txt))
-      : utf8_(detail::to_u8string(basic_fixed_string{txt})), portable_(txt)
+  [[nodiscard]] consteval explicit(false) symbol_text(const char (&txt)[N + 1]) MP_UNITS_PRE_DEFERRED(txt[N] == char{})
+    MP_UNITS_PRE_DEFERRED(detail::is_basic_literal_character_set(txt)) :
+      utf8_(detail::to_u8string(basic_fixed_string{txt})), portable_(txt)
   {
     MP_UNITS_PRE_DEFERRED_COMPAT(txt[N] == char{});
     MP_UNITS_PRE_DEFERRED_COMPAT(detail::is_basic_literal_character_set(txt));
@@ -212,18 +211,17 @@ public:
 
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   [[nodiscard]] constexpr explicit(false) symbol_text(const fixed_string<N>& txt)
-    MP_UNITS_PRE_DEFERRED(detail::is_basic_literal_character_set(txt.data_))
-      : utf8_(detail::to_u8string(txt)), portable_(txt)
+    MP_UNITS_PRE_DEFERRED(detail::is_basic_literal_character_set(txt.data_)) :
+      utf8_(detail::to_u8string(txt)), portable_(txt)
   {
     MP_UNITS_PRE_DEFERRED_COMPAT(detail::is_basic_literal_character_set(txt.data_));
   }
 
   // NOLINTNEXTLINE(*-avoid-c-arrays)
   [[nodiscard]] consteval symbol_text(const char8_t (&u)[N + 1], const char (&a)[M + 1])
-    MP_UNITS_PRE_DEFERRED(u[N] == char8_t{})
-    MP_UNITS_PRE_DEFERRED(a[M] == char{})
-    MP_UNITS_PRE_DEFERRED(detail::is_basic_literal_character_set(a))
-      : utf8_(u), portable_(a)
+    MP_UNITS_PRE_DEFERRED(u[N] == char8_t{}) MP_UNITS_PRE_DEFERRED(a[M] == char{})
+      MP_UNITS_PRE_DEFERRED(detail::is_basic_literal_character_set(a)) :
+      utf8_(u), portable_(a)
   {
     MP_UNITS_PRE_DEFERRED_COMPAT(u[N] == char8_t{});
     MP_UNITS_PRE_DEFERRED_COMPAT(a[M] == char{});
@@ -231,8 +229,8 @@ public:
   }
 
   [[nodiscard]] constexpr symbol_text(const fixed_u8string<N>& utf8, const fixed_string<M>& portable)
-    MP_UNITS_PRE_DEFERRED(detail::is_basic_literal_character_set(portable.data_))
-      : utf8_(utf8), portable_(portable)
+    MP_UNITS_PRE_DEFERRED(detail::is_basic_literal_character_set(portable.data_)) :
+      utf8_(utf8), portable_(portable)
   {
     MP_UNITS_PRE_DEFERRED_COMPAT(detail::is_basic_literal_character_set(portable.data_));
   }

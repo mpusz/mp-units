@@ -70,9 +70,7 @@ struct ratio {
   std::intmax_t den;
 
   // NOLINTNEXTLINE(bugprone-easily-swappable-parameters, google-explicit-constructor, hicpp-explicit-conversions)
-  MP_UNITS_CONSTEVAL explicit(false) ratio(std::intmax_t n, std::intmax_t d = 1)
-    MP_UNITS_PRE(d != 0)
-      : num{n}, den{d}
+  MP_UNITS_CONSTEVAL explicit(false) ratio(std::intmax_t n, std::intmax_t d = 1) MP_UNITS_PRE(d != 0) : num{n}, den{d}
   {
     MP_UNITS_EXPECTS(d != 0);
     if (num == 0)

@@ -302,7 +302,7 @@ public:
   // spreads into whatever consumes the result with nothing pointing back here.
   [[nodiscard]] constexpr cartesian_vector unit() const
     requires treat_as_floating_point<T>
-    MP_UNITS_PRE(norm() != T{})
+  MP_UNITS_PRE(norm() != T{})
   {
     MP_UNITS_EXPECTS(norm() != T{});
     return *this / norm();

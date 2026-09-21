@@ -144,8 +144,8 @@ public:
   // the member initializers run, and naming `uncertainty_` there is ill-formed ("'this' required
   // when accessing a member").
   [[nodiscard]] constexpr explicit uncertain(value_type val, value_type err)
-    MP_UNITS_PRE(!(err < representation_values<value_type>::zero()))
-      : value_(std::move(val)), uncertainty_(std::move(err))
+    MP_UNITS_PRE(!(err < representation_values<value_type>::zero())) :
+      value_(std::move(val)), uncertainty_(std::move(err))
   {
     MP_UNITS_EXPECTS(!(err < representation_values<value_type>::zero()));
   }
@@ -168,8 +168,7 @@ public:
   [[nodiscard]] constexpr value_type relative_uncertainty() const
     MP_UNITS_PRE(treat_as_floating_point<value_type> || value() != representation_values<value_type>::zero())
   {
-    MP_UNITS_EXPECTS(treat_as_floating_point<value_type> ||
-                     value() != representation_values<value_type>::zero());
+    MP_UNITS_EXPECTS(treat_as_floating_point<value_type> || value() != representation_values<value_type>::zero());
     using std::abs;
     return uncertainty() / abs(value());
   }

@@ -261,8 +261,7 @@ public:
     MP_UNITS_EXPECTS(row < N && col < N);
     return _data_[row * N + col];
   }
-  [[nodiscard]] constexpr const T& operator[](std::size_t row, std::size_t col) const
-    MP_UNITS_PRE(row < N && col < N)
+  [[nodiscard]] constexpr const T& operator[](std::size_t row, std::size_t col) const MP_UNITS_PRE(row < N && col < N)
   {
     MP_UNITS_EXPECTS(row < N && col < N);
     return _data_[row * N + col];

@@ -755,20 +755,11 @@ TEST_CASE("'abs()' and 'sqrt()' postconditions accept what they must", "[math][n
 {
   const auto nan = std::numeric_limits<double>::quiet_NaN();
 
-  SECTION("a NaN propagates through abs")
-  {
-    REQUIRE(isnan(abs(nan * isq::length[m])));
-  }
+  SECTION("a NaN propagates through abs") { REQUIRE(isnan(abs(nan * isq::length[m]))); }
 
-  SECTION("a NaN propagates through sqrt")
-  {
-    REQUIRE(isnan(sqrt(nan * isq::area[m2])));
-  }
+  SECTION("a NaN propagates through sqrt") { REQUIRE(isnan(sqrt(nan * isq::area[m2]))); }
 
-  SECTION("sqrt of a negative gives a NaN rather than a violation")
-  {
-    REQUIRE(isnan(sqrt(-4.0 * isq::area[m2])));
-  }
+  SECTION("sqrt of a negative gives a NaN rather than a violation") { REQUIRE(isnan(sqrt(-4.0 * isq::area[m2]))); }
 
   // The predicate is made total through `detail::value_is_non_negative` rather than guarded at the
   // call site, because a declaration contract cannot be wrapped in `if constexpr`. A complex
@@ -776,8 +767,7 @@ TEST_CASE("'abs()' and 'sqrt()' postconditions accept what they must", "[math][n
   // these into hard compile errors.
   SECTION("a complex representation is still accepted")
   {
-    REQUIRE(abs(quantity{std::complex<double>{3.0, -4.0}, m}).numerical_value_in(m) ==
-            std::complex<double>{5.0, 0.0});
+    REQUIRE(abs(quantity{std::complex<double>{3.0, -4.0}, m}).numerical_value_in(m) == std::complex<double>{5.0, 0.0});
     (void)sqrt(quantity{std::complex<double>{-4.0, 0.0}, m2});
   }
 }
@@ -817,4 +807,3 @@ TEST_CASE("'round()' on values it cannot round", "[math][round][nan]")
     REQUIRE(round<si::metre>(-2.5 * isq::length[m]) == -2 * isq::length[m]);
   }
 }
-
