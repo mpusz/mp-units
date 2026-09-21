@@ -340,11 +340,31 @@ def _category_nodes(corpus: _Corpus, ns_uri: str, active: str, node) -> list:
     headings = corpus.categories.get(ns_uri, [])
     if not headings or not active:
         return [node]
+
     base = _page_url(ns_uri)
-    return [
-        node if heading == active else Link(title=heading, url=f"{base}#{anchor}")
-        for heading, anchor in headings
-    ]
+    nodes = []
+    for heading, anchor in headings:
+        link = Link(title=heading, url=f"{base}#{anchor}")
+        if heading != active:
+            nodes.append(link)
+            continue
+        # Without this the category holding the open page is the one row in
+        # the sidebar that cannot be clicked: it is a section, and Material
+        # renders a section as a single toggle, so clicking the name collapses
+        # the branch being read rather than returning to the listing.
+        #
+        # `navigation.indexes` splits that row in two, a link to the section's
+        # index page and a separate chevron that folds it, which is the
+        # behaviour wanted here. Material picks the index by looking for a
+        # child with a true `is_index`, takes only its `url`, titles the row
+        # from the section itself, and drops it from the child list. A link to
+        # the category's heading answers all of that, so the category gets an
+        # index page's behaviour without a page existing to be its index.
+        link.is_index = True
+        link.parent = node
+        node.children.insert(0, link)
+        nodes.append(node)
+    return nodes
 
 
 def _insert(section, nodes: list, pages: list) -> _Graft:
