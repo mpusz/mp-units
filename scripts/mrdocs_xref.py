@@ -36,6 +36,7 @@ from pathlib import Path
 from typing import Any
 
 from mkdocs.structure.nav import Link, Section
+from mkdocs.utils import get_relative_url
 
 # Where `mrdocs` writes its output, relative to `docs_dir`.
 API_DIR = "reference/api_reference/mrdocs"
@@ -150,8 +151,6 @@ class _Graft:
                 self.section.children.remove(node)
         for page in self.pages:
             page.parent = None
-        for node in self.opened:
-            _set_active(node, False)
 
 
 _graft: _Graft | None = None
@@ -625,6 +624,49 @@ def on_page_context(context, page, config, nav, **kwargs):
     # never propagated up the tree.
     page.active = True
     return context
+
+
+# Material decides "is this branch pruned" and "is it open" from the one
+# `active` flag, so a section cannot be both kept and closed. `_open_namespaces`
+# sets the flag to keep the row expandable; this takes the open state back off
+# the rendered page, leaving the toggle itself untouched so it still opens.
+
+
+def _collapse(output: str, href: str) -> str:
+    """Uncheck the toggle belonging to the row that links to `href`.
+
+    Keyed on the row's own link rather than on its position, because a page
+    inside a namespace renders its parent's namespaces row too, and collapsing
+    that one would hide the branch the reader is in.
+
+    Matches nothing if Material ever renders this differently, in which case
+    the row stays open as it did before.
+    """
+    pattern = re.compile(
+        r"<input(?P<head>[^>]*md-nav__toggle[^>]*?)\s+checked(?P<tail>[^>]*)>"
+        r"(?P<gap>(?:(?!<input\b)[\s\S]){0,800}?"
+        r'<a href="' + re.escape(href) + r'" class="md-nav__link)'
+    )
+    return pattern.sub(r"<input\g<head>\g<tail>>\g<gap>", output, count=1)
+
+
+def on_post_page(output: str, page, config, **kwargs):
+    if not (_graft and _graft.opened):
+        return output
+    for section in _graft.opened:
+        index = next(
+            (child for child in section.children if getattr(child, "is_index", False)),
+            None,
+        )
+        if index is not None:
+            output = _collapse(output, get_relative_url(index.url, page.url))
+        # Cleared here rather than when the graft is undone. mkdocs marks the
+        # next page active before calling `on_page_context`, so clearing it
+        # there would undo an activation it had just propagated, and a section
+        # the reader is actually inside would come out pruned.
+        _set_active(section, False)
+    _graft.opened = []
+    return output
 
 
 def on_page_markdown(markdown: str, page, config, files, **kwargs):
