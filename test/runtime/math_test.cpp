@@ -767,7 +767,11 @@ TEST_CASE("'abs()' and 'sqrt()' postconditions accept what they must", "[math][n
   // these into hard compile errors.
   SECTION("a complex representation is still accepted")
   {
-    REQUIRE(abs(quantity{std::complex<double>{3.0, -4.0}, m}).numerical_value_in(m) == std::complex<double>{5.0, 0.0});
+    // The parts are compared separately rather than the whole `std::complex`: Catch2's expression
+    // decomposition cannot take `complex == complex` apart in a modules build.
+    const auto abs_c = abs(quantity{std::complex<double>{3.0, -4.0}, m}).numerical_value_in(m);
+    REQUIRE(abs_c.real() == 5.0);
+    REQUIRE(abs_c.imag() == 0.0);
     (void)sqrt(quantity{std::complex<double>{-4.0, 0.0}, m2});
   }
 }

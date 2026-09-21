@@ -136,13 +136,14 @@ template<auto R, typename Rep>
 #if MP_UNITS_HOSTED
   using std::sqrt;
 #endif
-  // `sqrt(R)` is bound once. Naming `quantity<sqrt(R), Rep>` here, or letting CTAD deduce it from
-  // `quantity{value, sqrt(R)}`, evaluates it again, and `sqrt` on a reference computes a canonical
-  // unit; either form showed up on the `isq/fractional_exponents` compile-cost benchmark.
-  constexpr auto to = sqrt(R);
-  const quantity<to, Rep> result{static_cast<Rep>(sqrt(q.numerical_value_ref_in(q.unit))), to};
-  MP_UNITS_POST_COMPAT(detail::value_is_non_negative(result.numerical_value_ref_in(result.unit)));
-  return result;
+  // No `MP_UNITS_POST_COMPAT` here, deliberately. The declaration contract above costs nothing, but
+  // giving the body a named result of the return type, which is the only way the GSL backends can
+  // check the same predicate, instantiates `quantity<sqrt(R), Rep>` machinery the single-expression
+  // return never needs. On the `isq/fractional_exponents` compile-cost benchmark that one line was
+  // +481 instantiations, about 2%, and it was the only measurable cost in this whole branch: the
+  // forty declaration preconditions and every other postcondition together cost nothing. So the
+  // postcondition is stated where it belongs and goes unchecked until a compiler can run it.
+  return {static_cast<Rep>(sqrt(q.numerical_value_ref_in(q.unit))), sqrt(R)};
 }
 
 /**
