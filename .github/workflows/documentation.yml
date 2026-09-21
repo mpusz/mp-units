@@ -102,8 +102,21 @@ jobs:
         with:
           python-version: 3.x
       - name: Installing pip dependencies
+        # clang-format lays out the API reference synopses. Without it the pages
+        # are still generated, but to MrDocs' layout rather than this project's.
+        # Keep the version in step with requirements.txt.
         run: |
-          pip install mkdocs-material mkdocs-rss-plugin
+          pip install mkdocs-material mkdocs-rss-plugin clang-format==21.1.8
+      - name: Install a newer libstdc++
+        # MrDocs brings its own Clang and parses the headers against whichever
+        # libstdc++ it finds. The runner's is old enough to make the `std::pair`
+        # CTAD in quantity_spec_equation_conversion.h ambiguous, which GCC itself
+        # accepts and later libstdc++ releases resolve, so the reference cannot be
+        # generated without a newer one. Same PPA the Conan workflow uses.
+        run: |
+          sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+          sudo apt update
+          sudo apt install -y g++-15
       - name: Cache MrDocs
         uses: actions/cache@v5
         with:
@@ -163,6 +176,22 @@ jobs:
         with:
           key: mrdocs-${{ hashFiles('scripts/mrdocs/run.py') }}
           path: ~/.cache/mp-units/mrdocs
+      - name: Installing pip dependencies
+        # Ahead of generating, not after it: clang-format lays out the synopses
+        # during generation. Keep the version in step with requirements.txt.
+        run: |
+          pip install conan mkdocs-material mkdocs-rss-plugin mkdocs-material[imaging] mike \
+                      clang-format==21.1.8
+      - name: Install a newer libstdc++
+        # MrDocs brings its own Clang and parses the headers against whichever
+        # libstdc++ it finds. The runner's is old enough to make the `std::pair`
+        # CTAD in quantity_spec_equation_conversion.h ambiguous, which GCC itself
+        # accepts and later libstdc++ releases resolve, so the reference cannot be
+        # generated without a newer one. Same PPA the Conan workflow uses.
+        run: |
+          sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+          sudo apt update
+          sudo apt install -y g++-15
       - name: Generate API reference
         # Source links point at the ref being documented, so a release's pages link to that
         # release's code rather than to whatever `master` holds later.
@@ -170,9 +199,6 @@ jobs:
           MRDOCS_SOURCE_REF: ${{ github.ref_type == 'tag' && github.ref_name || github.sha }}
         run: |
           python scripts/mrdocs/run.py
-      - name: Installing pip dependencies
-        run: |
-          pip install conan mkdocs-material mkdocs-rss-plugin mkdocs-material[imaging] mike
       - name: Building docs for a released version
         if: startsWith(github.event.ref, 'refs/tags/v')
         run: |
