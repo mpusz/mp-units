@@ -86,7 +86,7 @@ MP_UNITS_EXPORT template<typename To, typename From>
   //
   // `_DEBUG`, and so in the body: this is on every conversion path, and a contract on a
   // declaration cannot be limited to a debug build.
-  MP_UNITS_PRECONDITION_DEBUG(value_fits_in<To>(value));
+  MP_UNITS_PRECONDITION_DEBUG(::mp_units::detail::value_fits_in<To>(value));
   MP_UNITS_DIAGNOSTIC_PUSH
   MP_UNITS_DIAGNOSTIC_IGNORE_CONVERSION
   MP_UNITS_DIAGNOSTIC_IGNORE_FLOAT_CONVERSION
@@ -114,8 +114,7 @@ template<typename T>
 
 template<typename T>
 // Deferred reason 4: reached from `div_round` during constant evaluation.
-[[nodiscard]] constexpr T get_one(const T& value)
-  MP_UNITS_PRE_DEFERRED(value != get_zero(value))
+[[nodiscard]] constexpr T get_one(const T& value) MP_UNITS_PRE_DEFERRED(value != get_zero(value))
 {
   MP_UNITS_PRE_DEFERRED_COMPAT(value != get_zero(value));
   return value / value;

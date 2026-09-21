@@ -24,10 +24,10 @@
 
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/ext/contracts.h>
-#include <mp-units/framework/scaling.h>
 #include <mp-units/systems/si/prefixes.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
+#include <mp-units/utility/representation.h>
 #if MP_UNITS_HOSTED
 #ifdef MP_UNITS_IMPORT_STD
 import std;
@@ -99,7 +99,7 @@ constexpr decltype(auto) invoke_with_prefixed(Func func, Q q, U u, prefix_range 
   // would be worse behavior than today's. They take the same pass-through the zero above already
   // had. Comparing against the `int` bounds rather than calling `isfinite` catches an
   // absurd-but-finite magnitude in the same test and asks nothing new of the representation.
-  if (!detail::value_fits_in<int>(order)) return func(q.in(u));
+  if (!utility::value_fits_in<int>(order)) return func(q.in(u));
   const auto mag = static_cast<int>(order);
 
   // Exponent ensures value has at least min_integral_digits in integral part
