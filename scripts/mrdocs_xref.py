@@ -40,6 +40,10 @@ from mkdocs.structure.nav import Link, Section
 # Where `mrdocs` writes its output, relative to `docs_dir`.
 API_DIR = "reference/api_reference/mrdocs"
 TAGFILE = "reference.tag.xml"
+# The heading MrDocs gives a namespace page's list of child namespaces. The
+# nav nests the child namespaces under it, so that category is a section
+# already and must not also be added as a plain link.
+NAMESPACES = "Namespaces"
 
 # The hand-written page the `API Reference` entry points at, in preference to
 # the generated one (the whole corpus flattened onto a single page).
@@ -218,7 +222,13 @@ def _namespace_tree(corpus: _Corpus) -> list:
     One level per namespace, its page leading the section. `navigation.indexes`
     folds that page in, so the row is a link to the namespace with a chevron
     beside it, and the page's categories - and the symbol branch grafted on per
-    render - nest underneath alongside the child namespaces.
+    render - nest underneath.
+
+    The child namespaces go under a `Namespaces` section rather than beside the
+    categories, because otherwise a namespace is in the sidebar twice: once in
+    the category listing it belongs to and once as a sibling of that listing.
+    It also makes every category behave alike, each being an anchor into the
+    page and the container of its own members.
     """
     tree: dict = {}
     for uri, name in sorted(corpus.namespaces.items(), key=lambda kv: kv[1]):
@@ -235,7 +245,11 @@ def _namespace_tree(corpus: _Corpus) -> list:
             entry = node[key]
             if not entry["page"]:
                 continue
-            out.append({key: [entry["page"]] + render(entry["children"])})
+            children = render(entry["children"])
+            items = [entry["page"]]
+            if children:
+                items.append({NAMESPACES: children})
+            out.append({key: items})
         return out
 
     subtree = render(tree)
@@ -342,6 +356,8 @@ def _category_nodes(corpus: _Corpus, ns_uri: str, active: str, node) -> list:
     base = _page_url(ns_uri)
     nodes = []
     for heading, anchor in headings:
+        if heading == NAMESPACES:
+            continue
         link = Link(title=heading, url=f"{base}#{anchor}")
         if heading != active:
             nodes.append(link)
@@ -366,10 +382,15 @@ def _category_nodes(corpus: _Corpus, ns_uri: str, active: str, node) -> list:
 
 
 def _insert(section, nodes: list, pages: list) -> _Graft:
-    """Add nodes after the section's own page, above the child namespaces."""
-    position = (
-        1 if section.children and getattr(section.children[0], "is_page", False) else 0
-    )
+    """Add nodes after the section's own page and its child namespaces."""
+    position = 0
+    for child in section.children:
+        if getattr(child, "is_page", False) or getattr(
+            child, "holds_namespaces", False
+        ):
+            position += 1
+        else:
+            break
     for offset, node in enumerate(nodes):
         node.parent = section
         section.children.insert(position + offset, node)
@@ -482,6 +503,35 @@ def on_nav(nav, config, files, **kwargs):
             walk(item.children)
 
     walk(nav.items)
+
+    # The child namespaces are nested under a `Namespaces` section, so that
+    # section stands in for the category of the same name. Point it at the
+    # heading it replaces: Material takes a section's index from a child with
+    # a true `is_index` and leaves that child out of the list, so the row
+    # becomes a link to the listing with a chevron that opens the namespaces.
+    for uri, section in _corpus.sections.items():
+        if uri not in _corpus.namespaces:
+            continue
+        anchor = next(
+            (
+                a
+                for heading, a in _corpus.categories.get(uri, [])
+                if heading == NAMESPACES
+            ),
+            "",
+        )
+        for child in section.children:
+            if getattr(child, "is_section", False) and child.title == NAMESPACES:
+                child.holds_namespaces = True
+                if anchor and not any(
+                    getattr(item, "is_index", False) for item in child.children
+                ):
+                    link = Link(title=NAMESPACES, url=f"{_page_url(uri)}#{anchor}")
+                    link.is_index = True
+                    link.parent = child
+                    child.children.insert(0, link)
+                break
+
     return nav
 
 
@@ -518,6 +568,7 @@ def on_page_context(context, page, config, nav, **kwargs):
             [
                 Link(title=heading, url=f"{base}#{anchor}")
                 for heading, anchor in _corpus.categories[src_uri]
+                if heading != NAMESPACES
             ],
             [],
         )
