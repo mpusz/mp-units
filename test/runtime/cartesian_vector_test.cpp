@@ -638,4 +638,3 @@ TEST_CASE("magnitude postcondition accepts what it must", "[vector][nan]")
     REQUIRE(magnitude(utility::cartesian_vector{3.0, 4.0, 0.0}) == 5.0);
   }
 }
-

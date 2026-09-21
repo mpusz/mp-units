@@ -630,7 +630,7 @@ inline constexpr std::array<std::uintmax_t, 100> first_100_primes{
 // worse than one wrapper. A wrapping lambda instead of a named function is what the comment above
 // `smallest_prime_factor_of_hard_composite` already explains does not work here.
 [[nodiscard]] consteval std::uintmax_t find_first_factor(const std::uintmax_t n)
-  MP_UNITS_POST(r: r != 0u && n % r == 0u)
+  MP_UNITS_POST(r : r != 0u && n % r == 0u)
 {
   const std::uintmax_t result = find_first_factor_impl(n);
   MP_UNITS_POST_COMPAT(result != 0u && n % result == 0u);
