@@ -27,7 +27,7 @@
 #include <mp-units/systems/si/prefixes.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
-#include <mp-units/utility/representation.h>
+#include <mp-units/framework/scaling.h>
 #if MP_UNITS_HOSTED
 #ifdef MP_UNITS_IMPORT_STD
 import std;

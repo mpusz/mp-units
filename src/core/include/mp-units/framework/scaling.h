@@ -74,6 +74,33 @@ template<typename To, typename From>
     return true;
 }
 
+}  // namespace detail
+
+// The public face of `detail::value_fits_in`. `detail` is never exported, and a name that has to
+// cross a module boundary belongs in `mp_units::utility`, the supported extension tier - see the
+// note at the top of `utility/representation.h`. Defined here rather than there so that
+// `representation.h` does not have to include this header: doing so pulled `detail::RealScalar`
+// into scope alongside `utility::RealScalar` and made the unqualified name ambiguous in any
+// translation unit that opens both namespaces.
+namespace utility {
+
+/// @brief Is `value` still representable in `To` after truncation?
+///
+/// Answers `true` for any pair the question does not apply to, which is every case except a
+/// floating-point source with an integral target. That case is the one where the conversion is
+/// undefined rather than merely lossy, and it is not what `std::in_range` answers: its *Mandates*
+/// require both types to be standard or extended integer types, so a floating-point source is
+/// ill-formed there.
+MP_UNITS_EXPORT template<typename To, typename From>
+[[nodiscard]] constexpr bool value_fits_in(const From& value)
+{
+  return ::mp_units::detail::value_fits_in<To>(value);
+}
+
+}  // namespace utility
+
+namespace detail {
+
 MP_UNITS_EXPORT template<typename To, typename From>
 [[nodiscard]] constexpr To silent_cast(From value) noexcept
 {
