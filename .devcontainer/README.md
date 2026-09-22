@@ -105,31 +105,21 @@ Each iteration tests different combinations of:
 
 #### API Reference Generation
 
-The `.devcontainer/api_reference.sh` script automates the generation of API documentation:
+The API reference is generated from the headers with
+[MrDocs](https://www.mrdocs.com):
 
 ```bash
-# Generate API reference documentation
-.devcontainer/api_reference.sh
-
-# Generate API reference documentation (setup only, no build)
-.devcontainer/api_reference.sh -s
-
-# Use custom directory for dependencies
-.devcontainer/api_reference.sh -d /path/to/deps
+python scripts/mrdocs/run.py
 ```
 
-By default, the script performs both setup and build operations. Use the `-s` flag
-to perform setup only (done already during development container initialization).
-The script runs automatically during Codespace initialization to ensure the
-API documentation setup is ready.
+Nothing has to be installed first: the script downloads the pinned MrDocs
+release on first use and caches it under `~/.cache/mp-units/`. In a Codespace
+that cache does not survive a rebuild, so the first run after one downloads
+again (about 45 MB, a few seconds).
 
-The `-d` parameter allows you to specify a custom directory for API documentation
-dependencies. By default, dependencies are stored in `../api_reference_deps` relative
-to the project root. This directory contains:
-
-- **jegp.cmake_modules**: CMake modules required for documentation generation
-- **draft**: C++ standard draft sources for standardese-style formatting
-- **cxxdraft-htmlgen**: HTML generation tools and templates
+The generated pages are written to `docs/reference/api_reference/mrdocs/` and
+are not committed. `mkdocs serve` shows whatever was generated last, so run the
+script again after changing a header you want to see documented.
 
 ### Documentation
 

@@ -163,6 +163,23 @@
 | <span id="watt"></span><code>watt</code> | W | — | <code>[joule](#joule) / <wbr>[second](#second)</code> |
 | <span id="weber"></span><code>weber</code> | Wb | — | <code>[volt](#volt) * <wbr>[second](#second)</code> |
 
+## Prefixed unit symbols
+
+Not every unit has a symbol for every prefix. A combination that is
+not listed here does not exist, however reasonable it looks.
+
+| Unit | Prefixed symbols |
+|------|------------------|
+| <a href="#barn"><code>barn</code></a> | `fb` `pb` `nb` `ub` `mb` |
+| <a href="#becquerel"><code>becquerel</code></a> | `kBq` `MBq` `GBq` |
+| <a href="#curie"><code>curie</code></a> | `uCi` `mCi` |
+| <a href="#electronvolt"><code>electronvolt</code></a> | `keV` `MeV` `GeV` `TeV` `PeV` |
+| <a href="#gram"><code>gram</code></a> | `mg` `kg` |
+| <a href="#liter"><code>liter</code></a> | `mL` `cL` `dL` |
+| <a href="#meter"><code>meter</code></a> | `nm` `um` `mm` `cm` `km` |
+| <a href="#radian"><code>radian</code></a> | `mrad` |
+| <a href="#second"><code>second</code></a> | `ps` `ns` `us` `ms` |
+
 ## Constants
 
 | Name | Symbol | unit_symbol | Definition | Standard uncertainty |

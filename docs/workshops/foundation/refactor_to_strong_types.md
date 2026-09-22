@@ -126,7 +126,7 @@ int main()
 ## References
 
 - [Getting Started: Quick Start](../../getting_started/quick_start.md)
-- [API Reference](../../reference/api_reference.md)
+- [API Reference](../../reference/api_reference/overview.md)
 
 
 ## Takeaways

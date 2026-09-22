@@ -42,7 +42,7 @@ on:
       - "mkdocs.yml"
       - "example/**"
       - "scripts/**"
-      - "src/systems/include/**"
+      - "src/**"
 
   # The same paths on a pull request, so `link-check` (below) reports a broken link while it can
   # still be fixed in the branch rather than after it is published.
@@ -57,7 +57,7 @@ on:
       - "mkdocs.yml"
       - "example/**"
       - "scripts/**"
-      - "src/systems/include/**"
+      - "src/**"
 
   # A nightly rebuild, so a scheduled blog post publishes itself.
   #
@@ -102,12 +102,32 @@ jobs:
         with:
           python-version: 3.x
       - name: Installing pip dependencies
-        # No API reference toolchain here. It generates into
-        # `docs/reference/api_reference/gen`, which nothing links into: every reference goes
-        # through the checked-in `reference/api_reference.md` wrapper page, and that page is
-        # checked like any other.
+        # clang-format lays out the API reference synopses. Without it the pages
+        # are still generated, but to MrDocs' layout rather than this project's.
+        # Keep the version in step with requirements.txt.
         run: |
-          pip install mkdocs-material mkdocs-rss-plugin mkdocs-exclude
+          pip install mkdocs-material mkdocs-rss-plugin clang-format==21.1.8
+      - name: Install a newer libstdc++
+        # MrDocs brings its own Clang and parses the headers against whichever
+        # libstdc++ it finds. The runner's is old enough to make the `std::pair`
+        # CTAD in quantity_spec_equation_conversion.h ambiguous, which GCC itself
+        # accepts and later libstdc++ releases resolve, so the reference cannot be
+        # generated without a newer one. Same PPA the Conan workflow uses.
+        run: |
+          sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+          sudo apt update
+          sudo apt install -y g++-15
+      - name: Cache MrDocs
+        uses: actions/cache@v5
+        with:
+          key: mrdocs-${{ hashFiles('scripts/mrdocs/run.py') }}
+          path: ~/.cache/mp-units/mrdocs
+      - name: Generate API reference
+        # The reference is thousands of pages that the rest of the site links into, so this job
+        # cannot skip it: without these pages every link into them is dead and `--strict` fails
+        # for a reason that has nothing to do with the change under review.
+        run: |
+          python scripts/mrdocs/run.py
       - name: Building the site with every link checked
         env:
           # Check a scheduled post's links now, rather than the morning it publishes itself.
@@ -151,30 +171,34 @@ jobs:
           git config --global user.name github-actions
           git config --global user.email github-actions@github.com
           git fetch origin gh-pages --depth=1
-      - name: Installing API reference dependencies
-        run: |
-          sudo apt update
-          sudo apt install latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended lmodern
-          sudo apt install haskell-stack graphviz nodejs npm ghc cabal-install
-          npm install split mathjax-full mathjax-node-sre mathjax-node-cli yargs@16.2.0
-          cabal update
-          echo "${{ github.workspace }}/node_modules/.bin" >> $GITHUB_PATH
-      - name: Get git repos with API reference tools
-        run: |
-          git clone https://github.com/JohelEGP/jegp.cmake_modules.git --depth=1
-          git clone https://github.com/JohelEGP/draft.git --branch=standardese_sources_base --depth=1
-          git clone https://github.com/JohelEGP/cxxdraft-htmlgen.git --branch=standardese_sources_base --depth=1
-      - name: Generate API reference
-        run: |
-          cmake -S docs/reference/api_reference/src -B build \
-                -DCMAKE_MODULE_PATH="${{ github.workspace }}/jegp.cmake_modules/modules" \
-                -DJEGP_STANDARDESE_SOURCES_GIT_REPOSITORY="${{ github.workspace }}/draft" \
-                -DJEGP_CXXDRAFT_HTMLGEN_GIT_REPOSITORY="${{ github.workspace }}/cxxdraft-htmlgen"
-          cmake --build build
-          mv build/mp-units.html docs/reference/api_reference/gen
+      - name: Cache MrDocs
+        uses: actions/cache@v5
+        with:
+          key: mrdocs-${{ hashFiles('scripts/mrdocs/run.py') }}
+          path: ~/.cache/mp-units/mrdocs
       - name: Installing pip dependencies
+        # Ahead of generating, not after it: clang-format lays out the synopses
+        # during generation. Keep the version in step with requirements.txt.
         run: |
-          pip install conan mkdocs-material mkdocs-rss-plugin mkdocs-material[imaging] mkdocs-exclude mike
+          pip install conan mkdocs-material mkdocs-rss-plugin mkdocs-material[imaging] mike \
+                      clang-format==21.1.8
+      - name: Install a newer libstdc++
+        # MrDocs brings its own Clang and parses the headers against whichever
+        # libstdc++ it finds. The runner's is old enough to make the `std::pair`
+        # CTAD in quantity_spec_equation_conversion.h ambiguous, which GCC itself
+        # accepts and later libstdc++ releases resolve, so the reference cannot be
+        # generated without a newer one. Same PPA the Conan workflow uses.
+        run: |
+          sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+          sudo apt update
+          sudo apt install -y g++-15
+      - name: Generate API reference
+        # Source links point at the ref being documented, so a release's pages link to that
+        # release's code rather than to whatever `master` holds later.
+        env:
+          MRDOCS_SOURCE_REF: ${{ github.ref_type == 'tag' && github.ref_name || github.sha }}
+        run: |
+          python scripts/mrdocs/run.py
       - name: Building docs for a released version
         if: startsWith(github.event.ref, 'refs/tags/v')
         run: |

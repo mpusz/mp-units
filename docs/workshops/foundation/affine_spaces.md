@@ -154,7 +154,7 @@ int main()
 ## References
 
 - [User's Guide: The Affine Space](../../users_guide/framework_basics/the_affine_space.md)
-- [API Reference](../../reference/api_reference.md)
+- [API Reference](../../reference/api_reference/overview.md)
 
 
 ## Takeaways

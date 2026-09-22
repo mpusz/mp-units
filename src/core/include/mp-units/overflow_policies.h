@@ -66,7 +66,7 @@ namespace mp_units {
 // ============================================================================
 
 /**
- * @brief Policy that checks the value is within [min, max] and reports violations.
+ * @brief Policy that checks the value is within `[min, max]` and reports violations.
  *
  * If the quantity's representation type has a `constraint_violation_handler` specialization,
  * the handler's `on_violation()` is called on out-of-bounds values (providing guaranteed
@@ -108,7 +108,7 @@ check_in_range(Q, Q) -> check_in_range<Q>;
 #endif
 
 /**
- * @brief Policy that clamps the value to [min, max].
+ * @brief Policy that clamps the value to `[min, max]`.
  *
  * Saturates out-of-range values to the nearest boundary.
  * Use when you want to "correct" invalid values rather than signal an error.
@@ -137,11 +137,11 @@ clamp_to_range(Q, Q) -> clamp_to_range<Q>;
 #endif
 
 /**
- * @brief Policy that wraps the value into the half-open range [min, max).
+ * @brief Policy that wraps the value into the half-open range `[min, max)`.
  *
  * Uses modulo arithmetic to wrap values into the range.
  * Use for periodic/cyclic quantities (angles, time-of-day, etc.).
- * For example, with [0°, 360°): 370° -> 10°, -10° -> 350°.
+ * For example, with `[0°, 360°)`: 370° -> 10°, -10° -> 350°.
  */
 MP_UNITS_EXPORT template<Quantity Q>
 struct wrap_to_range {
@@ -170,8 +170,8 @@ wrap_to_range(Q, Q) -> wrap_to_range<Q>;
 /**
  * @brief Policy that reflects (folds) the value at both boundaries.
  *
- * Values that exceed [min, max] are "bounced back" from the boundary.
- * For example, with [-90, 90] (latitude): 91 -> 89, 180 -> 0, 270 -> -90.
+ * Values that exceed `[min, max]` are "bounced back" from the boundary.
+ * For example, with `[-90, 90]` for a latitude: 91 -> 89, 180 -> 0, 270 -> -90.
  */
 MP_UNITS_EXPORT template<Quantity Q>
 struct reflect_in_range {
@@ -202,7 +202,7 @@ reflect_in_range(Q, Q) -> reflect_in_range<Q>;
 namespace detail {
 
 /**
- * @brief Sentinel for the lower domain bound of a half-line [0, ∞) policy.
+ * @brief Sentinel for the lower domain bound of a half-line `[0, ∞)` policy.
  *
  * Used as the `.min` member of `check_non_negative` and `clamp_non_negative` so that
  * `quantity_point::min()` and `std::numeric_limits<quantity_point>::lowest()` return
@@ -288,7 +288,7 @@ MP_UNITS_EXPORT struct check_non_negative {
 };
 
 /**
- * @brief Policy that clamps the value to [0, ∞).
+ * @brief Policy that clamps the value to `[0, ∞)`.
  *
  * Saturates negative values to zero. Use when small negative values can arise from
  * floating-point rounding in a naturally non-negative domain (e.g., a computed energy

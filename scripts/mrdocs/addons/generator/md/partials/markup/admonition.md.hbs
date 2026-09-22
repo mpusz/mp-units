@@ -1,0 +1,13 @@
+{{!--
+    An admonition, in the HTML Material for MkDocs styles directly.
+
+    Material's `admonition` extension reads `!!! note`, and GitHub's
+    `> [!NOTE]` means nothing to it - that renders as a plain blockquote with
+    the marker left in the text. The `!!!` form is fragile here because it
+    needs its body indented by four spaces, which a partial block spanning
+    several lines will not do, so emit the markup the extension produces.
+--}}
+
+<div class="admonition {{kind}}" markdown="0"><p class="admonition-title">{{titlecase kind}}</p>
+<p>{{~> @partial-block ~}}</p>
+</div>

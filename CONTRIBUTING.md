@@ -66,8 +66,8 @@ conan build . -pr gcc15 -c user.mp-units.build:all=True -b missing
 # ... or build them as Conan packages instead
 .devcontainer/check_all.sh create
 
-# Generating API Reference
-.devcontainer/api_reference.sh
+# Generate the API reference
+python scripts/mrdocs/run.py
 
 # Preview documentation locally
 mkdocs serve
@@ -182,122 +182,48 @@ For more, see the [official documentation](https://mpusz.github.io/mp-units) and
         mkdocs build
         ```
 
-    ### Generating API reference
+    ### Generating the API reference
 
-    We need to take a few steps to set up our environment so that we are ready to generate API reference
-    documents.
+    The API reference is generated from the headers with
+    [MrDocs](https://www.mrdocs.com), so it cannot drift from the code:
 
-    First, we need to satisfy the requirements described in <https://github.com/cplusplus/draft> and
-    <https://github.com/Eelis/cxxdraft-htmlgen>.
-    On the Ubuntu platform, this is equivalent to the following instructions run from the user's home
-    directory:
-
-    ```bash
-    sudo apt install latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended lmodern
-    sudo apt install haskell-stack graphviz nodejs npm ghc cabal-install
-    npm install split mathjax-full mathjax-node-sre mathjax-node-cli yargs@16.2.0
-    cabal update
+    ```shell
+    python scripts/mrdocs/run.py
     ```
 
-    On some platforms, installing `mathjax-node-cli` through `npm` does not update the system's `PATH`
-    environment variable resulting in `tex2html` not found errors. In such cases we need to add
-    the `.bin` folder to the `PATH` environment variable manually:
+    That is the whole of it. The script downloads the pinned MrDocs release on
+    first use and caches it, so nothing has to be installed beforehand, and it
+    runs the same way from a Unix shell, PowerShell, cmd.exe or Git Bash. The
+    generated pages land in _docs/reference/api_reference/mrdocs/_ and are not
+    committed.
 
-    ```bash
-    echo "export PATH=\"~/node_modules/.bin:\$PATH\"" >> ~/.bashrc && source ~/.bashrc
-    ```
+    Running it by hand is optional: `mkdocs serve` and `mkdocs build` call it
+    themselves. Either way it regenerates only when something it depends on
+    changed, which takes about a minute for the whole library, and otherwise
+    costs a hash of the inputs. Pass `--force` to regenerate regardless.
 
-    Now, we are ready to start building our API reference using our automated script:
+    The synopses are laid out with clang-format, using the project's own
+    _.clang-format_ so that a declaration breaks where it would in a header.
+    The version is pinned in _requirements.txt_ to match the clang-format
+    hook in _.pre-commit-config.yaml_. Keep the two in step. Without
+    clang-format on `PATH` the pages are still generated, with the layout
+    MrDocs produced.
 
-    ```bash
-    .devcontainer/api_reference.sh
-    ```
+    Two environment variables are worth knowing:
 
-    This script will:
+    - `MRDOCS` points at a MrDocs binary of your own, instead of the pinned one.
+    - `MRDOCS_CACHE_DIR` moves the download cache, which otherwise follows the
+      platform convention (`~/.cache` on Linux, `~/Library/Caches` on macOS,
+      `%LOCALAPPDATA%` on Windows).
 
-    - Configure CMake with the correct module paths
-    - Build both PDF and HTML documentation
-    - Create a symlink to the generated documentation
+    The version is pinned in _scripts/mrdocs/run.py_, along with a checksum per
+    platform. Page names and section headings move between MrDocs releases, so
+    upgrading means bumping the version, regenerating, and reading the diff.
 
-    If you only want to setup CMake without building the documentation, use:
-
-    ```bash
-    .devcontainer/api_reference.sh -s
-    ```
-
-    #### Custom Dependency Directory
-
-    By default, the script downloads dependencies to `../api_reference_deps` relative to the
-    project root. You can specify a custom directory using the `-d` parameter:
-
-    ```bash
-    # Use a custom directory for dependencies
-    .devcontainer/api_reference.sh -d /path/to/custom/deps
-
-    # Combine with setup-only mode
-    .devcontainer/api_reference.sh -s -d ./local_deps
-    ```
-
-    The dependency directory will contain:
-
-    - `jegp.cmake_modules`: CMake modules for documentation generation
-    - `draft`: C++ standard draft sources for reference formatting
-    - `cxxdraft-htmlgen`: HTML generation tools for standardese-style output
-
-    This is useful when you want to:
-
-    - Share dependencies across multiple project checkouts
-    - Avoid re-downloading dependencies for development containers
-
-    #### Manual documentation generation
-
-    Alternatively, you can run the individual steps manually.
-
-    First, we need to clone the following git repositories:
-
-    - <https://github.com/JohelEGP/jegp.cmake_modules>
-    - `standardese_sources_base` branch of <https://github.com/JohelEGP/draft>
-    - `standardese_sources_base` branch of <https://github.com/JohelEGP/cxxdraft-htmlgen>
-
-    For example:
-
-    ```bash
-    git clone https://github.com/JohelEGP/jegp.cmake_modules.git --depth=1
-    git clone https://github.com/JohelEGP/draft.git --branch=standardese_sources_base --depth=1
-    git clone https://github.com/JohelEGP/cxxdraft-htmlgen.git --branch=standardese_sources_base --depth=1
-    ```
-
-    Next, configure CMake with the following:
-
-    ```bash
-    cmake -S docs/api_reference/src -B build/docs/api_reference \
-          -DCMAKE_MODULE_PATH="<path to gh:JohelEGP/jegp.cmake_modules>/modules" \
-          -DJEGP_STANDARDESE_SOURCES_GIT_REPOSITORY="<path to gh:JohelEGP/draft>" \
-          -DJEGP_CXXDRAFT_HTMLGEN_GIT_REPOSITORY="<path to gh:JohelEGP/cxxdraft-htmlgen>"
-    ```
-
-    Then build the documentation with CMake:
-
-    ```bash
-    cmake --build build/docs/api_reference
-    ```
-
-    The generated documentation will be available at:
-
-    - PDF: `build/docs/api_reference/mp-units.pdf`
-    - HTML: `build/docs/api_reference/mp-units.html/`
-
-    In the end, we need to move the generated documentation to the `docs/api_reference/gen` subdirectory:
-
-    ```bash
-    mv build/docs/api_reference/mp-units.html docs/api_reference/gen
-    ```
-
-    or just link the entire directory:
-
-    ```bash
-    ln -sf ../../build/docs/api_reference/mp-units.html docs/api_reference/gen
-    ```
+    Source links in the generated pages point at the exact commit they were
+    generated from, so a release's documentation links to that release's code.
+    The script warns when _src/_ has uncommitted changes, because the line
+    numbers then will not match whatever the links point at.
 
 
 ## Configuration Options for Developers and Contributors

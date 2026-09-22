@@ -38,22 +38,15 @@ Comprehensive listings of all available physical units systems:
 - **[Quantity Hierarchies](systems_reference/hierarchies/index.md)** - Detailed quantity type relationships
 <!-- markdownlint-enable MD013 -->
 
-### [API Reference](api_reference.md)
+### [API Reference](api_reference/overview.md)
 
-Detailed C++ API documentation for all library components.
+Declarations for everything the library exposes: class templates, concepts,
+functions and their signatures, generated from the headers with
+[MrDocs](https://www.mrdocs.com) so they cannot drift from the code.
 
-!!! note "Standardese Language"
-
-    The API Reference is written in formal standardese (standard specification language)
-    because we plan to use it as wording for the ISO C++ proposal. The content is maintained
-    in LaTeX format for standards submission.
-
-    We understand that standardese can be difficult to understand for non-expert audiences,
-    and we apologize for this complexity. However, we need to maintain this formal language
-    to ensure the documentation can be directly used in the standardization process.
-
-    Unfortunately, despite our best efforts, the documentation may occasionally be slightly
-    outdated due to the complexity of maintaining standardese alongside the implementation.
+Units, quantities, dimensions and constants are not here - those live in the
+[Systems Reference](systems_reference/index.md), which documents them as
+metrology rather than as C++ declarations.
 
 ### [Glossary](glossary.md)
 
@@ -70,7 +63,7 @@ References to standards, papers, and resources that inform the library's design.
 **Find a Unit**: Browse [Systems Reference](systems_reference/index.md) to locate specific
 units, quantities, or dimensions.
 
-**API Details**: Check [API Reference](api_reference.md) for detailed function signatures
+**API Details**: Check [API Reference](api_reference/overview.md) for detailed function signatures
 and class interfaces.
 
 **Terminology**: Consult the [Glossary](glossary.md) when you encounter unfamiliar metrology

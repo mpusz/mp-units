@@ -76,3 +76,15 @@
 | <span id="erlang"></span><code>erlang</code> | E | `E` | <code>kind: [isq::traffic_<wbr>intensity](isq.md#traffic_intensity)</code> |
 | <span id="octet"></span><code>octet</code> | o | `o` | <code>mag<8> * <wbr>[bit](#bit)</code> |
 | <span id="volt_ampere_reactive_power"></span><code>volt_<wbr>ampere_<wbr>reactive_<wbr>power</code> | var | `var` | <code>[si::volt](si.md#volt) * <wbr>[si::ampere](si.md#ampere)<br>kind: [isq::reactive_<wbr>power](isq.md#reactive_power)</code> |
+
+## Prefixed unit symbols
+
+Not every unit has a symbol for every prefix. A combination that is
+not listed here does not exist, however reasonable it looks.
+
+| Unit | Prefixed symbols |
+|------|------------------|
+| <a href="#baud"><code>baud</code></a> | `kBd` `MBd` `GBd` `TBd` `PBd` `EBd` `ZBd` `YBd` `RBd` `QBd` |
+| <a href="#bit"><code>bit</code></a> | `kbit` `Mbit` `Gbit` `Tbit` `Pbit` `Ebit` `Zbit` `Ybit` `Rbit` `Qbit` `Kibit` `Mibit` `Gibit` `Tibit` `Pibit` `Eibit` |
+| <a href="#byte"><code>byte</code></a> | `kB` `MB` `GB` `TB` `PB` `EB` `ZB` `YB` `RB` `QB` `KiB` `MiB` `GiB` `TiB` `PiB` `EiB` |
+| <a href="#octet"><code>octet</code></a> | `ko` `Mo` `Go` `To` `Po` `Eo` `Zo` `Yo` `Ro` `Qo` `Kio` `Mio` `Gio` `Tio` `Pio` `Eio` |

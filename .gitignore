@@ -55,6 +55,10 @@ CMakeUserPresets.json
 /docs/reference/api_reference/src/source/
 /docs/reference/api_reference/gen
 
+# MrDocs API reference: regenerated from the headers by
+# docs/reference/api_reference/mrdocs_poc/run.sh, never committed.
+/docs/reference/api_reference/mrdocs/
+
 # Generated website files
 site/
 
