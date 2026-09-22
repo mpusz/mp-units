@@ -56,7 +56,12 @@ LANDING = "reference/api_reference/overview.md"
 REPLACES = LANDING
 
 # A reference-style link whose label looks like a qualified C++ name.
-_REF = re.compile(r"\]\[([A-Za-z_][\w:]*(?:::[\w:~+\-*/%^&|!=<>\[\]()]+)+)\]")
+#
+# No `:` in either character class, so the only way across a `::` is the group
+# and any label has one parse. Letting both match it made the two ways of
+# splitting `::` ambiguous, and an unmatched label cost twice as much per
+# segment while the engine tried them all.
+_REF = re.compile(r"\]\[([A-Za-z_]\w*(?:::[\w~+\-*/%^&|!=<>\[\]()]+)+)\]")
 
 # A category heading on a namespace page, and the member links beneath it. The
 # generator emits MkDocs directory URLs, relative to where the page is *served*.
