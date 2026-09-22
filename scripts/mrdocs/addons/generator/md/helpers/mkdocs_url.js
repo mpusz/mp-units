@@ -10,39 +10,42 @@
 // one place and means MkDocs never has to rewrite links inside raw HTML, which
 // it does not parse.
 function mkdocs_url(href, from) {
-    if (!href) return '';
-    href = String(href);
-    // Leave anything that is not a local page alone.
-    if (/^[a-z][a-z0-9+.-]*:/i.test(href)) return href;
+  if (!href) return '';
+  href = String(href);
+  // Leave anything that is not a local page alone.
+  if (/^[a-z][a-z0-9+.-]*:/i.test(href)) return href;
 
-    const hash = href.indexOf('#');
-    const anchor = hash >= 0 ? href.slice(hash) : '';
-    const target = hash >= 0 ? href.slice(0, hash) : href;
-    if (!/\.md$/i.test(target)) return href;
+  const hash = href.indexOf('#');
+  const anchor = hash >= 0 ? href.slice(hash) : '';
+  const target = hash >= 0 ? href.slice(0, hash) : href;
+  if (!/\.md$/i.test(target)) return href;
 
-    const served = function (path) {
-        const parts = String(path).replace(/^\/+/, '').split('/');
-        const last = parts.pop();
-        if (last.toLowerCase() !== 'index.md') {
-            parts.push(last.replace(/\.md$/i, ''));
-        }
-        return parts.filter(function (p) { return p.length > 0; });
-    };
-
-    const to = served(target);
-    const here = served(from || '/index.md');
-
-    // `here` is the directory the current page is served from; walk up to the
-    // common prefix, then down into the target.
-    let common = 0;
-    while (common < here.length && common < to.length && here[common] === to[common]) {
-        common += 1;
+  const served = function(path) {
+    const parts = String(path).replace(/^\/+/, '').split('/');
+    const last = parts.pop();
+    if (last.toLowerCase() !== 'index.md') {
+      parts.push(last.replace(/\.md$/i, ''));
     }
-    const up = here.length - common;
-    const parts = [];
-    for (let i = 0; i < up; ++i) parts.push('..');
-    for (let i = common; i < to.length; ++i) parts.push(to[i]);
+    return parts.filter(function(p) {
+      return p.length > 0;
+    });
+  };
 
-    if (parts.length === 0) return './' + anchor;
-    return parts.join('/') + '/' + anchor;
+  const to = served(target);
+  const here = served(from || '/index.md');
+
+  // `here` is the directory the current page is served from; walk up to the
+  // common prefix, then down into the target.
+  let common = 0;
+  while (common < here.length && common < to.length &&
+         here[common] === to[common]) {
+    common += 1;
+  }
+  const up = here.length - common;
+  const parts = [];
+  for (let i = 0; i < up; ++i) parts.push('..');
+  for (let i = common; i < to.length; ++i) parts.push(to[i]);
+
+  if (parts.length === 0) return './' + anchor;
+  return parts.join('/') + '/' + anchor;
 }
