@@ -81,9 +81,11 @@ constexpr bool is_basic_literal_character_set(const char (&txt)[N]) noexcept
 }
 
 template<std::size_t N>
+// Deferred reason 3: reached by compile-time symbol construction.
 constexpr fixed_u8string<N> to_u8string(fixed_string<N> txt)
+  MP_UNITS_PRE_DEFERRED(is_basic_literal_character_set(txt.begin(), txt.end()))
 {
-  MP_UNITS_PRECONDITION(is_basic_literal_character_set(txt.begin(), txt.end()));
+  MP_UNITS_PRE_DEFERRED_COMPAT(is_basic_literal_character_set(txt.begin(), txt.end()));
   // Compiler defect (gcc < 14, clang < 19): during constant evaluation `bit_cast` leaves the empty
   // base subobject (`detail::fixed_string_iface`) uninitialized, so the result is unusable in a
   // constant expression and every compile-time symbol becomes ill-formed. The element-wise copy is
@@ -184,39 +186,53 @@ public:
   fixed_u8string<N> utf8_;
   fixed_string<M> portable_;
 
+  // These constructors keep their checks in the body. A `pre` on any of them makes GCC 16 report
+  // Deferred reason 3 throughout this class: every unit in the library constructs a `symbol_text`
+  // at compile time, and a `pre` on any of these constructors makes GCC 16 report "contract
+  // condition is not constant" for all of them. Each predicate names a parameter rather than a
+  // member, which is what a constructor's contract requires anyway - it is checked before the
+  // member initializers run.
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
-  [[nodiscard]] constexpr explicit(false) symbol_text(char ch) : utf8_(static_cast<char8_t>(ch)), portable_(ch)
+  [[nodiscard]] constexpr explicit(false) symbol_text(char ch)
+    MP_UNITS_PRE_DEFERRED(detail::is_basic_literal_character_set_char(ch)) :
+      utf8_(static_cast<char8_t>(ch)), portable_(ch)
   {
-    MP_UNITS_PRECONDITION(detail::is_basic_literal_character_set_char(ch));
+    MP_UNITS_PRE_DEFERRED_COMPAT(detail::is_basic_literal_character_set_char(ch));
   }
 
   // NOLINTNEXTLINE(*-avoid-c-arrays, google-explicit-constructor, hicpp-explicit-conversions)
-  [[nodiscard]] consteval explicit(false) symbol_text(const char (&txt)[N + 1]) :
+  [[nodiscard]] consteval explicit(false) symbol_text(const char (&txt)[N + 1]) MP_UNITS_PRE_DEFERRED(txt[N] == char{})
+    MP_UNITS_PRE_DEFERRED(detail::is_basic_literal_character_set(txt)) :
       utf8_(detail::to_u8string(basic_fixed_string{txt})), portable_(txt)
   {
-    MP_UNITS_PRECONDITION(txt[N] == char{});
-    MP_UNITS_PRECONDITION(detail::is_basic_literal_character_set(txt));
+    MP_UNITS_PRE_DEFERRED_COMPAT(txt[N] == char{});
+    MP_UNITS_PRE_DEFERRED_COMPAT(detail::is_basic_literal_character_set(txt));
   }
 
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
-  [[nodiscard]] constexpr explicit(false) symbol_text(const fixed_string<N>& txt) :
+  [[nodiscard]] constexpr explicit(false) symbol_text(const fixed_string<N>& txt)
+    MP_UNITS_PRE_DEFERRED(detail::is_basic_literal_character_set(txt.data_)) :
       utf8_(detail::to_u8string(txt)), portable_(txt)
   {
-    MP_UNITS_PRECONDITION(detail::is_basic_literal_character_set(txt.data_));
+    MP_UNITS_PRE_DEFERRED_COMPAT(detail::is_basic_literal_character_set(txt.data_));
   }
 
   // NOLINTNEXTLINE(*-avoid-c-arrays)
-  [[nodiscard]] consteval symbol_text(const char8_t (&u)[N + 1], const char (&a)[M + 1]) : utf8_(u), portable_(a)
+  [[nodiscard]] consteval symbol_text(const char8_t (&u)[N + 1], const char (&a)[M + 1])
+    MP_UNITS_PRE_DEFERRED(u[N] == char8_t{}) MP_UNITS_PRE_DEFERRED(a[M] == char{})
+      MP_UNITS_PRE_DEFERRED(detail::is_basic_literal_character_set(a)) :
+      utf8_(u), portable_(a)
   {
-    MP_UNITS_PRECONDITION(u[N] == char8_t{});
-    MP_UNITS_PRECONDITION(a[M] == char{});
-    MP_UNITS_PRECONDITION(detail::is_basic_literal_character_set(a));
+    MP_UNITS_PRE_DEFERRED_COMPAT(u[N] == char8_t{});
+    MP_UNITS_PRE_DEFERRED_COMPAT(a[M] == char{});
+    MP_UNITS_PRE_DEFERRED_COMPAT(detail::is_basic_literal_character_set(a));
   }
 
-  [[nodiscard]] constexpr symbol_text(const fixed_u8string<N>& utf8, const fixed_string<M>& portable) :
+  [[nodiscard]] constexpr symbol_text(const fixed_u8string<N>& utf8, const fixed_string<M>& portable)
+    MP_UNITS_PRE_DEFERRED(detail::is_basic_literal_character_set(portable.data_)) :
       utf8_(utf8), portable_(portable)
   {
-    MP_UNITS_PRECONDITION(detail::is_basic_literal_character_set(portable.data_));
+    MP_UNITS_PRE_DEFERRED_COMPAT(detail::is_basic_literal_character_set(portable.data_));
   }
 
   [[nodiscard]] constexpr const auto& utf8() const { return utf8_; }

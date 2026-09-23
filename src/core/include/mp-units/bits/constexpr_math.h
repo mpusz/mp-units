@@ -23,6 +23,7 @@
 #pragma once
 
 #include <mp-units/bits/hacks.h>  // IWYU pragma: keep
+#include <mp-units/ext/contracts.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #ifdef MP_UNITS_IMPORT_STD
@@ -202,8 +203,15 @@ template<typename To, typename From>
 }
 
 // The exponent of `factor` in the prime factorization of `n`.
+//
+// Without the precondition, `factor` of 1 or -1, or an `n` of 0, leaves the loop below unable to
+// make progress. That is not a hang - the constant evaluator stops at its iteration limit either
+// way - but it takes 262144 iterations to say so, and then reports only "'constexpr' loop iteration
+// count exceeds limit" with no hint as to which argument was wrong.
 [[nodiscard]] consteval std::intmax_t multiplicity(std::intmax_t factor, std::intmax_t n)
+  MP_UNITS_PRE(factor > 1 && n != 0)
 {
+  MP_UNITS_EXPECTS(factor > 1 && n != 0);
   std::intmax_t m = 0;
   while (n % factor == 0) {
     n /= factor;
@@ -214,10 +222,13 @@ template<typename To, typename From>
 
 // Divide a number by a given base raised to some power.
 //
-// Undefined unless base > 1, pow >= 0, and (base ^ pow) evenly divides n.
+// Undefined unless base > 1, pow >= 0, and (base ^ pow) evenly divides n. The first two are
+// checked; the third is not, because verifying it needs `base ^ pow`, which can overflow.
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 [[nodiscard]] consteval std::intmax_t remove_power(std::intmax_t base, std::intmax_t pow, std::intmax_t n)
+  MP_UNITS_PRE(base > 1 && pow >= 0)
 {
+  MP_UNITS_EXPECTS(base > 1 && pow >= 0);
   while (pow-- > 0) {
     n /= base;
   }

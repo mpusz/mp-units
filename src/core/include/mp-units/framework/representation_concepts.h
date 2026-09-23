@@ -171,6 +171,33 @@ concept Scalar = (RealScalar<T> || ComplexScalar<T>) && tensor_order<T> == 0;
 }  // namespace detail
 
 
+namespace detail {
+
+// A total predicate, for a contract that has to appear on a declaration. A declaration contract
+// cannot be wrapped in `if constexpr`, and an unconditional predicate would narrow the set of
+// representations a function accepts: `abs` supports a complex `quantity`, and an unguarded
+// `!(v < 0)` postcondition on it is a hard error for exactly the types that have no ordering.
+// Answering `true` where the comparison cannot be spelled keeps the contract well-formed for every
+// `T` and simply says nothing where it cannot speak.
+template<typename T>
+[[nodiscard]] constexpr bool value_is_non_negative(const T& value)
+{
+  // `!(v < 0)` and not `v >= 0`: every comparison with a NaN is false, so the positive form reports
+  // a NaN as negative, and on a `quantity` it is worse than it looks - `>=` rewrites to
+  // `(lhs <=> rhs) >= 0`, and `partial_ordering::unordered >= 0` is false too. `abs` of a NaN is a
+  // NaN and has to pass. The zero is `value - value` because the header defining `get_zero`
+  // includes this one.
+  if constexpr (requires {
+                  { value < (value - value) } -> std::convertible_to<bool>;
+                })
+    return !(value < (value - value));
+  else
+    return true;
+}
+
+}  // namespace detail
+
+
 /////////////// MAGNITUDE ///////////////
 
 namespace detail::magnitude_impl {
@@ -180,12 +207,11 @@ void norm() = delete;       // poison pill
 void abs() = delete;        // poison pill
 
 struct magnitude_t {
+  // Split out only so the body can name the result. The GSL backends have no declaration contract,
+  // so `MP_UNITS_POST_COMPAT` has to check a named value; the native backend does not need it, as
+  // `MP_UNITS_POST` on `operator()` below is the real contract.
   template<typename T>
-  [[nodiscard]] constexpr Scalar auto operator()(const T& vec) const
-    requires requires { vec.magnitude(); } || requires { magnitude(vec); } ||
-             (!Scalar<T> && (requires { vec.norm(); } || requires { norm(vec); })) ||
-             (RealScalar<T> && (std::is_arithmetic_v<T> || requires { vec.abs(); } || requires { abs(vec); })) ||
-             ComplexScalar<T>
+  [[nodiscard]] static constexpr Scalar auto dispatch(const T& vec)
   {
     if constexpr (requires { vec.magnitude(); })
       return vec.magnitude();
@@ -212,6 +238,23 @@ struct magnitude_t {
       return vec.abs();
     else if constexpr (requires { abs(vec); })
       return abs(vec);
+  }
+
+  // Every branch above reaches code the library does not own: `vec.magnitude()` and an ADL `norm()`
+  // are the documented customization points, and GLM arrives through the `magnitude()` overload the
+  // integration header wraps around `glm::length()`. A norm is non-negative by definition, nothing
+  // in the concept can say so, and a negative one propagates silently into whatever consumes it.
+  template<typename T>
+  [[nodiscard]] constexpr Scalar auto operator()(const T& vec) const
+    requires requires { vec.magnitude(); } || requires { magnitude(vec); } ||
+             (!Scalar<T> && (requires { vec.norm(); } || requires { norm(vec); })) ||
+             (RealScalar<T> && (std::is_arithmetic_v<T> || requires { vec.abs(); } || requires { abs(vec); })) ||
+             ComplexScalar<T>
+    MP_UNITS_POST(r: detail::value_is_non_negative(r))
+  {
+    const Scalar auto result = dispatch(vec);
+    MP_UNITS_POST_COMPAT(detail::value_is_non_negative(result));
+    return result;
   }
 };
 
