@@ -397,21 +397,36 @@ quantity<si::metre, double> storage = 5.0 * m;  // OK
 
 _This entry is based on discussion [#779](https://github.com/mpusz/mp-units/discussions/779)._
 
-## Why you never instantiate derived_unit (or any other derived_XXX type) yourself, and what to write instead?
-Users should never instantiate derived_XXX types by themselves. Just use regular arithmetic. For example:
+
+## Why you never instantiate derived_unit (or any other derived_XXX type) directly?
+
+Users should never instantiate derived_XXX types by themselves. Just use regular arithmetic.
+For example:
+
 ```cpp
 constexpr auto x = mp_units::si::metre / mp_units::per<mp_units::si::second>;
 ```
-A similar example can be found in https://mpusz.github.io/mp-units/latest/getting_started/quick_start/#__tabbed_5_3 of our docs.
 
-*This entry is based on discussion [#712](https://github.com/mpusz/mp-units/discussions/712)*
+A similar example can be found in
+[quick-start document](https://mpusz.github.io/mp-units/latest/getting_started/quick_start/#__tabbed_5_3)
+of our docs.
 
-## Why `QuantityOf` and `QuantityPointOf` do not take a Reference, and how to check for a specific unit when you genuinely need to? 
-!!! note 
+_This entry is based on discussion [#712](https://github.com/mpusz/mp-units/discussions/712)._
 
-     `The two concepts differ: QuantityOf constrains against a quantity specification, while QuantityPointOf accepts either a quantity specification or an absolute point origin. Read the concept definitions rather than trusting this summary.`
-     
-The main issue is that QuantityOf and QuantityPointOf do not take Reference as an argument. Checking if something is a length in meters or kilometers is not particularly useful in generic algorithms. What is important here is that something is a quantity of length, and this is the semantics we provide. Checking against a specific unit is very simple if you need that.
+
+## Why do not `QuantityOf` and `QuantityPointOf`take a Reference?
+
+!!! note
+
+     The two concepts differ: `QuantityOf` constrains against a quantity specification,
+     while `QuantityPointOf` accepts either a quantity specification or an absolute point
+     origin. Read the concept definitions rather than trusting this summary.
+
+The main issue is that QuantityOf and QuantityPointOf do not take Reference as
+ an argument.Checking if something is a length in meters or kilometers is not
+ particularly useful in generic algorithms. What is important here is that
+ something is a quantity of length, and this is the semantics we provide.
+ Checking against a specific unit is very simple if you need that.
 
 To summarize, you need to implement your concept like this:
 
@@ -423,4 +438,4 @@ concept is_quantity_point_of = Reference<decltype(R)> &&
 
 ```
 
-*This entry is based on discussion [#699](https://github.com/mpusz/mp-units/discussions/699)*
+_This entry is based on discussion [#699](https://github.com/mpusz/mp-units/discussions/699)._
