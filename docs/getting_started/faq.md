@@ -396,3 +396,83 @@ quantity<si::metre, double> storage = 5.0 * m;  // OK
 ```
 
 _This entry is based on discussion [#779](https://github.com/mpusz/mp-units/discussions/779)._
+
+## Why shouldn't I instantiate `derived_unit` (or other `derived_XXX` types) myself?
+
+Following a unit equation through the docs, you might try to spell the resulting type
+directly:
+
+```cpp
+derived_unit<si::metre, per<si::second>> speed_unit;   // does not compile
+```
+
+This fails because `derived_unit` and `per` both take *types* as their template arguments,
+while `si::metre` and `si::second` are objects — instances of unique, unnamed unit types —
+not types themselves. The same holds for `derived_dimension` and `derived_quantity_spec`:
+none of the `derived_XXX` family is meant to be named by a user.
+
+These types exist purely as the result of a unit, dimension, or quantity equation. The
+library's own operators build and canonicalize them internally, applying the sorting and
+simplification rules described in
+[Simplifying the resulting symbolic expressions](../users_guide/framework_basics/interface_introduction.md#simplifying-the-resulting-symbolic-expressions).
+That canonical form isn't part of the public interface, so you never write it by hand — you
+write the equation instead, and let the compiler produce and name the type for you:
+
+```cpp
+constexpr auto speed_unit = si::metre / si::second;
+quantity q = 42 * speed_unit;
+```
+
+This is the same pattern used throughout [Quick Start](quick_start.md#quantities) and the
+rest of the documentation. If you ever find yourself typing `derived_unit<...>`,
+`derived_dimension<...>`, or `derived_quantity_spec<...>` in your own code, that's the
+signal to replace it with the equivalent arithmetic expression.
+
+!!! note
+
+    [Design Overview](../users_guide/framework_basics/design_overview.md#unit) walks
+    through how these canonical types get built from unit, dimension, and quantity
+    equations.
+
+_This entry is based on discussion [#712](https://github.com/mpusz/mp-units/discussions/712)._
+
+
+## Why don't `QuantityOf` and `QuantityPointOf` take a `Reference`?
+
+It's natural to expect these concepts to accept a `Reference` — a quantity specification
+paired with a unit — the same way a `quantity` type is parameterized. They don't:
+`QuantityOf<T, V>` and `QuantityPointOf<T, V>` check `V` as a quantity specification (or,
+for `QuantityPointOf`, optionally as a `PointOrigin`). A `Reference` isn't itself a
+`QuantitySpec`, so passing one in `V`'s place simply never satisfies the concept — it
+doesn't fail to compile, it's just never `true`.
+
+This is deliberate. Whether something is a length measured in metres specifically, rather
+than kilometres or feet, is rarely what a generic algorithm needs to know — see
+[Generic Interfaces](../users_guide/framework_basics/generic_interfaces.md) for the
+trade-offs involved in picking a unit-specific interface at all. What a generic function
+almost always wants is to require that a value *is a length*, in whatever unit the caller
+happens to be using, so `QuantityOf` and `QuantityPointOf` are checked purely against
+quantity kind. `QuantityPointOf`'s second mode extends this to point types: matching the
+same absolute origin, since two points measured from different origins aren't comparable
+even when their quantity kind agrees.
+
+When you genuinely need to require one specific unit, check it explicitly alongside the
+kind:
+
+```cpp
+template<typename QP, auto R>
+concept is_quantity_point_of =
+  Reference<decltype(R)> &&
+  QuantityPointOf<std::remove_cvref_t<QP>, get_quantity_spec(R)> &&
+  (std::remove_cvref_t<QP>::unit == get_unit(R));
+```
+
+The same pattern applies to a plain `quantity`, using `QuantityOf` in place of
+`QuantityPointOf`.
+
+!!! note
+
+    See [Concepts](../users_guide/framework_basics/concepts.md#QuantityOf) for the exact
+    definitions, including `QuantityPointOf`'s `PointOrigin` case.
+
+_This entry is based on discussion [#699](https://github.com/mpusz/mp-units/discussions/699)._
