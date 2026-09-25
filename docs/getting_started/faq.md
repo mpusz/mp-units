@@ -407,15 +407,15 @@ derived_unit<si::metre, per<si::second>> speed_unit;   // does not compile
 ```
 
 This fails because `derived_unit` and `per` both take *types* as their template arguments,
-while `si::metre` and `si::second` are objects — instances of unique, unnamed unit types —
-not types themselves. The same holds for `derived_dimension` and `derived_quantity_spec`:
-none of the `derived_XXX` family is meant to be named by a user.
+while `si::metre` and `si::second` are objects, not types. The same holds for
+`derived_dimension` and `derived_quantity_spec`: none of the `derived_XXX` family is meant
+to be named by a user.
 
 These types exist purely as the result of a unit, dimension, or quantity equation. The
 library's own operators build and canonicalize them internally, applying the sorting and
 simplification rules described in
 [Simplifying the resulting symbolic expressions](../users_guide/framework_basics/interface_introduction.md#simplifying-the-resulting-symbolic-expressions).
-That canonical form isn't part of the public interface, so you never write it by hand — you
+That canonical form isn't part of the public interface, so you never write it by hand. You
 write the equation instead, and let the compiler produce and name the type for you:
 
 ```cpp
@@ -439,25 +439,28 @@ _This entry is based on discussion [#712](https://github.com/mpusz/mp-units/disc
 
 ## Why don't `QuantityOf` and `QuantityPointOf` take a `Reference`?
 
-It's natural to expect these concepts to accept a `Reference` — a quantity specification
-paired with a unit — the same way a `quantity` type is parameterized. They don't:
+It's natural to expect these concepts to accept a `Reference`, a quantity specification
+paired with a unit, the same way a `quantity` type is parameterized. They don't:
 `QuantityOf<T, V>` and `QuantityPointOf<T, V>` check `V` as a quantity specification (or,
 for `QuantityPointOf`, optionally as a `PointOrigin`). A `Reference` isn't itself a
-`QuantitySpec`, so passing one in `V`'s place simply never satisfies the concept — it
-doesn't fail to compile, it's just never `true`.
+`QuantitySpec`, so passing one in `V`'s place simply never satisfies the concept. It doesn't
+fail to compile; it's just never `true`.
 
 This is deliberate. Whether something is a length measured in metres specifically, rather
-than kilometres or feet, is rarely what a generic algorithm needs to know — see
+than kilometres or feet, is rarely what a generic algorithm needs to know. See
 [Generic Interfaces](../users_guide/framework_basics/generic_interfaces.md) for the
-trade-offs involved in picking a unit-specific interface at all. What a generic function
-almost always wants is to require that a value *is a length*, in whatever unit the caller
-happens to be using, so `QuantityOf` and `QuantityPointOf` are checked purely against
-quantity kind. `QuantityPointOf`'s second mode extends this to point types: matching the
-same absolute origin, since two points measured from different origins aren't comparable
-even when their quantity kind agrees.
+trade-offs involved in picking a unit-specific interface at all. What `QuantityOf` and
+`QuantityPointOf` actually check is convertibility to the quantity specification you name,
+in whatever unit the caller happens to be using, not merely that both share a broad kind.
+`QuantityOf<quantity<isq::height[m]>, isq::width>` is false, even though height and width
+are both lengths, because a height doesn't convert to a width: naming `isq::width` asks for
+exactly that, or something that specializes it, not for "any length". `QuantityPointOf`'s
+second mode extends this to point types, matching the same absolute origin, since two
+points measured from different origins aren't comparable even when their quantity
+specifications agree.
 
 When you genuinely need to require one specific unit, check it explicitly alongside the
-kind:
+specification:
 
 ```cpp
 template<typename QP, auto R>
