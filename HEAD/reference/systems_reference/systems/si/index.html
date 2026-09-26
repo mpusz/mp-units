@@ -1,0 +1,3504 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="The quantities and units library for C++">
+      
+      
+        <meta name="author" content="mp-units Team">
+      
+      
+        <link rel="canonical" href="https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/systems/si/">
+      
+      
+        <link rel="prev" href="../natural/">
+      
+      
+        <link rel="next" href="../typographic/">
+      
+      
+        
+      
+      
+        <link rel="alternate" type="application/rss+xml" title="RSS feed" href="../../../../feed_rss_created.xml">
+        <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../../../../feed_rss_updated.xml">
+      
+      <link rel="icon" href="../../../../assets/images/mp-units-color.svg">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>SI - mp-units</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../stylesheets/mrdocs.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  
+<meta property="og:type" content="website" />
+<meta property="og:title" content="SI - mp-units" />
+<meta property="og:description" content="The quantities and units library for C++" />
+<meta property="og:image" content="https://mpusz.github.io/mp-units/HEAD/assets/images/social/reference/systems_reference/systems/si.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:url" content="https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/systems/si/" />
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:title" content="SI - mp-units" />
+<meta property="twitter:description" content="The quantities and units library for C++" />
+<meta property="twitter:image" content="https://mpusz.github.io/mp-units/HEAD/assets/images/social/reference/systems_reference/systems/si.png" />
+</head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#si-system" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+You're not viewing the latest version.
+<a href="../../../../..">
+  <strong>Click here to go to latest.</strong>
+</a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),base=new URL("../../../.."),outdated=__md_get("__outdated",sessionStorage,base);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../.." title="mp-units" class="md-header__button md-logo" aria-label="mp-units" data-md-component="logo">
+      
+  <img src="../../../../assets/images/mp-units-transparent-white.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            mp-units
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              SI
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1M8 13h8v-2H8zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4a5 5 0 0 0 5-5 5 5 0 0 0-5-5"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="custom"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/mpusz/mp-units" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    mpusz/mp-units
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../getting_started/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../tutorials/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Tutorials
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../users_guide/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  User's Guide
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../workshops/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Workshops
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../how_to_guides/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  How-to Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../examples/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Examples
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../blog/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Blog
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../release_notes/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Release Notes
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="mp-units" class="md-nav__button md-logo" aria-label="mp-units" data-md-component="logo">
+      
+  <img src="../../../../assets/images/mp-units-transparent-white.svg" alt="logo">
+
+    </a>
+    mp-units
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/mpusz/mp-units" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    mpusz/mp-units
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../getting_started/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../tutorials/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../users_guide/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User's Guide
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../workshops/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workshops
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../how_to_guides/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How-to Guides
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../examples/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cheat_sheet/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cheat Sheet
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_3" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Systems Reference
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8_3" id="__nav_8_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_8_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Systems Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_8_3_2" id="__nav_8_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Systems
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_8_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_8_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Systems
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../angular/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Angular
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../astronomy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Astronomy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cgs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CGS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../codata/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CODATA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hep/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HEP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../iau/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IAU
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../iec/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IEC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../imperial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Imperial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../isq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ISQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../isq_angle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ISQ Angle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../natural/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Natural
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SI
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prefixes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prefixes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#units" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Units
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#non-si-units-accepted-for-use-with-the-si" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Non-SI units accepted for use with the SI
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prefixed-unit-symbols" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prefixed unit symbols
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#constants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Constants
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#point-origins" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Point Origins
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../typographic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Typographic
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../usc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    USC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../yard_pound/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Yard Pound
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dimensions_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dimensions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quantities_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quantities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../prefixes_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prefixes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../units_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Units
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../constants_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Constants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../point_origins_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Point Origins
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../hierarchies/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quantity Hierarchies
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../api_reference/overview/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../bibliography/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bibliography
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../blog/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../release_notes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Release Notes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/mpusz/mp-units/edit/master/docs/reference/systems_reference/systems/si.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/mpusz/mp-units/raw/master/docs/reference/systems_reference/systems/si.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.2 8.2 0 0 1-1.23-2"/></svg>
+    </a>
+  
+
+
+<!-- This file is auto-generated. Do not edit manually. -->
+<!-- Run: python3 scripts/systems_reference.py --force -->
+
+<h1 id="si-system">SI System<a class="headerlink" href="#si-system" title="Permanent link">&para;</a></h1>
+<p><strong>Namespace:</strong> <code>mp_units::si</code></p>
+<p><strong>Module:</strong> <code>mp_units.systems</code></p>
+<p><strong>Header:</strong> <code>&lt;mp-units/systems/si.h&gt;</code></p>
+<p><strong>Secondary Headers:</strong></p>
+<ul>
+<li><code>&lt;mp-units/systems/si/chrono.h&gt;</code></li>
+<li><code>&lt;mp-units/systems/si/constants.h&gt;</code></li>
+<li><code>&lt;mp-units/systems/si/core.h&gt;</code></li>
+<li><code>&lt;mp-units/systems/si/math.h&gt;</code></li>
+<li><code>&lt;mp-units/systems/si/prefix_utils.h&gt;</code></li>
+<li><code>&lt;mp-units/systems/si/prefixes.h&gt;</code></li>
+<li><code>&lt;mp-units/systems/si/unit_symbols.h&gt;</code></li>
+<li><code>&lt;mp-units/systems/si/unit_symbols_essential.h&gt;</code></li>
+<li><code>&lt;mp-units/systems/si/units.h&gt;</code></li>
+</ul>
+<h2 id="prefixes">Prefixes<a class="headerlink" href="#prefixes" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th style="text-align: center;">Symbol</th>
+<th>Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span id="quecto"></span><code>quecto</code></td>
+<td style="text-align: center;">q</td>
+<td><code>mag_power&lt;10, -30&gt;</code></td>
+</tr>
+<tr>
+<td><span id="ronto"></span><code>ronto</code></td>
+<td style="text-align: center;">r</td>
+<td><code>mag_power&lt;10, -27&gt;</code></td>
+</tr>
+<tr>
+<td><span id="yocto"></span><code>yocto</code></td>
+<td style="text-align: center;">y</td>
+<td><code>mag_power&lt;10, -24&gt;</code></td>
+</tr>
+<tr>
+<td><span id="zepto"></span><code>zepto</code></td>
+<td style="text-align: center;">z</td>
+<td><code>mag_power&lt;10, -21&gt;</code></td>
+</tr>
+<tr>
+<td><span id="atto"></span><code>atto</code></td>
+<td style="text-align: center;">a</td>
+<td><code>mag_power&lt;10, -18&gt;</code></td>
+</tr>
+<tr>
+<td><span id="femto"></span><code>femto</code></td>
+<td style="text-align: center;">f</td>
+<td><code>mag_power&lt;10, -15&gt;</code></td>
+</tr>
+<tr>
+<td><span id="pico"></span><code>pico</code></td>
+<td style="text-align: center;">p</td>
+<td><code>mag_power&lt;10, -12&gt;</code></td>
+</tr>
+<tr>
+<td><span id="nano"></span><code>nano</code></td>
+<td style="text-align: center;">n</td>
+<td><code>mag_power&lt;10, -9&gt;</code></td>
+</tr>
+<tr>
+<td><span id="micro"></span><code>micro</code></td>
+<td style="text-align: center;">µ (u)</td>
+<td><code>mag_power&lt;10, -6&gt;</code></td>
+</tr>
+<tr>
+<td><span id="milli"></span><code>milli</code></td>
+<td style="text-align: center;">m</td>
+<td><code>mag_power&lt;10, -3&gt;</code></td>
+</tr>
+<tr>
+<td><span id="centi"></span><code>centi</code></td>
+<td style="text-align: center;">c</td>
+<td><code>mag_power&lt;10, -2&gt;</code></td>
+</tr>
+<tr>
+<td><span id="deci"></span><code>deci</code></td>
+<td style="text-align: center;">d</td>
+<td><code>mag_power&lt;10, -1&gt;</code></td>
+</tr>
+<tr>
+<td><span id="deca"></span><code>deca</code></td>
+<td style="text-align: center;">da</td>
+<td><code>mag_power&lt;10, 1&gt;</code></td>
+</tr>
+<tr>
+<td><span id="hecto"></span><code>hecto</code></td>
+<td style="text-align: center;">h</td>
+<td><code>mag_power&lt;10, 2&gt;</code></td>
+</tr>
+<tr>
+<td><span id="kilo"></span><code>kilo</code></td>
+<td style="text-align: center;">k</td>
+<td><code>mag_power&lt;10, 3&gt;</code></td>
+</tr>
+<tr>
+<td><span id="mega"></span><code>mega</code></td>
+<td style="text-align: center;">M</td>
+<td><code>mag_power&lt;10, 6&gt;</code></td>
+</tr>
+<tr>
+<td><span id="giga"></span><code>giga</code></td>
+<td style="text-align: center;">G</td>
+<td><code>mag_power&lt;10, 9&gt;</code></td>
+</tr>
+<tr>
+<td><span id="tera"></span><code>tera</code></td>
+<td style="text-align: center;">T</td>
+<td><code>mag_power&lt;10, 12&gt;</code></td>
+</tr>
+<tr>
+<td><span id="peta"></span><code>peta</code></td>
+<td style="text-align: center;">P</td>
+<td><code>mag_power&lt;10, 15&gt;</code></td>
+</tr>
+<tr>
+<td><span id="exa"></span><code>exa</code></td>
+<td style="text-align: center;">E</td>
+<td><code>mag_power&lt;10, 18&gt;</code></td>
+</tr>
+<tr>
+<td><span id="zetta"></span><code>zetta</code></td>
+<td style="text-align: center;">Z</td>
+<td><code>mag_power&lt;10, 21&gt;</code></td>
+</tr>
+<tr>
+<td><span id="yotta"></span><code>yotta</code></td>
+<td style="text-align: center;">Y</td>
+<td><code>mag_power&lt;10, 24&gt;</code></td>
+</tr>
+<tr>
+<td><span id="ronna"></span><code>ronna</code></td>
+<td style="text-align: center;">R</td>
+<td><code>mag_power&lt;10, 27&gt;</code></td>
+</tr>
+<tr>
+<td><span id="quetta"></span><code>quetta</code></td>
+<td style="text-align: center;">Q</td>
+<td><code>mag_power&lt;10, 30&gt;</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="units">Units<a class="headerlink" href="#units" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Unit Name</th>
+<th style="text-align: center;">Symbol</th>
+<th style="text-align: center;">unit_symbol</th>
+<th>Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span id="ampere"></span><code>ampere</code></td>
+<td style="text-align: center;">A</td>
+<td style="text-align: center;"><code>A</code></td>
+<td><code>kind: <a href="../isq/#electric_current">isq::electric_<wbr>current</a></code></td>
+</tr>
+<tr>
+<td><span id="becquerel"></span><code>becquerel</code></td>
+<td style="text-align: center;">Bq</td>
+<td style="text-align: center;"><code>Bq</code></td>
+<td><code><a href="../core/#one">one</a> / <wbr><a href="#second">second</a><br>kind: <a href="../isq/#activity">isq::activity</a></code></td>
+</tr>
+<tr>
+<td><span id="candela"></span><code>candela</code></td>
+<td style="text-align: center;">cd</td>
+<td style="text-align: center;"><code>cd</code></td>
+<td><code>kind: <a href="../isq/#luminous_intensity">isq::luminous_<wbr>intensity</a></code></td>
+</tr>
+<tr>
+<td><span id="coulomb"></span><code>coulomb</code></td>
+<td style="text-align: center;">C</td>
+<td style="text-align: center;"><code>C</code></td>
+<td><code><a href="#ampere">ampere</a> * <wbr><a href="#second">second</a></code></td>
+</tr>
+<tr>
+<td><span id="degree_Celsius"></span><code>degree_<wbr>Celsius</code></td>
+<td style="text-align: center;">℃ (`C)</td>
+<td style="text-align: center;"><code>deg_C</code></td>
+<td><code><a href="#kelvin">kelvin</a><br>origin: <a href="#ice_point">ice_<wbr>point</a></code></td>
+</tr>
+<tr>
+<td><span id="farad"></span><code>farad</code></td>
+<td style="text-align: center;">F</td>
+<td style="text-align: center;"><code>F</code></td>
+<td><code><a href="#coulomb">coulomb</a> / <wbr><a href="#volt">volt</a><br>kind: <a href="../isq/#capacitance">isq::capacitance</a></code></td>
+</tr>
+<tr>
+<td><span id="gram"></span><code>gram</code></td>
+<td style="text-align: center;">g</td>
+<td style="text-align: center;"><code>g</code></td>
+<td><code>kind: <a href="../isq/#mass">isq::mass</a></code></td>
+</tr>
+<tr>
+<td><span id="gray"></span><code>gray</code></td>
+<td style="text-align: center;">Gy</td>
+<td style="text-align: center;"><code>Gy</code></td>
+<td><code><a href="#joule">joule</a> / <wbr><a href="#kilogram">kilogram</a><br>kind: <a href="../isq/#absorbed_dose">isq::absorbed_<wbr>dose</a></code></td>
+</tr>
+<tr>
+<td><span id="henry"></span><code>henry</code></td>
+<td style="text-align: center;">H</td>
+<td style="text-align: center;"><code>H</code></td>
+<td><code><a href="#weber">weber</a> / <wbr><a href="#ampere">ampere</a></code></td>
+</tr>
+<tr>
+<td><span id="hertz"></span><code>hertz</code></td>
+<td style="text-align: center;">Hz</td>
+<td style="text-align: center;"><code>Hz</code></td>
+<td><code><a href="../core/#one">one</a> / <wbr><a href="#second">second</a><br>kind: <a href="../isq/#frequency">isq::frequency</a></code></td>
+</tr>
+<tr>
+<td><span id="joule"></span><code>joule</code></td>
+<td style="text-align: center;">J</td>
+<td style="text-align: center;"><code>J</code></td>
+<td><code><a href="#newton">newton</a> * <wbr><a href="#metre">metre</a><br>kind: <a href="../isq/#energy">isq::energy</a></code></td>
+</tr>
+<tr>
+<td><span id="katal"></span><code>katal</code></td>
+<td style="text-align: center;">kat</td>
+<td style="text-align: center;"><code>kat</code></td>
+<td><code><a href="#mole">mole</a> / <wbr><a href="#second">second</a><br>kind: <a href="../isq/#catalytic_activity">isq::catalytic_<wbr>activity</a></code></td>
+</tr>
+<tr>
+<td><span id="kelvin"></span><code>kelvin</code></td>
+<td style="text-align: center;">K</td>
+<td style="text-align: center;"><code>K</code></td>
+<td><code>kind: <a href="../isq/#thermodynamic_temperature">isq::thermodynamic_<wbr>temperature</a><br>origin: <a href="#absolute_zero">absolute_<wbr>zero</a></code></td>
+</tr>
+<tr>
+<td><span id="kilogram"></span><code>kilogram</code></td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;"><code>kg</code></td>
+<td><code><a href="#kilo">kilo</a>&lt;<a href="#gram">gram</a>&gt;</code></td>
+</tr>
+<tr>
+<td><span id="lumen"></span><code>lumen</code></td>
+<td style="text-align: center;">lm</td>
+<td style="text-align: center;"><code>lm</code></td>
+<td><code><a href="#candela">candela</a> * <wbr><a href="#steradian">steradian</a><br>kind: <a href="../isq/#luminous_flux">isq::luminous_<wbr>flux</a></code></td>
+</tr>
+<tr>
+<td><span id="lux"></span><code>lux</code></td>
+<td style="text-align: center;">lx</td>
+<td style="text-align: center;"><code>lx</code></td>
+<td><code><a href="#lumen">lumen</a> / <wbr>square(<a href="#metre">metre</a>)<br>kind: <a href="../isq/#illuminance">isq::illuminance</a></code></td>
+</tr>
+<tr>
+<td><span id="metre"></span><code>metre</code></td>
+<td style="text-align: center;">m</td>
+<td style="text-align: center;"><code>m</code></td>
+<td><code>kind: <a href="../isq/#length">isq::length</a></code></td>
+</tr>
+<tr>
+<td><span id="mole"></span><code>mole</code></td>
+<td style="text-align: center;">mol</td>
+<td style="text-align: center;"><code>mol</code></td>
+<td><code>kind: <a href="../isq/#amount_of_substance">isq::amount_<wbr>of_<wbr>substance</a></code></td>
+</tr>
+<tr>
+<td><span id="newton"></span><code>newton</code></td>
+<td style="text-align: center;">N</td>
+<td style="text-align: center;"><code>N</code></td>
+<td><code><a href="#kilogram">kilogram</a> * <wbr><a href="#metre">metre</a> / <wbr>square(<a href="#second">second</a>)<br>kind: <a href="../isq/#force">isq::force</a></code></td>
+</tr>
+<tr>
+<td><span id="ohm"></span><code>ohm</code></td>
+<td style="text-align: center;">Ω (ohm)</td>
+<td style="text-align: center;"><code>Ω</code>, <code>ohm</code></td>
+<td><code><a href="#volt">volt</a> / <wbr><a href="#ampere">ampere</a><br>kind: <a href="../isq/#impedance">isq::impedance</a></code></td>
+</tr>
+<tr>
+<td><span id="pascal"></span><code>pascal</code></td>
+<td style="text-align: center;">Pa</td>
+<td style="text-align: center;"><code>Pa</code></td>
+<td><code><a href="#newton">newton</a> / <wbr>square(<a href="#metre">metre</a>)<br>kind: <a href="../isq/#pressure">isq::pressure</a></code></td>
+</tr>
+<tr>
+<td><span id="radian"></span><code>radian</code></td>
+<td style="text-align: center;">rad</td>
+<td style="text-align: center;"><code>rad</code></td>
+<td><code><a href="#metre">metre</a> / <wbr><a href="#metre">metre</a><br>kind: <a href="../isq/#angular_measure">isq::angular_<wbr>measure</a></code></td>
+</tr>
+<tr>
+<td><span id="second"></span><code>second</code></td>
+<td style="text-align: center;">s</td>
+<td style="text-align: center;"><code>s</code></td>
+<td><code>kind: <a href="../isq/#duration">isq::duration</a></code></td>
+</tr>
+<tr>
+<td><span id="siemens"></span><code>siemens</code></td>
+<td style="text-align: center;">S</td>
+<td style="text-align: center;"><code>S</code></td>
+<td><code><a href="../core/#one">one</a> / <wbr><a href="#ohm">ohm</a><br>kind: <a href="../isq/#admittance">isq::admittance</a></code></td>
+</tr>
+<tr>
+<td><span id="sievert"></span><code>sievert</code></td>
+<td style="text-align: center;">Sv</td>
+<td style="text-align: center;"><code>Sv</code></td>
+<td><code><a href="#joule">joule</a> / <wbr><a href="#kilogram">kilogram</a><br>kind: <a href="../isq/#dose_equivalent">isq::dose_<wbr>equivalent</a></code></td>
+</tr>
+<tr>
+<td><span id="steradian"></span><code>steradian</code></td>
+<td style="text-align: center;">sr</td>
+<td style="text-align: center;"><code>sr</code></td>
+<td><code>square(<a href="#metre">metre</a>) / <wbr>square(<a href="#metre">metre</a>)<br>kind: <a href="../isq/#solid_angular_measure">isq::solid_<wbr>angular_<wbr>measure</a></code></td>
+</tr>
+<tr>
+<td><span id="tesla"></span><code>tesla</code></td>
+<td style="text-align: center;">T</td>
+<td style="text-align: center;"><code>T</code></td>
+<td><code><a href="#weber">weber</a> / <wbr>square(<a href="#metre">metre</a>)<br>kind: <a href="../isq/#magnetic_flux_density">isq::magnetic_<wbr>flux_<wbr>density</a></code></td>
+</tr>
+<tr>
+<td><span id="volt"></span><code>volt</code></td>
+<td style="text-align: center;">V</td>
+<td style="text-align: center;"><code>V</code></td>
+<td><code><a href="#watt">watt</a> / <wbr><a href="#ampere">ampere</a><br>kind: <a href="../isq/#electric_potential">isq::electric_<wbr>potential</a></code></td>
+</tr>
+<tr>
+<td><span id="watt"></span><code>watt</code></td>
+<td style="text-align: center;">W</td>
+<td style="text-align: center;"><code>W</code></td>
+<td><code><a href="#joule">joule</a> / <wbr><a href="#second">second</a></code></td>
+</tr>
+<tr>
+<td><span id="weber"></span><code>weber</code></td>
+<td style="text-align: center;">Wb</td>
+<td style="text-align: center;"><code>Wb</code></td>
+<td><code><a href="#volt">volt</a> * <wbr><a href="#second">second</a></code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="non-si-units-accepted-for-use-with-the-si">Non-SI units accepted for use with the SI<a class="headerlink" href="#non-si-units-accepted-for-use-with-the-si" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Unit Name</th>
+<th style="text-align: center;">Symbol</th>
+<th style="text-align: center;">unit_symbol</th>
+<th>Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span id="arcminute"></span><code>arcminute</code></td>
+<td style="text-align: center;">′ (')</td>
+<td style="text-align: center;"><code>arcmin</code></td>
+<td><code>mag_ratio&lt;1, 60&gt; * <wbr><a href="#degree">degree</a></code></td>
+</tr>
+<tr>
+<td><span id="arcsecond"></span><code>arcsecond</code></td>
+<td style="text-align: center;">″ ('')</td>
+<td style="text-align: center;"><code>arcsec</code></td>
+<td><code>mag_ratio&lt;1, 60&gt; * <wbr><a href="#arcminute">arcminute</a></code></td>
+</tr>
+<tr>
+<td><span id="are"></span><code>are</code></td>
+<td style="text-align: center;">a</td>
+<td style="text-align: center;"><code>a</code></td>
+<td><code>square(<a href="#deca">deca</a>&lt;<a href="#metre">metre</a>&gt;)</code></td>
+</tr>
+<tr>
+<td><span id="astronomical_unit"></span><code>astronomical_<wbr>unit</code></td>
+<td style="text-align: center;">au</td>
+<td style="text-align: center;"><code>au</code></td>
+<td><code>mag&lt;149'597'870'700&gt; * <wbr><a href="#metre">metre</a></code></td>
+</tr>
+<tr>
+<td><span id="dalton"></span><code>dalton</code></td>
+<td style="text-align: center;">Da</td>
+<td style="text-align: center;"><code>Da</code></td>
+<td><code>mag_ratio&lt;16'605'390'666'050, 10'000'000'000'000&gt; * <wbr>mag_power&lt;10, -27&gt; * <wbr><a href="#kilogram">kilogram</a></code></td>
+</tr>
+<tr>
+<td><span id="day"></span><code>day</code></td>
+<td style="text-align: center;">d</td>
+<td style="text-align: center;"><code>d</code></td>
+<td><code>mag&lt;24&gt; * <wbr><a href="#hour">hour</a></code></td>
+</tr>
+<tr>
+<td><span id="degree"></span><code>degree</code></td>
+<td style="text-align: center;">° (deg)</td>
+<td style="text-align: center;"><code>deg</code></td>
+<td><code>mag_ratio&lt;1, 180&gt; * <wbr><a href="../core/#π">π</a> * <wbr><a href="#radian">radian</a></code></td>
+</tr>
+<tr>
+<td><span id="electronvolt"></span><code>electronvolt</code></td>
+<td style="text-align: center;">eV</td>
+<td style="text-align: center;"><code>eV</code></td>
+<td><code>mag_ratio&lt;1'602'176'634, 1'000'000'000&gt; * <wbr>mag_power&lt;10, -19&gt; * <wbr><a href="#joule">joule</a></code></td>
+</tr>
+<tr>
+<td><span id="hectare"></span><code>hectare</code></td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;"><code>ha</code></td>
+<td><code><a href="#hecto">hecto</a>&lt;<a href="#are">are</a>&gt;</code></td>
+</tr>
+<tr>
+<td><span id="hour"></span><code>hour</code></td>
+<td style="text-align: center;">h</td>
+<td style="text-align: center;"><code>h</code></td>
+<td><code>mag&lt;60&gt; * <wbr><a href="#minute">minute</a></code></td>
+</tr>
+<tr>
+<td><span id="litre"></span><code>litre</code></td>
+<td style="text-align: center;">L</td>
+<td style="text-align: center;"><code>l</code>, <code>L</code></td>
+<td><code>cubic(<a href="#deci">deci</a>&lt;<a href="#metre">metre</a>&gt;)</code></td>
+</tr>
+<tr>
+<td><span id="minute"></span><code>minute</code></td>
+<td style="text-align: center;">min</td>
+<td style="text-align: center;"><code>min</code></td>
+<td><code>mag&lt;60&gt; * <wbr><a href="#second">second</a></code></td>
+</tr>
+<tr>
+<td><span id="tonne"></span><code>tonne</code></td>
+<td style="text-align: center;">t</td>
+<td style="text-align: center;"><code>t</code></td>
+<td><code>mag&lt;1000&gt; * <wbr><a href="#kilogram">kilogram</a></code></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Namespace</p>
+<p>These units are defined in the <code>mp_units::non_si</code> namespace and are made available in the <code>mp_units::si</code> namespace through a using-directive.</p>
+</div>
+<h2 id="prefixed-unit-symbols">Prefixed unit symbols<a class="headerlink" href="#prefixed-unit-symbols" title="Permanent link">&para;</a></h2>
+<p>Not every unit has a symbol for every prefix. A combination that is
+not listed here does not exist, however reasonable it looks.</p>
+<table>
+<thead>
+<tr>
+<th>Unit</th>
+<th>Essential header</th>
+<th>Full header adds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#ampere"><code>ampere</code></a></td>
+<td><code>fA</code> <code>pA</code> <code>nA</code> <code>uA</code> <code>µA</code> <code>mA</code> <code>kA</code></td>
+<td><code>qA</code> <code>rA</code> <code>yA</code> <code>zA</code> <code>aA</code> <code>cA</code> <code>dA</code> <code>daA</code> <code>hA</code> <code>MA</code> <code>GA</code> <code>TA</code> <code>PA</code> <code>EA</code> <code>ZA</code> <code>YA</code> <code>RA</code> <code>QA</code></td>
+</tr>
+<tr>
+<td><a href="#becquerel"><code>becquerel</code></a></td>
+<td><code>mBq</code> <code>kBq</code> <code>MBq</code> <code>GBq</code> <code>TBq</code> <code>PBq</code></td>
+<td><code>qBq</code> <code>rBq</code> <code>yBq</code> <code>zBq</code> <code>aBq</code> <code>fBq</code> <code>pBq</code> <code>nBq</code> <code>uBq</code> <code>µBq</code> <code>cBq</code> <code>dBq</code> <code>daBq</code> <code>hBq</code> <code>EBq</code> <code>ZBq</code> <code>YBq</code> <code>RBq</code> <code>QBq</code></td>
+</tr>
+<tr>
+<td><a href="#candela"><code>candela</code></a></td>
+<td><code>mcd</code></td>
+<td><code>qcd</code> <code>rcd</code> <code>ycd</code> <code>zcd</code> <code>acd</code> <code>fcd</code> <code>pcd</code> <code>ncd</code> <code>ucd</code> <code>µcd</code> <code>ccd</code> <code>dcd</code> <code>dacd</code> <code>hcd</code> <code>kcd</code> <code>Mcd</code> <code>Gcd</code> <code>Tcd</code> <code>Pcd</code> <code>Ecd</code> <code>Zcd</code> <code>Ycd</code> <code>Rcd</code> <code>Qcd</code></td>
+</tr>
+<tr>
+<td><a href="#coulomb"><code>coulomb</code></a></td>
+<td><code>pC</code> <code>nC</code> <code>uC</code> <code>µC</code> <code>mC</code></td>
+<td><code>qC</code> <code>rC</code> <code>yC</code> <code>zC</code> <code>aC</code> <code>fC</code> <code>cC</code> <code>dC</code> <code>daC</code> <code>hC</code> <code>kC</code> <code>MC</code> <code>GC</code> <code>TC</code> <code>PC</code> <code>EC</code> <code>ZC</code> <code>YC</code> <code>RC</code> <code>QC</code></td>
+</tr>
+<tr>
+<td><a href="#farad"><code>farad</code></a></td>
+<td><code>fF</code> <code>pF</code> <code>nF</code> <code>uF</code> <code>µF</code> <code>mF</code></td>
+<td><code>qF</code> <code>rF</code> <code>yF</code> <code>zF</code> <code>aF</code> <code>cF</code> <code>dF</code> <code>daF</code> <code>hF</code> <code>kF</code> <code>MF</code> <code>GF</code> <code>TF</code> <code>PF</code> <code>EF</code> <code>ZF</code> <code>YF</code> <code>RF</code> <code>QF</code></td>
+</tr>
+<tr>
+<td><a href="#gram"><code>gram</code></a></td>
+<td><code>fg</code> <code>pg</code> <code>ng</code> <code>ug</code> <code>µg</code> <code>mg</code> <code>Mg</code></td>
+<td><code>qg</code> <code>rg</code> <code>yg</code> <code>zg</code> <code>ag</code> <code>cg</code> <code>dg</code> <code>dag</code> <code>hg</code> <code>Gg</code> <code>Tg</code> <code>Pg</code> <code>Eg</code> <code>Zg</code> <code>Yg</code> <code>Rg</code> <code>Qg</code></td>
+</tr>
+<tr>
+<td><a href="#gray"><code>gray</code></a></td>
+<td><code>uGy</code> <code>µGy</code> <code>mGy</code> <code>cGy</code> <code>kGy</code></td>
+<td><code>qGy</code> <code>rGy</code> <code>yGy</code> <code>zGy</code> <code>aGy</code> <code>fGy</code> <code>pGy</code> <code>nGy</code> <code>dGy</code> <code>daGy</code> <code>hGy</code> <code>MGy</code> <code>GGy</code> <code>TGy</code> <code>PGy</code> <code>EGy</code> <code>ZGy</code> <code>YGy</code> <code>RGy</code> <code>QGy</code></td>
+</tr>
+<tr>
+<td><a href="#henry"><code>henry</code></a></td>
+<td><code>nH</code> <code>uH</code> <code>µH</code> <code>mH</code></td>
+<td><code>qH</code> <code>rH</code> <code>yH</code> <code>zH</code> <code>aH</code> <code>fH</code> <code>pH</code> <code>cH</code> <code>dH</code> <code>daH</code> <code>hH</code> <code>kH</code> <code>MH</code> <code>GH</code> <code>TH</code> <code>PH</code> <code>EH</code> <code>ZH</code> <code>YH</code> <code>RH</code> <code>QH</code></td>
+</tr>
+<tr>
+<td><a href="#hertz"><code>hertz</code></a></td>
+<td><code>nHz</code> <code>uHz</code> <code>µHz</code> <code>mHz</code> <code>kHz</code> <code>MHz</code> <code>GHz</code> <code>THz</code> <code>PHz</code></td>
+<td><code>qHz</code> <code>rHz</code> <code>yHz</code> <code>zHz</code> <code>aHz</code> <code>fHz</code> <code>pHz</code> <code>cHz</code> <code>dHz</code> <code>daHz</code> <code>hHz</code> <code>EHz</code> <code>ZHz</code> <code>YHz</code> <code>RHz</code> <code>QHz</code></td>
+</tr>
+<tr>
+<td><a href="#joule"><code>joule</code></a></td>
+<td><code>aJ</code> <code>fJ</code> <code>pJ</code> <code>nJ</code> <code>uJ</code> <code>µJ</code> <code>mJ</code> <code>kJ</code> <code>MJ</code> <code>GJ</code> <code>TJ</code> <code>PJ</code> <code>EJ</code> <code>ZJ</code></td>
+<td><code>qJ</code> <code>rJ</code> <code>yJ</code> <code>zJ</code> <code>cJ</code> <code>dJ</code> <code>daJ</code> <code>hJ</code> <code>YJ</code> <code>RJ</code> <code>QJ</code></td>
+</tr>
+<tr>
+<td><a href="#katal"><code>katal</code></a></td>
+<td><code>nkat</code> <code>ukat</code> <code>µkat</code></td>
+<td><code>qkat</code> <code>rkat</code> <code>ykat</code> <code>zkat</code> <code>akat</code> <code>fkat</code> <code>pkat</code> <code>mkat</code> <code>ckat</code> <code>dkat</code> <code>dakat</code> <code>hkat</code> <code>kkat</code> <code>Mkat</code> <code>Gkat</code> <code>Tkat</code> <code>Pkat</code> <code>Ekat</code> <code>Zkat</code> <code>Ykat</code> <code>Rkat</code> <code>Qkat</code></td>
+</tr>
+<tr>
+<td><a href="#kelvin"><code>kelvin</code></a></td>
+<td><code>pK</code> <code>nK</code> <code>uK</code> <code>µK</code> <code>mK</code> <code>MK</code></td>
+<td><code>qK</code> <code>rK</code> <code>yK</code> <code>zK</code> <code>aK</code> <code>fK</code> <code>cK</code> <code>dK</code> <code>daK</code> <code>hK</code> <code>kK</code> <code>GK</code> <code>TK</code> <code>PK</code> <code>EK</code> <code>ZK</code> <code>YK</code> <code>RK</code> <code>QK</code></td>
+</tr>
+<tr>
+<td><a href="#lumen"><code>lumen</code></a></td>
+<td><code>klm</code></td>
+<td><code>qlm</code> <code>rlm</code> <code>ylm</code> <code>zlm</code> <code>alm</code> <code>flm</code> <code>plm</code> <code>nlm</code> <code>ulm</code> <code>µlm</code> <code>mlm</code> <code>clm</code> <code>dlm</code> <code>dalm</code> <code>hlm</code> <code>Mlm</code> <code>Glm</code> <code>Tlm</code> <code>Plm</code> <code>Elm</code> <code>Zlm</code> <code>Ylm</code> <code>Rlm</code> <code>Qlm</code></td>
+</tr>
+<tr>
+<td><a href="#lux"><code>lux</code></a></td>
+<td><code>mlx</code> <code>klx</code></td>
+<td><code>qlx</code> <code>rlx</code> <code>ylx</code> <code>zlx</code> <code>alx</code> <code>flx</code> <code>plx</code> <code>nlx</code> <code>ulx</code> <code>µlx</code> <code>clx</code> <code>dlx</code> <code>dalx</code> <code>hlx</code> <code>Mlx</code> <code>Glx</code> <code>Tlx</code> <code>Plx</code> <code>Elx</code> <code>Zlx</code> <code>Ylx</code> <code>Rlx</code> <code>Qlx</code></td>
+</tr>
+<tr>
+<td><a href="#metre"><code>metre</code></a></td>
+<td><code>fm</code> <code>pm</code> <code>nm</code> <code>um</code> <code>µm</code> <code>mm</code> <code>cm</code> <code>dm</code> <code>km</code></td>
+<td><code>qm</code> <code>rm</code> <code>ym</code> <code>zm</code> <code>am</code> <code>dam</code> <code>hm</code> <code>Mm</code> <code>Gm</code> <code>Tm</code> <code>Pm</code> <code>Em</code> <code>Zm</code> <code>Ym</code> <code>Rm</code> <code>Qm</code></td>
+</tr>
+<tr>
+<td><a href="#mole"><code>mole</code></a></td>
+<td><code>fmol</code> <code>pmol</code> <code>nmol</code> <code>umol</code> <code>µmol</code> <code>mmol</code> <code>cmol</code> <code>kmol</code></td>
+<td><code>qmol</code> <code>rmol</code> <code>ymol</code> <code>zmol</code> <code>amol</code> <code>dmol</code> <code>damol</code> <code>hmol</code> <code>Mmol</code> <code>Gmol</code> <code>Tmol</code> <code>Pmol</code> <code>Emol</code> <code>Zmol</code> <code>Ymol</code> <code>Rmol</code> <code>Qmol</code></td>
+</tr>
+<tr>
+<td><a href="#newton"><code>newton</code></a></td>
+<td><code>pN</code> <code>nN</code> <code>uN</code> <code>µN</code> <code>mN</code> <code>cN</code> <code>daN</code> <code>kN</code> <code>MN</code></td>
+<td><code>qN</code> <code>rN</code> <code>yN</code> <code>zN</code> <code>aN</code> <code>fN</code> <code>dN</code> <code>hN</code> <code>GN</code> <code>TN</code> <code>PN</code> <code>EN</code> <code>ZN</code> <code>YN</code> <code>RN</code> <code>QN</code></td>
+</tr>
+<tr>
+<td><a href="#ohm"><code>ohm</code></a></td>
+<td><code>uohm</code> <code>µΩ</code> <code>mohm</code> <code>mΩ</code> <code>kohm</code> <code>kΩ</code> <code>Mohm</code> <code>MΩ</code> <code>Gohm</code> <code>GΩ</code> <code>Tohm</code> <code>TΩ</code></td>
+<td><code>qohm</code> <code>qΩ</code> <code>rohm</code> <code>rΩ</code> <code>yohm</code> <code>yΩ</code> <code>zohm</code> <code>zΩ</code> <code>aohm</code> <code>aΩ</code> <code>fohm</code> <code>fΩ</code> <code>pohm</code> <code>pΩ</code> <code>nohm</code> <code>nΩ</code> <code>cohm</code> <code>cΩ</code> <code>dohm</code> <code>dΩ</code> <code>daohm</code> <code>daΩ</code> <code>hohm</code> <code>hΩ</code> <code>Pohm</code> <code>PΩ</code> <code>Eohm</code> <code>EΩ</code> <code>Zohm</code> <code>ZΩ</code> <code>Yohm</code> <code>YΩ</code> <code>Rohm</code> <code>RΩ</code> <code>Qohm</code> <code>QΩ</code></td>
+</tr>
+<tr>
+<td><a href="#pascal"><code>pascal</code></a></td>
+<td><code>uPa</code> <code>µPa</code> <code>mPa</code> <code>daPa</code> <code>hPa</code> <code>kPa</code> <code>MPa</code> <code>GPa</code> <code>TPa</code></td>
+<td><code>qPa</code> <code>rPa</code> <code>yPa</code> <code>zPa</code> <code>aPa</code> <code>fPa</code> <code>pPa</code> <code>nPa</code> <code>cPa</code> <code>dPa</code> <code>PPa</code> <code>EPa</code> <code>ZPa</code> <code>YPa</code> <code>RPa</code> <code>QPa</code></td>
+</tr>
+<tr>
+<td><a href="#radian"><code>radian</code></a></td>
+<td><code>nrad</code> <code>urad</code> <code>µrad</code> <code>mrad</code></td>
+<td><code>qrad</code> <code>rrad</code> <code>yrad</code> <code>zrad</code> <code>arad</code> <code>frad</code> <code>prad</code> <code>crad</code> <code>drad</code> <code>darad</code> <code>hrad</code> <code>krad</code> <code>Mrad</code> <code>Grad</code> <code>Trad</code> <code>Prad</code> <code>Erad</code> <code>Zrad</code> <code>Yrad</code> <code>Rrad</code> <code>Qrad</code></td>
+</tr>
+<tr>
+<td><a href="#second"><code>second</code></a></td>
+<td><code>as</code> <code>fs</code> <code>ps</code> <code>ns</code> <code>us</code> <code>µs</code> <code>ms</code> <code>ks</code></td>
+<td><code>qs</code> <code>rs</code> <code>ys</code> <code>zs</code> <code>cs</code> <code>ds</code> <code>das</code> <code>hs</code> <code>Ms</code> <code>Gs</code> <code>Ts</code> <code>Ps</code> <code>Es</code> <code>Zs</code> <code>Ys</code> <code>Rs</code> <code>Qs</code></td>
+</tr>
+<tr>
+<td><a href="#siemens"><code>siemens</code></a></td>
+<td><code>pS</code> <code>nS</code> <code>uS</code> <code>µS</code> <code>mS</code> <code>dS</code> <code>MS</code></td>
+<td><code>qS</code> <code>rS</code> <code>yS</code> <code>zS</code> <code>aS</code> <code>fS</code> <code>cS</code> <code>daS</code> <code>hS</code> <code>kS</code> <code>GS</code> <code>TS</code> <code>PS</code> <code>ES</code> <code>ZS</code> <code>YS</code> <code>RS</code> <code>QS</code></td>
+</tr>
+<tr>
+<td><a href="#sievert"><code>sievert</code></a></td>
+<td><code>nSv</code> <code>uSv</code> <code>µSv</code> <code>mSv</code></td>
+<td><code>qSv</code> <code>rSv</code> <code>ySv</code> <code>zSv</code> <code>aSv</code> <code>fSv</code> <code>pSv</code> <code>cSv</code> <code>dSv</code> <code>daSv</code> <code>hSv</code> <code>kSv</code> <code>MSv</code> <code>GSv</code> <code>TSv</code> <code>PSv</code> <code>ESv</code> <code>ZSv</code> <code>YSv</code> <code>RSv</code> <code>QSv</code></td>
+</tr>
+<tr>
+<td><a href="#steradian"><code>steradian</code></a></td>
+<td><code>msr</code></td>
+<td><code>qsr</code> <code>rsr</code> <code>ysr</code> <code>zsr</code> <code>asr</code> <code>fsr</code> <code>psr</code> <code>nsr</code> <code>usr</code> <code>µsr</code> <code>csr</code> <code>dsr</code> <code>dasr</code> <code>hsr</code> <code>ksr</code> <code>Msr</code> <code>Gsr</code> <code>Tsr</code> <code>Psr</code> <code>Esr</code> <code>Zsr</code> <code>Ysr</code> <code>Rsr</code> <code>Qsr</code></td>
+</tr>
+<tr>
+<td><a href="#tesla"><code>tesla</code></a></td>
+<td><code>fT</code> <code>pT</code> <code>nT</code> <code>uT</code> <code>µT</code> <code>mT</code></td>
+<td><code>qT</code> <code>rT</code> <code>yT</code> <code>zT</code> <code>aT</code> <code>cT</code> <code>dT</code> <code>daT</code> <code>hT</code> <code>kT</code> <code>MT</code> <code>GT</code> <code>TT</code> <code>PT</code> <code>ET</code> <code>ZT</code> <code>YT</code> <code>RT</code> <code>QT</code></td>
+</tr>
+<tr>
+<td><a href="#volt"><code>volt</code></a></td>
+<td><code>nV</code> <code>uV</code> <code>µV</code> <code>mV</code> <code>kV</code> <code>MV</code></td>
+<td><code>qV</code> <code>rV</code> <code>yV</code> <code>zV</code> <code>aV</code> <code>fV</code> <code>pV</code> <code>cV</code> <code>dV</code> <code>daV</code> <code>hV</code> <code>GV</code> <code>TV</code> <code>PV</code> <code>EV</code> <code>ZV</code> <code>YV</code> <code>RV</code> <code>QV</code></td>
+</tr>
+<tr>
+<td><a href="#watt"><code>watt</code></a></td>
+<td><code>pW</code> <code>nW</code> <code>uW</code> <code>µW</code> <code>mW</code> <code>kW</code> <code>MW</code> <code>GW</code> <code>TW</code> <code>PW</code></td>
+<td><code>qW</code> <code>rW</code> <code>yW</code> <code>zW</code> <code>aW</code> <code>fW</code> <code>cW</code> <code>dW</code> <code>daW</code> <code>hW</code> <code>EW</code> <code>ZW</code> <code>YW</code> <code>RW</code> <code>QW</code></td>
+</tr>
+<tr>
+<td><a href="#weber"><code>weber</code></a></td>
+<td>—</td>
+<td><code>qWb</code> <code>rWb</code> <code>yWb</code> <code>zWb</code> <code>aWb</code> <code>fWb</code> <code>pWb</code> <code>nWb</code> <code>uWb</code> <code>µWb</code> <code>mWb</code> <code>cWb</code> <code>dWb</code> <code>daWb</code> <code>hWb</code> <code>kWb</code> <code>MWb</code> <code>GWb</code> <code>TWb</code> <code>PWb</code> <code>EWb</code> <code>ZWb</code> <code>YWb</code> <code>RWb</code> <code>QWb</code></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Two headers</p>
+<p>The essential symbols come from <code>&lt;mp-units/systems/si/unit_symbols_essential.h&gt;</code>. The rest need
+<code>&lt;mp-units/systems/si/unit_symbols.h&gt;</code>, which is more expensive to compile, so include it
+only when you need an unusual prefix.</p>
+</div>
+<h2 id="constants">Constants<a class="headerlink" href="#constants" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th style="text-align: center;">Symbol</th>
+<th style="text-align: center;">unit_symbol</th>
+<th>Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span id="magnetic_constant"></span><code>magnetic_<wbr>constant</code></td>
+<td style="text-align: center;">μ₀ (u_<wbr>0)</td>
+<td style="text-align: center;">—</td>
+<td><code>mag&lt;4&gt; * <wbr>mag_power&lt;10, -7&gt; * <wbr><a href="../core/#π">π</a> * <wbr><a href="#henry">henry</a> / <wbr><a href="#metre">metre</a></code></td>
+</tr>
+<tr>
+<td><span id="reduced_planck_constant"></span><code>reduced_<wbr>planck_<wbr>constant</code></td>
+<td style="text-align: center;">ℏ (hbar)</td>
+<td style="text-align: center;">—</td>
+<td><code><a href="#si2019-planck_constant">si2019::planck_<wbr>constant</a> / <wbr>(mag&lt;2&gt; * <wbr><a href="../core/#π">π</a>)</code></td>
+</tr>
+<tr>
+<td><span id="si2019-avogadro_constant"></span><code>si2019::avogadro_<wbr>constant</code></td>
+<td style="text-align: center;">N_<wbr>A</td>
+<td style="text-align: center;">—</td>
+<td><code>mag_ratio&lt;602'214'076, 100'000'000&gt; * <wbr>mag_power&lt;10, 23&gt; / <wbr><a href="#mole">mole</a></code></td>
+</tr>
+<tr>
+<td><span id="si2019-boltzmann_constant"></span><code>si2019::boltzmann_<wbr>constant</code></td>
+<td style="text-align: center;">k</td>
+<td style="text-align: center;">—</td>
+<td><code>mag_ratio&lt;1'380'649, 1'000'000&gt; * <wbr>mag_power&lt;10, -23&gt; * <wbr><a href="#joule">joule</a> / <wbr><a href="#kelvin">kelvin</a></code></td>
+</tr>
+<tr>
+<td><span id="si2019-elementary_charge"></span><code>si2019::elementary_<wbr>charge</code></td>
+<td style="text-align: center;">e</td>
+<td style="text-align: center;">—</td>
+<td><code>mag_ratio&lt;1'602'176'634, 1'000'000'000&gt; * <wbr>mag_power&lt;10, -19&gt; * <wbr><a href="#coulomb">coulomb</a></code></td>
+</tr>
+<tr>
+<td><span id="si2019-hyperfine_structure_transition_frequency_of_cs"></span><code>si2019::hyperfine_<wbr>structure_<wbr>transition_<wbr>frequency_<wbr>of_<wbr>cs</code></td>
+<td style="text-align: center;">Δν_<wbr>Cs (dv_<wbr>Cs)</td>
+<td style="text-align: center;">—</td>
+<td><code>mag&lt;9'192'631'770&gt; * <wbr><a href="#hertz">hertz</a></code></td>
+</tr>
+<tr>
+<td><span id="si2019-luminous_efficacy"></span><code>si2019::luminous_<wbr>efficacy</code></td>
+<td style="text-align: center;">K_<wbr>cd</td>
+<td style="text-align: center;">—</td>
+<td><code>mag&lt;683&gt; * <wbr><a href="#lumen">lumen</a> / <wbr><a href="#watt">watt</a></code></td>
+</tr>
+<tr>
+<td><span id="si2019-planck_constant"></span><code>si2019::planck_<wbr>constant</code></td>
+<td style="text-align: center;">h</td>
+<td style="text-align: center;">—</td>
+<td><code>mag_ratio&lt;662'607'015, 100'000'000&gt; * <wbr>mag_power&lt;10, -34&gt; * <wbr><a href="#joule">joule</a> * <wbr><a href="#second">second</a></code></td>
+</tr>
+<tr>
+<td><span id="si2019-speed_of_light_in_vacuum"></span><code>si2019::speed_<wbr>of_<wbr>light_<wbr>in_<wbr>vacuum</code></td>
+<td style="text-align: center;">c</td>
+<td style="text-align: center;">—</td>
+<td><code>mag&lt;299'792'458&gt; * <wbr><a href="#metre">metre</a> / <wbr><a href="#second">second</a></code></td>
+</tr>
+<tr>
+<td><span id="standard_gravity"></span><code>standard_<wbr>gravity</code></td>
+<td style="text-align: center;">g₀ (g_<wbr>0)</td>
+<td style="text-align: center;">—</td>
+<td><code>mag_ratio&lt;980'665, 100'000&gt; * <wbr><a href="#metre">metre</a> / <wbr>square(<a href="#second">second</a>)</code></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Inline Namespaces</p>
+<p>The <code>mp_units::si::si2019</code> namespace is inline in <code>mp_units::si</code>, making its members directly accessible from the parent namespace.</p>
+</div>
+<h2 id="point-origins">Point Origins<a class="headerlink" href="#point-origins" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th style="text-align: center;">Type</th>
+<th>Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span id="absolute_zero"></span><code>absolute_zero</code></td>
+<td style="text-align: center;">absolute</td>
+<td><code><a href="../isq/#thermodynamic_temperature">isq::thermodynamic_<wbr>temperature</a></code></td>
+</tr>
+<tr>
+<td><span id="chrono_point_origin"></span><code>chrono_point_origin</code></td>
+<td style="text-align: center;">absolute</td>
+<td><code><a href="../isq/#time">isq::time</a></code></td>
+</tr>
+<tr>
+<td><span id="ice_point"></span><code>ice_point</code></td>
+<td style="text-align: center;">relative</td>
+<td><code>::mp_units::point&lt;<a href="#milli">milli</a>&lt;<a href="#kelvin">kelvin</a>&gt;&gt;(273'150)</code></td>
+</tr>
+<tr>
+<td><span id="zeroth_degree_Celsius"></span><code>zeroth_degree_Celsius</code></td>
+<td style="text-align: center;">relative</td>
+<td>alias to <a href="#ice_point">ice_<wbr>point</a></td>
+</tr>
+<tr>
+<td><span id="zeroth_kelvin"></span><code>zeroth_kelvin</code></td>
+<td style="text-align: center;">absolute</td>
+<td>alias to <a href="#absolute_zero">absolute_<wbr>zero</a></td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../natural/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Natural">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Natural
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../typographic/" class="md-footer__link md-footer__link--next" aria-label="Next: Typographic">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Typographic
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2018-2023 Mateusz Pusz
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "navigation.indexes", "navigation.prune", "navigation.tabs", "navigation.footer", "navigation.top", "search.highlight", "search.share", "search.suggest", "toc.follow", "toc.integrate"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../../../javascripts/ce_embed.js"></script>
+      
+        <script src="../../../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
