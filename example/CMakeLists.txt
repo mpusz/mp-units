@@ -109,5 +109,6 @@ add_executable(linear_algebra-cartesian-headers linear_algebra.cpp)
 target_compile_definitions(linear_algebra-cartesian-headers PRIVATE MP_UNITS_LA_USE_CARTESIAN)
 target_link_libraries(linear_algebra-cartesian-headers PRIVATE mp-units::mp-units)
 
+add_subdirectory(audio)
 add_subdirectory(glide_computer_lib)
 add_subdirectory(kalman_filter)
