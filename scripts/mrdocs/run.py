@@ -47,21 +47,21 @@ from pathlib import Path
 # diff before committing.
 # --------------------------------------------------------------------------
 
-VERSION = "2026.9.4"
+VERSION = "2026.9.29"
 
 # platform -> (archive suffix, sha256)
 RELEASES = {
     "Linux": (
         "tar.xz",
-        "1e0a455d3e68cb0bacc0884b10fbdf9865b260ae76ce46003c5542e2489af769",
+        "9d96e42f303046fb0b221aa9071eabccc40b9683e0b7af2b02a929d15476ca6a",
     ),
     "Darwin": (
         "tar.xz",
-        "a1cfa12f2a980772f91610091978b2bb40302cbbc0740500026ea870c6893e2e",
+        "b393adf3df2180fc00edd50d6a976a79de3a1b9fbab0e93844495e4faa1c8435",
     ),
     "win64": (
         "zip",
-        "4a570d433d449b230d9672eab7bb59f062bb04cbb71a2a3bf1d81ab6a7aeb688",
+        "c6ef68278816f3793152ff956d1318c74e80d5f98ae1d926c4e48835097ca4c4",
     ),
 }
 

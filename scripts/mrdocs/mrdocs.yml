@@ -37,11 +37,10 @@ base-url: https://github.com/mpusz/mp-units/blob/master/src/
 ## than excluding it gives base-class lists the `/* implementation-defined */`
 ## the upstream demo shows, instead of leaking `detail::quantity_iface`.
 ##
-## CAVEAT: either way, `quantity`'s hidden-friend operators are lost. They are
-## declared inside `detail::quantity_iface`, so filtering the namespace drops
-## them: `operator==` and `operator<=>` end up documented nowhere. The upstream
-## demo has the same hole - its `quantity` page lists `operator*` and no
-## comparison at all. See the upstream ask about promoting hidden friends.
+## Filtering the namespace used to take `quantity`'s hidden-friend operators
+## with it, because they are declared inside `detail::quantity_iface`:
+## `operator==` and `operator<=>` were documented nowhere. See
+## `inherit-hidden-friends` below, which is what fixes it.
 implementation-defined:
   - "mp_units::detail"
   - "mp_units::**::detail"
@@ -85,6 +84,15 @@ addons-supplemental:
 ## `__generate`, `param` and friends. 144 such pages, and `utility` alone drops
 ## from 1065 pages to 538 without them.
 inherit-base-members: reference
+
+## Our operators are hidden friends of a base that `implementation-defined`
+## filters out, so without this `quantity` documents `operator*` and no
+## comparison at all. `copy-dependencies` carries over the friends of an
+## *undocumented* base only, which is exactly that case, and unlike the same
+## value on `inherit-base-members` it pulls in nothing from libstdc++: the 132
+## pages it adds are all ours. `copy-all` would add 49 more by copying from
+## documented bases too, which `reference` already covers.
+inherit-hidden-friends: copy-dependencies
 
 generator: md
 multipage: true
