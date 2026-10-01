@@ -126,9 +126,10 @@ public:
 
   template<typename... Args>
     requires std::constructible_from<T, Args...>
-  constexpr reference emplace_back(Args&&... args)
+  // Deferred reason 3: reached by the compile-time symbol machinery.
+  constexpr reference emplace_back(Args&&... args) MP_UNITS_PRE_DEFERRED(size() < capacity())
   {
-    MP_UNITS_PRECONDITION(size() < capacity());
+    MP_UNITS_PRE_DEFERRED_COMPAT(size() < capacity());
     auto ptr = try_emplace_back(std::forward<Args>(args)...);
 #if MP_UNITS_HOSTED
     if (!ptr) throw std::runtime_error("not enough capacity");

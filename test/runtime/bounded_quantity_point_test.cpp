@@ -28,6 +28,7 @@
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
+#include <limits>
 #include <stdexcept>
 #endif
 
@@ -156,6 +157,33 @@ TEST_CASE("check_non_negative propagates through relative_point_origin - mutatin
     auto pt = qp_avg_safe(-1500.0 * avg_height_qs[m], average_height_origin);  // 200 m absolute
     CHECK_NOTHROW(pt -= 100.0 * avg_height_qs[m]);                             // 100 m absolute -- still >= 0
     CHECK(pt.quantity_from(average_height_origin).numerical_value_in(m) == -1600.0);
+  }
+}
+
+// A NaN is the one input where the two branches of these policies used to disagree: the handler
+// branch asked `v < vmin || v > vmax`, false for a NaN so the handler was never called, while the
+// assertion branch asked `v >= vmin && v <= vmax`, false too and so it fired. The same policy
+// answered differently for the same value depending on whether the representation happened to
+// carry a handler.
+//
+// These pin the direction deliberately: a bounds policy rejects a NaN. That is the opposite of the
+// rule everywhere else in the library, where a predicate is negated so a NaN passes - see the
+// `[nan]` sections in `math_test.cpp`, `cartesian_vector_test.cpp` and `uncertain_test.cpp`. The
+// difference is that there a NaN is a result flowing through a computation, while here it is the
+// value being validated, and a policy whose job is to report out-of-bounds values should not accept
+// something that is in no range at all.
+TEST_CASE("bounds policies reject a NaN", "[bounded][check][nan]")
+{
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+
+  SECTION("check_in_range, through the violation handler")
+  {
+    CHECK_THROWS_AS(qp_check(nan * test_angle_check[deg], check_origin), std::domain_error);
+  }
+
+  SECTION("check_non_negative, through the violation handler")
+  {
+    CHECK_THROWS_AS(qp_avg_safe(nan * avg_height_qs[m], average_height_origin), std::domain_error);
   }
 }
 
