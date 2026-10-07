@@ -34,8 +34,9 @@ include(GNUInstallDirs)
 #
 # Only the optional C++ module (`mp_units.integrations.<lib>`) is compiled against a library, and
 # only when that library happens to be available at configure time (e.g. in the `build_all` developer
-# build or any modules build). Those module targets are exported separately (NOT through
-# `mp-unitsTargets`), so `find_package(mp-units)` never gains a dependency on a third-party library.
+# build or any modules build) and its `MP_UNITS_BUILD_INTEGRATION_<LIB>` option is not turned off.
+# Those module targets are exported separately (NOT through `mp-unitsTargets`), so
+# `find_package(mp-units)` never gains a dependency on a third-party library.
 #
 
 # Always-present, dependency-free integration headers (shipped via a header FILE_SET).
@@ -60,10 +61,6 @@ if(MP_UNITS_BUILD_INSTALL)
     install(TARGETS mp-units-integrations EXPORT mp-unitsTargets FILE_SET HEADERS)
 endif()
 
-find_package(Eigen3 QUIET)
-find_package(glm QUIET)
-find_package(blaze QUIET)
-
 #
 # add_mp_units_integration(name DEPENDENCY <find_package_name> <imported_target>)
 #
@@ -73,6 +70,15 @@ function(add_mp_units_integration name)
     list(GET ARG_DEPENDENCY 0 dep_package)
     list(GET ARG_DEPENDENCY 1 dep_target)
 
+    # Lets a user skip an integration whose library is installed but does not work with their
+    # toolchain (e.g. GCC 16 fails to build the Eigen module over `static` functions in Eigen).
+    string(TOUPPER ${name} upper_name)
+    if(NOT MP_UNITS_BUILD_INTEGRATION_${upper_name})
+        message(STATUS "Skipping the 'mp_units.integrations.${name}' integration (disabled by option)")
+        return()
+    endif()
+
+    find_package(${dep_package} QUIET)
     if(NOT TARGET ${dep_target})
         message(STATUS "Skipping the 'mp_units.integrations.${name}' integration (${dep_package} not found)")
         return()

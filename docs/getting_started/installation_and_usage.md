@@ -162,6 +162,17 @@ If you obtain them differently you may need to adjust some CMake files.
     [`-ffreestanding`](https://gcc.gnu.org/onlinedocs/gcc/C-Dialect-Options.html) compilation option
     without any issues.
 
+#### `integration_eigen`, `integration_glm`, `integration_blaze`
+
+:   [:octicons-tag-24: 2.6.0][release-2-6-0] · :octicons-milestone-24: `True`/`False`
+    (Default: `True`)
+
+    Builds the `mp_units.integrations.<lib>` module of the
+    [linear algebra integration](../how_to_guides/integration/using_linear_algebra_libraries.md)
+    for Eigen, GLM, or Blaze respectively. When set to `False`, Conan does not fetch that
+    library and the module is not built. Use it when the library does not compile as a C++
+    module with your toolchain. The integration headers ship either way.
+
 #### `natural_units`
 
 :   [:octicons-tag-24: 2.5.0][release-2-5-0] · :octicons-milestone-24: `ON`/`OFF`
@@ -229,9 +240,22 @@ If you obtain them differently you may need to adjust some CMake files.
         [`-ffreestanding`](https://gcc.gnu.org/onlinedocs/gcc/C-Dialect-Options.html)
         compilation option without any issues.
 
+    [`MP_UNITS_BUILD_INTEGRATION_EIGEN`](#MP_UNITS_BUILD_INTEGRATION_EIGEN){ #MP_UNITS_BUILD_INTEGRATION_EIGEN },
+    [`MP_UNITS_BUILD_INTEGRATION_GLM`](#MP_UNITS_BUILD_INTEGRATION_GLM){ #MP_UNITS_BUILD_INTEGRATION_GLM },
+    [`MP_UNITS_BUILD_INTEGRATION_BLAZE`](#MP_UNITS_BUILD_INTEGRATION_BLAZE){ #MP_UNITS_BUILD_INTEGRATION_BLAZE }
+
+    :   [:octicons-tag-24: 2.6.0][release-2-6-0] · :octicons-milestone-24:
+        `ON`/`OFF` (Default: `ON`)
+
+        Builds the [linear algebra integration](../how_to_guides/integration/using_linear_algebra_libraries.md)
+        for Eigen, GLM, or Blaze respectively, if `find_package` finds the library. When `OFF`,
+        the library is not searched for, and neither the `mp-units::integrations-<lib>` target
+        nor its module is created. The integration headers ship either way.
+
 [release-2-2-0]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 [release-2-3-0]: https://github.com/mpusz/mp-units/releases/tag/v2.3.0
 [release-2-5-0]: https://github.com/mpusz/mp-units/releases/tag/v2.5.0
+[release-2-6-0]: https://github.com/mpusz/mp-units/releases/tag/v2.6.0
 
 ## Installation and reuse
 

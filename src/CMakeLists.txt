@@ -39,9 +39,15 @@ check_libcxx_in_use(MP_UNITS_LIBCXX)
 # project build options
 option(MP_UNITS_BUILD_CXX_MODULES "Add C++ modules to the list of default targets" OFF)
 option(MP_UNITS_BUILD_INSTALL "Install the library" ON)
+option(MP_UNITS_BUILD_INTEGRATION_EIGEN "Build the Eigen integration if Eigen is found" ON)
+option(MP_UNITS_BUILD_INTEGRATION_GLM "Build the GLM integration if GLM is found" ON)
+option(MP_UNITS_BUILD_INTEGRATION_BLAZE "Build the Blaze integration if Blaze is found" ON)
 
 message(STATUS "MP_UNITS_BUILD_CXX_MODULES: ${MP_UNITS_BUILD_CXX_MODULES}")
 message(STATUS "MP_UNITS_BUILD_INSTALL: ${MP_UNITS_BUILD_INSTALL}")
+message(STATUS "MP_UNITS_BUILD_INTEGRATION_EIGEN: ${MP_UNITS_BUILD_INTEGRATION_EIGEN}")
+message(STATUS "MP_UNITS_BUILD_INTEGRATION_GLM: ${MP_UNITS_BUILD_INTEGRATION_GLM}")
+message(STATUS "MP_UNITS_BUILD_INTEGRATION_BLAZE: ${MP_UNITS_BUILD_INTEGRATION_BLAZE}")
 
 # check for C++ features
 check_cxx_feature_supported(__cpp_lib_format MP_UNITS_LIB_FORMAT_SUPPORTED)

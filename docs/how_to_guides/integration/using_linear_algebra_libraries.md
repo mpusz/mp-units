@@ -77,6 +77,18 @@ The header-only `mp-units::integrations` target, the per-library targets
 (`mp-units::integrations-eigen`, `-glm`, `-blaze`), and their separate packaging are
 documented in [Project Structure](../../getting_started/project_structure.md).
 
+!!! tip "Skipping an integration"
+
+    A modules build of mp-units compiles the module of every integration whose library it
+    finds, whether your project uses it or not. If a library is installed but its module
+    does not compile with your toolchain, turn that integration off with the
+    [`integration_<lib>`](../../getting_started/installation_and_usage.md#integration_eigen-integration_glm-integration_blaze)
+    Conan option or the
+    [`MP_UNITS_BUILD_INTEGRATION_<LIB>`](../../getting_started/installation_and_usage.md#MP_UNITS_BUILD_INTEGRATION_EIGEN)
+    CMake option. GCC 16, for example, fails to build the Eigen module with an error about
+    exposing TU-local entities, which come from `static` functions in Eigen's headers
+    ([#843](https://github.com/mpusz/mp-units/issues/843)).
+
 !!! note "Expression templates"
 
     Eigen and Blaze evaluate lazily: their arithmetic operators return proxy expression types

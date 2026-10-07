@@ -266,6 +266,10 @@ This page documents the version history and changes for the **mp-units** library
 - feat: linear algebra integrations added (headers `mp-units/integrations/{eigen,glm,blaze}.h`
         and modules `mp_units.integrations.{eigen,glm,blaze}`) so Eigen, GLM, and Blaze vectors
         and matrices can be used directly as quantity representations
+- feat: `integration_{eigen,glm,blaze}` Conan options /
+        `MP_UNITS_BUILD_INTEGRATION_{EIGEN,GLM,BLAZE}` CMake options added to skip an
+        integration whose library is installed but does not build with the toolchain in use
+        (#843)
 - feat: `representation_canonical_type` customization point added (materializes
         expression-template representations before storing them in a `quantity`)
 - feat: quantity character split into two orthogonal axes, `quantity_tensor_order` (scalar,

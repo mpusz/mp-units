@@ -61,6 +61,9 @@ class MPUnitsConan(ConanFile):
         "no_crtp": [True, False],
         "contracts": ["none", "std", "gsl-lite", "ms-gsl"],
         "freestanding": [True, False],
+        "integration_eigen": [True, False],
+        "integration_glm": [True, False],
+        "integration_blaze": [True, False],
     }
     default_options = {
         # "cxx_modules" default set in config_options()
@@ -70,12 +73,21 @@ class MPUnitsConan(ConanFile):
         "import_std": False,  # still experimental in CMake
         "contracts": "gsl-lite",
         "freestanding": False,
+        "integration_eigen": True,
+        "integration_glm": True,
+        "integration_blaze": True,
     }
     # third-party libraries exercised by the linear algebra integration example and tests. These are
     # never runtime requirements of mp-units: the integration headers are dependency-free (guarded
     # by `__has_include`) and always ship; only the optional C++ modules are compiled against a
     # library, and only when it happens to be available (e.g. in the `build_all` developer build).
-    _linear_algebra_libs = ["eigen/5.0.1", "glm/1.0.1", "blaze/3.8.2"]
+    # Each `integration_<lib>` option drops its library, so its module is not built (e.g. when the
+    # library does not compile as a module with the toolchain in use).
+    _linear_algebra_libs = {
+        "eigen": "eigen/5.0.1",
+        "glm": "glm/1.0.1",
+        "blaze": "blaze/3.8.2",
+    }
     implements = ["auto_header_only"]
     exports = "LICENSE.md"
     exports_sources = (
@@ -220,6 +232,8 @@ class MPUnitsConan(ConanFile):
             self.package_type = "header-library"
         if self.options.freestanding:
             self.options.rm_safe("std_format")
+            for name in self._linear_algebra_libs:
+                self.options.rm_safe(f"integration_{name}")
 
     def requirements(self):
         if not self.options.freestanding:
@@ -240,8 +254,9 @@ class MPUnitsConan(ConanFile):
         # A consumer that later uses an integration pulls its library in via
         # `find_package(mp-units-integrations-<lib>)`, not via mp-units itself.
         if self._build_all or self.options.get_safe("cxx_modules"):
-            for ref in self._linear_algebra_libs:
-                self.test_requires(ref)
+            for name, ref in self._linear_algebra_libs.items():
+                if self.options.get_safe(f"integration_{name}"):
+                    self.test_requires(ref)
 
     def validate(self):
         compiler = self.settings.compiler
@@ -329,6 +344,10 @@ class MPUnitsConan(ConanFile):
             tc.cache_variables["CMAKE_TRY_COMPILE_TARGET_TYPE"] = "STATIC_LIBRARY"
         else:
             tc.cache_variables["MP_UNITS_API_STD_FORMAT"] = opt.std_format
+            for name in self._linear_algebra_libs:
+                tc.cache_variables[f"MP_UNITS_BUILD_INTEGRATION_{name.upper()}"] = bool(
+                    opt.get_safe(f"integration_{name}")
+                )
         tc.cache_variables["MP_UNITS_API_NO_CRTP"] = opt.no_crtp
         tc.cache_variables["MP_UNITS_API_CONTRACTS"] = str(opt.contracts).upper()
 
