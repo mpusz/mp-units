@@ -24,7 +24,8 @@
 // To be replaced with:
 // P0843: std::inplace_vector
 
-#include <mp-units/bits/hacks.h>  // IWYU pragma: keep
+#include <mp-units/bits/hacks.h>     // IWYU pragma: keep
+#include <mp-units/compat_macros.h>  // IWYU pragma: keep
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/ext/contracts.h>
@@ -131,7 +132,7 @@ public:
     MP_UNITS_PRECONDITION(size() < capacity());
     auto ptr = try_emplace_back(std::forward<Args>(args)...);
 #if MP_UNITS_HOSTED
-    if (!ptr) throw std::runtime_error("not enough capacity");
+    if (!ptr) MP_UNITS_THROW(std::runtime_error("not enough capacity"));
 #endif
     return *ptr;
   }

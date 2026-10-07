@@ -273,7 +273,7 @@ public:
 #if MP_UNITS_HOSTED
   [[nodiscard]] constexpr const_reference at(size_type pos) const
   {
-    if (pos >= size()) throw std::out_of_range("basic_fixed_string::at");
+    if (pos >= size()) MP_UNITS_THROW(std::out_of_range("basic_fixed_string::at"));
     return (*this)[pos];
   }
 #endif
