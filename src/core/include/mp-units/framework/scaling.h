@@ -51,9 +51,69 @@ namespace detail {
  * @tparam To    target type
  * @tparam From  source type (deduced)
  */
+// Not `std::in_range`, which cannot express this: its *Mandates* require both types to be standard
+// or extended integer types, so a floating-point source is ill-formed (libstdc++ fires a static
+// assertion in `<bits/intcmp.h>`). It answers "does this integer value fit in that integer type";
+// the question here is "is this floating-point value still representable after truncation", which
+// is the one that maps to the undefined behavior. The integer-to-integer case is deliberately
+// `true` below, because silent wrapping is exactly what `silent_cast` promises its callers.
+//
+// Total, so the `silent_cast` check reads the same whether or not the pair of types can be compared
+// at all. `value < max + 1` rather than `value <= max` because `static_cast<From>(max)`
+// generally is not `max`: for every two's-complement width it rounds up to the next power of two,
+// which is exactly the first value that does not fit, and adding one at that magnitude is a no-op.
+// `lowest` needs no such care - it is already a power of two and converts exactly. `bool` is
+// excluded because converting any finite value to it is well defined.
+template<typename To, typename From>
+[[nodiscard]] constexpr bool value_fits_in(const From& value)
+{
+  if constexpr (std::is_floating_point_v<From> && std::is_integral_v<To> && !std::is_same_v<To, bool>)
+    return value >= static_cast<From>(std::numeric_limits<To>::lowest()) &&
+           value < static_cast<From>(std::numeric_limits<To>::max()) + From{1};
+  else
+    return true;
+}
+
+}  // namespace detail
+
+// The public face of `detail::value_fits_in`. `detail` is never exported, and a name that has to
+// cross a module boundary belongs in `mp_units::utility`, the supported extension tier - see the
+// note at the top of `utility/representation.h`. Defined here rather than there so that
+// `representation.h` does not have to include this header: doing so pulled `detail::RealScalar`
+// into scope alongside `utility::RealScalar` and made the unqualified name ambiguous in any
+// translation unit that opens both namespaces.
+namespace utility {
+
+/// @brief Is `value` still representable in `To` after truncation?
+///
+/// Answers `true` for any pair the question does not apply to, which is every case except a
+/// floating-point source with an integral target. That case is the one where the conversion is
+/// undefined rather than merely lossy, and it is not what `std::in_range` answers: its *Mandates*
+/// require both types to be standard or extended integer types, so a floating-point source is
+/// ill-formed there.
+MP_UNITS_EXPORT template<typename To, typename From>
+[[nodiscard]] constexpr bool value_fits_in(const From& value)
+{
+  return ::mp_units::detail::value_fits_in<To>(value);
+}
+
+}  // namespace utility
+
+namespace detail {
+
 MP_UNITS_EXPORT template<typename To, typename From>
 [[nodiscard]] constexpr To silent_cast(From value) noexcept
 {
+  // Narrowing between integral types wraps, which is well defined and is the whole point of the
+  // name. A floating-point source with an integral target is different: if the truncated value is
+  // not representable in `To` the cast is undefined, and `value_cast<int>(1.5e300 * m)` reaches
+  // this line - `-fsanitize=float-cast-overflow` reports it here, and that sanitizer is not part of
+  // `-fsanitize=undefined`. A NaN is undefined for the same reason, and the predicate rejects it
+  // rather than negating to let it through, because there is no correct integer to produce.
+  //
+  // `_DEBUG`, and so in the body: this is on every conversion path, and a contract on a
+  // declaration cannot be limited to a debug build.
+  MP_UNITS_PRECONDITION_DEBUG(::mp_units::detail::value_fits_in<To>(value));
   MP_UNITS_DIAGNOSTIC_PUSH
   MP_UNITS_DIAGNOSTIC_IGNORE_CONVERSION
   MP_UNITS_DIAGNOSTIC_IGNORE_FLOAT_CONVERSION
@@ -80,9 +140,10 @@ template<typename T>
 }
 
 template<typename T>
-[[nodiscard]] constexpr T get_one(const T& value)
+// Deferred reason 4: reached from `div_round` during constant evaluation.
+[[nodiscard]] constexpr T get_one(const T& value) MP_UNITS_PRE_DEFERRED(value != get_zero(value))
 {
-  MP_UNITS_PRECONDITION(value != get_zero(value));
+  MP_UNITS_PRE_DEFERRED_COMPAT(value != get_zero(value));
   return value / value;
 }
 
@@ -90,9 +151,12 @@ template<typename T>
  * @brief Integer division with the quotient rounded according to @c Mode
  */
 template<rounding_mode Mode, typename T, typename D>
+// Deferred reason 2: deduced return type. The `auto` is load-bearing - the quotient type is derived
+// from the operands.
 [[nodiscard]] constexpr auto div_round(const T& dividend, const D& divisor)
+  MP_UNITS_PRE_DEFERRED(divisor > get_zero(divisor))  // unit magnitude denominators are always positive
 {
-  MP_UNITS_PRECONDITION(divisor > get_zero(divisor));  // unit magnitude denominators are always positive
+  MP_UNITS_PRE_DEFERRED_COMPAT(divisor > get_zero(divisor));
   using quot_type = std::remove_const_t<decltype(dividend / divisor)>;
   const quot_type quot = dividend / divisor;
   if constexpr (Mode == rounding_mode::truncated)

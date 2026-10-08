@@ -25,6 +25,7 @@
 #include <mp-units/bits/requires_hosted.h>
 //
 #include <mp-units/bits/module_macros.h>
+#include <mp-units/ext/contracts.h>
 #include <mp-units/utility/cartesian_vector.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
@@ -252,8 +253,19 @@ public:
 #if __cpp_multidimensional_subscript && MP_UNITS_COMP_GCC != 12
   // C++23 multidimensional subscript, equivalent to `operator()` above (GCC 12 defines the feature
   // macro but does not implement it, so it is excluded)
-  [[nodiscard]] constexpr T& operator[](std::size_t row, std::size_t col) { return _data_[row * N + col]; }
-  [[nodiscard]] constexpr const T& operator[](std::size_t row, std::size_t col) const { return _data_[row * N + col]; }
+  // Both indices, not just the flattened offset: with `row * N + col`, an out-of-range `col` alone
+  // can land inside the array and silently return a different element, which is worse than reading
+  // out of bounds because nothing goes wrong.
+  [[nodiscard]] constexpr T& operator[](std::size_t row, std::size_t col) MP_UNITS_PRE(row < N && col < N)
+  {
+    MP_UNITS_EXPECTS(row < N && col < N);
+    return _data_[row * N + col];
+  }
+  [[nodiscard]] constexpr const T& operator[](std::size_t row, std::size_t col) const MP_UNITS_PRE(row < N && col < N)
+  {
+    MP_UNITS_EXPECTS(row < N && col < N);
+    return _data_[row * N + col];
+  }
 #endif
 
   // Element-wise real and imaginary parts, present only for complex elements. Their existence is

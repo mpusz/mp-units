@@ -564,7 +564,7 @@ constexpr auto first_n_primes_result = first_n_primes<N>();
   return lhs < rhs ? lhs : rhs;
 }
 
-[[nodiscard]] consteval std::uintmax_t find_first_factor(std::uintmax_t n)
+[[nodiscard]] consteval std::uintmax_t find_first_factor_impl(std::uintmax_t n)
 {
   constexpr auto first_100_primes = first_n_primes_result<100>;
 
@@ -601,6 +601,30 @@ constexpr auto first_n_primes_result = first_n_primes<N>();
   }
 
   return n;  // Technically unreachable.
+}
+
+// `smallest_prime_factor_of_hard_composite` returns 0 as a failure sentinel and the fallback above
+// filters it, but the return type cannot say "never 0" and the sole caller feeds this straight into
+// `multiplicity` and `remove_power`, both of which loop forever on 0. A caller cannot defend
+// against it, which is what makes this a postcondition rather than something to check at the call.
+//
+// `n` is `const` because the predicate reads it: C++26 const-ifies every value parameter a `post`
+// names, and a non-const one is ill-formed rather than silently const inside the predicate. It
+// costs nothing here, but it is a real constraint - a function that mutates its own by-value
+// parameter cannot mention that parameter in its postcondition at all.
+//
+// The body is split out only so that this one can name the result. The declaration contract needs
+// no such thing - `post(r: ...)` covers every early return by itself, which is exactly what a
+// declaration contract is good at - but the GSL backends have no declaration contract, so
+// `MP_UNITS_POST_COMPAT` has to check a named value, and repeating it before each early return is
+// worse than one wrapper. A wrapping lambda instead of a named function is what the comment above
+// `smallest_prime_factor_of_hard_composite` already explains does not work here.
+[[nodiscard]] consteval std::uintmax_t find_first_factor(const std::uintmax_t n)
+  MP_UNITS_POST(r : r != 0u && n % r == 0u)
+{
+  const std::uintmax_t result = find_first_factor_impl(n);
+  MP_UNITS_POST_COMPAT(result != 0u && n % result == 0u);
+  return result;
 }
 
 }  // namespace mp_units::detail
