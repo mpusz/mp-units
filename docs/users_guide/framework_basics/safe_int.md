@@ -111,13 +111,14 @@ class safe_int;
 
 **mp-units** ships two policies:
 
-| Policy                      | Behaviour                    | Environment           |
-|-----------------------------|------------------------------|-----------------------|
-| `safe_int_terminate_policy` | `std::abort()` immediately   | freestanding + hosted |
-| `safe_int_throw_policy`     | throws `std::overflow_error` | hosted only           |
+| Policy                      | Behaviour                    | Environment                     |
+|-----------------------------|------------------------------|---------------------------------|
+| `safe_int_terminate_policy` | `std::abort()` immediately   | freestanding + hosted           |
+| `safe_int_throw_policy`     | throws `std::overflow_error` | hosted, with exceptions enabled |
 
-The default policy is `safe_int_throw_policy` on hosted platforms and
-`safe_int_terminate_policy` on freestanding platforms.
+The default policy is `safe_int_throw_policy` on hosted platforms with exceptions enabled,
+and `safe_int_terminate_policy` everywhere else, including hosted builds compiled with
+exceptions disabled.
 
 ### Convenience aliases
 

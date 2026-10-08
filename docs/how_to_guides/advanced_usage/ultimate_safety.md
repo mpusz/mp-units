@@ -44,10 +44,10 @@ the representation type.
 
 The library ships two error policies in `<mp-units/constrained.h>`:
 
-| Policy             | Availability | Behavior                   |
-|--------------------|--------------|----------------------------|
-| `throw_policy`     | Hosted only  | Throws `std::domain_error` |
-| `terminate_policy` | Always       | Calls `std::abort()`       |
+| Policy             | Availability                    | Behavior                   |
+|--------------------|---------------------------------|----------------------------|
+| `throw_policy`     | Hosted, with exceptions enabled | Throws `std::domain_error` |
+| `terminate_policy` | Always                          | Calls `std::abort()`       |
 
 You can also write your own:
 

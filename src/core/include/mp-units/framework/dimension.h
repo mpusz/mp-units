@@ -351,7 +351,7 @@ class MP_UNITS_STD_FMT::formatter<D, Char> {
     constexpr auto valid_modifiers = std::string_view{"UP"};
     for (; it != end && *it != '}'; ++it) {
       if (valid_modifiers.find(*it) == std::string_view::npos)
-        throw MP_UNITS_STD_FMT::format_error("invalid dimension modifier specified");
+        MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid dimension modifier specified"));
     }
     end = it;
 

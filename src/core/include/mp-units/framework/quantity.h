@@ -1248,8 +1248,8 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
   {
     if (begin == end || *begin == ':' || *begin == '}') return begin;
     if (*begin != '%')
-      throw MP_UNITS_STD_FMT::format_error(
-        "`quantity-specs` should start with a `conversion-spec` ('%' characters expected)");
+      MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error(
+        "`quantity-specs` should start with a `conversion-spec` ('%' characters expected)"));
     auto ptr = begin;
     while (ptr != end) {
       auto ch = *ptr;
@@ -1269,7 +1269,7 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
       }
       if (begin != ptr) handler.on_text(begin, ptr);
       ++ptr;  // consume '%'
-      if (ptr == end) throw MP_UNITS_STD_FMT::format_error("invalid `conversion-spec` format");
+      if (ptr == end) MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid `conversion-spec` format"));
 
       ch = *ptr++;
       switch (ch) {
@@ -1289,7 +1289,7 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
           handler.on_text(ptr - 1, ptr);
           break;
         default:
-          throw MP_UNITS_STD_FMT::format_error(std::string("unknown `placement-type` token '") + ch + "'");
+          MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error(std::string("unknown `placement-type` token '") + ch + "'"));
       }
       begin = ptr;
     }
@@ -1301,20 +1301,21 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
   constexpr It parse_default_spec(It begin, It end, Formatter& f, std::string& format_str)
   {
     if (begin == end || *begin != '[')
-      throw MP_UNITS_STD_FMT::format_error("`default-spec` should contain a `[` character");
+      MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("`default-spec` should contain a `[` character"));
     auto it = ++begin;
     for (int nested_brackets = 0; it != end && !(*it == ']' && nested_brackets == 0); it++) {
       if (*it == '[') ++nested_brackets;
       if (*it == ']') {
-        if (nested_brackets == 0) throw MP_UNITS_STD_FMT::format_error("unmatched ']' in format string");
+        if (nested_brackets == 0) MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("unmatched ']' in format string"));
         --nested_brackets;
       }
     }
     format_str = "{:" + std::string(begin, it) + '}';
-    if (it == end) throw MP_UNITS_STD_FMT::format_error("unmatched '[' in format string");
+    if (it == end) MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("unmatched '[' in format string"));
     MP_UNITS_STD_FMT::basic_format_parse_context<Char> ctx(std::string_view(begin, it));
     auto ptr = f.parse(ctx);
-    if (ptr != it) throw MP_UNITS_STD_FMT::format_error("invalid subentity format '" + std::string(begin, it) + "'");
+    if (ptr != it)
+      MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid subentity format '" + std::string(begin, it) + "'"));
     return ++it;  // skip `]`
   }
 
@@ -1322,7 +1323,7 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
   [[nodiscard]] constexpr It parse_defaults_specs(It begin, It end)
   {
     if (begin == end || *begin == '}') return begin;
-    if (*begin++ != ':') throw MP_UNITS_STD_FMT::format_error("`defaults-specs` should start with a `:`");
+    if (*begin++ != ':') MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("`defaults-specs` should start with a `:`"));
     do {
       auto ch = *begin++;
       // TODO check if not repeated
@@ -1337,7 +1338,7 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
           begin = parse_default_spec(begin, end, dimension_formatter_, dimension_format_str_);
           break;
         default:
-          throw MP_UNITS_STD_FMT::format_error(std::string("unknown `subentity-id` token '") + ch + "'");
+          MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error(std::string("unknown `subentity-id` token '") + ch + "'"));
       }
     } while (begin != end && *begin != '}');
     return begin;

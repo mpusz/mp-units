@@ -271,7 +271,7 @@ class MP_UNITS_STD_FMT::formatter<U, Char> {
     constexpr auto valid_modifiers = std::string_view{"UAP1ansd"};
     for (; it != end && *it != '}'; ++it) {
       if (valid_modifiers.find(*it) == std::string_view::npos)
-        throw MP_UNITS_STD_FMT::format_error("invalid unit modifier specified");
+        MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid unit modifier specified"));
     }
     end = it;
 
@@ -293,7 +293,7 @@ class MP_UNITS_STD_FMT::formatter<U, Char> {
     }
     if (it = mp_units::utility::at_most_one_of(begin, end, "sd"); it != end) {
       if (*it == 'd' && specs_.char_set == mp_units::character_set::basic)
-        throw MP_UNITS_STD_FMT::format_error("half_high_dot unit separator allowed only for UTF-8 encoding");
+        MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("half_high_dot unit separator allowed only for UTF-8 encoding"));
       specs_.separator =
         (*it == 's') ? mp_units::unit_symbol_separator::space : mp_units::unit_symbol_separator::half_high_dot;
     }

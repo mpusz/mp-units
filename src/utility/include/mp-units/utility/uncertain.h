@@ -741,11 +741,11 @@ struct MP_UNITS_STD_FMT::formatter<mp_units::utility::uncertain<T>, Char> : form
     if (it != end && *it == '.') {
       ++it;
       if (it == end || *it < '0' || '9' < *it)
-        throw MP_UNITS_STD_FMT::format_error("dynamic precision is not supported with the '~' format option");
+        MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("dynamic precision is not supported with the '~' format option"));
       const int precision = mp_units::utility::parse_nonnegative_int(it, end, -1);
       if (precision <= 0)
-        throw MP_UNITS_STD_FMT::format_error(
-          "the precision of the '~' format option is a number of significant digits and must be positive");
+        MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error(
+          "the precision of the '~' format option is a number of significant digits and must be positive"));
       specs_.significant_digits = precision;
     }
     if (it != end && *it == 'L') {
@@ -756,7 +756,7 @@ struct MP_UNITS_STD_FMT::formatter<mp_units::utility::uncertain<T>, Char> : form
       constexpr auto valid_types = std::string_view{"eEfFgG"};
       if (valid_types.find(static_cast<char>(*it)) != std::string_view::npos) specs_.type = static_cast<char>(*it++);
     }
-    if (it != end) throw MP_UNITS_STD_FMT::format_error("invalid format specifier for 'uncertain'");
+    if (it != end) MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid format specifier for 'uncertain'"));
     return end;
   }
 
@@ -768,8 +768,8 @@ public:
     if (spec_end == begin || *(spec_end - 1) != '~') return formatter<T, Char>::parse(ctx);
 
     if constexpr (!std::floating_point<T>)
-      throw MP_UNITS_STD_FMT::format_error(
-        "the '~' (concise uncertainty) format option requires a floating-point representation type");
+      MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error(
+        "the '~' (concise uncertainty) format option requires a floating-point representation type"));
 
     concise_ = true;
     parse_concise_specs(begin, spec_end - 1, ctx);

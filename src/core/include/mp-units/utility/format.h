@@ -390,8 +390,8 @@ MP_UNITS_EXPORT template<std::forward_iterator It>
 {
   const It it = ::mp_units::detail::find_first_of(begin, end, modifiers.begin(), modifiers.end());
   if (it != end && ::mp_units::detail::find_first_of(it + 1, end, modifiers.begin(), modifiers.end()) != end)
-    throw MP_UNITS_STD_FMT::format_error("only one of '" + std::string(modifiers) +
-                                         "' unit modifiers may be used in the format spec");
+    MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("only one of '" + std::string(modifiers) +
+                                                  "' unit modifiers may be used in the format spec"));
   return it;
 }
 

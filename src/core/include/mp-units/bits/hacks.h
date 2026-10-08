@@ -103,6 +103,13 @@
 #define MP_UNITS_HOSTED __STDC_HOSTED__
 #endif
 
+// A hosted build can still be compiled with exceptions disabled (e.g. -fno-exceptions)
+#if MP_UNITS_HOSTED && (defined __cpp_exceptions || defined __EXCEPTIONS || defined _CPPUNWIND)
+#define MP_UNITS_HAS_EXCEPTIONS 1
+#else
+#define MP_UNITS_HAS_EXCEPTIONS 0
+#endif
+
 // workarounds for https://cplusplus.github.io/CWG/issues/2387.html
 #define MP_UNITS_INLINE inline
 
