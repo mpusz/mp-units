@@ -65,6 +65,17 @@ template<typename Self, NamedQuantitySpec auto QS, auto... Args>
   return mp_units::contains<struct is_kind, Args...>();
 }
 
+// Whether `Q` itself was declared with `is_kind`. False for quantity specs that cannot be declared so
+// (e.g., derived ones), which have no `defined_as_kind_impl` overload.
+template<QuantitySpec Q>
+[[nodiscard]] consteval bool defined_as_kind(Q)
+{
+  if constexpr (requires { detail::defined_as_kind_impl(Q{}); })
+    return detail::defined_as_kind_impl(Q{});
+  else
+    return false;
+}
+
 template<QuantitySpec Q>
   requires requires(Q q) { detail::get_kind_tree_root(q); }
 using to_kind = decltype(detail::get_kind_tree_root(Q{}));
@@ -72,17 +83,10 @@ using to_kind = decltype(detail::get_kind_tree_root(Q{}));
 template<QuantitySpec Q>
 [[nodiscard]] consteval QuantitySpec auto get_kind_tree_root_impl(Q q)
 {
-  auto defined_as_kind = []<typename QQ>(QQ qq) {
-    if constexpr (requires { detail::defined_as_kind_impl(qq); })
-      return detail::defined_as_kind_impl(QQ{});
-    else
-      return false;
-  };
-
   // NOLINTBEGIN(bugprone-branch-clone)
   if constexpr (QuantityKindSpec<Q>) {
     return detail::remove_kind(q);
-  } else if constexpr (defined_as_kind(Q{})) {
+  } else if constexpr (detail::defined_as_kind(Q{})) {
     return q;
   } else if constexpr (requires { Q::_parent_; }) {
     return detail::get_kind_tree_root(Q::_parent_);

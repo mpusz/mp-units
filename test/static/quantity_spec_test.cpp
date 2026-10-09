@@ -967,6 +967,18 @@ static_assert(convertible(length / length, dimensionless) == yes);
 static_assert(convertible(length / width, dimensionless) == yes);
 static_assert(convertible(active_power / apparent_power, dimensionless) == yes);
 
+// an angle among the ingredients keeps them from being a plain ratio...
+static_assert(convertible(angular_measure_rate * radius / speed, dimensionless) == explicit_conversion_beyond_kind);
+static_assert(convertible(angular_measure_rate * radius, speed) == explicit_conversion_beyond_kind);
+// ...unless it cancels against another angle
+static_assert(convertible(angular_measure_rate * radius / angular_measure / speed, dimensionless) == yes);
+static_assert(convertible(angular_measure_rate * radius / angular_measure, speed) == yes);
+static_assert(convertible(angular_measure_rate * time, angular_measure) == yes);
+// the same holds for a quantity in the kind's tree that is not a kind itself
+static_assert(convertible(special_angular_measure / time * radius / speed, dimensionless) ==
+              explicit_conversion_beyond_kind);
+static_assert(convertible(special_angular_measure / time * radius / angular_measure / speed, dimensionless) == yes);
+
 static_assert(convertible(efficiency, strain) == cast);
 
 // nested kinds
