@@ -435,6 +435,69 @@ MP_UNITS_EXPORT template<std::forward_iterator It, typename Specs>
   return begin;
 }
 
+namespace detail {
+
+// Based on `fmt::detail::display_width_of` (fmtlib 12.2): East Asian wide and fullwidth
+// characters and the emoji blocks take two columns, everything else one.
+[[nodiscard]] constexpr int display_width_of(std::uint32_t cp) noexcept
+{
+  return 1 + (cp >= 0x1100 &&
+              (cp <= 0x115f ||                                    // Hangul Jamo init. consonants
+               cp == 0x2329 ||                                    // LEFT-POINTING ANGLE BRACKET
+               cp == 0x232a ||                                    // RIGHT-POINTING ANGLE BRACKET
+               (cp >= 0x2e80 && cp <= 0xa4cf && cp != 0x303f) ||  // CJK ... Yi except IDEOGRAPHIC HALF FILL SPACE
+               (cp >= 0xac00 && cp <= 0xd7a3) ||                  // Hangul Syllables
+               (cp >= 0xf900 && cp <= 0xfaff) ||                  // CJK Compatibility Ideographs
+               (cp >= 0xfe10 && cp <= 0xfe19) ||                  // Vertical Forms
+               (cp >= 0xfe30 && cp <= 0xfe6f) ||                  // CJK Compatibility Forms
+               (cp >= 0xff00 && cp <= 0xff60) ||                  // Fullwidth Forms
+               (cp >= 0xffe0 && cp <= 0xffe6) ||                  // Fullwidth Forms
+               (cp >= 0x20000 && cp <= 0x2fffd) ||                // CJK
+               (cp >= 0x30000 && cp <= 0x3fffd) ||                //
+               (cp >= 0x1f300 && cp <= 0x1f64f) ||                // Misc Symbols and Pictographs + Emoticons
+               (cp >= 0x1f900 && cp <= 0x1f9ff)));                // Supplemental Symbols and Pictographs
+}
+
+// The estimated display width of `s` in columns, which is what [format.string.std] pads to.
+// Counting code units instead pads every non-ASCII unit symbol short (`g₀`, `°`, `Ω`, `µm`).
+// Like fmtlib, single-byte text is decoded as UTF-8 (a malformed byte counts as one column) and
+// wider character types count one column per code unit.
+template<typename Char>
+[[nodiscard]] constexpr int display_width(std::basic_string_view<Char> s) noexcept
+{
+  if constexpr (sizeof(Char) != 1)
+    return static_cast<int>(s.size());
+  else {
+    int width = 0;
+    std::size_t i = 0;
+    while (i < s.size()) {
+      const auto lead = static_cast<unsigned char>(s[i]);
+      const std::size_t len = lead < 0x80           ? 1
+                              : (lead >> 5) == 0x6  ? 2
+                              : (lead >> 4) == 0xe  ? 3
+                              : (lead >> 3) == 0x1e ? 4
+                                                    : 0;
+      std::uint32_t cp = (len == 1) ? lead : (lead & (0x7fU >> len));
+      bool valid = len != 0 && i + len <= s.size();
+      for (std::size_t k = 1; valid && k < len; ++k) {
+        const auto c = static_cast<unsigned char>(s[i + k]);
+        valid = (c & 0xc0) == 0x80;
+        cp = (cp << 6) | (c & 0x3fU);
+      }
+      if (valid) {
+        width += display_width_of(cp);
+        i += len;
+      } else {
+        ++width;
+        ++i;
+      }
+    }
+    return width;
+  }
+}
+
+}  // namespace detail
+
 // The fill/align/width part of a `std-format-spec` and the padding it drives.
 // TODO the below should be exposed by the C++ Standard Library (used in our examples)
 MP_UNITS_EXPORT_BEGIN
@@ -471,7 +534,7 @@ template<typename Char, std::output_iterator<Char> Out>
 constexpr Out write_padded(Out out, std::basic_string_view<Char> s, int width, fmt_align align,
                            const fill_t<Char>& fill)
 {
-  const int len = static_cast<int>(s.size());
+  const int len = detail::display_width(s);
   const int pad = (width > len) ? width - len : 0;
   const int lpad = (align == fmt_align::center) ? pad / 2 : (align == fmt_align::right) ? pad : 0;
   const int rpad = pad - lpad;

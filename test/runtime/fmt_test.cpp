@@ -728,6 +728,41 @@ TEST_CASE("quantity fill and align specification", "[quantity][ostream][fmt]")
   }
 }
 
+TEST_CASE("fill and align pad to the display width, not to UTF-8 code units", "[quantity][unit][dimension][fmt]")
+{
+  SECTION("quantity with a non-ASCII unit symbol")
+  {
+    CHECK(MP_UNITS_STD_FMT::format("|{:10}|", 5 * si::ohm) == "|       5 Ω|");
+    CHECK(MP_UNITS_STD_FMT::format("|{:<10}|", 5 * us) == "|5 µs      |");
+    CHECK(MP_UNITS_STD_FMT::format("|{:*^10}|", 27 * deg) == "|***27°****|");
+    CHECK(MP_UNITS_STD_FMT::format("|{:>10}|", 10 * (m / s2)) == "|   10 m/s²|");
+  }
+
+  SECTION("quantity with a non-ASCII unit symbol and quantity-specs")
+  {
+    CHECK(MP_UNITS_STD_FMT::format("|{:>12:N[.1f]}|", 26.8 * deg) == "|       26.8°|");
+    CHECK(MP_UNITS_STD_FMT::format("|{:*<10%U}|", 5 * si::ohm) == "|Ω*********|");
+  }
+
+  SECTION("unit")
+  {
+    CHECK(MP_UNITS_STD_FMT::format("|{:*^6}|", si::kilo<si::ohm>) == "|**kΩ**|");
+    CHECK(MP_UNITS_STD_FMT::format("|{:>6}|", m / s2) == "|  m/s²|");
+  }
+
+  SECTION("dimension") { CHECK(MP_UNITS_STD_FMT::format("|{:>6}|", get_dimension(isq::speed)) == "|  LT⁻¹|"); }
+
+  SECTION("display width of a string")
+  {
+    CHECK(utility::detail::display_width(std::string_view{"m/s"}) == 3);
+    CHECK(utility::detail::display_width(std::string_view{"m/s²"}) == 4);
+    CHECK(utility::detail::display_width(std::string_view{"g₀"}) == 2);
+    CHECK(utility::detail::display_width(std::string_view{"中"}) == 2);    // CJK ideograph: two columns
+    CHECK(utility::detail::display_width(std::string_view{"\xff"}) == 1);  // malformed UTF-8: one column
+    CHECK(utility::detail::display_width(std::wstring_view{L"m/s"}) == 3);
+  }
+}
+
 TEST_CASE("quantity subentities selection", "[quantity][fmt]")
 {
   SECTION("quantity format string with only %N should print quantity value only")
