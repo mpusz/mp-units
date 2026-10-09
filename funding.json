@@ -1,0 +1,67 @@
+{
+  "$schema": "https://fundingjson.org/schema/v1.1.0.json",
+  "version": "v1.1.0",
+  "entity": {
+    "type": "individual",
+    "role": "owner",
+    "name": "Mateusz Pusz",
+    "email": "mateusz.pusz@gmail.com",
+    "description": "Author and lead maintainer of mp-units, lead author of P3045 (the proposal to add a quantities and units library to the C++ standard), and a voting member of the ISO C++ committee (WG21) since 2017. C++ trainer at Train IT.",
+    "webpageUrl": {
+      "url": "https://github.com/mpusz"
+    }
+  },
+  "projects": [
+    {
+      "guid": "mp-units",
+      "name": "mp-units",
+      "description": "mp-units is a C++20 library for physical quantities and units, built on the ISO 80000 International System of Quantities. It checks dimensions, units and quantity kinds at compile time with no runtime overhead, so unit mix-ups, arguments of different quantities passed in the wrong order, and silent truncation become compile errors. It is the basis of P3045 (https://wg21.link/p3045), the proposal to standardize its design, and the Library Evolution group agreed its scope in March 2026. Much of the work is research, not only implementation. In the project's comparison of eleven units libraries in seven languages (https://mpusz.github.io/mp-units/latest/blog/2026/03/23/understanding-safety-levels-in-physical-units-libraries/#comprehensive-library-comparison), mp-units is the only one rated full on quantity kind safety and the only one rated above none on quantity safety, and P4185 (https://wg21.link/p4185) proposes the rest of its mathematical model.\n\nThe ISO C++ Direction Group ranks safety as the top priority (Tier 0) for C++29 and asks for library facilities that help users build type-safe interfaces that avoid implicit conversion pitfalls (P5000R1, https://wg21.link/p5000r1). A quantities and units library is such a facility.\n\nmp-units is the most starred C++ quantities and units library on GitHub (https://www.star-history.com/?repos=mpusz%2Fmp-units%2Cnholthaus%2Funits%2Cbernedom%2FSI%2Caurora-opensource%2Fau%2Cmartinmoene%2FPhysUnits-CT-Cpp11%2Cboostorg%2Funits). It is in ConanCenter, vcpkg, the Bazel Central Registry and the ROS index. Software of CERN's SHiP experiment and two accelerator projects at FAIR depend on it, and Franke is adopting it in its coffee machines.\n\nHundreds, possibly thousands, of hours of engineering and standardization work remain before the library is complete and production quality, which is a precondition for standardization. Without funding this becomes best-effort work, and the library may not make it into C++29.",
+      "webpageUrl": {
+        "url": "https://github.com/mpusz/mp-units"
+      },
+      "repositoryUrl": {
+        "url": "https://github.com/mpusz/mp-units"
+      },
+      "licenses": [
+        "spdx:MIT"
+      ],
+      "tags": [
+        "cpp",
+        "programming",
+        "library",
+        "safety",
+        "science",
+        "standards"
+      ]
+    }
+  ],
+  "funding": {
+    "channels": [
+      {
+        "guid": "github-sponsors",
+        "type": "payment-provider",
+        "address": "https://github.com/sponsors/mpusz"
+      },
+      {
+        "guid": "bank",
+        "type": "bank",
+        "description": "Bank transfer (SEPA or SWIFT). Account details are provided directly to the funder on request."
+      }
+    ],
+    "plans": [
+      {
+        "guid": "development",
+        "status": "active",
+        "name": "mp-units development and standardization",
+        "description": "Engineering work on the library (completeness, production quality) and the ISO C++ standardization work for P3045, toward C++29.",
+        "amount": 50000,
+        "currency": "USD",
+        "frequency": "yearly",
+        "channels": [
+          "github-sponsors",
+          "bank"
+        ]
+      }
+    ]
+  }
+}

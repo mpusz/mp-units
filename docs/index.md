@@ -123,6 +123,14 @@ Harvard Bridge length = 364.4 smoot (2034.6 ft, 620.14 m) ± 1 εar
     recognise rather than on textbook examples.
 
     What those domains turn out to need feeds back into the library and the standardization proposal, which
-    is the same evidence the field trials above ask for.
+    is the same evidence the field trials above ask for. Every booking also pays for part of the development
+    and standardization work.
 
     [Domain Modeling with the C++ Type System](https://train-it.eu/workshops/domain-modeling-with-types/){ .md-button }
+
+!!! info "Support the project"
+
+    **mp-units** is open source, and a lot of engineering and standardization work is still needed before
+    it can become part of the C++ standard. If your company depends on the library or wants it in the
+    standard, a corporate sponsorship pays for that work directly: [get in touch](https://train-it.eu/contact)
+    to discuss it. Individuals can support it through [GitHub Sponsors](https://github.com/sponsors/mpusz).

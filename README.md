@@ -203,6 +203,13 @@ support helps sustain development and the standardization work.
 
   [![Sponsor](https://img.shields.io/badge/Sponsor-GitHub_Sponsors-pink?style=for-the-badge&logo=githubsponsors&labelColor=black&color=EA4AAA)](https://github.com/sponsors/mpusz)
 
+- 🏢 **Sponsor as a company** – If your company depends on **mp-units** or wants it in the
+  C++ standard, a corporate sponsorship pays for the engineering and the standardization
+  work directly. [Get in touch](https://train-it.eu/contact) to discuss it.
+- 🎓 **Book the workshop** – [Domain Modeling with the C++ Type System](https://train-it.eu/workshops/domain-modeling-with-types/)
+  is a two-day workshop for teams, taught by the library's author. Every booking pays for
+  part of the work on **mp-units**.
+
 - 📢 **Share your success story** – Help demonstrate real-world value for standardization
   and other potential users
 - 🤝 **Contribute** – Code, documentation, feedback, and community support
