@@ -480,9 +480,9 @@ template<typename Char>
       std::uint32_t cp = (len == 1) ? lead : (lead & (0x7fU >> len));
       bool valid = len != 0 && i + len <= s.size();
       for (std::size_t k = 1; valid && k < len; ++k) {
-        const auto c = static_cast<unsigned char>(s[i + k]);
-        valid = (c & 0xc0) == 0x80;
-        cp = (cp << 6) | (c & 0x3fU);
+        const auto cont = static_cast<unsigned char>(s[i + k]);
+        valid = (cont & 0xc0) == 0x80;
+        cp = (cp << 6) | (cont & 0x3fU);
       }
       if (valid) {
         width += display_width_of(cp);

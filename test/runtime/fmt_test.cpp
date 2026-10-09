@@ -752,6 +752,8 @@ TEST_CASE("fill and align pad to the display width, not to UTF-8 code units", "[
 
   SECTION("dimension") { CHECK(MP_UNITS_STD_FMT::format("|{:>6}|", get_dimension(isq::speed)) == "|  LT⁻¹|"); }
 
+#ifndef MP_UNITS_MODULES
+  // `display_width` is an implementation detail, so the module does not export it
   SECTION("display width of a string")
   {
     CHECK(utility::detail::display_width(std::string_view{"m/s"}) == 3);
@@ -761,6 +763,7 @@ TEST_CASE("fill and align pad to the display width, not to UTF-8 code units", "[
     CHECK(utility::detail::display_width(std::string_view{"\xff"}) == 1);  // malformed UTF-8: one column
     CHECK(utility::detail::display_width(std::wstring_view{L"m/s"}) == 3);
   }
+#endif
 }
 
 TEST_CASE("quantity subentities selection", "[quantity][fmt]")
