@@ -335,6 +335,14 @@ template<typename T>
     return dimensionless;
 }
 
+// Almost every list the conversion engine walks has no ingredient of a declared kind. Checking that once
+// per list lets the two functions below return before instantiating anything per element.
+template<typename... Ts>
+[[nodiscard]] consteval bool has_declared_kind(type_list<Ts...>)
+{
+  return (... || (detail::declared_kind_of(Ts{}) != dimensionless));
+}
+
 template<QuantitySpec K, typename... Ts>
 [[nodiscard]] consteval int count_declared_kind(K, type_list<Ts...>)
 {
@@ -347,12 +355,16 @@ template<QuantitySpec K, typename... Ts>
 template<typename... Num, typename... Den>
 [[nodiscard]] consteval bool declared_kinds_cancel(type_list<Num...>, type_list<Den...>)
 {
-  [[maybe_unused]] constexpr auto balanced = [](auto t) {
-    constexpr auto k = detail::declared_kind_of(decltype(t){});
-    return k == dimensionless ||
-           detail::count_declared_kind(k, type_list<Num...>{}) == detail::count_declared_kind(k, type_list<Den...>{});
-  };
-  return (... && balanced(Num{})) && (... && balanced(Den{}));
+  if constexpr (!detail::has_declared_kind(type_list<Num...>{}) && !detail::has_declared_kind(type_list<Den...>{}))
+    return true;
+  else {
+    [[maybe_unused]] constexpr auto balanced = [](auto t) {
+      constexpr auto k = detail::declared_kind_of(decltype(t){});
+      return k == dimensionless ||
+             detail::count_declared_kind(k, type_list<Num...>{}) == detail::count_declared_kind(k, type_list<Den...>{});
+    };
+    return (... && balanced(Num{})) && (... && balanced(Den{}));
+  }
 }
 
 struct cancelling_kinds_result {
@@ -368,25 +380,29 @@ struct cancelling_kinds_result {
 template<typename... Num, typename... Den>
 [[nodiscard]] consteval cancelling_kinds_result find_cancelling_declared_kinds(type_list<Num...>, type_list<Den...>)
 {
-  cancelling_kinds_result res;
-  [[maybe_unused]] int num_index = 0;
-  [[maybe_unused]] const auto match_numerator = [&]<typename N>(N) {
-    if constexpr (!is_specialization_of_power<N>) {
-      constexpr auto kind = detail::declared_kind_of(N{});
-      if constexpr (kind != dimensionless) {
-        [[maybe_unused]] int den_index = 0;
-        [[maybe_unused]] const auto match_denominator = [&]<typename D>(D) {
-          if constexpr (!is_specialization_of_power<D>)
-            if (!res && detail::declared_kind_of(D{}) == kind) res = {num_index, den_index};
-          ++den_index;
-        };
-        (match_denominator(Den{}), ...);
+  if constexpr (!detail::has_declared_kind(type_list<Num...>{}) || !detail::has_declared_kind(type_list<Den...>{}))
+    return cancelling_kinds_result{};
+  else {
+    cancelling_kinds_result res;
+    [[maybe_unused]] int num_index = 0;
+    [[maybe_unused]] const auto match_numerator = [&]<typename N>(N) {
+      if constexpr (!is_specialization_of_power<N>) {
+        constexpr auto kind = detail::declared_kind_of(N{});
+        if constexpr (kind != dimensionless) {
+          [[maybe_unused]] int den_index = 0;
+          [[maybe_unused]] const auto match_denominator = [&]<typename D>(D) {
+            if constexpr (!is_specialization_of_power<D>)
+              if (!res && detail::declared_kind_of(D{}) == kind) res = {num_index, den_index};
+            ++den_index;
+          };
+          (match_denominator(Den{}), ...);
+        }
       }
-    }
-    ++num_index;
-  };
-  (match_numerator(Num{}), ...);
-  return res;
+      ++num_index;
+    };
+    (match_numerator(Num{}), ...);
+    return res;
+  }
 }
 
 template<TypeList NumFrom, TypeList DenFrom, TypeList NumTo, TypeList DenTo>
