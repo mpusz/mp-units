@@ -31,6 +31,7 @@ import html
 import importlib.util
 import posixpath
 import re
+import sys
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -76,6 +77,14 @@ _MEMBER_LINK = re.compile(r'href="([^":#?]+/)"')
 # through, so an example is highlighted, carries a copy button, and is reachable
 # by the Compiler Explorer transform in `docs/javascripts/ce_embed.js`.
 _DOC_CODE = re.compile(r'(?s)<pre><code class="language-([\w+-]+)">(.*?)</code></pre>')
+
+# A link from a doc comment into the hand-written documentation, written as
+# `[text](guide:users_guide/framework_basics/systems_of_units)`. A doc comment
+# cannot spell the path itself: generated pages sit at five different nesting
+# depths, `nest_namespace_pages` moves them, and the `legible-names` suffix in a
+# page name is not stable between runs. The scheme survives MrDocs untouched, so
+# the hop is computed here, against the page that is actually being rendered.
+_GUIDE = re.compile(r'(?<=href=")guide:([^"#]+)(#[^"]*)?(?=")')
 
 # A synopsis block, and what is worth colouring inside one.
 _SYNOPSIS = re.compile(
@@ -482,6 +491,28 @@ def _fence(markup: str) -> str:
     return _DOC_CODE.sub(one, markup)
 
 
+def _guide_links(markup: str, page, docs_dir: Path) -> str:
+    """Resolve `guide:` targets to a URL relative to the page being rendered.
+
+    The link sits in raw HTML that MrDocs emitted, so ProperDocs does not rewrite it
+    the way it rewrites a Markdown link: the served URL has to be built here, or
+    the `.md` suffix survives into the page and the link is dead.
+    """
+
+    def one(match: re.Match) -> str:
+        target, anchor = match.group(1), match.group(2) or ""
+        if not (docs_dir / f"{target}.md").is_file():
+            print(
+                f"WARNING -  mrdocs: {page.file.src_uri} links to an unknown page "
+                f"'{target}'",
+                file=sys.stderr,
+            )
+            return match.group(0)
+        return get_relative_url(f"{target}/", page.url) + anchor
+
+    return _GUIDE.sub(one, markup)
+
+
 def _definitions(markdown: str, src_uri: str) -> str:
     """Markdown link definitions for the symbols this page references."""
     wanted = {m.group(1) for m in _REF.finditer(markdown)}
@@ -705,6 +736,7 @@ def on_page_markdown(markdown: str, page, config, files, **kwargs):
     if src_uri.startswith(f"{API_DIR}/"):
         markdown = _highlight(markdown)
         markdown = _fence(markdown)
+        markdown = _guide_links(markdown, page, Path(config["docs_dir"]))
 
     definitions = _definitions(markdown, src_uri)
     return f"{markdown}\n\n{definitions}\n" if definitions else markdown
