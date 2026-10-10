@@ -46,6 +46,7 @@ import std;
 #include <initializer_list>
 #include <optional>
 #include <string_view>
+#include <type_traits>
 #include <utility>
 #endif
 #endif
@@ -321,78 +322,68 @@ template<QuantitySpec Equation, TypeList Num, TypeList Den>
 template<QuantitySpec From, QuantitySpec To>
 [[nodiscard]] consteval specs_convertible_result convertible(From, To);
 
-// The kind an ingredient keeps even when its dimension cancels: the root of its kind tree when that root
-// was declared with `is_kind`, which also covers the quantities derived from it that are not kinds
-// themselves (`rotational_displacement` and `angular_measure` both give `angular_measure`). Otherwise
-// `dimensionless`, meaning the ingredient carries no such kind.
+// The kind tree an ingredient belongs to. It names a declared kind when its root was declared with `is_kind`,
+// which also covers the quantities derived from it that are not kinds themselves (`rotational_displacement` and
+// `angular_measure` both give `angular_measure`). An alias rather than a function: `get_kind_tree_root` is
+// already instantiated for every ingredient the conversion engine sees, so naming its result costs nothing.
 template<typename T>
-[[nodiscard]] consteval QuantitySpec auto declared_kind_of(T)
+using kind_root_of = MP_UNITS_NONCONST_TYPE(detail::get_kind_tree_root(detail::get_factor(T{})));
+
+template<typename K, typename... Ts>
+[[nodiscard]] consteval int count_declared_kind(type_list<Ts...>)
 {
-  using Q = MP_UNITS_NONCONST_TYPE(detail::get_factor(T{}));
-  if constexpr (constexpr auto root = detail::get_kind_tree_root(Q{}); detail::defined_as_kind(root))
-    return root;
-  else
-    return dimensionless;
+  return (0 + ... + (std::is_same_v<kind_root_of<Ts>, K> ? 1 : 0));
 }
 
-// Almost every list the conversion engine walks has no ingredient of a declared kind. Checking that once
-// per list lets the two functions below return before instantiating anything per element.
-template<typename... Ts>
-[[nodiscard]] consteval bool has_declared_kind(type_list<Ts...>)
-{
-  return (... || (detail::declared_kind_of(Ts{}) != dimensionless));
-}
-
-template<QuantitySpec K, typename... Ts>
-[[nodiscard]] consteval int count_declared_kind(K, type_list<Ts...>)
-{
-  return (0 + ... + (detail::declared_kind_of(Ts{}) == K{} ? 1 : 0));
-}
-
-// Ingredients whose dimensions cancel form a plain ratio only when the declared kinds among them
-// cancel as well. `angular_velocity * radius / speed` still carries an angle, so it must not become
-// `dimensionless` implicitly, just as `angular_velocity * radius` does not become `speed`.
-template<typename... Num, typename... Den>
-[[nodiscard]] consteval bool declared_kinds_cancel(type_list<Num...>, type_list<Den...>)
-{
-  if constexpr (!detail::has_declared_kind(type_list<Num...>{}) && !detail::has_declared_kind(type_list<Den...>{}))
-    return true;
-  else {
-    [[maybe_unused]] constexpr auto balanced = [](auto t) {
-      constexpr auto k = detail::declared_kind_of(decltype(t){});
-      return k == dimensionless ||
-             detail::count_declared_kind(k, type_list<Num...>{}) == detail::count_declared_kind(k, type_list<Den...>{});
-    };
-    return (... && balanced(Num{})) && (... && balanced(Den{}));
-  }
-}
-
-struct cancelling_kinds_result {
+struct declared_kinds_info {
+  // every declared kind occurs as often in the numerator as in the denominator
+  bool balanced = true;
+  // a numerator and a denominator ingredient of the same declared kind, if any
   int num_index = -1;
   int den_index = -1;
-  [[nodiscard]] constexpr explicit operator bool() const { return num_index >= 0; }
+  [[nodiscard]] constexpr bool can_cancel() const { return num_index >= 0; }
 };
 
-// Finds a numerator and a denominator ingredient of the same declared kind (e.g., the
-// `rotational_displacement` exploded out of `angular_velocity` and the `angular_measure` that `rad`
-// brings in). Such a pair cancels like a plain ratio: an angle divided by an angle is a number.
-// Powers are left alone, so `pow<2>(angular_measure) / angular_measure` keeps one angle.
+/**
+ * @brief What the declared kinds among a numerator and a denominator allow
+ *
+ * Ingredients whose dimensions cancel form a plain ratio only when the declared kinds among them cancel as
+ * well: `angular_velocity * radius / speed` still carries an angle, so it must not become `dimensionless`
+ * implicitly, just as `angular_velocity * radius` does not become `speed`. And a numerator and a denominator
+ * ingredient of the same declared kind (e.g., the `rotational_displacement` exploded out of
+ * `angular_velocity` and the `angular_measure` that `rad` brings in) cancel like a plain ratio, as an angle
+ * divided by an angle is a number; powers are left alone, so `pow<2>(angular_measure) / angular_measure`
+ * keeps one angle.
+ *
+ * Both answers come from one instantiation per numerator/denominator pair, and almost every pair the
+ * conversion engine visits carries no declared kind at all, so that case returns before anything is
+ * instantiated per element.
+ */
 template<typename... Num, typename... Den>
-[[nodiscard]] consteval cancelling_kinds_result find_cancelling_declared_kinds(type_list<Num...>, type_list<Den...>)
+[[nodiscard]] consteval declared_kinds_info analyze_declared_kinds(type_list<Num...>, type_list<Den...>)
 {
-  if constexpr (!detail::has_declared_kind(type_list<Num...>{}) || !detail::has_declared_kind(type_list<Den...>{}))
-    return cancelling_kinds_result{};
+  if constexpr (!(... || detail::defined_as_kind(kind_root_of<Num>{})) &&
+                !(... || detail::defined_as_kind(kind_root_of<Den>{})))
+    return {};
   else {
-    cancelling_kinds_result res;
+    [[maybe_unused]] constexpr auto balanced = []<typename T>(T) {
+      using kind = kind_root_of<T>;
+      return !detail::defined_as_kind(kind{}) || detail::count_declared_kind<kind>(type_list<Num...>{}) ==
+                                                   detail::count_declared_kind<kind>(type_list<Den...>{});
+    };
+    declared_kinds_info res{(... && balanced(Num{})) && (... && balanced(Den{}))};
     [[maybe_unused]] int num_index = 0;
     [[maybe_unused]] const auto match_numerator = [&]<typename N>(N) {
       if constexpr (!is_specialization_of_power<N>) {
-        constexpr auto kind = detail::declared_kind_of(N{});
-        if constexpr (kind != dimensionless) {
+        using kind = kind_root_of<N>;
+        if constexpr (detail::defined_as_kind(kind{})) {
           [[maybe_unused]] int den_index = 0;
           [[maybe_unused]] const auto match_denominator = [&]<typename D>(D) {
             if constexpr (!is_specialization_of_power<D>)
-              if (!res && detail::declared_kind_of(D{}) == kind) res = {num_index, den_index};
+              if (!res.can_cancel() && std::is_same_v<kind_root_of<D>, kind>) {
+                res.num_index = num_index;
+                res.den_index = den_index;
+              }
             ++den_index;
           };
           (match_denominator(Den{}), ...);
@@ -428,7 +419,7 @@ template<TypeList NumFrom, TypeList DenFrom, TypeList NumTo, TypeList DenTo>
 
   // if at least one of the sides is empty then we compare with dimensionless
   if constexpr (num_from_size == den_from_size && num_to_size + den_to_size == 0 &&
-                detail::declared_kinds_cancel(NumFrom{}, DenFrom{}))
+                detail::analyze_declared_kinds(NumFrom{}, DenFrom{}).balanced)
     return specs_convertible_result::yes;
   else if constexpr (num_from_size + den_from_size == 0 && num_to_size == den_to_size && num_to_size >= 1)
     return specs_convertible_result::explicit_conversion;
@@ -442,11 +433,13 @@ template<TypeList NumFrom, TypeList DenFrom, TypeList NumTo, TypeList DenTo>
       if (dens->result == specs_convertible_result::no) return specs_convertible_result::no;
       return detail::min(dens->result,
                          detail::are_ingredients_convertible(num_from, dens->rest_from, num_to, dens->rest_to));
-    } else if constexpr (constexpr auto from_kinds = detail::find_cancelling_declared_kinds(NumFrom{}, DenFrom{})) {
+    } else if constexpr (constexpr auto from_kinds = detail::analyze_declared_kinds(NumFrom{}, DenFrom{});
+                         from_kinds.can_cancel()) {
       return detail::are_ingredients_convertible(detail::type_list_erase_at<from_kinds.num_index>(num_from),
                                                  detail::type_list_erase_at<from_kinds.den_index>(den_from), num_to,
                                                  den_to);
-    } else if constexpr (constexpr auto to_kinds = detail::find_cancelling_declared_kinds(NumTo{}, DenTo{})) {
+    } else if constexpr (constexpr auto to_kinds = detail::analyze_declared_kinds(NumTo{}, DenTo{});
+                         to_kinds.can_cancel()) {
       return detail::are_ingredients_convertible(num_from, den_from,
                                                  detail::type_list_erase_at<to_kinds.num_index>(num_to),
                                                  detail::type_list_erase_at<to_kinds.den_index>(den_to));
