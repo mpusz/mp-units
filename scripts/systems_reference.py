@@ -11,9 +11,15 @@ This script parses system header files and generates markdown documentation incl
 
 import hashlib
 import json
+import os
+import platform
 import re
+import shutil
+import subprocess
 import sys
+import tempfile
 from collections import defaultdict
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, List, Optional, Set
@@ -2234,6 +2240,11 @@ class DocumentationGenerator:
                     print("Warning: Could not find insertion point in properdocs.yml")
                     return
 
+            # `properdocs serve` watches its own configuration and reloads on any
+            # write, so rewriting identical content would rebuild the site again.
+            if new_content == content:
+                print("  ✓ properdocs.yml already lists the generated pages")
+                return
             properdocs_path.write_text(new_content)
             print("  ✓ Updated properdocs.yml with generated pages")
 
@@ -4467,21 +4478,21 @@ class CppMetadataExtractor:
             {}
         )  # (namespace, qty_name) -> {dimension, kind_of, parent, character}
 
+    # A program printing this many quantities compiles in a few seconds, so
+    # larger systems (ISQ) are split to keep the slowest program short.
+    QUANTITIES_PER_PROGRAM = 100
+
     def extract_metadata(self):
-        """Generate C++ program, compile it, run it, and parse the output"""
-        import shutil
-        import subprocess
-        import tempfile
+        """Compile and run one small program per system, reusing cached results.
 
-        # Generate C++ program
-        cpp_code = self._generate_cpp_program()
-
-        # Write to temporary file
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".cpp", delete=False) as f:
-            cpp_file = Path(f.name)
-            f.write(cpp_code)
-
-        # Find available C++ compiler (try multiple options)
+        A single program over every system header took most of a regeneration,
+        and almost none of that was the quantities: it was parsing headers such
+        as the CODATA constants, which define no quantity at all. Each program
+        now includes only the headers of the system it prints, the programs
+        build in parallel, and each result is cached under a hash of the
+        preprocessed source, so a header edit recompiles only the programs that
+        can actually see it, and a comment-only edit recompiles none.
+        """
         compiler = None
         for candidate in [
             "g++-14",
@@ -4500,77 +4511,190 @@ class CppMetadataExtractor:
         if not compiler:
             print("Warning: No suitable C++23 compiler found (tried g++, clang++, c++)")
             print("         Quantity metadata extraction skipped")
-            cpp_file.unlink()
             return
 
-        # Compile
-        exe_file = cpp_file.with_suffix("")
-        compilation_failed = False
-        try:
-            compile_cmd = [
-                compiler,
-                "-std=c++23",
-                f"-I{self.source_dir}/src/core/include",
-                f"-I{self.source_dir}/src/systems/include",
-                str(cpp_file),
-                "-o",
-                str(exe_file),
-            ]
-            result = subprocess.run(
-                compile_cmd, capture_output=True, text=True, timeout=60
-            )
-            if result.returncode != 0:
-                compilation_failed = True
-                print(
-                    f"Warning: Failed to compile metadata extraction program with {compiler}:"
-                )
-                print(result.stderr)
-                print(f"         C++ file preserved for inspection: {cpp_file}")
-                return
+        flags = [
+            "-std=c++23",
+            f"-I{self.source_dir}/src/core/include",
+            f"-I{self.source_dir}/src/systems/include",
+        ]
+        version = subprocess.run(
+            [compiler, "--version"], capture_output=True, text=True
+        ).stdout
+        cache_dir = self._metadata_cache_dir()
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        programs = self._generate_cpp_programs()
 
-            # Run and capture output
+        with tempfile.TemporaryDirectory(prefix="systems-reference-") as work:
+            with ThreadPoolExecutor(max_workers=os.cpu_count() or 4) as pool:
+                results = list(
+                    pool.map(
+                        lambda item: self._run_program(
+                            *item, compiler, flags, version, cache_dir, Path(work)
+                        ),
+                        programs.items(),
+                    )
+                )
+
+        compiled = sum(1 for _, was_compiled in results if was_compiled)
+        print(
+            f"  ✓ {len(programs)} metadata programs: {compiled} compiled, "
+            f"{len(programs) - compiled} cached"
+        )
+        for output, _ in results:
+            if output is not None:
+                self._parse_output(output)
+        self._prune_metadata_cache(cache_dir)
+
+    @staticmethod
+    def _metadata_cache_dir() -> Path:
+        # outside the repository, like the MrDocs cache, so `properdocs serve`
+        # never watches it and git never sees it
+        if platform.system() == "Windows":
+            base = os.environ.get("LOCALAPPDATA") or Path.home() / "AppData" / "Local"
+        elif platform.system() == "Darwin":
+            base = Path.home() / "Library" / "Caches"
+        else:
+            base = os.environ.get("XDG_CACHE_HOME") or Path.home() / ".cache"
+        return Path(base) / "mp-units" / "systems_reference"
+
+    @staticmethod
+    def _prune_metadata_cache(cache_dir: Path, max_age_days: int = 30):
+        # Entries are shared between worktrees, so one unused by this run may be
+        # another checkout's. Only those nobody has read for a month go.
+        import time
+
+        cutoff = time.time() - max_age_days * 86400
+        for entry in cache_dir.glob("*.txt"):
             try:
-                result = subprocess.run(
-                    [str(exe_file)], capture_output=True, text=True, timeout=60
+                if entry.stat().st_mtime < cutoff:
+                    entry.unlink()
+            except OSError:
+                pass
+
+    def _run_program(self, label, code, compiler, flags, version, cache_dir, work):
+        """Return (output or None, whether it had to be compiled)."""
+        cpp_file = work / f"{label}.cpp"
+        cpp_file.write_text(code)
+
+        # The preprocessed text, without line markers, is everything that can
+        # change the output, and it is the same in every checkout. Comments are
+        # already gone from it, so editing one does not invalidate the cache.
+        result = subprocess.run(
+            [compiler, *flags, "-E", "-P", str(cpp_file)],
+            capture_output=True,
+            text=True,
+            timeout=300,
+        )
+        if result.returncode != 0:
+            print(f"Warning: Failed to preprocess metadata program {label}:")
+            print(result.stderr)
+            return None, False
+        hasher = hashlib.sha256()
+        for part in (compiler, version, *flags[:1], result.stdout):
+            hasher.update(part.encode())
+            hasher.update(b"\0")
+        cached = cache_dir / f"{hasher.hexdigest()}.txt"
+        if cached.is_file():
+            cached.touch()  # keeps it from being pruned
+            return cached.read_text(), False
+
+        exe_file = cpp_file.with_suffix("")
+        result = subprocess.run(
+            [compiler, *flags, str(cpp_file), "-o", str(exe_file)],
+            capture_output=True,
+            text=True,
+            timeout=300,
+        )
+        if result.returncode != 0:
+            kept = Path(tempfile.gettempdir()) / f"systems_reference_{label}.cpp"
+            shutil.copyfile(cpp_file, kept)
+            print(
+                f"Warning: Failed to compile metadata program {label} with {compiler}:"
+            )
+            print(result.stderr)
+            print(f"         C++ file preserved for inspection: {kept}")
+            return None, True
+
+        try:
+            result = subprocess.run(
+                [str(exe_file)], capture_output=True, text=True, timeout=60
+            )
+        except subprocess.TimeoutExpired:
+            print(f"Warning: Metadata program {label} timed out")
+            return None, True
+        if result.returncode != 0:
+            print(f"Warning: Failed to run metadata program {label}:")
+            print(result.stderr)
+            return None, True
+
+        # written aside and renamed, so a concurrent run never reads half a file
+        partial = cached.with_name(f"{cached.stem}.{os.getpid()}.tmp")
+        partial.write_text(result.stdout)
+        os.replace(partial, cached)
+        return result.stdout, True
+
+    def _include_paths(self, files) -> List[str]:
+        roots = [
+            self.source_dir / "src" / "core" / "include",
+            self.source_dir / "src" / "systems" / "include",
+        ]
+        paths = []
+        for file in files:
+            for root in roots:
+                if file.is_relative_to(root):
+                    paths.append(file.relative_to(root).as_posix())
+                    break
+        return paths
+
+    def _generate_cpp_programs(self) -> Dict[str, str]:
+        """One program per system defining quantities, larger ones split in chunks.
+
+        Each includes only its own system's headers, which also include whatever
+        that system builds on. The output is identical to that of a single
+        program including every header, and far cheaper to compile.
+        """
+        calls: Dict[str, List[str]] = defaultdict(list)
+        headers: Dict[str, List[str]] = defaultdict(list)
+
+        # dimensionless is a special case, defined in the core library
+        calls["core"].append('  print_quantity("", "dimensionless", dimensionless);')
+        headers["core"].append("mp-units/core.h")
+
+        for system_key, system in sorted(self.parser.systems.items()):
+            for qty in sorted(system.quantities, key=lambda q: q.name):
+                if qty.alias_target:  # Skip aliases
+                    continue
+                if system.namespace:  # Regular namespace
+                    calls[system_key].append(
+                        f"  PRINT_QTY({system.namespace}, {qty.name});"
+                    )
+                elif qty.name != "dimensionless":  # Empty namespace (core) = mp_units::
+                    calls[system_key].append(
+                        f'  print_quantity("", "{qty.name}", {qty.name});'
+                    )
+            if calls.get(system_key):
+                for include in self._include_paths(system.files):
+                    if include not in headers[system_key]:
+                        headers[system_key].append(include)
+
+        programs = {}
+        for system_key, system_calls in calls.items():
+            count = -(-len(system_calls) // self.QUANTITIES_PER_PROGRAM)
+            size = -(-len(system_calls) // count)
+            for index in range(count):
+                label = system_key if count == 1 else f"{system_key}_{index}"
+                programs[label] = self._generate_cpp_program(
+                    headers[system_key],
+                    system_calls[index * size : (index + 1) * size],
                 )
-            except subprocess.TimeoutExpired:
-                print("Warning: Metadata extraction program timed out")
-                return
-            if result.returncode != 0:
-                print("Warning: Failed to run metadata extraction program:")
-                print(result.stderr)
-                return
+        return programs
 
-            # Parse output
-            self._parse_output(result.stdout)
-
-        finally:
-            # Cleanup - preserve .cpp file only on compilation failure for debugging
-            if cpp_file.exists() and not compilation_failed:
-                cpp_file.unlink()
-            if exe_file.exists():
-                exe_file.unlink()
-            pass
-
-    def _generate_cpp_program(self) -> str:
-        """Generate C++ program that outputs metadata for all quantities"""
-        # Discover all system header files dynamically
-        systems_include_dir = (
-            self.source_dir / "src" / "systems" / "include" / "mp-units" / "systems"
-        )
-        system_headers = sorted(
-            [
-                f.name
-                for f in systems_include_dir.iterdir()
-                if f.is_file() and f.suffix == ".h"
-            ]
-        )
-
+    @staticmethod
+    def _generate_cpp_program(headers: List[str], calls: List[str]) -> str:
+        """Generate a C++ program that outputs metadata for the given quantities"""
         lines = ["// Auto-generated program to extract quantity metadata"]
-
-        # Add includes for all discovered system headers
-        for header in system_headers:
-            lines.append(f"#include <mp-units/systems/{header}>")
+        lines.extend(f"#include <{header}>" for header in headers)
 
         lines.extend(
             [
@@ -4625,33 +4749,8 @@ class CppMetadataExtractor:
                 "{",
             ]
         )
-
-        # Add dimensionless (special case - no namespace)
-        lines.append('  print_quantity("", "dimensionless", dimensionless);')
-
-        # Add all quantities from each system
-        for system_key, system in self.parser.systems.items():
-            if system.quantities:
-                for qty in sorted(system.quantities, key=lambda q: q.name):
-                    if not qty.alias_target:  # Skip aliases
-                        if system.namespace:  # Regular namespace
-                            lines.append(
-                                f"  PRINT_QTY({system.namespace}, {qty.name});"
-                            )
-                        else:  # Empty namespace (core) = mp_units::
-                            # dimensionless is already handled above
-                            if qty.name != "dimensionless":
-                                lines.append(
-                                    f'  print_quantity("", "{qty.name}", {qty.name});'
-                                )
-
-        lines.extend(
-            [
-                "  return 0;",
-                "}",
-            ]
-        )
-
+        lines.extend(calls)
+        lines.extend(["  return 0;", "}"])
         return "\n".join(lines)
 
     def _parse_output(self, output: str):
@@ -4799,17 +4898,25 @@ def main():
     print(f"  ✓ Extracted metadata for {len(extractor.metadata)} quantities")
 
     print(f"\nGenerating documentation to: {output_dir}")
-    generator = DocumentationGenerator(parser, output_dir)
-    generator.generate_systems_index()
-    generator.generate_dimensions_index()
-    generator.generate_quantities_index()
-    generator.generate_units_index()
-    generator.generate_prefixes_index()
-    generator.generate_constants_index()
-    generator.generate_point_origins_index()
-    hierarchy_count = generator.generate_cross_system_hierarchies()
-    generator.generate_hierarchies_overview()
-    generator.generate_per_system_pages()
+    # Every page is regenerated, because the global ones (the indices, and the
+    # namespace suffix a hierarchy page gets when its root name exists in two
+    # systems) can change with any system. Only the pages whose content differs
+    # are then written, so ProperDocs rebuilds those and leaves the rest alone.
+    with tempfile.TemporaryDirectory(prefix="systems-reference-") as staging_dir:
+        staging = Path(staging_dir)
+        generator = DocumentationGenerator(parser, staging)
+        generator.generate_systems_index()
+        generator.generate_dimensions_index()
+        generator.generate_quantities_index()
+        generator.generate_units_index()
+        generator.generate_prefixes_index()
+        generator.generate_constants_index()
+        generator.generate_point_origins_index()
+        hierarchy_count = generator.generate_cross_system_hierarchies()
+        generator.generate_hierarchies_overview()
+        generator.generate_per_system_pages()
+        written, removed, kept = sync_generated_pages(staging, output_dir)
+    print(f"  ✓ {written} pages written, {removed} removed, {kept} unchanged")
 
     print("\nUpdating properdocs configuration...")
     generator.update_properdocs_config(properdocs_file)
@@ -4832,6 +4939,44 @@ def main():
     print(f"  - {total_constants} constants documented")
 
     return 0
+
+
+def sync_generated_pages(staging: Path, destination: Path) -> tuple[int, int, int]:
+    """Copy across only what changed, leaving unchanged pages untouched.
+
+    ProperDocs rebuilds a page when its file changes, so rewriting all of them made
+    a one-header edit look like a change to every page. This is the pattern of
+    `_sync` in scripts/mrdocs/run.py.
+    """
+    written = removed = kept = 0
+    destination.mkdir(parents=True, exist_ok=True)
+    fresh = {path.relative_to(staging) for path in staging.rglob("*") if path.is_file()}
+    stale = {
+        path.relative_to(destination)
+        for path in destination.rglob("*")
+        if path.is_file()
+    }
+
+    # Written before anything is removed. A `properdocs serve` may be reading this
+    # tree, and it collects the file list up front: a page that disappears
+    # between the listing and the read crashes the build.
+    for relative in sorted(fresh):
+        source, target = staging / relative, destination / relative
+        if target.is_file() and target.read_bytes() == source.read_bytes():
+            kept += 1
+            continue
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, target)
+        written += 1
+
+    for relative in sorted(stale - fresh):
+        # written by the caller once generation has succeeded, so never in staging
+        if relative == Path(".cache.json"):
+            continue
+        (destination / relative).unlink()
+        removed += 1
+
+    return written, removed, kept
 
 
 def compute_source_hash(source_root: Path) -> str:
