@@ -1,0 +1,158 @@
+/* Styling for the MrDocs-generated API reference.
+ *
+ * MrDocs' own HTML output frames each section: light, rounded tables with a
+ * shaded header row, identifiers as pills, and the synopsis in a panel. The
+ * generated Markdown here carries the same markup, so the difference was
+ * purely CSS. These rules adapt it onto Material's colour tokens, so light and
+ * dark mode both work (the upstream stylesheet is light-only).
+ *
+ * Content width is left at Material's default.
+ */
+
+/* --- Members tables ---------------------------------------------------- */
+
+/* The scroll lives on the wrapper: a `display: block` table stops its cells
+ * filling the width, which leaves the header shading covering only part of the
+ * row and looks broken when a table has no Description column. */
+.mrdocs-table-wrap {
+  overflow-x: auto;
+  margin: 0.6rem 0 1.6rem;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.6rem;
+}
+
+.md-typeset .mrdocs-table {
+  display: table;
+  width: 100%;
+  margin: 0;
+  border: 0;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+}
+
+.md-typeset .mrdocs-table thead th {
+  text-align: left;
+  font-weight: 600;
+  background: var(--md-default-fg-color--lightest);
+  border-bottom: 1px solid var(--md-default-fg-color--lightest);
+  padding: 0.6rem 0.9rem;
+}
+
+.md-typeset .mrdocs-table td {
+  padding: 0.55rem 0.9rem;
+  vertical-align: top;
+  border-bottom: 1px solid var(--md-default-fg-color--lightest);
+  background: transparent;
+}
+
+.md-typeset .mrdocs-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* Keep identifiers whole: `constraint_violation_handler` would otherwise break
+ * mid-name. The wrapper scrolls instead. */
+.md-typeset .mrdocs-table td:first-child,
+.md-typeset .mrdocs-table th:first-child {
+  white-space: nowrap;
+}
+
+/* Shrink the name column only when there is a description beside it. A table
+ * with a single column (Static Member Functions, say) should fill the width
+ * rather than leave most of the frame empty. */
+.md-typeset .mrdocs-table td:first-child:not(:only-child),
+.md-typeset .mrdocs-table th:first-child:not(:only-child) {
+  width: 1%;
+}
+
+/* The description reads as secondary to the name it describes. */
+.md-typeset .mrdocs-table td:nth-child(2) {
+  color: var(--md-default-fg-color--light);
+}
+
+/* Identifiers get a faint tint rather than the heavy grey code background:
+ * enough to stay scannable down a long table, without turning every row into a
+ * row of buttons. */
+.md-typeset .mrdocs-table code {
+  background: color-mix(in srgb, var(--md-primary-fg-color) 6%, transparent);
+  border: 0;
+  border-radius: 0.2rem;
+  padding: 0.1em 0.4em;
+  box-shadow: none;
+}
+
+.md-typeset .mrdocs-table a:hover code {
+  background: color-mix(in srgb, var(--md-primary-fg-color) 12%, transparent);
+}
+
+/* `[constructor]`, `[deprecated]` and friends. */
+.md-typeset .mrdocs-table .small {
+  font-size: 0.85em;
+  color: var(--md-default-fg-color--light);
+}
+
+/* --- Synopsis ----------------------------------------------------------- */
+
+.md-typeset pre.mrdocs-synopsis {
+  padding: 0.9rem 1.1rem;
+  margin: 0.4rem 0 1.4rem;
+  overflow-x: auto;
+  background: var(--md-code-bg-color);
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.6rem;
+  line-height: 1.55;
+}
+
+.md-typeset pre.mrdocs-synopsis > code {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  box-shadow: none;
+}
+
+/* Links inside a signature read as part of the code, not as prose. */
+.md-typeset pre.mrdocs-synopsis a {
+  color: var(--md-primary-fg-color);
+  text-decoration: none;
+}
+
+.md-typeset pre.mrdocs-synopsis a:hover {
+  text-decoration: underline;
+}
+
+/* --- Section rhythm ----------------------------------------------------- */
+
+.md-typeset .mrdocs-table-wrap + h2,
+.md-typeset pre.mrdocs-synopsis + h2 {
+  margin-top: 2rem;
+}
+
+/* Keywords and comments in a synopsis. The types are links, so the block
+ * cannot be a fenced code block for Pygments to colour; the hook wraps the
+ * plain text between the links instead. Material's own code-highlight tokens
+ * are reused, so this follows the palette in both light and dark mode. */
+.md-typeset pre.mrdocs-synopsis .mrdocs-k {
+  color: var(--md-code-hl-keyword-color);
+  font-weight: 600;
+}
+
+.md-typeset pre.mrdocs-synopsis .mrdocs-c {
+  color: var(--md-code-hl-comment-color);
+  font-style: italic;
+}
+
+/* Page title.
+ *
+ * The generator wraps it in a code span so that a qualified name containing an
+ * emoji shortcode (`mp_units::si::henry` has `:si:` in it) is not turned into a
+ * flag. That is the only reason for the code span, so strip the code styling
+ * back off and let it read as a heading.
+ */
+.md-typeset h1 > code {
+  background: none;
+  border: 0;
+  padding: 0;
+  box-shadow: none;
+  color: inherit;
+  font-size: inherit;
+  font-weight: 700;
+}
