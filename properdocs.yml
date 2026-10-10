@@ -84,6 +84,13 @@ theme:
 # are reported at INFO, which is why they accumulated through green builds. Raised to
 # warnings, `properdocs build --strict` rejects them - see the `link-check` job in
 # `.github/workflows/documentation.yml`.
+# The API reference is reached through its namespace listings, not the sidebar: the
+# hook splices the namespace pages into `nav` and leaves the ~4800 symbol pages out
+# on purpose. ProperDocs cannot tell a deliberate omission from an oversight, so without
+# this it lists every one of them on each build and buries anything worth reading.
+not_in_nav: |
+  /reference/api_reference/mrdocs/**
+
 validation:
   links:
     anchors: warn
