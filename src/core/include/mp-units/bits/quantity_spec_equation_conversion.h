@@ -366,21 +366,21 @@ template<typename... Num, typename... Den>
                 !(... || detail::defined_as_kind(kind_root_of<Den>{})))
     return {};
   else {
-    [[maybe_unused]] constexpr auto balanced = []<typename T>(T) {
-      using kind = kind_root_of<T>;
+    [[maybe_unused]] constexpr auto balanced = []<typename Ingredient>(Ingredient) {
+      using kind = kind_root_of<Ingredient>;
       return !detail::defined_as_kind(kind{}) || detail::count_declared_kind<kind>(type_list<Num...>{}) ==
                                                    detail::count_declared_kind<kind>(type_list<Den...>{});
     };
     declared_kinds_info res{(... && balanced(Num{})) && (... && balanced(Den{}))};
     [[maybe_unused]] int num_index = 0;
-    [[maybe_unused]] const auto match_numerator = [&]<typename N>(N) {
-      if constexpr (!is_specialization_of_power<N>) {
-        using kind = kind_root_of<N>;
+    [[maybe_unused]] const auto match_numerator = [&]<typename NumIngredient>(NumIngredient) {
+      if constexpr (!is_specialization_of_power<NumIngredient>) {
+        using kind = kind_root_of<NumIngredient>;
         if constexpr (detail::defined_as_kind(kind{})) {
           [[maybe_unused]] int den_index = 0;
-          [[maybe_unused]] const auto match_denominator = [&]<typename D>(D) {
-            if constexpr (!is_specialization_of_power<D>)
-              if (!res.can_cancel() && std::is_same_v<kind_root_of<D>, kind>) {
+          [[maybe_unused]] const auto match_denominator = [&]<typename DenIngredient>(DenIngredient) {
+            if constexpr (!is_specialization_of_power<DenIngredient>)
+              if (!res.can_cancel() && std::is_same_v<kind_root_of<DenIngredient>, kind>) {
                 res.num_index = num_index;
                 res.den_index = den_index;
               }
