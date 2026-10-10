@@ -486,7 +486,11 @@ def _fence(markup: str) -> str:
         # A fence has to be longer than the longest backtick run it encloses.
         longest = max((len(run) for run in re.findall(r"`+", body)), default=0)
         fence = "`" * max(3, longest + 1)
-        return f"{fence}{language}\n{body}\n{fence}"
+        # MrDocs puts the closing tag and whatever follows it on one line, so
+        # both fences are surrounded here. A fence only delimits a block when it
+        # sits on a line of its own, and gluing the closing one to the next
+        # sentence swallows the rest of the page into the listing.
+        return f"\n\n{fence}{language}\n{body}\n{fence}\n\n"
 
     return _DOC_CODE.sub(one, markup)
 
