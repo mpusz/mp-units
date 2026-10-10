@@ -368,6 +368,39 @@ Guide. They go in the [FAQ](https://mpusz.github.io/mp-units/latest/getting_star
 and the chapter links to the FAQ entry where the question arises, as _the_affine_space.md_
 does for the quantity point constructor.
 
+### Documentation style
+
+The prose in _docs/_ and the doc comments the API reference is built from follow a few
+conventions beyond the formatting `pre-commit` enforces:
+
+- **Quantity names are italicized; the entities that model them are not.** Prose about the
+  quantities themselves writes _length_, _width_, _energy_, and _torque_. Prose about the
+  library entities writes `isq::length` and `isq::energy`, in code font like any other
+  identifier. An ordinary English use of the same word stays plain: "the length of the buffer"
+  is not a reference to the quantity.
+- **Project names are prose, not code.** mp-units, Conan, and Compiler Explorer are written
+  plainly. Backticks are for things you type into a source file, so `mp_units` the namespace
+  is code and mp-units the project is not.
+
+Doc comments are read by [MrDocs](https://www.mrdocs.com), which accepts Javadoc-style
+commands. A few of its behaviors are worth knowing, because the obvious habits from Doxygen
+produce worse output here:
+
+- **The first paragraph is the brief, so `@brief` is redundant.** Write the summary sentence
+  and leave the command out. Note that `@brief` consumes the whole paragraph rather than
+  the line, so a sentence beneath it silently joins the summary.
+- **Use `@ref` to point at another symbol.** A backticked name renders as code and is not
+  a link. `@ref` renders as code *and* links, so nothing is lost, and an unresolvable name
+  is reported, which makes these checkable.
+- **Deprecation comes from the attribute.** A `[[deprecated]]` attribute already produces
+  the message, the badge, and an admonition, so `@deprecated` only adds a second copy that
+  can drift out of step with the one the compiler enforces.
+- **Document a parameter only where the signature does not.** Restating a name and its type
+  adds nothing. Say what a parameter means when that cannot be read off the declaration, and
+  say nothing when it can.
+- **Code examples have to compile.** An example that was never built goes stale silently,
+  and a wrong example in the reference is worse than none.
+
 ### Unified code formatting
 
 A formatting standard is enforced with the `pre-commit` script. Before committing your changes,
