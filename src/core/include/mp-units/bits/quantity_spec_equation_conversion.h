@@ -405,6 +405,18 @@ template<typename... Num, typename... Den>
   }
 }
 
+// `List` without its element at `I`, or `List` itself when there is no such element. MSVC forms the
+// template arguments of a discarded `if constexpr` branch, so a "not found" index must not reach
+// `type_list_extract`, whose constraint would reject it.
+template<int I, typename... Ts>
+[[nodiscard]] consteval auto type_list_erase_at(type_list<Ts...>)
+{
+  if constexpr (I >= 0 && I < static_cast<int>(sizeof...(Ts)))
+    return typename type_list_extract<type_list<Ts...>, static_cast<std::size_t>(I)>::rest{};
+  else
+    return type_list<Ts...>{};
+}
+
 template<TypeList NumFrom, TypeList DenFrom, TypeList NumTo, TypeList DenTo>
 [[nodiscard]] constexpr specs_convertible_result are_ingredients_convertible(NumFrom num_from, DenFrom den_from,
                                                                              NumTo num_to, DenTo den_to)
@@ -431,13 +443,13 @@ template<TypeList NumFrom, TypeList DenFrom, TypeList NumTo, TypeList DenTo>
       return detail::min(dens->result,
                          detail::are_ingredients_convertible(num_from, dens->rest_from, num_to, dens->rest_to));
     } else if constexpr (constexpr auto from_kinds = detail::find_cancelling_declared_kinds(NumFrom{}, DenFrom{})) {
-      return detail::are_ingredients_convertible(
-        typename type_list_extract<NumFrom, static_cast<std::size_t>(from_kinds.num_index)>::rest{},
-        typename type_list_extract<DenFrom, static_cast<std::size_t>(from_kinds.den_index)>::rest{}, num_to, den_to);
+      return detail::are_ingredients_convertible(detail::type_list_erase_at<from_kinds.num_index>(num_from),
+                                                 detail::type_list_erase_at<from_kinds.den_index>(den_from), num_to,
+                                                 den_to);
     } else if constexpr (constexpr auto to_kinds = detail::find_cancelling_declared_kinds(NumTo{}, DenTo{})) {
-      return detail::are_ingredients_convertible(
-        num_from, den_from, typename type_list_extract<NumTo, static_cast<std::size_t>(to_kinds.num_index)>::rest{},
-        typename type_list_extract<DenTo, static_cast<std::size_t>(to_kinds.den_index)>::rest{});
+      return detail::are_ingredients_convertible(num_from, den_from,
+                                                 detail::type_list_erase_at<to_kinds.num_index>(num_to),
+                                                 detail::type_list_erase_at<to_kinds.den_index>(den_to));
     } else {
       // otherwise, get the ingredient with the highest complexity
       constexpr auto max_compl_res = detail::get_max_complexity(NumFrom{}, DenFrom{}, NumTo{}, DenTo{});
