@@ -27,6 +27,7 @@ known.
 
 from __future__ import annotations
 
+import html
 import importlib.util
 import posixpath
 import re
@@ -67,6 +68,14 @@ _REF = re.compile(r"\]\[([A-Za-z_]\w*(?:::[\w~+\-*/%^&|!=<>\[\]()]+)+)\]")
 # generator emits ProperDocs directory URLs, relative to where the page is *served*.
 _HEADING = re.compile(r"^## (.+)$", re.MULTILINE)
 _MEMBER_LINK = re.compile(r'href="([^":#?]+/)"')
+
+# An example from a doc comment. MrDocs emits it as raw HTML, which Pygments
+# never sees: highlighting happens while the Markdown is rendered, and by then
+# this is already a finished element. Turning it back into a fenced block hands
+# it to the same machinery every other code block in the documentation goes
+# through, so an example is highlighted, carries a copy button, and is reachable
+# by the Compiler Explorer transform in `docs/javascripts/ce_embed.js`.
+_DOC_CODE = re.compile(r'(?s)<pre><code class="language-([\w+-]+)">(.*?)</code></pre>')
 
 # A synopsis block, and what is worth colouring inside one.
 _SYNOPSIS = re.compile(
@@ -456,6 +465,23 @@ def _highlight(markup: str) -> str:
     return _SYNOPSIS.sub(one, markup)
 
 
+def _fence(markup: str) -> str:
+    """Rewrite MrDocs' raw-HTML examples as fenced code blocks."""
+
+    def one(match: re.Match) -> str:
+        language, body = match.groups()
+        body = html.unescape(body)
+        # MrDocs opens the block with a newline of its own, which `<pre>` keeps
+        # and which would otherwise render as a blank first line.
+        body = body.strip("\n")
+        # A fence has to be longer than the longest backtick run it encloses.
+        longest = max((len(run) for run in re.findall(r"`+", body)), default=0)
+        fence = "`" * max(3, longest + 1)
+        return f"{fence}{language}\n{body}\n{fence}"
+
+    return _DOC_CODE.sub(one, markup)
+
+
 def _definitions(markdown: str, src_uri: str) -> str:
     """Markdown link definitions for the symbols this page references."""
     wanted = {m.group(1) for m in _REF.finditer(markdown)}
@@ -678,6 +704,7 @@ def on_page_markdown(markdown: str, page, config, files, **kwargs):
     src_uri = page.file.src_uri
     if src_uri.startswith(f"{API_DIR}/"):
         markdown = _highlight(markdown)
+        markdown = _fence(markdown)
 
     definitions = _definitions(markdown, src_uri)
     return f"{markdown}\n\n{definitions}\n" if definitions else markdown
