@@ -83,7 +83,7 @@ struct relative_point_origin;
  * Satisfied by all quantity point origins that are defined using a provided quantity specification.
  */
 MP_UNITS_EXPORT template<typename T, auto QS>
-concept PointOriginFor = PointOrigin<T> && QuantitySpecOf<MP_UNITS_NTTP_TYPE(QS), T::_quantity_spec_>;
+concept PointOriginFor = PointOrigin<T> && QuantitySpecOf<MP_UNITS_NTTP_HACK(decltype(QS)), T::_quantity_spec_>;
 
 MP_UNITS_EXPORT template<Reference auto R, PointOriginFor<get_quantity_spec(R)> auto PO,
                          RepresentationOf<get_quantity_spec(R)> Rep>
@@ -121,7 +121,7 @@ template<PointOrigin PO1, PointOrigin PO2>
 
 template<typename T, auto V>
 concept SameAbsolutePointOriginAs =
-  PointOrigin<T> && PointOrigin<MP_UNITS_NTTP_TYPE(V)> && same_absolute_point_origins(T{}, V);
+  PointOrigin<T> && PointOrigin<MP_UNITS_NTTP_HACK(decltype(V))> && same_absolute_point_origins(T{}, V);
 
 }  // namespace detail
 
@@ -135,8 +135,8 @@ concept SameAbsolutePointOriginAs =
  */
 MP_UNITS_EXPORT template<typename QP, auto V>
 concept QuantityPointOf =
-  QuantityPoint<QP> && (ReferenceOf<MP_UNITS_NONCONST_TYPE(QP::reference), V> ||
-                        detail::SameAbsolutePointOriginAs<MP_UNITS_NONCONST_TYPE(QP::absolute_point_origin), V>);
+  QuantityPoint<QP> && (ReferenceOf<decltype(QP::reference), V> ||
+                        detail::SameAbsolutePointOriginAs<decltype(QP::absolute_point_origin), V>);
 
 /**
  * @brief A concept matching all external quantity point like types
@@ -154,7 +154,7 @@ namespace detail {
 
 template<auto From, auto To>
 concept HasFrameProjection =
-  AbsolutePointOrigin<MP_UNITS_NTTP_TYPE(From)> && AbsolutePointOrigin<MP_UNITS_NTTP_TYPE(To)> &&
+  AbsolutePointOrigin<MP_UNITS_NTTP_HACK(decltype(From))> && AbsolutePointOrigin<MP_UNITS_NTTP_HACK(decltype(To))> &&
   utility::specified<decltype(frame_projection<From, To>)>;
 
 }  // namespace detail

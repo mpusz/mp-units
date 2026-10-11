@@ -31,6 +31,7 @@
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/quantity_spec_hierarchy_conversion.h>
 #include <mp-units/bits/ratio.h>
+#include <mp-units/compat_macros.h>
 #include <mp-units/ext/algorithm.h>
 #include <mp-units/ext/type_name.h>
 #include <mp-units/framework/quantity_spec_concepts.h>

@@ -38,6 +38,7 @@ import std;
 namespace mp_units {
 
 template<Reference R>
+  requires detail::SymbolicArg<R>
 struct delta_ {
   template<typename FwdRep, RepresentationOf<get_quantity_spec(R{})> Rep = std::remove_cvref_t<FwdRep>>
   [[nodiscard]] constexpr quantity<R{}, Rep> operator()(FwdRep && lhs) const
@@ -47,6 +48,7 @@ struct delta_ {
 };
 
 template<Reference R>
+  requires detail::SymbolicArg<R>
 struct point_ {
   template<typename FwdRep, RepresentationOf<get_quantity_spec(R{})> Rep = std::remove_cvref_t<FwdRep>>
   [[nodiscard]] constexpr quantity_point<R{}, default_point_origin(R{}), Rep> operator()(FwdRep && lhs) const
@@ -58,13 +60,13 @@ struct point_ {
 MP_UNITS_EXPORT_BEGIN
 
 template<Reference auto R>
-constexpr delta_<MP_UNITS_NTTP_TYPE(R)> delta{};
+constexpr delta_<MP_UNITS_NTTP_HACK(decltype(R))> delta{};
 
 template<Reference auto R>
-constexpr point_<MP_UNITS_NTTP_TYPE(R)> point{};
+constexpr point_<MP_UNITS_NTTP_HACK(decltype(R))> point{};
 
 template<Reference auto R>
-[[deprecated("2.5.0: Use `point` instead")]] constexpr point_<MP_UNITS_NTTP_TYPE(R)> absolute{};
+[[deprecated("2.5.0: Use `point` instead")]] constexpr point_<MP_UNITS_NTTP_HACK(decltype(R))> absolute{};
 
 MP_UNITS_EXPORT_END
 

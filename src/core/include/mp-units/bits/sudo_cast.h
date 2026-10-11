@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <mp-units/compat_macros.h>
 #include <mp-units/ext/type_traits.h>
 #include <mp-units/framework/quantity_concepts.h>
 #include <mp-units/framework/reference_concepts.h>

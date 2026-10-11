@@ -31,6 +31,7 @@
 namespace mp_units {
 
 MP_UNITS_EXPORT template<QuantitySpec Q, Unit U>
+  requires detail::SymbolicArg<Q> && detail::SymbolicArg<U>
 struct reference;
 
 MP_UNITS_EXPORT_BEGIN
@@ -41,7 +42,7 @@ MP_UNITS_EXPORT_BEGIN
  * Satisfied by all specializations of @c reference.
  */
 template<typename T>
-concept Reference = Unit<T> || is_specialization_of<T, reference>;
+concept Reference = Unit<T> || is_specialization_of<std::remove_const_t<T>, reference>;
 
 /**
  * @brief A concept matching all references of the provided quantity spec

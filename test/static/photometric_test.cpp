@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <mp-units/compat_macros.h>
 #include <mp-units/systems/isq/light_and_radiation.h>
 #include <mp-units/systems/si.h>
 #ifdef MP_UNITS_IMPORT_STD
@@ -42,12 +43,12 @@ inline constexpr struct melanopic final : photometric_condition_base {
 } melanopic;
 
 // the concept accepts only photometric conditions
-static_assert(PhotometricCondition<std::remove_const_t<decltype(photopic_vision)>>);
-static_assert(PhotometricCondition<std::remove_const_t<decltype(scotopic_vision)>>);
+static_assert(PhotometricCondition<decltype(photopic_vision)>);
+static_assert(PhotometricCondition<decltype(scotopic_vision)>);
 static_assert(PhotometricCondition<mesopic_vision_<50>>);
-static_assert(PhotometricCondition<std::remove_const_t<decltype(melanopic)>>);
+static_assert(PhotometricCondition<decltype(melanopic)>);
 static_assert(!PhotometricCondition<int>);
-static_assert(!PhotometricCondition<std::remove_const_t<decltype(isq::length)>>);
+static_assert(!PhotometricCondition<decltype(isq::length)>);
 
 // plain names are the photopic default instantiations (ISO 80000-7 clause 0.3)
 static_assert(luminous_intensity_of<> == luminous_intensity);
@@ -56,10 +57,9 @@ static_assert(illuminance_of<> == illuminance);
 static_assert(luminous_flux_of<photopic_vision> == luminous_flux);
 
 // the photopic per-condition units are the SI units themselves
-static_assert(
-  std::same_as<std::remove_const_t<decltype(si::candela_of<>)>, std::remove_const_t<decltype(si::candela)>>);
-static_assert(std::same_as<std::remove_const_t<decltype(si::lumen_of<>)>, std::remove_const_t<decltype(si::lumen)>>);
-static_assert(std::same_as<std::remove_const_t<decltype(si::lux_of<>)>, std::remove_const_t<decltype(si::lux)>>);
+static_assert(std::same_as<MP_UNITS_NONCONST_TYPE(si::candela_of<>), MP_UNITS_NONCONST_TYPE(si::candela)>);
+static_assert(std::same_as<MP_UNITS_NONCONST_TYPE(si::lumen_of<>), MP_UNITS_NONCONST_TYPE(si::lumen)>);
+static_assert(std::same_as<MP_UNITS_NONCONST_TYPE(si::lux_of<>), MP_UNITS_NONCONST_TYPE(si::lux)>);
 
 // every condition roots its own kind tree over the same dimension
 static_assert(get_dimension(luminous_intensity_of<scotopic_vision>) == get_dimension(luminous_intensity));

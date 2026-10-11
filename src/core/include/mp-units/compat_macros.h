@@ -40,6 +40,13 @@
 
 #endif
 
+// GCC 12 and 13 ICE on `decltype(auto(expr))` (in tsubst, at cp/pt.cc)
+#if __cpp_auto_cast >= 202110L && (!defined MP_UNITS_COMP_GCC || MP_UNITS_COMP_GCC >= 14)
+#define MP_UNITS_NONCONST_TYPE(expr) decltype(auto(expr))
+#else
+#define MP_UNITS_NONCONST_TYPE(expr) std::remove_const_t<decltype(expr)>
+#endif
+
 #if MP_UNITS_HAS_EXCEPTIONS
 #define MP_UNITS_THROW(expr) throw expr
 #else

@@ -30,6 +30,7 @@
 namespace mp_units {
 
 template<Unit U1, Unit U2, Unit... Rest>
+  requires detail::SymbolicArg<U1> && detail::SymbolicArg<U2> && (... && detail::SymbolicArg<Rest>)
 struct common_unit;
 
 namespace detail {

@@ -46,7 +46,7 @@ struct base_dimension;
  */
 MP_UNITS_EXPORT template<typename T>
 concept Dimension = std::derived_from<T, detail::dimension_interface> && detail::SymbolicConstant<T> &&
-                    !is_specialization_of_v<T, base_dimension>;
+                    !is_specialization_of_v<std::remove_const_t<T>, base_dimension>;
 
 namespace detail {
 
@@ -66,6 +66,6 @@ concept BaseDimension = Dimension<T> && is_derived_from_specialization_of_v<T, b
  * Satisfied when both argument satisfy a `Dimension` concept and when they compare equal.
  */
 MP_UNITS_EXPORT template<typename T, auto D>
-concept DimensionOf = Dimension<T> && Dimension<MP_UNITS_NTTP_TYPE(D)> && (T{} == D);
+concept DimensionOf = Dimension<T> && Dimension<MP_UNITS_NTTP_HACK(decltype(D))> && (T{} == D);
 
 }  // namespace mp_units

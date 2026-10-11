@@ -44,7 +44,7 @@ namespace mp_units {
 namespace detail {
 
 template<QuantitySpec auto Q, Unit auto U>
-using reference_t = reference<MP_UNITS_NTTP_TYPE(Q), MP_UNITS_NTTP_TYPE(U)>;
+using reference_t = reference<MP_UNITS_NTTP_HACK(decltype(Q)), MP_UNITS_NTTP_HACK(decltype(U))>;
 
 }  // namespace detail
 
@@ -69,6 +69,7 @@ MP_UNITS_EXPORT_BEGIN
  * `2 / kmph`, `kmph * 3`, `kmph / 4`, `70 * isq::length[km] / isq:time[h]`.
  */
 template<QuantitySpec Q, Unit U>
+  requires detail::SymbolicArg<Q> && detail::SymbolicArg<U>
 struct reference {
   [[nodiscard]] friend consteval QuantitySpec auto get_quantity_spec(reference) { return Q{}; }
 
@@ -272,13 +273,13 @@ MP_UNITS_EXPORT_END
 namespace detail {
 
 template<Unit auto To, Unit From>
-[[nodiscard]] consteval MP_UNITS_NTTP_TYPE(To) clone_reference_with(From)
+[[nodiscard]] consteval MP_UNITS_NTTP_HACK(decltype(To)) clone_reference_with(From)
 {
   return {};
 }
 
 template<Unit auto To, QuantitySpec QS, Unit U>
-[[nodiscard]] consteval reference<QS, MP_UNITS_NTTP_TYPE(To)> clone_reference_with(reference<QS, U>)
+[[nodiscard]] consteval reference<QS, MP_UNITS_NTTP_HACK(decltype(To))> clone_reference_with(reference<QS, U>)
 {
   return {};
 }

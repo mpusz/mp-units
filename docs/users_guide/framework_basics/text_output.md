@@ -41,14 +41,14 @@ composes to express dimensions and units of derived quantities.
 === "Prefixes"
 
     ```cpp
-    template<PrefixableUnit U> struct micro_ : prefixed_unit<{u8"µ", "u"}, mag_power<10, -6>, U{}> {};
-    template<PrefixableUnit U> struct milli_ : prefixed_unit<"m", mag_power<10, -3>, U{}> {};
-    template<PrefixableUnit U> struct centi_ : prefixed_unit<"c", mag_power<10, -2>, U{}> {};
-    template<PrefixableUnit U> struct deci_  : prefixed_unit<"d", mag_power<10, -1>, U{}> {};
-    template<PrefixableUnit U> struct deca_  : prefixed_unit<"da", mag_power<10, 1>, U{}> {};
-    template<PrefixableUnit U> struct hecto_ : prefixed_unit<"h", mag_power<10, 2>, U{}> {};
-    template<PrefixableUnit U> struct kilo_  : prefixed_unit<"k", mag_power<10, 3>, U{}> {};
-    template<PrefixableUnit U> struct mega_  : prefixed_unit<"M", mag_power<10, 6>, U{}> {};
+    template<PrefixableUnit U> requires(!std::is_const_v<U>) struct micro_ : prefixed_unit<{u8"µ", "u"}, mag_power<10, -6>, U{}> {};
+    template<PrefixableUnit U> requires(!std::is_const_v<U>) struct milli_ : prefixed_unit<"m", mag_power<10, -3>, U{}> {};
+    template<PrefixableUnit U> requires(!std::is_const_v<U>) struct centi_ : prefixed_unit<"c", mag_power<10, -2>, U{}> {};
+    template<PrefixableUnit U> requires(!std::is_const_v<U>) struct deci_  : prefixed_unit<"d", mag_power<10, -1>, U{}> {};
+    template<PrefixableUnit U> requires(!std::is_const_v<U>) struct deca_  : prefixed_unit<"da", mag_power<10, 1>, U{}> {};
+    template<PrefixableUnit U> requires(!std::is_const_v<U>) struct hecto_ : prefixed_unit<"h", mag_power<10, 2>, U{}> {};
+    template<PrefixableUnit U> requires(!std::is_const_v<U>) struct kilo_  : prefixed_unit<"k", mag_power<10, 3>, U{}> {};
+    template<PrefixableUnit U> requires(!std::is_const_v<U>) struct mega_  : prefixed_unit<"M", mag_power<10, 6>, U{}> {};
     ```
 
 === "Constants"

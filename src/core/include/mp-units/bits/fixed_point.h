@@ -24,6 +24,7 @@
 
 #include <mp-units/bits/hacks.h>  // IWYU pragma: keep
 #include <mp-units/bits/int_power.h>
+#include <mp-units/compat_macros.h>
 #include <mp-units/ext/algorithm.h>
 #include <mp-units/ext/type_traits.h>  // IWYU pragma: keep
 #include <mp-units/framework/rounding.h>
@@ -174,7 +175,7 @@ struct fixed_point {
   [[nodiscard]] constexpr auto scale(U v) const
   {
     const auto res = v * int_repr_;
-    using res_t = std::remove_const_t<decltype(res)>;
+    using res_t = MP_UNITS_NONCONST_TYPE(res);
     using ret_t = conditional<is_signed_v<res_t>, std::make_signed_t<U>, U>;
     // arithmetic right shift rounds towards negative infinity
     auto quot = res >> fractional_bits;

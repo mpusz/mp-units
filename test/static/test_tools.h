@@ -23,6 +23,7 @@
 #pragma once
 
 #include <mp-units/bits/hacks.h>
+#include <mp-units/compat_macros.h>
 #include <mp-units/framework/quantity_spec.h>
 #ifdef MP_UNITS_IMPORT_STD
 import std;
@@ -50,7 +51,7 @@ constexpr bool approx_equal(Quantity auto q1, Quantity auto q2,
 }
 
 template<auto V, typename T>
-constexpr bool is_of_type = std::is_same_v<MP_UNITS_NTTP_TYPE(V), T>;
+constexpr bool is_of_type = std::is_same_v<MP_UNITS_NTTP_HACK(decltype(V)), T>;
 
 // NOLINTBEGIN(cppcoreguidelines-macro-usage)
 #if MP_UNITS_API_NO_CRTP

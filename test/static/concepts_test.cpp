@@ -22,6 +22,7 @@
 
 #include <mp-units/compat_macros.h>
 #include <mp-units/systems/codata/adopted_values.h>
+#include <mp-units/systems/iec.h>
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
 #if MP_UNITS_HOSTED
@@ -57,7 +58,7 @@ static_assert(!detail::BaseDimension<decltype(isq::dim_length / isq::dim_time)>)
 static_assert(!detail::BaseDimension<decltype(inverse(isq::dim_time))>);
 static_assert(!detail::BaseDimension<decltype(pow<2>(isq::dim_length))>);
 static_assert(!detail::BaseDimension<derived_dimension<struct isq::dim_length, per<struct isq::dim_time>>>);
-static_assert(!detail::BaseDimension<MP_UNITS_NONCONST_TYPE(dim_speed)>);
+static_assert(!detail::BaseDimension<decltype(dim_speed)>);
 static_assert(!detail::BaseDimension<base_dimension<"L">>);
 static_assert(!detail::BaseDimension<struct si::metre>);
 static_assert(!detail::BaseDimension<int>);
@@ -69,7 +70,7 @@ static_assert(Dimension<decltype(inverse(isq::dim_time))>);
 static_assert(Dimension<decltype(pow<2>(isq::dim_length))>);
 static_assert(Dimension<derived_dimension<struct isq::dim_length, per<struct isq::dim_time>>>);
 static_assert(Dimension<struct dimension_one>);
-static_assert(Dimension<MP_UNITS_NONCONST_TYPE(dim_speed)>);
+static_assert(Dimension<decltype(dim_speed)>);
 static_assert(!Dimension<base_dimension<"L">>);
 static_assert(!Dimension<struct si::metre>);
 static_assert(!Dimension<int>);
@@ -105,7 +106,7 @@ static_assert(QuantitySpec<kind_of_<struct isq::length>>);
 static_assert(QuantitySpec<decltype(isq::length / isq::duration)>);
 static_assert(QuantitySpec<decltype(pow<2>(isq::length))>);
 static_assert(QuantitySpec<struct dimensionless>);
-static_assert(QuantitySpec<MP_UNITS_NONCONST_TYPE(speed)>);
+static_assert(QuantitySpec<decltype(speed)>);
 static_assert(!QuantitySpec<struct isq::dim_length>);
 static_assert(!QuantitySpec<int>);
 
@@ -143,7 +144,7 @@ static_assert(!detail::NamedQuantitySpec<kind_of_<struct isq::length>>);
 static_assert(!detail::NamedQuantitySpec<decltype(isq::length / isq::duration)>);
 static_assert(!detail::NamedQuantitySpec<decltype(pow<2>(isq::length))>);
 static_assert(detail::NamedQuantitySpec<struct dimensionless>);
-static_assert(!detail::NamedQuantitySpec<MP_UNITS_NONCONST_TYPE(speed)>);
+static_assert(!detail::NamedQuantitySpec<decltype(speed)>);
 static_assert(!detail::NamedQuantitySpec<struct isq::dim_length>);
 static_assert(!detail::NamedQuantitySpec<int>);
 
@@ -155,7 +156,7 @@ static_assert(!detail::DerivedQuantitySpec<struct isq::speed>);
 static_assert(detail::DerivedQuantitySpec<decltype(isq::length / isq::duration)>);
 static_assert(detail::DerivedQuantitySpec<decltype(pow<2>(isq::length))>);
 static_assert(!detail::DerivedQuantitySpec<struct dimensionless>);
-static_assert(detail::DerivedQuantitySpec<MP_UNITS_NONCONST_TYPE(speed)>);
+static_assert(detail::DerivedQuantitySpec<decltype(speed)>);
 static_assert(!detail::DerivedQuantitySpec<struct isq::dim_length>);
 static_assert(!detail::DerivedQuantitySpec<int>);
 
@@ -167,13 +168,13 @@ static_assert(!detail::QuantityKindSpec<struct isq::speed>);
 static_assert(!detail::QuantityKindSpec<decltype(isq::length / isq::duration)>);
 static_assert(!detail::QuantityKindSpec<decltype(pow<2>(isq::length))>);
 static_assert(!detail::QuantityKindSpec<struct dimensionless>);
-static_assert(!detail::QuantityKindSpec<MP_UNITS_NONCONST_TYPE(speed)>);
+static_assert(!detail::QuantityKindSpec<decltype(speed)>);
 static_assert(!detail::QuantityKindSpec<struct isq::dim_length>);
 static_assert(!detail::QuantityKindSpec<int>);
 
 // Unit
 static_assert(Unit<struct si::metre>);
-static_assert(Unit<MP_UNITS_NONCONST_TYPE(si::kilogram)>);
+static_assert(Unit<decltype(si::kilogram)>);
 static_assert(Unit<si::kilo_<struct si::gram>>);
 static_assert(Unit<decltype(si::metre / si::second)>);
 static_assert(Unit<decltype(inverse(si::second))>);
@@ -196,7 +197,7 @@ static_assert(!Unit<std::chrono::seconds>);
 
 // PrefixableUnit
 static_assert(PrefixableUnit<struct si::metre>);
-static_assert(!PrefixableUnit<MP_UNITS_NONCONST_TYPE(si::kilogram)>);
+static_assert(!PrefixableUnit<decltype(si::kilogram)>);
 static_assert(!PrefixableUnit<si::kilo_<struct si::gram>>);
 static_assert(!PrefixableUnit<decltype(si::metre / si::second)>);
 static_assert(!PrefixableUnit<decltype(inverse(si::second))>);
@@ -219,7 +220,7 @@ static_assert(!PrefixableUnit<std::chrono::seconds>);
 
 // Unit
 static_assert(Unit<struct si::metre>);
-static_assert(Unit<MP_UNITS_NONCONST_TYPE(si::kilogram)>);
+static_assert(Unit<decltype(si::kilogram)>);
 static_assert(Unit<si::kilo_<struct si::gram>>);
 static_assert(Unit<decltype(si::metre / si::second)>);
 static_assert(Unit<decltype(inverse(si::second))>);
@@ -244,7 +245,7 @@ static_assert(!Unit<std::chrono::seconds>);
 // UnitOf
 static_assert(UnitOf<struct si::metre, isq::length>);
 static_assert(UnitOf<struct si::metre, isq::radius>);
-static_assert(UnitOf<MP_UNITS_NONCONST_TYPE(si::kilogram), isq::mass>);
+static_assert(UnitOf<decltype(si::kilogram), isq::mass>);
 static_assert(UnitOf<struct si::hertz, isq::frequency>);
 static_assert(UnitOf<struct si::hertz, inverse(isq::duration)>);
 static_assert(UnitOf<struct one, dimensionless>);
@@ -253,8 +254,8 @@ static_assert(UnitOf<struct si::radian, isq::angular_measure>);
 static_assert(UnitOf<struct si::degree, isq::angular_measure>);
 static_assert(UnitOf<struct one, isq::angular_measure>);
 static_assert(UnitOf<struct percent, isq::angular_measure>);
-static_assert(UnitOf<MP_UNITS_NONCONST_TYPE(si::radian / si::second), isq::angular_velocity>);
-static_assert(UnitOf<MP_UNITS_NONCONST_TYPE(one / si::second), isq::angular_velocity>);
+static_assert(UnitOf<decltype(si::radian / si::second), isq::angular_velocity>);
+static_assert(UnitOf<decltype(one / si::second), isq::angular_velocity>);
 static_assert(!UnitOf<struct si::radian, dimensionless>);
 static_assert(!UnitOf<struct si::metre, isq::duration>);
 
@@ -774,6 +775,219 @@ static_assert(!detail::UsesFloatingPointScaling<utility::cartesian_vector<int>>)
 static_assert(detail::UsesIntegerScaling<utility::cartesian_vector<int>>);
 
 #endif
+
+// A const-qualified symbolic type is still classified, as the standard's type categories accept a
+// const-qualified type. `decltype` of a named entity is const, so every check below takes one.
+inline constexpr struct my_measured_constant final :
+    named_constant<"k", mag<2> * si::metre, relative_standard_uncertainty{mag_ratio<1, 100>}> {
+} my_measured_constant;
+inline constexpr auto length_in_metres = isq::length[si::metre];
+
+static_assert(detail::SymbolicConstant<decltype(si::metre)>);
+
+static_assert(Dimension<decltype(isq::dim_length)>);
+static_assert(Dimension<decltype(dim_speed)>);
+static_assert(!Dimension<decltype(isq::length)>);
+static_assert(DimensionOf<decltype(isq::dim_length), isq::dim_length>);
+static_assert(!DimensionOf<decltype(isq::dim_length), isq::dim_time>);
+static_assert(detail::BaseDimension<decltype(isq::dim_length)>);
+static_assert(!detail::BaseDimension<decltype(dim_speed)>);
+
+static_assert(QuantitySpec<decltype(isq::length)>);
+static_assert(QuantitySpec<decltype(speed)>);
+static_assert(QuantitySpec<decltype(kind_of<isq::length>)>);
+static_assert(!QuantitySpec<decltype(si::metre)>);
+static_assert(QuantitySpecOf<decltype(isq::radius), isq::length>);
+static_assert(!QuantitySpecOf<decltype(isq::length), isq::duration>);
+static_assert(detail::NamedQuantitySpec<decltype(isq::length)>);
+static_assert(!detail::NamedQuantitySpec<decltype(speed)>);
+static_assert(detail::DerivedQuantitySpec<decltype(speed)>);
+static_assert(!detail::DerivedQuantitySpec<decltype(isq::length)>);
+static_assert(detail::QuantityKindSpec<decltype(kind_of<isq::length>)>);
+static_assert(!detail::QuantityKindSpec<decltype(isq::length)>);
+
+static_assert(Unit<decltype(si::metre)>);
+static_assert(Unit<decltype(si::kilogram)>);
+static_assert(Unit<decltype(my_measured_constant)>);
+static_assert(!Unit<decltype(isq::length)>);
+static_assert(PrefixableUnit<decltype(si::metre)>);
+static_assert(!PrefixableUnit<decltype(si::kilogram)>);
+static_assert(UnitOf<decltype(si::metre), isq::length>);
+static_assert(!UnitOf<decltype(si::metre), isq::duration>);
+static_assert(detail::OffsetUnit<decltype(si::degree_Celsius)>);
+static_assert(!detail::OffsetUnit<decltype(si::metre)>);
+static_assert(MeasuredConstant<decltype(my_measured_constant)>);
+static_assert(!MeasuredConstant<decltype(si::metre)>);
+static_assert(UnitMagnitude<decltype(mag<10>)>);
+static_assert(!UnitMagnitude<decltype(si::metre)>);
+
+static_assert(Reference<decltype(si::metre)>);
+static_assert(Reference<decltype(length_in_metres)>);
+static_assert(!Reference<decltype(isq::length)>);
+static_assert(ReferenceOf<decltype(isq::radius[si::metre]), isq::length>);
+static_assert(!ReferenceOf<decltype(si::second), isq::length>);
+
+static_assert(PointOrigin<decltype(my_origin)>);
+static_assert(PointOrigin<decltype(my_relative_origin)>);
+static_assert(!PointOrigin<decltype(si::metre)>);
+static_assert(PointOriginFor<decltype(my_origin), isq::length>);
+static_assert(!PointOriginFor<decltype(my_origin), isq::duration>);
+static_assert(detail::AbsolutePointOrigin<decltype(my_origin)>);
+static_assert(!detail::AbsolutePointOrigin<decltype(my_relative_origin)>);
+
+static_assert(Quantity<const quantity<si::metre>>);
+static_assert(QuantityOf<const quantity<si::metre>, isq::length>);
+static_assert(QuantityPoint<const quantity_point<si::metre, my_origin>>);
+static_assert(QuantityPointOf<const quantity_point<si::metre, my_origin>, isq::length>);
+
+// neither a reference nor a volatile type is a symbolic type
+static_assert(!detail::SymbolicConstant<struct si::metre&>);
+static_assert(!detail::SymbolicConstant<volatile struct si::metre>);
+static_assert(!Dimension<const struct isq::dim_length&>);
+static_assert(!Dimension<volatile struct isq::dim_length>);
+static_assert(!QuantitySpec<const struct isq::length&>);
+static_assert(!QuantitySpec<volatile struct isq::length>);
+static_assert(!Unit<const struct si::metre&>);
+static_assert(!Unit<volatile struct si::metre>);
+static_assert(!Unit<const volatile struct si::metre>);
+static_assert(!Reference<const struct si::metre&>);
+static_assert(!Reference<const decltype(length_in_metres)&>);
+static_assert(!Reference<volatile decltype(isq::length[si::metre])>);
+static_assert(!Reference<volatile decltype(length_in_metres)>);
+static_assert(!PointOrigin<const struct my_origin&>);
+static_assert(!PointOrigin<volatile struct my_origin>);
+static_assert(!UnitMagnitude<const decltype(mag<10>)&>);
+static_assert(!UnitMagnitude<volatile decltype(mag<10>)>);
+
+// const does not hide the bases that the concepts exclude
+static_assert(!Dimension<const base_dimension<"L">>);
+static_assert(!Unit<const named_unit<"?", kind_of<isq::length>>>);
+static_assert(!Unit<const prefixed_unit<"?", mag<10>, si::second>>);
+static_assert(!PointOrigin<const absolute_point_origin<isq::length>>);
+static_assert(!PointOrigin<const relative_point_origin<my_origin + 42 * si::metre>>);
+
+// Only a non-const type may enter a symbolic expression, or a `const` second divided by a second
+// would not simplify. Each position is checked on its own, and `valid_symbolic_terms` proves that
+// the same expressions are well-formed with non-const arguments.
+template<typename U, typename QS, typename D, typename R, typename M>
+concept valid_symbolic_terms = requires {
+  typename detail::type_list<U>;
+  typename per<U>;
+  typename power<U, 2>;
+  typename derived_unit<U, per<struct si::second>>;
+  typename derived_dimension<D, per<struct isq::dim_time>>;
+  typename derived_quantity_spec<QS, per<struct isq::duration>>;
+  typename scaled_unit<mag<10>, U>;
+  typename common_unit<U, si::centi_<struct si::metre>>;
+  typename common_unit<si::centi_<struct si::metre>, U>;
+  typename common_unit<si::centi_<struct si::metre>, si::milli_<struct si::metre>, U>;
+  typename reference<QS, struct si::metre>;
+  typename reference<struct isq::length, U>;
+  kind_of_<QS>{};
+  typename delta_<U>;
+  typename delta_<R>;
+  typename point_<U>;
+  typename point_<R>;
+  typename standard_uncertainty<U>;
+  typename relative_standard_uncertainty<M>;
+  typename si::quecto_<U>;
+  typename si::ronto_<U>;
+  typename si::yocto_<U>;
+  typename si::zepto_<U>;
+  typename si::atto_<U>;
+  typename si::femto_<U>;
+  typename si::pico_<U>;
+  typename si::nano_<U>;
+  typename si::micro_<U>;
+  typename si::milli_<U>;
+  typename si::centi_<U>;
+  typename si::deci_<U>;
+  typename si::deca_<U>;
+  typename si::hecto_<U>;
+  typename si::kilo_<U>;
+  typename si::mega_<U>;
+  typename si::giga_<U>;
+  typename si::tera_<U>;
+  typename si::peta_<U>;
+  typename si::exa_<U>;
+  typename si::zetta_<U>;
+  typename si::yotta_<U>;
+  typename si::ronna_<U>;
+  typename si::quetta_<U>;
+  typename iec::kibi_<U>;
+  typename iec::mebi_<U>;
+  typename iec::gibi_<U>;
+  typename iec::tebi_<U>;
+  typename iec::pebi_<U>;
+  typename iec::exbi_<U>;
+  typename iec::zebi_<U>;
+  typename iec::yobi_<U>;
+};
+static_assert(
+  valid_symbolic_terms<struct si::metre, struct isq::length, struct isq::dim_length,
+                       std::remove_const_t<decltype(length_in_metres)>, std::remove_const_t<decltype(mag<10>)>>);
+
+template<typename U, typename QS, typename D, typename R, typename M>
+concept invalid_symbolic_terms = requires {
+  requires !requires { typename detail::type_list<U>; };
+  requires !requires { typename per<U>; };
+  requires !requires { typename power<U, 2>; };
+  requires !requires { typename derived_unit<U, per<struct si::second>>; };
+  requires !requires { typename derived_dimension<D, per<struct isq::dim_time>>; };
+  requires !requires { typename derived_quantity_spec<QS, per<struct isq::duration>>; };
+  requires !requires { typename scaled_unit<mag<10>, U>; };
+  requires !requires { typename common_unit<U, si::centi_<struct si::metre>>; };
+  requires !requires { typename common_unit<si::centi_<struct si::metre>, U>; };
+  requires !requires { typename common_unit<si::centi_<struct si::metre>, si::milli_<struct si::metre>, U>; };
+  requires !requires { typename reference<QS, struct si::metre>; };
+  requires !requires { typename reference<struct isq::length, U>; };
+  requires !requires { kind_of_<QS>{}; };  // the primary is unconstrained, so only completing it fails
+  requires !requires { typename delta_<U>; };
+  requires !requires { typename delta_<R>; };
+  requires !requires { typename point_<U>; };
+  requires !requires { typename point_<R>; };
+  requires !requires { typename standard_uncertainty<U>; };
+  requires !requires { typename relative_standard_uncertainty<M>; };
+  requires !requires { typename si::quecto_<U>; };
+  requires !requires { typename si::ronto_<U>; };
+  requires !requires { typename si::yocto_<U>; };
+  requires !requires { typename si::zepto_<U>; };
+  requires !requires { typename si::atto_<U>; };
+  requires !requires { typename si::femto_<U>; };
+  requires !requires { typename si::pico_<U>; };
+  requires !requires { typename si::nano_<U>; };
+  requires !requires { typename si::micro_<U>; };
+  requires !requires { typename si::milli_<U>; };
+  requires !requires { typename si::centi_<U>; };
+  requires !requires { typename si::deci_<U>; };
+  requires !requires { typename si::deca_<U>; };
+  requires !requires { typename si::hecto_<U>; };
+  requires !requires { typename si::kilo_<U>; };
+  requires !requires { typename si::mega_<U>; };
+  requires !requires { typename si::giga_<U>; };
+  requires !requires { typename si::tera_<U>; };
+  requires !requires { typename si::peta_<U>; };
+  requires !requires { typename si::exa_<U>; };
+  requires !requires { typename si::zetta_<U>; };
+  requires !requires { typename si::yotta_<U>; };
+  requires !requires { typename si::ronna_<U>; };
+  requires !requires { typename si::quetta_<U>; };
+  requires !requires { typename iec::kibi_<U>; };
+  requires !requires { typename iec::mebi_<U>; };
+  requires !requires { typename iec::gibi_<U>; };
+  requires !requires { typename iec::tebi_<U>; };
+  requires !requires { typename iec::pebi_<U>; };
+  requires !requires { typename iec::exbi_<U>; };
+  requires !requires { typename iec::zebi_<U>; };
+  requires !requires { typename iec::yobi_<U>; };
+};
+static_assert(invalid_symbolic_terms<decltype(si::metre), decltype(isq::length), decltype(isq::dim_length),
+                                     decltype(length_in_metres), decltype(mag<10>)>);
+
+// an operand's const is dropped by deduction, so the expression still simplifies
+static_assert(decltype(si::second){} / si::second == one);
+static_assert(si::kilo<si::metre> == si::kilo<decltype(si::metre){}>);
+static_assert(si::kilo<si::metre> * si::second / decltype(si::second){} == si::kilo<si::metre>);
 
 }  // namespace
 

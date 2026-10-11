@@ -109,7 +109,7 @@ concept AngleUnit = Unit<U> && specified<decltype(radian_of<get_quantity_spec(U{
 template<typename R>
 concept RadialReference =
   Reference<R> && (get_character(get_quantity_spec(R{})).order == quantity_tensor_order::scalar) &&
-  !AngleUnit<MP_UNITS_NONCONST_TYPE(get_unit(R{}))>;
+  !AngleUnit<decltype(get_unit(R{}))>;
 
 // Whether a vector representation `To` can be initialized from its components. Two spellings are
 // possible, and `std::constructible_from` covers only the first: parenthesized init (aggregates since

@@ -25,6 +25,7 @@
 // IWYU pragma: private, include <mp-units/framework.h>
 #include <mp-units/bits/fixed_point.h>
 #include <mp-units/bits/int_power.h>
+#include <mp-units/compat_macros.h>
 #include <mp-units/framework/representation_concepts.h>
 #include <mp-units/framework/rounding.h>
 
@@ -93,7 +94,7 @@ template<rounding_mode Mode, typename T, typename D>
 [[nodiscard]] constexpr auto div_round(const T& dividend, const D& divisor)
 {
   MP_UNITS_PRECONDITION(divisor > get_zero(divisor));  // unit magnitude denominators are always positive
-  using quot_type = std::remove_const_t<decltype(dividend / divisor)>;
+  using quot_type = MP_UNITS_NONCONST_TYPE(dividend / divisor);
   const quot_type quot = dividend / divisor;
   if constexpr (Mode == rounding_mode::truncated)
     return quot;
@@ -112,7 +113,7 @@ template<rounding_mode Mode, typename T, typename D>
       else
         return dividend - quot * divisor;
     }();
-    using rem_type = std::remove_const_t<decltype(rem)>;
+    using rem_type = MP_UNITS_NONCONST_TYPE(rem);
     const rem_type no_rem = get_zero(rem);
     if constexpr (Mode == rounding_mode::rounded_down)
       return rem < no_rem ? quot - step : quot;

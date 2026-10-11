@@ -30,6 +30,7 @@
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/quantity_spec_equation_conversion.h>
 #include <mp-units/bits/quantity_spec_hierarchy.h>
+#include <mp-units/compat_macros.h>
 #include <mp-units/ext/algorithm.h>
 #include <mp-units/ext/type_name.h>
 #include <mp-units/ext/type_traits.h>
@@ -63,7 +64,7 @@ template<QuantitySpec From, QuantitySpec To>
     // Promote explicit_conversion → yes when kind_of<> wraps a named quantity and from is not an ancestor of to_root.
     // Skip the promotion when to_root is derived (the explicit_conversion reflects a cross-kind distance that matters)
     // or when from is a direct ancestor of to_root (parent→child downcast remains explicit_conversion).
-    if constexpr (NamedQuantitySpec<MP_UNITS_NONCONST_TYPE(to_root)> &&
+    if constexpr (NamedQuantitySpec<decltype(to_root)> &&
                   !detail::is_child_of(MP_UNITS_NONCONST_TYPE(to_root){}, From{}))
       return (res == explicit_conversion) ? yes : res;
     return res;

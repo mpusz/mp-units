@@ -28,6 +28,7 @@
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/unit_magnitude.h>
+#include <mp-units/compat_macros.h>
 #include <mp-units/ext/type_traits.h>
 #include <mp-units/framework/quantity_point_concepts.h>
 #include <mp-units/framework/quantity_spec_concepts.h>
@@ -153,10 +154,11 @@ constexpr bool is_positive_canonical_unit_mag = unit_mag_is_positive(U);
 }  // namespace detail
 
 template<UnitMagnitude auto M, Unit U>
-  requires(M != mag<1>)  // `mag<1>` is the empty `unit_magnitude<>`, so a single check covers both spellings
+// `mag<1>` is the empty `unit_magnitude<>`, so a single check covers both spellings
+  requires(M != mag<1>) && detail::SymbolicArg<U>
 struct scaled_unit;
 
-template<detail::SymbolicConstant... Expr>
+template<detail::SymbolicTerm... Expr>
 struct derived_unit;
 
 MP_UNITS_EXPORT struct one;
@@ -314,7 +316,8 @@ struct scaled_unit_impl : detail::unit_interface, detail::propagate_point_origin
  *       instantiate this type automatically based on the unit arithmetic equation provided by the user.
  */
 template<UnitMagnitude auto M, Unit U>
-  requires(M != mag<1>)  // `mag<1>` is the empty `unit_magnitude<>`, so a single check covers both spellings
+// `mag<1>` is the empty `unit_magnitude<>`, so a single check covers both spellings
+  requires(M != mag<1>) && detail::SymbolicArg<U>
 struct scaled_unit final : detail::scaled_unit_impl<M, U> {};
 
 namespace detail {
@@ -371,7 +374,7 @@ struct named_unit;
  */
 template<symbol_text Symbol, detail::QuantityKindSpec auto QS>
   requires(!Symbol.empty()) &&
-          (detail::BaseDimension<MP_UNITS_NONCONST_TYPE(get_dimension(QS))> || detail::remove_kind(QS) == dimensionless)
+          (detail::BaseDimension<decltype(get_dimension(QS))> || detail::remove_kind(QS) == dimensionless)
 struct named_unit<Symbol, QS> : detail::unit_interface {
   using _base_type_ = named_unit;           // exposition only
   static constexpr auto _symbol_ = Symbol;  ///< Unique base unit identifier
@@ -380,7 +383,7 @@ struct named_unit<Symbol, QS> : detail::unit_interface {
 
 template<symbol_text Symbol, detail::QuantityKindSpec auto QS, PointOrigin auto PO>
   requires(!Symbol.empty()) &&
-          (detail::BaseDimension<MP_UNITS_NONCONST_TYPE(get_dimension(QS))> || detail::remove_kind(QS) == dimensionless)
+          (detail::BaseDimension<decltype(get_dimension(QS))> || detail::remove_kind(QS) == dimensionless)
 struct named_unit<Symbol, QS, PO> : detail::unit_interface {
   using _base_type_ = named_unit;           // exposition only
   static constexpr auto _symbol_ = Symbol;  ///< Unique base unit identifier
@@ -465,6 +468,7 @@ struct named_unit<Symbol, U, QS, PO> : decltype(U)::_base_type_ {
  * @tparam M an exact magnitude representing the relative standard uncertainty
  */
 MP_UNITS_EXPORT template<UnitMagnitude M>
+  requires detail::SymbolicArg<M>
 struct relative_standard_uncertainty {
   M magnitude;
 };
@@ -503,6 +507,7 @@ relative_standard_uncertainty(M) -> relative_standard_uncertainty<M>;
  * @tparam U a unit expression representing the standard uncertainty in the constant's dimension
  */
 MP_UNITS_EXPORT template<Unit U>
+  requires detail::SymbolicArg<U>
 struct standard_uncertainty {
   U unit;
 };
@@ -587,7 +592,7 @@ struct named_constant<Symbol, U, SU> : decltype(U)::_base_type_ {
 MP_UNITS_EXPORT template<MeasuredConstant U>
 [[nodiscard]] consteval UnitMagnitude auto get_relative_standard_uncertainty(U u)
 {
-  if constexpr (requires { requires UnitMagnitude<MP_UNITS_NONCONST_TYPE(U::_relative_standard_uncertainty_)>; })
+  if constexpr (requires { requires UnitMagnitude<decltype(U::_relative_standard_uncertainty_)>; })
     return U::_relative_standard_uncertainty_;
   else
     // unqualified on purpose: `abs_magnitude` is a hidden friend of the magnitude, found via ADL
@@ -608,7 +613,7 @@ MP_UNITS_EXPORT template<MeasuredConstant U>
 MP_UNITS_EXPORT template<MeasuredConstant U>
 [[nodiscard]] consteval Unit auto get_standard_uncertainty(U u)
 {
-  if constexpr (requires { requires Unit<MP_UNITS_NONCONST_TYPE(U::_standard_uncertainty_)>; })
+  if constexpr (requires { requires Unit<decltype(U::_standard_uncertainty_)>; })
     return U::_standard_uncertainty_;
   else if constexpr (detail::is_positive_canonical_unit_mag<U{}>)
     return U::_relative_standard_uncertainty_ * u;
@@ -644,7 +649,7 @@ MP_UNITS_EXPORT template<symbol_text Symbol, UnitMagnitude auto M, PrefixableUni
 // `PrefixableUnit` guarantees a named unit, so `M * U` always reduces to `scaled_unit<M, U>`, whose `_base_type_` is
 // `scaled_unit_impl<M, U>`. Naming that base directly avoids instantiating the `operator*` machinery, and also the
 // `scaled_unit` specialization itself, for every prefix and unit combination (a quarter of `unit_symbols.h`).
-struct prefixed_unit : detail::scaled_unit_impl<M, MP_UNITS_NTTP_TYPE(U)> {
+struct prefixed_unit : detail::scaled_unit_impl<M, MP_UNITS_NTTP_HACK(decltype(U))> {
   using _base_type_ = prefixed_unit;  // exposition only
   static constexpr auto _symbol_ = Symbol + U._symbol_;
 };
@@ -692,6 +697,7 @@ constexpr auto common_unit_scaled_result = get_common_scaled_unit(U1{}, U2{}, Re
  *       instantiate this type automatically based on the unit arithmetic equation provided by the user.
  */
 template<Unit U1, Unit U2, Unit... Rest>
+  requires detail::SymbolicArg<U1> && detail::SymbolicArg<U2> && (... && detail::SymbolicArg<Rest>)
 struct common_unit final : decltype(detail::common_unit_scaled_result<U1, U2, Rest...>)::_base_type_ {
   using _base_type_ = common_unit;  // exposition only
   static constexpr auto _common_unit_ = detail::common_unit_scaled_result<U1, U2, Rest...>;
@@ -751,7 +757,7 @@ struct derived_unit_impl : detail::unit_interface, detail::expr_fractions<one, E
  * @note User should not instantiate this type! It is not exported from the C++ module. The library will
  *       instantiate this type automatically based on the unit arithmetic equation provided by the user.
  */
-template<detail::SymbolicConstant... Expr>
+template<detail::SymbolicTerm... Expr>
 struct derived_unit final : detail::derived_unit_impl<Expr...> {};
 
 /**

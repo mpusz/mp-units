@@ -83,8 +83,14 @@ concept SymbolicArg = !std::is_const_v<T> && !std::is_reference_v<T>;
    std::is_trivially_move_constructible_v<T> && std::is_trivially_destructible_v<T>)
 #endif
 
+// Possibly const-qualified, the way the standard's type categories are: `const second` is still a unit.
 template<typename T>
-concept SymbolicConstant = SymbolicArg<T> && MP_UNITS_SYMBOLIC_CONSTANT_TRAITS(T);
+concept SymbolicConstant = MP_UNITS_SYMBOLIC_CONSTANT_TRAITS(T);
+
+// A term of a symbolic expression must not be const-qualified, or `const second / second` would not
+// simplify, because `const second` and `second` are different types.
+template<typename T>
+concept SymbolicTerm = SymbolicArg<T> && SymbolicConstant<T>;
 
 /**
  * @brief Type list type used by the expression template framework

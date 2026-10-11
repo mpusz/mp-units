@@ -65,9 +65,9 @@ inline constexpr auto energy = force * length;
 
 // concepts verification
 static_assert(detail::BaseDimension<length_>);
-static_assert(!detail::BaseDimension<MP_UNITS_NONCONST_TYPE(frequency)>);
+static_assert(!detail::BaseDimension<decltype(frequency)>);
 static_assert(Dimension<length_>);
-static_assert(Dimension<MP_UNITS_NONCONST_TYPE(frequency)>);
+static_assert(Dimension<decltype(frequency)>);
 
 static_assert(detail::BaseDimension<decltype(speed * time)>);  // length
 
