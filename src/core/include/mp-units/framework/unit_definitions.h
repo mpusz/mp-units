@@ -184,7 +184,7 @@ struct unit_interface {
   }
 
   [[nodiscard]] friend consteval Unit auto operator*(Unit auto, UnitMagnitude auto)
-#if __cpp_deleted_function
+#if MP_UNITS_HAS_DELETED_FUNCTION_MESSAGE
     = delete ("To scale a unit use `mag * unit` syntax");
 #else
     = delete;

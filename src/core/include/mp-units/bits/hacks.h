@@ -66,7 +66,6 @@
 #define MP_UNITS_DIAGNOSTIC_IGNORE_ZERO_AS_NULLPOINTER_CONSTANT \
   MP_UNITS_DIAGNOSTIC_IGNORE("-Wzero-as-nullpointer-constant")
 #define MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED MP_UNITS_DIAGNOSTIC_IGNORE("-Wdeprecated-declarations")
-#define MP_UNITS_DIAGNOSTIC_IGNORE_BUILTIN_MACRO_REDEFINED MP_UNITS_DIAGNOSTIC_IGNORE("-Wbuiltin-macro-redefined")
 #define MP_UNITS_DIAGNOSTIC_IGNORE_PEDANTIC MP_UNITS_DIAGNOSTIC_IGNORE("-Wpedantic")
 #define MP_UNITS_DIAGNOSTIC_IGNORE_SIGN_CONVERSION MP_UNITS_DIAGNOSTIC_IGNORE("-Wsign-conversion")
 #define MP_UNITS_DIAGNOSTIC_IGNORE_CONVERSION MP_UNITS_DIAGNOSTIC_IGNORE("-Wconversion")
@@ -141,17 +140,14 @@ inline constexpr from_range_t from_range{};
 
 #endif
 
-// TODO https://github.com/llvm/llvm-project/issues/110224
-#if (MP_UNITS_COMP_CLANG >= 19 || (defined(__apple_build_version__) && MP_UNITS_COMP_CLANG >= 17)) && \
-  __cplusplus <= 202302
-
-MP_UNITS_DIAGNOSTIC_PUSH
-MP_UNITS_DIAGNOSTIC_IGNORE_BUILTIN_MACRO_REDEFINED
-
-#undef __cpp_deleted_function
-
-MP_UNITS_DIAGNOSTIC_POP
-
+// `= delete("reason")` where the language mode provides it. Clang 19 and later advertise
+// `__cpp_deleted_function` in every mode because they accept the syntax as an extension before
+// C++26, and `-Wpedantic` rejects that extension (Clang 19 warns about it even without
+// `-Wpedantic`, https://github.com/llvm/llvm-project/issues/109311).
+#if __cpp_deleted_function && !(MP_UNITS_COMP_CLANG && __cplusplus <= 202302L)
+#define MP_UNITS_HAS_DELETED_FUNCTION_MESSAGE 1
+#else
+#define MP_UNITS_HAS_DELETED_FUNCTION_MESSAGE 0
 #endif
 
 // Hack for a compiler bug: Clang 16 rejects some valid immediate invocations, e.g. a `consteval`

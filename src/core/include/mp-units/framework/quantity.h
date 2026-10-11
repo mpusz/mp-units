@@ -636,7 +636,7 @@ public:
   template<typename Value, Reference R2>
     requires(equivalent(unit, get_unit(R2{}))) && (!detail::RepConstructibleFrom<rep, Value>)
   constexpr quantity(Value val, R2)
-#if __cpp_deleted_function
+#if MP_UNITS_HAS_DELETED_FUNCTION_MESSAGE
     = delete ("Conversion is truncating");
 #else
     = delete;
@@ -667,7 +667,7 @@ public:
     requires detail::ExplicitFromNumber<reference> && (!detail::RepConstructibleFrom<rep, Value>)
   constexpr explicit(!std::convertible_to<Value, rep> ||
                      !mp_units::implicitly_convertible(quantity_spec, dimensionless)) quantity(Value val)
-#if __cpp_deleted_function
+#if MP_UNITS_HAS_DELETED_FUNCTION_MESSAGE
     = delete ("Conversion is truncating");
 #else
     = delete;
@@ -815,7 +815,7 @@ public:
   template<Unit U>
     requires(equivalent(U{}, unit))
   constexpr const rep&& numerical_value_ref_in(U) const&& noexcept
-#if __cpp_deleted_function
+#if MP_UNITS_HAS_DELETED_FUNCTION_MESSAGE
     = delete ("Can't form a reference to a temporary");
 #else
     = delete;

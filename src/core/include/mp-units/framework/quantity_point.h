@@ -716,7 +716,7 @@ public:
   template<PointOrigin PO2>
     requires(PO2{} == point_origin)
   constexpr const quantity_type&& quantity_ref_from(PO2) const&& noexcept
-#if __cpp_deleted_function
+#if MP_UNITS_HAS_DELETED_FUNCTION_MESSAGE
     = delete ("Can't form a reference to a temporary");
 #else
     = delete;

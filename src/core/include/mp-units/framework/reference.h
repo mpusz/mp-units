@@ -204,7 +204,7 @@ template<Reference R, typename Rep>
   requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{})>
 // NOLINTNEXTLINE(cppcoreguidelines-missing-std-forward)
 constexpr auto operator*(R, Rep&&)
-#if __cpp_deleted_function
+#if MP_UNITS_HAS_DELETED_FUNCTION_MESSAGE
   = delete ("To create a `quantity` use `Rep * R`");
 #else
   = delete;
@@ -214,7 +214,7 @@ template<Reference R, typename Rep>
   requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{})>
 // NOLINTNEXTLINE(cppcoreguidelines-missing-std-forward)
 constexpr auto operator/(R, Rep&&)
-#if __cpp_deleted_function
+#if MP_UNITS_HAS_DELETED_FUNCTION_MESSAGE
   = delete ("To create a `quantity` use `Rep / R`");
 #else
   = delete;
