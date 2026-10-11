@@ -75,7 +75,9 @@
 #define MP_UNITS_DIAGNOSTIC_IGNORE_INT_CONVERSION MP_UNITS_DIAGNOSTIC_IGNORE("-Wimplicit-int-conversion")
 #else
 #define MP_UNITS_DIAGNOSTIC_IGNORE_FLOAT_CONVERSION MP_UNITS_DIAGNOSTIC_IGNORE("-Wfloat-conversion")
-#define MP_UNITS_DIAGNOSTIC_IGNORE_INT_CONVERSION MP_UNITS_DIAGNOSTIC_IGNORE("-Wint-conversion")
+// GCC has no C++ counterpart of Clang's `-Wimplicit-int-conversion`: its `-Wint-conversion` is
+// C-only, and `-Wconversion` already covers integer conversions
+#define MP_UNITS_DIAGNOSTIC_IGNORE_INT_CONVERSION
 #endif
 #else
 #define MP_UNITS_DIAGNOSTIC_PUSH MP_UNITS_PRAGMA(warning(push))
