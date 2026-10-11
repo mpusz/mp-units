@@ -71,7 +71,7 @@ template<Unit auto U>
 constexpr bool space_before_unit_symbol = true;
 
 template<>
-MP_UNITS_INLINE constexpr bool space_before_unit_symbol<one> = false;
+inline constexpr bool space_before_unit_symbol<one> = false;
 
 MP_UNITS_EXPORT_END
 

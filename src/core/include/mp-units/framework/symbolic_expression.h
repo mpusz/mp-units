@@ -122,7 +122,7 @@ template<int Num>
 constexpr bool valid_ratio<Num, 0> = false;
 
 template<>
-MP_UNITS_INLINE constexpr bool valid_ratio<0, 0> = false;
+inline constexpr bool valid_ratio<0, 0> = false;
 
 template<int Num, int... Den>
 constexpr bool positive_ratio = Num > 0;
@@ -134,7 +134,7 @@ template<int Num, int... Den>
 constexpr bool ratio_one = false;
 
 template<>
-MP_UNITS_INLINE constexpr bool ratio_one<1> = true;
+inline constexpr bool ratio_one<1> = true;
 
 template<int N>
 constexpr bool ratio_one<N, N> = true;

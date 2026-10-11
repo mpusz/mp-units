@@ -62,8 +62,8 @@ inline constexpr auto deg2 = square(degree);
 }  // namespace angular
 
 template<>
-MP_UNITS_INLINE constexpr bool space_before_unit_symbol<angular::degree> = false;
+inline constexpr bool space_before_unit_symbol<angular::degree> = false;
 template<>
-MP_UNITS_INLINE constexpr bool space_before_unit_symbol<angular::gradian> = false;
+inline constexpr bool space_before_unit_symbol<angular::gradian> = false;
 
 }  // namespace mp_units

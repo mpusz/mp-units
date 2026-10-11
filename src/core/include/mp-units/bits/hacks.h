@@ -110,9 +110,6 @@
 #define MP_UNITS_HAS_EXCEPTIONS 0
 #endif
 
-// workarounds for https://cplusplus.github.io/CWG/issues/2387.html
-#define MP_UNITS_INLINE inline
-
 // Hack for compiler bugs: `decltype(V)` of a class-type non-type template parameter should be
 // the parameter's type, but two compilers get it wrong. GCC 12 gives `const T` (GCC bug 98820, fixed
 // in GCC 13). Clang 23 gives `const T&` once a constraint passes `V` on to another concept
