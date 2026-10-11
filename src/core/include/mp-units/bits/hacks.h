@@ -118,13 +118,13 @@
 
 // Hack for compiler bugs: `decltype(V)` of a class-type non-type template parameter should be
 // the parameter's type, but two compilers get it wrong. GCC 12 gives `const T` (GCC bug 98820, fixed
-// in GCC 13). Clang 23 gives `const T&` once a constraint passes `V` on to another concept
+// in GCC 13). LLVM Clang 23 gives `const T&` once a constraint passes `V` on to another concept
 // (https://github.com/llvm/llvm-project/issues/230945). Wrap such a `decltype(V)` in this macro: it
 // adds the trait that undoes the bug on those two compilers and leaves the type alone everywhere else.
 // Newer GCC still yields `const T` for a `V` mapped from a static member such as `T::_quantity_spec_`,
 // which needs no hack because the classification concepts accept a const-qualified type.
 // Extend a branch to a newer version only after that version is confirmed to have the same bug.
-#if MP_UNITS_COMP_CLANG == 23
+#if MP_UNITS_COMP_CLANG == 23 && !MP_UNITS_COMP_APPLE_CLANG
 #define MP_UNITS_NTTP_HACK(...) std::remove_cvref_t<__VA_ARGS__>
 #elif MP_UNITS_COMP_GCC == 12
 #define MP_UNITS_NTTP_HACK(...) std::remove_const_t<__VA_ARGS__>
@@ -179,7 +179,10 @@ inline constexpr from_range_t from_range{};
 
 #endif
 
-#if defined(__clang__) && defined(__apple_build_version__) && __apple_build_version__ < 16000026
+// Hack for a compiler bug: Apple Clang 15 (Xcode 15) crashes or takes very long to compile the
+// representation concepts when they require `WeaklyRegular`, so those concepts take a simpler form
+// there. Apple Clang 16 does not need it.
+#if MP_UNITS_COMP_APPLE_CLANG == 15
 #define MP_UNITS_XCODE15_HACKS
 #endif
 
