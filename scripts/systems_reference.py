@@ -187,7 +187,21 @@ class Constant:
 
 
 CORE_UNITS_SECTION_START = "// common dimensionless units"
-CORE_UNITS_SECTION_END = "// Common unit"
+# The section ends where its `// clang-format off` block does. A prose comment
+# after it made a poor marker: a doc-comment pass rewrote it and the section,
+# with `percent`, `ppm`, and `pi`, vanished from the reference.
+CORE_UNITS_SECTION_END = "// clang-format on"
+
+
+def core_units_section(content: str) -> Optional[str]:
+    """Return the text between the core units markers, or None if there is none."""
+    start = content.find(CORE_UNITS_SECTION_START)
+    if start == -1:
+        return None
+    end = content.find(CORE_UNITS_SECTION_END, start)
+    if end == -1:
+        return None
+    return content[start:end]
 
 
 def find_core_units_header(source_root: Path) -> Optional[Path]:
@@ -200,8 +214,7 @@ def find_core_units_header(source_root: Path) -> Optional[Path]:
     """
     framework_dir = source_root / "src/core/include/mp-units/framework"
     for path in sorted(framework_dir.glob("*.h")):
-        content = path.read_text()
-        if CORE_UNITS_SECTION_START in content and CORE_UNITS_SECTION_END in content:
+        if core_units_section(path.read_text()) is not None:
             return path
     return None
 
@@ -388,31 +401,27 @@ class SystemsParser:
         # Parse other units from the framework component defining them
         unit_path = find_core_units_header(self.source_root)
         if unit_path is None:
-            print(
-                "Warning: no framework header defines the core dimensionless units; "
-                "`percent`, `ppm`, and `pi` will be missing from the reference"
+            # an error, not a warning: the reference built without these looks
+            # complete, and a warning in the `properdocs serve` log went unnoticed
+            raise RuntimeError(
+                "no framework header has a section between "
+                f"'{CORE_UNITS_SECTION_START}' and '{CORE_UNITS_SECTION_END}'; "
+                "without it `percent`, `ppm`, and `pi` would be missing from the reference"
             )
-        else:
-            try:
-                raw_content = unit_path.read_text()
-                # Find markers before stripping comments
-                start_marker = raw_content.find(CORE_UNITS_SECTION_START)
-                end_marker = raw_content.find(CORE_UNITS_SECTION_END)
-                if start_marker != -1 and end_marker != -1:
-                    # Extract the section, then strip comments
-                    section_content = raw_content[start_marker:end_marker]
-                    content = self._strip_comments(section_content)
-                    # Parse units at mp_units namespace level (no sub-namespace)
-                    self._parse_units(
-                        content, core_system, str(unit_path), namespace_to_search=None
-                    )
-                    # Parse constants before aliases so aliases can find their targets
-                    self._parse_constants(content, core_system, str(unit_path))
-                    self._parse_aliases(content, core_system, str(unit_path))
-                    # Parse unit_symbols after constants so constants can be matched
-                    self._parse_unit_symbols(content, core_system, str(unit_path))
-            except Exception as e:
-                print(f"Warning: Could not parse {unit_path}: {e}")
+        try:
+            # Extract the section by its comment markers, then strip comments
+            content = self._strip_comments(core_units_section(unit_path.read_text()))
+            # Parse units at mp_units namespace level (no sub-namespace)
+            self._parse_units(
+                content, core_system, str(unit_path), namespace_to_search=None
+            )
+            # Parse constants before aliases so aliases can find their targets
+            self._parse_constants(content, core_system, str(unit_path))
+            self._parse_aliases(content, core_system, str(unit_path))
+            # Parse unit_symbols after constants so constants can be matched
+            self._parse_unit_symbols(content, core_system, str(unit_path))
+        except Exception as e:
+            print(f"Warning: Could not parse {unit_path}: {e}")
         # Users include core.h, never the framework component the definitions were read from
         core_header = self.source_root / "src/core/include/mp-units/core.h"
         core_system.files.append(core_header)
