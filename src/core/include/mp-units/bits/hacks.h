@@ -152,14 +152,14 @@ MP_UNITS_DIAGNOSTIC_POP
 
 #endif
 
-#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
-
-#define MP_UNITS_CONSTEVAL constexpr
-
+// Hack for a compiler bug: Clang 16 rejects some valid immediate invocations, e.g. a `consteval`
+// operator called in the initializer of a static data member of a class template ("cannot take
+// address of consteval function ... outside of an immediate invocation"). Clang 17 accepts them.
+// Extend the branch to a newer version only after that version is confirmed to have the same bug.
+#if MP_UNITS_COMP_CLANG == 16
+#define MP_UNITS_CONSTEVAL_HACK constexpr
 #else
-
-#define MP_UNITS_CONSTEVAL consteval
-
+#define MP_UNITS_CONSTEVAL_HACK consteval
 #endif
 
 #if !defined MP_UNITS_API_NO_CRTP && __cpp_explicit_this_parameter

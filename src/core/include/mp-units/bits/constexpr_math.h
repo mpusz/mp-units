@@ -40,7 +40,7 @@ import std;
 namespace mp_units::detail {
 
 template<typename T>
-[[nodiscard]] MP_UNITS_CONSTEVAL T abs(T v) noexcept
+[[nodiscard]] MP_UNITS_CONSTEVAL_HACK T abs(T v) noexcept
   requires requires {
     v < T{0};
     -v;

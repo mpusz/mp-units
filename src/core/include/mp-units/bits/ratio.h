@@ -70,7 +70,7 @@ struct ratio {
   std::intmax_t den;
 
   // NOLINTNEXTLINE(bugprone-easily-swappable-parameters, google-explicit-constructor, hicpp-explicit-conversions)
-  MP_UNITS_CONSTEVAL explicit(false) ratio(std::intmax_t n, std::intmax_t d = 1) : num{n}, den{d}
+  MP_UNITS_CONSTEVAL_HACK explicit(false) ratio(std::intmax_t n, std::intmax_t d = 1) : num{n}, den{d}
   {
     MP_UNITS_PRECONDITION(den != 0);
     if (num == 0)
@@ -82,17 +82,17 @@ struct ratio {
     }
   }
 
-  [[nodiscard]] friend MP_UNITS_CONSTEVAL bool operator==(ratio, ratio) = default;
-  [[nodiscard]] friend MP_UNITS_CONSTEVAL auto operator<=>(ratio lhs, ratio rhs) { return (lhs - rhs).num <=> 0; }
+  [[nodiscard]] friend MP_UNITS_CONSTEVAL_HACK bool operator==(ratio, ratio) = default;
+  [[nodiscard]] friend MP_UNITS_CONSTEVAL_HACK auto operator<=>(ratio lhs, ratio rhs) { return (lhs - rhs).num <=> 0; }
 
-  [[nodiscard]] friend MP_UNITS_CONSTEVAL ratio operator-(ratio r) { return ratio{-r.num, r.den}; }
+  [[nodiscard]] friend MP_UNITS_CONSTEVAL_HACK ratio operator-(ratio r) { return ratio{-r.num, r.den}; }
 
-  [[nodiscard]] friend MP_UNITS_CONSTEVAL ratio operator+(ratio lhs, ratio rhs)
+  [[nodiscard]] friend MP_UNITS_CONSTEVAL_HACK ratio operator+(ratio lhs, ratio rhs)
   {
     return ratio{lhs.num * rhs.den + lhs.den * rhs.num, lhs.den * rhs.den};
   }
 
-  [[nodiscard]] friend MP_UNITS_CONSTEVAL ratio operator-(ratio lhs, ratio rhs) { return lhs + (-rhs); }
+  [[nodiscard]] friend MP_UNITS_CONSTEVAL_HACK ratio operator-(ratio lhs, ratio rhs) { return lhs + (-rhs); }
 
   [[nodiscard]] friend consteval ratio operator*(ratio lhs, ratio rhs)
   {

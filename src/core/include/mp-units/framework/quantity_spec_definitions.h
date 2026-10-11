@@ -300,7 +300,7 @@ struct quantity_spec_interface : quantity_spec_interface_base {
   }
 #else
   template<typename Self_ = Self, UnitOf<Self_{}> U>
-  [[nodiscard]] MP_UNITS_CONSTEVAL Reference auto operator[](U) const
+  [[nodiscard]] MP_UNITS_CONSTEVAL_HACK Reference auto operator[](U) const
   {
     return detail::make_reference(Self{}, U{});
   }

@@ -192,7 +192,7 @@ template<typename T>
 }
 
 template<typename T>
-[[nodiscard]] MP_UNITS_CONSTEVAL ratio get_exponent(T)
+[[nodiscard]] MP_UNITS_CONSTEVAL_HACK ratio get_exponent(T)
 {
   // this covers both `power` and `power_v`
   if constexpr (requires { T::_exponent_; })
@@ -417,7 +417,7 @@ struct expr_fractions : decltype(expr_fractions_impl<OneType, type_list<Ts...>>(
 
 // expr_make_spec
 template<typename NumList, typename DenList, SymbolicArg OneType, template<typename...> typename To>
-[[nodiscard]] MP_UNITS_CONSTEVAL auto expr_make_spec_impl()
+[[nodiscard]] MP_UNITS_CONSTEVAL_HACK auto expr_make_spec_impl()
 {
   constexpr std::size_t num = type_list_size<NumList>;
   constexpr std::size_t den = type_list_size<DenList>;
@@ -442,7 +442,7 @@ template<typename NumList, typename DenList, SymbolicArg OneType, template<typen
  */
 template<typename NumList, typename DenList, SymbolicArg OneType, template<typename, typename> typename Pred,
          template<typename...> typename To>
-[[nodiscard]] MP_UNITS_CONSTEVAL auto get_optimized_expression()
+[[nodiscard]] MP_UNITS_CONSTEVAL_HACK auto get_optimized_expression()
 {
   using num_list = expr_consolidate<NumList>;
   using den_list = expr_consolidate<DenList>;
@@ -463,7 +463,7 @@ template<typename NumList, typename DenList, SymbolicArg OneType, template<typen
  */
 template<template<typename...> typename To, SymbolicArg OneType,
          template<typename, typename> typename Pred = type_list_name_less, typename Lhs, typename Rhs>
-[[nodiscard]] MP_UNITS_CONSTEVAL auto expr_multiply(Lhs, Rhs)
+[[nodiscard]] MP_UNITS_CONSTEVAL_HACK auto expr_multiply(Lhs, Rhs)
 {
   if constexpr (std::is_same_v<Lhs, OneType>) {
     return Rhs{};
@@ -498,7 +498,7 @@ template<template<typename...> typename To, SymbolicArg OneType,
  */
 template<template<typename...> typename To, SymbolicArg OneType,
          template<typename, typename> typename Pred = type_list_name_less, typename Lhs, typename Rhs>
-[[nodiscard]] MP_UNITS_CONSTEVAL auto expr_divide(Lhs lhs, Rhs rhs)
+[[nodiscard]] MP_UNITS_CONSTEVAL_HACK auto expr_divide(Lhs lhs, Rhs rhs)
 {
   if constexpr (std::is_same_v<Lhs, Rhs>) {
     return OneType{};
