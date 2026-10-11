@@ -29,6 +29,11 @@
 
 #if __clang__
 #define MP_UNITS_COMP_CLANG __clang_major__
+#if defined __apple_build_version__
+// Apple Clang numbers its versions independently of LLVM Clang, so a hack keyed to an LLVM Clang
+// version has to exclude it, and a hack for Apple Clang has to name Apple's version
+#define MP_UNITS_COMP_APPLE_CLANG __clang_major__
+#endif
 #elif __GNUC__
 #define MP_UNITS_COMP_GCC __GNUC__
 #define MP_UNITS_COMP_GCC_MINOR __GNUC_MINOR__
@@ -153,8 +158,10 @@ inline constexpr from_range_t from_range{};
 // Hack for a compiler bug: Clang 16 rejects some valid immediate invocations, e.g. a `consteval`
 // operator called in the initializer of a static data member of a class template ("cannot take
 // address of consteval function ... outside of an immediate invocation"). Clang 17 accepts them.
+// Apple Clang 15 and 16 keep the hack they always had, as nobody has tested them without it.
 // Extend the branch to a newer version only after that version is confirmed to have the same bug.
-#if MP_UNITS_COMP_CLANG == 16
+#if (MP_UNITS_COMP_CLANG == 16 && !MP_UNITS_COMP_APPLE_CLANG) || MP_UNITS_COMP_APPLE_CLANG == 15 || \
+  MP_UNITS_COMP_APPLE_CLANG == 16
 #define MP_UNITS_CONSTEVAL_HACK constexpr
 #else
 #define MP_UNITS_CONSTEVAL_HACK consteval
