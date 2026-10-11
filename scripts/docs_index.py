@@ -27,21 +27,37 @@ It answers the question a doc comment's `docs:` link has to answer: which page
 actually covers this entity? A filename is no guide: `pure_dimensional_analysis.md`
 sounds like the home of `DimensionOf` and never mentions it.
 
-- `docs/.index.md` is the lookup: one line per entity, naming the few pages whose
-  code uses it most, so `grep '^- `DimensionOf`' docs/.index.md` answers the
-  question. It is kept small because an agent reads it whole.
+- `docs/.index.md` is the lookup: one line per entity, naming the few pages most
+  about it, so `grep '^- `DimensionOf`' docs/.index.md` answers the question. It
+  is kept small because an agent reads it whole.
 - `docs/.index-pages.md` is for browsing: each page's title, headings, first
-  paragraph where that is real prose, and every entity its code uses, counted.
+  paragraph where that is real prose, and every entity it mentions, counted.
 
 Blog posts are left out: an entity is never linked to a release announcement, and
-they would crowd the reference pages out of the lookup.
+they would crowd the reference pages out of the lookup. The release notes and the
+cheat sheet stay in the browsing file but are not ranked, for the same reason:
+they mention nearly everything and are never the page to link. An entity that
+only they mention is listed as covered by no page, which is a documentation gap
+worth seeing rather than hiding.
 
 An entity is a name the public headers declare at namespace scope outside
 `detail`: concepts, class templates, functions, variables and quantity specs. The
 vocabulary is read from the headers rather than written down, so a renamed entity
-cannot linger here. Only code counts as a mention (fenced blocks, inline code, and
-the `--8<--` snippets a page includes), because prose says "dimension" without
-meaning `Dimension`. Member functions are not indexed.
+cannot linger here. Member functions are not indexed. A page mentions an entity
+in three ways, counted apart:
+
+- in code: fenced blocks, inline code, and the `--8<--` snippets it includes;
+- in prose, by a name that cannot be an English word. `QuantitySpec`,
+  `quantity_point` and `isq::speed` count; `Dimension` and `point` do not, because
+  prose says "dimension" without meaning the concept;
+- in a heading that titles it: `QuantityOf` in `` ### `QuantityOf<T, V>` `` but
+  not `Unit` in `` ### The `.numerical_value_in(Unit)` Function ``.
+
+The lookup ranks by a heading weighing as much as `HEADING_WEIGHT` uses, plus
+the code and prose counts. A page that titles a section after an entity is about
+it; a page using it many times in examples may not be. A chapter explaining a
+concept often names the class modeling it rather than the concept, which no
+count can see; the concept's entry in `concepts.md` carries those.
 
 The output is committed, and a pre-commit hook (which CI runs too) fails when it
 is stale:
@@ -66,6 +82,13 @@ PAGES = DOCS / ".index-pages.md"
 
 # pages per entity in the lookup; the tail of a long list is passing mentions
 LOOKUP_PAGES = 5
+
+# pages that mention nearly everything and are never the page to link; they stay
+# in the browsing file
+UNRANKED_DOCS = ("release_notes.md", "reference/cheat_sheet.md")
+
+# a heading naming an entity is worth this many uses: the page is about it
+HEADING_WEIGHT = 25
 
 # generated trees, indexed by their own tooling, and the blog
 EXCLUDED_DOCS = (
@@ -303,7 +326,7 @@ def vocabulary() -> set[str]:
 _FENCE = re.compile(r"^(\s*)(`{3,}|~{3,})")
 _SNIPPET = re.compile(r'^\s*-{2}8<-{2}\s+"([^"]+)"')
 _HEADING = re.compile(r"^(#{1,6})\s+(.*?)\s*#*\s*$")
-_INLINE_CODE = re.compile(r"(`+)(.+?)\1")
+_INLINE_CODE = re.compile(r"(`+)(.+?)\1", re.S)  # a span may wrap within a paragraph
 
 
 def _snippet(spec: str) -> str:
@@ -337,6 +360,8 @@ class Page:
         self.headings: list[tuple[int, str]] = []
         self.summary = ""
         self.code: list[str] = []  # fenced blocks, included snippets, inline spans
+        self.prose: list[str] = []  # the text around them, links reduced to their text
+        self.heading_text: list[str] = []  # raw, inline code included
         self._parse(path.read_text(encoding="utf-8"))
 
     def _parse(self, text: str) -> None:
@@ -354,7 +379,22 @@ class Page:
         fence: str | None = None
         block: list[str] = []
         paragraph: list[str] | None = None  # collected until the first heading after H1
+        running: list[str] = []  # the running text since the last blank line
+
+        def end_running() -> None:
+            text = "\n".join(running)
+            self.code += [m.group(2) for m in _INLINE_CODE.finditer(text)]
+            self.prose.append(_prose(text))
+            running.clear()
+
         for line in lines:
+            if fence is None and (
+                not line.strip()
+                or _FENCE.match(line)
+                or _SNIPPET.match(line)
+                or _HEADING.match(line)
+            ):
+                end_running()
             if fence is not None:
                 if line.strip().startswith(fence):
                     self.code.append("\n".join(block))
@@ -370,7 +410,6 @@ class Page:
             if snippet := _SNIPPET.match(line):
                 self.code.append(_snippet(snippet.group(1)))
                 continue
-            self.code += [m.group(2) for m in _INLINE_CODE.finditer(line)]
             if m := _HEADING.match(line):
                 level, heading = len(m.group(1)), _clean_inline(m.group(2))
                 if level == 1 and not self.title:
@@ -378,15 +417,18 @@ class Page:
                     paragraph = []
                 elif level > 1:
                     self.headings.append((level, heading))
+                    self.heading_text.append(m.group(2))
                     self._take_summary(paragraph)
                     paragraph = None
                 continue
+            running.append(line)
             if paragraph is not None:
                 if line.strip():
                     paragraph.append(line)
                 elif paragraph:
                     self._take_summary(paragraph)
                     paragraph = None
+        end_running()
         self._take_summary(paragraph)
 
     def _take_summary(self, paragraph: list[str] | None) -> None:
@@ -405,21 +447,78 @@ class Page:
         if len(text.split()) >= 6 and not text.endswith(":"):
             self.summary = text
 
-    def entities(self, vocab: set[str], unqualified: dict[str, str]) -> Counter[str]:
+    def mentions(
+        self, match: "Matcher"
+    ) -> tuple[Counter[str], Counter[str], Counter[str]]:
+        """Uses in code, mentions in prose, and headings naming each entity."""
+        code: Counter[str] = Counter()
+        for text in self.code:
+            code += match(text)
+        prose = match("\n".join(self.prose), prose=True)
+        headings: Counter[str] = Counter()
+        for text in self.heading_text:
+            # A heading is about the entity it titles: `Unit` in `QuantityOf<T, V>`
+            # or `.numerical_value_in(Unit)` is a placeholder, not the subject.
+            titled = [
+                m.group(1)
+                for span in _INLINE_CODE.finditer(text)
+                if (m := re.match(r"\s*((?:\w+::)*\w+)", span.group(2)))
+            ]
+            # once per heading, however it spells the name
+            headings.update(
+                set(match(" ".join(titled))) | set(match(_prose(text), prose=True))
+            )
+        return code, prose, headings
+
+
+def _prose(line: str) -> str:
+    """Markdown text without its code spans, link targets and markup."""
+    line = _INLINE_CODE.sub(" ", line)
+    line = re.sub(r"(?m)^\s*\[[^\]]+\]:\s*\S+.*$", " ", line)  # link definitions
+    line = re.sub(r"\]\([^)]*\)", "] ", line)  # inline link targets
+    line = re.sub(r"\{[#.:][^}]*\}", " ", line)  # attr_list
+    return re.sub(r"<[^>]+>", " ", line)  # html
+
+
+def _unambiguous(name: str) -> bool:
+    """Whether a bare name in prose can only mean the entity: `QuantitySpec` or
+    `quantity_point` can, `Dimension` and `point` are English words."""
+    bare = name.rpartition("::")[2]
+    return "_" in bare or re.search(r"[a-z0-9][A-Z]", bare) is not None
+
+
+class Matcher:
+    """Finds the library entities a text names."""
+
+    def __init__(self, vocab: set[str]):
+        self.vocab = vocab
+        # A bare name means a framework entity: the core, or utility after its
+        # `using namespace`. Systems are spelled qualified in the docs, and their
+        # bare unit symbols (`m`, `s`) would match every one-letter variable.
+        self.unqualified = {name: name for name in vocab if "::" not in name}
+        for name in vocab:
+            if name.startswith("utility::") and name.count("::") == 1:
+                self.unqualified.setdefault(name.removeprefix("utility::"), name)
+
+    def __call__(self, text: str, prose: bool = False) -> Counter[str]:
+        """Entities `text` names. In prose a qualified name always counts and a
+        bare one only when it cannot be an English word; a file name never does."""
         found: Counter[str] = Counter()
-        for code in self.code:
-            for m in re.finditer(r"(?<![\w.>])((?:\w+::)*)(\w+)\b(?!\s*::)", code):
-                qualifier, name = m.group(1), m.group(2)
-                path = qualifier.removeprefix("::").removeprefix("mp_units::")
-                if path.startswith("std::"):
-                    continue
-                if path:
-                    if (entity := path + name) in vocab:
-                        found[entity] += 1
-                elif name in unqualified and not code[: m.start()].endswith(
-                    ("->", ".")
-                ):
-                    found[unqualified[name]] += 1
+        for m in re.finditer(r"(?<![\w.>])((?:\w+::)*)(\w+)\b(?!\s*::)", text):
+            qualifier, name = m.group(1), m.group(2)
+            path = qualifier.removeprefix("::").removeprefix("mp_units::")
+            if path.startswith("std::"):
+                continue
+            if prose and re.match(r"\.(?:h|md|cpp)\b|/", text[m.end() :]):
+                continue
+            if path:
+                if (entity := path + name) in self.vocab:
+                    found[entity] += 1
+            elif name in self.unqualified and not text[: m.start()].endswith(
+                ("->", ".")
+            ):
+                if not prose or _unambiguous(name):
+                    found[self.unqualified[name]] += 1
         return found
 
 
@@ -437,16 +536,19 @@ _PREAMBLE = [
 ]
 
 
-def generate() -> dict[Path, str]:
-    vocab = vocabulary()
-    # A bare name means a framework entity: the core, or utility after its
-    # `using namespace`. Systems are spelled qualified in the docs, and their bare
-    # unit symbols (`m`, `s`) would match every one-letter variable.
-    unqualified = {name: name for name in vocab if "::" not in name}
-    for name in vocab:
-        if name.startswith("utility::") and name.count("::") == 1:
-            unqualified.setdefault(name.removeprefix("utility::"), name)
+def _score(count: tuple[int, int, int]) -> int:
+    code, prose, headings = count
+    return HEADING_WEIGHT * headings + code + prose
 
+
+def _counts(count: tuple[int, int, int]) -> str:
+    """`h1 c6 p2`: headings, code uses, prose mentions; zeros left out."""
+    code, prose, headings = count
+    return " ".join(f"{tag}{n}" for tag, n in zip("hcp", (headings, code, prose)) if n)
+
+
+def generate() -> dict[Path, str]:
+    match = Matcher(vocabulary())
     pages = [
         Page(path)
         for path in _tracked("docs")
@@ -454,26 +556,36 @@ def generate() -> dict[Path, str]:
         and not path.name.startswith(".")
         and not path.relative_to(DOCS).as_posix().startswith(EXCLUDED_DOCS)
     ]
-    users: defaultdict[str, list[tuple[int, str]]] = defaultdict(list)
+    users: defaultdict[str, list[tuple[tuple[int, int, int], str]]] = defaultdict(list)
+    # entities the ranked pages never mention, kept so the lookup can say so
+    unranked: defaultdict[str, set[str]] = defaultdict(set)
 
     browse = [
         *_PREAMBLE,
         "# Documentation pages",
         "",
         "Each page under `docs/` (blog posts excepted) with its headings and the library",
-        "entities its code uses, counted: uses in fenced blocks, inline code and included",
-        "snippets, not in prose. To find the page for an entity, use `.index.md` instead.",
+        "entities it mentions. `code` counts uses in fenced blocks, inline code and included",
+        "snippets; `prose` counts names in running text that cannot be English words",
+        "(`QuantitySpec`, `quantity_point`, `isq::speed`); `headings` lists the entities a",
+        "heading titles. To find the page for an entity, use `.index.md` instead.",
     ]
     for page in pages:
-        found = page.entities(vocab, unqualified)
-        ranked = sorted(found.items(), key=lambda item: (-item[1], item[0]))
-        for entity, count in ranked:
-            users[entity].append((count, page.path))
+        code, prose, headings = page.mentions(match)
+        for entity in code.keys() | prose.keys() | headings.keys():
+            if page.path.startswith(UNRANKED_DOCS):
+                unranked[entity].add(page.path)
+            else:
+                users[entity].append(
+                    ((code[entity], prose[entity], headings[entity]), page.path)
+                )
         browse += ["", f"## {page.path}", "", f"title: {page.title}"]
         if page.summary:
             browse.append(f"summary: {page.summary}")
-        if ranked:
-            browse.append("entities: " + ", ".join(f"`{e}` {c}" for e, c in ranked))
+        for label, found in (("code", code), ("prose", prose), ("headings", headings)):
+            if found:
+                ranked = sorted(found.items(), key=lambda item: (-item[1], item[0]))
+                browse.append(f"{label}: " + ", ".join(f"`{e}` {c}" for e, c in ranked))
         if page.headings:
             top = min(level for level, _ in page.headings)
             browse += [
@@ -485,16 +597,29 @@ def generate() -> dict[Path, str]:
         *_PREAMBLE,
         "# Documentation index",
         "",
-        "For each library entity, the pages under `docs/` whose code uses it most, by count",
-        "of uses in fenced blocks, inline code and included snippets (not prose). A page",
+        "For each library entity, the pages under `docs/` that are most about it. `h` counts",
+        "the headings titling it, `c` its uses in fenced blocks, inline code and included",
+        "snippets, and `p` its mentions in running text; a heading outweighs",
+        f"{HEADING_WEIGHT} uses. Release notes and the cheat sheet mention nearly everything",
+        "and are not ranked, so an entity only they mention is marked as uncovered. A page",
         "that uses an entity is not yet a page about it: read it before linking. Headings",
         "and summaries per page are in `.index-pages.md`.",
         "",
     ]
-    for entity in sorted(users, key=str.casefold):
-        ranked = sorted(users[entity], key=lambda item: (-item[0], item[1]))
+    # the exact name breaks a casefold tie (`Quantity` and `quantity`), which a
+    # set alone would order by hash and so differently on every run
+    for entity in sorted(
+        users.keys() | unranked.keys(), key=lambda e: (e.casefold(), e)
+    ):
+        if entity not in users:
+            # Saying so beats leaving it unfindable: a grep that returns nothing
+            # cannot tell an undocumented entity from a misspelled one.
+            where = ", ".join(sorted(unranked[entity]))
+            lookup.append(f"- `{entity}`: no page covers it ({where} aside)")
+            continue
+        ranked = sorted(users[entity], key=lambda item: (-_score(item[0]), item[1]))
         line = f"- `{entity}`: " + ", ".join(
-            f"{path} {count}" for count, path in ranked[:LOOKUP_PAGES]
+            f"{path} {_counts(count)}" for count, path in ranked[:LOOKUP_PAGES]
         )
         if len(ranked) > LOOKUP_PAGES:
             line += f" (+{len(ranked) - LOOKUP_PAGES} more)"
