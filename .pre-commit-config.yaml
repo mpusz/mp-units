@@ -60,6 +60,13 @@ repos:
         language: system
         pass_filenames: false
         files: ^(scripts/codata_constants\.py|scripts/codata/allascii_.*\.txt|src/systems/include/mp-units/systems/codata\.h|src/systems/include/mp-units/systems/codata/.*\.h)$
+      - id: docs-index
+        name: docs index check
+        description: verify docs/.index.md and docs/.index-pages.md match the docs pages and the headers they index
+        entry: python3 scripts/docs_index.py --check
+        language: system
+        pass_filenames: false
+        files: ^(docs/.*\.md|example/.*|src/.*\.h|scripts/docs_index\.py)$
   - repo: https://github.com/DavidAnson/markdownlint-cli2
     rev: v0.22.1
     hooks:
