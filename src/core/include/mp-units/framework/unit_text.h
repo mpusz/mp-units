@@ -257,7 +257,7 @@ std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>&
 // unit-symbol-separator = 's' | 'd';
 //
 template<typename U, typename Char>
-  requires mp_units::detail::GCC_120625_is_complete<U> && mp_units::Unit<U>
+  requires(MP_UNITS_FORMATTER_HACK(U, mp_units::Unit<U>))
 class MP_UNITS_STD_FMT::formatter<U, Char> {
   struct format_specs : mp_units::utility::fill_align_width_format_specs<Char>, mp_units::unit_symbol_formatting {};
   format_specs specs_{};

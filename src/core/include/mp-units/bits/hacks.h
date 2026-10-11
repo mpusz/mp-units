@@ -187,12 +187,28 @@ inline constexpr from_range_t from_range{};
 #define MP_UNITS_HAS_BUILTIN(...) 0
 #endif
 
+// Hack for a library bug: libstdc++ 15.1 in C++23 mode derives some `std::formatter`
+// specializations from `std::formatter<__format::__disabled, wchar_t>` for an incomplete
+// `__disabled`. Matching that against a constrained program-defined `std::formatter` partial
+// specialization checks its constraint on the incomplete type, which is a hard error for a
+// concept such as `Dimension` (https://gcc.gnu.org/bugzilla/show_bug.cgi?id=120625, fixed in
+// 15.2). Wrap such a constraint in this macro: on the affected library it first checks that
+// `T` is complete.
+#if _GLIBCXX_RELEASE == 15 && __GLIBCXX__ < 20250808
+
 namespace mp_units::detail {
 
-// https://gcc.gnu.org/bugzilla/show_bug.cgi?id=120625
 template<typename T>
-inline constexpr bool GCC_120625_is_complete = requires { sizeof(T) > 0; };
+inline constexpr bool is_complete = requires { sizeof(T) > 0; };
 
 }  // namespace mp_units::detail
+
+#define MP_UNITS_FORMATTER_HACK(T, ...) mp_units::detail::is_complete<T>&& __VA_ARGS__
+
+#else
+
+#define MP_UNITS_FORMATTER_HACK(T, ...) __VA_ARGS__
+
+#endif
 
 // NOLINTEND(bugprone-reserved-identifier, cppcoreguidelines-macro-usage)

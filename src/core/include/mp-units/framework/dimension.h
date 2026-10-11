@@ -335,7 +335,7 @@ std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>&
 // character-set         = 'U' | 'P';
 //
 template<typename D, typename Char>
-  requires mp_units::detail::GCC_120625_is_complete<D> && mp_units::Dimension<D>
+  requires(MP_UNITS_FORMATTER_HACK(D, mp_units::Dimension<D>))
 class MP_UNITS_STD_FMT::formatter<D, Char> {
   struct format_specs :
       mp_units::utility::fill_align_width_format_specs<Char>,
