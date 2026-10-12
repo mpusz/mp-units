@@ -213,11 +213,16 @@ unit magnitude in a more flexible way.
 Each prefix is implemented similarly to the following:
 
 ```cpp
-template<PrefixableUnit U> struct quecto_ : prefixed_unit<"q", mag_power<10, -30>, U{}> {};
+template<PrefixableUnit U>
+    requires(!std::is_const_v<U>)
+struct quecto_ : prefixed_unit<"q", mag_power<10, -30>, U{}> {};
 template<PrefixableUnit auto U> constexpr quecto_<decltype(U)> quecto;
 ```
 
-and then a [PrefixableUnit](concepts.md#PrefixableUnit) can be prefixed in the following
+The `requires` clause rejects a `const` unit type, because `quecto_<const metre>` would be
+a different type from `quecto_<metre>`.
+
+Then a [PrefixableUnit](concepts.md#PrefixableUnit) can be prefixed in the following
 way:
 
 ```cpp
@@ -229,7 +234,9 @@ efficiently represent any rational magnitude. For example, IEC 80000 prefixes us
 IT industry can be implemented as:
 
 ```cpp
-template<PrefixableUnit U> struct yobi_ : prefixed_unit<"Yi", mag_power<2, 80>, U{}> {};
+template<PrefixableUnit U>
+    requires(!std::is_const_v<U>)
+struct yobi_ : prefixed_unit<"Yi", mag_power<2, 80>, U{}> {};
 template<PrefixableUnit auto U> constexpr yobi_<decltype(U)> yobi;
 ```
 

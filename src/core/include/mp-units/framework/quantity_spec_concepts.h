@@ -23,6 +23,7 @@
 #pragma once
 
 // IWYU pragma: private, include <mp-units/framework.h>
+#include <mp-units/bits/config.h>
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/framework/symbolic_expression.h>
@@ -51,7 +52,7 @@ template<typename T>
 constexpr bool is_specialization_of_quantity_spec = false;
 
 template<typename Derived, auto... Params>
-constexpr bool is_specialization_of_quantity_spec<quantity_spec<Derived, Params...> > = true;
+constexpr bool is_specialization_of_quantity_spec<quantity_spec<Derived, Params...>> = true;
 
 #endif
 
@@ -59,7 +60,7 @@ constexpr bool is_specialization_of_quantity_spec<quantity_spec<Derived, Params.
 
 MP_UNITS_EXPORT template<typename T>
 concept QuantitySpec = std::derived_from<T, detail::quantity_spec_interface_base> && detail::SymbolicConstant<T> &&
-                       !detail::is_specialization_of_quantity_spec<T>;
+                       !detail::is_specialization_of_quantity_spec<std::remove_const_t<T>>;
 
 template<typename Q>
 struct kind_of_;
@@ -67,7 +68,7 @@ struct kind_of_;
 namespace detail {
 
 template<typename T>
-concept QuantityKindSpec = QuantitySpec<T> && is_specialization_of<T, kind_of_>;
+concept QuantityKindSpec = QuantitySpec<T> && is_specialization_of<std::remove_const_t<T>, kind_of_>;
 
 }  // namespace detail
 
@@ -85,6 +86,6 @@ MP_UNITS_EXPORT template<QuantitySpec From, QuantitySpec To>
  */
 MP_UNITS_EXPORT template<typename T, auto QS>
 concept QuantitySpecOf =
-  QuantitySpec<T> && QuantitySpec<MP_UNITS_NTTP_TYPE(QS)> && (mp_units::implicitly_convertible(T{}, QS));
+  QuantitySpec<T> && QuantitySpec<MP_UNITS_NTTP_HACK(decltype(QS))> && (mp_units::implicitly_convertible(T{}, QS));
 
 }  // namespace mp_units

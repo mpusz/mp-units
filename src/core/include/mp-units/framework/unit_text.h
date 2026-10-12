@@ -24,6 +24,7 @@
 #pragma once
 
 // IWYU pragma: private, include <mp-units/framework/unit.h>
+#include <mp-units/bits/config.h>
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/text_tools.h>
@@ -71,7 +72,7 @@ template<Unit auto U>
 constexpr bool space_before_unit_symbol = true;
 
 template<>
-MP_UNITS_INLINE constexpr bool space_before_unit_symbol<one> = false;
+inline constexpr bool space_before_unit_symbol<one> = false;
 
 MP_UNITS_EXPORT_END
 
@@ -257,7 +258,7 @@ std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>&
 // unit-symbol-separator = 's' | 'd';
 //
 template<typename U, typename Char>
-  requires mp_units::detail::GCC_120625_is_complete<U> && mp_units::Unit<U>
+  requires(MP_UNITS_FORMATTER_HACK(U, mp_units::Unit<U>))
 class MP_UNITS_STD_FMT::formatter<U, Char> {
   struct format_specs : mp_units::utility::fill_align_width_format_specs<Char>, mp_units::unit_symbol_formatting {};
   format_specs specs_{};

@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include <mp-units/bits/hacks.h>  // IWYU pragma: keep
+#include <mp-units/bits/config.h>
+#include <mp-units/bits/diagnostics.h>  // IWYU pragma: keep
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #ifdef MP_UNITS_IMPORT_STD
@@ -72,7 +73,7 @@ using type_list_map = type_list_map_impl<From, To>::type;
 
 
 // element
-#if defined(__cpp_pack_indexing) && __cplusplus > 202302
+#if MP_UNITS_HAS_PACK_INDEXING
 
 // C++26: Pack indexing (P2662) gives a compiler-native O(1) element access,
 // eliminating the indexed_type_list multiple-inheritance machinery entirely.
@@ -174,7 +175,7 @@ using type_list_join = type_list_join_impl<Lists...>::type;
 template<typename List, typename First, typename Second>
 struct type_list_split_impl;
 
-#if defined(__cpp_pack_indexing) && __cplusplus > 202302
+#if MP_UNITS_HAS_PACK_INDEXING
 
 // C++26: Direct pack indexing avoids building an indexed_type_list (N base classes)
 // and then re-traversing it for every element of both output lists.
@@ -213,7 +214,7 @@ struct type_list_split_half<List<Types...>> : type_list_split<List<Types...>, (s
 // algorithm: switching `type_list_front` to `Ts...[0]` reproduces it just as well, while the existing
 // `type_list_element` and `type_list_split` uses escape it only because they sit off the conversion
 // path. Header-mode builds are unaffected, and clang-22 evaluates all of it correctly.
-#if defined(__cpp_pack_indexing) && __cplusplus > 202302 && !(MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 22)
+#if MP_UNITS_HAS_PACK_INDEXING
 
 // C++26: The element and the remainder are indexed straight out of the pack, so the two halves
 // that the split-based formulation materializes only to rejoin them never come into existence.

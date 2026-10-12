@@ -23,6 +23,8 @@
 #pragma once
 
 // IWYU pragma: private, include <mp-units/framework.h>
+#include <mp-units/bits/config.h>
+#include <mp-units/bits/diagnostics.h>
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/sudo_cast.h>
@@ -117,7 +119,7 @@ concept ScalarRepConvertible =
      type_name<Rep>(), type_name<T>()));
 
 template<auto R>
-concept UnitOne = Reference<MP_UNITS_NTTP_TYPE(R)> &&
+concept UnitOne = Reference<MP_UNITS_NTTP_HACK(decltype(R))> &&
                   (equivalent(get_unit(R), one) && detail::get_associated_quantity(get_unit(R)) == dimensionless);
 
 template<auto R>
@@ -134,13 +136,13 @@ concept ImplicitFromNumberQuantity = Quantity<Q> && ImplicitFromNumber<Q::refere
 // expression-template results (e.g. Eigen, Blaze) are checked and stored as their evaluated
 // concrete type rather than the lazy proxy type.
 template<auto QS, typename Func, typename T, typename U>
-concept InvokeResultOf = QuantitySpec<MP_UNITS_NTTP_TYPE(QS)> && std::regular_invocable<Func, T, U> &&
+concept InvokeResultOf = QuantitySpec<MP_UNITS_NTTP_HACK(decltype(QS))> && std::regular_invocable<Func, T, U> &&
                          RepresentationOf<representation_canonical_type_t<std::invoke_result_t<Func, T, U>>, QS>;
 
 template<typename Func, typename Q1, typename Q2,
          auto QS = std::invoke_result_t<Func, MP_UNITS_NONCONST_TYPE(Q1::quantity_spec),
                                         MP_UNITS_NONCONST_TYPE(Q2::quantity_spec)>{}>
-concept InvocableQuantities = QuantitySpec<MP_UNITS_NTTP_TYPE(QS)> && Quantity<Q1> && Quantity<Q2> &&
+concept InvocableQuantities = QuantitySpec<MP_UNITS_NTTP_HACK(decltype(QS))> && Quantity<Q1> && Quantity<Q2> &&
                               InvokeResultOf<QS, Func, typename Q1::rep, typename Q2::rep>;
 
 // A representation whose tensor order is that of a vector or tensor (order >= 1). Written as a nested
@@ -158,11 +160,11 @@ concept OrderRaisingRepresentation = requires { requires tensor_order<T> >= 1; }
 // a real->complex field mismatch is not bridged either.
 template<auto QS>
 concept ScalarCharacterSpec =
-  QuantitySpec<MP_UNITS_NTTP_TYPE(QS)> && (get_character(QS).order == quantity_tensor_order::scalar);
+  QuantitySpec<MP_UNITS_NTTP_HACK(decltype(QS))> && (get_character(QS).order == quantity_tensor_order::scalar);
 
 template<auto QS, typename Func, typename T, typename U>
 concept ScalableResultOf =
-  QuantitySpec<MP_UNITS_NTTP_TYPE(QS)> && std::regular_invocable<Func, T, U> &&
+  QuantitySpec<MP_UNITS_NTTP_HACK(decltype(QS))> && std::regular_invocable<Func, T, U> &&
   (RepresentationOf<representation_canonical_type_t<std::invoke_result_t<Func, T, U>>, QS> ||
    (ScalarCharacterSpec<QS> &&
     OrderRaisingRepresentation<representation_canonical_type_t<std::invoke_result_t<Func, T, U>>> &&
@@ -538,22 +540,15 @@ struct quantity_iface {
   // tuple-like decomposition of a vector quantity into named 1D-vector components (see
   // framework/vector_components.h).
   template<std::size_t Idx, auto R1, typename Rep1>
-#if !(defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17)
     requires DecomposableIndex<get_quantity_spec(R1), Rep1, Idx>
-#endif
   [[nodiscard]] friend constexpr Quantity auto get(const quantity<R1, Rep1>& q)
   {
     constexpr auto comp = vector_components<get_quantity_spec(R1)>::template axis<Idx>;
     return component_access<Idx>(q.numerical_value_in(get_unit(R1))) * comp[get_unit(R1)];
   }
 
-#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
-  template<auto QS, auto R1, typename Rep1>
-    requires(!std::integral<decltype(QS)>)
-#else
   template<QuantitySpec auto QS, auto R1, typename Rep1>
     requires DecomposableAxis<get_quantity_spec(R1), Rep1, QS>
-#endif
   [[nodiscard]] friend constexpr Quantity auto get(const quantity<R1, Rep1>& q)
   {
     return get<axis_index_of<QS>(vector_components<get_quantity_spec(R1)>{})>(q);
@@ -636,7 +631,7 @@ public:
   template<typename Value, Reference R2>
     requires(equivalent(unit, get_unit(R2{}))) && (!detail::RepConstructibleFrom<rep, Value>)
   constexpr quantity(Value val, R2)
-#if __cpp_deleted_function
+#if MP_UNITS_HAS_DELETED_FUNCTION_MESSAGE
     = delete ("Conversion is truncating");
 #else
     = delete;
@@ -667,7 +662,7 @@ public:
     requires detail::ExplicitFromNumber<reference> && (!detail::RepConstructibleFrom<rep, Value>)
   constexpr explicit(!std::convertible_to<Value, rep> ||
                      !mp_units::implicitly_convertible(quantity_spec, dimensionless)) quantity(Value val)
-#if __cpp_deleted_function
+#if MP_UNITS_HAS_DELETED_FUNCTION_MESSAGE
     = delete ("Conversion is truncating");
 #else
     = delete;
@@ -815,7 +810,7 @@ public:
   template<Unit U>
     requires(equivalent(U{}, unit))
   constexpr const rep&& numerical_value_ref_in(U) const&& noexcept
-#if __cpp_deleted_function
+#if MP_UNITS_HAS_DELETED_FUNCTION_MESSAGE
     = delete ("Can't form a reference to a temporary");
 #else
     = delete;

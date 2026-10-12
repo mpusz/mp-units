@@ -30,7 +30,6 @@
 //     g = 4π²L / T²        (simple pendulum)
 //     M = g R² / G         (surface gravity of a sphere)
 
-#include <mp-units/bits/hacks.h>
 #include <mp-units/compat_macros.h>
 #include <mp-units/ext/format.h>
 #ifdef MP_UNITS_IMPORT_STD

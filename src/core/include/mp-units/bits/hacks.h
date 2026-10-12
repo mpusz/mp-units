@@ -23,121 +23,138 @@
 // NOLINTBEGIN(bugprone-reserved-identifier, cppcoreguidelines-macro-usage)
 #pragma once
 
-#ifndef MP_UNITS_IN_MODULE_INTERFACE
-#include <version>
+#include <mp-units/bits/compiler.h>
+
+// Hack for compiler bugs: `decltype(V)` of a class-type non-type template parameter should be
+// the parameter's type, but two compilers get it wrong. GCC 12 gives `const T` (GCC bug 98820, fixed
+// in GCC 13). LLVM Clang 23 gives `const T&` once a constraint passes `V` on to another concept
+// (https://github.com/llvm/llvm-project/issues/230945). Wrap such a `decltype(V)` in this macro: it
+// adds the trait that undoes the bug on those two compilers and leaves the type alone everywhere else.
+// Newer GCC still yields `const T` for a `V` mapped from a static member such as `T::_quantity_spec_`,
+// which needs no hack because the classification concepts accept a const-qualified type.
+// Extend a branch to a newer version only after that version is confirmed to have the same bug.
+#if MP_UNITS_COMP_CLANG == 23 && !MP_UNITS_COMP_APPLE_CLANG
+#define MP_UNITS_NTTP_HACK(...) std::remove_cvref_t<__VA_ARGS__>
+#elif MP_UNITS_COMP_GCC == 12
+#define MP_UNITS_NTTP_HACK(...) std::remove_const_t<__VA_ARGS__>
+#else
+#define MP_UNITS_NTTP_HACK(...) __VA_ARGS__
 #endif
 
-#if __clang__
-#define MP_UNITS_COMP_CLANG __clang_major__
-#elif __GNUC__
-#define MP_UNITS_COMP_GCC __GNUC__
-#define MP_UNITS_COMP_GCC_MINOR __GNUC_MINOR__
-#elif _MSC_VER
-#define MP_UNITS_COMP_MSVC _MSC_VER
+// Hack for a compiler bug: Clang 16 rejects some valid immediate invocations, e.g. a `consteval`
+// operator called in the initializer of a static data member of a class template ("cannot take
+// address of consteval function ... outside of an immediate invocation"). Clang 17 accepts them.
+// Apple Clang 15 and 16 keep the hack they always had, as nobody has tested them without it.
+// Extend the branch to a newer version only after that version is confirmed to have the same bug.
+#if (MP_UNITS_COMP_CLANG == 16 && !MP_UNITS_COMP_APPLE_CLANG) || MP_UNITS_COMP_APPLE_CLANG == 15 || \
+  MP_UNITS_COMP_APPLE_CLANG == 16
+#define MP_UNITS_CONSTEVAL_HACK constexpr
+#else
+#define MP_UNITS_CONSTEVAL_HACK consteval
 #endif
 
-// Adapted from https://github.com/ericniebler/range-v3/blob/master/include/range/v3/detail/config.hpp#L185.
-#define MP_UNITS_PRAGMA(X) _Pragma(#X)
+// Hack for a compiler bug: Apple Clang 15 (Xcode 15) crashes or takes very long to compile the
+// representation concepts when they require `WeaklyRegular`, so those concepts take a simpler form
+// there. Apple Clang 16 does not need it.
+#if MP_UNITS_COMP_APPLE_CLANG == 15
+#define MP_UNITS_XCODE15_HACKS
+#endif
 
-// `#warning` is C++23, and MSVC emits a hard error for it in earlier modes, so deprecated headers
-// use a compiler-specific pragma instead
+// Hack for a library bug: libstdc++ 15.1 in C++23 mode derives some `std::formatter`
+// specializations from `std::formatter<__format::__disabled, wchar_t>` for an incomplete
+// `__disabled`. Matching that against a constrained program-defined `std::formatter` partial
+// specialization checks its constraint on the incomplete type, which is a hard error for a
+// concept such as `Dimension` (https://gcc.gnu.org/bugzilla/show_bug.cgi?id=120625, fixed in
+// 15.2). Wrap such a constraint in this macro: on the affected library it first checks that
+// `T` is complete.
+#if _GLIBCXX_RELEASE == 15 && __GLIBCXX__ < 20250808
+
+namespace mp_units::detail {
+
+template<typename T>
+inline constexpr bool is_complete = requires { sizeof(T) > 0; };
+
+}  // namespace mp_units::detail
+
+#define MP_UNITS_FORMATTER_HACK(T, ...) (mp_units::detail::is_complete<T> && (__VA_ARGS__))
+
+#else
+
+#define MP_UNITS_FORMATTER_HACK(T, ...) (__VA_ARGS__)
+
+#endif
+
+// Hack for a compiler bug: in a module build, Clang 18 warns about a deprecated data member from
+// the implicitly defined copy constructor of its class, which it defines in the importing
+// translation unit, outside the `MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED` region around the class.
+// Header builds and Clang 16, 17 and 20 to 23 are not affected. Wrap the member's `[[deprecated]]`
+// in this macro: on Clang 18 it drops the attribute, so the member stays available without the
+// warning.
+#if MP_UNITS_COMP_CLANG == 18 && !MP_UNITS_COMP_APPLE_CLANG
+#define MP_UNITS_DEPRECATED_MEMBER_HACK(...)
+#else
+#define MP_UNITS_DEPRECATED_MEMBER_HACK(...) __VA_ARGS__
+#endif
+
+// Hack for compiler bugs: during constant evaluation `std::bit_cast` leaves an empty base subobject
+// uninitialized, so its result is unusable in a constant expression. GCC 12 and 13 and LLVM Clang 16
+// to 18 are affected, GCC 14 and Clang 20 are not. Apple Clang below 19 keeps the hack it always had,
+// as nobody has tested it without.
+#if MP_UNITS_COMP_GCC == 12 || MP_UNITS_COMP_GCC == 13 ||                                   \
+  (MP_UNITS_COMP_CLANG >= 16 && MP_UNITS_COMP_CLANG <= 18 && !MP_UNITS_COMP_APPLE_CLANG) || \
+  (MP_UNITS_COMP_APPLE_CLANG && MP_UNITS_COMP_APPLE_CLANG < 19)
+#define MP_UNITS_BIT_CAST_HACK 1
+#else
+#define MP_UNITS_BIT_CAST_HACK 0
+#endif
+
+// Hack for a compiler bug: LLVM Clang 19 to 21 mis-evaluate constant expressions that reach a
+// pack-indexed type through a module interface, reporting an initializer as non-constant with no
+// cause. Header-mode builds are unaffected, and Clang 22 evaluates them correctly. Apple Clang below
+// 22 keeps the hack it always had, as nobody has tested it without.
+#if (MP_UNITS_COMP_CLANG >= 19 && MP_UNITS_COMP_CLANG <= 21 && !MP_UNITS_COMP_APPLE_CLANG) || \
+  (MP_UNITS_COMP_APPLE_CLANG && MP_UNITS_COMP_APPLE_CLANG < 22)
+#define MP_UNITS_PACK_INDEXING_HACK 1
+#else
+#define MP_UNITS_PACK_INDEXING_HACK 0
+#endif
+
+// Hack for a compiler bug: GCC 12 parses `t[i, j]` in a requires-expression as the deprecated comma
+// subscript `t[(i, j)]`, so a probe for the C++23 multidimensional subscript is satisfied by a type
+// with only a one-index `operator[]`. GCC 13 parses it correctly.
+#if MP_UNITS_COMP_GCC == 12
+#define MP_UNITS_MULTIDIM_SUBSCRIPT_HACK 1
+#else
+#define MP_UNITS_MULTIDIM_SUBSCRIPT_HACK 0
+#endif
+
+// Hack for compiler bugs: GCC 12 and 13 ICE on `decltype(auto(expr))` (in tsubst, at cp/pt.cc).
+#if MP_UNITS_COMP_GCC == 12 || MP_UNITS_COMP_GCC == 13
+#define MP_UNITS_AUTO_CAST_HACK 1
+#else
+#define MP_UNITS_AUTO_CAST_HACK 0
+#endif
+
+// Hack for a compiler bug: MSVC ICEs on a `detail::ratio` passed as a non-type template argument
+// to build a magnitude, so `mag_ratio` builds it from prime factorizations there. The affected MSVC
+// versions are not known, so it applies to all of them until one is tested without it.
 #if MP_UNITS_COMP_MSVC
-#define MP_UNITS_DEPRECATED_HEADER(Msg) MP_UNITS_PRAGMA(message(Msg))
+#define MP_UNITS_MAG_RATIO_HACK 1
 #else
-#define MP_UNITS_DEPRECATED_HEADER(Msg) MP_UNITS_PRAGMA(GCC warning Msg)
+#define MP_UNITS_MAG_RATIO_HACK 0
 #endif
-#if !MP_UNITS_COMP_MSVC
-#define MP_UNITS_DIAGNOSTIC_PUSH MP_UNITS_PRAGMA(GCC diagnostic push)
-#define MP_UNITS_DIAGNOSTIC_POP MP_UNITS_PRAGMA(GCC diagnostic pop)
-#define MP_UNITS_DIAGNOSTIC_IGNORE_PRAGMAS MP_UNITS_PRAGMA(GCC diagnostic ignored "-Wpragmas")
-#define MP_UNITS_DIAGNOSTIC_IGNORE(X)                                \
-  MP_UNITS_DIAGNOSTIC_IGNORE_PRAGMAS                                 \
-  MP_UNITS_PRAGMA(GCC diagnostic ignored "-Wunknown-pragmas")        \
-  MP_UNITS_PRAGMA(GCC diagnostic ignored "-Wunknown-warning-option") \
-  MP_UNITS_PRAGMA(GCC diagnostic ignored X)
-#define MP_UNITS_DIAGNOSTIC_IGNORE_EXPR_ALWAYS_TF
-#define MP_UNITS_DIAGNOSTIC_IGNORE_FLOAT_EQUAL MP_UNITS_DIAGNOSTIC_IGNORE("-Wfloat-equal")
-#define MP_UNITS_DIAGNOSTIC_IGNORE_LOSS_OF_DATA
-#define MP_UNITS_DIAGNOSTIC_IGNORE_MISSING_BRACES MP_UNITS_DIAGNOSTIC_IGNORE("-Wmissing-braces")
-#define MP_UNITS_DIAGNOSTIC_IGNORE_NON_TEMPLATE_FRIEND MP_UNITS_DIAGNOSTIC_IGNORE("-Wnon-template-friend")
-#define MP_UNITS_DIAGNOSTIC_IGNORE_SHADOW MP_UNITS_DIAGNOSTIC_IGNORE("-Wshadow")
-#define MP_UNITS_DIAGNOSTIC_IGNORE_UNARY_MINUS_UNSIGNED
-#define MP_UNITS_DIAGNOSTIC_IGNORE_UNREACHABLE
-#define MP_UNITS_DIAGNOSTIC_IGNORE_ZERO_AS_NULLPOINTER_CONSTANT \
-  MP_UNITS_DIAGNOSTIC_IGNORE("-Wzero-as-nullpointer-constant")
-#define MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED MP_UNITS_DIAGNOSTIC_IGNORE("-Wdeprecated-declarations")
-#define MP_UNITS_DIAGNOSTIC_IGNORE_BUILTIN_MACRO_REDEFINED MP_UNITS_DIAGNOSTIC_IGNORE("-Wbuiltin-macro-redefined")
-#define MP_UNITS_DIAGNOSTIC_IGNORE_PEDANTIC MP_UNITS_DIAGNOSTIC_IGNORE("-Wpedantic")
-#define MP_UNITS_DIAGNOSTIC_IGNORE_SIGN_CONVERSION MP_UNITS_DIAGNOSTIC_IGNORE("-Wsign-conversion")
-#define MP_UNITS_DIAGNOSTIC_IGNORE_CONVERSION MP_UNITS_DIAGNOSTIC_IGNORE("-Wconversion")
-#if MP_UNITS_COMP_CLANG
-#define MP_UNITS_DIAGNOSTIC_IGNORE_FLOAT_CONVERSION MP_UNITS_DIAGNOSTIC_IGNORE("-Wimplicit-float-conversion")
-#define MP_UNITS_DIAGNOSTIC_IGNORE_INT_CONVERSION MP_UNITS_DIAGNOSTIC_IGNORE("-Wimplicit-int-conversion")
+
+// Hack for a compiler bug: MSVC needs an explicit copy-deduction guide for `quantity_point`. The
+// affected MSVC versions are not known, so it applies to all of them until one is tested without it.
+#if MP_UNITS_COMP_MSVC
+#define MP_UNITS_QUANTITY_POINT_CTAD_HACK 1
 #else
-#define MP_UNITS_DIAGNOSTIC_IGNORE_FLOAT_CONVERSION MP_UNITS_DIAGNOSTIC_IGNORE("-Wfloat-conversion")
-#define MP_UNITS_DIAGNOSTIC_IGNORE_INT_CONVERSION MP_UNITS_DIAGNOSTIC_IGNORE("-Wint-conversion")
-#endif
-#else
-#define MP_UNITS_DIAGNOSTIC_PUSH MP_UNITS_PRAGMA(warning(push))
-#define MP_UNITS_DIAGNOSTIC_POP MP_UNITS_PRAGMA(warning(pop))
-#define MP_UNITS_DIAGNOSTIC_IGNORE_PRAGMAS MP_UNITS_PRAGMA(warning(disable : 4068))
-#define MP_UNITS_DIAGNOSTIC_IGNORE(X) MP_UNITS_DIAGNOSTIC_IGNORE_PRAGMAS MP_UNITS_PRAGMA(warning(disable : X))
-#define MP_UNITS_DIAGNOSTIC_IGNORE_EXPR_ALWAYS_TF MP_UNITS_DIAGNOSTIC_IGNORE(4296)
-#define MP_UNITS_DIAGNOSTIC_IGNORE_FLOAT_EQUAL
-#define MP_UNITS_DIAGNOSTIC_IGNORE_LOSS_OF_DATA MP_UNITS_DIAGNOSTIC_IGNORE(4244)
-#define MP_UNITS_DIAGNOSTIC_IGNORE_MISSING_BRACES
-#define MP_UNITS_DIAGNOSTIC_IGNORE_NON_TEMPLATE_FRIEND
-#define MP_UNITS_DIAGNOSTIC_IGNORE_SHADOW MP_UNITS_DIAGNOSTIC_IGNORE(4459)
-#define MP_UNITS_DIAGNOSTIC_IGNORE_UNARY_MINUS_UNSIGNED MP_UNITS_DIAGNOSTIC_IGNORE(4146)
-#define MP_UNITS_DIAGNOSTIC_IGNORE_UNREACHABLE MP_UNITS_DIAGNOSTIC_IGNORE(4702)
-#define MP_UNITS_DIAGNOSTIC_IGNORE_ZERO_AS_NULLPOINTER_CONSTANT
-#define MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED MP_UNITS_DIAGNOSTIC_IGNORE(4996)
-#define MP_UNITS_DIAGNOSTIC_IGNORE_PEDANTIC
-#define MP_UNITS_DIAGNOSTIC_IGNORE_SIGN_CONVERSION
-#define MP_UNITS_DIAGNOSTIC_IGNORE_CONVERSION MP_UNITS_DIAGNOSTIC_IGNORE(4242)
-#define MP_UNITS_DIAGNOSTIC_IGNORE_FLOAT_CONVERSION
-#define MP_UNITS_DIAGNOSTIC_IGNORE_INT_CONVERSION
+#define MP_UNITS_QUANTITY_POINT_CTAD_HACK 0
 #endif
 
-#if !defined MP_UNITS_HOSTED && defined __STDC_HOSTED__
-#define MP_UNITS_HOSTED __STDC_HOSTED__
-#endif
-
-// A hosted build can still be compiled with exceptions disabled (e.g. -fno-exceptions)
-#if MP_UNITS_HOSTED && (defined __cpp_exceptions || defined __EXCEPTIONS || defined _CPPUNWIND)
-#define MP_UNITS_HAS_EXCEPTIONS 1
-#else
-#define MP_UNITS_HAS_EXCEPTIONS 0
-#endif
-
-// workarounds for https://cplusplus.github.io/CWG/issues/2387.html
-#define MP_UNITS_INLINE inline
-
-#if __cpp_auto_cast >= 202110L && MP_UNITS_COMP_GCC > 13
-#define MP_UNITS_NONCONST_TYPE(expr) decltype(auto(expr))
-#else
-#define MP_UNITS_NONCONST_TYPE(expr) std::remove_const_t<decltype(expr)>
-#endif
-
-// The type of a non-type template parameter, as a plain value type. `decltype(V)` names the template
-// parameter object, and compilers disagree on what that yields once `V` has been forwarded into a
-// nested concept: GCC reports the const the object really has, Clang 23 additionally binds a
-// reference (`const T&`), while Clang up to 22 and MSVC report the bare type. Each branch strips
-// only what its own compiler adds, so one that gets this right instantiates no trait at all.
-#if MP_UNITS_COMP_CLANG >= 23
-
-#define MP_UNITS_NTTP_TYPE(V) std::remove_cvref_t<decltype(V)>
-
-#elif MP_UNITS_COMP_GCC
-
-#define MP_UNITS_NTTP_TYPE(V) std::remove_const_t<decltype(V)>
-
-#else
-
-#define MP_UNITS_NTTP_TYPE(V) decltype(V)
-
-#endif
-
+// Hack: before C++23 the standard library has no `std::from_range`, which the `fixed_string`
+// constructor taking a range relies on. Declaring it in `namespace std` is undefined behavior
+// ([namespace.std]), accepted here so that C++20 users can spell the same constructor call.
 #if !defined __cpp_lib_ranges_to_container
 
 namespace std {
@@ -150,63 +167,5 @@ inline constexpr from_range_t from_range{};
 }  // namespace std
 
 #endif
-
-// TODO https://github.com/llvm/llvm-project/issues/110224
-#if (MP_UNITS_COMP_CLANG >= 19 || (defined(__apple_build_version__) && MP_UNITS_COMP_CLANG >= 17)) && \
-  __cplusplus <= 202302
-
-MP_UNITS_DIAGNOSTIC_PUSH
-MP_UNITS_DIAGNOSTIC_IGNORE_BUILTIN_MACRO_REDEFINED
-
-#undef __cpp_deleted_function
-
-MP_UNITS_DIAGNOSTIC_POP
-
-#endif
-
-#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
-
-#define MP_UNITS_CONSTEVAL constexpr
-
-#else
-
-#define MP_UNITS_CONSTEVAL consteval
-
-#endif
-
-#if !defined MP_UNITS_API_NO_CRTP && __cpp_explicit_this_parameter
-
-#define MP_UNITS_API_NO_CRTP 1
-
-#endif
-
-#if !defined MP_UNITS_API_THROWING_CONSTRAINTS && __cpp_constexpr_exceptions >= 202411L
-
-#define MP_UNITS_API_THROWING_CONSTRAINTS 1
-
-#endif
-
-#if defined(__clang__) && defined(__apple_build_version__) && __apple_build_version__ < 16000026
-#define MP_UNITS_XCODE15_HACKS
-#endif
-
-// MSVC does not define `__has_builtin`. `#if` expands macros before evaluating, and `defined()`
-// does not stop that expansion, so `defined(__has_builtin) && __has_builtin(X)` still leaves
-// `__has_builtin (X)` in the expression; every remaining identifier becomes `0`, giving `0 (0)`
-// and a "unexpected tokens following preprocessor directive" diagnostic. Going through a wrapper
-// keeps the call site free of the bare macro name.
-#ifdef __has_builtin
-#define MP_UNITS_HAS_BUILTIN(...) __has_builtin(__VA_ARGS__)
-#else
-#define MP_UNITS_HAS_BUILTIN(...) 0
-#endif
-
-namespace mp_units::detail {
-
-// https://gcc.gnu.org/bugzilla/show_bug.cgi?id=120625
-template<typename T>
-inline constexpr bool GCC_120625_is_complete = requires { sizeof(T) > 0; };
-
-}  // namespace mp_units::detail
 
 // NOLINTEND(bugprone-reserved-identifier, cppcoreguidelines-macro-usage)

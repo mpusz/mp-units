@@ -23,6 +23,8 @@
 #pragma once
 
 // IWYU pragma: private, include <mp-units/framework.h>
+#include <mp-units/bits/config.h>
+#include <mp-units/bits/diagnostics.h>
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/text_tools.h>
@@ -55,7 +57,7 @@ import std;
 
 namespace mp_units {
 
-template<detail::SymbolicConstant... Expr>
+template<detail::SymbolicTerm... Expr>
 struct derived_dimension;
 
 MP_UNITS_EXPORT struct dimension_one;
@@ -188,7 +190,7 @@ struct base_dimension : detail::dimension_interface {
  * @note User should not instantiate this type! It is not exported from the C++ module. The library will
  *       instantiate this type automatically based on the dimensional arithmetic equation provided by the user.
  */
-template<detail::SymbolicConstant... Expr>
+template<detail::SymbolicTerm... Expr>
 struct derived_dimension final : detail::dimension_interface, detail::derived_dimension_impl<Expr...> {};
 
 /**
@@ -207,18 +209,16 @@ MP_UNITS_EXPORT_BEGIN
 
 [[nodiscard]] consteval Dimension auto inverse(Dimension auto d) { return dimension_one / d; }
 
+// The suppression covers the whole definition: Clang up to 21 reports the deprecated member from
+// the implicitly defined copy constructor, while a user naming `encoding` is still warned
+MP_UNITS_DIAGNOSTIC_PUSH
+MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
 struct dimension_symbol_formatting {
-#if MP_UNITS_COMP_CLANG
-  // TODO prevents the deprecated usage in implicit copy constructor warning
-  character_set char_set = character_set::unicode;
-#else
-  [[deprecated("2.5.0: Use `char_set` instead")]] character_set encoding = character_set::unicode;
-  MP_UNITS_DIAGNOSTIC_PUSH
-  MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
+  MP_UNITS_DEPRECATED_MEMBER_HACK([[deprecated("2.5.0: Use `char_set` instead")]])
+  character_set encoding = character_set::unicode;
   character_set char_set = encoding;
-  MP_UNITS_DIAGNOSTIC_POP
-#endif
 };
+MP_UNITS_DIAGNOSTIC_POP
 
 MP_UNITS_EXPORT_END
 
@@ -335,7 +335,7 @@ std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>&
 // character-set         = 'U' | 'P';
 //
 template<typename D, typename Char>
-  requires mp_units::detail::GCC_120625_is_complete<D> && mp_units::Dimension<D>
+  requires(MP_UNITS_FORMATTER_HACK(D, mp_units::Dimension<D>))
 class MP_UNITS_STD_FMT::formatter<D, Char> {
   struct format_specs :
       mp_units::utility::fill_align_width_format_specs<Char>,

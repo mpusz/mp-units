@@ -84,10 +84,10 @@ static_assert(std::is_same_v<decltype(std::declval<uncertain_length>() + std::de
 
 // only constants defined with an uncertainty wrapper (`relative_standard_uncertainty` or
 // `standard_uncertainty`) are measured constants
-static_assert(MeasuredConstant<std::remove_const_t<decltype(iau::newtonian_constant_of_gravitation)>>);
-static_assert(!MeasuredConstant<std::remove_const_t<decltype(si::si2019::speed_of_light_in_vacuum)>>);
-static_assert(!MeasuredConstant<std::remove_const_t<decltype(iau::nominal_solar_mass_parameter)>>);
-static_assert(!MeasuredConstant<std::remove_const_t<decltype(si::metre)>>);
+static_assert(MeasuredConstant<MP_UNITS_NONCONST_TYPE(iau::newtonian_constant_of_gravitation)>);
+static_assert(!MeasuredConstant<MP_UNITS_NONCONST_TYPE(si::si2019::speed_of_light_in_vacuum)>);
+static_assert(!MeasuredConstant<MP_UNITS_NONCONST_TYPE(iau::nominal_solar_mass_parameter)>);
+static_assert(!MeasuredConstant<MP_UNITS_NONCONST_TYPE(si::metre)>);
 
 // CODATA 2018: G = 6.674 30(15) × 10⁻¹¹ m³ kg⁻¹ s⁻². The definition stores the published absolute
 // uncertainty, and the relative form derives from it as an exact ratio of canonical magnitudes:
@@ -103,13 +103,13 @@ static_assert(get_standard_uncertainty(iau::newtonian_constant_of_gravitation) =
 // the uncertainty is relational and materializes only when a conversion leaves units in which
 // the constant cancels
 constexpr quantity G_measured = measurement_of(iau::newtonian_constant_of_gravitation);
-static_assert(std::is_same_v<std::remove_const_t<decltype(G_measured)>,
+static_assert(std::is_same_v<MP_UNITS_NONCONST_TYPE(G_measured),
                              quantity<iau::newtonian_constant_of_gravitation, uncertain<double>>>);
 static_assert(G_measured.numerical_value_ref_in(G_measured.unit).value() == 1.0);
 static_assert(G_measured.numerical_value_ref_in(G_measured.unit).uncertainty() == 0.0);
 
 constexpr quantity G_measured_float = measurement_of<float>(iau::newtonian_constant_of_gravitation);
-static_assert(std::is_same_v<std::remove_const_t<decltype(G_measured_float)>::rep, uncertain<float>>);
+static_assert(std::is_same_v<MP_UNITS_NONCONST_TYPE(G_measured_float)::rep, uncertain<float>>);
 
 // asking for the measurement of a constant that is exact by definition is a compile-time error
 template<auto C>
@@ -128,8 +128,8 @@ static_assert(!has_relative_standard_uncertainty<si::si2019::speed_of_light_in_v
 // constant has a different one per namespace. The derived `u_r` is the exact ratio of the two
 // published magnitudes; materializing it into a floating-point type need not reproduce a decimal
 // literal bit for bit on every platform, so these are compared with `approx_equal`.
-static_assert(MeasuredConstant<std::remove_const_t<decltype(hep::codata2018::electron_mass)>>);
-static_assert(MeasuredConstant<std::remove_const_t<decltype(hep::codata2022::electron_mass)>>);
+static_assert(MeasuredConstant<MP_UNITS_NONCONST_TYPE(hep::codata2018::electron_mass)>);
+static_assert(MeasuredConstant<MP_UNITS_NONCONST_TYPE(hep::codata2022::electron_mass)>);
 // CODATA 2018: 0.510 998 950 00(15) MeV/c²
 static_assert(approx_equal(get_value<double>(get_relative_standard_uncertainty(hep::codata2018::electron_mass)) * one,
                            1.5e-10 / 0.51099895 * one));
@@ -148,14 +148,14 @@ static_assert(
 
 // k_B is exact since the 2019 SI redefinition, so the post-2019 releases carry no uncertainty while
 // the pre-2019 one does
-static_assert(MeasuredConstant<std::remove_const_t<decltype(hep::codata2014::boltzmann_constant)>>);
-static_assert(!MeasuredConstant<std::remove_const_t<decltype(hep::codata2018::boltzmann_constant)>>);
+static_assert(MeasuredConstant<MP_UNITS_NONCONST_TYPE(hep::codata2014::boltzmann_constant)>);
+static_assert(!MeasuredConstant<MP_UNITS_NONCONST_TYPE(hep::codata2018::boltzmann_constant)>);
 
 // μ₀ went the other way: exact by definition until the ampere was redefined through `e` in the
 // 2019 SI, measured ever since
-static_assert(!MeasuredConstant<std::remove_const_t<decltype(hep::codata2014::permeability_of_vacuum)>>);
-static_assert(MeasuredConstant<std::remove_const_t<decltype(hep::codata2018::permeability_of_vacuum)>>);
-static_assert(MeasuredConstant<std::remove_const_t<decltype(hep::codata2022::permeability_of_vacuum)>>);
+static_assert(!MeasuredConstant<MP_UNITS_NONCONST_TYPE(hep::codata2014::permeability_of_vacuum)>);
+static_assert(MeasuredConstant<MP_UNITS_NONCONST_TYPE(hep::codata2018::permeability_of_vacuum)>);
+static_assert(MeasuredConstant<MP_UNITS_NONCONST_TYPE(hep::codata2022::permeability_of_vacuum)>);
 // CODATA 2018: 1.256 637 062 12(19) × 10⁻⁶ N/A²; CODATA 2022: 1.256 637 061 27(20) × 10⁻⁶ N/A²
 static_assert(
   approx_equal(get_value<double>(get_relative_standard_uncertainty(hep::codata2018::permeability_of_vacuum)) * one,
@@ -167,9 +167,9 @@ static_assert(
 // The SI-expressed values track the same history. They are separate CODATA table entries from the
 // HEP ones above: `hep` declares its own system of quantities, so those constants are not even the
 // same type, and before 2019 the two forms of a constant could carry different published `u_r`.
-static_assert(!MeasuredConstant<std::remove_const_t<decltype(codata::codata2014::magnetic_constant)>>);
-static_assert(MeasuredConstant<std::remove_const_t<decltype(codata::codata2018::magnetic_constant)>>);
-static_assert(MeasuredConstant<std::remove_const_t<decltype(codata::codata2022::magnetic_constant)>>);
+static_assert(!MeasuredConstant<MP_UNITS_NONCONST_TYPE(codata::codata2014::magnetic_constant)>);
+static_assert(MeasuredConstant<MP_UNITS_NONCONST_TYPE(codata::codata2018::magnetic_constant)>);
+static_assert(MeasuredConstant<MP_UNITS_NONCONST_TYPE(codata::codata2022::magnetic_constant)>);
 static_assert(approx_equal(get_value<double>(get_relative_standard_uncertainty(codata::codata2018::magnetic_constant)) *
                              one,
                            1.9e-16 / 1.25663706212e-6 * one));
@@ -182,20 +182,20 @@ static_assert(approx_equal(get_value<double>(get_relative_standard_uncertainty(c
 // to it would trip the deprecation warning under `-Werror`).
 static_assert(codata::magnetic_constant == codata::codata2022::magnetic_constant);
 static_assert(codata::codata2018::magnetic_constant != codata::codata2022::magnetic_constant);
-static_assert(MeasuredConstant<std::remove_const_t<decltype(codata::magnetic_constant)>>);
+static_assert(MeasuredConstant<MP_UNITS_NONCONST_TYPE(codata::magnetic_constant)>);
 
 // IAU imports G rather than duplicating it. This must stay a using-declaration: the planetary mass
 // units divide by G, and `M_SUN -> M_EARTH` is exact only because the very same type cancels.
-static_assert(std::is_same_v<std::remove_const_t<decltype(iau::newtonian_constant_of_gravitation)>,
-                             std::remove_const_t<decltype(codata::newtonian_constant_of_gravitation)>>);
+static_assert(std::is_same_v<MP_UNITS_NONCONST_TYPE(iau::newtonian_constant_of_gravitation),
+                             MP_UNITS_NONCONST_TYPE(codata::newtonian_constant_of_gravitation)>);
 static_assert(detail::conversion_relative_uncertainty(iau::solar_mass, iau::terrestrial_mass) == 0.0L);
 // the unqualified name resolves through the inline namespace to the CODATA 2018 one
 static_assert(hep::permeability_of_vacuum == hep::codata2018::permeability_of_vacuum);
 
 // the constants that are exact by definition stay unannotated
-static_assert(!MeasuredConstant<std::remove_const_t<decltype(hep::speed_of_light_in_vacuum)>>);
-static_assert(!MeasuredConstant<std::remove_const_t<decltype(hep::planck_constant)>>);
-static_assert(!MeasuredConstant<std::remove_const_t<decltype(hep::avogadro_constant)>>);
+static_assert(!MeasuredConstant<MP_UNITS_NONCONST_TYPE(hep::speed_of_light_in_vacuum)>);
+static_assert(!MeasuredConstant<MP_UNITS_NONCONST_TYPE(hep::planck_constant)>);
+static_assert(!MeasuredConstant<MP_UNITS_NONCONST_TYPE(hep::avogadro_constant)>);
 
 // The derivation of a conversion factor's relative standard uncertainty is fully `consteval`,
 // so its rules are pinned at compile time here. The fold into `uncertain` itself goes through
@@ -273,7 +273,7 @@ inline constexpr struct electron_magnetic_moment final :
                    standard_uncertainty{mag_ratio<29, 10> * mag_power<10, -33> * si::joule / si::tesla}> {
 } electron_magnetic_moment;
 
-static_assert(MeasuredConstant<std::remove_const_t<decltype(electron_magnetic_moment)>>);
+static_assert(MeasuredConstant<MP_UNITS_NONCONST_TYPE(electron_magnetic_moment)>);
 
 // the declared uncertainty is returned verbatim and is positive by construction
 static_assert(get_standard_uncertainty(electron_magnetic_moment) ==

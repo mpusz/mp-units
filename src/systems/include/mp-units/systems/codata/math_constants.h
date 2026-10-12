@@ -31,7 +31,7 @@
 // used when a conversion factor is materialized into a representation type. The Wien
 // displacement law constants of the post-2019 adjustments are defined through them.
 
-#include <mp-units/bits/hacks.h>
+#include <mp-units/bits/config.h>
 #include <mp-units/bits/module_macros.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
@@ -42,7 +42,7 @@ MP_UNITS_EXPORT
 namespace mp_units::codata {
 
 // clang-format off
-#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 18
+#if !MP_UNITS_HAS_FLOATING_POINT_NTTP
 inline constexpr struct wien_x_wavelength_c final : mag_constant<symbol_text{u8"x_λ", "x_lambda"}> {
   static constexpr auto _value_ = 4.965114231744276303698759131322893944L;
 } wien_x_wavelength_c;

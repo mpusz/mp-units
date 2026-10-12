@@ -24,7 +24,7 @@
 // NOLINTBEGIN(cppcoreguidelines-macro-usage)
 #pragma once
 
-#include <mp-units/bits/hacks.h>
+#include <mp-units/bits/config.h>
 
 #if MP_UNITS_API_NO_CRTP
 
@@ -38,6 +38,12 @@
   inline constexpr struct name : ::mp_units::quantity_spec<name, __VA_ARGS__> { \
   } name
 
+#endif
+
+#if MP_UNITS_HAS_AUTO_CAST
+#define MP_UNITS_NONCONST_TYPE(expr) decltype(auto(expr))
+#else
+#define MP_UNITS_NONCONST_TYPE(expr) std::remove_const_t<decltype(expr)>
 #endif
 
 #if MP_UNITS_HAS_EXCEPTIONS
@@ -70,7 +76,9 @@
 
 #else  // MP_UNITS_USE_FMTLIB
 
-#if !defined __cpp_lib_format && !defined MP_UNITS_COMP_CLANG
+// libc++ before 20 provides `<format>` but leaves `__cpp_lib_format` undefined
+// (https://github.com/llvm/llvm-project/issues/77773)
+#if !defined __cpp_lib_format && !(defined _LIBCPP_VERSION && _LIBCPP_VERSION < 200000)
 #error "std::formatting facility not supported"
 #endif
 

@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include "test_tools.h"
+#include <mp-units/bits/hacks.h>
 #include <mp-units/ext/type_traits.h>
 #include <mp-units/framework.h>
 #include <mp-units/systems/isq.h>
@@ -41,10 +42,10 @@ using percent_ = struct percent;
 
 // clang-format off
 // prefixes
-template<PrefixableUnit U> struct milli_  final : prefixed_unit<"m", mag_power<10, -3>, U{}> {};
-template<PrefixableUnit U> struct kilo_   final : prefixed_unit<"k", mag_power<10, 3>, U{}> {};
-template<PrefixableUnit auto U> constexpr milli_<MP_UNITS_NTTP_TYPE(U)> milli;
-template<PrefixableUnit auto U> constexpr kilo_<MP_UNITS_NTTP_TYPE(U)> kilo;
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct milli_  final : prefixed_unit<"m", mag_power<10, -3>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct kilo_   final : prefixed_unit<"k", mag_power<10, 3>, U{}> {};
+template<PrefixableUnit auto U> constexpr milli_<MP_UNITS_NTTP_HACK(decltype(U))> milli;
+template<PrefixableUnit auto U> constexpr kilo_<MP_UNITS_NTTP_HACK(decltype(U))> kilo;
 
 // base units
 inline constexpr struct second_ final : named_unit<"s", kind_of<isq::duration>> {} second;
@@ -90,7 +91,7 @@ inline constexpr struct helion_g_factor final : named_constant<symbol_text{u8"ð
 // concepts verification
 static_assert(Unit<metre_>);
 static_assert(Unit<second_>);
-static_assert(Unit<MP_UNITS_NONCONST_TYPE(kilogram)>);
+static_assert(Unit<decltype(kilogram)>);
 static_assert(Unit<hertz_>);
 static_assert(Unit<newton_>);
 static_assert(Unit<minute_>);
@@ -100,19 +101,19 @@ static_assert(Unit<decltype(cubic(metre))>);
 static_assert(Unit<decltype(mag<60> * second)>);
 static_assert(Unit<decltype(second * second)>);
 static_assert(Unit<decltype(metre / second)>);
-static_assert(Unit<MP_UNITS_NONCONST_TYPE(kilometre)>);
+static_assert(Unit<decltype(kilometre)>);
 static_assert(PrefixableUnit<metre_>);
 static_assert(PrefixableUnit<hertz_>);
 static_assert(PrefixableUnit<newton_>);
 static_assert(PrefixableUnit<minute_>);
 static_assert(PrefixableUnit<radian_>);
-static_assert(!PrefixableUnit<MP_UNITS_NONCONST_TYPE(kilogram)>);
+static_assert(!PrefixableUnit<decltype(kilogram)>);
 static_assert(!PrefixableUnit<decltype(kilojoule)>);
 static_assert(!PrefixableUnit<si::kilo_<struct gram_>>);
 static_assert(!PrefixableUnit<decltype(square(metre))>);
 static_assert(!PrefixableUnit<decltype(cubic(metre))>);
 static_assert(!PrefixableUnit<decltype(mag<60> * second)>);
-static_assert(!PrefixableUnit<MP_UNITS_NONCONST_TYPE(kilometre)>);
+static_assert(!PrefixableUnit<decltype(kilometre)>);
 
 // named unit
 static_assert(is_of_type<metre, metre_>);
@@ -365,15 +366,15 @@ static_assert(is_of_type<get_canonical_unit(standard_gravity / speed_of_light_in
                          derived_unit<one_, per<second_>>>);
 
 // negative named constant
-static_assert(Unit<MP_UNITS_NONCONST_TYPE(helion_g_factor)>);
-static_assert(!PrefixableUnit<MP_UNITS_NONCONST_TYPE(helion_g_factor)>);
+static_assert(Unit<decltype(helion_g_factor)>);
+static_assert(!PrefixableUnit<decltype(helion_g_factor)>);
 static_assert(get_canonical_unit(helion_g_factor).mag == mag<-ratio{4'255'250'615, 1'000'000'000}>);
 
 // named units require a positive canonical magnitude (only named constants may be negative)
 // object construction forces the class template to be complete, so constraint failure on every
 // `named_unit` specialization is detected (the primary template is declared but never defined)
 template<auto U>
-concept valid_named_unit = Unit<MP_UNITS_NTTP_TYPE(U)> && requires { named_unit<"tst", U>{}; };
+concept valid_named_unit = Unit<MP_UNITS_NTTP_HACK(decltype(U))> && requires { named_unit<"tst", U>{}; };
 
 static_assert(valid_named_unit<metre / second>);
 static_assert(valid_named_unit<mag<-1> * helion_g_factor>);  // two sign flips cancel

@@ -21,6 +21,8 @@
 // SOFTWARE.
 
 #include "test_tools.h"
+#include <mp-units/bits/config.h>
+#include <mp-units/bits/diagnostics.h>
 #include <mp-units/compat_macros.h>
 #include <mp-units/ext/type_traits.h>
 #include <mp-units/systems/isq.h>
@@ -983,17 +985,17 @@ static_assert(quantity_point{123 * m}.unit == si::metre);
 static_assert(quantity_point{123 * m}.quantity_spec == kind_of<isq::length>);
 
 static_assert(std::is_same_v<decltype(quantity_point{isq::height(123 * m)})::rep, int>);
-static_assert(std::is_same_v<std::remove_const_t<decltype(quantity_point{isq::height(123 * m)}.point_origin)>,
+static_assert(std::is_same_v<MP_UNITS_NONCONST_TYPE(quantity_point{isq::height(123 * m)}.point_origin),
                              natural_point_origin_<isq::height>>);
-static_assert(std::is_same_v<std::remove_const_t<decltype(quantity_point{isq::height(123 * m)}.absolute_point_origin)>,
+static_assert(std::is_same_v<MP_UNITS_NONCONST_TYPE(quantity_point{isq::height(123 * m)}.absolute_point_origin),
                              natural_point_origin_<isq::height>>);
 static_assert(quantity_point{isq::height(123 * m)}.unit == si::metre);
 static_assert(quantity_point{isq::height(123 * m)}.quantity_spec == isq::height);
 
 static_assert(std::is_same_v<decltype(quantity_point{delta<deg_C>(20)})::rep, int>);
 static_assert(
-  std::is_same_v<std::remove_const_t<decltype(quantity_point{delta<deg_C>(20)}.point_origin)>, struct si::ice_point>);
-static_assert(std::is_same_v<std::remove_const_t<decltype(quantity_point{delta<deg_C>(20)}.absolute_point_origin)>,
+  std::is_same_v<MP_UNITS_NONCONST_TYPE(quantity_point{delta<deg_C>(20)}.point_origin), struct si::ice_point>);
+static_assert(std::is_same_v<MP_UNITS_NONCONST_TYPE(quantity_point{delta<deg_C>(20)}.absolute_point_origin),
                              struct si::absolute_zero>);
 static_assert(quantity_point{delta<deg_C>(20)}.unit == si::degree_Celsius);
 static_assert(quantity_point{delta<deg_C>(20)}.quantity_spec == kind_of<isq::thermodynamic_temperature>);

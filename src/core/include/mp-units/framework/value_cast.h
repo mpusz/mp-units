@@ -23,6 +23,7 @@
 #pragma once
 
 // IWYU pragma: private, include <mp-units/framework.h>
+#include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/sudo_cast.h>
 #include <mp-units/compat_macros.h>
@@ -68,7 +69,7 @@ template<typename Rep, Unit UFrom, Unit UTo>
 }
 
 template<auto FromU, auto ToU, typename Rep>
-concept ExplicitlyCastable = UnitConvertibleTo<MP_UNITS_NTTP_TYPE(FromU), ToU> &&
+concept ExplicitlyCastable = UnitConvertibleTo<MP_UNITS_NTTP_HACK(decltype(FromU)), ToU> &&
                              (!scaling_overflows_non_zero_values<Rep>(FromU, ToU) ||
                               unsatisfied<"The result of scaling '{}' to '{}' overflows the '{}' representation type">(
                                 FromU, ToU, type_name<Rep>()));
@@ -184,7 +185,7 @@ constexpr bool implicitly_scalable =
  * @param policy an optional rounding policy (`truncated` when not provided)
  */
 template<auto ToU, typename FwdQ, RoundingPolicy Policy = truncated_t, Quantity Q = std::remove_cvref_t<FwdQ>>
-  requires UnitOf<MP_UNITS_NTTP_TYPE(ToU), Q::quantity_spec> &&
+  requires UnitOf<MP_UNITS_NTTP_HACK(decltype(ToU)), Q::quantity_spec> &&
            detail::ExplicitlyCastable<Q::unit, ToU, typename Q::rep> &&
            detail::ValidRoundingPolicyFor<Policy, typename Q::rep, typename Q::rep>
 [[nodiscard]] constexpr Quantity auto value_cast(FwdQ&& q, Policy = Policy{})
@@ -227,7 +228,7 @@ template<typename ToRep, typename FwdQ, RoundingPolicy Policy = truncated_t, Qua
  */
 template<Unit auto ToU, typename ToRep, typename FwdQ, RoundingPolicy Policy = truncated_t,
          Quantity Q = std::remove_cvref_t<FwdQ>>
-  requires UnitOf<MP_UNITS_NTTP_TYPE(ToU), Q::quantity_spec> && RepresentationOf<ToRep, Q::quantity_spec> &&
+  requires UnitOf<MP_UNITS_NTTP_HACK(decltype(ToU)), Q::quantity_spec> && RepresentationOf<ToRep, Q::quantity_spec> &&
            std::constructible_from<ToRep, typename Q::rep> && detail::ExplicitlyCastable<Q::unit, ToU, ToRep> &&
            detail::ValidRoundingPolicyFor<Policy, typename Q::rep, ToRep>
 [[nodiscard]] constexpr Quantity auto value_cast(FwdQ&& q, Policy = Policy{})
@@ -238,7 +239,7 @@ template<Unit auto ToU, typename ToRep, typename FwdQ, RoundingPolicy Policy = t
 
 template<typename ToRep, Unit auto ToU, typename FwdQ, RoundingPolicy Policy = truncated_t,
          Quantity Q = std::remove_cvref_t<FwdQ>>
-  requires UnitOf<MP_UNITS_NTTP_TYPE(ToU), Q::quantity_spec> && RepresentationOf<ToRep, Q::quantity_spec> &&
+  requires UnitOf<MP_UNITS_NTTP_HACK(decltype(ToU)), Q::quantity_spec> && RepresentationOf<ToRep, Q::quantity_spec> &&
            std::constructible_from<ToRep, typename Q::rep> && detail::ExplicitlyCastable<Q::unit, ToU, ToRep> &&
            detail::ValidRoundingPolicyFor<Policy, typename Q::rep, ToRep>
 [[nodiscard]] constexpr Quantity auto value_cast(FwdQ&& q, Policy policy = Policy{})
@@ -263,7 +264,7 @@ template<typename ToRep, Unit auto ToU, typename FwdQ, RoundingPolicy Policy = t
  * @param policy an optional rounding policy (`truncated` when not provided)
  */
 template<Quantity ToQ, typename FwdQ, RoundingPolicy Policy = truncated_t, Quantity Q = std::remove_cvref_t<FwdQ>>
-  requires(ToQ::quantity_spec == Q::quantity_spec) && UnitOf<MP_UNITS_NONCONST_TYPE(ToQ::unit), Q::quantity_spec> &&
+  requires(ToQ::quantity_spec == Q::quantity_spec) && UnitOf<decltype(ToQ::unit), Q::quantity_spec> &&
           std::constructible_from<typename ToQ::rep, typename Q::rep> &&
           detail::ExplicitlyCastable<Q::unit, ToQ::unit, typename ToQ::rep> &&
           detail::ValidRoundingPolicyFor<Policy, typename Q::rep, typename ToQ::rep>
@@ -285,7 +286,7 @@ template<Quantity ToQ, typename FwdQ, RoundingPolicy Policy = truncated_t, Quant
  */
 template<Unit auto ToU, typename FwdQP, RoundingPolicy Policy = truncated_t,
          QuantityPoint QP = std::remove_cvref_t<FwdQP>>
-  requires UnitOf<MP_UNITS_NTTP_TYPE(ToU), QP::quantity_spec> &&
+  requires UnitOf<MP_UNITS_NTTP_HACK(decltype(ToU)), QP::quantity_spec> &&
            detail::ExplicitlyCastable<QP::unit, ToU, typename QP::rep> &&
            detail::ValidRoundingPolicyFor<Policy, typename QP::rep, typename QP::rep>
 [[nodiscard]] constexpr QuantityPoint auto value_cast(FwdQP&& qp, Policy policy = Policy{})
@@ -331,7 +332,7 @@ template<typename ToRep, typename FwdQP, RoundingPolicy Policy = truncated_t,
  */
 template<Unit auto ToU, typename ToRep, typename FwdQP, RoundingPolicy Policy = truncated_t,
          QuantityPoint QP = std::remove_cvref_t<FwdQP>>
-  requires UnitOf<MP_UNITS_NTTP_TYPE(ToU), QP::quantity_spec> && RepresentationOf<ToRep, QP::quantity_spec> &&
+  requires UnitOf<MP_UNITS_NTTP_HACK(decltype(ToU)), QP::quantity_spec> && RepresentationOf<ToRep, QP::quantity_spec> &&
            std::constructible_from<ToRep, typename QP::rep> && detail::ExplicitlyCastable<QP::unit, ToU, ToRep> &&
            detail::ValidRoundingPolicyFor<Policy, typename QP::rep, ToRep>
 [[nodiscard]] constexpr QuantityPoint auto value_cast(FwdQP&& qp, Policy policy = Policy{})
@@ -343,7 +344,7 @@ template<Unit auto ToU, typename ToRep, typename FwdQP, RoundingPolicy Policy = 
 
 template<typename ToRep, Unit auto ToU, typename FwdQP, RoundingPolicy Policy = truncated_t,
          QuantityPoint QP = std::remove_cvref_t<FwdQP>>
-  requires UnitOf<MP_UNITS_NTTP_TYPE(ToU), QP::quantity_spec> && RepresentationOf<ToRep, QP::quantity_spec> &&
+  requires UnitOf<MP_UNITS_NTTP_HACK(decltype(ToU)), QP::quantity_spec> && RepresentationOf<ToRep, QP::quantity_spec> &&
            std::constructible_from<ToRep, typename QP::rep> && detail::ExplicitlyCastable<QP::unit, ToU, ToRep> &&
            detail::ValidRoundingPolicyFor<Policy, typename QP::rep, ToRep>
 [[nodiscard]] constexpr QuantityPoint auto value_cast(FwdQP&& qp, Policy policy = Policy{})
@@ -370,7 +371,7 @@ template<typename ToRep, Unit auto ToU, typename FwdQP, RoundingPolicy Policy = 
  */
 template<Quantity ToQ, typename FwdQP, RoundingPolicy Policy = truncated_t,
          QuantityPoint QP = std::remove_cvref_t<FwdQP>>
-  requires(ToQ::quantity_spec == QP::quantity_spec) && UnitOf<MP_UNITS_NONCONST_TYPE(ToQ::unit), QP::quantity_spec> &&
+  requires(ToQ::quantity_spec == QP::quantity_spec) && UnitOf<decltype(ToQ::unit), QP::quantity_spec> &&
           std::constructible_from<typename ToQ::rep, typename QP::rep> &&
           detail::ExplicitlyCastable<QP::unit, ToQ::unit, typename ToQ::rep> &&
           detail::ValidRoundingPolicyFor<Policy, typename QP::rep, typename ToQ::rep>
@@ -412,7 +413,7 @@ template<Quantity ToQ, typename FwdQP, RoundingPolicy Policy = truncated_t,
  */
 template<QuantityPoint ToQP, typename FwdQP, RoundingPolicy Policy = truncated_t,
          QuantityPoint QP = std::remove_cvref_t<FwdQP>>
-  requires(ToQP::quantity_spec == QP::quantity_spec) && UnitOf<MP_UNITS_NONCONST_TYPE(ToQP::unit), QP::quantity_spec> &&
+  requires(ToQP::quantity_spec == QP::quantity_spec) && UnitOf<decltype(ToQP::unit), QP::quantity_spec> &&
           (detail::same_absolute_point_origins(ToQP::point_origin, QP::point_origin)) &&
           std::constructible_from<typename ToQP::rep, typename QP::rep> &&
           detail::ExplicitlyCastable<QP::unit, ToQP::unit, typename ToQP::rep> &&

@@ -21,7 +21,6 @@
 // SOFTWARE.
 
 #include <catch2/catch_test_macros.hpp>
-#include <mp-units/bits/hacks.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>
 #include <mp-units/systems/yard_pound.h>

@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include "test_tools.h"
+#include <mp-units/bits/config.h>
 #include <mp-units/systems/cgs.h>
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>

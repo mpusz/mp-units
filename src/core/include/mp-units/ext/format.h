@@ -26,7 +26,7 @@
 
 #include <mp-units/bits/requires_hosted.h>
 //
-#include <mp-units/bits/hacks.h>
+#include <mp-units/bits/diagnostics.h>
 #include <mp-units/compat_macros.h>
 
 #if MP_UNITS_USE_FMTLIB

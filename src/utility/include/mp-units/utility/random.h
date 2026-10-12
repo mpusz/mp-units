@@ -585,15 +585,10 @@ MP_UNITS_EXPORT_END
 
 namespace mp_units {
 // Transition compatibility shims: the random distributions now live in `mp_units::utility`;
-// deprecated to steer users to the new location, to be removed in a future release. gcc-12 cannot
-// deprecate the aliases without breaking their CTAD, so there they stay using-declarations.
-#if MP_UNITS_COMP_GCC == 12
-#define MP_UNITS_RANDOM_COMPAT(name) MP_UNITS_EXPORT using utility::name
-#else
+// deprecated to steer users to the new location, to be removed in a future release.
 #define MP_UNITS_RANDOM_COMPAT(name)   \
   MP_UNITS_EXPORT template<Quantity Q> \
   using name [[deprecated("moved to mp_units::utility::" #name)]] = utility::name<Q>
-#endif
 MP_UNITS_RANDOM_COMPAT(binomial_distribution);
 MP_UNITS_RANDOM_COMPAT(cauchy_distribution);
 MP_UNITS_RANDOM_COMPAT(chi_squared_distribution);

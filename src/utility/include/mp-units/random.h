@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <mp-units/bits/hacks.h>
+#include <mp-units/bits/diagnostics.h>
 
 MP_UNITS_DEPRECATED_HEADER("2.6.0: <mp-units/random.h> is deprecated; include <mp-units/utility/random.h> instead.")
 

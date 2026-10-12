@@ -8,6 +8,23 @@ This page documents the version history and changes for the **mp-units** library
 
 ### 2.6.0 <small>TBD</small> { id="2.6.0" }
 
+- fix: the deprecated `encoding` member of `unit_symbol_formatting` and
+      `dimension_symbol_formatting` is available on Clang again. The library left it out
+      there to avoid a spurious deprecation warning from the implicit copy constructor,
+      so setting it did not compile on Clang and `char_set` did not take its value. Using
+      it now warns on every compiler
+- fix: Clang with libstdc++ 12, which has no `<format>`, now hits the "std::formatting
+      facility not supported" error when `std::format` is selected. The check used to
+      skip every Clang to accommodate libc++ before 20, which provides `<format>` without
+      defining `__cpp_lib_format`. It now skips only that library
+- fix: the deprecated `mp_units::cartesian_vector` and random-distribution aliases warn on
+      GCC 12 as well. They were plain using-declarations there
+- feat: the concepts for symbolic types accept a const-qualified type, the way the
+      standard's type categories do. `Unit<decltype(si::metre)>` and
+      `QuantitySpec<decltype(isq::length)>` now hold, just as `Quantity<const Q>` always
+      did. Only a non-const type may enter a symbolic expression, so
+      `si::kilo_<const metre>` and `derived_unit<const metre, per<second>>` are still
+      rejected, and dividing a `const` second by a second still gives `one`
 - (!) refactor: `character_set` enumerators renamed back to `unicode` and `basic`,
       following SG16 review of [P3045](https://wg21.link/p3045). The enumeration names a
       *character set*, not an encoding, so `utf8` was the wrong name: UTF-8 is one

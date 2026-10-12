@@ -23,6 +23,8 @@
 #pragma once
 
 // IWYU pragma: private, include <mp-units/framework.h>
+#include <mp-units/bits/config.h>
+#include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/compat_macros.h>
 #include <mp-units/framework/quantity_concepts.h>
@@ -44,7 +46,7 @@ namespace mp_units {
 namespace detail {
 
 template<QuantitySpec auto Q, Unit auto U>
-using reference_t = reference<MP_UNITS_NTTP_TYPE(Q), MP_UNITS_NTTP_TYPE(U)>;
+using reference_t = reference<MP_UNITS_NTTP_HACK(decltype(Q)), MP_UNITS_NTTP_HACK(decltype(U))>;
 
 }  // namespace detail
 
@@ -69,6 +71,7 @@ MP_UNITS_EXPORT_BEGIN
  * `2 / kmph`, `kmph * 3`, `kmph / 4`, `70 * isq::length[km] / isq:time[h]`.
  */
 template<QuantitySpec Q, Unit U>
+  requires detail::SymbolicArg<Q> && detail::SymbolicArg<U>
 struct reference {
   [[nodiscard]] friend consteval QuantitySpec auto get_quantity_spec(reference) { return Q{}; }
 
@@ -203,7 +206,7 @@ template<Reference R, typename Rep>
   requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{})>
 // NOLINTNEXTLINE(cppcoreguidelines-missing-std-forward)
 constexpr auto operator*(R, Rep&&)
-#if __cpp_deleted_function
+#if MP_UNITS_HAS_DELETED_FUNCTION_MESSAGE
   = delete ("To create a `quantity` use `Rep * R`");
 #else
   = delete;
@@ -213,7 +216,7 @@ template<Reference R, typename Rep>
   requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{})>
 // NOLINTNEXTLINE(cppcoreguidelines-missing-std-forward)
 constexpr auto operator/(R, Rep&&)
-#if __cpp_deleted_function
+#if MP_UNITS_HAS_DELETED_FUNCTION_MESSAGE
   = delete ("To create a `quantity` use `Rep / R`");
 #else
   = delete;
@@ -272,13 +275,13 @@ MP_UNITS_EXPORT_END
 namespace detail {
 
 template<Unit auto To, Unit From>
-[[nodiscard]] consteval MP_UNITS_NTTP_TYPE(To) clone_reference_with(From)
+[[nodiscard]] consteval MP_UNITS_NTTP_HACK(decltype(To)) clone_reference_with(From)
 {
   return {};
 }
 
 template<Unit auto To, QuantitySpec QS, Unit U>
-[[nodiscard]] consteval reference<QS, MP_UNITS_NTTP_TYPE(To)> clone_reference_with(reference<QS, U>)
+[[nodiscard]] consteval reference<QS, MP_UNITS_NTTP_HACK(decltype(To))> clone_reference_with(reference<QS, U>)
 {
   return {};
 }

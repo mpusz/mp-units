@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <mp-units/bits/hacks.h>  // IWYU pragma: keep
+#include <mp-units/bits/config.h>  // IWYU pragma: keep
 #include <mp-units/ext/fixed_string.h>
 
 #if MP_UNITS_API_THROWING_CONSTRAINTS

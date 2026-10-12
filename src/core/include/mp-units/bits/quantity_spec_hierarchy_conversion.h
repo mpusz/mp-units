@@ -28,7 +28,7 @@
 // named quantities sharing a common base. In V3 this maps onto the C++ type system
 // (inheritance + is_base_of/is_convertible), so this file is the part that gets replaced by
 // language features.
-#include <mp-units/bits/hacks.h>
+#include <mp-units/bits/config.h>
 #include <mp-units/bits/quantity_spec_hierarchy.h>
 #include <mp-units/ext/type_traits.h>
 #include <mp-units/framework/quantity_spec_concepts.h>

@@ -23,6 +23,8 @@
 #pragma once
 
 // IWYU pragma: private, include <mp-units/framework.h>
+#include <mp-units/bits/config.h>
+#include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/ext/type_traits.h>
 #include <mp-units/framework/quantity_character.h>
@@ -281,7 +283,7 @@ concept has_vector_indexing = requires(const T& t) { t[std::size_t{}]; };
 
 template<typename T>
 concept has_matrix_indexing = requires(const T& t) { t(std::size_t{}, std::size_t{}); }
-#if __cpp_multidimensional_subscript && MP_UNITS_COMP_GCC != 12
+#if MP_UNITS_HAS_MULTIDIM_SUBSCRIPT
                               || requires(const T& t) { t[std::size_t{}, std::size_t{}]; }
 #endif
 ;
@@ -323,7 +325,7 @@ template<typename T>
   requires has_matrix_indexing<T>
 [[nodiscard]] consteval auto matrix_element()
 {
-#if __cpp_multidimensional_subscript && MP_UNITS_COMP_GCC != 12
+#if MP_UNITS_HAS_MULTIDIM_SUBSCRIPT
   if constexpr (requires(const T& t) { t[std::size_t{}, std::size_t{}]; })
     return std::type_identity<std::remove_cvref_t<decltype(std::declval<const T&>()[std::size_t{}, std::size_t{}])>>{};
   else
@@ -437,7 +439,7 @@ MP_UNITS_EXPORT template<typename T>
 constexpr bool disable_representation = detail::is_quantity_abstraction<detail::value_type_t<T>>;
 
 template<>
-MP_UNITS_INLINE constexpr bool disable_representation<bool> = true;
+inline constexpr bool disable_representation<bool> = true;
 
 // A representation carries a runtime value, which a stateless type cannot do. Rejecting empty tag
 // types here also short-circuits the whole representation-concept chain (`WeaklyRegular`, scaling,
@@ -446,7 +448,7 @@ MP_UNITS_INLINE constexpr bool disable_representation<bool> = true;
 // candidate. An exotic stateless representation can still opt back in with an explicit
 // specialization, which takes precedence over this constrained one.
 template<detail::SymbolicConstant T>
-MP_UNITS_INLINE constexpr bool disable_representation<T> = true;
+inline constexpr bool disable_representation<T> = true;
 
 MP_UNITS_EXPORT_BEGIN
 
@@ -628,7 +630,7 @@ struct quantity_point_like_traits;
 // point or a delta is not decomposable into plain vector components.
 template<QuantitySpec auto QS>
   requires(get_character(QS).order == quantity_tensor_order::vector) &&
-          (!detail::QuantityKindSpec<MP_UNITS_NTTP_TYPE(QS)>)
+          (!detail::QuantityKindSpec<MP_UNITS_NTTP_HACK(decltype(QS))>)
 struct vector_components;
 
 MP_UNITS_EXPORT_END

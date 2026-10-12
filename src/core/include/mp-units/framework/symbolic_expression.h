@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <mp-units/bits/config.h>
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/ratio.h>
 #include <mp-units/bits/type_list.h>
@@ -83,8 +84,14 @@ concept SymbolicArg = !std::is_const_v<T> && !std::is_reference_v<T>;
    std::is_trivially_move_constructible_v<T> && std::is_trivially_destructible_v<T>)
 #endif
 
+// Possibly const-qualified, the way the standard's type categories are: `const second` is still a unit.
 template<typename T>
-concept SymbolicConstant = SymbolicArg<T> && MP_UNITS_SYMBOLIC_CONSTANT_TRAITS(T);
+concept SymbolicConstant = MP_UNITS_SYMBOLIC_CONSTANT_TRAITS(T);
+
+// A term of a symbolic expression must not be const-qualified, or `const second / second` would not
+// simplify, because `const second` and `second` are different types.
+template<typename T>
+concept SymbolicTerm = SymbolicArg<T> && SymbolicConstant<T>;
 
 /**
  * @brief Type list type used by the expression template framework
@@ -116,7 +123,7 @@ template<int Num>
 constexpr bool valid_ratio<Num, 0> = false;
 
 template<>
-MP_UNITS_INLINE constexpr bool valid_ratio<0, 0> = false;
+inline constexpr bool valid_ratio<0, 0> = false;
 
 template<int Num, int... Den>
 constexpr bool positive_ratio = Num > 0;
@@ -128,7 +135,7 @@ template<int Num, int... Den>
 constexpr bool ratio_one = false;
 
 template<>
-MP_UNITS_INLINE constexpr bool ratio_one<1> = true;
+inline constexpr bool ratio_one<1> = true;
 
 template<int N>
 constexpr bool ratio_one<N, N> = true;
@@ -186,7 +193,7 @@ template<typename T>
 }
 
 template<typename T>
-[[nodiscard]] MP_UNITS_CONSTEVAL ratio get_exponent(T)
+[[nodiscard]] MP_UNITS_CONSTEVAL_HACK ratio get_exponent(T)
 {
   // this covers both `power` and `power_v`
   if constexpr (requires { T::_exponent_; })
@@ -411,7 +418,7 @@ struct expr_fractions : decltype(expr_fractions_impl<OneType, type_list<Ts...>>(
 
 // expr_make_spec
 template<typename NumList, typename DenList, SymbolicArg OneType, template<typename...> typename To>
-[[nodiscard]] MP_UNITS_CONSTEVAL auto expr_make_spec_impl()
+[[nodiscard]] MP_UNITS_CONSTEVAL_HACK auto expr_make_spec_impl()
 {
   constexpr std::size_t num = type_list_size<NumList>;
   constexpr std::size_t den = type_list_size<DenList>;
@@ -436,7 +443,7 @@ template<typename NumList, typename DenList, SymbolicArg OneType, template<typen
  */
 template<typename NumList, typename DenList, SymbolicArg OneType, template<typename, typename> typename Pred,
          template<typename...> typename To>
-[[nodiscard]] MP_UNITS_CONSTEVAL auto get_optimized_expression()
+[[nodiscard]] MP_UNITS_CONSTEVAL_HACK auto get_optimized_expression()
 {
   using num_list = expr_consolidate<NumList>;
   using den_list = expr_consolidate<DenList>;
@@ -457,7 +464,7 @@ template<typename NumList, typename DenList, SymbolicArg OneType, template<typen
  */
 template<template<typename...> typename To, SymbolicArg OneType,
          template<typename, typename> typename Pred = type_list_name_less, typename Lhs, typename Rhs>
-[[nodiscard]] MP_UNITS_CONSTEVAL auto expr_multiply(Lhs, Rhs)
+[[nodiscard]] MP_UNITS_CONSTEVAL_HACK auto expr_multiply(Lhs, Rhs)
 {
   if constexpr (std::is_same_v<Lhs, OneType>) {
     return Rhs{};
@@ -492,7 +499,7 @@ template<template<typename...> typename To, SymbolicArg OneType,
  */
 template<template<typename...> typename To, SymbolicArg OneType,
          template<typename, typename> typename Pred = type_list_name_less, typename Lhs, typename Rhs>
-[[nodiscard]] MP_UNITS_CONSTEVAL auto expr_divide(Lhs lhs, Rhs rhs)
+[[nodiscard]] MP_UNITS_CONSTEVAL_HACK auto expr_divide(Lhs lhs, Rhs rhs)
 {
   if constexpr (std::is_same_v<Lhs, Rhs>) {
     return OneType{};

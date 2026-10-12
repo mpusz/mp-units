@@ -164,30 +164,30 @@ to gram) to create scaled versions:
 ```cpp
 namespace mp_units::si {
 
-template<PrefixableUnit U> struct quecto_ : prefixed_unit<"q", mag_power<10, -30>, U{}> {};
-template<PrefixableUnit U> struct ronto_  : prefixed_unit<"r", mag_power<10, -27>, U{}> {};
-template<PrefixableUnit U> struct yocto_  : prefixed_unit<"y", mag_power<10, -24>, U{}> {};
-template<PrefixableUnit U> struct zepto_  : prefixed_unit<"z", mag_power<10, -21>, U{}> {};
-template<PrefixableUnit U> struct atto_   : prefixed_unit<"a", mag_power<10, -18>, U{}> {};
-template<PrefixableUnit U> struct femto_  : prefixed_unit<"f", mag_power<10, -15>, U{}> {};
-template<PrefixableUnit U> struct pico_   : prefixed_unit<"p", mag_power<10, -12>, U{}> {};
-template<PrefixableUnit U> struct nano_   : prefixed_unit<"n", mag_power<10, -9>, U{}> {};
-template<PrefixableUnit U> struct micro_  : prefixed_unit<symbol_text{u8"µ", "u"}, mag_power<10, -6>, U{}> {};
-template<PrefixableUnit U> struct milli_  : prefixed_unit<"m", mag_power<10, -3>, U{}> {};
-template<PrefixableUnit U> struct centi_  : prefixed_unit<"c", mag_power<10, -2>, U{}> {};
-template<PrefixableUnit U> struct deci_   : prefixed_unit<"d", mag_power<10, -1>, U{}> {};
-template<PrefixableUnit U> struct deca_   : prefixed_unit<"da", mag_power<10, 1>, U{}> {};
-template<PrefixableUnit U> struct hecto_  : prefixed_unit<"h", mag_power<10, 2>, U{}> {};
-template<PrefixableUnit U> struct kilo_   : prefixed_unit<"k", mag_power<10, 3>, U{}> {};
-template<PrefixableUnit U> struct mega_   : prefixed_unit<"M", mag_power<10, 6>, U{}> {};
-template<PrefixableUnit U> struct giga_   : prefixed_unit<"G", mag_power<10, 9>, U{}> {};
-template<PrefixableUnit U> struct tera_   : prefixed_unit<"T", mag_power<10, 12>, U{}> {};
-template<PrefixableUnit U> struct peta_   : prefixed_unit<"P", mag_power<10, 15>, U{}> {};
-template<PrefixableUnit U> struct exa_    : prefixed_unit<"E", mag_power<10, 18>, U{}> {};
-template<PrefixableUnit U> struct zetta_  : prefixed_unit<"Z", mag_power<10, 21>, U{}> {};
-template<PrefixableUnit U> struct yotta_  : prefixed_unit<"Y", mag_power<10, 24>, U{}> {};
-template<PrefixableUnit U> struct ronna_  : prefixed_unit<"R", mag_power<10, 27>, U{}> {};
-template<PrefixableUnit U> struct quetta_ : prefixed_unit<"Q", mag_power<10, 30>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct quecto_ : prefixed_unit<"q", mag_power<10, -30>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct ronto_  : prefixed_unit<"r", mag_power<10, -27>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct yocto_  : prefixed_unit<"y", mag_power<10, -24>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct zepto_  : prefixed_unit<"z", mag_power<10, -21>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct atto_   : prefixed_unit<"a", mag_power<10, -18>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct femto_  : prefixed_unit<"f", mag_power<10, -15>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct pico_   : prefixed_unit<"p", mag_power<10, -12>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct nano_   : prefixed_unit<"n", mag_power<10, -9>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct micro_  : prefixed_unit<symbol_text{u8"µ", "u"}, mag_power<10, -6>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct milli_  : prefixed_unit<"m", mag_power<10, -3>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct centi_  : prefixed_unit<"c", mag_power<10, -2>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct deci_   : prefixed_unit<"d", mag_power<10, -1>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct deca_   : prefixed_unit<"da", mag_power<10, 1>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct hecto_  : prefixed_unit<"h", mag_power<10, 2>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct kilo_   : prefixed_unit<"k", mag_power<10, 3>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct mega_   : prefixed_unit<"M", mag_power<10, 6>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct giga_   : prefixed_unit<"G", mag_power<10, 9>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct tera_   : prefixed_unit<"T", mag_power<10, 12>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct peta_   : prefixed_unit<"P", mag_power<10, 15>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct exa_    : prefixed_unit<"E", mag_power<10, 18>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct zetta_  : prefixed_unit<"Z", mag_power<10, 21>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct yotta_  : prefixed_unit<"Y", mag_power<10, 24>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct ronna_  : prefixed_unit<"R", mag_power<10, 27>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct quetta_ : prefixed_unit<"Q", mag_power<10, 30>, U{}> {};
 
 }
 ```

@@ -23,6 +23,7 @@
 #pragma once
 
 // IWYU pragma: private, include <mp-units/framework.h>
+#include <mp-units/bits/config.h>
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/unit_magnitude.h>
@@ -42,7 +43,7 @@ namespace mp_units {
 
 MP_UNITS_EXPORT_BEGIN
 
-#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 18
+#if !MP_UNITS_HAS_FLOATING_POINT_NTTP
 
 template<symbol_text Symbol>
 struct mag_constant {
@@ -72,8 +73,7 @@ template<detail::MagArg auto V>
   requires detail::is_nonzero_mag_arg<V>
 constexpr UnitMagnitude auto mag = detail::make_magnitude<V>();
 
-#if MP_UNITS_COMP_MSVC
-// Workaround for MSVC ICE with ratio as NTTP in make_magnitude
+#if MP_UNITS_MAG_RATIO_HACK
 template<std::intmax_t N, std::intmax_t D>
   requires(N != 0)
 constexpr UnitMagnitude auto mag_ratio = []() consteval {
@@ -103,7 +103,7 @@ constexpr UnitMagnitude auto mag_power = pow<Num, Den>(mag<Base>);
 /**
  * @brief  A convenient Magnitude constant for pi, which we can manipulate like a regular number.
  */
-#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 18
+#if !MP_UNITS_HAS_FLOATING_POINT_NTTP
 inline constexpr struct pi_c final : mag_constant<symbol_text{u8"π" /* U+03C0 GREEK SMALL LETTER PI */, "pi"}> {
   static constexpr auto _value_ = std::numbers::pi_v<long double>;
 #else

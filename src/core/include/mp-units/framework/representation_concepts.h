@@ -23,7 +23,10 @@
 #pragma once
 
 // IWYU pragma: private, include <mp-units/framework.h>
+#include <mp-units/bits/config.h>
+#include <mp-units/bits/diagnostics.h>
 #include <mp-units/bits/fixed_point.h>
+#include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/quantity_character.h>
@@ -122,7 +125,7 @@ concept WeaklyRegular = std::copyable<T> && std::equality_comparable<T>;
 
 template<typename T>
 concept RegularAddable = Addable<T>
-#if MP_UNITS_COMP_GCC != 12 && !defined(MP_UNITS_XCODE15_HACKS)
+#if !defined(MP_UNITS_XCODE15_HACKS)
                          && WeaklyRegular<T>
 #endif
   ;
@@ -388,10 +391,10 @@ MP_UNITS_DIAGNOSTIC_PUSH
 MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
 template<typename T, auto V>
 concept RepresentationOfCharacter =
-  (std::same_as<MP_UNITS_NTTP_TYPE(V), quantity_tensor_order> && RepresentationOfOrder<T, V>) ||
-  (std::same_as<MP_UNITS_NTTP_TYPE(V), quantity_field> && RepresentationOfField<T, V>) ||
-  ((std::same_as<MP_UNITS_NTTP_TYPE(V), quantity_character> ||
-    std::same_as<MP_UNITS_NTTP_TYPE(V), quantity_character_legacy>) &&
+  (std::same_as<MP_UNITS_NTTP_HACK(decltype(V)), quantity_tensor_order> && RepresentationOfOrder<T, V>) ||
+  (std::same_as<MP_UNITS_NTTP_HACK(decltype(V)), quantity_field> && RepresentationOfField<T, V>) ||
+  ((std::same_as<MP_UNITS_NTTP_HACK(decltype(V)), quantity_character> ||
+    std::same_as<MP_UNITS_NTTP_HACK(decltype(V)), quantity_character_legacy>) &&
    RepresentationOfOrder<T, order_of(V)> && RepresentationOfField<T, field_of(V)>);
 MP_UNITS_DIAGNOSTIC_POP
 
@@ -400,20 +403,21 @@ MP_UNITS_DIAGNOSTIC_POP
 #ifdef MP_UNITS_XCODE15_HACKS
 MP_UNITS_EXPORT template<typename T, auto V>
 concept RepresentationOf =
-  detail::SomeRepresentation<T> &&
-  ((QuantitySpec<MP_UNITS_NTTP_TYPE(V)> && (detail::QuantityKindSpec<MP_UNITS_NTTP_TYPE(V)> ||
-                                            (detail::RepresentationOfOrder<T, detail::order_of(get_character(V))> &&
-                                             detail::RepresentationOfField<T, detail::field_of(get_character(V))>))) ||
-   detail::RepresentationOfCharacter<T, V>);
+  detail::SomeRepresentation<T> && ((QuantitySpec<MP_UNITS_NTTP_HACK(decltype(V))> &&
+                                     (detail::QuantityKindSpec<MP_UNITS_NTTP_HACK(decltype(V))> ||
+                                      (detail::RepresentationOfOrder<T, detail::order_of(get_character(V))> &&
+                                       detail::RepresentationOfField<T, detail::field_of(get_character(V))>))) ||
+                                    detail::RepresentationOfCharacter<T, V>);
 
 #else
 
 MP_UNITS_EXPORT template<typename T, auto V>
-concept RepresentationOf = (QuantitySpec<MP_UNITS_NTTP_TYPE(V)> &&
-                            ((detail::QuantityKindSpec<MP_UNITS_NTTP_TYPE(V)> && detail::SomeRepresentation<T>) ||
-                             (detail::RepresentationOfOrder<T, detail::order_of(get_character(V))> &&
-                              detail::RepresentationOfField<T, detail::field_of(get_character(V))>))) ||
-                           detail::RepresentationOfCharacter<T, V>;
+concept RepresentationOf =
+  (QuantitySpec<MP_UNITS_NTTP_HACK(decltype(V))> &&
+   ((detail::QuantityKindSpec<MP_UNITS_NTTP_HACK(decltype(V))> && detail::SomeRepresentation<T>) ||
+    (detail::RepresentationOfOrder<T, detail::order_of(get_character(V))> &&
+     detail::RepresentationOfField<T, detail::field_of(get_character(V))>))) ||
+  detail::RepresentationOfCharacter<T, V>;
 #endif
 
 }  // namespace mp_units

@@ -36,7 +36,7 @@ namespace mp_units {
 
 MP_UNITS_EXPORT_BEGIN
 
-[[nodiscard]] MP_UNITS_CONSTEVAL Unit auto inverse(Unit auto u) { return one / u; }
+[[nodiscard]] MP_UNITS_CONSTEVAL_HACK Unit auto inverse(Unit auto u) { return one / u; }
 
 // common dimensionless units
 // clang-format off

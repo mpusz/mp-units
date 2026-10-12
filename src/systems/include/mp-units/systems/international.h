@@ -26,7 +26,7 @@
 // This header is provided for backward compatibility and will be removed in a future release.
 // Please update your code to use <mp-units/systems/yard_pound.h> instead.
 
-#include <mp-units/bits/hacks.h>
+#include <mp-units/bits/diagnostics.h>
 
 // the module interface unit includes this header only to export the deprecated namespace shim
 #ifndef MP_UNITS_IN_MODULE_INTERFACE

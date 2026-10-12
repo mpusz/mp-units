@@ -23,6 +23,7 @@
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
+#include <mp-units/bits/hacks.h>
 #include <mp-units/bits/unit_magnitude.h>
 #include <mp-units/ext/inplace_vector.h>
 #include <mp-units/framework/unit_magnitude.h>

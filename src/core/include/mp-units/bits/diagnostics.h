@@ -1,0 +1,89 @@
+// The MIT License (MIT)
+//
+// Copyright (c) 2018 Mateusz Pusz
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+// NOLINTBEGIN(cppcoreguidelines-macro-usage)
+#pragma once
+
+#include <mp-units/bits/compiler.h>
+
+// `#warning` is C++23, and MSVC emits a hard error for it in earlier modes, so deprecated headers
+// use a compiler-specific pragma instead
+#if MP_UNITS_COMP_MSVC
+#define MP_UNITS_DEPRECATED_HEADER(Msg) MP_UNITS_PRAGMA(message(Msg))
+#else
+#define MP_UNITS_DEPRECATED_HEADER(Msg) MP_UNITS_PRAGMA(GCC warning Msg)
+#endif
+#if !MP_UNITS_COMP_MSVC
+#define MP_UNITS_DIAGNOSTIC_PUSH MP_UNITS_PRAGMA(GCC diagnostic push)
+#define MP_UNITS_DIAGNOSTIC_POP MP_UNITS_PRAGMA(GCC diagnostic pop)
+#define MP_UNITS_DIAGNOSTIC_IGNORE_PRAGMAS MP_UNITS_PRAGMA(GCC diagnostic ignored "-Wpragmas")
+#define MP_UNITS_DIAGNOSTIC_IGNORE(X)                                \
+  MP_UNITS_DIAGNOSTIC_IGNORE_PRAGMAS                                 \
+  MP_UNITS_PRAGMA(GCC diagnostic ignored "-Wunknown-pragmas")        \
+  MP_UNITS_PRAGMA(GCC diagnostic ignored "-Wunknown-warning-option") \
+  MP_UNITS_PRAGMA(GCC diagnostic ignored X)
+#define MP_UNITS_DIAGNOSTIC_IGNORE_EXPR_ALWAYS_TF
+#define MP_UNITS_DIAGNOSTIC_IGNORE_FLOAT_EQUAL MP_UNITS_DIAGNOSTIC_IGNORE("-Wfloat-equal")
+#define MP_UNITS_DIAGNOSTIC_IGNORE_LOSS_OF_DATA
+#define MP_UNITS_DIAGNOSTIC_IGNORE_MISSING_BRACES MP_UNITS_DIAGNOSTIC_IGNORE("-Wmissing-braces")
+#define MP_UNITS_DIAGNOSTIC_IGNORE_NON_TEMPLATE_FRIEND MP_UNITS_DIAGNOSTIC_IGNORE("-Wnon-template-friend")
+#define MP_UNITS_DIAGNOSTIC_IGNORE_SHADOW MP_UNITS_DIAGNOSTIC_IGNORE("-Wshadow")
+#define MP_UNITS_DIAGNOSTIC_IGNORE_UNARY_MINUS_UNSIGNED
+#define MP_UNITS_DIAGNOSTIC_IGNORE_UNREACHABLE
+#define MP_UNITS_DIAGNOSTIC_IGNORE_ZERO_AS_NULLPOINTER_CONSTANT \
+  MP_UNITS_DIAGNOSTIC_IGNORE("-Wzero-as-nullpointer-constant")
+#define MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED MP_UNITS_DIAGNOSTIC_IGNORE("-Wdeprecated-declarations")
+#define MP_UNITS_DIAGNOSTIC_IGNORE_PEDANTIC MP_UNITS_DIAGNOSTIC_IGNORE("-Wpedantic")
+#define MP_UNITS_DIAGNOSTIC_IGNORE_SIGN_CONVERSION MP_UNITS_DIAGNOSTIC_IGNORE("-Wsign-conversion")
+#define MP_UNITS_DIAGNOSTIC_IGNORE_CONVERSION MP_UNITS_DIAGNOSTIC_IGNORE("-Wconversion")
+#if MP_UNITS_COMP_CLANG
+#define MP_UNITS_DIAGNOSTIC_IGNORE_FLOAT_CONVERSION MP_UNITS_DIAGNOSTIC_IGNORE("-Wimplicit-float-conversion")
+#define MP_UNITS_DIAGNOSTIC_IGNORE_INT_CONVERSION MP_UNITS_DIAGNOSTIC_IGNORE("-Wimplicit-int-conversion")
+#else
+#define MP_UNITS_DIAGNOSTIC_IGNORE_FLOAT_CONVERSION MP_UNITS_DIAGNOSTIC_IGNORE("-Wfloat-conversion")
+// GCC has no C++ counterpart of Clang's `-Wimplicit-int-conversion`: its `-Wint-conversion` is
+// C-only, and `-Wconversion` already covers integer conversions
+#define MP_UNITS_DIAGNOSTIC_IGNORE_INT_CONVERSION
+#endif
+#else
+#define MP_UNITS_DIAGNOSTIC_PUSH MP_UNITS_PRAGMA(warning(push))
+#define MP_UNITS_DIAGNOSTIC_POP MP_UNITS_PRAGMA(warning(pop))
+#define MP_UNITS_DIAGNOSTIC_IGNORE_PRAGMAS MP_UNITS_PRAGMA(warning(disable : 4068))
+#define MP_UNITS_DIAGNOSTIC_IGNORE(X) MP_UNITS_DIAGNOSTIC_IGNORE_PRAGMAS MP_UNITS_PRAGMA(warning(disable : X))
+#define MP_UNITS_DIAGNOSTIC_IGNORE_EXPR_ALWAYS_TF MP_UNITS_DIAGNOSTIC_IGNORE(4296)
+#define MP_UNITS_DIAGNOSTIC_IGNORE_FLOAT_EQUAL
+#define MP_UNITS_DIAGNOSTIC_IGNORE_LOSS_OF_DATA MP_UNITS_DIAGNOSTIC_IGNORE(4244)
+#define MP_UNITS_DIAGNOSTIC_IGNORE_MISSING_BRACES
+#define MP_UNITS_DIAGNOSTIC_IGNORE_NON_TEMPLATE_FRIEND
+#define MP_UNITS_DIAGNOSTIC_IGNORE_SHADOW MP_UNITS_DIAGNOSTIC_IGNORE(4459)
+#define MP_UNITS_DIAGNOSTIC_IGNORE_UNARY_MINUS_UNSIGNED MP_UNITS_DIAGNOSTIC_IGNORE(4146)
+#define MP_UNITS_DIAGNOSTIC_IGNORE_UNREACHABLE MP_UNITS_DIAGNOSTIC_IGNORE(4702)
+#define MP_UNITS_DIAGNOSTIC_IGNORE_ZERO_AS_NULLPOINTER_CONSTANT
+#define MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED MP_UNITS_DIAGNOSTIC_IGNORE(4996)
+#define MP_UNITS_DIAGNOSTIC_IGNORE_PEDANTIC
+#define MP_UNITS_DIAGNOSTIC_IGNORE_SIGN_CONVERSION
+#define MP_UNITS_DIAGNOSTIC_IGNORE_CONVERSION MP_UNITS_DIAGNOSTIC_IGNORE(4242)
+#define MP_UNITS_DIAGNOSTIC_IGNORE_FLOAT_CONVERSION
+#define MP_UNITS_DIAGNOSTIC_IGNORE_INT_CONVERSION
+#endif
+
+// NOLINTEND(cppcoreguidelines-macro-usage)

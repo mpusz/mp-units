@@ -28,9 +28,10 @@
 // and the ingredient-matching algorithm for derived quantities. This is what the C++ type
 // system cannot express, so it stays in V3 (planned to be reimplemented in the value domain
 // with C++26 reflection).
-#include <mp-units/bits/hacks.h>
+#include <mp-units/bits/config.h>
 #include <mp-units/bits/quantity_spec_hierarchy_conversion.h>
 #include <mp-units/bits/ratio.h>
+#include <mp-units/compat_macros.h>
 #include <mp-units/ext/algorithm.h>
 #include <mp-units/ext/type_name.h>
 #include <mp-units/framework/quantity_spec_concepts.h>
@@ -136,7 +137,7 @@ struct [[nodiscard]] explode_result {
   specs_convertible_result result;
 };
 
-#if MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
+#if !MP_UNITS_HAS_AGGREGATE_CTAD
 
 template<QuantitySpec Q>
 explode_result(Q, specs_convertible_result) -> explode_result<Q>;
@@ -183,7 +184,7 @@ struct [[nodiscard]] extract_common_base_result {
   RestTo rest_to{};
 };
 
-#if MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
+#if !MP_UNITS_HAS_AGGREGATE_CTAD
 
 extract_common_base_result(specs_convertible_result) -> extract_common_base_result<type_list<>, type_list<>>;
 

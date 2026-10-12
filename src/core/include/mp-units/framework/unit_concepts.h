@@ -23,6 +23,7 @@
 #pragma once
 
 // IWYU pragma: private, include <mp-units/framework.h>
+#include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/unsatisfied.h>
 #include <mp-units/compat_macros.h>
@@ -51,7 +52,8 @@ struct named_unit;
  */
 MP_UNITS_EXPORT template<typename T>
 concept Unit = std::derived_from<T, detail::unit_interface> && detail::SymbolicConstant<T> &&
-               !is_specialization_of_v<T, named_unit> && !detail::is_specialization_of_prefixed_unit<T>;
+               !is_specialization_of_v<std::remove_const_t<T>, named_unit> &&
+               !detail::is_specialization_of_prefixed_unit<std::remove_const_t<T>>;
 
 /**
  * @brief A concept to be used to define prefixes for a unit
@@ -67,7 +69,7 @@ concept PrefixableUnit = Unit<T> && is_derived_from_specialization_of_v<T, named
  */
 MP_UNITS_EXPORT template<typename U, auto QS>
 concept UnitOf =
-  Unit<U> && QuantitySpec<MP_UNITS_NTTP_TYPE(QS)> &&
+  Unit<U> && QuantitySpec<MP_UNITS_NTTP_HACK(decltype(QS))> &&
   (mp_units::implicitly_convertible(get_quantity_spec(U{}), QS) ||
    (unsatisfied<"Unit '{}' is associated with quantity of kind '{}' which is not convertible to the '{}' quantity">(
      U{}, type_name(get_quantity_spec(U{})._quantity_spec_), type_name(QS))));
@@ -92,8 +94,8 @@ concept ConvertibleUnits =
 
 template<typename U1, auto U2>
 concept UnitConvertibleTo =
-  Unit<U1> && Unit<MP_UNITS_NTTP_TYPE(U2)> &&
-  ((U1{} == U2) || ((!Unit<U1> || !Unit<MP_UNITS_NTTP_TYPE(U2)> || UnitsOfCompatibleQuantities<U1{}, U2>) &&
+  Unit<U1> && Unit<MP_UNITS_NTTP_HACK(decltype(U2))> &&
+  ((U1{} == U2) || ((!Unit<U1> || !Unit<MP_UNITS_NTTP_HACK(decltype(U2))> || UnitsOfCompatibleQuantities<U1{}, U2>) &&
                     ConvertibleUnits<U1{}, U2>));
 
 template<typename T>
@@ -110,7 +112,7 @@ concept OffsetUnit = Unit<T> && requires { T::_point_origin_; };
  */
 MP_UNITS_EXPORT template<typename T>
 concept MeasuredConstant =
-  Unit<T> && (requires { requires UnitMagnitude<MP_UNITS_NONCONST_TYPE(T::_relative_standard_uncertainty_)>; } ||
-              requires { requires Unit<MP_UNITS_NONCONST_TYPE(T::_standard_uncertainty_)>; });
+  Unit<T> && (requires { requires UnitMagnitude<decltype(T::_relative_standard_uncertainty_)>; } ||
+              requires { requires Unit<decltype(T::_standard_uncertainty_)>; });
 
 }  // namespace mp_units

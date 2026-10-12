@@ -24,9 +24,12 @@
 #pragma once
 
 // IWYU pragma: private, include <mp-units/framework/quantity_spec.h>
+#include <mp-units/bits/config.h>
+#include <mp-units/bits/diagnostics.h>
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/quantity_spec_hierarchy.h>
+#include <mp-units/compat_macros.h>
 #include <mp-units/ext/algorithm.h>
 #include <mp-units/ext/type_name.h>
 #include <mp-units/ext/type_traits.h>
@@ -61,7 +64,7 @@ template<typename, auto...>
 #endif
 struct quantity_spec;
 
-template<detail::SymbolicConstant... Expr>
+template<detail::SymbolicTerm... Expr>
 struct derived_quantity_spec;
 
 MP_UNITS_EXPORT template<QuantitySpec From, QuantitySpec To>
@@ -101,7 +104,7 @@ concept NamedQuantitySpec =
 template<typename T>
 concept DerivedQuantitySpec =
   QuantitySpec<T> &&
-  (is_specialization_of<T, derived_quantity_spec> ||
+  (is_specialization_of<std::remove_const_t<T>, derived_quantity_spec> ||
    (QuantityKindSpec<T> && is_specialization_of<MP_UNITS_NONCONST_TYPE(T::_quantity_spec_), derived_quantity_spec>));
 
 
@@ -299,7 +302,7 @@ struct quantity_spec_interface : quantity_spec_interface_base {
   }
 #else
   template<typename Self_ = Self, UnitOf<Self_{}> U>
-  [[nodiscard]] MP_UNITS_CONSTEVAL Reference auto operator[](U) const
+  [[nodiscard]] MP_UNITS_CONSTEVAL_HACK Reference auto operator[](U) const
   {
     return detail::make_reference(Self{}, U{});
   }
@@ -680,7 +683,7 @@ struct derived_quantity_spec_impl :
  * @note User should not instantiate this type! It is not exported from the C++ module. The library will
  *       instantiate this type automatically based on the dimensional arithmetic equation provided by the user.
  */
-template<detail::SymbolicConstant... Expr>
+template<detail::SymbolicTerm... Expr>
 // TODO Restore `final` in V3
 struct derived_quantity_spec : detail::derived_quantity_spec_impl<Expr...> {};
 
@@ -705,7 +708,7 @@ template<QuantitySpec Q>
 }  // namespace detail
 
 template<QuantitySpec Q>
-  requires(!detail::QuantityKindSpec<Q>) && (detail::get_kind_tree_root(Q{}) == Q{})
+  requires detail::SymbolicArg<Q> && (!detail::QuantityKindSpec<Q>) && (detail::get_kind_tree_root(Q{}) == Q{})
 #if MP_UNITS_API_NO_CRTP
 // TODO Restore `final` in V3
 struct kind_of_<Q> : Q::_base_type_ {
@@ -722,14 +725,14 @@ struct kind_of_<Q> : quantity_spec<kind_of_<Q>, Q{}>::_base_type_ {
 
 MP_UNITS_EXPORT template<QuantitySpec auto Q>
   requires requires { typename kind_of_<decltype(Q)>; }
-constexpr kind_of_<MP_UNITS_NTTP_TYPE(Q)> kind_of;
+constexpr kind_of_<MP_UNITS_NTTP_HACK(decltype(Q))> kind_of;
 
 namespace detail {
 
 template<QuantitySpec auto... From, QuantitySpec Q>
 [[nodiscard]] consteval QuantitySpec auto clone_kind_of(Q q)
 {
-  if constexpr ((... && QuantityKindSpec<MP_UNITS_NTTP_TYPE(From)>))
+  if constexpr ((... && QuantityKindSpec<MP_UNITS_NTTP_HACK(decltype(From))>))
     return kind_of<Q{}>;
   else
     return q;

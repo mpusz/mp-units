@@ -235,7 +235,9 @@ For example:
 A unit can be defined by the user in one of the following ways:
 
 ```cpp
-template<PrefixableUnit U> struct kilo_ : prefixed_unit<"k", mag_power<10, 3>, U{}> {};
+template<PrefixableUnit U>
+  requires(!std::is_const_v<U>)
+struct kilo_ : prefixed_unit<"k", mag_power<10, 3>, U{}> {};
 template<PrefixableUnit auto U> constexpr kilo_<decltype(U)> kilo;
 
 inline constexpr struct second : named_unit<"s", kind_of<isq::duration>> {} second;

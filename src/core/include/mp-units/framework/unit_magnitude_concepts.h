@@ -23,6 +23,7 @@
 #pragma once
 
 // IWYU pragma: private, include <mp-units/framework.h>
+#include <mp-units/bits/config.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/ext/type_traits.h>
 #include <mp-units/framework/symbol_text.h>
@@ -38,7 +39,7 @@ import std;
 
 namespace mp_units {
 
-#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 18
+#if !MP_UNITS_HAS_FLOATING_POINT_NTTP
 MP_UNITS_EXPORT template<symbol_text Symbol>
 #else
 MP_UNITS_EXPORT template<symbol_text Symbol, long double Value>
@@ -60,6 +61,6 @@ constexpr bool is_mag_constant = is_derived_from_specialization_of_v<T, mag_cons
  * @brief  Concept to detect whether T is a valid UnitMagnitude.
  */
 MP_UNITS_EXPORT template<typename T>
-concept UnitMagnitude = is_specialization_of_v<T, detail::unit_magnitude>;
+concept UnitMagnitude = is_specialization_of_v<std::remove_const_t<T>, detail::unit_magnitude>;
 
 }  // namespace mp_units

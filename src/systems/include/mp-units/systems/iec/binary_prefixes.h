@@ -22,34 +22,40 @@
 
 #pragma once
 
+#include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/framework/unit.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
+#include <type_traits>
+#endif
 #endif
 
 namespace mp_units::iec {
 
 // clang-format off
-template<PrefixableUnit U> struct kibi_ final : prefixed_unit<"Ki", mag_power<2, 10>, U{}> {};
-template<PrefixableUnit U> struct mebi_ final : prefixed_unit<"Mi", mag_power<2, 20>, U{}> {};
-template<PrefixableUnit U> struct gibi_ final : prefixed_unit<"Gi", mag_power<2, 30>, U{}> {};
-template<PrefixableUnit U> struct tebi_ final : prefixed_unit<"Ti", mag_power<2, 40>, U{}> {};
-template<PrefixableUnit U> struct pebi_ final : prefixed_unit<"Pi", mag_power<2, 50>, U{}> {};
-template<PrefixableUnit U> struct exbi_ final : prefixed_unit<"Ei", mag_power<2, 60>, U{}> {};
-template<PrefixableUnit U> struct zebi_ final : prefixed_unit<"Zi", mag_power<2, 70>, U{}> {};
-template<PrefixableUnit U> struct yobi_ final : prefixed_unit<"Yi", mag_power<2, 80>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct kibi_ final : prefixed_unit<"Ki", mag_power<2, 10>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct mebi_ final : prefixed_unit<"Mi", mag_power<2, 20>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct gibi_ final : prefixed_unit<"Gi", mag_power<2, 30>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct tebi_ final : prefixed_unit<"Ti", mag_power<2, 40>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct pebi_ final : prefixed_unit<"Pi", mag_power<2, 50>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct exbi_ final : prefixed_unit<"Ei", mag_power<2, 60>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct zebi_ final : prefixed_unit<"Zi", mag_power<2, 70>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct yobi_ final : prefixed_unit<"Yi", mag_power<2, 80>, U{}> {};
 
 MP_UNITS_EXPORT_BEGIN
 
-template<PrefixableUnit auto U> constexpr kibi_<MP_UNITS_NTTP_TYPE(U)> kibi;
-template<PrefixableUnit auto U> constexpr mebi_<MP_UNITS_NTTP_TYPE(U)> mebi;
-template<PrefixableUnit auto U> constexpr gibi_<MP_UNITS_NTTP_TYPE(U)> gibi;
-template<PrefixableUnit auto U> constexpr tebi_<MP_UNITS_NTTP_TYPE(U)> tebi;
-template<PrefixableUnit auto U> constexpr pebi_<MP_UNITS_NTTP_TYPE(U)> pebi;
-template<PrefixableUnit auto U> constexpr exbi_<MP_UNITS_NTTP_TYPE(U)> exbi;
-template<PrefixableUnit auto U> constexpr zebi_<MP_UNITS_NTTP_TYPE(U)> zebi;
-template<PrefixableUnit auto U> constexpr yobi_<MP_UNITS_NTTP_TYPE(U)> yobi;
+template<PrefixableUnit auto U> constexpr kibi_<MP_UNITS_NTTP_HACK(decltype(U))> kibi;
+template<PrefixableUnit auto U> constexpr mebi_<MP_UNITS_NTTP_HACK(decltype(U))> mebi;
+template<PrefixableUnit auto U> constexpr gibi_<MP_UNITS_NTTP_HACK(decltype(U))> gibi;
+template<PrefixableUnit auto U> constexpr tebi_<MP_UNITS_NTTP_HACK(decltype(U))> tebi;
+template<PrefixableUnit auto U> constexpr pebi_<MP_UNITS_NTTP_HACK(decltype(U))> pebi;
+template<PrefixableUnit auto U> constexpr exbi_<MP_UNITS_NTTP_HACK(decltype(U))> exbi;
+template<PrefixableUnit auto U> constexpr zebi_<MP_UNITS_NTTP_HACK(decltype(U))> zebi;
+template<PrefixableUnit auto U> constexpr yobi_<MP_UNITS_NTTP_HACK(decltype(U))> yobi;
 // clang-format on
 
 MP_UNITS_EXPORT_END

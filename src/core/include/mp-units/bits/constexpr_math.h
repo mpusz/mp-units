@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include <mp-units/bits/hacks.h>  // IWYU pragma: keep
+#include <mp-units/bits/diagnostics.h>  // IWYU pragma: keep
+#include <mp-units/bits/hacks.h>        // IWYU pragma: keep
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #ifdef MP_UNITS_IMPORT_STD
@@ -40,7 +41,7 @@ import std;
 namespace mp_units::detail {
 
 template<typename T>
-[[nodiscard]] MP_UNITS_CONSTEVAL T abs(T v) noexcept
+[[nodiscard]] MP_UNITS_CONSTEVAL_HACK T abs(T v) noexcept
   requires requires {
     v < T{0};
     -v;
