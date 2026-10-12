@@ -42,8 +42,8 @@ using percent_ = struct percent;
 
 // clang-format off
 // prefixes
-template<PrefixableUnit U> struct milli_  final : prefixed_unit<"m", mag_power<10, -3>, U{}> {};
-template<PrefixableUnit U> struct kilo_   final : prefixed_unit<"k", mag_power<10, 3>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct milli_  final : prefixed_unit<"m", mag_power<10, -3>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct kilo_   final : prefixed_unit<"k", mag_power<10, 3>, U{}> {};
 template<PrefixableUnit auto U> constexpr milli_<MP_UNITS_NTTP_HACK(decltype(U))> milli;
 template<PrefixableUnit auto U> constexpr kilo_<MP_UNITS_NTTP_HACK(decltype(U))> kilo;
 
