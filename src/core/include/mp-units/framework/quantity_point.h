@@ -958,7 +958,7 @@ public:
 };
 
 // CTAD
-#ifdef MP_UNITS_COMP_MSVC
+#if MP_UNITS_QUANTITY_POINT_CTAD_HACK
 template<QuantityPoint QP>
 quantity_point(QP qp) -> quantity_point<QP::reference, QP::point_origin, typename QP::rep>;
 #endif

@@ -23,7 +23,7 @@
 // NOLINTBEGIN(bugprone-reserved-identifier, cppcoreguidelines-macro-usage)
 #pragma once
 
-#include <mp-units/bits/config.h>
+#include <mp-units/bits/compiler.h>
 
 // Hack for compiler bugs: `decltype(V)` of a class-type non-type template parameter should be
 // the parameter's type, but two compilers get it wrong. GCC 12 gives `const T` (GCC bug 98820, fixed
@@ -82,6 +82,62 @@ inline constexpr bool is_complete = requires { sizeof(T) > 0; };
 
 #define MP_UNITS_FORMATTER_HACK(T, ...) (__VA_ARGS__)
 
+#endif
+
+// Hack for compiler bugs: during constant evaluation `std::bit_cast` leaves an empty base subobject
+// uninitialized, so its result is unusable in a constant expression. GCC 12 and 13 and LLVM Clang 16
+// to 18 are affected, GCC 14 and Clang 20 are not. Apple Clang below 19 keeps the hack it always had,
+// as nobody has tested it without.
+#if MP_UNITS_COMP_GCC == 12 || MP_UNITS_COMP_GCC == 13 ||                                   \
+  (MP_UNITS_COMP_CLANG >= 16 && MP_UNITS_COMP_CLANG <= 18 && !MP_UNITS_COMP_APPLE_CLANG) || \
+  (MP_UNITS_COMP_APPLE_CLANG && MP_UNITS_COMP_APPLE_CLANG < 19)
+#define MP_UNITS_BIT_CAST_HACK 1
+#else
+#define MP_UNITS_BIT_CAST_HACK 0
+#endif
+
+// Hack for a compiler bug: LLVM Clang 19 to 21 mis-evaluate constant expressions that reach a
+// pack-indexed type through a module interface, reporting an initializer as non-constant with no
+// cause. Header-mode builds are unaffected, and Clang 22 evaluates them correctly. Apple Clang below
+// 22 keeps the hack it always had, as nobody has tested it without.
+#if (MP_UNITS_COMP_CLANG >= 19 && MP_UNITS_COMP_CLANG <= 21 && !MP_UNITS_COMP_APPLE_CLANG) || \
+  (MP_UNITS_COMP_APPLE_CLANG && MP_UNITS_COMP_APPLE_CLANG < 22)
+#define MP_UNITS_PACK_INDEXING_HACK 1
+#else
+#define MP_UNITS_PACK_INDEXING_HACK 0
+#endif
+
+// Hack for a compiler bug: GCC 12 parses `t[i, j]` in a requires-expression as the deprecated comma
+// subscript `t[(i, j)]`, so a probe for the C++23 multidimensional subscript is satisfied by a type
+// with only a one-index `operator[]`. GCC 13 parses it correctly.
+#if MP_UNITS_COMP_GCC == 12
+#define MP_UNITS_MULTIDIM_SUBSCRIPT_HACK 1
+#else
+#define MP_UNITS_MULTIDIM_SUBSCRIPT_HACK 0
+#endif
+
+// Hack for compiler bugs: GCC 12 and 13 ICE on `decltype(auto(expr))` (in tsubst, at cp/pt.cc).
+#if MP_UNITS_COMP_GCC == 12 || MP_UNITS_COMP_GCC == 13
+#define MP_UNITS_AUTO_CAST_HACK 1
+#else
+#define MP_UNITS_AUTO_CAST_HACK 0
+#endif
+
+// Hack for a compiler bug: MSVC ICEs on a `detail::ratio` passed as a non-type template argument
+// to build a magnitude, so `mag_ratio` builds it from prime factorizations there. The affected MSVC
+// versions are not known, so it applies to all of them until one is tested without it.
+#if MP_UNITS_COMP_MSVC
+#define MP_UNITS_MAG_RATIO_HACK 1
+#else
+#define MP_UNITS_MAG_RATIO_HACK 0
+#endif
+
+// Hack for a compiler bug: MSVC needs an explicit copy-deduction guide for `quantity_point`. The
+// affected MSVC versions are not known, so it applies to all of them until one is tested without it.
+#if MP_UNITS_COMP_MSVC
+#define MP_UNITS_QUANTITY_POINT_CTAD_HACK 1
+#else
+#define MP_UNITS_QUANTITY_POINT_CTAD_HACK 0
 #endif
 
 // Hack: before C++23 the standard library has no `std::from_range`, which the `fixed_string`

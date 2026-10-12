@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <mp-units/bits/config.h>
 #include <mp-units/systems/angular.h>
 #include <mp-units/systems/codata/adopted_values.h>
 #include <mp-units/systems/iau.h>
@@ -143,7 +144,7 @@ static_assert(unit_symbol<usf{.char_set = basic}>(mag_ratio<1, 18'000> * (metre 
 // static_assert(unit_symbol<usf{.char_set = basic}>(mag<1> / mag_power<2, 1, 2> * m) == "(1/2^(1/2) m)");
 
 // magnitude constants
-#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 18
+#if !MP_UNITS_HAS_FLOATING_POINT_NTTP
 inline constexpr struct e final : mag_constant<"e"> {
   static constexpr long double _value_ = std::numbers::e_v<long double>;
 #else

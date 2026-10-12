@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <mp-units/bits/config.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/compat_macros.h>
 #include <mp-units/framework/customization_points.h>

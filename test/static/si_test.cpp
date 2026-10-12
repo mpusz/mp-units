@@ -20,6 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <mp-units/bits/compiler.h>
+#include <mp-units/bits/config.h>
+#include <mp-units/bits/hacks.h>
 #include <mp-units/systems/si.h>
 #ifdef MP_UNITS_IMPORT_STD
 import std;

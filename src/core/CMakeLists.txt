@@ -29,7 +29,8 @@ endfunction()
 # core library definition
 add_mp_units_module(
     core mp-units-core
-    HEADERS include/mp-units/bits/config.h
+    HEADERS include/mp-units/bits/compiler.h
+            include/mp-units/bits/config.h
             include/mp-units/bits/constexpr_math.h
             include/mp-units/bits/core_gmf.h
             include/mp-units/bits/diagnostics.h

@@ -23,6 +23,7 @@
 #pragma once
 
 // IWYU pragma: begin_exports
+#include <mp-units/bits/config.h>
 #include <mp-units/compat_macros.h>
 #include <mp-units/concepts.h>
 #include <mp-units/framework.h>

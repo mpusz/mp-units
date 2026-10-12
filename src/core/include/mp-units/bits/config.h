@@ -23,26 +23,8 @@
 // NOLINTBEGIN(cppcoreguidelines-macro-usage)
 #pragma once
 
-#ifndef MP_UNITS_IN_MODULE_INTERFACE
-#include <version>
-#endif
-
-#if __clang__
-#define MP_UNITS_COMP_CLANG __clang_major__
-#if defined __apple_build_version__
-// Apple Clang numbers its versions independently of LLVM Clang, so a hack keyed to an LLVM Clang
-// version has to exclude it, and a hack for Apple Clang has to name Apple's version
-#define MP_UNITS_COMP_APPLE_CLANG __clang_major__
-#endif
-#elif __GNUC__
-#define MP_UNITS_COMP_GCC __GNUC__
-#define MP_UNITS_COMP_GCC_MINOR __GNUC_MINOR__
-#elif _MSC_VER
-#define MP_UNITS_COMP_MSVC _MSC_VER
-#endif
-
-// Adapted from https://github.com/ericniebler/range-v3/blob/master/include/range/v3/detail/config.hpp#L185.
-#define MP_UNITS_PRAGMA(X) _Pragma(#X)
+#include <mp-units/bits/compiler.h>
+#include <mp-units/bits/hacks.h>
 
 #if !defined MP_UNITS_HOSTED && defined __STDC_HOSTED__
 #define MP_UNITS_HOSTED __STDC_HOSTED__
@@ -74,6 +56,54 @@
 #define MP_UNITS_HAS_DELETED_FUNCTION_MESSAGE 1
 #else
 #define MP_UNITS_HAS_DELETED_FUNCTION_MESSAGE 0
+#endif
+
+// A capability below is set only where the library can actually use the feature: the language mode
+// provides it, and no compiler bug in `hacks.h` gets in the way. Code checks the capability alone,
+// so a hack cannot be forgotten at one of its sites.
+
+// Pack indexing (`Ts...[I]`) where the language mode provides it. Clang 19 and later advertise
+// `__cpp_pack_indexing` in every mode because they accept the syntax as an extension before C++26,
+// and `-Wpedantic` rejects that extension.
+#if __cpp_pack_indexing && !(MP_UNITS_COMP_CLANG && __cplusplus <= 202302L) && !MP_UNITS_PACK_INDEXING_HACK
+#define MP_UNITS_HAS_PACK_INDEXING 1
+#else
+#define MP_UNITS_HAS_PACK_INDEXING 0
+#endif
+
+// The C++23 multidimensional subscript (`t[i, j]`).
+#if __cpp_multidimensional_subscript && !MP_UNITS_MULTIDIM_SUBSCRIPT_HACK
+#define MP_UNITS_HAS_MULTIDIM_SUBSCRIPT 1
+#else
+#define MP_UNITS_HAS_MULTIDIM_SUBSCRIPT 0
+#endif
+
+// `auto(expr)` and `auto{expr}` (P0849).
+#if __cpp_auto_cast >= 202110L && !MP_UNITS_AUTO_CAST_HACK
+#define MP_UNITS_HAS_AUTO_CAST 1
+#else
+#define MP_UNITS_HAS_AUTO_CAST 0
+#endif
+
+// Class template argument deduction for aggregates (P1816, P2082), which LLVM Clang implements from
+// version 17. Where it is missing, aggregates provide explicit deduction guides. Apple Clang below
+// 17 keeps those guides as it always had them.
+#if (MP_UNITS_COMP_CLANG == 16 && !MP_UNITS_COMP_APPLE_CLANG) || \
+  (MP_UNITS_COMP_APPLE_CLANG && MP_UNITS_COMP_APPLE_CLANG < 17)
+#define MP_UNITS_HAS_AGGREGATE_CTAD 0
+#else
+#define MP_UNITS_HAS_AGGREGATE_CTAD 1
+#endif
+
+// Non-type template parameters of floating-point type, which LLVM Clang implements from version 18
+// ("sorry, non-type template argument of type 'long double' is not yet supported" before that).
+// Clang reports `__cpp_nontype_template_args` as 201411 even when it supports them, so the macro
+// cannot be used. Apple Clang below 18 keeps the form it always had.
+#if ((MP_UNITS_COMP_CLANG == 16 || MP_UNITS_COMP_CLANG == 17) && !MP_UNITS_COMP_APPLE_CLANG) || \
+  (MP_UNITS_COMP_APPLE_CLANG && MP_UNITS_COMP_APPLE_CLANG < 18)
+#define MP_UNITS_HAS_FLOATING_POINT_NTTP 0
+#else
+#define MP_UNITS_HAS_FLOATING_POINT_NTTP 1
 #endif
 
 #if !defined MP_UNITS_API_NO_CRTP && __cpp_explicit_this_parameter

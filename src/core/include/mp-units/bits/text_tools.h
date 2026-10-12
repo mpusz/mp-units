@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <mp-units/bits/diagnostics.h>
 #include <mp-units/bits/ratio.h>
 #include <mp-units/compat_macros.h>
 #include <mp-units/ext/fixed_string.h>

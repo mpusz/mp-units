@@ -540,22 +540,15 @@ struct quantity_iface {
   // tuple-like decomposition of a vector quantity into named 1D-vector components (see
   // framework/vector_components.h).
   template<std::size_t Idx, auto R1, typename Rep1>
-#if !(defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17)
     requires DecomposableIndex<get_quantity_spec(R1), Rep1, Idx>
-#endif
   [[nodiscard]] friend constexpr Quantity auto get(const quantity<R1, Rep1>& q)
   {
     constexpr auto comp = vector_components<get_quantity_spec(R1)>::template axis<Idx>;
     return component_access<Idx>(q.numerical_value_in(get_unit(R1))) * comp[get_unit(R1)];
   }
 
-#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
-  template<auto QS, auto R1, typename Rep1>
-    requires(!std::integral<decltype(QS)>)
-#else
   template<QuantitySpec auto QS, auto R1, typename Rep1>
     requires DecomposableAxis<get_quantity_spec(R1), Rep1, QS>
-#endif
   [[nodiscard]] friend constexpr Quantity auto get(const quantity<R1, Rep1>& q)
   {
     return get<axis_index_of<QS>(vector_components<get_quantity_spec(R1)>{})>(q);

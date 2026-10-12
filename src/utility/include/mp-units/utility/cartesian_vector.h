@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <mp-units/bits/config.h>
 #include <mp-units/bits/requires_hosted.h>
 //
 #include <mp-units/bits/module_macros.h>
@@ -431,14 +432,9 @@ cartesian_vector(Arg, Args...) -> cartesian_vector<std::common_type_t<Arg, Args.
 namespace mp_units {
 
 // Transition compatibility shim: `cartesian_vector` now lives in `mp_units::utility`; deprecated to
-// steer users to the new location, to be removed in a future release. gcc-12 cannot deprecate the
-// alias without breaking its CTAD, so there it stays a (non-deprecated) using-declaration.
-#if MP_UNITS_COMP_GCC == 12
-MP_UNITS_EXPORT using utility::cartesian_vector;
-#else
+// steer users to the new location, to be removed in a future release.
 MP_UNITS_EXPORT template<typename T = double, std::size_t N = 3>
 using cartesian_vector [[deprecated("moved to mp_units::utility::cartesian_vector")]] = utility::cartesian_vector<T, N>;
-#endif
 
 }  // namespace mp_units
 

@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <mp-units/bits/config.h>
 #include <mp-units/bits/requires_hosted.h>
 //
 #include <mp-units/bits/module_macros.h>

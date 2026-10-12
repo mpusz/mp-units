@@ -40,8 +40,7 @@
 
 #endif
 
-// GCC 12 and 13 ICE on `decltype(auto(expr))` (in tsubst, at cp/pt.cc)
-#if __cpp_auto_cast >= 202110L && (!defined MP_UNITS_COMP_GCC || MP_UNITS_COMP_GCC >= 14)
+#if MP_UNITS_HAS_AUTO_CAST
 #define MP_UNITS_NONCONST_TYPE(expr) decltype(auto(expr))
 #else
 #define MP_UNITS_NONCONST_TYPE(expr) std::remove_const_t<decltype(expr)>
@@ -77,7 +76,9 @@
 
 #else  // MP_UNITS_USE_FMTLIB
 
-#if !defined __cpp_lib_format && !defined MP_UNITS_COMP_CLANG
+// libc++ before 20 provides `<format>` but leaves `__cpp_lib_format` undefined
+// (https://github.com/llvm/llvm-project/issues/77773)
+#if !defined __cpp_lib_format && !(defined _LIBCPP_VERSION && _LIBCPP_VERSION < 200000)
 #error "std::formatting facility not supported"
 #endif
 

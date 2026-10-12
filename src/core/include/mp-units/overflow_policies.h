@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <mp-units/bits/config.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/ext/contracts.h>
 #include <mp-units/framework/customization_points.h>
@@ -100,7 +101,7 @@ struct check_in_range {
   }
 };
 
-#if MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
+#if !MP_UNITS_HAS_AGGREGATE_CTAD
 
 template<Quantity Q>
 check_in_range(Q, Q) -> check_in_range<Q>;
@@ -129,7 +130,7 @@ struct clamp_to_range {
   }
 };
 
-#if MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
+#if !MP_UNITS_HAS_AGGREGATE_CTAD
 
 template<Quantity Q>
 clamp_to_range(Q, Q) -> clamp_to_range<Q>;
@@ -160,7 +161,7 @@ struct wrap_to_range {
   }
 };
 
-#if MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
+#if !MP_UNITS_HAS_AGGREGATE_CTAD
 
 template<Quantity Q>
 wrap_to_range(Q, Q) -> wrap_to_range<Q>;
@@ -192,7 +193,7 @@ struct reflect_in_range {
   }
 };
 
-#if MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
+#if !MP_UNITS_HAS_AGGREGATE_CTAD
 
 template<Quantity Q>
 reflect_in_range(Q, Q) -> reflect_in_range<Q>;

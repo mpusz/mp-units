@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include <catch2/catch_test_macros.hpp>
+#include <mp-units/bits/config.h>
 #include <mp-units/framework.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>

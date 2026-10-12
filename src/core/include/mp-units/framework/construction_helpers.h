@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <mp-units/bits/hacks.h>
 #include <mp-units/framework/quantity.h>
 #include <mp-units/framework/quantity_point.h>
 #include <mp-units/framework/reference_concepts.h>

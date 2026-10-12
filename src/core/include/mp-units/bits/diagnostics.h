@@ -23,7 +23,7 @@
 // NOLINTBEGIN(cppcoreguidelines-macro-usage)
 #pragma once
 
-#include <mp-units/bits/config.h>
+#include <mp-units/bits/compiler.h>
 
 // `#warning` is C++23, and MSVC emits a hard error for it in earlier modes, so deprecated headers
 // use a compiler-specific pragma instead

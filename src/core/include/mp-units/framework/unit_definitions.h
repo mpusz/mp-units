@@ -83,7 +83,7 @@ struct canonical_unit {
   U reference_unit;
 };
 
-#if MP_UNITS_COMP_CLANG
+#if !MP_UNITS_HAS_AGGREGATE_CTAD
 
 template<UnitMagnitude M, Unit U>
 canonical_unit(M, U) -> canonical_unit<M, U>;
@@ -474,7 +474,7 @@ struct relative_standard_uncertainty {
   M magnitude;
 };
 
-#if MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
+#if !MP_UNITS_HAS_AGGREGATE_CTAD
 
 template<UnitMagnitude M>
 relative_standard_uncertainty(M) -> relative_standard_uncertainty<M>;
@@ -513,7 +513,7 @@ struct standard_uncertainty {
   U unit;
 };
 
-#if MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
+#if !MP_UNITS_HAS_AGGREGATE_CTAD
 
 template<Unit U>
 standard_uncertainty(U) -> standard_uncertainty<U>;

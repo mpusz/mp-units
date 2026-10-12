@@ -45,6 +45,7 @@
 //
 // TODO these should be exposed by the C++ Standard Library
 
+#include <mp-units/bits/diagnostics.h>
 #include <mp-units/bits/requires_hosted.h>
 //
 #include <mp-units/bits/module_macros.h>

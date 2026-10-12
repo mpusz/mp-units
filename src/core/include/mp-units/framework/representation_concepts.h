@@ -23,7 +23,10 @@
 #pragma once
 
 // IWYU pragma: private, include <mp-units/framework.h>
+#include <mp-units/bits/config.h>
+#include <mp-units/bits/diagnostics.h>
 #include <mp-units/bits/fixed_point.h>
+#include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/quantity_character.h>
@@ -122,7 +125,7 @@ concept WeaklyRegular = std::copyable<T> && std::equality_comparable<T>;
 
 template<typename T>
 concept RegularAddable = Addable<T>
-#if MP_UNITS_COMP_GCC != 12 && !defined(MP_UNITS_XCODE15_HACKS)
+#if !defined(MP_UNITS_XCODE15_HACKS)
                          && WeaklyRegular<T>
 #endif
   ;

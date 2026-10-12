@@ -137,7 +137,7 @@ struct [[nodiscard]] explode_result {
   specs_convertible_result result;
 };
 
-#if MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
+#if !MP_UNITS_HAS_AGGREGATE_CTAD
 
 template<QuantitySpec Q>
 explode_result(Q, specs_convertible_result) -> explode_result<Q>;
@@ -184,7 +184,7 @@ struct [[nodiscard]] extract_common_base_result {
   RestTo rest_to{};
 };
 
-#if MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
+#if !MP_UNITS_HAS_AGGREGATE_CTAD
 
 extract_common_base_result(specs_convertible_result) -> extract_common_base_result<type_list<>, type_list<>>;
 

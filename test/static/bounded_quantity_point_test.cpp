@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <mp-units/bits/config.h>
 #include <mp-units/compat_macros.h>
 #include <mp-units/framework.h>
 #include <mp-units/overflow_policies.h>
@@ -933,7 +934,7 @@ struct clamp_min_only {
   }
 };
 
-#if MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
+#if !MP_UNITS_HAS_AGGREGATE_CTAD
 template<Quantity Q>
 clamp_min_only(Q) -> clamp_min_only<Q>;
 #endif
@@ -951,7 +952,7 @@ struct clamp_max_only {
   }
 };
 
-#if MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
+#if !MP_UNITS_HAS_AGGREGATE_CTAD
 template<Quantity Q>
 clamp_max_only(Q) -> clamp_max_only<Q>;
 #endif

@@ -24,6 +24,7 @@
 
 #define MP_UNITS_IN_GMF
 
+#include <mp-units/bits/compiler.h>
 #include <mp-units/bits/config.h>
 #include <mp-units/bits/diagnostics.h>
 #include <mp-units/bits/hacks.h>

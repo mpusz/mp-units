@@ -23,6 +23,7 @@
 #pragma once
 
 // IWYU pragma: private, include <mp-units/framework.h>
+#include <mp-units/bits/config.h>
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/unsatisfied.h>
@@ -78,7 +79,7 @@ template<auto Root, auto... Others>
   return (std::size_t{0} + ... + (Root == Others ? std::size_t{1} : std::size_t{0}));
 }
 
-#if !(defined(__cpp_pack_indexing) && __cplusplus > 202302)
+#if !MP_UNITS_HAS_PACK_INDEXING
 
 // Portable fallback for `Axes...[I]` on implementations without C++26 pack indexing.
 template<std::size_t Idx, auto V0, auto... Vs>
@@ -139,7 +140,7 @@ struct vector_axes {
   // the I-th axis spec (C++26 pack indexing with a portable recursive fallback)
   template<std::size_t Idx>
   static constexpr QuantitySpec auto axis =
-#if defined(__cpp_pack_indexing) && __cplusplus > 202302
+#if MP_UNITS_HAS_PACK_INDEXING
     Axes...[Idx];
 #else
     detail::nth_value<Idx, Axes...>();

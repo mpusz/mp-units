@@ -8,6 +8,12 @@ This page documents the version history and changes for the **mp-units** library
 
 ### 2.6.0 <small>TBD</small> { id="2.6.0" }
 
+- fix: Clang with libstdc++ 12, which has no `<format>`, now hits the "std::formatting
+      facility not supported" error when `std::format` is selected. The check used to
+      skip every Clang to accommodate libc++ before 20, which provides `<format>` without
+      defining `__cpp_lib_format`. It now skips only that library
+- fix: the deprecated `mp_units::cartesian_vector` and random-distribution aliases warn on
+      GCC 12 as well. They were plain using-declarations there
 - feat: the concepts for symbolic types accept a const-qualified type, the way the
       standard's type categories do. `Unit<decltype(si::metre)>` and
       `QuantitySpec<decltype(isq::length)>` now hold, just as `Quantity<const Q>` always

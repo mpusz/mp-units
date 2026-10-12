@@ -24,8 +24,8 @@
 #pragma once
 
 // IWYU pragma: private, include <mp-units/framework.h>
-#include <mp-units/bits/config.h>
 #include <mp-units/bits/diagnostics.h>
+#include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/compat_macros.h>
 #include <mp-units/ext/algorithm.h>
@@ -85,11 +85,11 @@ template<std::size_t N>
 constexpr fixed_u8string<N> to_u8string(fixed_string<N> txt)
 {
   MP_UNITS_PRECONDITION(is_basic_literal_character_set(txt.begin(), txt.end()));
-  // Compiler defect (gcc < 14, clang < 19): during constant evaluation `bit_cast` leaves the empty
+  // Compiler defect (`MP_UNITS_BIT_CAST_HACK`): during constant evaluation `bit_cast` leaves the empty
   // base subobject (`detail::fixed_string_iface`) uninitialized, so the result is unusable in a
   // constant expression and every compile-time symbol becomes ill-formed. The element-wise copy is
   // a workaround; `bit_cast` is the intended semantics.
-#if (defined MP_UNITS_COMP_GCC && MP_UNITS_COMP_GCC < 14) || (defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 19)
+#if MP_UNITS_BIT_CAST_HACK
   char8_t buffer[N + 1] = {};
   for (std::size_t i = 0; i != N; ++i) buffer[i] = static_cast<char8_t>(txt[i]);
   return fixed_u8string<N>(buffer, buffer + N);

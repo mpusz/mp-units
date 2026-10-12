@@ -23,6 +23,7 @@
 #pragma once
 
 // IWYU pragma: private, include <mp-units/framework.h>
+#include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/ext/type_traits.h>
 #include <mp-units/framework/symbol_text.h>

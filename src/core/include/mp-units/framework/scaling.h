@@ -23,6 +23,7 @@
 #pragma once
 
 // IWYU pragma: private, include <mp-units/framework.h>
+#include <mp-units/bits/diagnostics.h>
 #include <mp-units/bits/fixed_point.h>
 #include <mp-units/bits/int_power.h>
 #include <mp-units/compat_macros.h>

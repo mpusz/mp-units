@@ -20,6 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <mp-units/bits/config.h>
+#include <mp-units/bits/diagnostics.h>
 #include <mp-units/compat_macros.h>
 #include <mp-units/systems/codata/adopted_values.h>
 #include <mp-units/systems/iec.h>
@@ -490,9 +492,9 @@ struct ambiguous_shaped {
 // undefined, so this is `false` via a substitution failure (SFINAE-friendly), not a hard error.
 template<typename T>
 concept order_defined = (tensor_order<T> < 3);
-// GCC 12 prematurely defines `__cpp_multidimensional_subscript` without implementing `t[i, j]`, so
-// the library skips that probe there (see `has_matrix_indexing`); keep this test in step.
-#if __cpp_multidimensional_subscript && MP_UNITS_COMP_GCC != 12
+// GCC 12 cannot probe for `t[i, j]` (see `MP_UNITS_MULTIDIM_SUBSCRIPT_HACK`), so the library skips
+// that probe there (see `has_matrix_indexing`). Keep this test in step.
+#if MP_UNITS_HAS_MULTIDIM_SUBSCRIPT
 struct multidim_subscript_shaped {
   double operator[](std::size_t, std::size_t) const;
 };
@@ -501,7 +503,7 @@ struct multidim_subscript_shaped {
 static_assert(tensor_order<order_detection::scalar_shaped> == 0);
 static_assert(tensor_order<order_detection::vector_shaped> == 1);
 static_assert(tensor_order<order_detection::matrix_shaped> == 2);
-#if __cpp_multidimensional_subscript && MP_UNITS_COMP_GCC != 12
+#if MP_UNITS_HAS_MULTIDIM_SUBSCRIPT
 static_assert(tensor_order<order_detection::multidim_subscript_shaped> == 2);  // C++23 t[i, j]
 #endif
 // Single-shape types have a defined order; the ambiguous both-shape type does not (soft-rejected).

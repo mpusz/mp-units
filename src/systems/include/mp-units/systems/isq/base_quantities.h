@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <mp-units/bits/config.h>
 #include <mp-units/bits/module_macros.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE

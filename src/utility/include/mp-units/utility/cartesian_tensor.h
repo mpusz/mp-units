@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <mp-units/bits/config.h>
 #include <mp-units/bits/requires_hosted.h>
 //
 #include <mp-units/bits/module_macros.h>
@@ -249,9 +250,9 @@ public:
   [[nodiscard]] constexpr T& operator()(std::size_t row, std::size_t col) { return _data_[row * N + col]; }
   [[nodiscard]] constexpr const T& operator()(std::size_t row, std::size_t col) const { return _data_[row * N + col]; }
 
-#if __cpp_multidimensional_subscript && MP_UNITS_COMP_GCC != 12
-  // C++23 multidimensional subscript, equivalent to `operator()` above (GCC 12 defines the feature
-  // macro but does not implement it, so it is excluded)
+#if MP_UNITS_HAS_MULTIDIM_SUBSCRIPT
+  // C++23 multidimensional subscript, equivalent to `operator()` above (excluded where the library
+  // cannot detect it, see `MP_UNITS_MULTIDIM_SUBSCRIPT_HACK`)
   [[nodiscard]] constexpr T& operator[](std::size_t row, std::size_t col) { return _data_[row * N + col]; }
   [[nodiscard]] constexpr const T& operator[](std::size_t row, std::size_t col) const { return _data_[row * N + col]; }
 #endif
