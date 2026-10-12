@@ -135,18 +135,27 @@ inline constexpr bool is_complete = requires { sizeof(T) > 0; };
 #define MP_UNITS_AUTO_CAST_HACK 0
 #endif
 
-// Hack for a compiler bug: MSVC ICEs on a `detail::ratio` passed as a non-type template argument
-// to build a magnitude, so `mag_ratio` builds it from prime factorizations there. The affected MSVC
-// versions are not known, so it applies to all of them until one is tested without it.
-#if MP_UNITS_COMP_MSVC
+// Hack for a compiler bug: MSVC crashes with an internal compiler error (C1001) when `mag_ratio`
+// passes `detail::ratio{N, D}` to `make_magnitude` as a non-type template argument, so `mag_ratio`
+// builds the magnitude from prime factorizations there. Confirmed on MSVC 19.51 (`_MSC_VER` 1951).
+// Older versions were not tested and keep the hack. Extend the branch to a newer version only after
+// that version is confirmed to have the same bug.
+#if MP_UNITS_COMP_MSVC && MP_UNITS_COMP_MSVC <= 1951
 #define MP_UNITS_MAG_RATIO_HACK 1
 #else
 #define MP_UNITS_MAG_RATIO_HACK 0
 #endif
 
-// Hack for a compiler bug: MSVC needs an explicit copy-deduction guide for `quantity_point`. The
-// affected MSVC versions are not known, so it applies to all of them until one is tested without it.
-#if MP_UNITS_COMP_MSVC
+// Hack for a compiler bug: MSVC omits the implicit copy deduction candidate of a class template with
+// a constrained `auto` non-type template parameter whose constraint depends on an earlier parameter,
+// like `PO` of `quantity_point`. `quantity_point qp = other_qp;` then fails with C2641, so the hack
+// adds an explicit copy deduction guide. Minimal reproducer, accepted by GCC and Clang:
+//   template<typename T, int V> concept C = true;
+//   template<int R, C<R> auto PO> struct X {};
+//   X b = X<0, 1>{};  // error C2641
+// Confirmed on MSVC 19.51 (`_MSC_VER` 1951). Older versions were not tested and keep the hack.
+// Extend the branch to a newer version only after that version is confirmed to have the same bug.
+#if MP_UNITS_COMP_MSVC && MP_UNITS_COMP_MSVC <= 1951
 #define MP_UNITS_QUANTITY_POINT_CTAD_HACK 1
 #else
 #define MP_UNITS_QUANTITY_POINT_CTAD_HACK 0
