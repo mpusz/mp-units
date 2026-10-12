@@ -24,6 +24,8 @@
 
 #define MP_UNITS_IN_GMF
 
+#include <mp-units/bits/config.h>
+#include <mp-units/bits/diagnostics.h>
 #include <mp-units/bits/hacks.h>
 #include <mp-units/compat_macros.h>
 #include <mp-units/ext/contracts.h>

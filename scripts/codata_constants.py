@@ -1000,7 +1000,7 @@ MATH_CONSTANTS_HEADER = LICENSE + """\
 // used when a conversion factor is materialized into a representation type. The Wien
 // displacement law constants of the post-2019 adjustments are defined through them.
 
-#include <mp-units/bits/hacks.h>
+#include <mp-units/bits/config.h>
 #include <mp-units/bits/module_macros.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE

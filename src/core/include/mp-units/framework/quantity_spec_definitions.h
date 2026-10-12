@@ -24,6 +24,8 @@
 #pragma once
 
 // IWYU pragma: private, include <mp-units/framework/quantity_spec.h>
+#include <mp-units/bits/config.h>
+#include <mp-units/bits/diagnostics.h>
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/quantity_spec_hierarchy.h>

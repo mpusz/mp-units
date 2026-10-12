@@ -21,7 +21,8 @@
 // SOFTWARE.
 
 #include "test_tools.h"
-#include <mp-units/bits/hacks.h>
+#include <mp-units/bits/config.h>
+#include <mp-units/bits/diagnostics.h>
 #include <mp-units/ext/fixed_string.h>
 #include <mp-units/ext/type_traits.h>
 #include <mp-units/systems/isq/electromagnetism.h>

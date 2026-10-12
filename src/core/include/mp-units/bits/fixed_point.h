@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <mp-units/bits/hacks.h>  // IWYU pragma: keep
+#include <mp-units/bits/diagnostics.h>  // IWYU pragma: keep
 #include <mp-units/bits/int_power.h>
 #include <mp-units/compat_macros.h>
 #include <mp-units/ext/algorithm.h>

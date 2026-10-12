@@ -22,7 +22,6 @@
 
 #pragma once
 
-#include <mp-units/bits/hacks.h>
 
 // IWYU pragma: begin_exports
 #include <mp-units/systems/si/prefixes.h>

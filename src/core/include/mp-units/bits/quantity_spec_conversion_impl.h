@@ -27,7 +27,6 @@
 // The conversion dispatcher: routes between the in-hierarchy engine
 // (quantity_spec_hierarchy_conversion.h) and the equation engine
 // (quantity_spec_equation_conversion.h), and computes common quantity specs.
-#include <mp-units/bits/hacks.h>
 #include <mp-units/bits/quantity_spec_equation_conversion.h>
 #include <mp-units/bits/quantity_spec_hierarchy.h>
 #include <mp-units/compat_macros.h>

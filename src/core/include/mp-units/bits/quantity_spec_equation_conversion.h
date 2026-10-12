@@ -28,7 +28,7 @@
 // and the ingredient-matching algorithm for derived quantities. This is what the C++ type
 // system cannot express, so it stays in V3 (planned to be reimplemented in the value domain
 // with C++26 reflection).
-#include <mp-units/bits/hacks.h>
+#include <mp-units/bits/config.h>
 #include <mp-units/bits/quantity_spec_hierarchy_conversion.h>
 #include <mp-units/bits/ratio.h>
 #include <mp-units/compat_macros.h>

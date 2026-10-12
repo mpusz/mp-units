@@ -24,7 +24,7 @@
 // To be replaced with:
 // P0843: std::inplace_vector
 
-#include <mp-units/bits/hacks.h>     // IWYU pragma: keep
+#include <mp-units/bits/config.h>    // IWYU pragma: keep
 #include <mp-units/compat_macros.h>  // IWYU pragma: keep
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE

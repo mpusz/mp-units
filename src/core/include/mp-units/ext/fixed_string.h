@@ -26,7 +26,8 @@
 // NOLINTBEGIN(*-avoid-c-arrays)
 #pragma once
 
-#include <mp-units/bits/hacks.h>  // IWYU pragma: keep
+#include <mp-units/bits/config.h>  // IWYU pragma: keep
+#include <mp-units/bits/hacks.h>   // IWYU pragma: keep
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/compat_macros.h>  // IWYU pragma: keep
 #include <mp-units/ext/type_traits.h>

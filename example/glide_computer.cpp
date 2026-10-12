@@ -22,7 +22,7 @@
 
 #include "geographic.h"
 #include "glide_computer_lib.h"
-#include <mp-units/bits/hacks.h>
+#include <mp-units/bits/diagnostics.h>
 #include <mp-units/compat_macros.h>
 #include <mp-units/ext/format.h>
 #ifdef MP_UNITS_IMPORT_STD

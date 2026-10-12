@@ -24,6 +24,7 @@
 #pragma once
 
 // IWYU pragma: private, include <mp-units/framework/unit.h>
+#include <mp-units/bits/config.h>
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/text_tools.h>

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <mp-units/bits/hacks.h>
+#include <mp-units/bits/config.h>
 
 #if !MP_UNITS_HOSTED
 #error "This header is not available in freestanding mode."

@@ -22,7 +22,6 @@
 
 #pragma once
 
-#include <mp-units/bits/hacks.h>  // IWYU pragma: keep
 #include <mp-units/bits/int_power.h>
 #include <mp-units/ext/type_traits.h>  // IWYU pragma: keep
 

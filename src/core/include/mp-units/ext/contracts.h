@@ -24,7 +24,7 @@
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 
-#include <mp-units/bits/hacks.h>
+#include <mp-units/bits/config.h>
 #include <mp-units/compat_macros.h>
 
 #if MP_UNITS_API_CONTRACTS == 1 || (!defined MP_UNITS_API_CONTRACTS && __cpp_contracts >= 202502L)

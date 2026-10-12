@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include <mp-units/bits/hacks.h>
+#include <mp-units/bits/config.h>
+#include <mp-units/bits/diagnostics.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/framework/customization_points.h>
 #if MP_UNITS_HOSTED

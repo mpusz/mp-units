@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <mp-units/bits/hacks.h>
+#include <mp-units/bits/config.h>
 
 // IWYU pragma: begin_exports
 #if MP_UNITS_HOSTED
