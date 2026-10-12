@@ -24,6 +24,7 @@
 
 // IWYU pragma: private, include <mp-units/framework.h>
 #include <mp-units/bits/diagnostics.h>
+#include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/framework/symbol_text.h>
 
@@ -58,7 +59,8 @@ enum class unit_symbol_separator : std::int8_t {
 MP_UNITS_DIAGNOSTIC_PUSH
 MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
 struct unit_symbol_formatting {
-  [[deprecated("2.5.0: Use `char_set` instead")]] character_set encoding = character_set::unicode;
+  MP_UNITS_DEPRECATED_MEMBER_HACK([[deprecated("2.5.0: Use `char_set` instead")]])
+  character_set encoding = character_set::unicode;
   character_set char_set = encoding;
 
   unit_symbol_solidus solidus = unit_symbol_solidus::one_denominator;

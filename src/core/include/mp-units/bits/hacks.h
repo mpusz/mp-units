@@ -84,6 +84,18 @@ inline constexpr bool is_complete = requires { sizeof(T) > 0; };
 
 #endif
 
+// Hack for a compiler bug: in a module build, Clang 18 warns about a deprecated data member from
+// the implicitly defined copy constructor of its class, which it defines in the importing
+// translation unit, outside the `MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED` region around the class.
+// Header builds and Clang 16, 17 and 20 to 23 are not affected. Wrap the member's `[[deprecated]]`
+// in this macro: on Clang 18 it drops the attribute, so the member stays available without the
+// warning.
+#if MP_UNITS_COMP_CLANG == 18 && !MP_UNITS_COMP_APPLE_CLANG
+#define MP_UNITS_DEPRECATED_MEMBER_HACK(...)
+#else
+#define MP_UNITS_DEPRECATED_MEMBER_HACK(...) __VA_ARGS__
+#endif
+
 // Hack for compiler bugs: during constant evaluation `std::bit_cast` leaves an empty base subobject
 // uninitialized, so its result is unusable in a constant expression. GCC 12 and 13 and LLVM Clang 16
 // to 18 are affected, GCC 14 and Clang 20 are not. Apple Clang below 19 keeps the hack it always had,
