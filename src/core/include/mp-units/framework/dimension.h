@@ -209,18 +209,15 @@ MP_UNITS_EXPORT_BEGIN
 
 [[nodiscard]] consteval Dimension auto inverse(Dimension auto d) { return dimension_one / d; }
 
+// The suppression covers the whole definition: Clang up to 21 reports the deprecated member from
+// the implicitly defined copy constructor, while a user naming `encoding` is still warned
+MP_UNITS_DIAGNOSTIC_PUSH
+MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
 struct dimension_symbol_formatting {
-#if MP_UNITS_COMP_CLANG
-  // TODO prevents the deprecated usage in implicit copy constructor warning
-  character_set char_set = character_set::unicode;
-#else
   [[deprecated("2.5.0: Use `char_set` instead")]] character_set encoding = character_set::unicode;
-  MP_UNITS_DIAGNOSTIC_PUSH
-  MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
   character_set char_set = encoding;
-  MP_UNITS_DIAGNOSTIC_POP
-#endif
 };
+MP_UNITS_DIAGNOSTIC_POP
 
 MP_UNITS_EXPORT_END
 

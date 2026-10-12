@@ -8,6 +8,11 @@ This page documents the version history and changes for the **mp-units** library
 
 ### 2.6.0 <small>TBD</small> { id="2.6.0" }
 
+- fix: the deprecated `encoding` member of `unit_symbol_formatting` and
+      `dimension_symbol_formatting` is available on Clang again. The library left it out
+      there to avoid a spurious deprecation warning from the implicit copy constructor,
+      so setting it did not compile on Clang and `char_set` did not take its value. Using
+      it now warns on every compiler
 - fix: Clang with libstdc++ 12, which has no `<format>`, now hits the "std::formatting
       facility not supported" error when `std::format` is selected. The check used to
       skip every Clang to accommodate libc++ before 20, which provides `<format>` without
