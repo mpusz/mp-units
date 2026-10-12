@@ -1304,13 +1304,13 @@ class SystemsParser:
 
     def _parse_prefixes(self, content: str, system: SystemInfo, file: str):
         """Parse prefix template definitions (two-line pattern: class template + variable template)"""
-        # Pattern for class template: template<PrefixableUnit U> struct NAME_ :
-        #   prefixed_unit<...> {};
+        # Pattern for class template, with an optional requires-clause:
+        #   template<PrefixableUnit U> requires(...) struct NAME_ : prefixed_unit<...> {};
         # Followed by: template<PrefixableUnit auto U> constexpr NAME_<...> NAME;
 
         # First, find all class template definitions
         class_pattern = (
-            r"template<PrefixableUnit U>\s+struct\s+(\w+)_(?:\s+final)?\s*:\s*"
+            r"template<PrefixableUnit U>(?:\s+requires\s*\([^;{]*?\))?\s+struct\s+(\w+)_(?:\s+final)?\s*:\s*"
             r'prefixed_unit<(?:symbol_text\{u8"([^"]+)"\s*,\s*"([^"]+)"\}'
             r'|"([^"]+)"),\s*(.+?),\s*U\{\}>\s*\{\}\s*;'
         )
