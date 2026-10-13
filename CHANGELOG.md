@@ -8,6 +8,69 @@ This page documents the version history and changes for the **mp-units** library
 
 ### 2.6.0 <small>TBD</small> { id="2.6.0" }
 
+- (!) refactor: the quantity specification conversion engine is reimplemented from a
+      written specification, the new chapter
+      [Quantity Specification Conversions](https://mpusz.github.io/mp-units/latest/users_guide/advanced_topics/quantity_spec_conversions/).
+      Conversions between two named quantities are unchanged, except where the definitions
+      listed below changed or the source carries, through its equation, a declared kind its
+      target doesn't: `isq::period_of_binary_digits` carries `storage_capacity` and converts
+      to `isq::duration` only explicitly, as an angle per length does to `1 / length`.
+      Where quantity equations or kinds take part, a few patterns
+      that used to compile now need an explicit conversion or are ill-formed. A declared
+      kind (`is_kind`) is a boundary in both directions:
+      `quantity<isq::angular_measure[rad]> a = isq::arc_length(arc) / isq::radius(r);`
+      needs `isq::angular_measure(...)`, `isq::arc_length` from `angle * r` needs
+      `quantity<isq::arc_length[m]>(angle * r)`, and a product of user-defined quantities
+      needs an explicit conversion to a user-defined `is_kind` quantity like `pixel_area`.
+      Under plain `isq` the rotational formulas P = τω and E = ½Iω² need the explicit
+      constructor with a unit, `quantity<isq::power[W]>(torque * omega)` and
+      `quantity<isq::kinetic_energy[J]>(...)`, because ISQ defines *torque* without an
+      angle and *angular velocity* with one, and the unit has to drop the angle as well.
+      `isq_angle` keeps both implicit
+      (see [Strong Angular System](https://mpusz.github.io/mp-units/latest/users_guide/systems/strong_angular_system/)).
+      Converting to a kind is no longer more permissive than converting to the quantity it
+      wraps: `quantity<si::hertz> f = 1 / isq::time(duration);` needs
+      `isq::frequency(...)`, while `1 / (2 * s)` is unaffected. A kind of a declared
+      sub-kind no longer converts to a sibling branch: `isq::mean_queue_length(2 * rad)`
+      is ill-formed, convert it with `quantity<dimensionless[one]>(...)` first. Distinct
+      roots of one dimension stay apart:
+      `quantity<Bq * kg> x = f_in_hertz * mass;` is ill-formed. A factor common to both
+      sides doesn't change how they relate, and paired factors keep their relation:
+      siblings still need `quantity_cast`, and
+      `isq::energy * isq::time / isq::period_duration` converts to `isq::kinetic_energy`
+      explicitly, as `isq::energy` does. Conversion-heavy translation units compile in
+      about 30 % less time (`isq_test` 17.8 s -> 12.5 s with GCC 15)
+- fix: the inverse of an angle no longer converts implicitly to a plain number.
+      `1 / isq::angular_measure` to `dimensionless` drops the angle, so it is explicit, and
+      an angle doesn't convert to its own inverse, even with `quantity_cast`
+- (!) fix: ISQ definitions corrected against ISO/IEC 80000. `isq::angular_repetency` is
+      `phase_angle / wavelength` (k = 2π/λ, like `angular_frequency`), so a phase speed
+      ω/k converts to `length / time` implicitly and `1 / wavelength` is an angular
+      repetency only explicitly. `isq::inductance`, `isq::mutual_inductance` and
+      `isq::reluctance` are defined over `total_magnetic_flux` (IEC 80000-6 items 6-41.1,
+      6-41.2 and 6-39) instead of `protoflux` and `magnetic_flux`. `isq::entropy` is
+      `heat / thermodynamic_temperature`, the thermodynamic definition dS = δQ/T, instead
+      of `kinetic_energy / ...`. `isq::magnetic_constant` and `isq::electric_constant` are
+      children of `permeability` and `permittivity` (IEC 80000-6 items 6-26.1 and 6-14.1),
+      so `relative_permeability` and `relative_permittivity` are ratios within one tree.
+      `isq::propagation_coefficient` is a complex quantity with `isq::attenuation` and
+      `isq::phase_coefficient` as its real children (ISO 80000-3 item 3-26). The phase
+      coefficient carries a phase angle that the propagation coefficient doesn't, so it
+      converts to its parent only explicitly. `isq::isothermal_compressibility` and
+      `isq::isentropic_compressibility` are no longer `is_kind`: ISO 80000-4 item 4-20 treats
+      them as compressibility under a stated condition, so both convert to
+      `isq::compressibility` implicitly and to each other with `quantity_cast`
+- fix: the converting constructor of `quantity` no longer asks the source for its value in
+      the source's own unit, so a product whose unit carries more angles than its quantity
+      specification (`moment_of_inertia * pow<2>(angular_velocity)` in `kg m² rad²/s²`)
+      converts to `quantity<isq::kinetic_energy[J]>`
+- fix: a ratio of two quantities of one dimension converts to `dimensionless` again
+      (`isq::width * isq::height / isq::area`)
+- fix: `kind_of<K>` relates to a target through `K` itself, with its downcasts promoted
+- (!) fix: `natural::speed` is no longer `is_kind`. It is the plain ratio v/c, so it
+      converts to `dimensionless` implicitly
+- refactor: `iau::parsec` is defined as exactly 648 000/π astronomical units instead of an
+      astronomical unit per arcsecond. The numeric value is unchanged
 - fix: the deprecated `encoding` member of `unit_symbol_formatting` and
       `dimension_symbol_formatting` is available on Clang again. The library left it out
       there to avoid a spurious deprecation warning from the implicit copy constructor,

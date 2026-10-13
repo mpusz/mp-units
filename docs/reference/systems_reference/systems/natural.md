@@ -30,8 +30,8 @@
 | <span id="length"></span><code>length</code> | scalar | E⁻¹ |  | <code>[inverse_<wbr>energy](#inverse_energy)</code> | <code>[inverse_<wbr>energy](#inverse_energy)</code> | — | [view](../hierarchies/inverse_energy.md) |
 | <span id="mass"></span><code>mass</code> | scalar | E | [≥ 0](../../../users_guide/framework_basics/systems_of_quantities.md#non-negative-quantities) | <code>[energy](#energy)</code> | <code>[energy](#energy)</code> | — | [view](../hierarchies/energy_natural.md) |
 | <span id="momentum"></span><code>momentum</code> | scalar | E | [≥ 0](../../../users_guide/framework_basics/systems_of_quantities.md#non-negative-quantities) | <code>[energy](#energy)</code> | <code>[energy](#energy)</code> | <code>[mass](#mass) * <wbr>[velocity](#velocity)</code> | [view](../hierarchies/energy_natural.md) |
-| <span id="speed"></span><code>speed</code> | scalar | — | [kind](../../../users_guide/framework_basics/systems_of_quantities.md#modeling-a-quantity-kind) | <code>[speed](#speed)</code> | <code>[dimensionless](core.md#dimensionless)</code> | <code>[length](#length) / <wbr>[duration](#duration)</code> | [view](../hierarchies/dimensionless.md) |
-| <span id="velocity"></span><code>velocity</code> | scalar | — |  | <code>[speed](#speed)</code> | <code>[speed](#speed)</code> | — | [view](../hierarchies/dimensionless.md) |
+| <span id="speed"></span><code>speed</code> | scalar | — |  | <code>[dimensionless](core.md#dimensionless)</code> | <code>[dimensionless](core.md#dimensionless)</code> | <code>[length](#length) / <wbr>[duration](#duration)</code> | [view](../hierarchies/dimensionless.md) |
+| <span id="velocity"></span><code>velocity</code> | scalar | — |  | <code>[dimensionless](core.md#dimensionless)</code> | <code>[speed](#speed)</code> | — | [view](../hierarchies/dimensionless.md) |
 
 ## Units
 

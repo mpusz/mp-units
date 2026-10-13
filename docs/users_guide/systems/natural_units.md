@@ -103,22 +103,20 @@ flowchart TD
 ```mermaid
 flowchart TD
     dimensionless["<b>dimensionless</b><br>[one]"]
-    dimensionless -.- speed
+    dimensionless --- speed["<b>speed</b><br><i>(length / duration)</i>"]
+    speed --- velocity["<b>velocity</b>"]
     dimensionless -.- angular_measure
-    subgraph kind_speed[" "]
-        speed["<b>speed</b><br><i>(length / duration)</i>"]
-        speed --- velocity["<b>velocity</b>"]
-    end
     subgraph kind_angular[" "]
         angular_measure["<b>angular_measure</b>"]
     end
 ```
 
-_Velocities_ and _angles_ are dimensionless, but they are **separate quantity kinds**
-— the `is_kind` marker prevents implicit cross-conversion between them. The dashed arrows
-denote subkinds — crossing the kind boundary requires an explicit conversion. Quantities
-from different `is_kind` roots (`speed` and `angular_measure`) cannot be converted to
-each other at all.
+_Velocities_ and _angles_ are both dimensionless. A natural _speed_ is the plain ratio
+$\beta = v / c$, so it is an ordinary child of `dimensionless` with a recipe, and the
+recipe works in every direction: `speed * duration` is a _length_ and `length / duration`
+is a _speed_, both implicitly. _Angular measure_ is a **separate quantity kind**: the
+`is_kind` marker (the dashed arrow) makes leaving or entering it an explicit conversion, and
+a _speed_ cannot be converted to an _angle_ at all.
 
 ## Dimensional Relationships
 

@@ -89,7 +89,7 @@ until the final display.
 ### Computing Notional: Rounding to the Scaled Integer Grid
 
 ```cpp
---8<-- "example/trade_execution.cpp:87:91"
+--8<-- "example/trade_execution.cpp:87:92"
 ```
 
 `in<std::int64_t>(us_dollar_8, rounded)` converts the _price_ unit from `USD` to `USD_8`
@@ -99,14 +99,14 @@ floating point, so scaling it by 10⁸ and truncating would report one unit less
 quoted price for roughly 7% of two-decimal prices (`0.29 USD` becomes `28999999 USD_8`
 rather than `29000000 USD_8`). Rounding to the nearest scaled integer lands on the
 quoted price. The product
-`price_in_usd8 * f.qty` yields a derived expression (_currency_ × _market quantity_)
-that is implicitly convertible to `notional_value`; the `return` converts it to
-`Notional`.
+`price_in_usd8 * f.qty` yields a derived expression (_currency_ × _market quantity_).
+`notional_value` is a kind of its own, and a kind is never entered implicitly, so the
+`return` names it: `notional_value(price_in_usd8 * f.qty)`.
 
 ### Accumulating Fills
 
 ```cpp
---8<-- "example/trade_execution.cpp:99:115"
+--8<-- "example/trade_execution.cpp:100:116"
 ```
 
 Each fill is constructed with an explicit `Price{...}` (the constructor is explicit, so
@@ -120,7 +120,7 @@ _notional value_ — the `// does not compile` comment shows what the type syste
 ### Recovering the Average Fill Price
 
 ```cpp
---8<-- "example/trade_execution.cpp:117:124"
+--8<-- "example/trade_execution.cpp:118:125"
 ```
 
 `currency(total_notional / total_qty)` performs an explicit quantity cast to the
@@ -134,7 +134,7 @@ how much information is retained at each level.
 ## Example Usage
 
 ```cpp
---8<-- "example/trade_execution.cpp:95:135"
+--8<-- "example/trade_execution.cpp:96:136"
 ```
 
 **Sample Output:**

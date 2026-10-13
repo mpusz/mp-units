@@ -35,19 +35,19 @@ MP_UNITS_EXPORT_BEGIN
 template<QuantitySpec From, QuantitySpec To>
 [[nodiscard]] consteval bool implicitly_convertible(From from, To to)
 {
-  return detail::convertible(from, to) == detail::specs_convertible_result::yes;
+  return detail::convertible(from, to) == detail::conversion_rank::implicit;
 }
 
 template<QuantitySpec From, QuantitySpec To>
 [[nodiscard]] consteval bool explicitly_convertible(From from, To to)
 {
-  return detail::convertible(from, to) >= detail::specs_convertible_result::explicit_conversion_beyond_kind;
+  return detail::convertible(from, to) >= detail::conversion_rank::explicit_only;
 }
 
 template<QuantitySpec From, QuantitySpec To>
 [[nodiscard]] consteval bool castable(From from, To to)
 {
-  return detail::convertible(from, to) >= detail::specs_convertible_result::cast;
+  return detail::convertible(from, to) >= detail::conversion_rank::cast;
 }
 
 template<QuantitySpec QS1, QuantitySpec QS2>

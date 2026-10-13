@@ -45,7 +45,7 @@ quantity speed = magnitude(velocity);         // Euclidean magnitude → scalar 
 
 The integration is deliberately thin. Each header is guarded with `__has_include`, so it
 is a harmless no-op when the library is absent, and it only wires up the
-[representation customization points](../../users_guide/framework_basics/representation_types.md):
+[representation customization points](../../users_guide/advanced_topics/representation_types.md):
 
 - the vector's `value_type` is detected as the underlying numeric type,
 - the library's `norm()`/`length()` is picked up by the `magnitude()` CPO,

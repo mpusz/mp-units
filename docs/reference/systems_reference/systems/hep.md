@@ -230,7 +230,7 @@ not listed here does not exist, however reasonable it looks.
 | <span id="standard_temperature"></span><code>standard_<wbr>temperature</code> | T_<wbr>STP | — | <code>mag_ratio<27'315, 100> * <wbr>[kelvin](#kelvin)</code> | — |
 | <span id="universe_mean_density"></span><code>universe_<wbr>mean_<wbr>density</code> | ρ_<wbr>universe (rho_<wbr>universe) | — | <code>mag_power<10, -25> * <wbr>[gram](#gram) / <wbr>cubic([si::centi](si.md#centi)<[meter](#meter)>)</code> | — |
 
-Constants with a standard uncertainty are measured rather than exact by definition, and satisfy the [`MeasuredConstant`](../../../users_guide/framework_basics/concepts.md#MeasuredConstant) concept. The uncertainty is stated in the form its source publishes: an absolute value in the constant's own dimension, or a relative one (marked *(relative)*) when only that form is published. A `—` means no uncertainty is declared for that constant.
+Constants with a standard uncertainty are measured rather than exact by definition, and satisfy the [`MeasuredConstant`](../../../users_guide/advanced_topics/concepts.md#MeasuredConstant) concept. The uncertainty is stated in the form its source publishes: an absolute value in the constant's own dimension, or a relative one (marked *(relative)*) when only that form is published. A `—` means no uncertainty is declared for that constant.
 
 !!! note "Inline Namespaces"
 

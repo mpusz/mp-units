@@ -225,6 +225,21 @@ template<SymbolicArg T, auto R>
 // template<typename T, ratio R>  // TODO ICE gcc 12
 using power_or_T = decltype(power_or_T_impl<T, R>());
 
+// `power_or_T` as a one-element list, or an empty list when the exponent is zero.
+template<SymbolicArg T, auto R>
+struct power_or_T_list_impl {
+  using type = type_list<power_or_T<T, R>>;
+};
+
+template<SymbolicArg T, auto R>
+  requires(R.num == 0)
+struct power_or_T_list_impl<T, R> {
+  using type = type_list<>;
+};
+
+template<SymbolicArg T, auto R>
+using power_or_T_list = power_or_T_list_impl<T, R>::type;
+
 
 /**
  * @brief Consolidates contiguous ranges of exponents of the same type
@@ -603,6 +618,9 @@ template<ratio R, typename... Ts>
 {
   return type_list<power_or_T<Ts, R>...>{};
 }
+
+template<typename List, ratio R>
+using rational_power_list = decltype(detail::apply_rational_power<R>(List{}));
 
 /**
  * @brief Returns the numerator and denominator contributions of a single projected element.

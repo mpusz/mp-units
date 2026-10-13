@@ -16,8 +16,8 @@ The **mp-units** library is not limited to working with complete quantities (num
 paired with units). It also supports **pure dimensional analysis**, where you track and validate
 dimensions and quantity types without concerning yourself with actual quantity values.
 
-This works by embedding [`Dimension`](../../users_guide/framework_basics/concepts.md#Dimension)
-or [`QuantitySpec`](../../users_guide/framework_basics/concepts.md#QuantitySpec) types into
+This works by embedding [`Dimension`](../../users_guide/advanced_topics/concepts.md#Dimension)
+or [`QuantitySpec`](../../users_guide/advanced_topics/concepts.md#QuantitySpec) types into
 your own custom arithmetic types. By propagating arithmetic operations to these embedded
 types through overloaded operators, the library automatically performs full dimensional
 analysis and type checking—all at compile-time, with zero runtime overhead.
@@ -300,8 +300,8 @@ Using pure dimensional analysis in **mp-units** provides several advantages:
 
 Pure dimensional analysis in **mp-units** enables you to leverage the library's powerful
 type system for dimensional validation even when you're not working with complete quantities.
-By embedding [`Dimension`](../../users_guide/framework_basics/concepts.md#Dimension)
-or [`QuantitySpec`](../../users_guide/framework_basics/concepts.md#QuantitySpec)
+By embedding [`Dimension`](../../users_guide/advanced_topics/concepts.md#Dimension)
+or [`QuantitySpec`](../../users_guide/advanced_topics/concepts.md#QuantitySpec)
 types into your custom arithmetic types and propagating operations to them, you
 achieve full compile-time dimensional analysis with zero runtime overhead.
 

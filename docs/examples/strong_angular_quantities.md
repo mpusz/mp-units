@@ -91,8 +91,12 @@ Applying a perpendicular force of 500 N to a 20 cm long lever results in 100 m N
 ## Alternative Approach
 
 For simpler cases where angles can be treated as dimensionless, the standard `isq` system
-can be used. The `isq_angle` system is valuable when you need stronger type checking for
-angular quantities or when working with standards that treat angles dimensionally.
+can be used. Be aware that `isq` defines _torque_ and _angular momentum_ without an angle
+but _angular velocity_ with one, so the rotational formulas lose an angle on the way and
+need an explicit conversion there: `isq::power(torque * omega)` and
+`isq::kinetic_energy(inertia * pow<2>(omega))`. In `isq_angle` the angle is carried
+consistently, and both are implicit. See
+[Strong Angular System](../users_guide/systems/strong_angular_system.md).
 
 ## Related Concepts
 

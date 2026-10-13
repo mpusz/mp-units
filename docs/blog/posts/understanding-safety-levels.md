@@ -661,7 +661,7 @@ explicitly, so the type system enforces that the conversion is intentional.
     constexpr QuantityOf<water_head> auto to_water_head(QuantityOf<fluid_head> auto h_fluid,
                                                         QuantityOf<specific_gravity> auto sg)
     {
-      // We explicitly cast the result to water_head because we know the physics is correct
+      // We explicitly convert the result to water_head because we know the physics is correct
       return water_head(isq::height(h_fluid) * sg);
     }
 

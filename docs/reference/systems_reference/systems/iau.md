@@ -15,7 +15,7 @@
 |-----------|:------:|:-----------:|------------|
 | <span id="astronomical_unit"></span><code>astronomical_<wbr>unit</code> | au | — | alias to [non_<wbr>si::astronomical_<wbr>unit](si.md#astronomical_unit) |
 | <span id="jovian_mass"></span><code>jovian_<wbr>mass</code> | M_♃ (M_JUP) | `M_JUP` | <code>[nominal_<wbr>jovian_<wbr>mass_<wbr>parameter](#nominal_jovian_mass_parameter) / <wbr>[newtonian_<wbr>constant_<wbr>of_<wbr>gravitation](codata.md#codata2022-newtonian_constant_of_gravitation)</code> |
-| <span id="parsec"></span><code>parsec</code> | pc | `pc` | <code>[astronomical_<wbr>unit](#astronomical_unit) / <wbr>(mag_ratio<1, 3600> * <wbr>[si::degree](si.md#degree))</code> |
+| <span id="parsec"></span><code>parsec</code> | pc | `pc` | <code>mag_ratio<648'000, 1> / <wbr>[π](core.md#π) * <wbr>[astronomical_<wbr>unit](#astronomical_unit)</code> |
 | <span id="solar_mass"></span><code>solar_<wbr>mass</code> | M_☉ (M_SUN) | `M_SUN` | <code>[nominal_<wbr>solar_<wbr>mass_<wbr>parameter](#nominal_solar_mass_parameter) / <wbr>[newtonian_<wbr>constant_<wbr>of_<wbr>gravitation](codata.md#codata2022-newtonian_constant_of_gravitation)</code> |
 | <span id="terrestrial_mass"></span><code>terrestrial_<wbr>mass</code> | M_⊕ (M_EARTH) | `M_EARTH` | <code>[nominal_<wbr>terrestrial_<wbr>mass_<wbr>parameter](#nominal_terrestrial_mass_parameter) / <wbr>[newtonian_<wbr>constant_<wbr>of_<wbr>gravitation](codata.md#codata2022-newtonian_constant_of_gravitation)</code> |
 
@@ -36,4 +36,4 @@
 | <span id="nominal_terrestrial_polar_radius"></span><code>nominal_<wbr>terrestrial_<wbr>polar_<wbr>radius</code> | R_<wbr>⊕ₚᴺ (R_<wbr>EARTH_<wbr>P_<wbr>N) | `R_EARTH_P_N` | <code>mag_ratio<63'568, 10'000> * <wbr>mag_power<10, 6> * <wbr>[si::metre](si.md#metre)</code> | — |
 | <span id="nominal_total_solar_irradiance"></span><code>nominal_<wbr>total_<wbr>solar_<wbr>irradiance</code> | S_<wbr>☉ᴺ (S_<wbr>SUN_<wbr>N) | `S_SUN_N` | <code>mag<1361> * <wbr>[si::watt](si.md#watt) / <wbr>square([si::metre](si.md#metre))</code> | — |
 
-Constants with a standard uncertainty are measured rather than exact by definition, and satisfy the [`MeasuredConstant`](../../../users_guide/framework_basics/concepts.md#MeasuredConstant) concept. The uncertainty is stated in the form its source publishes: an absolute value in the constant's own dimension, or a relative one (marked *(relative)*) when only that form is published. A `—` means no uncertainty is declared for that constant.
+Constants with a standard uncertainty are measured rather than exact by definition, and satisfy the [`MeasuredConstant`](../../../users_guide/advanced_topics/concepts.md#MeasuredConstant) concept. The uncertainty is stated in the form its source publishes: an absolute value in the constant's own dimension, or a relative one (marked *(relative)*) when only that form is published. A `—` means no uncertainty is declared for that constant.

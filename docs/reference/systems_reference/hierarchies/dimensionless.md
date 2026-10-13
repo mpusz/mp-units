@@ -140,7 +140,10 @@ flowchart LR
     isq_waiting_probability["<b><a href="../../systems/isq/#waiting_probability" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::waiting_probability</a></b>"]
     dimensionless --- isq_waiting_probability
     dimensionless -.- natural_angular_measure
-    dimensionless -.- natural_speed
+    natural_speed["<b><a href="../../systems/natural/#speed" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">natural::speed</a></b><br><i>(<a href="../../systems/isq/#length" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">length</a> / <a href="../../systems/isq/#duration" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">duration</a>)</i>"]
+    dimensionless --- natural_speed
+    natural_velocity["<b><a href="../../systems/natural/#velocity" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">natural::velocity</a></b>"]
+    natural_speed --- natural_velocity
     subgraph kind_hep_lorentz_factor[" "]
         hep_lorentz_factor["<b><a href="../../systems/hep/#lorentz_factor" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">hep::lorentz_factor</a></b>"]
     end
@@ -187,11 +190,6 @@ flowchart LR
     end
     subgraph kind_natural_angular_measure[" "]
         natural_angular_measure["<b><a href="../../systems/natural/#angular_measure" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">natural::angular_measure</a></b>"]
-    end
-    subgraph kind_natural_speed[" "]
-        natural_speed["<b><a href="../../systems/natural/#speed" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">natural::speed</a></b><br><i>(<a href="../../systems/isq/#length" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">length</a> / <a href="../../systems/isq/#duration" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">duration</a>)</i>"]
-        natural_velocity["<b><a href="../../systems/natural/#velocity" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">natural::velocity</a></b>"]
-        natural_speed --- natural_velocity
     end
 ```
 

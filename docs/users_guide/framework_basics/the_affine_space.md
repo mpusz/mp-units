@@ -85,7 +85,8 @@ _displacement vector_ abstraction in the affine space. It can be constructed wit
 
 In the **mp-units** library, the _Point_ abstraction is modelled by:
 
-- [`PointOrigin` concept](concepts.md#PointOrigin) that specifies measurement origin, and
+- [`PointOrigin` concept](../advanced_topics/concepts.md#PointOrigin) that specifies
+  measurement origin, and
 - `quantity_point` class template that specifies a _Point_ relative to a specific
   predefined origin.
 
@@ -103,8 +104,8 @@ class quantity_point;
 ```
 
 As we can see above, the `quantity_point` class template exposes one additional parameter
-compared to `quantity`. The `PO` parameter satisfies a
-[`PointOriginFor` concept](concepts.md#PointOriginFor) and specifies the origin of our
+compared to `quantity`. The `PO` parameter satisfies a [`PointOriginFor`
+concept](../advanced_topics/concepts.md#PointOriginFor) and specifies the origin of our
 measurement scale.
 
 Each `quantity_point` internally stores a `quantity` object, which represents a
@@ -664,7 +665,7 @@ arithmetic operations.
 
     `check_in_range` delegates error reporting to the representation type:
 
-    - If the rep has a [`constraint_violation_handler`](representation_types.md#constraint-violation-handler)
+    - If the rep has a [`constraint_violation_handler`](../advanced_topics/representation_types.md#constraint-violation-handler)
       specialization (e.g. `constrained<double, throw_policy>`), the handler's `on_violation()` is called,
       providing **guaranteed enforcement** regardless of build mode.
     - Otherwise, falls back to [`MP_UNITS_EXPECTS`](../../how_to_guides/integration/wide_compatibility.md#contract-checking-macros),

@@ -20,7 +20,7 @@ For background on the concepts used here, see:
   scalar, vector, and tensor characters
 - [Systems of Quantities](../../users_guide/framework_basics/systems_of_quantities.md) -
   the quantity hierarchy, `is_kind`, and quantity-kind safety
-- [Representation Types](../../users_guide/framework_basics/representation_types.md) -
+- [Representation Types](../../users_guide/advanced_topics/representation_types.md) -
   what a type must provide to act as a representation
 <!-- markdownlint-enable MD013 -->
 
@@ -225,7 +225,7 @@ const double climb_rate = get<vertical_velocity>(v).numerical_value_in(km / h);
 
 Decomposition reuses the same representation that already backs the vector _quantity_. On
 top of the normal
-[vector representation requirements](../../users_guide/framework_basics/representation_types.md)
+[vector representation requirements](../../users_guide/advanced_topics/representation_types.md)
 (copyable, `bool`-returning equality, a Euclidean norm, and a `value_type`), the type must
 be **indexable by a compile-time constant index**: `Idx` is a template argument, not a
 runtime value, which is what lets each axis have its own return type. The access itself
@@ -291,7 +291,7 @@ get<isq::acceleration>(v);  // error: not one of the declared axes
   scalar, vector, and tensor characters and their operations
 - [Systems of Quantities](../../users_guide/framework_basics/systems_of_quantities.md) -
   the quantity hierarchy, `is_kind`, and quantity-kind safety
-- [Representation Types](../../users_guide/framework_basics/representation_types.md) -
+- [Representation Types](../../users_guide/advanced_topics/representation_types.md) -
   the requirements a representation must meet
 - [Using a Linear Algebra Library as the Representation](../../examples/linear_algebra.md) -
   a runnable example that decomposes a drone velocity against four backends

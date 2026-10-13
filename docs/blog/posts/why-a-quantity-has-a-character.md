@@ -478,7 +478,7 @@ The representation type still has to answer a narrower, humbler question: can th
 actually hold and manipulate a value of the required character? Two traits answer it, and
 the two axes need different amounts of help:
 
-- [`numeric_field<T>`](../../users_guide/framework_basics/representation_types.md#numeric_field)
+- [`numeric_field<T>`](../../users_guide/advanced_topics/representation_types.md#numeric_field)
   reports the field. It reads `real()`/`imag()` off a scalar _element_ of the type, reached
   by indexing, rather than off the container's surface. That is what defeats the Eigen and
   Blaze problem for free: a real matrix exposes `real()`/`imag()` on its surface, but its
@@ -488,7 +488,7 @@ the two axes need different amounts of help:
   complex representation is used through. A complex-element container that lacks it is left
   unclassified, exactly as an ambiguous order is, rather than guessed and silently given a
   Euclidean magnitude where a Hermitian one was meant.
-- [`tensor_order<T>`](../../users_guide/framework_basics/representation_types.md#tensor_order)
+- [`tensor_order<T>`](../../users_guide/advanced_topics/representation_types.md#tensor_order)
   reports the order, from a type's indexing operators (`t[i]` for a vector, `t(i, j)` for
   a tensor). An Eigen column vector is an `N x 1` matrix that exposes both, so its order is
   genuinely ambiguous: `tensor_order` has no default for it, and the Eigen adapter supplies
@@ -570,7 +570,7 @@ Even after the traits landed, a single narrow knob survived, `disable_real`, who
 real job was to keep `bool` out. But "should this type be a representation at all?" is a
 different and more general question than "is it a real scalar?", and there was no knob for
 it. We consolidated to one character-agnostic
-[`disable_representation<T>`](../../users_guide/framework_basics/representation_types.md#disable_representation).
+[`disable_representation<T>`](../../users_guide/advanced_topics/representation_types.md#disable_representation).
 At first it defaulted to `false`, with a single explicit specialization for `bool`,
 taking over the one job `disable_real` had. `NotQuantity` was still a separate concept
 at that point, keeping quantities and quantity-like types out of a representation slot.

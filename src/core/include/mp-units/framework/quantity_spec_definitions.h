@@ -47,6 +47,7 @@ import std;
 #else
 #include <concepts>
 #include <cstdint>
+#include <string_view>
 #include <type_traits>
 #include <utility>
 #endif
@@ -166,29 +167,32 @@ template<QuantitySpec Q>
 template<QuantitySpec Q>
 [[nodiscard]] consteval QuantitySpec auto get_kind_tree_root(Q);
 
-template<NamedQuantitySpec Lhs, NamedQuantitySpec Rhs, NamedQuantitySpec LhsRoot, NamedQuantitySpec RhsRoot,
-         NamedQuantitySpec LhsKindRoot, NamedQuantitySpec RhsKindRoot>
-consteval bool quantity_spec_less_value()
-{
-  constexpr auto lhs_root_name = detail::type_name<LhsRoot>();
-  constexpr auto rhs_root_name = detail::type_name<RhsRoot>();
-  if (lhs_root_name != rhs_root_name) return lhs_root_name < rhs_root_name;
-  constexpr auto lhs_kind_name = detail::type_name<LhsKindRoot>();
-  constexpr auto rhs_kind_name = detail::type_name<RhsKindRoot>();
-  if (lhs_kind_name != rhs_kind_name) return lhs_kind_name < rhs_kind_name;
-  return detail::type_name<Lhs>() < detail::type_name<Rhs>();
-}
+template<typename Q>
+struct kind_root_impl;
 
-template<NamedQuantitySpec Lhs, NamedQuantitySpec Rhs, NamedQuantitySpec LhsRoot, NamedQuantitySpec RhsRoot,
-         NamedQuantitySpec LhsKindRoot, NamedQuantitySpec RhsKindRoot>
-struct quantity_spec_less_impl :
-    std::bool_constant<quantity_spec_less_value<Lhs, Rhs, LhsRoot, RhsRoot, LhsKindRoot, RhsKindRoot>()> {};
+// The names a named quantity specification sorts by, computed once per quantity specification: the
+// root, then the kind root, then the quantity itself. The roots are read from the class templates
+// behind `get_hierarchy_root` and `get_kind_tree_root`, so that no function is instantiated per
+// quantity.
+template<NamedQuantitySpec Q>
+struct quantity_spec_sort_key {
+  static constexpr std::string_view root = detail::type_name<hierarchy_root<Q>>();
+  static constexpr std::string_view kind_root = detail::type_name<typename kind_root_impl<Q>::type>();
+  static constexpr std::string_view name = detail::type_name<Q>();
+};
 
 template<NamedQuantitySpec Lhs, NamedQuantitySpec Rhs>
-struct quantity_spec_less :
-    quantity_spec_less_impl<Lhs, Rhs, decltype(detail::get_hierarchy_root(Lhs{})),
-                            decltype(detail::get_hierarchy_root(Rhs{})), decltype(detail::get_kind_tree_root(Lhs{})),
-                            decltype(detail::get_kind_tree_root(Rhs{}))> {};
+consteval bool quantity_spec_less_value()
+{
+  using lhs = quantity_spec_sort_key<Lhs>;
+  using rhs = quantity_spec_sort_key<Rhs>;
+  if (lhs::root != rhs::root) return lhs::root < rhs::root;
+  if (lhs::kind_root != rhs::kind_root) return lhs::kind_root < rhs::kind_root;
+  return lhs::name < rhs::name;
+}
+
+template<NamedQuantitySpec Lhs, NamedQuantitySpec Rhs>
+struct quantity_spec_less : std::bool_constant<quantity_spec_less_value<Lhs, Rhs>()> {};
 
 template<typename T1, typename T2>
 using type_list_of_quantity_spec_less = expr_less<T1, T2, quantity_spec_less>;

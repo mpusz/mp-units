@@ -222,8 +222,8 @@ template<PrefixableUnit auto U> constexpr quecto_<decltype(U)> quecto;
 The `requires` clause rejects a `const` unit type, because `quecto_<const metre>` would be
 a different type from `quecto_<metre>`.
 
-Then a [PrefixableUnit](concepts.md#PrefixableUnit) can be prefixed in the following
-way:
+Then a [PrefixableUnit](../advanced_topics/concepts.md#PrefixableUnit) can be prefixed in
+the following way:
 
 ```cpp
 inline constexpr auto qm = quecto<metre>;

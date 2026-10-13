@@ -129,6 +129,18 @@ struct type_list_front_impl<List<T, Ts...>> {
 template<TypeList List>
 using type_list_front = type_list_front_impl<List>::type;
 
+// pop_front
+template<typename List>
+struct type_list_pop_front_impl;
+
+template<template<typename...> typename List, typename T, typename... Ts>
+struct type_list_pop_front_impl<List<T, Ts...>> {
+  using type = List<Ts...>;
+};
+
+template<TypeList List>
+using type_list_pop_front = type_list_pop_front_impl<List>::type;
+
 // back
 template<TypeList List>
 using type_list_back = type_list_element<List, type_list_size<List> - 1>;
@@ -166,6 +178,24 @@ struct type_list_join_impl {
 template<template<typename...> typename List, typename... First, typename... Second, typename... Rest>
 struct type_list_join_impl<List<First...>, List<Second...>, Rest...> {
   using type = type_list_join_impl<List<First..., Second...>, Rest...>::type;
+};
+
+// Two, three and four lists, the arities the conversion engine joins, are joined in one step
+// rather than one instantiation per list.
+template<template<typename...> typename List, typename... First, typename... Second>
+struct type_list_join_impl<List<First...>, List<Second...>> {
+  using type = List<First..., Second...>;
+};
+
+template<template<typename...> typename List, typename... First, typename... Second, typename... Third>
+struct type_list_join_impl<List<First...>, List<Second...>, List<Third...>> {
+  using type = List<First..., Second..., Third...>;
+};
+
+template<template<typename...> typename List, typename... First, typename... Second, typename... Third,
+         typename... Fourth>
+struct type_list_join_impl<List<First...>, List<Second...>, List<Third...>, List<Fourth...>> {
+  using type = List<First..., Second..., Third..., Fourth...>;
 };
 
 template<TypeList... Lists>

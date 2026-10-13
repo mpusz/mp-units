@@ -20,14 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-
 #pragma once
 
-// IWYU pragma: private, include <mp-units/framework/quantity_spec.h>
-// The in-hierarchy part of the conversion engine: kind-tree roots and conversions between
-// named quantities sharing a common base. In V3 this maps onto the C++ type system
-// (inheritance + is_base_of/is_convertible), so this file is the part that gets replaced by
-// language features.
 #include <mp-units/bits/config.h>
 #include <mp-units/bits/quantity_spec_hierarchy.h>
 #include <mp-units/ext/type_traits.h>
@@ -44,80 +38,119 @@ import std;
 #endif
 #endif
 
+// The half of the conversion engine that reads only the hierarchy: kind roots, the tree rule for
+// two named quantity specifications, and the kind rules for a `kind_of<K>` whose `K` is named.
 namespace mp_units::detail {
 
-enum class [[nodiscard]] specs_convertible_result : std::int8_t {
-  no,
-  cast,
-  explicit_conversion_beyond_kind,
-  explicit_conversion,
-  yes
-};
+// The four outcomes a user sees. The public predicates are thresholds on this order.
+enum class conversion_rank : std::int8_t { none, cast, explicit_only, implicit };
+
+// The rank of a conversion is its weakest step.
+[[nodiscard]] consteval conversion_rank weaker(conversion_rank lhs, conversion_rank rhs)
+{
+  return lhs < rhs ? lhs : rhs;
+}
+
+// declared kinds
+
+template<typename T>
+struct is_declared_kind_impl : std::false_type {};
 
 #if MP_UNITS_API_NO_CRTP
-template<NamedQuantitySpec auto QS, auto... Args>
-[[nodiscard]] consteval bool defined_as_kind_impl(quantity_spec<QS, Args...>)
+template<auto... Args>
+struct is_declared_kind_impl<quantity_spec<Args...>> :
+    std::bool_constant<mp_units::contains<struct is_kind, Args...>()> {};
 #else
-template<typename Self, NamedQuantitySpec auto QS, auto... Args>
-[[nodiscard]] consteval bool defined_as_kind_impl(quantity_spec<Self, QS, Args...>)
+template<typename Self, auto... Args>
+struct is_declared_kind_impl<quantity_spec<Self, Args...>> :
+    std::bool_constant<mp_units::contains<struct is_kind, Args...>()> {};
 #endif
-{
-  return mp_units::contains<struct is_kind, Args...>();
-}
 
-// Whether `Q` itself was declared with `is_kind`. False for quantity specs that cannot be declared so
-// (e.g., derived ones), which have no `defined_as_kind_impl` overload.
+template<typename Q>
+concept DeclaredKind = is_declared_kind_impl<typename Q::_base_type_>::value;
+
+// kind roots
+
+template<typename Q>
+struct kind_root_impl : std::type_identity<Q> {};
+
+template<HasParent Q>
+  requires(!DeclaredKind<Q>)
+struct kind_root_impl<Q> : kind_root_impl<parent_of<Q>> {};
+
+// The nearest ancestor-or-self declared with `is_kind`, else the root of the tree.
+template<typename Q>
+using kind_root = kind_root_impl<Q>::type;
+
+template<NamedQuantitySpec Q>
+using to_kind_root = kind_root<Q>;
+
 template<QuantitySpec Q>
-[[nodiscard]] consteval bool defined_as_kind(Q)
+[[nodiscard]] consteval QuantitySpec auto get_kind_tree_root(Q q)
 {
-  if constexpr (requires { detail::defined_as_kind_impl(Q{}); })
-    return detail::defined_as_kind_impl(Q{});
+  if constexpr (QuantityKindSpec<Q>)
+    // `kind_of_` requires a kind tree root, so the wrapped specification is one
+    return Q::_quantity_spec_;
+  else if constexpr (DerivedQuantitySpec<Q>)
+    // builds a derived specification because `get_kind` needs one
+    return detail::expr_map<to_kind_root, derived_quantity_spec, struct dimensionless, type_list_of_quantity_spec_less>(
+      q);
   else
-    return false;
+    return kind_root<Q>{};
 }
 
-template<QuantitySpec Q>
-  requires requires(Q q) { detail::get_kind_tree_root(q); }
-using to_kind = decltype(detail::get_kind_tree_root(Q{}));
+// The tree rule: two named quantity specifications relate through their positions in the tree
+// alone. Equations are never consulted here.
 
-template<QuantitySpec Q>
-[[nodiscard]] consteval QuantitySpec auto get_kind_tree_root_impl(Q q)
+// A source `kind_of<K>` has not committed to a position below `K`, so a downcast from it is implicit.
+// Leaving a declared kind on the way up stays explicit for any source.
+template<typename From, typename To, bool SourceIsKind = false>
+[[nodiscard]] consteval conversion_rank convertible_named()
 {
-  // NOLINTBEGIN(bugprone-branch-clone)
-  if constexpr (QuantityKindSpec<Q>) {
-    return detail::remove_kind(q);
-  } else if constexpr (detail::defined_as_kind(Q{})) {
-    return q;
-  } else if constexpr (requires { Q::_parent_; }) {
-    return detail::get_kind_tree_root(Q::_parent_);
-  } else if constexpr (DerivedQuantitySpec<Q>) {
-    return detail::expr_map<to_kind, derived_quantity_spec, struct dimensionless, type_list_of_quantity_spec_less>(q);
-  } else {
-    // root quantity
-    return q;
-  }
-  // NOLINTEND(bugprone-branch-clone)
+  using enum conversion_rank;
+  if constexpr (std::is_same_v<From, To>)
+    return implicit;
+  else if constexpr (!std::is_same_v<hierarchy_root<From>, hierarchy_root<To>>)
+    return none;
+  else if constexpr (detail::is_ancestor_or_self<To, From>())
+    return std::is_same_v<kind_root<From>, kind_root<To>> ? implicit : explicit_only;
+  else if constexpr (detail::is_ancestor_or_self<From, To>())
+    return SourceIsKind ? implicit : explicit_only;
+  else
+    return std::is_same_v<kind_root<From>, kind_root<To>> ? cast : none;
 }
 
-template<QuantitySpec Q>
-constexpr QuantitySpec auto get_kind_tree_root_result = detail::get_kind_tree_root_impl(Q{});
+// The kind rules for a named kind root `K`. `kind_of<K>` means "any quantity of the tree of `K`,
+// which one is not known yet". It has no fixed position in the tree and so no sibling. A
+// conversion between a kind of a named root and a named quantity never ranks `cast`. (A kind of a
+// derived root goes through the equation rules instead, where a factor can meet a sibling:
+// `kind_of<acceleration * time>` to `special_speed` meets `velocity` as a sibling.)
 
-template<QuantitySpec Q>
-[[nodiscard]] consteval QuantitySpec auto get_kind_tree_root(Q)
+// `kind_of<K> -> To` (and `kind_of<K> -> kind_of<To>`): the kind may be specialized freely, through
+// sub-kind roots as well. Above its root it leaves a declared kind.
+template<typename K, typename To>
+[[nodiscard]] consteval conversion_rank convertible_from_kind()
 {
-  return get_kind_tree_root_result<Q>;
+  using enum conversion_rank;
+  if constexpr (detail::is_ancestor_or_self<K, To>())
+    return implicit;
+  else if constexpr (detail::is_ancestor_or_self<To, K>())
+    return explicit_only;
+  else
+    return none;
 }
 
-template<NamedQuantitySpec From, NamedQuantitySpec To>
-[[nodiscard]] consteval specs_convertible_result convertible_common_base(From from, To to)
+// `From -> kind_of<K>` ranks as `From -> K` does.
+template<typename From, typename K>
+[[nodiscard]] consteval conversion_rank convertible_to_kind()
 {
-  using enum specs_convertible_result;
-  if constexpr (std::is_same_v<From, To>) return yes;
-  if constexpr (detail::is_child_of(From{}, To{}))
-    return (detail::get_kind_tree_root(from) == detail::get_kind_tree_root(to)) ? yes : explicit_conversion_beyond_kind;
-  if constexpr (detail::is_child_of(To{}, From{})) return explicit_conversion;
-  if constexpr (detail::get_kind_tree_root(From{}) == detail::get_kind_tree_root(To{})) return cast;
-  return no;
+  using enum conversion_rank;
+  if constexpr (detail::is_ancestor_or_self<K, From>())
+    return std::is_same_v<kind_root<From>, K> ? implicit : explicit_only;
+  else if constexpr (detail::is_ancestor_or_self<From, K>())
+    return explicit_only;
+  else
+    return none;
 }
 
 }  // namespace mp_units::detail

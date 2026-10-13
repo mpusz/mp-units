@@ -3481,7 +3481,7 @@ class DocumentationGenerator:
                         f.write(
                             "\nConstants with a standard uncertainty are measured rather"
                             " than exact by definition, and satisfy the"
-                            " [`MeasuredConstant`](../../../users_guide/framework_basics/concepts.md#MeasuredConstant)"
+                            " [`MeasuredConstant`](../../../users_guide/advanced_topics/concepts.md#MeasuredConstant)"
                             " concept. The uncertainty is stated in the form its source"
                             " publishes: an absolute value in the constant's own dimension,"
                             " or a relative one (marked *(relative)*) when only that form is"

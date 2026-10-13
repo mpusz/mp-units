@@ -504,131 +504,25 @@ static_assert(length / length == dimensionless);
 
 using namespace detail;
 
-// defines_equation
-static_assert(defines_equation(speed));
-static_assert(defines_equation(rate_of_climb));
-static_assert(defines_equation(velocity));
-static_assert(!defines_equation(special_speed));
-static_assert(!defines_equation(special_rate_of_climb));
-
-static_assert(defines_equation(energy));
-static_assert(defines_equation(kinetic_energy));
-static_assert(defines_equation(gravitational_potential_energy));
-static_assert(defines_equation(newtonian_gravitational_potential_energy));
-static_assert(!defines_equation(potential_energy));
-
-// get_complexity
-static_assert(get_complexity(length) == 0);
-static_assert(get_complexity(height) == 0);
-static_assert(get_complexity(pow<4>(length)) == 0);
-static_assert(get_complexity(dimensionless) == 0);
-static_assert(get_complexity(storage_capacity) == 1);
-static_assert(get_complexity(relative_linear_strain) == 1);
-static_assert(get_complexity(angular_measure) == 1);
-static_assert(get_complexity(solid_angular_measure) == 2);
-static_assert(get_complexity(length / time) == 0);
-static_assert(get_complexity(mass * length / time) == 0);
-static_assert(get_complexity(frequency) == 1);
-static_assert(get_complexity(area) == 1);
-static_assert(get_complexity(pow<2>(area)) == 1);
-static_assert(get_complexity(volume) == 1);
-static_assert(get_complexity(speed) == 1);
-static_assert(get_complexity(special_speed) == 1);
-static_assert(get_complexity(horizontal_speed) == 1);
-static_assert(get_complexity(special_rate_of_climb) == 1);
-static_assert(get_complexity(velocity) == 1);
-static_assert(get_complexity(acceleration) == 2);
-static_assert(get_complexity(force) == 3);
-static_assert(get_complexity(dimensionless_rate) == 1);
-static_assert(get_complexity(angular_measure_rate) == 2);
-static_assert(get_complexity(solid_angular_measure_rate) == 3);
-static_assert(get_complexity(voltage) == 5);
-static_assert(get_complexity(capacitance) == 6);
-static_assert(get_complexity(resistance) == 6);
-
-static_assert(get_complexity(acceleration * time) == 2);
-static_assert(get_complexity(acceleration / time) == 2);
-static_assert(get_complexity(speed * area) == 1);
-static_assert(get_complexity(acceleration * area) == 2);
-static_assert(get_complexity(acceleration * force) == 3);
-static_assert(get_complexity(speed / frequency) == 1);
-static_assert(get_complexity(acceleration / frequency) == 2);
-static_assert(get_complexity(force / frequency) == 3);
-static_assert(get_complexity(area / acceleration) == 2);
-static_assert(get_complexity(area / force) == 3);
-static_assert(get_complexity(speed * area / frequency) == 1);
-
-static_assert(get_complexity(pixel_count) == 1);
-static_assert(get_complexity(pixel_x) == 1);
-static_assert(get_complexity(pixel_y) == 1);
-static_assert(get_complexity(pixel_area) == 2);
-
-// explode
-static_assert(explode(frequency).equation == inverse(period_duration));
-static_assert(explode(speed).equation == length / time);
-static_assert(explode(special_speed).equation == length / time);
-static_assert(explode(horizontal_speed).equation == horizontal_length / time);
-static_assert(explode(rate_of_climb).equation == height / time);
-static_assert(explode(special_rate_of_climb).equation == height / time);
-static_assert(explode(velocity).equation == displacement / time);
-static_assert(explode(modulus_of_elasticity).equation == normal_stress / relative_linear_strain);
-static_assert(explode(pixel_area).equation == pixel_x * pixel_y);
-
-using enum specs_convertible_result;
-
-static_assert(have_common_base(width, length));
-static_assert(have_common_base(width, height));
-static_assert(have_common_base(angular_measure, dimensionless));
-static_assert(have_common_base(angular_measure, solid_angular_measure));
-
-static_assert(convertible_common_base(width, length) == yes);
-static_assert(convertible_common_base(length, width) == explicit_conversion);
-static_assert(convertible_common_base(width, height) == cast);
-static_assert(convertible_common_base(angular_measure, dimensionless) == explicit_conversion_beyond_kind);
-static_assert(convertible_common_base(dimensionless, angular_measure) == explicit_conversion);
-static_assert(convertible_common_base(angular_measure, solid_angular_measure) == no);
-
-static_assert(are_ingredients_convertible(length / time, length / time) == yes);
-static_assert(are_ingredients_convertible(mass * length / time, mass* length / time) == yes);
-static_assert(are_ingredients_convertible(area / length, area / length) == yes);
-
-static_assert(are_ingredients_convertible(volume * length, area* area) == yes);
-static_assert(are_ingredients_convertible(pow<4>(length), area* area) == yes);
-static_assert(are_ingredients_convertible(dimensionless / (length * length), dimensionless / area) == yes);
-
-static_assert(are_ingredients_convertible(width * height, length* length) == yes);
-static_assert(are_ingredients_convertible(dimensionless / (width * height), dimensionless / (length * length)) == yes);
-
-static_assert(are_ingredients_convertible(dimensionless / (width * height), dimensionless / area) == yes);
-
-static_assert(are_ingredients_convertible(length * length, width* height) == explicit_conversion);
-static_assert(are_ingredients_convertible(dimensionless / (length * length), dimensionless / (width * height)) ==
-              explicit_conversion);
-
-static_assert(are_ingredients_convertible(dimensionless / area, dimensionless / (length * length)) == yes);
-
-static_assert(are_ingredients_convertible(dimensionless / storage_capacity, dimensionless) ==
-              explicit_conversion_beyond_kind);
-static_assert(are_ingredients_convertible(dimensionless, dimensionless / storage_capacity) == explicit_conversion);
-static_assert(are_ingredients_convertible(pixel_area, pixel_x* pixel_y) == yes);
+using enum conversion_rank;
 
 // different dimensions
-static_assert(convertible(mass, length) == no);
-static_assert(convertible(speed, length) == no);
-static_assert(convertible(length, speed) == no);
-static_assert(convertible(energy, speed) == no);
-static_assert(convertible(length, kind_of<time>) == no);
-static_assert(convertible(kind_of<time>, length) == no);
-static_assert(convertible(energy, kind_of<speed>) == no);
-static_assert(convertible(kind_of<speed>, energy) == no);
+static_assert(convertible(mass, length) == none);
+static_assert(convertible(speed, length) == none);
+static_assert(convertible(length, speed) == none);
+static_assert(convertible(energy, speed) == none);
+static_assert(convertible(length, kind_of<time>) == none);
+static_assert(convertible(kind_of<time>, length) == none);
+static_assert(convertible(energy, kind_of<speed>) == none);
+static_assert(convertible(kind_of<speed>, energy) == none);
 
 // the same types
-static_assert(convertible(length, length) == yes);
-static_assert(convertible(width, width) == yes);
-static_assert(convertible(energy, energy) == yes);
-static_assert(convertible(kind_of<length>, kind_of<length>) == yes);
-static_assert(convertible(kind_of<energy>, kind_of<energy>) == yes);
-static_assert(convertible(get_kind(moment_of_force), get_kind(moment_of_force)) == yes);
+static_assert(convertible(length, length) == implicit);
+static_assert(convertible(width, width) == implicit);
+static_assert(convertible(energy, energy) == implicit);
+static_assert(convertible(kind_of<length>, kind_of<length>) == implicit);
+static_assert(convertible(kind_of<energy>, kind_of<energy>) == implicit);
+static_assert(convertible(get_kind(moment_of_force), get_kind(moment_of_force)) == implicit);
 
 // converting to a different branch
 static_assert(convertible(height, width) == cast);
@@ -639,169 +533,165 @@ static_assert(convertible(gravitational_potential_energy, newtonian_gravitationa
 static_assert(convertible(newtonian_gravitational_potential_energy, gravitational_potential_energy) == cast);
 static_assert(convertible(rate_of_climb, velocity) == cast);
 static_assert(convertible(rate_of_climb, horizontal_speed) == cast);
-// two siblings that both inherit the parent equation — still cast, not yes (Fix 4)
+// two siblings that both inherit the parent equation are still a cast (Fix 4)
 static_assert(convertible(north_speed, east_speed) == cast);
 static_assert(convertible(east_speed, north_speed) == cast);
 
 // converting to a different kind
-static_assert(convertible(frequency, activity) == no);
-static_assert(convertible(activity, frequency) == no);
-static_assert(convertible(energy, moment_of_force) == no);
-static_assert(convertible(energy, torque) == no);
-static_assert(convertible(angular_measure, solid_angular_measure) == no);
+static_assert(convertible(frequency, activity) == none);
+static_assert(convertible(activity, frequency) == none);
+static_assert(convertible(energy, moment_of_force) == none);
+static_assert(convertible(energy, torque) == none);
+static_assert(convertible(angular_measure, solid_angular_measure) == none);
 
 // upcasting same hierarchy branch
-static_assert(convertible(width, length) == yes);
-static_assert(convertible(path_length, length) == yes);
-static_assert(convertible(distance, length) == yes);
-static_assert(convertible(distance, path_length) == yes);
-static_assert(convertible(special_speed, speed) == yes);
-static_assert(convertible(north_speed, speed) == yes);
-static_assert(convertible(east_speed, speed) == yes);
-static_assert(convertible(rate_of_climb, speed) == yes);
-static_assert(convertible(special_rate_of_climb, speed) == yes);
-static_assert(convertible(velocity, speed) == yes);
-static_assert(convertible(potential_energy, energy) == yes);
-static_assert(convertible(kinetic_energy, energy) == yes);
-static_assert(convertible(newtonian_gravitational_potential_energy, potential_energy) == yes);
-static_assert(convertible(newtonian_gravitational_potential_energy, energy) == yes);
+static_assert(convertible(width, length) == implicit);
+static_assert(convertible(path_length, length) == implicit);
+static_assert(convertible(distance, length) == implicit);
+static_assert(convertible(distance, path_length) == implicit);
+static_assert(convertible(special_speed, speed) == implicit);
+static_assert(convertible(north_speed, speed) == implicit);
+static_assert(convertible(east_speed, speed) == implicit);
+static_assert(convertible(rate_of_climb, speed) == implicit);
+static_assert(convertible(special_rate_of_climb, speed) == implicit);
+static_assert(convertible(velocity, speed) == implicit);
+static_assert(convertible(potential_energy, energy) == implicit);
+static_assert(convertible(kinetic_energy, energy) == implicit);
+static_assert(convertible(newtonian_gravitational_potential_energy, potential_energy) == implicit);
+static_assert(convertible(newtonian_gravitational_potential_energy, energy) == implicit);
 
 // upcasting beyond the hierarchy/kind
-static_assert(convertible(angular_measure, dimensionless) == explicit_conversion_beyond_kind);
-static_assert(convertible(angular_measure * time / period_duration, dimensionless) == explicit_conversion_beyond_kind);
-static_assert(convertible(storage_capacity, dimensionless) == explicit_conversion_beyond_kind);
+static_assert(convertible(angular_measure, dimensionless) == explicit_only);
+static_assert(convertible(angular_measure * time / period_duration, dimensionless) == explicit_only);
+static_assert(convertible(storage_capacity, dimensionless) == explicit_only);
 
 // upcasting to the derived quantity
-static_assert(convertible(frequency, inverse(time)) == yes);
-static_assert(convertible(speed, length / time) == yes);
-static_assert(convertible(speed, length / time) == yes);
-static_assert(convertible(velocity, length / time) == yes);
-static_assert(convertible(rate_of_climb, length / time) == yes);
-static_assert(convertible(rate_of_climb, height / time) == yes);
-static_assert(convertible(gravitational_potential_energy, mass * acceleration * length) == yes);
-static_assert(convertible(angular_measure, arc_length / radius) == yes);
-static_assert(convertible(solid_angular_measure, area / pow<2>(radius)) == yes);
-static_assert(convertible(pixel_area, pixel_x* pixel_y) == yes);
-static_assert(convertible(pixel_area, pixel_count* pixel_y) == yes);
-static_assert(convertible(pixel_area, pixel_count* pixel_count) == yes);
+static_assert(convertible(frequency, inverse(time)) == implicit);
+static_assert(convertible(speed, length / time) == implicit);
+static_assert(convertible(speed, length / time) == implicit);
+static_assert(convertible(velocity, length / time) == implicit);
+static_assert(convertible(rate_of_climb, length / time) == implicit);
+static_assert(convertible(rate_of_climb, height / time) == implicit);
+static_assert(convertible(gravitational_potential_energy, mass * acceleration * length) == implicit);
+static_assert(convertible(angular_measure, arc_length / radius) == explicit_only);
+static_assert(convertible(solid_angular_measure, area / pow<2>(radius)) == explicit_only);
+static_assert(convertible(pixel_area, pixel_x* pixel_y) == implicit);
+static_assert(convertible(pixel_area, pixel_count* pixel_y) == implicit);
+static_assert(convertible(pixel_area, pixel_count* pixel_count) == implicit);
 
 // downcasting same hierarchy branch
-static_assert(convertible(length, width) == explicit_conversion);
-static_assert(convertible(path_length, distance) == explicit_conversion);
-static_assert(convertible(length, distance) == explicit_conversion);
-static_assert(convertible(path_length, distance) == explicit_conversion);
-static_assert(convertible(speed, special_speed) == explicit_conversion);
-static_assert(convertible(speed, north_speed) == explicit_conversion);
-static_assert(convertible(speed, east_speed) == explicit_conversion);
-static_assert(convertible(speed, rate_of_climb) == explicit_conversion);
-static_assert(convertible(speed, special_rate_of_climb) == explicit_conversion);
-static_assert(convertible(rate_of_climb, special_rate_of_climb) == explicit_conversion);
-static_assert(convertible(energy, potential_energy) == explicit_conversion);
-static_assert(convertible(energy, kinetic_energy) == explicit_conversion);
-static_assert(convertible(energy, newtonian_gravitational_potential_energy) == explicit_conversion);
-static_assert(convertible(potential_energy, newtonian_gravitational_potential_energy) == explicit_conversion);
-static_assert(convertible(dimensionless, rotation) == explicit_conversion);
-static_assert(convertible(dimensionless, rotational_displacement) == explicit_conversion);
+static_assert(convertible(length, width) == explicit_only);
+static_assert(convertible(path_length, distance) == explicit_only);
+static_assert(convertible(length, distance) == explicit_only);
+static_assert(convertible(path_length, distance) == explicit_only);
+static_assert(convertible(speed, special_speed) == explicit_only);
+static_assert(convertible(speed, north_speed) == explicit_only);
+static_assert(convertible(speed, east_speed) == explicit_only);
+static_assert(convertible(speed, rate_of_climb) == explicit_only);
+static_assert(convertible(speed, special_rate_of_climb) == explicit_only);
+static_assert(convertible(rate_of_climb, special_rate_of_climb) == explicit_only);
+static_assert(convertible(energy, potential_energy) == explicit_only);
+static_assert(convertible(energy, kinetic_energy) == explicit_only);
+static_assert(convertible(energy, newtonian_gravitational_potential_energy) == explicit_only);
+static_assert(convertible(potential_energy, newtonian_gravitational_potential_energy) == explicit_only);
+static_assert(convertible(dimensionless, rotation) == explicit_only);
+static_assert(convertible(dimensionless, rotational_displacement) == explicit_only);
 
 // derived quantities to type
-static_assert(convertible(inverse(frequency), time) == yes);
-static_assert(convertible(inverse(period_duration), frequency) == yes);
-static_assert(convertible(length * length, area) == yes);
-static_assert(convertible(length / time, speed) == yes);
-static_assert(convertible(displacement / time, speed) == yes);
-static_assert(convertible(displacement / time, velocity) == yes);
-static_assert(convertible(height / time, speed) == yes);
-static_assert(convertible(height / time, rate_of_climb) == yes);
-static_assert(convertible(area / length, length) == yes);
-static_assert(convertible(length * length * length, volume) == yes);
-static_assert(convertible(area * length, volume) == yes);
-static_assert(convertible(volume / length, area) == yes);
-static_assert(convertible(volume / area, length) == yes);
-static_assert(convertible(volume / length / length, length) == yes);
-static_assert(convertible(area * area / length, volume) == yes);
-static_assert(convertible(area * (area / length), volume) == yes);
-static_assert(convertible(volume / (length * length), length) == yes);
-static_assert(convertible(length / speed, time) == yes);
-static_assert(convertible(speed * time, length) == yes);
-static_assert(convertible(displacement / time / time, acceleration) == yes);
-static_assert(convertible(displacement / (time * time), acceleration) == yes);
-static_assert(convertible(velocity / time, acceleration) == yes);
-static_assert(convertible(velocity / acceleration, time) == yes);
-static_assert(convertible(acceleration * time, velocity) == yes);
-static_assert(convertible(acceleration * (time * time), displacement) == yes);
-static_assert(convertible(mass * pow<2>(length) / pow<2>(time), energy) == yes);
-static_assert(convertible(force * length, energy) == yes);
-static_assert(convertible(force * position_vector, moment_of_force) == yes);
-static_assert(convertible(width * height, area) == yes);
-static_assert(convertible(pow<1, 2>(area), length) == yes);
-static_assert(convertible(length, pow<1, 2>(area)) == yes);
-static_assert(convertible(mass * acceleration_of_free_fall * height, gravitational_potential_energy) == yes);
+static_assert(convertible(inverse(frequency), time) == implicit);
+static_assert(convertible(inverse(period_duration), frequency) == implicit);
+static_assert(convertible(length * length, area) == implicit);
+static_assert(convertible(length / time, speed) == implicit);
+static_assert(convertible(displacement / time, speed) == implicit);
+static_assert(convertible(displacement / time, velocity) == implicit);
+static_assert(convertible(height / time, speed) == implicit);
+static_assert(convertible(height / time, rate_of_climb) == implicit);
+static_assert(convertible(area / length, length) == implicit);
+static_assert(convertible(length * length * length, volume) == implicit);
+static_assert(convertible(area * length, volume) == implicit);
+static_assert(convertible(volume / length, area) == implicit);
+static_assert(convertible(volume / area, length) == implicit);
+static_assert(convertible(volume / length / length, length) == implicit);
+static_assert(convertible(area * area / length, volume) == implicit);
+static_assert(convertible(area * (area / length), volume) == implicit);
+static_assert(convertible(volume / (length * length), length) == implicit);
+static_assert(convertible(length / speed, time) == implicit);
+static_assert(convertible(speed * time, length) == implicit);
+static_assert(convertible(displacement / time / time, acceleration) == implicit);
+static_assert(convertible(displacement / (time * time), acceleration) == implicit);
+static_assert(convertible(velocity / time, acceleration) == implicit);
+static_assert(convertible(velocity / acceleration, time) == implicit);
+static_assert(convertible(acceleration * time, velocity) == implicit);
+static_assert(convertible(acceleration * (time * time), displacement) == implicit);
+static_assert(convertible(mass * pow<2>(length) / pow<2>(time), energy) == implicit);
+static_assert(convertible(force * length, energy) == implicit);
+static_assert(convertible(force * position_vector, moment_of_force) == implicit);
+static_assert(convertible(width * height, area) == implicit);
+static_assert(convertible(area, width* height) == explicit_only);
+static_assert(convertible(pow<1, 2>(area), length) == implicit);
+static_assert(convertible(length, pow<1, 2>(area)) == implicit);
+static_assert(convertible(mass * acceleration_of_free_fall * height, gravitational_potential_energy) == implicit);
 static_assert(convertible(gravitational_constant * pow<2>(mass) / length, newtonian_gravitational_potential_energy) ==
-              yes);
-static_assert(convertible(mass * pow<2>(length) / pow<2>(time), kinetic_energy) == yes);
-static_assert(convertible(arc_length / radius, angular_measure) == yes);
-static_assert(convertible(area / pow<2>(radius), solid_angular_measure) == yes);
-static_assert(convertible(pixel_x * pixel_y, pixel_area) == yes);
-constexpr auto q = pixel_x * pixel_y;
-static_assert(are_ingredients_convertible(decltype(q)::_num_{}, decltype(q)::_den_{}, type_list<pixel_area_>{},
-                                          type_list<>{}) == yes);
-static_assert(!try_extract_common_base(decltype(q)::_num_{}, type_list<pixel_area_>{}));
+              implicit);
+static_assert(convertible(mass * pow<2>(length) / pow<2>(time), kinetic_energy) == implicit);
+static_assert(convertible(arc_length / radius, angular_measure) == explicit_only);
+static_assert(convertible(area / pow<2>(radius), solid_angular_measure) == explicit_only);
+static_assert(convertible(pixel_x * pixel_y, pixel_area) == implicit);
 
 // additional dimensionless remainder
-static_assert(convertible(length / speed, time) == yes);
+static_assert(convertible(length / speed, time) == implicit);
 
 // derived quantities to more constrained type
-static_assert(convertible(inverse(time), frequency) == explicit_conversion);
-static_assert(convertible(length / time / time, acceleration) == explicit_conversion);
-static_assert(convertible(length / time, velocity) == explicit_conversion);
-static_assert(convertible(length / time, rate_of_climb) == explicit_conversion);
-static_assert(convertible(acceleration / velocity, frequency) == explicit_conversion);
-static_assert(convertible(force * length, torque) == explicit_conversion);
-static_assert(convertible(mass * acceleration * length, gravitational_potential_energy) == explicit_conversion);
+static_assert(convertible(inverse(time), frequency) == explicit_only);
+static_assert(convertible(length / time / time, acceleration) == explicit_only);
+static_assert(convertible(length / time, velocity) == explicit_only);
+static_assert(convertible(length / time, rate_of_climb) == explicit_only);
+static_assert(convertible(acceleration / velocity, frequency) == explicit_only);
+static_assert(convertible(force * length, torque) == explicit_only);
+static_assert(convertible(mass * acceleration * length, gravitational_potential_energy) == explicit_only);
 // force * length is the simplified form of the newtonian GPE equation
-// (gravitational_constant * mass²/length explodes to force * pow<2>(length)/pow<2>(mass) * mass²/length = force *
+// (gravitational_constant * mass²/length expands to force * pow<2>(length)/pow<2>(mass) * mass²/length = force *
 // length)
-static_assert(convertible(force * length, newtonian_gravitational_potential_energy) == yes);
-static_assert(convertible(length / radius, angular_measure) == explicit_conversion);
-static_assert(convertible(length / length, angular_measure) == explicit_conversion);
-static_assert(convertible(arc_length / length, angular_measure) == explicit_conversion);
-static_assert(convertible(area / pow<2>(length), solid_angular_measure) == explicit_conversion);
-static_assert(convertible(pixel_count * pixel_y, pixel_area) == explicit_conversion);
-static_assert(convertible(pixel_count * pixel_count, pixel_area) == explicit_conversion);
+static_assert(convertible(force * length, newtonian_gravitational_potential_energy) == implicit);
+static_assert(convertible(length / radius, angular_measure) == explicit_only);
+static_assert(convertible(length / length, angular_measure) == explicit_only);
+static_assert(convertible(arc_length / length, angular_measure) == explicit_only);
+static_assert(convertible(area / pow<2>(length), solid_angular_measure) == explicit_only);
+static_assert(convertible(pixel_count * pixel_y, pixel_area) == explicit_only);
+static_assert(convertible(pixel_count * pixel_count, pixel_area) == explicit_only);
 
 // invalid derived quantities
 static_assert(convertible(mass * acceleration_of_free_fall * width, gravitational_potential_energy) == cast);
 
 // derived quantities to more specialized type
-static_assert(convertible(force * position_vector, torque) == explicit_conversion);
-static_assert(convertible(length / time, special_speed) == explicit_conversion);
-static_assert(convertible(length / time, north_speed) == explicit_conversion);
-static_assert(convertible(length / time, east_speed) == explicit_conversion);
-static_assert(convertible(height / time, special_rate_of_climb) == explicit_conversion);
-static_assert(convertible(mass * pow<2>(length) / pow<2>(time), mechanical_energy) == yes);
-static_assert(convertible(mass * pow<2>(length) / pow<2>(time), potential_energy) == explicit_conversion);
-static_assert(convertible(mass * pow<2>(length) / pow<2>(time), gravitational_potential_energy) == explicit_conversion);
+static_assert(convertible(force * position_vector, torque) == explicit_only);
+static_assert(convertible(length / time, special_speed) == explicit_only);
+static_assert(convertible(length / time, north_speed) == explicit_only);
+static_assert(convertible(length / time, east_speed) == explicit_only);
+static_assert(convertible(height / time, special_rate_of_climb) == explicit_only);
+static_assert(convertible(mass * pow<2>(length) / pow<2>(time), mechanical_energy) == implicit);
+static_assert(convertible(mass * pow<2>(length) / pow<2>(time), potential_energy) == explicit_only);
+static_assert(convertible(mass * pow<2>(length) / pow<2>(time), gravitational_potential_energy) == explicit_only);
 
-static_assert(convertible(dimensionless, dimensionless / relative_linear_strain) == explicit_conversion);
-static_assert(convertible(length, height) == explicit_conversion);
-static_assert(convertible(length, height / relative_linear_strain) == explicit_conversion);
-static_assert(convertible(mass / length / pow<2>(time), pressure) == explicit_conversion);
-static_assert(convertible(mass / length / pow<2>(time), normal_stress) == explicit_conversion);
-static_assert(convertible(mass / length / pow<2>(time), normal_stress / relative_linear_strain) == explicit_conversion);
-static_assert(convertible(mass / length / pow<2>(time), modulus_of_elasticity) == explicit_conversion);
+static_assert(convertible(dimensionless, dimensionless / relative_linear_strain) == explicit_only);
+static_assert(convertible(length, height) == explicit_only);
+static_assert(convertible(length, height / relative_linear_strain) == explicit_only);
+static_assert(convertible(mass / length / pow<2>(time), pressure) == explicit_only);
+static_assert(convertible(mass / length / pow<2>(time), normal_stress) == explicit_only);
+static_assert(convertible(mass / length / pow<2>(time), normal_stress / relative_linear_strain) == explicit_only);
+static_assert(convertible(mass / length / pow<2>(time), modulus_of_elasticity) == explicit_only);
 
 // quantities derived from dimensionless
-static_assert(convertible(power / power, efficiency) == explicit_conversion);
-static_assert(convertible(stress / stress, strain) == explicit_conversion);
-static_assert(convertible(stress / stress, efficiency) == explicit_conversion);
+static_assert(convertible(power / power, efficiency) == explicit_only);
+static_assert(convertible(stress / stress, strain) == explicit_only);
+static_assert(convertible(stress / stress, efficiency) == explicit_only);
 
 // specialized dimensionless to dimensionless and back
-static_assert(convertible(height / width, dimensionless) == yes);
-static_assert(convertible(dimensionless, height / width) == explicit_conversion);
+static_assert(convertible(height / width, dimensionless) == implicit);
+static_assert(convertible(dimensionless, height / width) == explicit_only);
 
 // derived with dimensionless remainder after explosion
-// TODO revise that
-static_assert(convertible(distance / speed, time) == yes);
+static_assert(convertible(distance / speed, time) == implicit);
 
 // derived quantities to incompatible type
 static_assert(convertible(height / time, velocity) == cast);
@@ -809,355 +699,425 @@ static_assert(convertible(displacement / time, rate_of_climb) == cast);
 static_assert(convertible(pixel_x * pixel_x, pixel_area) == cast);
 
 // type to compatible derived
-static_assert(convertible(distance, speed* time) == yes);
+static_assert(convertible(distance, speed* time) == implicit);
 
 // type to more specialized derived quantity
-static_assert(convertible(speed, height / time) == explicit_conversion);
-static_assert(convertible(speed, displacement / time) == explicit_conversion);
+static_assert(convertible(speed, height / time) == explicit_only);
+static_assert(convertible(speed, displacement / time) == explicit_only);
 
 // type to a derived quantity on a different branch
 static_assert(convertible(velocity, height / time) == cast);
 static_assert(convertible(rate_of_climb, displacement / time) == cast);
 
 // derived quantities requiring explosion to a type
-static_assert(convertible(acceleration * time, velocity) == yes);
-static_assert(convertible(acceleration * period_duration, velocity) == yes);
-static_assert(convertible(velocity * time / period_duration, velocity) == yes);
-static_assert(convertible(mass * acceleration_of_free_fall * height / weight, height) == yes);
+static_assert(convertible(acceleration * time, velocity) == implicit);
+static_assert(convertible(acceleration * period_duration, velocity) == implicit);
+static_assert(convertible(velocity * time / period_duration, velocity) == implicit);
+static_assert(convertible(mass * acceleration_of_free_fall * height / weight, height) == implicit);
 
 // derived quantities to more generic derived compatible type
-static_assert(convertible(inverse(width * height), inverse(area)) == yes);
-static_assert(convertible(path_length * distance, pow<2>(path_length)) == yes);
+static_assert(convertible(inverse(width * height), inverse(area)) == implicit);
+static_assert(convertible(path_length * distance, pow<2>(path_length)) == implicit);
 
 // derived to compatible derived
-static_assert(convertible(inverse(length * length), inverse(area)) == yes);
-static_assert(convertible(velocity * time, acceleration* pow<2>(time)) == yes);
-static_assert(convertible(height / period_duration, length / time) == yes);
-static_assert(convertible(height / width, length / length) == yes);
-static_assert(convertible(height * width, length* length) == yes);
-static_assert(convertible(inverse(path_length * distance), inverse(pow<2>(path_length))) == yes);
-static_assert(convertible(path_length * period_duration, length* time) == yes);
+static_assert(convertible(inverse(length * length), inverse(area)) == implicit);
+static_assert(convertible(velocity * time, acceleration* pow<2>(time)) == implicit);
+static_assert(convertible(height / period_duration, length / time) == implicit);
+static_assert(convertible(height / width, length / length) == implicit);
+static_assert(convertible(height * width, length* length) == implicit);
+static_assert(convertible(inverse(path_length * distance), inverse(pow<2>(path_length))) == implicit);
+static_assert(convertible(path_length * period_duration, length* time) == implicit);
 
-static_assert(convertible(volume * length, pow<2>(area)) == yes);
-static_assert(convertible(pow<4>(length), pow<2>(area)) == yes);
-static_assert(convertible(pow<2>(radius), pow<2>(length)) == yes);
+static_assert(convertible(volume * length, pow<2>(area)) == implicit);
+static_assert(convertible(pow<4>(length), pow<2>(area)) == implicit);
+static_assert(convertible(pow<2>(radius), pow<2>(length)) == implicit);
 
-static_assert(convertible(height * time / period_duration, length) == yes);
-static_assert(convertible(angular_measure * time / period_duration, arc_length / radius) == yes);
+static_assert(convertible(height * time / period_duration, length) == implicit);
+static_assert(convertible(angular_measure * time / period_duration, arc_length / radius) == explicit_only);
 static_assert(convertible(special_angular_measure * solid_angular_measure, angular_measure* solid_angular_measure) ==
-              yes);
-static_assert(convertible(voltage * width / height, voltage) == yes);
-static_assert(convertible(voltage * time / (capacitance * resistance), voltage) == yes);
+              implicit);
+static_assert(convertible(voltage * width / height, voltage) == implicit);
+static_assert(convertible(voltage * time / (capacitance * resistance), voltage) == implicit);
 
 // derived to more specialized derived
-static_assert(convertible(length / time, height / period_duration) == explicit_conversion);
-static_assert(convertible(length * length, height* width) == explicit_conversion);
-static_assert(convertible(length * time, radius* period_duration) == explicit_conversion);
+static_assert(convertible(length / time, height / period_duration) == explicit_only);
+static_assert(convertible(length * length, height* width) == explicit_only);
+static_assert(convertible(length * time, radius* period_duration) == explicit_only);
 
 // derived to incompatible specialized derived
 static_assert(convertible(height / time, distance / time) == cast);
 static_assert(convertible(path_length * time, radius* period_duration) == cast);
 
-// when more than one possible combination is present
-// TODO revise that
+// when more than one pairing of same-tree factors is possible, the best one counts
 static_assert(convertible(width * height, pow<2>(height)) == cast);
 static_assert(convertible(inverse(width * height), inverse(pow<2>(height))) == cast);
-static_assert(convertible(width * distance, path_length* width) == yes);
-static_assert(convertible(height * distance, path_length* height) == cast);
-static_assert(convertible(width * length, length* height) == explicit_conversion);
-static_assert(convertible(length * distance, path_length* height) == cast);
-static_assert(convertible(width * distance, width* path_length) == yes);
-static_assert(convertible(length * distance, height* path_length) == cast);
+static_assert(convertible(width * distance, path_length* width) == implicit);
+static_assert(convertible(height * distance, path_length* height) == implicit);
+// `length` is on both sides, so this relates as `width -> height` does
+static_assert(convertible(width * length, length* height) == cast);
+static_assert(convertible(length * distance, path_length* height) == explicit_only);
+static_assert(convertible(width * distance, width* path_length) == implicit);
+static_assert(convertible(length * distance, height* path_length) == explicit_only);
+static_assert(convertible(height * path_length, distance* height) == explicit_only);
+// the first pairing that ranks `implicit` for one factor is not always part of the best complete pairing:
+// `radius -> length` is `implicit` but leaves the siblings `height -> width`, while `radius -> width`
+// leaves `height -> length`
+static_assert(convertible(radius * height, width* length) == implicit);
+static_assert(convertible(radius * height, length* width) == implicit);
 
 // kind to its type
-static_assert(convertible(kind_of<length>, length) == yes);
-static_assert(convertible(kind_of<length>, width) == yes);
-static_assert(convertible(kind_of<length>, position_vector) == yes);
-static_assert(convertible(kind_of<frequency>, frequency) == yes);
-static_assert(convertible(kind_of<speed>, velocity) == yes);
-static_assert(convertible(kind_of<energy>, energy) == yes);
-static_assert(convertible(kind_of<energy>, potential_energy) == yes);
-static_assert(convertible(kind_of<energy>, kinetic_energy) == yes);
-static_assert(convertible(kind_of<dimensionless>, rotation) == yes);
-static_assert(convertible(kind_of<dimensionless>, angular_measure) == yes);
-static_assert(convertible(kind_of<dimensionless>, rotational_displacement) == yes);
+static_assert(convertible(kind_of<length>, length) == implicit);
+static_assert(convertible(kind_of<length>, width) == implicit);
+static_assert(convertible(kind_of<length>, position_vector) == implicit);
+static_assert(convertible(kind_of<frequency>, frequency) == implicit);
+static_assert(convertible(kind_of<speed>, velocity) == implicit);
+static_assert(convertible(kind_of<energy>, energy) == implicit);
+static_assert(convertible(kind_of<energy>, potential_energy) == implicit);
+static_assert(convertible(kind_of<energy>, kinetic_energy) == implicit);
+static_assert(convertible(kind_of<dimensionless>, rotation) == implicit);
+static_assert(convertible(kind_of<dimensionless>, angular_measure) == implicit);
+static_assert(convertible(kind_of<dimensionless>, rotational_displacement) == implicit);
 
 // kind to a type of a different dimension
-static_assert(convertible(kind_of<length>, mass) == no);
-static_assert(convertible(kind_of<length>, speed) == no);
-static_assert(convertible(kind_of<energy>, length) == no);
-static_assert(convertible(kind_of<energy>, speed) == no);
+static_assert(convertible(kind_of<length>, mass) == none);
+static_assert(convertible(kind_of<length>, speed) == none);
+static_assert(convertible(kind_of<energy>, length) == none);
+static_assert(convertible(kind_of<energy>, speed) == none);
 
 // kind to a type of another kind but the same dimension
-static_assert(convertible(kind_of<energy>, moment_of_force) == no);
-static_assert(convertible(kind_of<activity>, frequency) == no);
-static_assert(convertible(kind_of<frequency>, activity) == no);
+static_assert(convertible(kind_of<energy>, moment_of_force) == none);
+static_assert(convertible(kind_of<activity>, frequency) == none);
+static_assert(convertible(kind_of<frequency>, activity) == none);
 
 // derived kind to a compatible type
-static_assert(convertible(kind_of<length / time>, speed) == yes);
-static_assert(convertible(kind_of<length / time>, velocity) == yes);
-static_assert(convertible(kind_of<length / pow<2>(time)>, acceleration) == yes);
-static_assert(convertible(kind_of<inverse(time)>, frequency) == yes);
-static_assert(convertible(kind_of<inverse(time)>, activity) == yes);
-static_assert(convertible(kind_of<mass * pow<2>(length) / pow<2>(time)>, energy) == yes);
-static_assert(convertible(kind_of<mass * pow<2>(length) / pow<2>(time)>, moment_of_force) == yes);
-static_assert(convertible(kind_of<frequency * time / length>, repetency) == yes);
+static_assert(convertible(kind_of<length / time>, speed) == implicit);
+static_assert(convertible(kind_of<length / time>, velocity) == implicit);
+static_assert(convertible(kind_of<length / pow<2>(time)>, acceleration) == implicit);
+static_assert(convertible(kind_of<inverse(time)>, frequency) == implicit);
+static_assert(convertible(kind_of<inverse(time)>, activity) == implicit);
+static_assert(convertible(kind_of<mass * pow<2>(length) / pow<2>(time)>, energy) == implicit);
+static_assert(convertible(kind_of<mass * pow<2>(length) / pow<2>(time)>, moment_of_force) == implicit);
+static_assert(convertible(kind_of<frequency * time / length>, repetency) == implicit);
 
 // type to a kind of a different kind
-static_assert(convertible(mass, kind_of<length>) == no);
-static_assert(convertible(speed, kind_of<length>) == no);
-static_assert(convertible(length, kind_of<energy>) == no);
-static_assert(convertible(speed, kind_of<energy>) == no);
-static_assert(convertible(moment_of_force, kind_of<energy>) == no);
-static_assert(convertible(frequency, kind_of<activity>) == no);
-static_assert(convertible(activity, kind_of<frequency>) == no);
+static_assert(convertible(mass, kind_of<length>) == none);
+static_assert(convertible(speed, kind_of<length>) == none);
+static_assert(convertible(length, kind_of<energy>) == none);
+static_assert(convertible(speed, kind_of<energy>) == none);
+static_assert(convertible(moment_of_force, kind_of<energy>) == none);
+static_assert(convertible(frequency, kind_of<activity>) == none);
+static_assert(convertible(activity, kind_of<frequency>) == none);
 
 // converting type to a kind
-static_assert(convertible(length, kind_of<length>) == yes);
-static_assert(convertible(width, kind_of<length>) == yes);
-static_assert(convertible(frequency, kind_of<frequency>) == yes);
-static_assert(convertible(frequency, kind_of<inverse(time)>) == yes);
-static_assert(convertible(frequency, kind_of<activity>) == no);
-static_assert(convertible(energy, kind_of<energy>) == yes);
-static_assert(convertible(potential_energy, kind_of<energy>) == yes);
-static_assert(convertible(kinetic_energy, kind_of<energy>) == yes);
-static_assert(convertible(rotation, kind_of<dimensionless>) == yes);
-static_assert(convertible(angular_measure, kind_of<dimensionless>) == explicit_conversion_beyond_kind);
-static_assert(convertible(rotational_displacement, kind_of<dimensionless>) == explicit_conversion_beyond_kind);
+static_assert(convertible(length, kind_of<length>) == implicit);
+static_assert(convertible(width, kind_of<length>) == implicit);
+static_assert(convertible(frequency, kind_of<frequency>) == implicit);
+static_assert(convertible(frequency, kind_of<inverse(time)>) == implicit);
+static_assert(convertible(frequency, kind_of<activity>) == none);
+static_assert(convertible(energy, kind_of<energy>) == implicit);
+static_assert(convertible(potential_energy, kind_of<energy>) == implicit);
+static_assert(convertible(kinetic_energy, kind_of<energy>) == implicit);
+static_assert(convertible(rotation, kind_of<dimensionless>) == implicit);
+static_assert(convertible(angular_measure, kind_of<dimensionless>) == explicit_only);
+static_assert(convertible(rotational_displacement, kind_of<dimensionless>) == explicit_only);
 
 // converting derived type to a kind
-static_assert(convertible(inverse(period_duration), kind_of<frequency>) == yes);
-static_assert(convertible(inverse(time), kind_of<frequency>) == yes);
-static_assert(convertible(length / time, kind_of<speed>) == yes);
-static_assert(convertible(length / pow<2>(time), kind_of<acceleration>) == yes);
-static_assert(convertible(mass * pow<2>(length) / pow<2>(time), kind_of<energy>) == yes);
+static_assert(convertible(inverse(period_duration), kind_of<frequency>) == implicit);
+static_assert(convertible(inverse(time), kind_of<frequency>) == explicit_only);
+static_assert(convertible(length / time, kind_of<speed>) == implicit);
+static_assert(convertible(length / pow<2>(time), kind_of<acceleration>) == explicit_only);
+static_assert(convertible(mass * pow<2>(length) / pow<2>(time), kind_of<energy>) == implicit);
 
 // converting kind to a kind
-static_assert(convertible(kind_of<dimensionless>, kind_of<angular_measure>) == yes);
-static_assert(convertible(kind_of<angular_measure>, kind_of<dimensionless>) == explicit_conversion_beyond_kind);
+static_assert(convertible(kind_of<dimensionless>, kind_of<angular_measure>) == implicit);
+static_assert(convertible(kind_of<angular_measure>, kind_of<dimensionless>) == explicit_only);
 
 // converting derived kind to a kind
-static_assert(convertible(kind_of<inverse(time)>, kind_of<frequency>) == yes);
-static_assert(convertible(kind_of<length / time>, kind_of<speed>) == yes);
-static_assert(convertible(kind_of<length / pow<2>(time)>, kind_of<acceleration>) == yes);
+static_assert(convertible(kind_of<inverse(time)>, kind_of<frequency>) == implicit);
+static_assert(convertible(kind_of<length / time>, kind_of<speed>) == implicit);
+static_assert(convertible(kind_of<length / pow<2>(time)>, kind_of<acceleration>) == implicit);
 
 // converting kind to a type
-static_assert(convertible(kind_of<mass / length / pow<2>(time)>, pressure) == yes);
-static_assert(convertible(kind_of<mass / length / pow<2>(time)>, normal_stress) == yes);
-static_assert(convertible(kind_of<mass / length / pow<2>(time)>, normal_stress / relative_linear_strain) == yes);
-static_assert(convertible(kind_of<mass / length / pow<2>(time)>, modulus_of_elasticity) == yes);
+static_assert(convertible(kind_of<mass / length / pow<2>(time)>, pressure) == implicit);
+static_assert(convertible(kind_of<mass / length / pow<2>(time)>, normal_stress) == implicit);
+static_assert(convertible(kind_of<mass / length / pow<2>(time)>, normal_stress / relative_linear_strain) == implicit);
+static_assert(convertible(kind_of<mass / length / pow<2>(time)>, modulus_of_elasticity) == implicit);
 
 // converting type to a derived kind
-static_assert(convertible(speed, kind_of<length / time>) == yes);
-static_assert(convertible(velocity, kind_of<length / time>) == yes);
-static_assert(convertible(energy, kind_of<mass * pow<2>(length) / pow<2>(time)>) == yes);
-static_assert(convertible(mass_density, kind_of<mass / pow<3>(length)>) == yes);
-static_assert(convertible(voltage_phasor, kind_of<energy / time / electric_current>) == yes);
+static_assert(convertible(speed, kind_of<length / time>) == implicit);
+static_assert(convertible(velocity, kind_of<length / time>) == implicit);
+static_assert(convertible(energy, kind_of<mass * pow<2>(length) / pow<2>(time)>) == implicit);
+static_assert(convertible(mass_density, kind_of<mass / pow<3>(length)>) == implicit);
+static_assert(convertible(voltage_phasor, kind_of<energy / time / electric_current>) == implicit);
 
 // kinds of different dimensions
-static_assert(convertible(kind_of<mass>, kind_of<length>) == no);
-static_assert(convertible(kind_of<energy>, kind_of<length>) == no);
-static_assert(convertible(kind_of<length>, kind_of<energy>) == no);
-static_assert(convertible(kind_of<frequency>, kind_of<energy>) == no);
+static_assert(convertible(kind_of<mass>, kind_of<length>) == none);
+static_assert(convertible(kind_of<energy>, kind_of<length>) == none);
+static_assert(convertible(kind_of<length>, kind_of<energy>) == none);
+static_assert(convertible(kind_of<frequency>, kind_of<energy>) == none);
 
 // derived quantities to dimensionless
-static_assert(convertible(frequency * period_duration, dimensionless) == yes);
-static_assert(convertible(frequency * time, dimensionless) == yes);
-static_assert(convertible(length / length, dimensionless) == yes);
-static_assert(convertible(length / width, dimensionless) == yes);
-static_assert(convertible(active_power / apparent_power, dimensionless) == yes);
+static_assert(convertible(frequency * period_duration, dimensionless) == implicit);
+static_assert(convertible(frequency * time, dimensionless) == implicit);
+static_assert(convertible(length / length, dimensionless) == implicit);
+static_assert(convertible(length / width, dimensionless) == implicit);
+static_assert(convertible(active_power / apparent_power, dimensionless) == implicit);
 
 // an angle among the ingredients keeps them from being a plain ratio...
-static_assert(convertible(angular_measure_rate * radius / speed, dimensionless) == explicit_conversion_beyond_kind);
-static_assert(convertible(angular_measure_rate * radius, speed) == explicit_conversion_beyond_kind);
+static_assert(convertible(angular_measure_rate * radius / speed, dimensionless) == explicit_only);
+static_assert(convertible(angular_measure_rate * radius, speed) == explicit_only);
 // ...unless it cancels against another angle
-static_assert(convertible(angular_measure_rate * radius / angular_measure / speed, dimensionless) == yes);
-static_assert(convertible(angular_measure_rate * radius / angular_measure, speed) == yes);
-static_assert(convertible(angular_measure_rate * time, angular_measure) == yes);
+static_assert(convertible(angular_measure_rate * radius / angular_measure / speed, dimensionless) == implicit);
+static_assert(convertible(angular_measure_rate * radius / angular_measure, speed) == implicit);
+static_assert(convertible(angular_measure_rate * time, angular_measure) == implicit);
 // the same holds for a quantity in the kind's tree that is not a kind itself
-static_assert(convertible(special_angular_measure / time * radius / speed, dimensionless) ==
-              explicit_conversion_beyond_kind);
-static_assert(convertible(special_angular_measure / time * radius / angular_measure / speed, dimensionless) == yes);
+static_assert(convertible(special_angular_measure / time * radius / speed, dimensionless) == explicit_only);
+static_assert(convertible(special_angular_measure / time * radius / angular_measure / speed, dimensionless) ==
+              implicit);
 
 static_assert(convertible(efficiency, strain) == cast);
 
+// an inherited equation is an `implicit` upcast, in a numerator or a denominator alike
+static_assert(convertible(special_speed, length / time) == implicit);
+static_assert(convertible(special_speed * time, length) == implicit);
+static_assert(convertible(length / special_speed, time) == implicit);
+static_assert(convertible(inverse(special_speed), time / length) == implicit);
+
+// a declared kind is a boundary in both directions: losing it or gaining it costs explicit_only,
+// and the verdict doesn't depend on which operations are taken
+static_assert(convertible(angular_measure * radius, arc_length) == explicit_only);
+static_assert(convertible(arc_length, angular_measure* radius) == explicit_only);
+static_assert(convertible(angular_measure_rate * radius, speed) == explicit_only);
+static_assert(convertible(angular_measure / solid_angular_measure, dimensionless) == explicit_only);
+static_assert(convertible(special_angular_measure / angular_measure, dimensionless) == implicit);
+static_assert(convertible(angular_measure / time, dimensionless_rate) == explicit_only);
+static_assert(convertible(kind_of<dimensionless>, angular_measure) == implicit);
+static_assert(convertible(dimensionless / angular_measure, dimensionless) == explicit_only);
+static_assert(convertible(kinetic_energy / (angular_measure * mass * pow<2>(speed)), dimensionless) == explicit_only);
+static_assert(convertible(inverse(phase_angle), radius / arc_length) == explicit_only);
+static_assert(convertible(phase_angle / time, dimensionless / time) == explicit_only);
+static_assert(convertible(angular_measure_rate / frequency, dimensionless) == explicit_only);
+static_assert(convertible(angular_measure_rate / frequency, angular_measure) == implicit);
+
+// a ratio of quantities of one kind is a plain number, whatever the exponents
+static_assert(convertible(width * height / area, dimensionless) == implicit);
+static_assert(convertible(pow<2>(width) / (height * length), dimensionless) == implicit);
+
+// two factors of one tree relate as the tree says, even when packed into a product
+static_assert(convertible(energy * time / period_duration, kinetic_energy) == explicit_only);
+static_assert(convertible(north_speed * energy, east_speed* energy) == cast);
+
+// a quantity converts implicitly from and to its own equation even when the equation mentions its own
+// tree
+static_assert(convertible(electromagnetism_power * time / period_duration, active_power) == implicit);
+static_assert(convertible(active_power, electromagnetism_power* time / period_duration) == implicit);
+static_assert(convertible(pow<2>(active_power), pow<2>(electromagnetism_power* time / period_duration)) == implicit);
+
+// a factor common to both sides doesn't change how they relate
+static_assert(convertible(north_speed * mass, east_speed* mass) == convertible(north_speed, east_speed));
+static_assert(convertible(frequency * mass, activity* mass) == convertible(frequency, activity));
+static_assert(convertible(energy * time, torque* time) == convertible(energy, torque));
+static_assert(convertible(width * mass, length* mass) == convertible(width, length));
+static_assert(convertible(length * mass, width* mass) == convertible(length, width));
+static_assert(convertible(angular_measure * mass, dimensionless* mass) == convertible(angular_measure, dimensionless));
+static_assert(convertible(velocity * length / time, velocity* speed) == convertible(length / time, speed));
+static_assert(convertible(kind_of<length> * kind_of<mass>, width* mass) == convertible(kind_of<length>, width));
+static_assert(convertible(width * mass, kind_of<length>* kind_of<mass>) == convertible(width, kind_of<length>));
+static_assert(convertible(pow<2>(width) * mass, width * length * mass) == convertible(pow<2>(width), width* length));
+
+// the order of operations: pair first, self-cancel only against an empty side, then the deepest factor
+static_assert(convertible(height / width, width / height) == cast);
+// the same kind lost in one part and gained in the other is `none`, unlike the reciprocal of a plain
+// ratio above
+static_assert(convertible(angular_measure, inverse(angular_measure)) == none);
+static_assert(convertible(inverse(angular_measure), angular_measure) == none);
+static_assert(convertible(angular_measure / solid_angular_measure, solid_angular_measure / angular_measure) == none);
+static_assert(convertible(height / width, radius / width) == cast);
+static_assert(convertible(height * speed / length, width / time) == cast);
+static_assert(convertible(acceleration * time, special_speed) == cast);
+static_assert(convertible(speed, speed* time / period_duration) == explicit_only);
+static_assert(convertible(speed * time, displacement) == explicit_only);
+static_assert(convertible(velocity * time, displacement) == implicit);
+static_assert(convertible(mass * speed, mass* velocity) == explicit_only);
+static_assert(convertible(area / length, width) == explicit_only);
+static_assert(convertible(pow<2>(width), pow<2>(height)) == cast);
+
+// two roots of one dimension left over after pairing block the conversion, but they still convert
+// to the base quantities of their dimension, and their ratio is a plain number
+static_assert(convertible(frequency * width, activity* length) == none);
+static_assert(convertible(pow<2>(frequency) * mass, pow<2>(activity) * mass) == none);
+static_assert(convertible(frequency * mass, mass / time) == implicit);
+static_assert(convertible(energy / torque, dimensionless) == implicit);
+
+// a kind converts implicitly into the sub-kinds of its tree
+static_assert(convertible(kind_of<dimensionless>, storage_capacity) == implicit);
+static_assert(convertible(kind_of<acceleration * time>, special_speed) == cast);
+
 // nested kinds
-static_assert(convertible(dimensionless, dimensionless) == yes);
-static_assert(convertible(angular_measure, dimensionless) == explicit_conversion_beyond_kind);
-static_assert(convertible(solid_angular_measure, dimensionless) == explicit_conversion_beyond_kind);
+static_assert(convertible(dimensionless, dimensionless) == implicit);
+static_assert(convertible(angular_measure, dimensionless) == explicit_only);
+static_assert(convertible(solid_angular_measure, dimensionless) == explicit_only);
 
-static_assert(convertible(kind_of<dimensionless>, dimensionless) == yes);
-static_assert(convertible(kind_of<angular_measure>, dimensionless) == explicit_conversion_beyond_kind);
-static_assert(convertible(kind_of<solid_angular_measure>, dimensionless) == explicit_conversion_beyond_kind);
+static_assert(convertible(kind_of<dimensionless>, dimensionless) == implicit);
+static_assert(convertible(kind_of<angular_measure>, dimensionless) == explicit_only);
+static_assert(convertible(kind_of<solid_angular_measure>, dimensionless) == explicit_only);
 
-static_assert(convertible(dimensionless, kind_of<dimensionless>) == yes);
-static_assert(convertible(angular_measure, kind_of<dimensionless>) == explicit_conversion_beyond_kind);
-static_assert(convertible(solid_angular_measure, kind_of<dimensionless>) == explicit_conversion_beyond_kind);
+static_assert(convertible(dimensionless, kind_of<dimensionless>) == implicit);
+static_assert(convertible(angular_measure, kind_of<dimensionless>) == explicit_only);
+static_assert(convertible(solid_angular_measure, kind_of<dimensionless>) == explicit_only);
 
-static_assert(convertible(kind_of<dimensionless>, kind_of<dimensionless>) == yes);
-static_assert(convertible(kind_of<angular_measure>, kind_of<dimensionless>) == explicit_conversion_beyond_kind);
-static_assert(convertible(kind_of<solid_angular_measure>, kind_of<dimensionless>) == explicit_conversion_beyond_kind);
+static_assert(convertible(kind_of<dimensionless>, kind_of<dimensionless>) == implicit);
+static_assert(convertible(kind_of<angular_measure>, kind_of<dimensionless>) == explicit_only);
+static_assert(convertible(kind_of<solid_angular_measure>, kind_of<dimensionless>) == explicit_only);
 
-static_assert(convertible(angular_measure, solid_angular_measure) == no);
-static_assert(convertible(angular_measure, kind_of<solid_angular_measure>) == no);
-static_assert(convertible(kind_of<angular_measure>, kind_of<solid_angular_measure>) == no);
+static_assert(convertible(angular_measure, solid_angular_measure) == none);
+static_assert(convertible(angular_measure, kind_of<solid_angular_measure>) == none);
+static_assert(convertible(kind_of<angular_measure>, kind_of<solid_angular_measure>) == none);
 
-static_assert(convertible(dimensionless, angular_measure) == explicit_conversion);
-static_assert(convertible(dimensionless, solid_angular_measure) == explicit_conversion);
+static_assert(convertible(dimensionless, angular_measure) == explicit_only);
+static_assert(convertible(dimensionless, solid_angular_measure) == explicit_only);
 
-static_assert(convertible(dimensionless, kind_of<angular_measure>) == explicit_conversion);
-static_assert(convertible(dimensionless, kind_of<solid_angular_measure>) == explicit_conversion);
+static_assert(convertible(dimensionless, kind_of<angular_measure>) == explicit_only);
+static_assert(convertible(dimensionless, kind_of<solid_angular_measure>) == explicit_only);
 
-static_assert(convertible(kind_of<dimensionless>, angular_measure) == yes);
-static_assert(convertible(kind_of<dimensionless>, solid_angular_measure) == yes);
+static_assert(convertible(kind_of<dimensionless>, angular_measure) == implicit);
+static_assert(convertible(kind_of<dimensionless>, solid_angular_measure) == implicit);
 
-static_assert(convertible(kind_of<dimensionless>, kind_of<angular_measure>) == yes);
-static_assert(convertible(kind_of<dimensionless>, kind_of<solid_angular_measure>) == yes);
+static_assert(convertible(kind_of<dimensionless>, kind_of<angular_measure>) == implicit);
+static_assert(convertible(kind_of<dimensionless>, kind_of<solid_angular_measure>) == implicit);
 
 // derived nested kinds
-static_assert(convertible(dimensionless / time, dimensionless / time) == yes);
-static_assert(convertible(angular_measure / time, dimensionless / time) == explicit_conversion_beyond_kind);
-static_assert(convertible(solid_angular_measure / time, dimensionless / time) == explicit_conversion_beyond_kind);
+static_assert(convertible(dimensionless / time, dimensionless / time) == implicit);
+static_assert(convertible(angular_measure / time, dimensionless / time) == explicit_only);
+static_assert(convertible(solid_angular_measure / time, dimensionless / time) == explicit_only);
 
-static_assert(convertible(kind_of<dimensionless / time>, dimensionless / time) == yes);
-static_assert(convertible(kind_of<angular_measure / time>, dimensionless / time) == explicit_conversion_beyond_kind);
-static_assert(convertible(kind_of<solid_angular_measure / time>, dimensionless / time) ==
-              explicit_conversion_beyond_kind);
+static_assert(convertible(kind_of<dimensionless / time>, dimensionless / time) == implicit);
+static_assert(convertible(kind_of<angular_measure / time>, dimensionless / time) == explicit_only);
+static_assert(convertible(kind_of<solid_angular_measure / time>, dimensionless / time) == explicit_only);
 
-static_assert(convertible(dimensionless / storage_capacity, dimensionless) == explicit_conversion_beyond_kind);
-static_assert(convertible(dimensionless * storage_capacity, dimensionless) == explicit_conversion_beyond_kind);
-static_assert(convertible(inverse(transfer_rate), period_duration) == explicit_conversion_beyond_kind);
+static_assert(convertible(dimensionless / storage_capacity, dimensionless) == explicit_only);
+static_assert(convertible(dimensionless * storage_capacity, dimensionless) == explicit_only);
+static_assert(convertible(inverse(transfer_rate), period_duration) == explicit_only);
 
-static_assert(convertible(dimensionless / time, kind_of<dimensionless / time>) == yes);
-static_assert(convertible(angular_measure / time, kind_of<dimensionless / time>) == explicit_conversion_beyond_kind);
-static_assert(convertible(solid_angular_measure / time, kind_of<dimensionless / time>) ==
-              explicit_conversion_beyond_kind);
+static_assert(convertible(dimensionless / time, kind_of<dimensionless / time>) == implicit);
+static_assert(convertible(angular_measure / time, kind_of<dimensionless / time>) == explicit_only);
+static_assert(convertible(solid_angular_measure / time, kind_of<dimensionless / time>) == explicit_only);
 
-static_assert(convertible(kind_of<dimensionless / time>, kind_of<dimensionless / time>) == yes);
-static_assert(convertible(kind_of<angular_measure / time>, kind_of<dimensionless / time>) ==
-              explicit_conversion_beyond_kind);
-static_assert(convertible(kind_of<solid_angular_measure / time>, kind_of<dimensionless / time>) ==
-              explicit_conversion_beyond_kind);
+static_assert(convertible(kind_of<dimensionless / time>, kind_of<dimensionless / time>) == implicit);
+static_assert(convertible(kind_of<angular_measure / time>, kind_of<dimensionless / time>) == explicit_only);
+static_assert(convertible(kind_of<solid_angular_measure / time>, kind_of<dimensionless / time>) == explicit_only);
 
-static_assert(convertible(angular_measure / time, solid_angular_measure / time) == no);
-static_assert(convertible(angular_measure / time, kind_of<solid_angular_measure / time>) == no);
-static_assert(convertible(kind_of<angular_measure / time>, kind_of<solid_angular_measure / time>) == no);
+static_assert(convertible(angular_measure / time, solid_angular_measure / time) == none);
+static_assert(convertible(angular_measure / time, kind_of<solid_angular_measure / time>) == none);
+static_assert(convertible(kind_of<angular_measure / time>, kind_of<solid_angular_measure / time>) == none);
 
-static_assert(convertible(dimensionless / time, angular_measure / time) == explicit_conversion);
-static_assert(convertible(dimensionless / time, solid_angular_measure / time) == explicit_conversion);
+static_assert(convertible(dimensionless / time, angular_measure / time) == explicit_only);
+static_assert(convertible(dimensionless / time, solid_angular_measure / time) == explicit_only);
 
-static_assert(convertible(dimensionless / time, kind_of<angular_measure / time>) == explicit_conversion);
-static_assert(convertible(dimensionless / time, kind_of<solid_angular_measure / time>) == explicit_conversion);
+static_assert(convertible(dimensionless / time, kind_of<angular_measure / time>) == explicit_only);
+static_assert(convertible(dimensionless / time, kind_of<solid_angular_measure / time>) == explicit_only);
 
-static_assert(convertible(kind_of<dimensionless / time>, angular_measure / time) == yes);
-static_assert(convertible(kind_of<dimensionless / time>, solid_angular_measure / time) == yes);
+static_assert(convertible(kind_of<dimensionless / time>, angular_measure / time) == implicit);
+static_assert(convertible(kind_of<dimensionless / time>, solid_angular_measure / time) == implicit);
 
-static_assert(convertible(kind_of<dimensionless / time>, kind_of<angular_measure / time>) == yes);
-static_assert(convertible(kind_of<dimensionless / time>, kind_of<solid_angular_measure / time>) == yes);
+static_assert(convertible(kind_of<dimensionless / time>, kind_of<angular_measure / time>) == implicit);
+static_assert(convertible(kind_of<dimensionless / time>, kind_of<solid_angular_measure / time>) == implicit);
 
 // named derived nested kinds
-static_assert(convertible(dimensionless_rate, dimensionless_rate) == yes);
-static_assert(convertible(angular_measure_rate, dimensionless_rate) == no);
-static_assert(convertible(solid_angular_measure_rate, dimensionless_rate) == no);
+static_assert(convertible(dimensionless_rate, dimensionless_rate) == implicit);
+static_assert(convertible(angular_measure_rate, dimensionless_rate) == none);
+static_assert(convertible(solid_angular_measure_rate, dimensionless_rate) == none);
 
-static_assert(convertible(kind_of<dimensionless_rate>, dimensionless_rate) == yes);
-static_assert(convertible(kind_of<angular_measure_rate>, dimensionless_rate) == no);
-static_assert(convertible(kind_of<solid_angular_measure_rate>, dimensionless_rate) == no);
+static_assert(convertible(kind_of<dimensionless_rate>, dimensionless_rate) == implicit);
+static_assert(convertible(kind_of<angular_measure_rate>, dimensionless_rate) == none);
+static_assert(convertible(kind_of<solid_angular_measure_rate>, dimensionless_rate) == none);
 
-static_assert(convertible(dimensionless_rate, kind_of<dimensionless_rate>) == yes);
-static_assert(convertible(angular_measure_rate, kind_of<dimensionless_rate>) == no);
-static_assert(convertible(solid_angular_measure_rate, kind_of<dimensionless_rate>) == no);
+static_assert(convertible(dimensionless_rate, kind_of<dimensionless_rate>) == implicit);
+static_assert(convertible(angular_measure_rate, kind_of<dimensionless_rate>) == none);
+static_assert(convertible(solid_angular_measure_rate, kind_of<dimensionless_rate>) == none);
 
-static_assert(convertible(kind_of<dimensionless_rate>, kind_of<dimensionless_rate>) == yes);
-static_assert(convertible(kind_of<angular_measure_rate>, kind_of<dimensionless_rate>) == no);
-static_assert(convertible(kind_of<solid_angular_measure_rate>, kind_of<dimensionless_rate>) == no);
+static_assert(convertible(kind_of<dimensionless_rate>, kind_of<dimensionless_rate>) == implicit);
+static_assert(convertible(kind_of<angular_measure_rate>, kind_of<dimensionless_rate>) == none);
+static_assert(convertible(kind_of<solid_angular_measure_rate>, kind_of<dimensionless_rate>) == none);
 
-static_assert(convertible(angular_measure_rate, solid_angular_measure_rate) == no);
-static_assert(convertible(angular_measure_rate, kind_of<solid_angular_measure_rate>) == no);
-static_assert(convertible(kind_of<angular_measure_rate>, kind_of<solid_angular_measure_rate>) == no);
+static_assert(convertible(angular_measure_rate, solid_angular_measure_rate) == none);
+static_assert(convertible(angular_measure_rate, kind_of<solid_angular_measure_rate>) == none);
+static_assert(convertible(kind_of<angular_measure_rate>, kind_of<solid_angular_measure_rate>) == none);
 
-static_assert(convertible(dimensionless_rate, angular_measure_rate) == no);
-static_assert(convertible(dimensionless_rate, solid_angular_measure_rate) == no);
+static_assert(convertible(dimensionless_rate, angular_measure_rate) == none);
+static_assert(convertible(dimensionless_rate, solid_angular_measure_rate) == none);
 
-static_assert(convertible(dimensionless_rate, kind_of<angular_measure_rate>) == no);
-static_assert(convertible(dimensionless_rate, kind_of<solid_angular_measure_rate>) == no);
+static_assert(convertible(dimensionless_rate, kind_of<angular_measure_rate>) == none);
+static_assert(convertible(dimensionless_rate, kind_of<solid_angular_measure_rate>) == none);
 
-static_assert(convertible(kind_of<dimensionless_rate>, angular_measure_rate) == no);
-static_assert(convertible(kind_of<dimensionless_rate>, solid_angular_measure_rate) == no);
+static_assert(convertible(kind_of<dimensionless_rate>, angular_measure_rate) == none);
+static_assert(convertible(kind_of<dimensionless_rate>, solid_angular_measure_rate) == none);
 
-static_assert(convertible(kind_of<dimensionless_rate>, kind_of<angular_measure_rate>) == no);
-static_assert(convertible(kind_of<dimensionless_rate>, kind_of<solid_angular_measure_rate>) == no);
+static_assert(convertible(kind_of<dimensionless_rate>, kind_of<angular_measure_rate>) == none);
+static_assert(convertible(kind_of<dimensionless_rate>, kind_of<solid_angular_measure_rate>) == none);
 
-static_assert(convertible(dimensionless_rate, dimensionless / time) == yes);
-static_assert(convertible(angular_measure_rate, dimensionless / time) == explicit_conversion_beyond_kind);
-static_assert(convertible(solid_angular_measure_rate, dimensionless / time) == explicit_conversion_beyond_kind);
+static_assert(convertible(dimensionless_rate, dimensionless / time) == implicit);
+static_assert(convertible(angular_measure_rate, dimensionless / time) == explicit_only);
+static_assert(convertible(solid_angular_measure_rate, dimensionless / time) == explicit_only);
 
-static_assert(convertible(kind_of<dimensionless_rate>, dimensionless / time) == yes);
-static_assert(convertible(kind_of<angular_measure_rate>, dimensionless / time) == explicit_conversion_beyond_kind);
-static_assert(convertible(kind_of<solid_angular_measure_rate>, dimensionless / time) ==
-              explicit_conversion_beyond_kind);
+static_assert(convertible(kind_of<dimensionless_rate>, dimensionless / time) == implicit);
+static_assert(convertible(kind_of<angular_measure_rate>, dimensionless / time) == explicit_only);
+static_assert(convertible(kind_of<solid_angular_measure_rate>, dimensionless / time) == explicit_only);
 
-static_assert(convertible(dimensionless_rate, kind_of<dimensionless / time>) == yes);
-static_assert(convertible(angular_measure_rate, kind_of<dimensionless / time>) == explicit_conversion_beyond_kind);
-static_assert(convertible(solid_angular_measure_rate, kind_of<dimensionless / time>) ==
-              explicit_conversion_beyond_kind);
+static_assert(convertible(dimensionless_rate, kind_of<dimensionless / time>) == implicit);
+static_assert(convertible(angular_measure_rate, kind_of<dimensionless / time>) == explicit_only);
+static_assert(convertible(solid_angular_measure_rate, kind_of<dimensionless / time>) == explicit_only);
 
-static_assert(convertible(kind_of<dimensionless_rate>, kind_of<dimensionless / time>) == yes);
-static_assert(convertible(kind_of<angular_measure_rate>, kind_of<dimensionless / time>) ==
-              explicit_conversion_beyond_kind);
-static_assert(convertible(kind_of<solid_angular_measure_rate>, kind_of<dimensionless / time>) ==
-              explicit_conversion_beyond_kind);
+static_assert(convertible(kind_of<dimensionless_rate>, kind_of<dimensionless / time>) == implicit);
+static_assert(convertible(kind_of<angular_measure_rate>, kind_of<dimensionless / time>) == explicit_only);
+static_assert(convertible(kind_of<solid_angular_measure_rate>, kind_of<dimensionless / time>) == explicit_only);
 
-static_assert(convertible(angular_measure_rate, solid_angular_measure / time) == no);
-static_assert(convertible(angular_measure_rate, kind_of<solid_angular_measure / time>) == no);
-static_assert(convertible(kind_of<angular_measure_rate>, kind_of<solid_angular_measure / time>) == no);
+static_assert(convertible(angular_measure_rate, solid_angular_measure / time) == none);
+static_assert(convertible(angular_measure_rate, kind_of<solid_angular_measure / time>) == none);
+static_assert(convertible(kind_of<angular_measure_rate>, kind_of<solid_angular_measure / time>) == none);
 
-static_assert(convertible(dimensionless_rate, angular_measure / time) == explicit_conversion);
-static_assert(convertible(dimensionless_rate, kind_of<angular_measure / time>) == explicit_conversion);
-static_assert(convertible(dimensionless_rate, solid_angular_measure / time) == explicit_conversion);
-static_assert(convertible(dimensionless_rate, kind_of<solid_angular_measure / time>) == explicit_conversion);
+static_assert(convertible(dimensionless_rate, angular_measure / time) == explicit_only);
+static_assert(convertible(dimensionless_rate, kind_of<angular_measure / time>) == explicit_only);
+static_assert(convertible(dimensionless_rate, solid_angular_measure / time) == explicit_only);
+static_assert(convertible(dimensionless_rate, kind_of<solid_angular_measure / time>) == explicit_only);
 
-static_assert(convertible(kind_of<dimensionless_rate>, angular_measure / time) == yes);
-static_assert(convertible(kind_of<dimensionless_rate>, solid_angular_measure / time) == yes);
+static_assert(convertible(kind_of<dimensionless_rate>, angular_measure / time) == implicit);
+static_assert(convertible(kind_of<dimensionless_rate>, solid_angular_measure / time) == implicit);
 
-static_assert(convertible(kind_of<dimensionless_rate>, kind_of<angular_measure / time>) == yes);
-static_assert(convertible(kind_of<dimensionless_rate>, kind_of<solid_angular_measure / time>) == yes);
+static_assert(convertible(kind_of<dimensionless_rate>, kind_of<angular_measure / time>) == implicit);
+static_assert(convertible(kind_of<dimensionless_rate>, kind_of<solid_angular_measure / time>) == implicit);
 
-static_assert(convertible(dimensionless / time, dimensionless_rate) == yes);
-static_assert(convertible(angular_measure / time, dimensionless_rate) == explicit_conversion_beyond_kind);
-static_assert(convertible(solid_angular_measure / time, dimensionless_rate) == explicit_conversion_beyond_kind);
+static_assert(convertible(dimensionless / time, dimensionless_rate) == implicit);
+static_assert(convertible(angular_measure / time, dimensionless_rate) == explicit_only);
+static_assert(convertible(solid_angular_measure / time, dimensionless_rate) == explicit_only);
 
-static_assert(convertible(kind_of<dimensionless / time>, dimensionless_rate) == yes);
-static_assert(convertible(kind_of<angular_measure / time>, dimensionless_rate) == explicit_conversion_beyond_kind);
-static_assert(convertible(kind_of<solid_angular_measure / time>, dimensionless_rate) ==
-              explicit_conversion_beyond_kind);
+static_assert(convertible(kind_of<dimensionless / time>, dimensionless_rate) == implicit);
+static_assert(convertible(kind_of<angular_measure / time>, dimensionless_rate) == explicit_only);
+static_assert(convertible(kind_of<solid_angular_measure / time>, dimensionless_rate) == explicit_only);
 
-static_assert(convertible(dimensionless / time, kind_of<dimensionless_rate>) == yes);
-static_assert(convertible(angular_measure / time, kind_of<dimensionless_rate>) == explicit_conversion_beyond_kind);
-static_assert(convertible(solid_angular_measure / time, kind_of<dimensionless_rate>) ==
-              explicit_conversion_beyond_kind);
+static_assert(convertible(dimensionless / time, kind_of<dimensionless_rate>) == implicit);
+static_assert(convertible(angular_measure / time, kind_of<dimensionless_rate>) == explicit_only);
+static_assert(convertible(solid_angular_measure / time, kind_of<dimensionless_rate>) == explicit_only);
 
-static_assert(convertible(kind_of<dimensionless / time>, kind_of<dimensionless_rate>) == yes);
-static_assert(convertible(kind_of<angular_measure / time>, kind_of<dimensionless_rate>) ==
-              explicit_conversion_beyond_kind);
-static_assert(convertible(kind_of<solid_angular_measure / time>, kind_of<dimensionless_rate>) ==
-              explicit_conversion_beyond_kind);
+static_assert(convertible(kind_of<dimensionless / time>, kind_of<dimensionless_rate>) == implicit);
+static_assert(convertible(kind_of<angular_measure / time>, kind_of<dimensionless_rate>) == explicit_only);
+static_assert(convertible(kind_of<solid_angular_measure / time>, kind_of<dimensionless_rate>) == explicit_only);
 
-static_assert(convertible(angular_measure / time, solid_angular_measure_rate) == no);
-static_assert(convertible(angular_measure / time, kind_of<solid_angular_measure_rate>) == no);
-static_assert(convertible(kind_of<angular_measure / time>, kind_of<solid_angular_measure_rate>) == no);
+static_assert(convertible(angular_measure / time, solid_angular_measure_rate) == none);
+static_assert(convertible(angular_measure / time, kind_of<solid_angular_measure_rate>) == none);
+static_assert(convertible(kind_of<angular_measure / time>, kind_of<solid_angular_measure_rate>) == none);
 
-static_assert(convertible(dimensionless / time, angular_measure_rate) == explicit_conversion);
-static_assert(convertible(dimensionless / time, solid_angular_measure_rate) == explicit_conversion);
+static_assert(convertible(dimensionless / time, angular_measure_rate) == explicit_only);
+static_assert(convertible(dimensionless / time, solid_angular_measure_rate) == explicit_only);
 
-static_assert(convertible(dimensionless / time, kind_of<angular_measure_rate>) == yes);
-static_assert(convertible(dimensionless / time, kind_of<solid_angular_measure_rate>) == yes);
+static_assert(convertible(dimensionless / time, kind_of<angular_measure_rate>) == explicit_only);
+static_assert(convertible(dimensionless / time, kind_of<solid_angular_measure_rate>) == explicit_only);
 
-static_assert(convertible(kind_of<dimensionless / time>, angular_measure_rate) == yes);
-static_assert(convertible(kind_of<dimensionless / time>, solid_angular_measure_rate) == yes);
+static_assert(convertible(kind_of<dimensionless / time>, angular_measure_rate) == implicit);
+static_assert(convertible(kind_of<dimensionless / time>, solid_angular_measure_rate) == implicit);
 
-static_assert(convertible(kind_of<dimensionless / time>, kind_of<angular_measure_rate>) == yes);
-static_assert(convertible(kind_of<dimensionless / time>, kind_of<solid_angular_measure_rate>) == yes);
+static_assert(convertible(kind_of<dimensionless / time>, kind_of<angular_measure_rate>) == implicit);
+static_assert(convertible(kind_of<dimensionless / time>, kind_of<solid_angular_measure_rate>) == implicit);
 
 // get_common_quantity_spec
 static_assert(get_common_quantity_spec(length, length) == length);

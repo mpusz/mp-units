@@ -12,7 +12,7 @@ of quantities, units, and related types.
 !!! info
 
     For obtaining textual representations of units and dimensions, see the
-    [Text Output](text_output.md) chapter.
+    [Text Output](../framework_basics/text_output.md) chapter.
 
 
 ## `dimension`

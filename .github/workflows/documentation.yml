@@ -106,7 +106,7 @@ jobs:
         # are still generated, but to MrDocs' layout rather than this project's.
         # Keep the version in step with requirements.txt.
         run: |
-          pip install mkdocs-material mkdocs-rss-plugin clang-format==21.1.8
+          pip install mkdocs-material mkdocs-rss-plugin mkdocs-redirects clang-format==21.1.8
       - name: Install a newer libstdc++
         # MrDocs brings its own Clang and parses the headers against whichever
         # libstdc++ it finds. The runner's is old enough to make the `std::pair`
@@ -180,7 +180,7 @@ jobs:
         # Ahead of generating, not after it: clang-format lays out the synopses
         # during generation. Keep the version in step with requirements.txt.
         run: |
-          pip install conan mkdocs-material mkdocs-rss-plugin mkdocs-material[imaging] mike \
+          pip install conan mkdocs-material mkdocs-rss-plugin mkdocs-redirects mkdocs-material[imaging] mike \
                       clang-format==21.1.8
       - name: Install a newer libstdc++
         # MrDocs brings its own Clang and parses the headers against whichever

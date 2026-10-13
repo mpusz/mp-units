@@ -439,7 +439,16 @@ static_assert(Quantity<quantity<isq::stress[si::pascal], utility::cartesian_tens
 // `VectorRepresentation` subsumes `TensorRepresentation` (the latter is defined as the former plus
 // the order-2 case), so a VectorRepresentation-constrained overload is preferred over a
 // TensorRepresentation-constrained one for vector representations, while a genuine tensor matches
-// only the TensorRepresentation overload. This locks the subsumption ordering used to rank overloads.
+// only the TensorRepresentation overload. This locks the subsumption ordering that a user's overload
+// set would rely on.
+//
+// clang 21 needs 6 to 16 minutes for this namespace depending on -std, clang 20 under a minute.
+// clang 22 and 23 show the same growth on a reduced reproducer. The subsumption check normalizes
+// the three-deep nested disjunctions of the representation concepts, and from clang 21 on the cost
+// grows about twentyfold for every ten atomic constraints (a 71-line reproducer without includes
+// shows it). Nothing in the library ranks overloads by these concepts, so the lock is kept for the
+// other compilers.
+#if !(MP_UNITS_COMP_CLANG >= 21 && MP_UNITS_COMP_CLANG <= 23)
 namespace subsumption_check {
 template<detail::TensorRepresentation>
 consteval int grade()
@@ -461,6 +470,7 @@ static_assert(grade<utility::cartesian_vector<double>>() == 1);  // VectorRepres
 static_assert(grade<double>() == 0);                             // ScalarRepresentation wins (subsumes Vector)
 static_assert(grade<std::complex<double>>() == 0);               // a complex scalar is order 0 too
 }  // namespace subsumption_check
+#endif
 
 // cartesian_vector whose element is a quantity must not be a representation
 static_assert(!RepresentationOf<utility::cartesian_vector<quantity<si::metre>>, quantity_tensor_order::vector>);

@@ -59,17 +59,9 @@ inline constexpr auto electric_tension = voltage;
 QUANTITY_SPEC(induced_voltage, voltage);                      // TODO what is a correct equation here?
 QUANTITY_SPEC(electric_flux_density, electric_polarization);  // vector
 inline constexpr auto electric_displacement = electric_flux_density;
-QUANTITY_SPEC(magnetic_constant,
-              electric_potential* time / (electric_current * length));  // TODO what is a correct equation here?
-inline constexpr auto permeability_of_vacuum = magnetic_constant;
 QUANTITY_SPEC(phase_speed_of_electromagnetic_waves, angular_frequency / angular_wavenumber);
 // `speed_of_light_in_vacuum` (item 6-35.2) and its aliases live in `shared_quantities.h`
-QUANTITY_SPEC(electric_constant, inverse(magnetic_constant* pow<2>(speed_of_light_in_vacuum)));
-inline constexpr auto permittivity_of_vacuum = electric_constant;
 QUANTITY_SPEC(permittivity, electric_flux_density / electric_field_strength, quantity_tensor_order::scalar);
-QUANTITY_SPEC(relative_permittivity, dimensionless, permittivity / electric_constant);
-QUANTITY_SPEC(electric_susceptibility, dimensionless,
-              electric_polarization / electric_constant / electric_field_strength, quantity_tensor_order::scalar);
 QUANTITY_SPEC(electric_flux, electric_flux_density* area, quantity_tensor_order::scalar);
 QUANTITY_SPEC(displacement_current_density, electric_current_density, electric_flux_density / time);  // vector
 QUANTITY_SPEC(displacement_current, electric_current, displacement_current_density* area,
@@ -88,6 +80,14 @@ QUANTITY_SPEC(magnetization, magnetic_moment / volume);  // vector
 QUANTITY_SPEC(magnetic_field_strength, magnetization);   // vector
 inline constexpr auto magnetizing_field = magnetic_field_strength;
 QUANTITY_SPEC(permeability, magnetic_flux_density / magnetic_field_strength, quantity_tensor_order::scalar);
+QUANTITY_SPEC(magnetic_constant, permeability);  // IEC 80000-6 6-26.1: permeability of vacuum
+inline constexpr auto permeability_of_vacuum = magnetic_constant;
+QUANTITY_SPEC(electric_constant, permittivity,
+              inverse(magnetic_constant* pow<2>(speed_of_light_in_vacuum)));  // 6-14.1: permittivity of vacuum
+inline constexpr auto permittivity_of_vacuum = electric_constant;
+QUANTITY_SPEC(relative_permittivity, dimensionless, permittivity / electric_constant);
+QUANTITY_SPEC(electric_susceptibility, dimensionless,
+              electric_polarization / electric_constant / electric_field_strength, quantity_tensor_order::scalar);
 QUANTITY_SPEC(relative_permeability, dimensionless, permeability / magnetic_constant);
 QUANTITY_SPEC(magnetic_susceptibility, dimensionless, magnetization / magnetic_field_strength,
               quantity_tensor_order::scalar);
@@ -106,11 +106,11 @@ QUANTITY_SPEC(magnetic_tension, electric_current, magnetic_field_strength* posit
 QUANTITY_SPEC(magnetomotive_force, electric_current, magnetic_field_strength* position_vector,
               quantity_tensor_order::scalar);
 QUANTITY_SPEC(number_of_turns_in_a_winding, dimensionless, non_negative);
-QUANTITY_SPEC(reluctance, magnetic_tension / magnetic_flux);
+QUANTITY_SPEC(reluctance, magnetic_tension / total_magnetic_flux);
 QUANTITY_SPEC(permeance, inverse(reluctance));
-QUANTITY_SPEC(inductance, protoflux / electric_current);
+QUANTITY_SPEC(inductance, total_magnetic_flux / electric_current);
 inline constexpr auto self_inductance = inductance;
-QUANTITY_SPEC(mutual_inductance, inductance, protoflux / electric_current);
+QUANTITY_SPEC(mutual_inductance, inductance, total_magnetic_flux / electric_current);
 QUANTITY_SPEC(coupling_factor, dimensionless, mutual_inductance / pow<1, 2>(pow<2>(self_inductance)), non_negative);
 QUANTITY_SPEC(leakage_factor, dimensionless, pow<2>(coupling_factor), non_negative);
 QUANTITY_SPEC(conductivity, electric_current_density / electric_field_strength, quantity_tensor_order::scalar);

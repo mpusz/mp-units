@@ -122,11 +122,9 @@ This section contains all quantity hierarchy trees across all systems, grouped b
 ## Dimension: L⁻¹
 
 - [`isq::angular_repetency`](angular_repetency_isq.md) (6 quantities)
-- [`isq::attenuation`](attenuation.md) (1 quantity)
 - [`isq::curvature`](curvature.md) (1 quantity)
 - [`isq::linear_attenuation_coefficient`](linear_attenuation_coefficient.md) (2 quantities)
-- [`isq::phase_coefficient`](phase_coefficient_isq.md) (1 quantity)
-- [`isq::propagation_coefficient`](propagation_coefficient_isq.md) (1 quantity)
+- [`isq::propagation_coefficient`](propagation_coefficient_isq.md) (3 quantities)
 - [`isq::repetency`](repetency.md) (1 quantity)
 
 ## Dimension: T⁻²
@@ -250,7 +248,7 @@ This section contains all quantity hierarchy trees across all systems, grouped b
 ## Dimension: αL⁻¹
 
 - [`isq_angle::angular_repetency`](angular_repetency_isq_angle.md) (1 quantity)
-- [`isq_angle::phase_coefficient`](phase_coefficient_isq_angle.md) (1 quantity)
+- [`isq_angle::phase_coefficient`](phase_coefficient.md) (1 quantity)
 - [`isq_angle::propagation_coefficient`](propagation_coefficient_isq_angle.md) (1 quantity)
 
 ## Dimension: αT⁻²
@@ -432,8 +430,7 @@ This section contains all quantity hierarchy trees across all systems, grouped b
 
 ## Dimension: LMI⁻²T⁻²
 
-- [`isq::magnetic_constant`](magnetic_constant.md) (1 quantity)
-- [`isq::permeability`](permeability.md) (1 quantity)
+- [`isq::permeability`](permeability.md) (2 quantities)
 
 ## Dimension: LMI⁻¹T⁻²
 
@@ -533,8 +530,7 @@ This section contains all quantity hierarchy trees across all systems, grouped b
 
 ## Dimension: I²T⁴L⁻³M⁻¹
 
-- [`isq::electric_constant`](electric_constant.md) (1 quantity)
-- [`isq::permittivity`](permittivity.md) (1 quantity)
+- [`isq::permittivity`](permittivity.md) (2 quantities)
 
 ## Dimension: ML⁻¹Θ⁻¹T⁻²
 
@@ -548,4 +544,4 @@ This section contains all quantity hierarchy trees across all systems, grouped b
 
 - [`isq::Lorenz_coefficient`](Lorenz_coefficient.md) (1 quantity)
 
-**Total hierarchies:** 198
+**Total hierarchies:** 194

@@ -213,10 +213,10 @@ _voltage phasor_ shares everything with _voltage_ but is complex rather than rea
 ## Representation types for vector and tensor quantities
 
 The `quantity` class template's second parameter is constrained with
-[`RepresentationOf`](concepts.md#RepresentationOf), which verifies that the representation
-type satisfies the requirements for the quantity's character. See
-[Representation Types](representation_types.md) for the full details on requirements and
-how to use custom types.
+[`RepresentationOf`](../advanced_topics/concepts.md#RepresentationOf), which verifies that
+the representation type satisfies the requirements for the quantity's character. See
+[Representation Types](../advanced_topics/representation_types.md) for the full details on
+requirements and how to use custom types.
 
 !!! note
 
@@ -226,7 +226,7 @@ how to use custom types.
     `cartesian_tensor<T, N>` for second-order `N`×`N` Cartesian tensors, where the
     compile-time dimension `N` is `2` or `3` (default `3`). Any third-party linear
     algebra library types can also be used via the customization points described in
-    [Representation Types](representation_types.md).
+    [Representation Types](../advanced_topics/representation_types.md).
 
     Both types live in the `mp_units::utility` namespace. The snippets below assume a
     `using namespace mp_units::utility;` (or an `mp_units::utility::` qualification).
@@ -271,6 +271,6 @@ character on purpose, so it cannot be used where a vector representation is expe
 
 By that same ordering, a lower-order representation fills a higher-order slot, so the
 simpler types are still accepted for a tensor quantity: a fundamental type models a scalar
-tensor measure (for example a _von Mises stress_), and a `cartesian_vector` is also a valid
-tensor representation. See [Representation Types](representation_types.md) for the
-full rules.
+tensor measure (for example a _von Mises stress_), and a `cartesian_vector` is also a
+valid tensor representation. See [Representation
+Types](../advanced_topics/representation_types.md) for the full rules.

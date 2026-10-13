@@ -439,7 +439,7 @@ for `int64_t`, where 2.5.0's `intmax_t` widening provided no benefit (since `int
 
 !!! info
 
-    For implementation details, see [Built-in Scaling Algorithm](../../users_guide/framework_basics/representation_types.md#built-in-scaling-algorithm).
+    For implementation details, see [Built-in Scaling Algorithm](../../users_guide/advanced_topics/representation_types.md#built-in-scaling-algorithm).
 
 ??? question "Why not just use floating-point?"
 
@@ -941,7 +941,7 @@ automatic conversions the library performs transparently.
 !!! tip "Understanding the scaling algorithm"
 
     For a deep dive into how **mp-units** performs unit conversions and chooses
-    common units, see [How Scaling Works](../../users_guide/framework_basics/representation_types.md#how-scaling-works)
+    common units, see [How Scaling Works](../../users_guide/advanced_topics/representation_types.md#how-scaling-works)
     in the Representation Types guide. The library uses sophisticated algorithms
     including widened arithmetic for integer types to avoid UB during scaling
     operations, but `safe_int` is still necessary to catch overflow in the **result**

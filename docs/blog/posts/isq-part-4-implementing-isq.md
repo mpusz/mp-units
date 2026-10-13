@@ -149,8 +149,8 @@ implicitly:
     ```
 
 - _mechanical energy_ is a more "specialized" quantity than _energy_ (not every
-  _energy_ is a _mechanical energy_). It is why an explicit cast is needed to
-  convert from either _energy_ or the results of its
+  _energy_ is a _mechanical energy_). It is why an explicit conversion is needed
+  to convert from either _energy_ or the results of its
   [quantity equation](../../reference/glossary.md#quantity-equation):
 
     ```cpp

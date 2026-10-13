@@ -38,15 +38,15 @@ Core concepts that form the foundation of **mp-units**:
 - [Simple and Typed Quantities](framework_basics/simple_and_typed_quantities.md) - Two approaches to quantity creation
 - [Value Conversions](framework_basics/value_conversions.md) - Converting between representations
 - [Character of a Quantity](framework_basics/character_of_a_quantity.md) - Scalar, vector, and tensor quantities
-- [Representation Types](framework_basics/representation_types.md) - Numeric types for quantity values
+- [Representation Types](advanced_topics/representation_types.md) - Numeric types for quantity values
 - [`safe_int<T>`](framework_basics/safe_int.md) - Overflow-safe integer arithmetic wrapper
 - [Dimensionless Quantities](framework_basics/dimensionless_quantities.md) - Handling ratios and counts
 - [Quantity Arithmetics](framework_basics/quantity_arithmetics.md) - Mathematical operations
 - [Generic Interfaces](framework_basics/generic_interfaces.md) - Writing flexible, type-safe code
 - [Faster-than-lightspeed Constants](framework_basics/faster_than_lightspeed_constants.md) - Compile-time constant handling
 - [The Affine Space](framework_basics/the_affine_space.md) - Points, quantities, and origins
-- [Type Introspection](framework_basics/type_introspection.md) - Inspecting quantity types at compile time
-- [Concepts](framework_basics/concepts.md) - C++20 concepts used throughout the library
+- [Type Introspection](advanced_topics/type_introspection.md) - Inspecting quantity types at compile time
+- [Concepts](advanced_topics/concepts.md) - C++20 concepts used throughout the library
 - [Text Output](framework_basics/text_output.md) - Formatting and printing quantities
 <!-- markdownlint-enable MD013 -->
 

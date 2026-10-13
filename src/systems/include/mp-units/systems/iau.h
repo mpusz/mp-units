@@ -61,7 +61,8 @@ inline constexpr struct nominal_jovian_mass_parameter final : named_constant<sym
 using non_si::astronomical_unit;
 
 // Derived units
-inline constexpr struct parsec final : named_unit<"pc", astronomical_unit / (mag_ratio<1, 3600> * si::degree)> {} parsec;
+// IAU 2015 Resolution B2: exactly 648 000 / pi astronomical units (the au seen under one arcsecond)
+inline constexpr struct parsec final : named_unit<"pc", mag_ratio<648'000, 1> / π * astronomical_unit> {} parsec;
 
 // IAU 2015 Resolution B3 fixes the nominal mass *parameters* exactly and leaves the mass itself to
 // follow from "the current best estimate" of G, so this simply imports the current CODATA

@@ -111,7 +111,7 @@ accepts everything:
 
 ## Constraining function template arguments with concepts
 
-Much better generic code can be implemented using [basic concepts](concepts.md)
+Much better generic code can be implemented using [basic concepts](../advanced_topics/concepts.md)
 provided with the library:
 
 === "Original template notation"
@@ -145,10 +145,11 @@ provided with the library:
     }
     ```
 
-This explicitly states that the arguments passed by the user must not only satisfy
-a [`Quantity`](concepts.md#Quantity) concept, but also their quantity specification must
-be implicitly convertible to `isq::length` and `isq::duration` accordingly. This no longer
-leaves room for error while still allowing the compiler to generate the most efficient code.
+This explicitly states that the arguments passed by the user must not only satisfy a
+[`Quantity`](../advanced_topics/concepts.md#Quantity) concept, but also their quantity
+specification must be implicitly convertible to `isq::length` and `isq::duration`
+accordingly. This no longer leaves room for error while still allowing the compiler to
+generate the most efficient code.
 
 !!! tip
 
@@ -230,4 +231,4 @@ a function is actually what we expected here.
 
     The `QuantityOf` and `QuantityPointOf` concepts are probably the most useful, but there
     are a few more to play with. A list of all the concepts can be found in
-    the [Basic Concepts](concepts.md) chapter.
+    the [Basic Concepts](../advanced_topics/concepts.md) chapter.
