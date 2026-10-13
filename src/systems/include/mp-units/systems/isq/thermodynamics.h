@@ -43,10 +43,10 @@ QUANTITY_SPEC(linear_expansion_coefficient, inverse(length) * (length / thermody
 QUANTITY_SPEC(cubic_expansion_coefficient, inverse(volume) * (volume / thermodynamic_temperature));
 QUANTITY_SPEC(relative_pressure_coefficient, inverse(pressure) * (pressure / thermodynamic_temperature));
 QUANTITY_SPEC(pressure_coefficient, pressure / thermodynamic_temperature);
-QUANTITY_SPEC(isothermal_compressibility, compressibility, inverse(volume) * (volume / pressure),
-              is_kind);  // TODO how to handle "negative" part
-QUANTITY_SPEC(isentropic_compressibility, compressibility, inverse(volume) * (volume / pressure),
-              is_kind);  // TODO how to handle "negative" part
+QUANTITY_SPEC(isothermal_compressibility, compressibility,
+              inverse(volume) * (volume / pressure));  // TODO how to handle "negative" part
+QUANTITY_SPEC(isentropic_compressibility, compressibility,
+              inverse(volume) * (volume / pressure));  // TODO how to handle "negative" part
 // energy definition moved to mechanics
 QUANTITY_SPEC(internal_energy, energy);  // differs from ISO 80000
 QUANTITY_SPEC(heat, internal_energy);

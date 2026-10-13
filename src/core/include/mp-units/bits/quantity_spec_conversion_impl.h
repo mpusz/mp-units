@@ -56,7 +56,7 @@ template<typename From, typename To>
     if constexpr (QuantityKindSpec<From>)
       return detail::convertible_from_kind<from_root, to_root>();
     else
-      return detail::convertible_to_kind<from_root, to_root>();
+      return detail::with_kind_boundary<from_root, to_root, detail::convertible_to_kind<from_root, to_root>()>();
   } else {
     constexpr conversion_rank result =
       detail::convertible_by_equations<from_root, to_root, QuantityKindSpec<From>, QuantityKindSpec<To>>();
@@ -76,7 +76,7 @@ template<QuantitySpec From, QuantitySpec To>
   else if constexpr (QuantityKindSpec<From> || QuantityKindSpec<To>)
     return detail::convertible_kinds<From, To>();
   else if constexpr (NamedQuantitySpec<From> && NamedQuantitySpec<To>)
-    return detail::convertible_named<From, To>();
+    return detail::with_kind_boundary<From, To, detail::convertible_named<From, To>()>();
   else
     return detail::convertible_by_equations<From, To>();
 }

@@ -12,7 +12,10 @@ This page documents the version history and changes for the **mp-units** library
       written specification, the new chapter
       [Quantity Specification Conversions](https://mpusz.github.io/mp-units/latest/users_guide/advanced_topics/quantity_spec_conversions/).
       Conversions between two named quantities are unchanged, except where the definitions
-      listed below changed. Where quantity equations or kinds take part, a few patterns
+      listed below changed or the source carries, through its equation, a declared kind its
+      target doesn't: `isq::period_of_binary_digits` carries `storage_capacity` and converts
+      to `isq::duration` only explicitly, as an angle per length does to `1 / length`.
+      Where quantity equations or kinds take part, a few patterns
       that used to compile now need an explicit conversion or are ill-formed. A declared
       kind (`is_kind`) is a boundary in both directions:
       `quantity<isq::angular_measure[rad]> a = isq::arc_length(arc) / isq::radius(r);`
@@ -51,7 +54,12 @@ This page documents the version history and changes for the **mp-units** library
       children of `permeability` and `permittivity` (IEC 80000-6 items 6-26.1 and 6-14.1),
       so `relative_permeability` and `relative_permittivity` are ratios within one tree.
       `isq::propagation_coefficient` is a complex quantity with `isq::attenuation` and
-      `isq::phase_coefficient` as its real children (ISO 80000-3 item 3-26)
+      `isq::phase_coefficient` as its real children (ISO 80000-3 item 3-26). The phase
+      coefficient carries a phase angle that the propagation coefficient doesn't, so it
+      converts to its parent only explicitly. `isq::isothermal_compressibility` and
+      `isq::isentropic_compressibility` are no longer `is_kind`: ISO 80000-4 item 4-20 treats
+      them as compressibility under a stated condition, so both convert to
+      `isq::compressibility` implicitly and to each other with `quantity_cast`
 - fix: the converting constructor of `quantity` no longer asks the source for its value in
       the source's own unit, so a product whose unit carries more angles than its quantity
       specification (`moment_of_inertia * pow<2>(angular_velocity)` in `kg m² rad²/s²`)

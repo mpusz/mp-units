@@ -197,6 +197,20 @@ template<typename FromNum, typename FromDen, typename ToNum, typename ToDen, boo
     return implicit;
 }
 
+// The tree rule looks only at positions in a hierarchy, so on its own it would let an upcast drop a
+// declared kind that only the source's equation carries: `isq::phase_coefficient`, defined as
+// `phase_angle / path_length`, below `isq::propagation_coefficient`, which carries no angle. Where the
+// tree rule says `implicit`, the kind boundary of the two quantities decides. Below `implicit` the
+// tree rule's answer stands.
+template<typename From, typename To, conversion_rank TreeRank>
+[[nodiscard]] consteval conversion_rank with_kind_boundary()
+{
+  if constexpr (TreeRank != conversion_rank::implicit)
+    return TreeRank;
+  else
+    return detail::kind_boundary<type_list<From>, type_list<>, type_list<To>, type_list<>, false>();
+}
+
 // operation ranks
 
 // Expanding a To factor `M` is the tree rule `A(M) -> M`: `implicit` when `M` defines its equation,
@@ -566,16 +580,6 @@ struct substituted<Num, Den, I, false> : substituted_side<Den, Num, I> {
   using den = substituted_side<Den, Num, I>::this_list;
 };
 
-// The position of the first factor of depth `Depth` in a list that has one.
-template<int Depth, typename... Ts>
-[[nodiscard]] consteval std::size_t index_of_depth(type_list<Ts...>)
-{
-  std::size_t index = 0;
-  bool found = false;
-  ((found = found || quantity_spec_depth<expr_type<Ts>>::value == Depth, index += !found), ...);
-  return index;
-}
-
 template<conversion_rank Rank, typename FromNum, typename FromDen, typename ToNum, typename ToDen, bool SourceIsKind>
 [[nodiscard]] consteval conversion_rank reduce();
 
@@ -599,11 +603,42 @@ template<conversion_rank Rank, typename FromNum, typename FromDen, typename ToNu
                         FromNum, FromDen, typename side::num, typename side::den, SourceIsKind>();
 }
 
-// Reduce the deepest factor: nothing pairs and nothing self-cancels, so the factor of greatest
-// depth is expanded (ties: From numerator, From denominator, To numerator, To
-// denominator, then list order). The deepest factor is reduced first, so the two sides meet at the
-// most specific common equation. Flattening both sides to base quantities would rank
-// `acceleration * time -> special_speed` `explicit_only` instead of `cast`.
+// Every factor of depth `Depth` in one list, from position `I` on, is expanded in turn and the best
+// rank is kept. Which of equally deep factors comes first in a list follows their names, so trying
+// only the first would let a name decide the verdict. The search stops at the first `implicit`.
+template<int Depth, bool Source, bool InNum, std::size_t I, conversion_rank Rank, typename FromNum, typename FromDen,
+         typename ToNum, typename ToDen, bool SourceIsKind>
+[[nodiscard]] consteval conversion_rank best_expansion()
+{
+  using list =
+    std::conditional_t<Source, std::conditional_t<InNum, FromNum, FromDen>, std::conditional_t<InNum, ToNum, ToDen>>;
+  if constexpr (I == type_list_size<list>)
+    return conversion_rank::none;
+  else {
+    constexpr conversion_rank here = [] {
+      if constexpr (quantity_spec_depth<expr_type<type_list_element<list, I>>>::value != Depth)
+        return conversion_rank::none;
+      else if constexpr (Source)
+        return detail::expand_source<Rank, FromNum, FromDen, ToNum, ToDen, InNum, I, SourceIsKind>();
+      else
+        return detail::expand_target<Rank, FromNum, FromDen, ToNum, ToDen, InNum, I, SourceIsKind>();
+    }();
+    if constexpr (here == conversion_rank::implicit)
+      return here;
+    else {
+      constexpr conversion_rank rest =
+        detail::best_expansion<Depth, Source, InNum, I + 1, Rank, FromNum, FromDen, ToNum, ToDen, SourceIsKind>();
+      return here > rest ? here : rest;
+    }
+  }
+}
+
+// Reduce the deepest factor: nothing pairs and nothing self-cancels, so a factor of greatest depth is
+// expanded. The list it comes from is the first one holding that depth, in the order From numerator,
+// From denominator, To numerator, To denominator; within that list every factor of that depth is tried
+// (see `best_expansion`). The deepest factor is reduced first, so the two sides meet at the most
+// specific common equation. Flattening both sides to base quantities would rank
+// `inverse(repetency) -> height` `explicit_only` instead of `cast`.
 template<conversion_rank Rank, typename FromNum, typename FromDen, typename ToNum, typename ToDen, bool SourceIsKind>
 [[nodiscard]] consteval conversion_rank reduce_deepest()
 {
@@ -616,17 +651,13 @@ template<conversion_rank Rank, typename FromNum, typename FromDen, typename ToNu
     // nothing left has an equation and nothing pairs or self-cancels
     return conversion_rank::none;
   else if constexpr (from_num_depth == deepest)
-    return detail::expand_source<Rank, FromNum, FromDen, ToNum, ToDen, true, detail::index_of_depth<deepest>(FromNum{}),
-                                 SourceIsKind>();
+    return detail::best_expansion<deepest, true, true, 0, Rank, FromNum, FromDen, ToNum, ToDen, SourceIsKind>();
   else if constexpr (from_den_depth == deepest)
-    return detail::expand_source<Rank, FromNum, FromDen, ToNum, ToDen, false,
-                                 detail::index_of_depth<deepest>(FromDen{}), SourceIsKind>();
+    return detail::best_expansion<deepest, true, false, 0, Rank, FromNum, FromDen, ToNum, ToDen, SourceIsKind>();
   else if constexpr (to_num_depth == deepest)
-    return detail::expand_target<Rank, FromNum, FromDen, ToNum, ToDen, true, detail::index_of_depth<deepest>(ToNum{}),
-                                 SourceIsKind>();
+    return detail::best_expansion<deepest, false, true, 0, Rank, FromNum, FromDen, ToNum, ToDen, SourceIsKind>();
   else
-    return detail::expand_target<Rank, FromNum, FromDen, ToNum, ToDen, false, detail::index_of_depth<deepest>(ToDen{}),
-                                 SourceIsKind>();
+    return detail::best_expansion<deepest, false, false, 0, Rank, FromNum, FromDen, ToNum, ToDen, SourceIsKind>();
 }
 
 // The two single-factor rules that come before pairing, in their order: exact equation first, then
@@ -722,9 +753,9 @@ template<typename FromNum, typename FromDen, typename ToNum, typename ToDen, boo
     if constexpr (SourceIsKind)
       return detail::convertible_from_kind<from, to>();
     else if constexpr (TargetIsKind)
-      return detail::convertible_to_kind<from, to>();
+      return detail::with_kind_boundary<from, to, detail::convertible_to_kind<from, to>()>();
     else
-      return detail::convertible_named<from, to>();
+      return detail::with_kind_boundary<from, to, detail::convertible_named<from, to>()>();
   } else
     return detail::weaker(detail::reduce<conversion_rank::implicit, FromNum, FromDen, ToNum, ToDen, SourceIsKind>(),
                           detail::kind_boundary<FromNum, FromDen, ToNum, ToDen, SourceIsKind>());

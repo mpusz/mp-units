@@ -167,15 +167,16 @@ flowchart TD
 ```
 
 Step 2 makes one operation at a time. After each operation it starts again from the top,
-until both sides are the same, which is usually when both are empty:
+until both sides are the same: both empty, or the same product right after an exact
+equation:
 
 ```mermaid
 flowchart TD
     left{step 2:<br>both sides the same?} -- yes --> done([go to step 3])
     left -- no --> single{exact equation, or<br>a product of its own tree?}
-    single -- no --> pair[pair the factors of every<br>tree found on both sides]
+    single -- no --> pair[pair the factors of every<br>tree found on both sides,<br>except siblings still waiting]
     single -- yes --> sub[expand it]
-    pair --> apart{a pair ranking none, or<br>different roots of one<br>dimension left unpaired?}
+    pair --> apart{a pair ranking none, or<br>different roots of one<br>dimension left unpaired,<br>neither equation mentioning<br>the other's tree?}
     apart -- yes --> r_no([none])
     apart -- no --> paired{anything paired?}
     paired -- no --> cancel{the other side empty,<br>and self-cancel possible?}
@@ -265,14 +266,17 @@ _frequency_ is defined over _period duration_, so this one needs `isq::frequency
 
 ## Two named quantities
 
-Between two named quantities only their positions in the hierarchy matter, and equations
-are not consulted.
+Between two named quantities their positions in the hierarchy decide. Equations are
+consulted only for the declared kinds they carry, as the kind boundary in
+[Derived quantities](#derived-quantities) describes.
 
 1. Different trees: `none`. _Frequency_ and _activity_ both have the dimension of inverse
    time and have nothing in common.
-2. The source is a descendant of the target: `implicit`, unless a declared kind lies on
-   the way up, the source included and the target excluded, which makes it
-   `explicit`.
+2. The source is a descendant of the target: `implicit`, unless the source carries a
+   declared kind that the target doesn't, which makes it `explicit`. The kind may lie on
+   the way up, the source included and the target excluded, or come from the source's
+   equation: _phase coefficient_ is defined as `phase_angle / path_length`, so it carries
+   a phase angle that its parent _propagation coefficient_ doesn't.
 3. The target is a descendant of the source: `explicit`.
 4. Neither: `cast` if both have the same kind root, otherwise `none`.
 
@@ -281,6 +285,8 @@ static_assert(!castable(isq::frequency, isq::activity));                     // 
 static_assert(implicitly_convertible(isq::width, isq::length));              // 2
 static_assert(explicitly_convertible(isq::angular_measure, dimensionless));  // 2, kind loss
 static_assert(!implicitly_convertible(isq::angular_measure, dimensionless));
+static_assert(explicitly_convertible(isq::phase_coefficient, isq::propagation_coefficient));  // 2
+static_assert(!implicitly_convertible(isq::phase_coefficient, isq::propagation_coefficient));
 static_assert(explicitly_convertible(isq::length, isq::width));              // 3
 static_assert(!implicitly_convertible(isq::length, isq::width));
 static_assert(castable(isq::height, isq::width));                            // 4
@@ -350,7 +356,7 @@ The rules say which operation applies when more than one could:
 - **Common factors cancel first.** A factor present on both sides, in the same part, is
     canceled before any operation. The rest is then decided as if it were converted on its
     own: `isq::phase_coefficient * isq::mass` to
-    `isq::propagation_coefficient * isq::mass` is `implicit`, like the bare pair.
+    `isq::propagation_coefficient * isq::mass` is `explicit`, like the bare pair.
 - **Exact equation first.** If one side is a single named quantity, possibly raised to a
     power, and the other side is exactly the equation of that quantity's defining ancestor
     raised to the same power, that factor is expanded before any other operation.
@@ -373,32 +379,35 @@ The rules say which operation applies when more than one could:
     of their tree is present. When a tree offers several ways to pair, the rank of the
     pairing is the best over all pairings of that tree's factors.
 - **Different roots stay apart.** Two named quantities of the same dimension from
-    different trees, left over after pairing, form a pair too, and such a pair is `none`,
-    unless the equation of either mentions the other's tree, in which case the equations
-    decide. This keeps roots of one dimension apart inside products:
-    `isq::frequency * isq::width` to `isq::activity * isq::length` is `none`, because
-    neither equation mentions the other's tree. An equation that does mention the other
-    tree still resolves: `isq::radiant_intensity * isq::solid_angular_measure` to
-    `isq::radiant_flux` is `implicit`.
+    different trees, left over after pairing, end the conversion with `none`, unless the
+    equation of either mentions the other's tree, in which case the equations decide. This
+    keeps roots of one dimension apart inside products: `isq::frequency * isq::width` to
+    `isq::activity * isq::length` is `none`, because neither equation mentions the other's
+    tree. An equation that does mention the other tree still resolves:
+    `isq::radiant_intensity * isq::solid_angular_measure` to `isq::radiant_flux` is
+    `implicit`.
 - **Self-cancel only against an empty side.** A side may self-cancel only once the other
     side is empty. Otherwise `isq::arc_length / isq::radius` to `isq::angular_measure`
     would cancel the source into a number before the equation is used.
 - **Reduce the deepest factor.** When nothing else applies, the factor with the greatest
     depth is expanded. Ties go, in this order, to the source numerator, the source
-    denominator, the target numerator, the target denominator, then to list order. The
-    factor with the greatest depth is reduced first, so both sides meet at the most
-    specific common equation.
+    denominator, the target numerator, the target denominator. Within that list every
+    factor of that depth is tried and the best rank is kept, so the names of the
+    quantities never decide the result. The factor with the greatest depth is reduced
+    first, so both sides meet at the most specific common equation.
 
-The process stops when both lists are empty. Its rank is the lowest rank of the operations
-taken, or `implicit` if no operation was needed, lowered further by the kind boundary
-where it applies. It stops with `none` when a pair ranks `none`, or when factors remain
-and no operation applies.
+The process stops when both lists are the same: both empty, or the same product right
+after an exact equation. Its rank is the lowest rank of the operations taken, or
+`implicit` if no operation was needed, lowered further by the kind boundary where it
+applies. It stops with `none` when a pair ranks `none`, or when factors remain and no
+operation applies.
 
 ### Worked examples
 
-Each diagram below follows one conversion through the procedure. A box shows what is
-left to convert, an arrow is one operation with its rank, and the conversion gets the
-lowest rank of its arrows.
+Each diagram below follows one conversion through the procedure. A box shows what is left
+to convert, an arrow is one operation with its rank, and the conversion gets the lowest
+rank of its arrows. When the kind boundary applies, it is the last arrow, and it can only
+lower the result.
 
 ??? example "`isq::width * isq::height` → `isq::area`: `implicit`"
 
@@ -521,10 +530,10 @@ lowest rank of its arrows.
 ??? example "`isq::angular_velocity * isq::radius / isq::speed` → `dimensionless`: `explicit`"
 
     In ISQ `angular_velocity` is `angular_displacement / duration`, and
-    `angular_displacement` is an alias of `rotational_displacement`, which inherits
-    `path_length / radius` from _angular measure_. Every operation is `implicit`, but the
-    source carries _angular measure_ and the target carries nothing, so the kind boundary
-    makes the conversion `explicit`:
+    `angular_displacement` is an alias of `rotational_displacement`, which restates the
+    equation `path_length / radius` of _angular measure_. Every operation is `implicit`,
+    but the source carries _angular measure_ and the target carries nothing, so the kind
+    boundary makes the conversion `explicit`:
 
     ```mermaid
     flowchart TD
@@ -548,8 +557,8 @@ lowest rank of its arrows.
 
 ??? example "The same divided by `isq::angular_measure`: `implicit`"
 
-    The source carries the angle once in the numerator and once in the denominator. The
-    two angles cancel each other, nothing is lost, and the result is `implicit`:
+    The source carries the angle once in the numerator and once in the denominator, so
+    the carried kinds balance:
 
     ```mermaid
     flowchart TD
@@ -563,7 +572,7 @@ lowest rank of its arrows.
         B -->|"self-cancel rotational_displacement against angular_measure (source): <b>implicit</b>, the numerator and the denominator both leave the kind angular_measure, both noted for the kind boundary"| C
         C -->|"expand speed (source): <b>implicit</b>, the two duration factors cancel"| D
         D -->|"self-cancel radius against length (source): <b>implicit</b>"| E
-        E -->|"kind boundary: the two departures from angular_measure balance, so no kind is lost: <b>implicit</b>"| F
+        E -->|"kind boundary: the source carries angular_measure in its numerator and its denominator, which cancel, so no kind is lost: <b>implicit</b>"| F
     ```
 
     ```cpp
