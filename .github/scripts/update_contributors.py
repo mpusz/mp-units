@@ -172,9 +172,16 @@ def update_contributors_file(
 
     before = content.split(START_MARKER)[0]
     after = content.split(END_MARKER)[1]
+    # Leave the file untouched when nobody new appeared, so the date stamp alone
+    # never produces a diff and the workflow opens no empty pull request
+    rendered = render_list(contributors)
+    if f"{START_MARKER}\n\n{rendered}\n\n_{len(contributors)} people," in content:
+        print(f"No new contributors; {path} left unchanged")
+        return
+
     stamp = date.today().isoformat()
     block = (
-        f"{START_MARKER}\n\n{render_list(contributors)}\n\n"
+        f"{START_MARKER}\n\n{rendered}\n\n"
         f"_{len(contributors)} people, last updated {stamp}._\n\n{END_MARKER}"
     )
 
