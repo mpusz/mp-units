@@ -99,22 +99,19 @@ struct carried_kinds_result {
   using den = Den;
 };
 
-// Every `is_kind` ancestor-or-self of a quantity, as a sorted factor list.
+// Every `is_kind` ancestor-or-self of a quantity, as a sorted factor list. The nearest one is the
+// kind root, so the walk jumps straight to it, and a quantity whose kind root is the undeclared root
+// of its tree has none.
 template<typename Q>
 [[nodiscard]] consteval auto declared_kinds_of()
 {
-  if constexpr (!HasParent<Q>) {
-    if constexpr (DeclaredKind<Q>)
-      return type_list<Q>{};
-    else
-      return type_list<>{};
-  } else {
-    using above = decltype(detail::declared_kinds_of<parent_of<Q>>());
-    if constexpr (DeclaredKind<Q>)
-      return merge_quantity_spec_factors<type_list<Q>, above>{};
-    else
-      return above{};
-  }
+  using nearest = kind_root<Q>;
+  if constexpr (!DeclaredKind<nearest>)
+    return type_list<>{};
+  else if constexpr (!HasParent<nearest>)
+    return type_list<nearest>{};
+  else
+    return merge_quantity_spec_factors<type_list<nearest>, decltype(detail::declared_kinds_of<parent_of<nearest>>())>{};
 }
 
 template<typename Q>
@@ -137,9 +134,27 @@ template<typename List>
   }
 }
 
+// Whether any factor of a list carries a declared kind. Most factors carry none, and a side made
+// only of such factors carries none either, so its merge walk is skipped.
+template<typename... Ts>
+[[nodiscard]] consteval bool any_carries_kinds(type_list<Ts...>)
+{
+  return (... || (type_list_size<typename carried_kinds<expr_type<Ts>>::num> +
+                    type_list_size<typename carried_kinds<expr_type<Ts>>::den> >
+                  0));
+}
+
 // The declared kinds a side `Num / Den` carries, with what appears in both parts canceled.
-template<typename Num, typename Den>
+template<typename Num, typename Den,
+         bool Carries = detail::any_carries_kinds(Num{}) || detail::any_carries_kinds(Den{})>
 struct side_carried_kinds {
+  using normalised = carried_kinds_result<type_list<>, type_list<>>;
+  using num = type_list<>;
+  using den = type_list<>;
+};
+
+template<typename Num, typename Den>
+struct side_carried_kinds<Num, Den, true> {
   using num_part = decltype(detail::list_carried_kinds<Num>());
   using den_part = decltype(detail::list_carried_kinds<Den>());
   using normalised =
@@ -149,24 +164,19 @@ struct side_carried_kinds {
   using den = normalised::den;
 };
 
-template<typename Q>
-[[nodiscard]] consteval auto quantity_carried_kinds()
-{
-  using chain = decltype(detail::declared_kinds_of<Q>());
-  if constexpr (HasEquation<Q>) {
-    using from_equation =
-      typename side_carried_kinds<typename equation_of<Q>::_num_, typename equation_of<Q>::_den_>::normalised;
-    return carried_kinds_result<merge_quantity_spec_factors<chain, typename from_equation::num>,
-                                typename from_equation::den>{};
-  } else
-    return carried_kinds_result<chain, type_list<>>{};
-}
-
 // What a named quantity carries: its `is_kind` chain (every `is_kind` ancestor-or-self) and
 // whatever its equation carries, recursively. A base quantity not declared `is_kind` carries
 // nothing. It is a class template, so the compiler computes it once per quantity.
 template<typename Q>
-struct carried_kinds : decltype(detail::quantity_carried_kinds<Q>()) {};
+struct carried_kinds : carried_kinds_result<decltype(detail::declared_kinds_of<Q>()), type_list<>> {};
+
+template<HasEquation Q>
+struct carried_kinds<Q> :
+    carried_kinds_result<
+      merge_quantity_spec_factors<
+        decltype(detail::declared_kinds_of<Q>()),
+        typename side_carried_kinds<typename equation_of<Q>::_num_, typename equation_of<Q>::_den_>::normalised::num>,
+      typename side_carried_kinds<typename equation_of<Q>::_num_, typename equation_of<Q>::_den_>::normalised::den> {};
 
 // `lost` holds the declared kinds that From carries in excess of To, and `gained` those that To
 // carries in excess of From. The positive and the negative parts are compared separately, so an
@@ -174,11 +184,11 @@ struct carried_kinds : decltype(detail::quantity_carried_kinds<Q>()) {};
 // the cap on gained kinds. A kind lost together with one gained is `none`, and that includes the same
 // kind lost in one part and gained in the other (`angular_measure` to `inverse(angular_measure)`).
 template<typename FromNum, typename FromDen, typename ToNum, typename ToDen, bool SourceIsKind>
-[[nodiscard]] consteval conversion_rank kind_boundary()
+[[nodiscard]] consteval conversion_rank kind_boundary_rank()
 {
   using enum conversion_rank;
-  using from = side_carried_kinds<FromNum, FromDen>;
-  using to = side_carried_kinds<ToNum, ToDen>;
+  using from = carried_kinds_result<FromNum, FromDen>;
+  using to = carried_kinds_result<ToNum, ToDen>;
   using num_diff = simplify_quantity_spec_factors<typename from::num, typename to::num>;
   using den_diff = simplify_quantity_spec_factors<typename from::den, typename to::den>;
   using lost = type_list_join<typename num_diff::num, typename den_diff::num>;
@@ -195,6 +205,24 @@ template<typename FromNum, typename FromDen, typename ToNum, typename ToDen, boo
     return explicit_only;
   else
     return implicit;
+}
+
+// The kind boundary of a conversion from the side `FromNum / FromDen` to the side `ToNum / ToDen`.
+// Both sides most often carry the same declared kinds, usually none, and then nothing is lost or
+// gained.
+template<typename FromNum, typename FromDen, typename ToNum, typename ToDen, bool SourceIsKind>
+[[nodiscard]] consteval conversion_rank kind_boundary()
+{
+  using enum conversion_rank;
+  using from = side_carried_kinds<FromNum, FromDen>;
+  using to = side_carried_kinds<ToNum, ToDen>;
+  if constexpr (std::is_same_v<typename from::num, typename to::num> &&
+                std::is_same_v<typename from::den, typename to::den>)
+    // both sides carry the same declared kinds (most often none)
+    return implicit;
+  else
+    return detail::kind_boundary_rank<typename from::num, typename from::den, typename to::num, typename to::den,
+                                      SourceIsKind>();
 }
 
 // The tree rule looks only at positions in a hierarchy, so on its own it would let an upcast drop a
@@ -292,12 +320,14 @@ struct is_own_tree_product<type_list<>, type_list<E>> : is_own_tree_product_quan
 
 // pair
 
-template<conversion_rank Rank, typename FromRest, typename ToRest, bool Paired>
+// `has_cast` records whether a tree ranked `cast`, the only case in which `pair_lists` reads `All`.
+template<conversion_rank Rank, typename FromRest, typename ToRest, bool Paired, bool HasCast = false>
 struct pairing_result {
   static constexpr conversion_rank rank = Rank;
   using from_rest = FromRest;
   using to_rest = ToRest;
   static constexpr bool paired = Paired;
+  static constexpr bool has_cast = HasCast;
 };
 
 template<typename FromFactors, typename ToFactors, bool SourceIsKind>
@@ -440,12 +470,14 @@ template<typename From, typename To, typename All, bool SourceIsKind>
         decltype(detail::pair_lists<typename from_split::rest, typename to_split::rest, All, SourceIsKind>());
       using paired = pairing_result<detail::weaker(matched::rank, tail::rank),
                                     type_list_join<typename matched::from_rest, typename tail::from_rest>,
-                                    type_list_join<typename matched::to_rest, typename tail::to_rest>, true>;
+                                    type_list_join<typename matched::to_rest, typename tail::to_rest>, true,
+                                    matched::rank == cast || tail::has_cast>;
       // nested so that the scan of `All` is instantiated only for a tree that actually ranks `cast`
       if constexpr (matched::rank == cast) {
         if constexpr (detail::any_remaining_equation_mentions<from_root>(All{}))
           return pairing_result<tail::rank, type_list_join<typename from_split::factors, typename tail::from_rest>,
-                                type_list_join<typename to_split::factors, typename tail::to_rest>, tail::paired>{};
+                                type_list_join<typename to_split::factors, typename tail::to_rest>, tail::paired,
+                                true>{};
         else
           return paired{};
       } else
@@ -453,14 +485,30 @@ template<typename From, typename To, typename All, bool SourceIsKind>
     } else if constexpr (quantity_spec_sort_key<from_root>::name < quantity_spec_sort_key<to_root>::name) {
       using tail = decltype(detail::pair_lists<type_list_pop_front<From>, To, All, SourceIsKind>());
       return pairing_result<tail::rank, type_list_push_front<typename tail::from_rest, type_list_front<From>>,
-                            typename tail::to_rest, tail::paired>{};
+                            typename tail::to_rest, tail::paired, tail::has_cast>{};
     } else {
       using tail = decltype(detail::pair_lists<From, type_list_pop_front<To>, All, SourceIsKind>());
       return pairing_result<tail::rank, typename tail::from_rest,
-                            type_list_push_front<typename tail::to_rest, type_list_front<To>>, tail::paired>{};
+                            type_list_push_front<typename tail::to_rest, type_list_front<To>>, tail::paired,
+                            tail::has_cast>{};
     }
   }
 }
+
+template<bool HasCast, typename NumAlone, typename DenAlone, typename FromNum, typename FromDen, typename ToNum,
+         typename ToDen, bool SourceIsKind>
+struct paired_sides {
+  using num = NumAlone;
+  using den = DenAlone;
+};
+
+template<typename NumAlone, typename DenAlone, typename FromNum, typename FromDen, typename ToNum, typename ToDen,
+         bool SourceIsKind>
+struct paired_sides<true, NumAlone, DenAlone, FromNum, FromDen, ToNum, ToDen, SourceIsKind> {
+  using all = type_list_join<FromNum, FromDen, ToNum, ToDen>;
+  using num = decltype(detail::pair_lists<FromNum, ToNum, all, SourceIsKind>());
+  using den = decltype(detail::pair_lists<FromDen, ToDen, all, SourceIsKind>());
+};
 
 // Different roots stay apart: two named factors of one sign and one dimension from different trees,
 // left over after pairing, block the conversion with `none` (`frequency * width -> activity * length`).
@@ -481,13 +529,10 @@ template<typename Lhs, typename Rhs>
            !detail::equation_mentions<hierarchy_root<Lhs>, Rhs>();
 }
 
-template<typename Lhs, typename Rhs>
-struct blocking_pair : std::bool_constant<detail::is_blocking_pair<Lhs, Rhs>()> {};
-
 template<typename F, typename... Ts>
 [[nodiscard]] consteval bool blocks_any(type_list<Ts...>)
 {
-  return (... || blocking_pair<expr_type<F>, expr_type<Ts>>::value);
+  return (... || detail::is_blocking_pair<expr_type<F>, expr_type<Ts>>());
 }
 
 template<typename To, typename... Fs>
@@ -669,16 +714,22 @@ template<typename FromNum, typename FromDen, typename ToNum, typename ToDen>
 [[nodiscard]] consteval leading_operation find_leading_operation()
 {
   using enum leading_operation;
-  if constexpr (is_recipe<FromNum, FromDen, ToNum, ToDen>::value)
-    return expand_source;
-  else if constexpr (is_recipe<ToNum, ToDen, FromNum, FromDen>::value)
-    return expand_target;
-  else if constexpr (is_own_tree_product<FromNum, FromDen>::value)
-    return expand_source;
-  else if constexpr (is_own_tree_product<ToNum, ToDen>::value)
-    return expand_target;
-  else
-    return none;
+  // both rules need a side of a single factor, so the traits are not even instantiated otherwise
+  constexpr bool from_single = type_list_size<FromNum> + type_list_size<FromDen> == 1;
+  constexpr bool to_single = type_list_size<ToNum> + type_list_size<ToDen> == 1;
+  if constexpr (from_single) {
+    if constexpr (is_recipe<FromNum, FromDen, ToNum, ToDen>::value) return expand_source;
+  }
+  if constexpr (to_single) {
+    if constexpr (is_recipe<ToNum, ToDen, FromNum, FromDen>::value) return expand_target;
+  }
+  if constexpr (from_single) {
+    if constexpr (is_own_tree_product<FromNum, FromDen>::value) return expand_source;
+  }
+  if constexpr (to_single) {
+    if constexpr (is_own_tree_product<ToNum, ToDen>::value) return expand_target;
+  }
+  return none;
 }
 
 // One step of the procedure: done, a single-factor rule, pair (a cross-tree pair ends it with `none`),
@@ -688,20 +739,26 @@ template<conversion_rank Rank, typename FromNum, typename FromDen, typename ToNu
 [[nodiscard]] consteval conversion_rank reduce()
 {
   using enum conversion_rank;
-  constexpr leading_operation operation = detail::find_leading_operation<FromNum, FromDen, ToNum, ToDen>();
   if constexpr (std::is_same_v<FromNum, ToNum> && std::is_same_v<FromDen, ToDen>)
     // both sides are empty, or the same product (right after an exact equation)
     return Rank;
-  else if constexpr (operation == leading_operation::expand_source)
+  else if constexpr (constexpr leading_operation operation =
+                       detail::find_leading_operation<FromNum, FromDen, ToNum, ToDen>();
+                     operation == leading_operation::expand_source)
     return detail::expand_source<Rank, FromNum, FromDen, ToNum, ToDen, type_list_size<FromNum> == 1, 0, SourceIsKind>();
   else if constexpr (operation == leading_operation::expand_target)
     return detail::expand_target<Rank, FromNum, FromDen, ToNum, ToDen, type_list_size<ToNum> == 1, 0, SourceIsKind>();
   else {
     constexpr std::size_t from_size = type_list_size<FromNum> + type_list_size<FromDen>;
     constexpr std::size_t to_size = type_list_size<ToNum> + type_list_size<ToDen>;
-    using all = type_list_join<FromNum, FromDen, ToNum, ToDen>;
-    using num = decltype(detail::pair_lists<FromNum, ToNum, all, SourceIsKind>());
-    using den = decltype(detail::pair_lists<FromDen, ToDen, all, SourceIsKind>());
+    // Paired first without `All`, which keeps the pairing of one list pair the same instantiation in
+    // every step that meets it. Only when a tree ranks `cast` does the deferral need every factor.
+    using num_alone = decltype(detail::pair_lists<FromNum, ToNum, type_list<>, SourceIsKind>());
+    using den_alone = decltype(detail::pair_lists<FromDen, ToDen, type_list<>, SourceIsKind>());
+    using sides = paired_sides<num_alone::has_cast || den_alone::has_cast, num_alone, den_alone, FromNum, FromDen,
+                               ToNum, ToDen, SourceIsKind>;
+    using num = sides::num;
+    using den = sides::den;
     // same-tree factors pair first (the best pairing), so only what they leave can pair across trees
     if constexpr (detail::any_blocking_pair<typename num::to_rest>(typename num::from_rest{}) ||
                   detail::any_blocking_pair<typename den::to_rest>(typename den::from_rest{}))
@@ -756,10 +813,28 @@ template<typename FromNum, typename FromDen, typename ToNum, typename ToDen, boo
       return detail::with_kind_boundary<from, to, detail::convertible_to_kind<from, to>()>();
     else
       return detail::with_kind_boundary<from, to, detail::convertible_named<from, to>()>();
-  } else
-    return detail::weaker(detail::reduce<conversion_rank::implicit, FromNum, FromDen, ToNum, ToDen, SourceIsKind>(),
-                          detail::kind_boundary<FromNum, FromDen, ToNum, ToDen, SourceIsKind>());
+  } else if constexpr (constexpr conversion_rank rank =
+                         detail::reduce<conversion_rank::implicit, FromNum, FromDen, ToNum, ToDen, SourceIsKind>();
+                       rank == conversion_rank::none)
+    // the kind boundary can only lower the rank
+    return conversion_rank::none;
+  else
+    return detail::weaker(rank, detail::kind_boundary<FromNum, FromDen, ToNum, ToDen, SourceIsKind>());
 }
+
+// Whether two factor lists have a base in common, the only case in which simplifying them against
+// each other changes them.
+template<typename E, typename List>
+inline constexpr bool has_base = false;
+
+template<typename E, typename... Ts>
+inline constexpr bool has_base<E, type_list<Ts...>> = (... || std::is_same_v<expr_type<Ts>, expr_type<E>>);
+
+template<typename Lhs, typename Rhs>
+inline constexpr bool share_a_base = false;
+
+template<typename... Ls, typename Rhs>
+inline constexpr bool share_a_base<type_list<Ls...>, Rhs> = (... || has_base<Ls, Rhs>);
 
 // A factor common to both sides doesn't change how they relate: a factor present on both sides,
 // in the same part, is canceled before anything else, so `A * X -> B * X` is decided exactly as
@@ -769,10 +844,17 @@ template<typename From, typename To, bool SourceIsKind = false, bool TargetIsKin
 {
   using from = quantity_spec_factors<From>;
   using to = quantity_spec_factors<To>;
-  using num = simplify_quantity_spec_factors<typename from::num, typename to::num>;
-  using den = simplify_quantity_spec_factors<typename from::den, typename to::den>;
-  return detail::convertible_factors<typename num::num, typename den::num, typename num::den, typename den::den,
-                                     SourceIsKind, TargetIsKind>();
+  if constexpr (!share_a_base<typename from::num, typename to::num> &&
+                !share_a_base<typename from::den, typename to::den>)
+    // nothing to cancel, which is the common case
+    return detail::convertible_factors<typename from::num, typename from::den, typename to::num, typename to::den,
+                                       SourceIsKind, TargetIsKind>();
+  else {
+    using num = simplify_quantity_spec_factors<typename from::num, typename to::num>;
+    using den = simplify_quantity_spec_factors<typename from::den, typename to::den>;
+    return detail::convertible_factors<typename num::num, typename den::num, typename num::den, typename den::den,
+                                       SourceIsKind, TargetIsKind>();
+  }
 }
 
 }  // namespace mp_units::detail

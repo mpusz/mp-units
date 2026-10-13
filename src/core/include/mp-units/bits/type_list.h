@@ -180,6 +180,24 @@ struct type_list_join_impl<List<First...>, List<Second...>, Rest...> {
   using type = type_list_join_impl<List<First..., Second...>, Rest...>::type;
 };
 
+// Two, three and four lists, the arities the conversion engine joins, are joined in one step
+// rather than one instantiation per list.
+template<template<typename...> typename List, typename... First, typename... Second>
+struct type_list_join_impl<List<First...>, List<Second...>> {
+  using type = List<First..., Second...>;
+};
+
+template<template<typename...> typename List, typename... First, typename... Second, typename... Third>
+struct type_list_join_impl<List<First...>, List<Second...>, List<Third...>> {
+  using type = List<First..., Second..., Third...>;
+};
+
+template<template<typename...> typename List, typename... First, typename... Second, typename... Third,
+         typename... Fourth>
+struct type_list_join_impl<List<First...>, List<Second...>, List<Third...>, List<Fourth...>> {
+  using type = List<First..., Second..., Third..., Fourth...>;
+};
+
 template<TypeList... Lists>
 using type_list_join = type_list_join_impl<Lists...>::type;
 

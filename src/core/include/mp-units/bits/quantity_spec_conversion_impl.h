@@ -42,28 +42,6 @@ import std;
 // rules, or the equation rule, and the common quantity specification is derived from it.
 namespace mp_units::detail {
 
-// The kind rules with a `kind_of<>` on at least one side. A kind root `K` is a named quantity or a
-// derived specification of kind roots. When either side is derived the equation rule runs on `K`
-// itself, told that the source is a kind, so that each downcast step from it ranks `implicit` (see
-// the kind rules in `quantity_spec_hierarchy_conversion.h`).
-template<typename From, typename To>
-[[nodiscard]] consteval conversion_rank convertible_kinds()
-{
-  using enum conversion_rank;
-  using from_root = decltype(detail::remove_kind(From{}));
-  using to_root = decltype(detail::remove_kind(To{}));
-  if constexpr (NamedQuantitySpec<from_root> && NamedQuantitySpec<to_root>) {
-    if constexpr (QuantityKindSpec<From>)
-      return detail::convertible_from_kind<from_root, to_root>();
-    else
-      return detail::with_kind_boundary<from_root, to_root, detail::convertible_to_kind<from_root, to_root>()>();
-  } else {
-    constexpr conversion_rank result =
-      detail::convertible_by_equations<from_root, to_root, QuantityKindSpec<From>, QuantityKindSpec<To>>();
-    return result;
-  }
-}
-
 template<QuantitySpec From, QuantitySpec To>
 [[nodiscard]] consteval conversion_rank convertible(From, To)
 {
@@ -73,9 +51,22 @@ template<QuantitySpec From, QuantitySpec To>
   else if constexpr (!std::is_same_v<MP_UNITS_NONCONST_TYPE(From::_dimension_),
                                      MP_UNITS_NONCONST_TYPE(To::_dimension_)>)
     return none;
-  else if constexpr (QuantityKindSpec<From> || QuantityKindSpec<To>)
-    return detail::convertible_kinds<From, To>();
-  else if constexpr (NamedQuantitySpec<From> && NamedQuantitySpec<To>)
+  else if constexpr (QuantityKindSpec<From> || QuantityKindSpec<To>) {
+    // The kind rules with a `kind_of<>` on at least one side. A kind root `K` is a named quantity or a
+    // derived specification of kind roots. When either side is derived the equation rule runs on `K`
+    // itself, told that the source is a kind, so that each downcast step from it ranks `implicit` (see
+    // the kind rules in `quantity_spec_hierarchy_conversion.h`). They are inlined here rather than
+    // a function of their own, which would be one more instantiation per conversion.
+    using from_root = decltype(detail::remove_kind(From{}));
+    using to_root = decltype(detail::remove_kind(To{}));
+    if constexpr (NamedQuantitySpec<from_root> && NamedQuantitySpec<to_root>) {
+      if constexpr (QuantityKindSpec<From>)
+        return detail::convertible_from_kind<from_root, to_root>();
+      else
+        return detail::with_kind_boundary<from_root, to_root, detail::convertible_to_kind<from_root, to_root>()>();
+    } else
+      return detail::convertible_by_equations<from_root, to_root, QuantityKindSpec<From>, QuantityKindSpec<To>>();
+  } else if constexpr (NamedQuantitySpec<From> && NamedQuantitySpec<To>)
     return detail::with_kind_boundary<From, To, detail::convertible_named<From, To>()>();
   else
     return detail::convertible_by_equations<From, To>();
