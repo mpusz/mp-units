@@ -770,8 +770,8 @@ need a finite sentinel is
 
 Addition and subtraction follow the point/delta table from above. Adding or subtracting a
 raw scalar is ill-formed for every logarithmic quantity (`3 dB + 2` has no physical
-meaning). The only scalar interaction is multiplying a gain. Five more operations are
-worth spelling out.
+meaning). The only scalar interaction is multiplying or dividing a gain by a raw scalar.
+Five more operations are worth spelling out.
 
 !!! note "Why is `10 dBm + 10 dBm` ill-formed, and not `13 dBm`?"
 
@@ -795,24 +795,34 @@ worth spelling out.
     both operations available and distinct.
 
 **Negation.** Negating a gain produces another gain (the reciprocal linear ratio).
-Negating a *level* is also meaningful and permitted, because the log-domain value is
-signed: `-point<dBm>(10.0)` is `-10 dBm`, which is `0.1 mW`, a perfectly ordinary RF
-value. It does not produce a negative linear quantity.
+Negating a *level* while keeping its kind is ill-formed, for the same reason a linear point
+cannot be negated: the result depends on the origin. `10 dBm` and `-20 dBW` are the same
+10 mW, yet flipping the sign gives `-10 dBm` (0.1 mW) for one and `+20 dBW` (100 W) for
+the other. Negating a level and inverting its kind together is well-defined, and it is
+one of the operations in
+[Open Question 7](#7-chaining-transfer-functions-in-the-log-domain).
 
 ```cpp
 quantity attenuation = -(3.0 * dB<isq::power>);   // a 3 dB attenuation
-quantity low_power   = -point<dBm>(10.0);         // -10 dBm, 0.1 mW
+quantity low_power   = point<dBm>(-10.0);         // -10 dBm, 0.1 mW
+// auto bad          = -point<dBm>(10.0);         // ill-formed: the result depends on the origin
 ```
 
 **Scaling, powers, and roots.** Multiplying a gain by a scalar raises the linear ratio to
-a power, so it scales the log-domain value. Because a logarithm turns exponentiation into
-multiplication, `pow`, `sqrt`, and `cbrt` on a gain simply scale its numerical value:
+that power, so it scales the log-domain value: `2 * g` squares the ratio and `g / 2` takes
+its square root. `pow`, `sqrt`, and `cbrt` are ill-formed on a gain, because `sqrt(6 dB)`
+has more than one reading. The square root of the linear ratio is `3 dB`, while the square
+root of the stored number is `2.449 dB^½`, which means nothing. Everywhere else in
+**mp-units** `pow<2>(q)` means `q * q`, and the product of two gains is ill-formed
+(below), so a `pow<2>` that returned `2 * g` would break that identity for this one family
+of quantities. `g / 2` says the same thing without the ambiguity. We can add the overloads
+later if users need them, which costs far less than removing them after a release.
 
 ```cpp
 quantity g       = 6.0 * dB<isq::power>;  // linear ratio 10^0.6 ≈ 3.98
-quantity half_g  = sqrt(g);               // 3 dB, linear ratio ≈ 2.00
-quantity third_g = cbrt(g);               // 2 dB, linear ratio ≈ 1.58
-quantity twice_g = pow<2>(g);             // 12 dB, linear ratio ≈ 15.8
+quantity half_g  = g / 2;                 // 3 dB, linear ratio ≈ 2.00
+quantity twice_g = 2 * g;                 // 12 dB, linear ratio ≈ 15.8
+// auto bad      = sqrt(g);               // ill-formed: 3 dB or 2.449 dB^½?
 ```
 
 **Multiplying two gains is ill-formed.** Unlike linear quantities, where `delta × delta`
@@ -1335,6 +1345,19 @@ undefined (`dB SPL + dB SPL` as a product is a well-defined level in Pa²), it i
 superposition is the reading a user intends there, and that reading is underdetermined. So
 the question is which reading the notation invites, not which one the mathematics permits.
 
+Robin Savonen Söderholm
+[pointed out](https://github.com/mpusz/mp-units/discussions/845#discussioncomment-18847420)
+a case from statistics. The log-likelihood of a continuous observation is a level: the
+logarithm of a probability density, referenced to one over the unit of the variable, so
+switching from meters to millimeters lowers it by `ln 1000`, just as converting `dBm` to
+`dBW` lowers a level by 30. The difference of two log-likelihoods of the same data is a
+unit-free gain. The log-likelihoods of independent observations add, and that sum is the
+logarithm of the product of their densities, a same-kind `level + level` that is not read
+as superposition. The Gaussian log-density,
+$-\frac{1}{2}(\ln 2\pi + \ln\sigma^2 + z^2)$ with $z = (x - \mu)/\sigma$, also multiplies
+a level by $-\frac{1}{2}$, which is `pow` on the underlying variance and gives a level
+referenced to one over a length. Neither operation is in the design yet.
+
 - **Leave it to the linear crossing (Option A).** Good parts: one rule for `level + level`
   (always ill-formed), no new operation, and the physics of the conversion stays visible
   at the call site. Drawbacks: it is verbose exactly where the domain expects a one-liner,
@@ -1364,6 +1387,12 @@ $M_{A \cdot B}(L_A/M_A + L_B/M_B)$ is correct in general, but then an operator s
 returns neither operand's sum, which is worse than not offering it. Constraining Option B
 to equal multipliers keeps `+` a true addition and rejects this case at compile time,
 where the linear crossing is the honest way to write it.
+
+The statistics case above shows what the multiplier rule does not catch. If Option B is
+extended to same-kind operands, then under the power default of
+[Open Question 6](#6-should-the-classification-have-a-default) _power_ and _power_² both
+carry coefficient 1, so `10 dBm + 10 dBm` would compile as a level over _power_² rather
+than fail.
 
 We also asked whether an inversion operation is needed, since `dB(V/Pa)` and `dB(Pa/V)`
 are reciprocal kinds and negating the value while inverting the kind has no spelling today.
@@ -1510,3 +1539,6 @@ argument for an ill-formed `level + level`, the full-scale conventions in
 [Open Question 7](#7-chaining-transfer-functions-in-the-log-domain), and
 [Open Question 8](#8-should-a-gain-carry-its-domain), and **Chip Hogg**,
 who caught that the nholthaus survey described a version the library had moved past.
+Thanks to **Robin Savonen Söderholm** too, whose question about `sqrt` led to the rules
+for [negation and roots](#arithmetic) and whose log-likelihood example is in
+[Open Question 7](#7-chaining-transfer-functions-in-the-log-domain).
