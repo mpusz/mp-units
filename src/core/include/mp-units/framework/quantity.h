@@ -675,7 +675,11 @@ public:
                                    !mp_units::implicitly_convertible(get_quantity_spec(R2), quantity_spec) ||
                                    !mp_units::implicitly_scalable<get_unit(R2), Rep2, unit, rep>)
     quantity(const quantity<R2, Rep2>& q) :
-      numerical_value_is_an_implementation_detail_(q.numerical_value_in(q.unit))
+      // the units are equivalent, so the stored value is already the value in `unit`. `q`'s unit
+      // need not be a unit of `q`'s own quantity specification (a product like
+      // `moment_of_inertia * angular_velocity²` has a unit that carries more angles than its
+      // quantity specification), so `q` is not asked to convert to it
+      numerical_value_is_an_implementation_detail_(q.numerical_value_is_an_implementation_detail_)
   {
   }
 

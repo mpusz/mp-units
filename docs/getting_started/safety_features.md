@@ -154,7 +154,7 @@ latitude lat{95.0 * deg, equator};  // throws std::domain_error (out of [-90, 90
       in-depth narrative on automatic scaling overflow and design tradeoffs
     - [Ensure Ultimate Safety](../how_to_guides/advanced_usage/ultimate_safety.md) —
       combining `safe_int`, `constrained`, and origin bounds policies
-    - [Representation Types: `constraint_violation_handler`](../users_guide/framework_basics/representation_types.md#constraint-violation-handler) —
+    - [Representation Types: `constraint_violation_handler`](../users_guide/advanced_topics/representation_types.md#constraint-violation-handler) —
       customization point reference
 
 
@@ -187,7 +187,7 @@ static_assert(!is_non_negative(isq::velocity));   // ❌ Vector character — ex
         This means construction of, or arithmetic on, such a point checks the value:
 
         - If the representation type has a
-          [`constraint_violation_handler`](../users_guide/framework_basics/representation_types.md#constraint-violation-handler)
+          [`constraint_violation_handler`](../users_guide/advanced_topics/representation_types.md#constraint-violation-handler)
           specialization (e.g., a `constrained<T, Policy>` rep), the handler is invoked on
           violation — behaviour is guaranteed regardless of build mode.
         - For plain types (like `double`) the library falls back to
@@ -363,7 +363,7 @@ To dive deeper into **mp-units** safety features:
   In-depth analysis, library comparisons, and why safety matters for C++ standardization
 - [Simple and Typed Quantities](../users_guide/framework_basics/simple_and_typed_quantities.md) -
 Choose your level of type safety
-- [Representation Types](../users_guide/framework_basics/representation_types.md) -
+- [Representation Types](../users_guide/advanced_topics/representation_types.md) -
   Customization points including `constraint_violation_handler`
 - [Range-Validated Quantity Points](../users_guide/framework_basics/the_affine_space.md#range-validated-quantity-points) -
   Bounded quantity points with overflow policies

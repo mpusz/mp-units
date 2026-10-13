@@ -74,7 +74,7 @@ QUANTITY_SPEC(ratio_of_specific_heat_capacities, dimensionless,
 QUANTITY_SPEC(isentropic_exponent,
               volume / pressure * (pressure / volume));  // TODO how to handle "negative" part
 inline constexpr auto isentropic_expansion_factor = isentropic_exponent;
-QUANTITY_SPEC(entropy, kinetic_energy / thermodynamic_temperature, non_negative);
+QUANTITY_SPEC(entropy, heat / thermodynamic_temperature, non_negative);
 QUANTITY_SPEC(specific_entropy, entropy / mass, non_negative);
 QUANTITY_SPEC(enthalpy, internal_energy);  // differs from ISO 80000
 inline constexpr auto thermodynamic_energy = internal_energy;

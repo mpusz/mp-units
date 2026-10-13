@@ -168,7 +168,7 @@ published pair is mutually rounded and carrying both would embed a contradiction
 The uncertainty is stored as an exact symbolic expression, so no representation type is
 imposed at the definition point. It is metadata only and never participates in unit
 equality, conversion factors, or symbolic simplification. Constants defined this way satisfy
-the [`MeasuredConstant`](../../users_guide/framework_basics/concepts.md#MeasuredConstant)
+the [`MeasuredConstant`](../../users_guide/advanced_topics/concepts.md#MeasuredConstant)
 concept. `get_standard_uncertainty(constant)` and
 `get_relative_standard_uncertainty(constant)` each return the declared form or derive the
 other one on demand. The derivation is an exact ratio of canonical magnitudes

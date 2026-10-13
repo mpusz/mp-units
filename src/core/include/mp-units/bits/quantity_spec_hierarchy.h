@@ -22,7 +22,11 @@
 
 #pragma once
 
+#include <mp-units/bits/type_list.h>
+#include <mp-units/compat_macros.h>
+#include <mp-units/ext/algorithm.h>
 #include <mp-units/framework/quantity_spec_concepts.h>
+#include <mp-units/framework/symbolic_expression.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #ifdef MP_UNITS_IMPORT_STD
@@ -32,102 +36,119 @@ import std;
 #endif
 #endif
 
+// The facts about a named quantity specification that follow from its parent chain and its
+// equation alone: root, ancestry, whether it defines its equation, and depth. Everything that
+// needs the `is_kind` property (kind roots) lives in `quantity_spec_hierarchy_conversion.h`,
+// because this header is included before `is_kind` is declared.
+//
+// The root and the depth are class templates, so the compiler computes each once per quantity
+// specification. The ancestry and equation checks are consteval functions.
 namespace mp_units::detail {
 
-[[nodiscard]] consteval std::size_t hierarchy_path_length(QuantitySpec auto q)
-{
-  if constexpr (requires { q._parent_; })
-    return hierarchy_path_length(q._parent_) + 1;
-  else
-    return 1;
-}
+template<typename Q>
+concept HasParent = requires { Q::_parent_; };
+
+// Either its own equation or the one propagated from the parent (see `propagate_equation`).
+template<typename Q>
+concept HasEquation = requires { Q::_equation_; };
+
+template<HasParent Q>
+using parent_of = MP_UNITS_NONCONST_TYPE(Q::_parent_);
+
+template<HasEquation Q>
+using equation_of = MP_UNITS_NONCONST_TYPE(Q::_equation_);
+
+// root
+
+template<typename Q>
+struct hierarchy_root_impl : std::type_identity<Q> {};
+
+template<HasParent Q>
+struct hierarchy_root_impl<Q> : hierarchy_root_impl<parent_of<Q>> {};
+
+template<typename Q>
+using hierarchy_root = hierarchy_root_impl<Q>::type;
 
 template<QuantitySpec Q>
-constexpr std::size_t hierarchy_path_length_v = hierarchy_path_length(Q{});
-
-template<std::size_t Offset>
-  requires(Offset >= 0)
-[[nodiscard]] consteval QuantitySpec auto hierarchy_path_advance(QuantitySpec auto q)
+[[nodiscard]] consteval QuantitySpec auto get_hierarchy_root(Q)
 {
-  if constexpr (Offset == 0)
-    return q;
-  else if constexpr (requires { q._parent_; })
-    return hierarchy_path_advance<Offset - 1>(q._parent_);
+  if constexpr (QuantityKindSpec<Q>)
+    return hierarchy_root<MP_UNITS_NONCONST_TYPE(Q::_quantity_spec_)>{};
+  else
+    return hierarchy_root<Q>{};
 }
 
-template<QuantitySpec A, QuantitySpec B>
-[[nodiscard]] consteval bool have_common_base_in_hierarchy_of_equal_length(A a, B b)
+// ancestry
+
+template<typename Ancestor, typename Q>
+[[nodiscard]] consteval bool is_ancestor_or_self()
 {
-  if constexpr (std::is_same_v<A, B>)
+  if constexpr (std::is_same_v<Ancestor, Q>)
     return true;
-  else if constexpr (requires { a._parent_; })
-    return have_common_base_in_hierarchy_of_equal_length(a._parent_, b._parent_);
+  else if constexpr (HasParent<Q>)
+    return detail::is_ancestor_or_self<Ancestor, parent_of<Q>>();
   else
     return false;
 }
 
-template<QuantitySpec A, QuantitySpec B>
-[[nodiscard]] consteval bool have_common_base(A a, B b)
-{
-  if constexpr (std::is_same_v<A, B>)
-    return true;
-  else {
-    constexpr std::size_t a_length = hierarchy_path_length_v<A>;
-    constexpr std::size_t b_length = hierarchy_path_length_v<B>;
-    if constexpr (a_length > b_length)
-      return have_common_base_in_hierarchy_of_equal_length(hierarchy_path_advance<a_length - b_length>(a), b);
-    else
-      return have_common_base_in_hierarchy_of_equal_length(a, hierarchy_path_advance<b_length - a_length>(b));
-  }
-}
+// equation
 
-template<QuantitySpec A, QuantitySpec B>
-  requires(have_common_base_in_hierarchy_of_equal_length(A{}, B{}))
-[[nodiscard]] consteval QuantitySpec auto get_common_base_for_hierarchy_of_equal_length(A a, B b)
+// A quantity defines its equation when the equation is its own and differs from the parent's. A
+// child that restates the parent's equation inherits it like a child without one.
+// `propagate_equation` copies the parent's `_equation_` into every child that has none, so the
+// equation reaches every level of a branch and comparing with the direct parent covers them all.
+template<typename Q>
+[[nodiscard]] consteval bool defines_equation()
 {
-  if constexpr (std::is_same_v<A, B>)
-    return a;
-  else
-    return get_common_base_for_hierarchy_of_equal_length(a._parent_, b._parent_);
-}
-
-template<QuantitySpec A, QuantitySpec B>
-  requires(have_common_base(A{}, B{}))
-[[nodiscard]] consteval QuantitySpec auto get_common_base(A a, B b)
-{
-  constexpr std::size_t a_length = hierarchy_path_length_v<A>;
-  constexpr std::size_t b_length = hierarchy_path_length_v<B>;
-  if constexpr (a_length > b_length)
-    return get_common_base_for_hierarchy_of_equal_length(hierarchy_path_advance<a_length - b_length>(a), b);
-  else
-    return get_common_base_for_hierarchy_of_equal_length(a, hierarchy_path_advance<b_length - a_length>(b));
-}
-
-template<QuantitySpec Child, QuantitySpec Parent>
-[[nodiscard]] consteval bool is_child_of(Child ch, Parent p)
-{
-  constexpr std::size_t child_length = hierarchy_path_length_v<Child>;
-  constexpr std::size_t parent_length = hierarchy_path_length_v<Parent>;
-  if constexpr (parent_length >= child_length)
+  if constexpr (!HasEquation<Q>)
     return false;
+  else if constexpr (!HasParent<Q>)
+    return true;
+  else if constexpr (!HasEquation<parent_of<Q>>)
+    return true;
   else
-    return hierarchy_path_advance<child_length - parent_length>(ch) == p;
+    return !std::is_same_v<equation_of<Q>, equation_of<parent_of<Q>>>;
 }
 
-[[nodiscard]] consteval QuantitySpec auto get_hierarchy_root_impl(QuantitySpec auto q)
+// depth
+
+template<typename Q>
+struct quantity_spec_depth;
+
+template<typename... Ts>
+[[nodiscard]] consteval int max_factor_depth(type_list<Ts...>)
 {
-  if constexpr (requires { q._parent_; })
-    return get_hierarchy_root_impl(q._parent_);
-  else
-    return q;
+  int result = 0;
+  ((result = detail::max(result, quantity_spec_depth<expr_type<Ts>>::value)), ...);
+  return result;
 }
 
-template<QuantitySpec Q>
-constexpr QuantitySpec auto get_hierarchy_root_result = get_hierarchy_root_impl(Q{});
-
-[[nodiscard]] consteval QuantitySpec auto get_hierarchy_root(QuantitySpec auto q)
+// One more than the deepest factor of either list of the equation.
+template<typename Eq>
+[[nodiscard]] consteval int equation_depth()
 {
-  return get_hierarchy_root_result<decltype(q)>;
+  return 1 +
+         detail::max(detail::max_factor_depth(typename Eq::_num_{}), detail::max_factor_depth(typename Eq::_den_{}));
+}
+
+// The length of the longest equation chain below a quantity: a quantity without an equation has
+// depth 0.
+template<typename Q>
+struct quantity_spec_depth : std::integral_constant<int, 0> {};
+
+template<HasEquation Q>
+struct quantity_spec_depth<Q> : std::integral_constant<int, detail::equation_depth<equation_of<Q>>()> {};
+
+// nearest common ancestor
+
+// Both named and in one tree.
+template<typename Q1, typename Q2>
+[[nodiscard]] consteval QuantitySpec auto nearest_common_ancestor()
+{
+  if constexpr (detail::is_ancestor_or_self<Q1, Q2>())
+    return Q1{};
+  else
+    return detail::nearest_common_ancestor<parent_of<Q1>, Q2>();
 }
 
 }  // namespace mp_units::detail

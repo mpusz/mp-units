@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include <mp-units/framework.h>
+#include <mp-units/math.h>
 #include <mp-units/systems/iec.h>
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
@@ -98,7 +99,7 @@ static_assert(verify(isq::logarithmic_decrement, scalar, one));
 static_assert(verify(isq::attenuation, scalar, non_negative, one / m));
 static_assert(verify(isq::extinction, scalar, non_negative, one / m));
 static_assert(verify(isq::phase_coefficient, scalar, rad / m, one / m));
-static_assert(verify(isq::propagation_coefficient, scalar, non_negative, one / m));
+static_assert(verify(isq::propagation_coefficient, complex_scalar, one / m));
 
 // mechanics
 static_assert(verify(isq::mass, scalar, non_negative, kg));
@@ -590,5 +591,74 @@ static_assert(get_common_quantity_spec(isq::Curie_temperature, isq::Neel_tempera
 static_assert(get_common_quantity_spec(isq::lower_critical_magnetic_flux_density,
                                        isq::upper_critical_magnetic_flux_density) ==
               isq::critical_magnetic_flux_density);
+
+
+// distinct roots of one dimension stay apart inside products unless an equation relates them
+static_assert(!castable(isq::frequency * isq::width, isq::activity* isq::length));
+static_assert(implicitly_convertible(isq::radiant_intensity * isq::solid_angular_measure, isq::radiant_flux));
+static_assert(!castable(isq::irradiance / isq::wavelength, isq::spectral_radiant_exitance));
+static_assert(explicitly_convertible(isq::radiance, isq::radiant_flux / isq::area));
+static_assert(!implicitly_convertible(isq::radiance, isq::radiant_flux / isq::area));
+
+// trading one declared kind for another is not a conversion
+static_assert(!castable(isq::photon_flux / isq::solid_angular_measure, isq::transfer_rate));
+
+// angular repetency carries the angle like angular frequency does (k = 2π/λ), so a phase speed
+// converts to `length / time` implicitly and a plain 1/λ is only explicitly an angular repetency
+static_assert(implicitly_convertible(isq::phase_speed, isq::length / isq::time));
+static_assert(implicitly_convertible(isq::angular_frequency / isq::angular_repetency, isq::speed));
+static_assert(!implicitly_convertible(inverse(isq::wavelength), isq::angular_repetency));
+static_assert(explicitly_convertible(inverse(isq::wavelength), isq::angular_repetency));
+
+// inductance and reluctance are defined over the total magnetic flux (IEC 80000-6 6-41.1, 6-39), so
+// an inductance's equation is a permeance's only explicitly (magnetic tension is a child of current)
+static_assert(implicitly_convertible(isq::total_magnetic_flux / isq::electric_current, isq::inductance));
+static_assert(!implicitly_convertible(isq::inductance, isq::permeance));
+static_assert(explicitly_convertible(isq::total_magnetic_flux / isq::electric_current, isq::permeance));
+
+// entropy is defined over heat (the thermodynamic definition dS = δQ/T, and ISO 80000-5 item 5-15
+// gives heat capacity as dQ/dT), so entropy has the same equation as heat capacity but a different
+// root
+static_assert(implicitly_convertible(isq::heat / isq::thermodynamic_temperature, isq::entropy));
+static_assert(implicitly_convertible(isq::heat / isq::thermodynamic_temperature, isq::heat_capacity));
+static_assert(!castable(isq::entropy, isq::heat_capacity));
+
+// the magnetic and electric constants are the vacuum values of permeability and permittivity
+// (IEC 80000-6 6-26.1, 6-14.1), so the relative quantities are ratios inside one tree
+static_assert(implicitly_convertible(isq::magnetic_constant, isq::permeability));
+static_assert(!implicitly_convertible(isq::permeability, isq::magnetic_constant));
+static_assert(explicitly_convertible(isq::permeability, isq::magnetic_constant));
+static_assert(implicitly_convertible(isq::electric_constant, isq::permittivity));
+static_assert(implicitly_convertible(isq::permeability / isq::magnetic_constant, isq::relative_permeability));
+static_assert(!implicitly_convertible(isq::magnetic_flux_density, isq::magnetic_constant* isq::magnetization));
+
+// the propagation coefficient is the complex parent of attenuation and phase coefficient (ISO 80000-3 3-26)
+static_assert(implicitly_convertible(isq::attenuation, isq::propagation_coefficient));
+static_assert(implicitly_convertible(isq::phase_coefficient, isq::propagation_coefficient));
+static_assert(!explicitly_convertible(isq::attenuation, isq::phase_coefficient));
+static_assert(castable(isq::attenuation, isq::phase_coefficient));
+static_assert(castable(inverse(isq::repetency), isq::height));
+static_assert(!explicitly_convertible(inverse(isq::repetency), isq::height));
+static_assert(implicitly_convertible(isq::phase_angle / isq::path_length, isq::phase_coefficient));
+
+// a product's unit may carry more angles than its quantity specification (moment of inertia is
+// defined as angular_momentum / angular_velocity). The units are equivalent, so the explicit
+// constructor keeps the value as is
+static_assert(quantity<isq::kinetic_energy[J]>(isq::moment_of_inertia(2. * kg * m2) *
+                                               isq::angular_velocity(3. * rad / s) *
+                                               isq::angular_velocity(3. * rad / s))
+                .numerical_value_in(J) == 18.);
+static_assert(
+  quantity<isq::power[W]>(isq::torque(3. * N * m) * isq::angular_velocity(2. * rad / s)).numerical_value_in(W) == 6.);
+
+// rotational mechanics under plain isq needs an explicit conversion. Torque has no angle and angular
+// velocity has one.
+static_assert(!implicitly_convertible(isq::torque * isq::angular_velocity, isq::power));
+static_assert(explicitly_convertible(isq::torque * isq::angular_velocity, isq::power));
+
+// a factor common to both sides doesn't change how they relate
+static_assert(implicitly_convertible(isq::phase_coefficient * isq::mass, isq::propagation_coefficient* isq::mass));
+static_assert(!castable(isq::radiant_intensity * isq::mass, isq::radiant_flux* isq::mass));
+static_assert(implicitly_convertible(isq::velocity * isq::length / isq::time, isq::velocity* isq::speed));
 
 }  // namespace

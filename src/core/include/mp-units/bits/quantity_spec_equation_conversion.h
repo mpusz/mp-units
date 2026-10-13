@@ -20,21 +20,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-
 #pragma once
 
-// IWYU pragma: private, include <mp-units/framework/quantity_spec.h>
-// The equation part of the conversion engine: quantity equation complexity, type explosion,
-// and the ingredient-matching algorithm for derived quantities. This is what the C++ type
-// system cannot express, so it stays in V3 (planned to be reimplemented in the value domain
-// with C++26 reflection).
-#include <mp-units/bits/config.h>
+#include <mp-units/bits/quantity_spec_hierarchy.h>
 #include <mp-units/bits/quantity_spec_hierarchy_conversion.h>
 #include <mp-units/bits/ratio.h>
+#include <mp-units/bits/type_list.h>
 #include <mp-units/compat_macros.h>
 #include <mp-units/ext/algorithm.h>
 #include <mp-units/ext/type_name.h>
-#include <mp-units/framework/quantity_spec_concepts.h>
 #include <mp-units/framework/quantity_spec_definitions.h>
 #include <mp-units/framework/symbolic_expression.h>
 
@@ -43,509 +37,711 @@
 import std;
 #else
 #include <cstddef>
-#include <cstdint>
-#include <initializer_list>
-#include <optional>
-#include <string_view>
 #include <type_traits>
-#include <utility>
 #endif
 #endif
 
+// The equation rule: at least one side is a derived quantity specification. The rules named below
+// ("exact equation first", "different roots stay apart", "a product of its own tree", "pairing",
+// "self-cancel only against an empty side", "reduce the deepest factor") are the ones the user's
+// guide page on quantity specification conversions describes, and the cap on the rank is the kind
+// boundary described there.
+//
+// Each side is a signed multiset of factors kept as two sorted `type_list`s (numerator and
+// denominator) of `T` or `power<T, Num, Den>` elements, as `derived_quantity_spec` stores them, and
+// the two sides stay apart (a From factor never merges with a To factor). The question "is From
+// convertible to To" is answered by reducing From * To^-1 to a plain number with three operations, each
+// with a rank:
+//  - pair:        a From factor against a To factor of the same tree and sign (the tree rule),
+//  - self-cancel: a numerator against a denominator factor of one side and one dimension,
+//  - expand:      a factor replaced by its equation (`implicit` on the From side, the target expansion
+//                 rank on the To side).
+// The rank of the conversion is the weakest operation taken, capped by the kind boundary: a declared
+// kind that one side carries in excess of the other lowers the rank regardless of the operations. Lists
+// are never turned back into a `derived_quantity_spec`.
 namespace mp_units::detail {
 
-/**
- * @brief @c get_complexity specifies how many type explosions can be done on a quantity
- */
-template<QuantitySpec Q>
-[[nodiscard]] consteval int get_complexity(Q);
-
-template<QuantitySpec Q, int... Ints>
-[[nodiscard]] consteval int get_complexity_impl(power<Q, Ints...>);
-
+// The numerator and the denominator factors of a quantity specification: a derived one lists its
+// own, `dimensionless` is the empty product, and any other is a single factor.
 template<typename Q>
-[[nodiscard]] consteval int get_complexity_impl(kind_of_<Q>);
+struct quantity_spec_factors {
+  using num = type_list<Q>;
+  using den = type_list<>;
+};
 
-template<QuantitySpec Q>
-[[nodiscard]] consteval int get_complexity_impl(Q);
+template<DerivedQuantitySpec Q>
+struct quantity_spec_factors<Q> {
+  using num = Q::_num_;
+  using den = Q::_den_;
+};
 
-template<typename... Ts>
-[[nodiscard]] consteval int get_complexity_impl(type_list<Ts...>)
-{
-  if constexpr (sizeof...(Ts) == 0)
-    return 0;
-  else
-    return detail::max({detail::get_complexity_impl(Ts{})...});
-}
+template<>
+struct quantity_spec_factors<struct dimensionless> {
+  using num = type_list<>;
+  using den = type_list<>;
+};
 
-template<QuantitySpec Q, int... Ints>
-[[nodiscard]] consteval int get_complexity_impl(power<Q, Ints...>)
-{
-  return detail::get_complexity(Q{});
-}
+// Both inputs are sorted by `quantity_spec_less` with one element per base, and so is the result,
+// which the pairing walk and the exact equation check of the equation rule rely on.
+template<typename Lhs, typename Rhs>
+using merge_quantity_spec_factors = expr_consolidate<type_list_merge_sorted<Lhs, Rhs, type_list_of_quantity_spec_less>>;
 
+// A factor present in the numerator and the denominator of one side is the same quantity twice,
+// so the exponents just subtract.
+template<typename Num, typename Den>
+using simplify_quantity_spec_factors = expr_simplify<Num, Den, type_list_of_quantity_spec_less>;
+
+// the kind boundary
+
+template<typename Num, typename Den>
+struct carried_kinds_result {
+  using num = Num;
+  using den = Den;
+};
+
+// Every `is_kind` ancestor-or-self of a quantity, as a sorted factor list.
 template<typename Q>
-[[nodiscard]] consteval int get_complexity_impl(kind_of_<Q>)
+[[nodiscard]] consteval auto declared_kinds_of()
 {
-  return detail::get_complexity(Q{});
-}
-
-template<QuantitySpec Q>
-[[nodiscard]] consteval int get_complexity_impl(Q)
-{
-  if constexpr (DerivedQuantitySpec<Q>)
-    return detail::max(detail::get_complexity_impl(typename Q::_num_{}),
-                       detail::get_complexity_impl(typename Q::_den_{}));
-  else if constexpr (requires { Q::_equation_; } && Q{} != dimensionless)
-    return 1 + detail::get_complexity(Q::_equation_);
-  else
-    return 0;
-}
-
-template<QuantitySpec Q>
-constexpr auto get_complexity_result = detail::get_complexity_impl(Q{});
-
-/**
- * @brief Get the complexity of a quantity spec
- *
- * Complexity of the quantity spec specifies how many times a given quantity can be exploded
- * to the underlying equation. For the derived quantities, the largest complexity of the
- * ingredients is returned.
- *
- * @tparam Q Quantity specification to be analyzed
- * @return int Complexity of the quantity spec
- */
-template<QuantitySpec Q>
-[[nodiscard]] consteval int get_complexity(Q)
-{
-  return get_complexity_result<Q>;
-}
-
-template<QuantitySpec Q>
-  requires requires { Q::_equation_; }
-[[nodiscard]] consteval bool defines_equation(Q)
-{
-  if constexpr (requires { Q::_parent_._equation_; })
-    return Q::_parent_._equation_ != Q::_equation_;
-  else
-    return true;
-}
-
-template<QuantitySpec Q>
-struct [[nodiscard]] explode_result {
-  Q equation;
-  specs_convertible_result result;
-};
-
-#if !MP_UNITS_HAS_AGGREGATE_CTAD
-
-template<QuantitySpec Q>
-explode_result(Q, specs_convertible_result) -> explode_result<Q>;
-
-#endif
-
-
-template<QuantitySpec Q>
-  requires requires { Q::_equation_; }
-[[nodiscard]] consteval auto explode(Q)
-{
-  if constexpr (defines_equation(Q{}))
-    return explode_result{Q::_equation_, specs_convertible_result::yes};
-  else {
-    constexpr bool q_is_kind = detail::defined_as_kind(Q{});
-    return explode_result{Q::_equation_, q_is_kind ? specs_convertible_result::explicit_conversion_beyond_kind
-                                                   : specs_convertible_result::explicit_conversion};
-  }
-}
-
-template<QuantitySpec Q, int... Ints>
-  requires requires { Q::_equation_; }
-[[nodiscard]] consteval auto explode(power<Q, Ints...>)
-{
-  constexpr ratio exp = power<Q, Ints...>::_exponent_;
-  if constexpr (defines_equation(Q{}))
-    return explode_result{pow<exp.num, exp.den>(Q::_equation_), specs_convertible_result::yes};
-  else {
-    constexpr bool q_is_kind = detail::defined_as_kind(Q{});
-    return explode_result{pow<exp.num, exp.den>(Q::_equation_),
-                          q_is_kind ? specs_convertible_result::explicit_conversion_beyond_kind
-                                    : specs_convertible_result::explicit_conversion};
-  }
-}
-
-template<TypeList NumFrom, TypeList DenFrom, TypeList NumTo, TypeList DenTo>
-[[nodiscard]] constexpr specs_convertible_result are_ingredients_convertible(NumFrom num_from, DenFrom den_from,
-                                                                             NumTo num_to, DenTo den_to);
-
-template<TypeList RestFrom = type_list<>, TypeList RestTo = type_list<>>
-struct [[nodiscard]] extract_common_base_result {
-  specs_convertible_result result;
-  RestFrom rest_from{};
-  RestTo rest_to{};
-};
-
-#if !MP_UNITS_HAS_AGGREGATE_CTAD
-
-extract_common_base_result(specs_convertible_result) -> extract_common_base_result<type_list<>, type_list<>>;
-
-template<TypeList RestFrom, TypeList RestTo>
-extract_common_base_result(specs_convertible_result, RestFrom, RestTo) -> extract_common_base_result<RestFrom, RestTo>;
-
-#endif
-
-template<TypeList ProcessedFrom, TypeList RemainingFrom, TypeList ProcessedTo, TypeList RemainingTo>
-[[nodiscard]] consteval auto try_extract_common_base(ProcessedFrom, RemainingFrom, ProcessedTo, RemainingTo)
-{
-  return std::optional<extract_common_base_result<>>(std::nullopt);
-}
-
-template<typename... ProcessedFrom, typename From, typename... RemainingFrom, typename... ProcessedTo, typename To,
-         typename... RemainingTo>
-[[nodiscard]] consteval auto try_extract_common_base(type_list<ProcessedFrom...>, type_list<From, RemainingFrom...>,
-                                                     type_list<ProcessedTo...>, type_list<To, RemainingTo...>)
-{
-  constexpr QuantitySpec auto from_factor = detail::get_factor(From{});
-  constexpr QuantitySpec auto to_factor = detail::get_factor(To{});
-  constexpr QuantitySpec auto from_root = get_hierarchy_root(from_factor);
-  constexpr QuantitySpec auto to_root = get_hierarchy_root(to_factor);
-  constexpr std::string_view from_root_name = detail::type_name<MP_UNITS_NONCONST_TYPE(from_root)>();
-  constexpr std::string_view to_root_name = detail::type_name<MP_UNITS_NONCONST_TYPE(to_root)>();
-
-  // Type lists are sorted by the root name. This allows us to easily progress through both lists to find the quantities
-  // belonging to the same hierarchy tree.
-  if constexpr (from_root_name < to_root_name)
-    return detail::try_extract_common_base(type_list<ProcessedFrom..., From>{}, type_list<RemainingFrom...>{},
-                                           type_list<ProcessedTo...>{}, type_list<To, RemainingTo...>{});
-  else if constexpr (from_root_name > to_root_name)
-    return detail::try_extract_common_base(type_list<ProcessedFrom...>{}, type_list<From, RemainingFrom...>{},
-                                           type_list<ProcessedTo..., To>{}, type_list<RemainingTo...>{});
-  else {
-    // We are dealing with quantities from the same hierarchy tree.
-    constexpr specs_convertible_result res = detail::convertible_common_base(from_factor, to_factor);
-    if constexpr (res == specs_convertible_result::no)
-      // We do not need to analyze the rest of the lists as the quantities are not convertible when at least one element
-      // is not convertible.
-      return std::optional(extract_common_base_result{specs_convertible_result::no});
-    else if constexpr (res == specs_convertible_result::cast &&
-                       (detail::get_complexity(from_factor) > 0 || detail::get_complexity(to_factor) > 0) &&
-                       (detail::get_complexity_impl(type_list<ProcessedFrom..., RemainingFrom...>{}) > 0 ||
-                        detail::get_complexity_impl(type_list<ProcessedTo..., RemainingTo...>{}) > 0))
-      // One or both factors have a defining equation and remaining elements have complexity — defer to
-      // the explosion path so higher-complexity elements can be tried first.
-      return std::optional<extract_common_base_result<>>(std::nullopt);
-    else {
-      // We might deal with different powers of quantities. Let's find the biggest common exponent and extract it.
-      // The rest of the quantities must be reinserted into the list.
-      constexpr ratio from_exp = detail::get_exponent(From{});
-      constexpr ratio to_exp = detail::get_exponent(To{});
-      if constexpr (from_exp == to_exp)
-        return std::optional(extract_common_base_result{res, type_list<ProcessedFrom..., RemainingFrom...>{},
-                                                        type_list<ProcessedTo..., RemainingTo...>{}});
-      else if constexpr (from_exp > to_exp) {
-        using rest = power_or_T<MP_UNITS_NONCONST_TYPE(from_factor), from_exp - to_exp>;
-        return std::optional(extract_common_base_result{res, type_list<ProcessedFrom..., rest, RemainingFrom...>{},
-                                                        type_list<ProcessedTo..., RemainingTo...>{}});
-      } else {
-        using rest = power_or_T<MP_UNITS_NONCONST_TYPE(to_factor), to_exp - from_exp>;
-        return std::optional(extract_common_base_result{res, type_list<ProcessedFrom..., RemainingFrom...>{},
-                                                        type_list<ProcessedTo..., rest, RemainingTo...>{}});
-      }
-    }
-  }
-}
-
-template<TypeList From, TypeList To>
-[[nodiscard]] consteval auto try_extract_common_base(From from, To to)
-{
-  return detail::try_extract_common_base(type_list<>{}, from, type_list<>{}, to);
-}
-
-struct get_max_complexity_result_base {
-  int complexity;
-  int index;
-};
-
-template<typename... Elems>
-[[nodiscard]] consteval get_max_complexity_result_base get_max_complexity(type_list<Elems...>)
-{
-  if constexpr (sizeof...(Elems) == 0)
-    return {-1, -1};
-  else {
-    const std::initializer_list<int> list{detail::get_complexity_impl(Elems{})...};
-    const auto it = detail::max_element(list.begin(), list.end());
-    return {*it, static_cast<int>(it - list.begin())};
-  }
-}
-
-enum class ingredient_type : std::int8_t { numerator_from, denominator_from, numerator_to, denominator_to };
-
-struct get_max_complexity_result : get_max_complexity_result_base {
-  ingredient_type type;
-};
-
-template<TypeList NumFrom, TypeList DenFrom, TypeList NumTo, TypeList DenTo>
-[[nodiscard]] consteval get_max_complexity_result get_max_complexity(NumFrom num_from, DenFrom den_from, NumTo num_to,
-                                                                     DenTo den_to)
-{
-  const std::initializer_list<get_max_complexity_result_base> list{
-    detail::get_max_complexity(num_from), detail::get_max_complexity(den_from), detail::get_max_complexity(num_to),
-    detail::get_max_complexity(den_to)};
-  const auto it =
-    detail::max_element(list.begin(), list.end(), [](auto lhs, auto rhs) { return lhs.complexity < rhs.complexity; });
-  return {*it, static_cast<ingredient_type>(it - list.begin())};
-}
-
-template<QuantitySpec Equation, TypeList Num, TypeList Den>
-[[nodiscard]] consteval auto merge_with_equation(Equation, Num, Den)
-{
-  if constexpr (Equation{} == dimensionless)
-    return std::pair(Num{}, Den{});
-  else {
-    constexpr QuantitySpec auto merged_qs = [&]() {
-      if constexpr (DerivedQuantitySpec<Equation>)
-        return detail::get_optimized_expression<
-          type_list_merge_sorted<typename Equation::_num_, Num, type_list_of_quantity_spec_less>,
-          type_list_merge_sorted<typename Equation::_den_, Den, type_list_of_quantity_spec_less>, struct dimensionless,
-          type_list_of_quantity_spec_less, derived_quantity_spec>();
-      else
-        return detail::get_optimized_expression<
-          type_list_merge_sorted<Num, type_list<Equation>, type_list_of_quantity_spec_less>, Den, struct dimensionless,
-          type_list_of_quantity_spec_less, derived_quantity_spec>();
-    }();
-    using qs_type = MP_UNITS_NONCONST_TYPE(merged_qs);
-    if constexpr (DerivedQuantitySpec<qs_type>)
-      return std::pair(typename qs_type::_num_{}, typename qs_type::_den_{});
+  if constexpr (!HasParent<Q>) {
+    if constexpr (DeclaredKind<Q>)
+      return type_list<Q>{};
     else
-      return std::pair(type_list<qs_type>{}, type_list<>{});
+      return type_list<>{};
+  } else {
+    using above = decltype(detail::declared_kinds_of<parent_of<Q>>());
+    if constexpr (DeclaredKind<Q>)
+      return merge_quantity_spec_factors<type_list<Q>, above>{};
+    else
+      return above{};
   }
 }
 
-template<QuantitySpec From, QuantitySpec To>
-[[nodiscard]] consteval specs_convertible_result convertible(From, To);
+template<typename Q>
+struct carried_kinds;
 
-// The kind tree an ingredient belongs to. It names a declared kind when its root was declared with `is_kind`,
-// which also covers the quantities derived from it that are not kinds themselves (`rotational_displacement` and
-// `angular_measure` both give `angular_measure`). An alias rather than a function: `get_kind_tree_root` is
-// already instantiated for every ingredient the conversion engine sees, so naming its result costs nothing.
-template<typename T>
-using kind_root_of = MP_UNITS_NONCONST_TYPE(detail::get_kind_tree_root(detail::get_factor(T{})));
-
-template<typename K, typename... Ts>
-[[nodiscard]] consteval int count_declared_kind(type_list<Ts...>)
+// The declared kinds a factor list carries, exponents multiplied in.
+template<typename List>
+[[nodiscard]] consteval auto list_carried_kinds()
 {
-  return (0 + ... + (std::is_same_v<kind_root_of<Ts>, K> ? 1 : 0));
+  if constexpr (type_list_size<List> == 0)
+    return carried_kinds_result<type_list<>, type_list<>>{};
+  else {
+    using element = type_list_front<List>;
+    using carried = carried_kinds<expr_type<element>>;
+    constexpr ratio exponent = detail::get_exponent(element{});
+    using rest = decltype(detail::list_carried_kinds<type_list_pop_front<List>>());
+    return carried_kinds_result<
+      merge_quantity_spec_factors<rational_power_list<typename carried::num, exponent>, typename rest::num>,
+      merge_quantity_spec_factors<rational_power_list<typename carried::den, exponent>, typename rest::den>>{};
+  }
 }
 
-struct declared_kinds_info {
-  // every declared kind occurs as often in the numerator as in the denominator
-  bool balanced = true;
-  // a numerator and a denominator ingredient of the same declared kind, if any
-  int num_index = -1;
-  int den_index = -1;
-  [[nodiscard]] constexpr bool can_cancel() const { return num_index >= 0; }
+// The declared kinds a side `Num / Den` carries, with what appears in both parts canceled.
+template<typename Num, typename Den>
+struct side_carried_kinds {
+  using num_part = decltype(detail::list_carried_kinds<Num>());
+  using den_part = decltype(detail::list_carried_kinds<Den>());
+  using normalised =
+    simplify_quantity_spec_factors<merge_quantity_spec_factors<typename num_part::num, typename den_part::den>,
+                                   merge_quantity_spec_factors<typename num_part::den, typename den_part::num>>;
+  using num = normalised::num;
+  using den = normalised::den;
 };
 
-/**
- * @brief What the declared kinds among a numerator and a denominator allow
- *
- * Ingredients whose dimensions cancel form a plain ratio only when the declared kinds among them cancel as
- * well: `angular_velocity * radius / speed` still carries an angle, so it must not become `dimensionless`
- * implicitly, just as `angular_velocity * radius` does not become `speed`. And a numerator and a denominator
- * ingredient of the same declared kind (e.g., the `rotational_displacement` exploded out of
- * `angular_velocity` and the `angular_measure` that `rad` brings in) cancel like a plain ratio, as an angle
- * divided by an angle is a number; powers are left alone, so `pow<2>(angular_measure) / angular_measure`
- * keeps one angle.
- *
- * Both answers come from one instantiation per numerator/denominator pair, and almost every pair the
- * conversion engine visits carries no declared kind at all, so that case returns before anything is
- * instantiated per element.
- */
-template<typename... Num, typename... Den>
-[[nodiscard]] consteval declared_kinds_info analyze_declared_kinds(type_list<Num...>, type_list<Den...>)
+template<typename Q>
+[[nodiscard]] consteval auto quantity_carried_kinds()
 {
-  if constexpr (!(... || detail::defined_as_kind(kind_root_of<Num>{})) &&
-                !(... || detail::defined_as_kind(kind_root_of<Den>{})))
-    return {};
-  else {
-    [[maybe_unused]] constexpr auto balanced = []<typename Ingredient>(Ingredient) {
-      using kind = kind_root_of<Ingredient>;
-      return !detail::defined_as_kind(kind{}) || detail::count_declared_kind<kind>(type_list<Num...>{}) ==
-                                                   detail::count_declared_kind<kind>(type_list<Den...>{});
-    };
-    declared_kinds_info res{(... && balanced(Num{})) && (... && balanced(Den{}))};
-    [[maybe_unused]] int num_index = 0;
-    [[maybe_unused]] const auto match_numerator = [&]<typename NumIngredient>(NumIngredient) {
-      if constexpr (!is_specialization_of_power<NumIngredient>) {
-        using kind = kind_root_of<NumIngredient>;
-        if constexpr (detail::defined_as_kind(kind{})) {
-          [[maybe_unused]] int den_index = 0;
-          [[maybe_unused]] const auto match_denominator = [&]<typename DenIngredient>(DenIngredient) {
-            if constexpr (!is_specialization_of_power<DenIngredient>)
-              if (!res.can_cancel() && std::is_same_v<kind_root_of<DenIngredient>, kind>) {
-                res.num_index = num_index;
-                res.den_index = den_index;
-              }
-            ++den_index;
-          };
-          (match_denominator(Den{}), ...);
-        }
-      }
-      ++num_index;
-    };
-    (match_numerator(Num{}), ...);
-    return res;
-  }
+  using chain = decltype(detail::declared_kinds_of<Q>());
+  if constexpr (HasEquation<Q>) {
+    using from_equation =
+      typename side_carried_kinds<typename equation_of<Q>::_num_, typename equation_of<Q>::_den_>::normalised;
+    return carried_kinds_result<merge_quantity_spec_factors<chain, typename from_equation::num>,
+                                typename from_equation::den>{};
+  } else
+    return carried_kinds_result<chain, type_list<>>{};
 }
 
-// `List` without its element at `I`, or `List` itself when there is no such element. MSVC forms the
-// template arguments of a discarded `if constexpr` branch, so a "not found" index must not reach
-// `type_list_extract`, whose constraint would reject it.
-template<int I, typename... Ts>
-[[nodiscard]] consteval auto type_list_erase_at(type_list<Ts...>)
+// What a named quantity carries: its `is_kind` chain (every `is_kind` ancestor-or-self) and
+// whatever its equation carries, recursively. A base quantity not declared `is_kind` carries
+// nothing. It is a class template, so the compiler computes it once per quantity.
+template<typename Q>
+struct carried_kinds : decltype(detail::quantity_carried_kinds<Q>()) {};
+
+// `lost` holds the declared kinds that From carries in excess of To, and `gained` those that To
+// carries in excess of From. The positive and the negative parts are compared separately, so an
+// angle in a denominator that the target lacks counts as lost. A source `kind_of<K>` is exempt from
+// the cap on gained kinds. A kind lost together with one gained is `none`, and that includes the same
+// kind lost in one part and gained in the other (`angular_measure` to `inverse(angular_measure)`).
+template<typename FromNum, typename FromDen, typename ToNum, typename ToDen, bool SourceIsKind>
+[[nodiscard]] consteval conversion_rank kind_boundary()
 {
-  if constexpr (I >= 0 && I < static_cast<int>(sizeof...(Ts)))
-    return typename type_list_extract<type_list<Ts...>, static_cast<std::size_t>(I)>::rest{};
+  using enum conversion_rank;
+  using from = side_carried_kinds<FromNum, FromDen>;
+  using to = side_carried_kinds<ToNum, ToDen>;
+  using num_diff = simplify_quantity_spec_factors<typename from::num, typename to::num>;
+  using den_diff = simplify_quantity_spec_factors<typename from::den, typename to::den>;
+  using lost = type_list_join<typename num_diff::num, typename den_diff::num>;
+  using gained = type_list_join<typename num_diff::den, typename den_diff::den>;
+  constexpr bool dissolved = type_list_size<lost> > 0;
+  constexpr bool created = type_list_size<gained> > 0;
+  if constexpr (dissolved && created)
+    // one declared kind traded for another, like
+    // `isq::angular_measure * isq::length -> isq::solid_angular_measure * isq::length`
+    return none;
+  else if constexpr (dissolved)
+    return explicit_only;
+  else if constexpr (!SourceIsKind && created)
+    return explicit_only;
   else
-    return type_list<Ts...>{};
+    return implicit;
 }
 
-template<TypeList NumFrom, TypeList DenFrom, TypeList NumTo, TypeList DenTo>
-[[nodiscard]] constexpr specs_convertible_result are_ingredients_convertible(NumFrom num_from, DenFrom den_from,
-                                                                             NumTo num_to, DenTo den_to)
+// operation ranks
+
+// Expanding a To factor `M` is the tree rule `A(M) -> M`: `implicit` when `M` defines its equation,
+// else a downcast, which a source `kind_of<K>` takes implicitly.
+template<typename M, bool SourceIsKind>
+[[nodiscard]] consteval conversion_rank target_expansion_rank()
 {
-  constexpr std::size_t num_from_size = type_list_size<NumFrom>;
-  constexpr std::size_t den_from_size = type_list_size<DenFrom>;
-  constexpr std::size_t num_to_size = type_list_size<NumTo>;
-  constexpr std::size_t den_to_size = type_list_size<DenTo>;
+  return detail::defines_equation<M>() || SourceIsKind ? conversion_rank::implicit : conversion_rank::explicit_only;
+}
 
-  // if at least one of the sides is empty then we compare with dimensionless
-  if constexpr (num_from_size == den_from_size && num_to_size + den_to_size == 0 &&
-                detail::analyze_declared_kinds(NumFrom{}, DenFrom{}).balanced)
-    return specs_convertible_result::yes;
-  else if constexpr (num_from_size + den_from_size == 0 && num_to_size == den_to_size && num_to_size >= 1)
-    return specs_convertible_result::explicit_conversion;
+// Exact equation first: one side is a single factor `N^e` and the other side is exactly `eq(N)^e`.
+// That factor is expanded before any pairing, otherwise a quantity whose
+// equation mentions its own tree would pair with it as a sibling.
+
+// Whether `OtherNum / OtherDen` is exactly `EqNum / EqDen` raised to the exponent of the factor `E`.
+// A function rather than a constrained partial specialization: gcc-12 crashes on a class-type
+// non-type template argument spelled as a call in a base-specifier (`rational_power_list<EqNum,
+// detail::get_exponent(E{})>`), and a named constant sidesteps it.
+template<typename E, typename EqNum, typename EqDen, typename OtherNum, typename OtherDen>
+[[nodiscard]] consteval bool recipe_matches()
+{
+  if constexpr (type_list_size<EqNum> == type_list_size<OtherNum> &&
+                type_list_size<EqDen> == type_list_size<OtherDen>) {
+    constexpr ratio exponent = detail::get_exponent(E{});
+    return std::is_same_v<OtherNum, rational_power_list<EqNum, exponent>> &&
+           std::is_same_v<OtherDen, rational_power_list<EqDen, exponent>>;
+  } else
+    return false;
+}
+
+// A side of any other shape than one factor with an equation has no equation for the other side to
+// match.
+template<typename SideNum, typename SideDen, typename OtherNum, typename OtherDen>
+struct is_recipe : std::false_type {};
+
+template<typename E, typename OtherNum, typename OtherDen>
+  requires HasEquation<expr_type<E>>
+struct is_recipe<type_list<E>, type_list<>, OtherNum, OtherDen> :
+    std::bool_constant<detail::recipe_matches<E, typename equation_of<expr_type<E>>::_num_,
+                                              typename equation_of<expr_type<E>>::_den_, OtherNum, OtherDen>()> {};
+
+// a factor in the denominator carries a negative exponent, which inverts its equation
+template<typename E, typename OtherNum, typename OtherDen>
+  requires HasEquation<expr_type<E>>
+struct is_recipe<type_list<>, type_list<E>, OtherNum, OtherDen> :
+    std::bool_constant<detail::recipe_matches<E, typename equation_of<expr_type<E>>::_den_,
+                                              typename equation_of<expr_type<E>>::_num_, OtherNum, OtherDen>()> {};
+
+template<typename Root, typename... Ts>
+[[nodiscard]] consteval bool all_of_tree(type_list<Ts...>)
+{
+  return (... && std::is_same_v<hierarchy_root<expr_type<Ts>>, Root>);
+}
+
+// A product of its own tree: one side is a single factor whose (non-empty) equation consists
+// entirely of quantities of its own tree. In the ISQ this happens in the `dimensionless` tree,
+// where every pure number is a sibling of every other, and for `intrinsic_carrier_density`, defined
+// as `sqrt(electron_density * hole_density)` within the number density tree. Nothing here restricts
+// it to these trees: a user's `geometric_mean_length` defined over `sqrt(width * height)` triggers
+// it in the `length` tree.
+
+template<typename Q>
+struct is_own_tree_product_quantity : std::false_type {};
+
+template<HasEquation Q>
+  requires(type_list_size<typename equation_of<Q>::_num_> + type_list_size<typename equation_of<Q>::_den_> > 0)
+struct is_own_tree_product_quantity<Q> :
+    std::bool_constant<detail::all_of_tree<hierarchy_root<Q>>(typename equation_of<Q>::_num_{}) &&
+                       detail::all_of_tree<hierarchy_root<Q>>(typename equation_of<Q>::_den_{})> {};
+
+template<typename SideNum, typename SideDen>
+struct is_own_tree_product : std::false_type {};
+
+template<typename E>
+struct is_own_tree_product<type_list<E>, type_list<>> : is_own_tree_product_quantity<expr_type<E>> {};
+
+template<typename E>
+struct is_own_tree_product<type_list<>, type_list<E>> : is_own_tree_product_quantity<expr_type<E>> {};
+
+// pair
+
+template<conversion_rank Rank, typename FromRest, typename ToRest, bool Paired>
+struct pairing_result {
+  static constexpr conversion_rank rank = Rank;
+  using from_rest = FromRest;
+  using to_rest = ToRest;
+  static constexpr bool paired = Paired;
+};
+
+template<typename FromFactors, typename ToFactors, bool SourceIsKind>
+[[nodiscard]] consteval auto pair_tree_factors();
+
+// Pairs `F` with every candidate of `ToPost` in turn and keeps the best complete pairing of the
+// tree's factors. A partially consumed source factor goes back to the front of the source factors,
+// so it pairs again with the next candidate, and the leftovers keep their sorted order.
+template<typename F, typename FromRest, typename ToPre, typename ToPost, bool SourceIsKind>
+[[nodiscard]] consteval auto best_match()
+{
+  using enum conversion_rank;
+  if constexpr (type_list_size<ToPost> == 0)
+    // the sentinel every real pairing beats or ties, so it is never the one returned
+    return pairing_result<none, type_list<>, type_list<>, true>{};
   else {
-    // otherwise, check if the pairwise ingredients are convertible
-    if constexpr (constexpr auto nums = detail::try_extract_common_base(NumFrom{}, NumTo{})) {
-      if (nums->result == specs_convertible_result::no) return specs_convertible_result::no;
-      return detail::min(nums->result,
-                         detail::are_ingredients_convertible(nums->rest_from, den_from, nums->rest_to, den_to));
-    } else if constexpr (constexpr auto dens = detail::try_extract_common_base(DenFrom{}, DenTo{})) {
-      if (dens->result == specs_convertible_result::no) return specs_convertible_result::no;
-      return detail::min(dens->result,
-                         detail::are_ingredients_convertible(num_from, dens->rest_from, num_to, dens->rest_to));
-    } else if constexpr (constexpr auto from_kinds = detail::analyze_declared_kinds(NumFrom{}, DenFrom{});
-                         from_kinds.can_cancel()) {
-      return detail::are_ingredients_convertible(detail::type_list_erase_at<from_kinds.num_index>(num_from),
-                                                 detail::type_list_erase_at<from_kinds.den_index>(den_from), num_to,
-                                                 den_to);
-    } else if constexpr (constexpr auto to_kinds = detail::analyze_declared_kinds(NumTo{}, DenTo{});
-                         to_kinds.can_cancel()) {
-      return detail::are_ingredients_convertible(num_from, den_from,
-                                                 detail::type_list_erase_at<to_kinds.num_index>(num_to),
-                                                 detail::type_list_erase_at<to_kinds.den_index>(den_to));
-    } else {
-      // otherwise, get the ingredient with the highest complexity
-      constexpr auto max_compl_res = detail::get_max_complexity(NumFrom{}, DenFrom{}, NumTo{}, DenTo{});
-
-      constexpr auto list = [&] {
-        if constexpr (max_compl_res.type == ingredient_type::numerator_from)
-          return NumFrom{};
-        else if constexpr (max_compl_res.type == ingredient_type::denominator_from)
-          return DenFrom{};
-        else if constexpr (max_compl_res.type == ingredient_type::numerator_to)
-          return NumTo{};
-        else
-          return DenTo{};
-      }();
-      using extracted = type_list_extract<MP_UNITS_NONCONST_TYPE(list), static_cast<std::size_t>(max_compl_res.index)>;
-
-      // before exploding check if the ingredient is convertible with dimensionless
-      if constexpr (max_compl_res.type == ingredient_type::numerator_from && num_to_size + den_to_size == 0) {
-        constexpr specs_convertible_result res =
-          detail::convertible(detail::get_factor(typename extracted::element{}), dimensionless);
-        if constexpr (res != specs_convertible_result::no)
-          return detail::min(res,
-                             detail::are_ingredients_convertible(typename extracted::rest{}, den_from, num_to, den_to));
-      } else if constexpr (max_compl_res.type == ingredient_type::numerator_to && num_from_size + den_from_size == 0) {
-        constexpr specs_convertible_result res =
-          detail::convertible(dimensionless, detail::get_factor(typename extracted::element{}));
-        if constexpr (res != specs_convertible_result::no)
-          return detail::min(
-            res, detail::are_ingredients_convertible(num_from, den_from, typename extracted::rest{}, den_to));
-      }
-
-      if constexpr (max_compl_res.complexity > 0) {
-        // explode the ingredient to the underlying equation
-        constexpr auto explode_res = detail::explode(typename extracted::element{});
-        // kind-boundary cost is asymmetric: the FROM side pays explicit_conversion_beyond_kind,
-        // the TO side pays at most explicit_conversion (you are being asked to go INTO a kind).
-        constexpr auto to_side_result = explode_res.result == specs_convertible_result::explicit_conversion_beyond_kind
-                                          ? specs_convertible_result::explicit_conversion
-                                          : explode_res.result;
-        if constexpr (max_compl_res.type == ingredient_type::numerator_from) {
-          const auto [num, den] =
-            detail::merge_with_equation(explode_res.equation, typename extracted::rest{}, den_from);
-          return detail::are_ingredients_convertible(num, den, num_to, den_to);
-        } else if constexpr (max_compl_res.type == ingredient_type::denominator_from) {
-          const auto [num, den] =
-            detail::merge_with_equation(dimensionless / explode_res.equation, num_from, typename extracted::rest{});
-          return detail::min(explode_res.result, detail::are_ingredients_convertible(num, den, num_to, den_to));
-        } else if constexpr (max_compl_res.type == ingredient_type::numerator_to) {
-          const auto [num, den] = detail::merge_with_equation(explode_res.equation, typename extracted::rest{}, den_to);
-          return detail::min(to_side_result, detail::are_ingredients_convertible(num_from, den_from, num, den));
-        } else {
-          const auto [num, den] =
-            detail::merge_with_equation(dimensionless / explode_res.equation, num_to, typename extracted::rest{});
-          return detail::min(to_side_result, detail::are_ingredients_convertible(num_from, den_from, num, den));
-        }
-      } else
-        // this should never happen
-        return specs_convertible_result::no;
+    using T = type_list_front<ToPost>;
+    using from_base = expr_type<F>;
+    using to_base = expr_type<T>;
+    constexpr ratio from_exp = detail::get_exponent(F{});
+    constexpr ratio to_exp = detail::get_exponent(T{});
+    constexpr ratio common = from_exp < to_exp ? from_exp : to_exp;
+    using from_after = type_list_join<power_or_T_list<from_base, from_exp - common>, FromRest>;
+    using to_after = type_list_join<ToPre, power_or_T_list<to_base, to_exp - common>, type_list_pop_front<ToPost>>;
+    using continued = decltype(detail::pair_tree_factors<from_after, to_after, SourceIsKind>());
+    constexpr conversion_rank rank =
+      detail::weaker(detail::convertible_named<from_base, to_base, SourceIsKind>(), continued::rank);
+    if constexpr (rank == implicit)
+      return pairing_result<implicit, typename continued::from_rest, typename continued::to_rest, true>{};
+    else {
+      using alternative = decltype(detail::best_match<F, FromRest, type_list_push_back<ToPre, T>,
+                                                      type_list_pop_front<ToPost>, SourceIsKind>());
+      if constexpr (alternative::rank > rank)
+        return alternative{};
+      else
+        return pairing_result<rank, typename continued::from_rest, typename continued::to_rest, true>{};
     }
   }
 }
 
-template<QuantitySpec From, QuantitySpec To>
-[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(From, To)
+// The sum of the exponents of a factor list.
+template<typename... Ts>
+[[nodiscard]] consteval ratio total_exponent(type_list<Ts...>)
 {
-  if constexpr (DerivedQuantitySpec<From> && DerivedQuantitySpec<To>)
-    return detail::are_ingredients_convertible(typename From::_num_{}, typename From::_den_{}, typename To::_num_{},
-                                               typename To::_den_{});
-  else if constexpr (DerivedQuantitySpec<From> && NamedQuantitySpec<To>) {
-    if constexpr (To{} == dimensionless)
-      return detail::are_ingredients_convertible(typename From::_num_{}, typename From::_den_{}, type_list<>{},
-                                                 type_list<>{});
-    // If `To` defines its own equation, try matching the derived `From` against that equation directly.
-    // This ensures that a derived expression equivalent to the named quantity's defining equation is
-    // convertible to it at the correct level, rather than being prematurely matched via a parent-child
-    // common base (which would yield only `explicit_conversion`).
-    else if constexpr (requires { To::_equation_; }) {
-      if constexpr (detail::defines_equation(To{})) {
-        constexpr specs_convertible_result eq_res = detail::convertible(From{}, To::_equation_);
-        if constexpr (eq_res != specs_convertible_result::no) return eq_res;
-      }
-      return detail::are_ingredients_convertible(typename From::_num_{}, typename From::_den_{}, type_list<To>{},
-                                                 type_list<>{});
+  ratio sum{0};
+  ((sum = sum + detail::get_exponent(Ts{})), ...);
+  return sum;
+}
+
+// Pairs the source and the target factors of one tree. Pairing is maximal (the whole exponent of the
+// smaller side is matched), but which factors of the larger side take part is a choice: a source
+// factor may stay unpaired, for a later self-cancel, as long as the remaining source factors still
+// outweigh the target factors. Ties go to pairing the factor.
+template<typename FromFactors, typename ToFactors, bool SourceIsKind>
+[[nodiscard]] consteval auto pair_tree_factors()
+{
+  using enum conversion_rank;
+  if constexpr (type_list_size<FromFactors> == 0 || type_list_size<ToFactors> == 0)
+    return pairing_result<implicit, FromFactors, ToFactors, false>{};
+  else {
+    using F = type_list_front<FromFactors>;
+    using rest = type_list_pop_front<FromFactors>;
+    using paired = decltype(detail::best_match<F, rest, type_list<>, ToFactors, SourceIsKind>());
+    if constexpr (paired::rank == implicit)
+      return paired{};
+    else if constexpr (detail::total_exponent(rest{}) >= detail::total_exponent(ToFactors{})) {
+      using skipped = decltype(detail::pair_tree_factors<rest, ToFactors, SourceIsKind>());
+      if constexpr (skipped::rank > paired::rank)
+        return pairing_result<skipped::rank, type_list_push_front<typename skipped::from_rest, F>,
+                              typename skipped::to_rest, true>{};
+      else
+        return paired{};
     } else
-      return detail::are_ingredients_convertible(typename From::_num_{}, typename From::_den_{}, type_list<To>{},
-                                                 type_list<>{});
-  } else {
-    if constexpr (From{} == dimensionless)
-      return detail::are_ingredients_convertible(type_list<>{}, type_list<>{}, typename To::_num_{},
-                                                 typename To::_den_{});
-    // Symmetric case: if `From` defines its own equation, try matching that equation against `To` directly.
-    else if constexpr (requires { From::_equation_; }) {
-      if constexpr (detail::defines_equation(From{})) {
-        constexpr specs_convertible_result eq_res = detail::convertible(From::_equation_, To{});
-        if constexpr (eq_res != specs_convertible_result::no) return eq_res;
-      }
-      return detail::are_ingredients_convertible(type_list<From>{}, type_list<>{}, typename To::_num_{},
-                                                 typename To::_den_{});
-    } else
-      return detail::are_ingredients_convertible(type_list<From>{}, type_list<>{}, typename To::_num_{},
-                                                 typename To::_den_{});
+      return paired{};
   }
+}
+
+template<typename Factors, typename Rest>
+struct tree_factors_split {
+  using factors = Factors;
+  using rest = Rest;
+};
+
+// The leading factors of `List` whose tree is `Root`, and what follows them.
+template<typename Root, typename List>
+[[nodiscard]] consteval auto split_tree_factors()
+{
+  if constexpr (type_list_size<List> == 0)
+    return tree_factors_split<type_list<>, type_list<>>{};
+  else {
+    using head = type_list_front<List>;
+    if constexpr (std::is_same_v<hierarchy_root<expr_type<head>>, Root>) {
+      using tail = decltype(detail::split_tree_factors<Root, type_list_pop_front<List>>());
+      return tree_factors_split<type_list_push_front<typename tail::factors, head>, typename tail::rest>{};
+    } else
+      return tree_factors_split<type_list<>, List>{};
+  }
+}
+
+template<typename Root, typename Q>
+[[nodiscard]] consteval bool equation_mentions()
+{
+  if constexpr (!HasEquation<Q>)
+    return false;
+  else
+    return []<typename... Ts>(type_list<Ts...>) {
+      return (... || std::is_same_v<hierarchy_root<expr_type<Ts>>, Root>);
+    }(type_list_join<typename equation_of<Q>::_num_, typename equation_of<Q>::_den_>{});
+}
+
+// Whether a factor outside the tree `Root` has an equation that mentions that tree. The factors of
+// the tree itself are the ones being paired, so they are not "remaining" and do not count.
+template<typename Root, typename... Ts>
+[[nodiscard]] consteval bool any_remaining_equation_mentions(type_list<Ts...>)
+{
+  return (... ||
+          (!std::is_same_v<hierarchy_root<expr_type<Ts>>, Root> && detail::equation_mentions<Root, expr_type<Ts>>()));
+}
+
+// Pairing: one merge walk over two lists of the same sign pairs every tree that appears on both
+// sides. Both lists are sorted by the root name first, so the factors of one tree are adjacent and
+// aligned across the lists. `All` holds every factor of both sides: a tree that would rank `cast` is
+// deferred while a remaining factor (one of another tree) has an equation that mentions this tree,
+// so that the decision between siblings is made with every factor of the tree present.
+template<typename From, typename To, typename All, bool SourceIsKind>
+[[nodiscard]] consteval auto pair_lists()
+{
+  using enum conversion_rank;
+  if constexpr (type_list_size<From> == 0 || type_list_size<To> == 0)
+    return pairing_result<implicit, From, To, false>{};
+  else {
+    using from_root = hierarchy_root<expr_type<type_list_front<From>>>;
+    using to_root = hierarchy_root<expr_type<type_list_front<To>>>;
+    if constexpr (std::is_same_v<from_root, to_root>) {
+      using from_split = decltype(detail::split_tree_factors<from_root, From>());
+      using to_split = decltype(detail::split_tree_factors<to_root, To>());
+      using matched =
+        decltype(detail::pair_tree_factors<typename from_split::factors, typename to_split::factors, SourceIsKind>());
+      using tail =
+        decltype(detail::pair_lists<typename from_split::rest, typename to_split::rest, All, SourceIsKind>());
+      using paired = pairing_result<detail::weaker(matched::rank, tail::rank),
+                                    type_list_join<typename matched::from_rest, typename tail::from_rest>,
+                                    type_list_join<typename matched::to_rest, typename tail::to_rest>, true>;
+      // nested so that the scan of `All` is instantiated only for a tree that actually ranks `cast`
+      if constexpr (matched::rank == cast) {
+        if constexpr (detail::any_remaining_equation_mentions<from_root>(All{}))
+          return pairing_result<tail::rank, type_list_join<typename from_split::factors, typename tail::from_rest>,
+                                type_list_join<typename to_split::factors, typename tail::to_rest>, tail::paired>{};
+        else
+          return paired{};
+      } else
+        return paired{};
+    } else if constexpr (quantity_spec_sort_key<from_root>::name < quantity_spec_sort_key<to_root>::name) {
+      using tail = decltype(detail::pair_lists<type_list_pop_front<From>, To, All, SourceIsKind>());
+      return pairing_result<tail::rank, type_list_push_front<typename tail::from_rest, type_list_front<From>>,
+                            typename tail::to_rest, tail::paired>{};
+    } else {
+      using tail = decltype(detail::pair_lists<From, type_list_pop_front<To>, All, SourceIsKind>());
+      return pairing_result<tail::rank, typename tail::from_rest,
+                            type_list_push_front<typename tail::to_rest, type_list_front<To>>, tail::paired>{};
+    }
+  }
+}
+
+// Different roots stay apart: two named factors of one sign and one dimension from different trees,
+// left over after pairing, block the conversion with `none` (`frequency * width -> activity * length`).
+// The exception is a pair whose equations connect them, where the equation of either factor has a
+// factor in the other's tree (`radiant_intensity = radiant_flux / solid_angular_measure` against
+// `radiant_flux`): such factors don't block and the equations decide. The check itself looks only
+// at the two quantities, so the order of the operations doesn't change its result.
+template<typename Lhs, typename Rhs>
+[[nodiscard]] consteval bool is_blocking_pair()
+{
+  if constexpr (std::is_same_v<hierarchy_root<Lhs>, hierarchy_root<Rhs>>)
+    return false;
+  else if constexpr (!std::is_same_v<MP_UNITS_NONCONST_TYPE(Lhs::_dimension_),
+                                     MP_UNITS_NONCONST_TYPE(Rhs::_dimension_)>)
+    return false;
+  else
+    return !detail::equation_mentions<hierarchy_root<Rhs>, Lhs>() &&
+           !detail::equation_mentions<hierarchy_root<Lhs>, Rhs>();
+}
+
+template<typename Lhs, typename Rhs>
+struct blocking_pair : std::bool_constant<detail::is_blocking_pair<Lhs, Rhs>()> {};
+
+template<typename F, typename... Ts>
+[[nodiscard]] consteval bool blocks_any(type_list<Ts...>)
+{
+  return (... || blocking_pair<expr_type<F>, expr_type<Ts>>::value);
+}
+
+template<typename To, typename... Fs>
+[[nodiscard]] consteval bool any_blocking_pair(type_list<Fs...>)
+{
+  return (... || detail::blocks_any<Fs>(To{}));
+}
+
+// self-cancel
+
+template<bool Found, typename Num, typename Den>
+struct cancel_result {
+  static constexpr bool found = Found;
+  using num = Num;
+  using den = Den;
+};
+
+// The first denominator factor of the same dimension as `N`.
+template<typename N, typename DenPre, typename DenPost>
+[[nodiscard]] consteval auto cancel_against()
+{
+  if constexpr (type_list_size<DenPost> == 0)
+    return cancel_result<false, type_list<N>, DenPre>{};
+  else {
+    using D = type_list_front<DenPost>;
+    if constexpr (std::is_same_v<MP_UNITS_NONCONST_TYPE(expr_type<N>::_dimension_),
+                                 MP_UNITS_NONCONST_TYPE(expr_type<D>::_dimension_)>) {
+      constexpr ratio num_exp = detail::get_exponent(N{});
+      constexpr ratio den_exp = detail::get_exponent(D{});
+      constexpr ratio common = num_exp < den_exp ? num_exp : den_exp;
+      return cancel_result<
+        true, power_or_T_list<expr_type<N>, num_exp - common>,
+        type_list_join<DenPre, power_or_T_list<expr_type<D>, den_exp - common>, type_list_pop_front<DenPost>>>{};
+    } else
+      return detail::cancel_against<N, type_list_push_back<DenPre, D>, type_list_pop_front<DenPost>>();
+  }
+}
+
+// One self-cancel on one side, the first available in list order (every self-cancel on a side has
+// the same rank, so which one goes first doesn't change the result).
+template<typename NumPre, typename Num, typename Den>
+[[nodiscard]] consteval auto self_cancel()
+{
+  if constexpr (type_list_size<Num> == 0 || type_list_size<Den> == 0)
+    return cancel_result<false, type_list_join<NumPre, Num>, Den>{};
+  else {
+    using N = type_list_front<Num>;
+    using attempt = decltype(detail::cancel_against<N, type_list<>, Den>());
+    if constexpr (attempt::found)
+      return cancel_result<true, type_list_join<NumPre, typename attempt::num, type_list_pop_front<Num>>,
+                           typename attempt::den>{};
+    else
+      return detail::self_cancel<type_list_push_back<NumPre, N>, type_list_pop_front<Num>, Den>();
+  }
+}
+
+// expand
+
+// Replaces the factor at `I` of `This` with its equation: the equation's numerator joins `This`
+// and its denominator joins `Other` (the opposite list of the same side), both raised to the
+// factor's exponent, and then the two lists of the side are normalised against each other.
+// The factor and the rest come from one `type_list_extract`.
+template<typename This, typename Other, std::size_t I>
+struct substituted_side {
+  using extracted = type_list_extract<This, I>;
+  using element = extracted::element;
+  using factor = expr_type<element>;
+  static constexpr ratio exponent = detail::get_exponent(element{});
+  using eq = equation_of<factor>;
+  using merged_this =
+    merge_quantity_spec_factors<typename extracted::rest, rational_power_list<typename eq::_num_, exponent>>;
+  using merged_other = merge_quantity_spec_factors<Other, rational_power_list<typename eq::_den_, exponent>>;
+  using normalised = simplify_quantity_spec_factors<merged_this, merged_other>;
+  using this_list = normalised::num;
+  using other_list = normalised::den;
+};
+
+// A side `Num / Den` after the factor at `I` of its numerator (`InNum`) or of its denominator is
+// replaced by its equation. Expanding a From factor and expanding a To factor are this one
+// substitution. They differ only in rank.
+template<typename Num, typename Den, std::size_t I, bool InNum>
+struct substituted : substituted_side<Num, Den, I> {
+  using num = substituted_side<Num, Den, I>::this_list;
+  using den = substituted_side<Num, Den, I>::other_list;
+};
+
+template<typename Num, typename Den, std::size_t I>
+struct substituted<Num, Den, I, false> : substituted_side<Den, Num, I> {
+  using num = substituted_side<Den, Num, I>::other_list;
+  using den = substituted_side<Den, Num, I>::this_list;
+};
+
+// The position of the first factor of depth `Depth` in a list that has one.
+template<int Depth, typename... Ts>
+[[nodiscard]] consteval std::size_t index_of_depth(type_list<Ts...>)
+{
+  std::size_t index = 0;
+  bool found = false;
+  ((found = found || quantity_spec_depth<expr_type<Ts>>::value == Depth, index += !found), ...);
+  return index;
+}
+
+template<conversion_rank Rank, typename FromNum, typename FromDen, typename ToNum, typename ToDen, bool SourceIsKind>
+[[nodiscard]] consteval conversion_rank reduce();
+
+// Expands the From factor at `I` of the numerator (`InNum`) or the denominator, always `implicit`.
+template<conversion_rank Rank, typename FromNum, typename FromDen, typename ToNum, typename ToDen, bool InNum,
+         std::size_t I, bool SourceIsKind>
+[[nodiscard]] consteval conversion_rank expand_source()
+{
+  using side = substituted<FromNum, FromDen, I, InNum>;
+  return detail::reduce<Rank, typename side::num, typename side::den, ToNum, ToDen, SourceIsKind>();
+}
+
+// Expands the To factor at `I` of the numerator (`InNum`) or the denominator, at the target expansion
+// rank.
+template<conversion_rank Rank, typename FromNum, typename FromDen, typename ToNum, typename ToDen, bool InNum,
+         std::size_t I, bool SourceIsKind>
+[[nodiscard]] consteval conversion_rank expand_target()
+{
+  using side = substituted<ToNum, ToDen, I, InNum>;
+  return detail::reduce<detail::weaker(Rank, detail::target_expansion_rank<typename side::factor, SourceIsKind>()),
+                        FromNum, FromDen, typename side::num, typename side::den, SourceIsKind>();
+}
+
+// Reduce the deepest factor: nothing pairs and nothing self-cancels, so the factor of greatest
+// depth is expanded (ties: From numerator, From denominator, To numerator, To
+// denominator, then list order). The deepest factor is reduced first, so the two sides meet at the
+// most specific common equation. Flattening both sides to base quantities would rank
+// `acceleration * time -> special_speed` `explicit_only` instead of `cast`.
+template<conversion_rank Rank, typename FromNum, typename FromDen, typename ToNum, typename ToDen, bool SourceIsKind>
+[[nodiscard]] consteval conversion_rank reduce_deepest()
+{
+  constexpr int from_num_depth = detail::max_factor_depth(FromNum{});
+  constexpr int from_den_depth = detail::max_factor_depth(FromDen{});
+  constexpr int to_num_depth = detail::max_factor_depth(ToNum{});
+  constexpr int to_den_depth = detail::max_factor_depth(ToDen{});
+  constexpr int deepest = detail::max({from_num_depth, from_den_depth, to_num_depth, to_den_depth});
+  if constexpr (deepest == 0)
+    // nothing left has an equation and nothing pairs or self-cancels
+    return conversion_rank::none;
+  else if constexpr (from_num_depth == deepest)
+    return detail::expand_source<Rank, FromNum, FromDen, ToNum, ToDen, true, detail::index_of_depth<deepest>(FromNum{}),
+                                 SourceIsKind>();
+  else if constexpr (from_den_depth == deepest)
+    return detail::expand_source<Rank, FromNum, FromDen, ToNum, ToDen, false,
+                                 detail::index_of_depth<deepest>(FromDen{}), SourceIsKind>();
+  else if constexpr (to_num_depth == deepest)
+    return detail::expand_target<Rank, FromNum, FromDen, ToNum, ToDen, true, detail::index_of_depth<deepest>(ToNum{}),
+                                 SourceIsKind>();
+  else
+    return detail::expand_target<Rank, FromNum, FromDen, ToNum, ToDen, false, detail::index_of_depth<deepest>(ToDen{}),
+                                 SourceIsKind>();
+}
+
+// The two single-factor rules that come before pairing, in their order: exact equation first, then
+// a product of its own tree, the From side before the To side in each. Both are the same
+// substitution of the one factor. After an exact equation the two sides are the same product.
+enum class leading_operation : std::int8_t { none, expand_source, expand_target };
+
+template<typename FromNum, typename FromDen, typename ToNum, typename ToDen>
+[[nodiscard]] consteval leading_operation find_leading_operation()
+{
+  using enum leading_operation;
+  if constexpr (is_recipe<FromNum, FromDen, ToNum, ToDen>::value)
+    return expand_source;
+  else if constexpr (is_recipe<ToNum, ToDen, FromNum, FromDen>::value)
+    return expand_target;
+  else if constexpr (is_own_tree_product<FromNum, FromDen>::value)
+    return expand_source;
+  else if constexpr (is_own_tree_product<ToNum, ToDen>::value)
+    return expand_target;
+  else
+    return none;
+}
+
+// One step of the procedure: done, a single-factor rule, pair (a cross-tree pair ends it with `none`),
+// self-cancel against an empty counterpart, reduce the deepest. Every step removes a factor or
+// replaces one by factors of strictly smaller depth, so it terminates.
+template<conversion_rank Rank, typename FromNum, typename FromDen, typename ToNum, typename ToDen, bool SourceIsKind>
+[[nodiscard]] consteval conversion_rank reduce()
+{
+  using enum conversion_rank;
+  constexpr leading_operation operation = detail::find_leading_operation<FromNum, FromDen, ToNum, ToDen>();
+  if constexpr (std::is_same_v<FromNum, ToNum> && std::is_same_v<FromDen, ToDen>)
+    // both sides are empty, or the same product (right after an exact equation)
+    return Rank;
+  else if constexpr (operation == leading_operation::expand_source)
+    return detail::expand_source<Rank, FromNum, FromDen, ToNum, ToDen, type_list_size<FromNum> == 1, 0, SourceIsKind>();
+  else if constexpr (operation == leading_operation::expand_target)
+    return detail::expand_target<Rank, FromNum, FromDen, ToNum, ToDen, type_list_size<ToNum> == 1, 0, SourceIsKind>();
+  else {
+    constexpr std::size_t from_size = type_list_size<FromNum> + type_list_size<FromDen>;
+    constexpr std::size_t to_size = type_list_size<ToNum> + type_list_size<ToDen>;
+    using all = type_list_join<FromNum, FromDen, ToNum, ToDen>;
+    using num = decltype(detail::pair_lists<FromNum, ToNum, all, SourceIsKind>());
+    using den = decltype(detail::pair_lists<FromDen, ToDen, all, SourceIsKind>());
+    // same-tree factors pair first (the best pairing), so only what they leave can pair across trees
+    if constexpr (detail::any_blocking_pair<typename num::to_rest>(typename num::from_rest{}) ||
+                  detail::any_blocking_pair<typename den::to_rest>(typename den::from_rest{}))
+      return none;
+    else if constexpr (num::paired || den::paired) {
+      constexpr conversion_rank rank = detail::weaker(Rank, detail::weaker(num::rank, den::rank));
+      if constexpr (rank == none)
+        return none;
+      else
+        return detail::reduce<rank, typename num::from_rest, typename den::from_rest, typename num::to_rest,
+                              typename den::to_rest, SourceIsKind>();
+    } else if constexpr (to_size == 0) {
+      // a ratio of two quantities of one dimension is a plain number
+      using cancel = decltype(detail::self_cancel<type_list<>, FromNum, FromDen>());
+      if constexpr (cancel::found)
+        return detail::reduce<Rank, typename cancel::num, typename cancel::den, ToNum, ToDen, SourceIsKind>();
+      else
+        return detail::reduce_deepest<Rank, FromNum, FromDen, ToNum, ToDen, SourceIsKind>();
+    } else if constexpr (from_size == 0) {
+      // the user asserts that a number is such a ratio
+      using cancel = decltype(detail::self_cancel<type_list<>, ToNum, ToDen>());
+      if constexpr (cancel::found)
+        return detail::reduce<SourceIsKind ? Rank : detail::weaker(Rank, explicit_only), FromNum, FromDen,
+                              typename cancel::num, typename cancel::den, SourceIsKind>();
+      else
+        return detail::reduce_deepest<Rank, FromNum, FromDen, ToNum, ToDen, SourceIsKind>();
+    } else
+      return detail::reduce_deepest<Rank, FromNum, FromDen, ToNum, ToDen, SourceIsKind>();
+  }
+}
+
+// Neither side is a kind here. `convertible_kinds` strips `kind_of<>` and passes `SourceIsKind`,
+// which exempts a source kind from the kind boundary's cap on gained kinds.
+// Whether a side is a single named quantity with exponent one.
+template<typename Num, typename Den>
+inline constexpr bool is_single_named = false;
+
+template<typename Q>
+  requires(!is_specialization_of_power<Q>)
+inline constexpr bool is_single_named<type_list<Q>, type_list<>> = true;
+
+template<typename FromNum, typename FromDen, typename ToNum, typename ToDen, bool SourceIsKind, bool TargetIsKind>
+[[nodiscard]] consteval conversion_rank convertible_factors()
+{
+  if constexpr (is_single_named<FromNum, FromDen> && is_single_named<ToNum, ToDen>) {
+    // what is left are two named quantities: they relate as the bare pair does
+    using from = type_list_front<FromNum>;
+    using to = type_list_front<ToNum>;
+    if constexpr (SourceIsKind)
+      return detail::convertible_from_kind<from, to>();
+    else if constexpr (TargetIsKind)
+      return detail::convertible_to_kind<from, to>();
+    else
+      return detail::convertible_named<from, to>();
+  } else
+    return detail::weaker(detail::reduce<conversion_rank::implicit, FromNum, FromDen, ToNum, ToDen, SourceIsKind>(),
+                          detail::kind_boundary<FromNum, FromDen, ToNum, ToDen, SourceIsKind>());
+}
+
+// A factor common to both sides doesn't change how they relate: a factor present on both sides,
+// in the same part, is canceled before anything else, so `A * X -> B * X` is decided exactly as
+// `A -> B`, the kind boundary included, as long as no factor of `X` cancels against `A` or `B`.
+template<typename From, typename To, bool SourceIsKind = false, bool TargetIsKind = false>
+[[nodiscard]] consteval conversion_rank convertible_by_equations()
+{
+  using from = quantity_spec_factors<From>;
+  using to = quantity_spec_factors<To>;
+  using num = simplify_quantity_spec_factors<typename from::num, typename to::num>;
+  using den = simplify_quantity_spec_factors<typename from::den, typename to::den>;
+  return detail::convertible_factors<typename num::num, typename den::num, typename num::den, typename den::den,
+                                     SourceIsKind, TargetIsKind>();
 }
 
 }  // namespace mp_units::detail

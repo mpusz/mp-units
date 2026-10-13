@@ -121,7 +121,7 @@ Both stream insertion operations and `std::format` facilities are supported.
 ## Related Concepts
 
 <!-- markdownlint-disable MD013 -->
-- [Quantity Concepts](../users_guide/framework_basics/concepts.md#QuantityOf) - Understanding `QuantityOf`
+- [Quantity Concepts](../users_guide/advanced_topics/concepts.md#QuantityOf) - Understanding `QuantityOf`
 - [Simple and Typed Quantities](../users_guide/framework_basics/simple_and_typed_quantities.md) - Quantity kinds vs. typed quantities
 - [Value Conversions](../users_guide/framework_basics/value_conversions.md) - Different conversion types
 - [Text Output](../users_guide/framework_basics/text_output.md) - Formatting quantities

@@ -142,6 +142,29 @@ quantities to make their recipes physically correct:
 Use this system when you need both strong angular dimensions and the full typed ISQ
 quantity system.
 
+### Rotational mechanics in `isq` and in `isq_angle`
+
+In the library, an _angular measure_ is a quantity kind of its own, and a quantity of a
+kind never turns into a quantity without that kind implicitly (see
+[Quantity Specification Conversions](../advanced_topics/quantity_spec_conversions.md)).
+Plain `isq` follows ISO 80000 in defining _torque_ and _angular momentum_ without an angle
+while _angular velocity_ carries one, so the rotational formulas lose an angle on the way
+and need an explicit conversion:
+
+```cpp
+const quantity power = isq::power(torque * omega);                        // P = τω
+const quantity energy = isq::kinetic_energy(inertia * pow<2>(omega));     // E = ½Iω²
+```
+
+In `isq_angle`, _torque_ and _angular momentum_ carry the angle as the physics requires,
+so both formulas convert implicitly:
+
+```cpp
+const quantity<si::watt> power = torque * omega;
+```
+
+This is why `isq_angle` is the system to use for rotational mechanics.
+
 ### Example
 
 Here's an example using `isq_angle` to calculate _torque_ with proper dimensional analysis:

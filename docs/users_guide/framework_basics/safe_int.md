@@ -4,9 +4,9 @@
 
 `safe_int<T>` is a thin wrapper around an integral type `T` that **detects all arithmetic
 overflow at runtime**. It participates in the ordinary C++ arithmetic system and satisfies
-all the concepts that **mp-units** requires of a
-[representation type](representation_types.md) — making it a true drop-in replacement for
-plain integers.
+all the concepts that **mp-units** requires of a [representation
+type](../advanced_topics/representation_types.md) — making it a true drop-in replacement
+for plain integers.
 
 ```cpp
 #include <mp-units/utility/safe_int.h>
@@ -20,7 +20,7 @@ quantity<mm, safe_i32> doubled = distance + distance;  // throws — 3×10⁹ > 
 
 !!! info "Motivation"
 
-    **mp-units**' [built-in scaling algorithm](representation_types.md#built-in-scaling-algorithm)
+    **mp-units**' [built-in scaling algorithm](../advanced_topics/representation_types.md#built-in-scaling-algorithm)
     uses widened intermediate arithmetic (e.g. `int64_t`/`uint64_t` for types up to
     `int32_t`/`uint32_t`, 128-bit for 64-bit types) to avoid undefined behavior during
     unit conversions. This handles the vast
@@ -177,7 +177,7 @@ The policy must provide a `static void on_overflow(std::string_view)` member fun
 
 ## Drop-in replacement
 
-`safe_int<T>` satisfies all the same [representation concepts](concepts.md#RepresentationOf)
+`safe_int<T>` satisfies all the same [representation concepts](../advanced_topics/concepts.md#RepresentationOf)
 as `T`. Only the representation type changes — everything else stays identical:
 
 === "plain int16_t"

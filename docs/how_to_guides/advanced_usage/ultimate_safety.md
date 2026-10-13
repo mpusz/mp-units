@@ -30,7 +30,7 @@ The library provides building blocks that work together:
    on every construction and mutation
 2. **`constrained<T, ErrorPolicy>`** — a transparent wrapper that tags a representation
    type with an error policy
-3. [**`constraint_violation_handler<Rep>`**](../../users_guide/framework_basics/representation_types.md#constraint-violation-handler) —
+3. [**`constraint_violation_handler<Rep>`**](../../users_guide/advanced_topics/representation_types.md#constraint-violation-handler) —
    a customization point that library features query to dispatch errors
 <!-- markdownlint-enable MD013 -->
 
@@ -191,7 +191,7 @@ use its error policy for bounds violations.
   overflow-safe integer arithmetic reference
 - [Preventing Integer Overflow in Physical Computations](../../blog/posts/preventing-integer-overflow.md) —
   in-depth narrative on automatic scaling overflow, design tradeoffs, and comparison with Au
-- [Representation Types](../../users_guide/framework_basics/representation_types.md) —
+- [Representation Types](../../users_guide/advanced_topics/representation_types.md) —
   `constraint_violation_handler` reference
 - [Range-Validated Quantity Points](../../users_guide/framework_basics/the_affine_space.md#range-validated-quantity-points) —
   overflow policies reference

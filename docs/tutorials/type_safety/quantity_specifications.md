@@ -55,7 +55,7 @@ int main()
 
   // These DON'T compile (specific → different specific)
   // width = height;  // ❌ Can't assign height to width!
-  // width = radius;  // ❌ Can't assign radius to width!
+  // height = radius; // ❌ Can't assign radius to height!
 
   // But you can force it with quantity_cast if you really need to
   width = quantity_cast<isq::width>(height);  // ⚠️ Explicit cast
@@ -64,9 +64,9 @@ int main()
 ```
 
 **Key insight**: Specific quantity types (_width_, _height_, _radius_) can convert to their
-parent kind (_length_), but not to each other. Converting back from generic to specific
-requires explicit conversion. Use `quantity_cast` between siblings only when you're certain
-the semantic conversion is valid!
+parent kind (_length_), but not across branches (a _height_ is never a _width_).
+Converting back from generic to specific requires explicit conversion. Use `quantity_cast`
+between siblings only when you're certain the semantic conversion is valid!
 
 ## Operations Across the Hierarchy
 

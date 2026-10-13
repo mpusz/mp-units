@@ -119,6 +119,13 @@ plugins:
       cards_layout_options:
         background_color: "#00599c"
   - tags
+  # Pages that moved keep their old URLs working: each old path gets a page that forwards to the new
+  # one, anchors included. Paths are relative to `docs/`.
+  - redirects:
+      redirect_maps:
+        users_guide/framework_basics/concepts.md: users_guide/advanced_topics/concepts.md
+        users_guide/framework_basics/type_introspection.md: users_guide/advanced_topics/type_introspection.md
+        users_guide/framework_basics/representation_types.md: users_guide/advanced_topics/representation_types.md
 
 # Customization
 extra:
@@ -214,15 +221,12 @@ nav:
           - Simple and Typed Quantities: users_guide/framework_basics/simple_and_typed_quantities.md
           - Value Conversions: users_guide/framework_basics/value_conversions.md
           - Character of a Quantity: users_guide/framework_basics/character_of_a_quantity.md
-          - Representation Types: users_guide/framework_basics/representation_types.md
           - "`safe_int<T>`": users_guide/framework_basics/safe_int.md
           - Dimensionless Quantities: users_guide/framework_basics/dimensionless_quantities.md
           - Quantity Arithmetics: users_guide/framework_basics/quantity_arithmetics.md
           - Generic Interfaces: users_guide/framework_basics/generic_interfaces.md
           - Faster-than-lightspeed Constants: users_guide/framework_basics/faster_than_lightspeed_constants.md
           - The Affine Space: users_guide/framework_basics/the_affine_space.md
-          - Type Introspection: users_guide/framework_basics/type_introspection.md
-          - Concepts: users_guide/framework_basics/concepts.md
           - Text Output: users_guide/framework_basics/text_output.md
       - Systems:
           - Systems: users_guide/systems/index.md
@@ -235,6 +239,11 @@ nav:
           - Strong Angular System: users_guide/systems/strong_angular_system.md
           - High Energy Physics (HEP): users_guide/systems/hep.md
           - Natural Units: users_guide/systems/natural_units.md
+      - Advanced Topics:
+          - Representation Types: users_guide/advanced_topics/representation_types.md
+          - Quantity Specification Conversions: users_guide/advanced_topics/quantity_spec_conversions.md
+          - Type Introspection: users_guide/advanced_topics/type_introspection.md
+          - Concepts: users_guide/advanced_topics/concepts.md
   - Workshops:
       - Workshops: workshops/index.md
       - Foundation:
@@ -359,7 +368,6 @@ nav:
               - angular_velocity (isq_angle): reference/systems_reference/hierarchies/angular_velocity_isq_angle.md
               - area (hep): reference/systems_reference/hierarchies/area_hep.md
               - area (isq): reference/systems_reference/hierarchies/area_isq.md
-              - attenuation: reference/systems_reference/hierarchies/attenuation.md
               - call_intensity: reference/systems_reference/hierarchies/call_intensity.md
               - capacitance: reference/systems_reference/hierarchies/capacitance.md
               - catalytic_activity: reference/systems_reference/hierarchies/catalytic_activity.md
@@ -382,7 +390,6 @@ nav:
               - electric_charge (hep): reference/systems_reference/hierarchies/electric_charge_hep.md
               - electric_charge (isq): reference/systems_reference/hierarchies/electric_charge_isq.md
               - electric_charge_density: reference/systems_reference/hierarchies/electric_charge_density.md
-              - electric_constant: reference/systems_reference/hierarchies/electric_constant.md
               - electric_current (hep): reference/systems_reference/hierarchies/electric_current_hep.md
               - electric_current (isq): reference/systems_reference/hierarchies/electric_current_isq.md
               - electric_current_density: reference/systems_reference/hierarchies/electric_current_density.md
@@ -431,7 +438,6 @@ nav:
               - luminous_flux (isq): reference/systems_reference/hierarchies/luminous_flux_isq.md
               - luminous_intensity (hep): reference/systems_reference/hierarchies/luminous_intensity_hep.md
               - luminous_intensity (isq): reference/systems_reference/hierarchies/luminous_intensity_isq.md
-              - magnetic_constant: reference/systems_reference/hierarchies/magnetic_constant.md
               - magnetic_dipole_moment: reference/systems_reference/hierarchies/magnetic_dipole_moment.md
               - magnetic_field: reference/systems_reference/hierarchies/magnetic_field.md
               - magnetic_flux (hep): reference/systems_reference/hierarchies/magnetic_flux_hep.md
@@ -460,8 +466,7 @@ nav:
               - permeability: reference/systems_reference/hierarchies/permeability.md
               - permeance: reference/systems_reference/hierarchies/permeance.md
               - permittivity: reference/systems_reference/hierarchies/permittivity.md
-              - phase_coefficient (isq): reference/systems_reference/hierarchies/phase_coefficient_isq.md
-              - phase_coefficient (isq_angle): reference/systems_reference/hierarchies/phase_coefficient_isq_angle.md
+              - phase_coefficient: reference/systems_reference/hierarchies/phase_coefficient.md
               - phase_speed: reference/systems_reference/hierarchies/phase_speed.md
               - phase_speed_of_electromagnetic_waves: reference/systems_reference/hierarchies/phase_speed_of_electromagnetic_waves.md
               - photon_exitance: reference/systems_reference/hierarchies/photon_exitance.md

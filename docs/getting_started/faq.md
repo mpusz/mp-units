@@ -108,7 +108,7 @@ in order to form a quantity.
     The same applies to the construction of `quantity_point` using an explicit point origin.
     To prevent similar safety issues during maintenance, initialization always requires
     providing both a `quantity` and a
-    [`PointOrigin`](../users_guide/framework_basics/concepts.md#PointOrigin)
+    [`PointOrigin`](../users_guide/advanced_topics/concepts.md#PointOrigin)
     to use as a reference point.
 
 
@@ -293,7 +293,7 @@ identifiers to a `standard_case`, even if it results in harder-to-understand cod
 !!! note
 
     In case you have a good idea of how to rename
-    [existing concepts](../users_guide/framework_basics/concepts.md) to the `standard_case`,
+    [existing concepts](../users_guide/advanced_topics/concepts.md) to the `standard_case`,
     please let us know in the associated [GitHub Issue](https://github.com/mpusz/mp-units/issues/93).
 
 
@@ -475,7 +475,7 @@ The same pattern applies to a plain `quantity`, using `QuantityOf` in place of
 
 !!! note
 
-    See [Concepts](../users_guide/framework_basics/concepts.md#QuantityOf) for the exact
+    See [Concepts](../users_guide/advanced_topics/concepts.md#QuantityOf) for the exact
     definitions, including `QuantityPointOf`'s `PointOrigin` case.
 
 _This entry is based on discussion [#699](https://github.com/mpusz/mp-units/discussions/699)._

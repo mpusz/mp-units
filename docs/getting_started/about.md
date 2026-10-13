@@ -33,7 +33,7 @@ and actionable.
 
 To achieve this goal, several techniques are applied:
 
-- [Use of C++20 concepts](../users_guide/framework_basics/concepts.md) to improve
+- [Use of C++20 concepts](../users_guide/advanced_topics/concepts.md) to improve
   compile-time performance and error readability vs traditional SFINAE‑based metaprogramming.
 - [Strong types for framework entities](../users_guide/framework_basics/interface_introduction.md#strong-types-instead-of-aliases)
   instead of type aliases.

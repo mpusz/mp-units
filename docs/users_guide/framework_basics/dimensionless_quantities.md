@@ -74,12 +74,12 @@ According to the [ISQ](../../reference/glossary.md#isq), _work_ divided by _heat
 for the _thermodynamic efficiency_ quantity, thus:
 
 ```cpp
-static_assert(implicitly_convertible(q.quantity_spec, isq::efficiency_thermodynamics));
+static_assert(implicitly_convertible(q.quantity_spec, isq::thermodynamic_efficiency));
 ```
 
 !!! note
 
-    The quantity of `isq::efficiency_thermodynamics` is of a kind `dimensionless`, so it is implicitly
+    The quantity of `isq::thermodynamic_efficiency` is of a kind `dimensionless`, so it is implicitly
     convertible to `dimensionless` and satisfies the `QuantityOf<dimensionless>` concept.
 
 
@@ -658,12 +658,12 @@ Traditional approaches to creating strong numeric types each face different trad
     inline constexpr struct fhd : named_unit<"FHD", mag<1920 * 1080> * one, kind_of<pixel_area>> {} fhd;
     inline constexpr struct uhd_4k : named_unit<"4K", mag<3840 * 2160> * one, kind_of<pixel_area>> {} uhd_4k;
 
-    void draw_point(quantity<pixel_x[one], int> x>, quantity<pixel_y[one], int> y>) { /* ... */ }
+    void draw_point(quantity<pixel_x[one], int> x, quantity<pixel_y[one], int> y) { /* ... */ }
 
     quantity<pixel_area[one], int> calculate_area(quantity<pixel_x[one], int> width,
                                                   quantity<pixel_y[one], int> height)
     {
-      return width * height;
+      return pixel_area(width * height);  // entering the `pixel_area` kind is explicit
     }
 
     quantity x = pixel_x(100);

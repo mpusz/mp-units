@@ -13,7 +13,7 @@ For background on the concepts used here, see:
   scalar, vector, and tensor characters
 - [Why a Quantity Has a Character](../../blog/posts/why-a-quantity-has-a-character.md) -
   why character is part of a quantity's identity
-- [Representation Types](../../users_guide/framework_basics/representation_types.md) -
+- [Representation Types](../../users_guide/advanced_topics/representation_types.md) -
   what a type must provide to act as a representation
 <!-- markdownlint-enable MD013 -->
 
@@ -185,6 +185,6 @@ sibling, then provide its `hat` / `vee` dual to `isq::angular_momentum` or
   scalar, vector, and tensor characters and their operations
 - [Decompose a Vector Quantity into Components](decompose_vector_quantity.md) -
   the complementary direction, naming the axes of a vector quantity
-- [Representation Types](../../users_guide/framework_basics/representation_types.md) -
+- [Representation Types](../../users_guide/advanced_topics/representation_types.md) -
   the requirements a representation must meet
 <!-- markdownlint-enable MD013 -->

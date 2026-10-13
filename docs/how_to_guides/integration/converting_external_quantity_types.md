@@ -7,7 +7,7 @@ conversion traits, control whether conversions are implicit or explicit, and mai
 at library boundaries.
 
 For background on the concepts used in these conversions, see
-[Concepts](../../users_guide/framework_basics/concepts.md) in the User's Guide.
+[Concepts](../../users_guide/advanced_topics/concepts.md) in the User's Guide.
 
 ## What You Need to Provide
 
@@ -95,7 +95,7 @@ struct mp_units::quantity_like_traits<Meter> {
 
 ### Step 2: Verify the Concept
 
-Check that the [`QuantityLike`](../../users_guide/framework_basics/concepts.md#QuantityLike)
+Check that the [`QuantityLike`](../../users_guide/advanced_topics/concepts.md#QuantityLike)
 concept is satisfied:
 
 ```cpp
@@ -274,7 +274,7 @@ struct mp_units::quantity_point_like_traits<Timestamp> {
 <!-- markdownlint-disable-next-line MD024 -->
 ### Step 2: Verify the Concept
 
-Check that the [`QuantityPointLike`](../../users_guide/framework_basics/concepts.md#QuantityPointLike)
+Check that the [`QuantityPointLike`](../../users_guide/advanced_topics/concepts.md#QuantityPointLike)
 concept is satisfied:
 
 ```cpp
@@ -437,7 +437,7 @@ or to integrate with external libraries while maintaining strong dimensional saf
 
 <!-- markdownlint-disable MD013 -->
 - [The Affine Space](../../users_guide/framework_basics/the_affine_space.md) - Understanding quantity points
-- [Concepts](../../users_guide/framework_basics/concepts.md) - `QuantityLike` and `QuantityPointLike` concepts
+- [Concepts](../../users_guide/advanced_topics/concepts.md) - `QuantityLike` and `QuantityPointLike` concepts
 - [Value Conversions](../../users_guide/framework_basics/value_conversions.md) - Understanding conversion rules
 <!-- markdownlint-enable MD013 -->
 

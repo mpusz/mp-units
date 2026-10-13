@@ -75,7 +75,7 @@ flowchart TD
 
 The `mp_units.utility` module is layered on top of both `mp_units.core` and `mp_units.systems`.
 It collects useful add-ons that are deliberately **not** part of the framework: the built-in
-[`cartesian_vector`/`cartesian_tensor`](../users_guide/framework_basics/representation_types.md)
+[`cartesian_vector`/`cartesian_tensor`](../users_guide/advanced_topics/representation_types.md)
 representation types and the random number generators.
 The framework (`mp_units.core`) is the slice intended for C++ standardization, so anything
 that will not be standardized lives in `mp_units.utility` instead. The umbrella `mp_units`
@@ -192,7 +192,7 @@ used directly as quantity representations:
 - `mp-units/integrations/glm.h` integrates [GLM](https://github.com/g-truc/glm),
 - `mp-units/integrations/blaze.h` integrates [Blaze](https://bitbucket.org/blaze-lib/blaze).
 
-See [Representation Types](../users_guide/framework_basics/representation_types.md#third-party-library-integrations)
+See [Representation Types](../users_guide/advanced_topics/representation_types.md#third-party-library-integrations)
 for usage.
 
 ### Systems and associated utilities

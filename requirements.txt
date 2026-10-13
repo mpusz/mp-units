@@ -7,5 +7,6 @@ clang-format==21.1.8
 identify
 mkdocs-material
 mkdocs-rss-plugin
+mkdocs-redirects
 mkdocs-material[imaging]
 mike

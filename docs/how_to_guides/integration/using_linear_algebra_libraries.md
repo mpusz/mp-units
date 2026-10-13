@@ -9,7 +9,7 @@ points for you.
 
 For the design rationale behind representation types and the full customization-point
 reference, see
-[Representation Types](../../users_guide/framework_basics/representation_types.md) in the
+[Representation Types](../../users_guide/advanced_topics/representation_types.md) in the
 User's Guide. To author a representation type of your own from scratch, see
 [Using Custom Representation Types](using_custom_representation_types.md).
 
@@ -94,7 +94,7 @@ documented in [Project Structure](../../getting_started/project_structure.md).
     Eigen and Blaze evaluate lazily: their arithmetic operators return proxy expression types
     that reference their operands. The plugin headers map each such proxy to its evaluated
     concrete type (via
-    [`representation_canonical_type`](../../users_guide/framework_basics/representation_types.md#representation_canonical_type))
+    [`representation_canonical_type`](../../users_guide/advanced_topics/representation_types.md#representation_canonical_type))
     so a `quantity` never stores a dangling proxy.
 
 !!! warning "V2 limitation: vector-operation result types"
@@ -117,23 +117,23 @@ customization points described here, and they are the template for adapting any 
 Five things vary between libraries:
 
 - **Underlying type.** Eigen and GLM expose a `value_type` member, so
-  [`representation_underlying_type`](../../users_guide/framework_basics/representation_types.md#representation_underlying_type)
+  [`representation_underlying_type`](../../users_guide/advanced_topics/representation_types.md#representation_underlying_type)
   detects it automatically. Blaze names it `ElementType` instead, so its plugin specializes
-  [`representation_underlying_type`](../../users_guide/framework_basics/representation_types.md#representation_underlying_type)
+  [`representation_underlying_type`](../../users_guide/advanced_topics/representation_types.md#representation_underlying_type)
   explicitly.
 - **Magnitude.** Eigen and Blaze provide `norm()`, which the
-  [`magnitude()`](../../users_guide/framework_basics/representation_types.md#character-determination)
+  [`magnitude()`](../../users_guide/advanced_topics/representation_types.md#character-determination)
   CPO uses directly. GLM spells it `length()`, so its plugin adds a one-line
-  [`magnitude()`](../../users_guide/framework_basics/representation_types.md#character-determination)
+  [`magnitude()`](../../users_guide/advanced_topics/representation_types.md#character-determination)
   overload (found by ADL) that forwards to it.
 - **Order.** A library whose structural shape is ambiguous declares its order explicitly.
   An Eigen column vector is an `N×1` matrix, so it exposes *both* single-index `operator[]`
   and two-index `operator()`, making its order ambiguous, so
-  [`tensor_order`](../../users_guide/framework_basics/representation_types.md#tensor_order)
+  [`tensor_order`](../../users_guide/advanced_topics/representation_types.md#tensor_order)
   has no default for it and its plugin specializes it from the compile-time shape. GLM and
   Blaze, whose vectors and matrices are structurally distinct types, need no such override.
 - **Field.** No override is needed:
-  [`numeric_field`](../../users_guide/framework_basics/representation_types.md#numeric_field)
+  [`numeric_field`](../../users_guide/advanced_topics/representation_types.md#numeric_field)
   reads the field off a scalar element, so a real matrix of `double` is real even though Eigen
   and Blaze also expose `real()`/`imag()` on it, and a complex matrix is complex. The one
   requirement is that a complex-element container also expose `real()`/`imag()` on its surface
@@ -144,7 +144,7 @@ Five things vary between libraries:
   their arithmetic operators. A proxy holds references to its operands, so storing one
   inside a `quantity` would leave dangling references once those operands expire. Their
   plugins specialize
-  [`representation_canonical_type`](../../users_guide/framework_basics/representation_types.md#representation_canonical_type)
+  [`representation_canonical_type`](../../users_guide/advanced_topics/representation_types.md#representation_canonical_type)
   to map each proxy to its evaluated concrete type (Eigen's `PlainObject`, Blaze's
   `ResultType`), so a `quantity` always stores a materialized value. GLM evaluates
   eagerly, so it needs no such specialization.
@@ -170,10 +170,10 @@ templates it generically.
     First, require that the element multiplication is valid, with
     `requires(const T& t, const U& u) { t * u; }`. This is basic hygiene, since without it
     the operator is selected for arguments its own body cannot compile. It also settles
-    [unit magnitudes](../../users_guide/framework_basics/concepts.md#UnitMagnitude) for
+    [unit magnitudes](../../users_guide/advanced_topics/concepts.md#UnitMagnitude) for
     free, because `element * magnitude` is ill-formed, so a constrained operator is never
     mistaken for one providing
-    [magnitude-aware scaling](../../users_guide/framework_basics/representation_types.md#unit-magnitude-aware-scaling).
+    [magnitude-aware scaling](../../users_guide/advanced_topics/representation_types.md#unit-magnitude-aware-scaling).
     An *unconstrained* one is, and the type must then answer what `element * magnitude`
     produces and is restricted to truncating conversions, when the built-in floating-point
     path would have handled it.
@@ -218,7 +218,7 @@ templates it generically.
 <!-- markdownlint-disable MD013 -->
 **User's Guide:**
 
-- [Representation Types](../../users_guide/framework_basics/representation_types.md) - Complete design and requirements reference, including the customization points the plugins specialize
+- [Representation Types](../../users_guide/advanced_topics/representation_types.md) - Complete design and requirements reference, including the customization points the plugins specialize
 - [Character of a Quantity](../../users_guide/framework_basics/character_of_a_quantity.md) - Understanding vector and tensor characters
 
 **How-to Guides:**

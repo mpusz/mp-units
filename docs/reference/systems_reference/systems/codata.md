@@ -709,7 +709,7 @@
 | <span id="wien_x_frequency"></span><code>wien_<wbr>x_<wbr>frequency</code> | x_<wbr>ν (x_<wbr>nu) | — | <code>mag<wien_x_frequency_c> * <wbr>[one](core.md#one)</code> | — |
 | <span id="wien_x_wavelength"></span><code>wien_<wbr>x_<wbr>wavelength</code> | x_<wbr>λ (x_<wbr>lambda) | — | <code>mag<wien_x_wavelength_c> * <wbr>[one](core.md#one)</code> | — |
 
-Constants with a standard uncertainty are measured rather than exact by definition, and satisfy the [`MeasuredConstant`](../../../users_guide/framework_basics/concepts.md#MeasuredConstant) concept. The uncertainty is stated in the form its source publishes: an absolute value in the constant's own dimension, or a relative one (marked *(relative)*) when only that form is published. A `—` means no uncertainty is declared for that constant.
+Constants with a standard uncertainty are measured rather than exact by definition, and satisfy the [`MeasuredConstant`](../../../users_guide/advanced_topics/concepts.md#MeasuredConstant) concept. The uncertainty is stated in the form its source publishes: an absolute value in the constant's own dimension, or a relative one (marked *(relative)*) when only that form is published. A `—` means no uncertainty is declared for that constant.
 
 !!! note "Inline Namespaces"
 

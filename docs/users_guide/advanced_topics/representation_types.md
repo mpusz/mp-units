@@ -8,7 +8,7 @@ requirements—such as range-validated values, vectors, or specialized numeric t
 The representation type determines what kind of mathematical operations are available and
 how the quantity behaves in calculations. To ensure type safety, the library verifies that
 your representation type has the capabilities required for the quantity's
-[character](character_of_a_quantity.md).
+[character](../framework_basics/character_of_a_quantity.md).
 
 
 ## Representation Requirements
@@ -31,9 +31,10 @@ mathematical nature of physical quantities—preventing, for example, using a sc
 vector operations like cross product are needed.
 
 The requirements split along the two independent axes of a quantity's
-[character](character_of_a_quantity.md): the **field** (real or complex) and the **order**
-(scalar, vector, or tensor). A representation type must satisfy a common baseline, then the
-requirements of its field and of its order.
+[character](../framework_basics/character_of_a_quantity.md):
+the **field** (real or complex) and the **order** (scalar, vector, or tensor). A
+representation type must satisfy a common baseline, then the requirements of its field and
+of its order.
 
 ### Common baseline (every representation type)
 
@@ -589,8 +590,8 @@ constexpr bool mp_units::treat_as_floating_point<my_fixed_point_type> = true;
 
 **Impact:** When `treat_as_floating_point<Rep>` is `true`, the type is treated as
 floating-point for conversion purposes. See
-[Value Conversions](value_conversions.md#value-conversions) for details on how this
-affects implicit conversions between quantities.
+[Value Conversions](../framework_basics/value_conversions.md#value-conversions)
+for details on how this affects implicit conversions between quantities.
 
 ---
 
@@ -684,7 +685,7 @@ constexpr bool mp_units::implicitly_scalable<FromUnit, my_special_int, ToUnit, m
 ```
 
 **Impact:** Controls whether conversions between quantity types are implicit or require
-`value_cast` or a rounding policy. See [Value Conversions](../../users_guide/framework_basics/value_conversions.md)
+`value_cast` or a rounding policy. See [Value Conversions](../framework_basics/value_conversions.md)
 for the full picture.
 
 ---
@@ -818,7 +819,8 @@ uncertainty, so the hook belongs to the conversion rather than to the value. See
 The library enforces character at compile-time: vector quantities require
 `scalar_product()` or `vector_product()` instead of `*`; complex quantities restrict
 `real()`, `imag()`, and `modulus()` to quantities of the correct character. See
-[Character of a Quantity](character_of_a_quantity.md) for full details and examples.
+[Character of a Quantity](../framework_basics/character_of_a_quantity.md)
+for full details and examples.
 
 
 ## Decomposing a Vector Quantity { #decomposing-a-vector-quantity }
@@ -1002,7 +1004,7 @@ library respects that choice throughout unit conversion.
         While double-width arithmetic avoids UB during the intermediate scaling multiplication,
         it cannot prevent overflow in the final result when that result doesn't fit in the
         target type. For runtime overflow detection, use
-        [`safe_int<T>`](safe_int.md), which wraps the representation type and checks all
+        [`safe_int<T>`](../framework_basics/safe_int.md), which wraps the representation type and checks all
         arithmetic operations for overflow.
 
 If different internal fields need different scale factors, encode that logic in
@@ -1058,7 +1060,7 @@ the new representation type through `sudo_cast`, and the resulting `quantity` (o
 
     For bounded `quantity_point` types, the library provides a different mechanism:
     overflow policies can be passed directly as template parameters to point origins.
-    See [Range-Validated Quantity Points](the_affine_space.md#range-validated-quantity-points).
+    See [Range-Validated Quantity Points](../framework_basics/the_affine_space.md#range-validated-quantity-points).
 
 
 ## Built-in Support
@@ -1149,8 +1151,8 @@ library that has no plugin, and the caveats (expression templates, the unsupport
 ## See Also
 
 <!-- markdownlint-disable MD013 -->
-- [Character of a Quantity](character_of_a_quantity.md) - Understanding quantity characters
-- [Value Conversions](value_conversions.md) - How `treat_as_floating_point` affects conversions
+- [Character of a Quantity](../framework_basics/character_of_a_quantity.md) - Understanding quantity characters
+- [Value Conversions](../framework_basics/value_conversions.md) - How `treat_as_floating_point` affects conversions
 - [Concepts](concepts.md#RepresentationOf) - The `RepresentationOf` concept definition
 - [Using Custom Representation Types](../../how_to_guides/integration/using_custom_representation_types.md) - Step-by-step guide to creating custom representation types
 - [Tutorial: Custom Contract Handlers](../../tutorials/affine_space/custom_contract_handlers.md) - Implementing custom error policies for `constrained` types

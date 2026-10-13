@@ -5,7 +5,7 @@ with **mp-units**. You'll learn the steps needed to make your type work seamless
 the library's quantity system.
 
 For background on representation type design and requirements, see the
-[Representation Types](../../users_guide/framework_basics/representation_types.md)
+[Representation Types](../../users_guide/advanced_topics/representation_types.md)
 section in the User's Guide.
 
 ## Quick Start
@@ -23,7 +23,7 @@ auto distance = value * m;  // quantity<si::metre, my_custom_type>
 ```
 
 Your custom type must satisfy the library's
-[`RepresentationOf`](../../users_guide/framework_basics/concepts.md#RepresentationOf) concept,
+[`RepresentationOf`](../../users_guide/advanced_topics/concepts.md#RepresentationOf) concept,
 which verifies your type provides the operations needed for its intended
 [quantity character](../../users_guide/framework_basics/character_of_a_quantity.md).
 
@@ -240,7 +240,7 @@ struct std::formatter<my_scalar_type<T>, Char> : std::formatter<T, Char> {
 ### Step 4: Specialize `representation_values` (if needed)
 
 If your type needs custom special values (see the
-[`representation_values<Rep>`](../../users_guide/framework_basics/representation_types.md#representation_values)
+[`representation_values<Rep>`](../../users_guide/advanced_topics/representation_types.md#representation_values)
 documentation):
 
 ```cpp
@@ -279,7 +279,7 @@ on using bounds checking with quantity points.
 
 The library applies a unit magnitude to a representation value internally when performing
 unit conversions. Three built-in paths handle this automatically — see
-[How Scaling Works](../../users_guide/framework_basics/representation_types.md#how-scaling-works)
+[How Scaling Works](../../users_guide/advanced_topics/representation_types.md#how-scaling-works)
 for the full concept definitions and algorithm.
 
 `my_scalar_type<T>` already satisfies the floating-point or integer scaling path
@@ -289,10 +289,10 @@ no further customization is needed.
 
 If your type is not automatically recognized (e.g., a third-party floating-point type with
 no `value_type` member), expose the underlying type via
-[`representation_underlying_type`](../../users_guide/framework_basics/representation_types.md#representation_underlying_type)
+[`representation_underlying_type`](../../users_guide/advanced_topics/representation_types.md#representation_underlying_type)
 — `treat_as_floating_point` will then default to `true` automatically, with no further
 specialization needed. The example below shows this typical case. Only specialize
-[`treat_as_floating_point`](../../users_guide/framework_basics/representation_types.md#treat_as_floating_point)
+[`treat_as_floating_point`](../../users_guide/advanced_topics/representation_types.md#treat_as_floating_point)
 directly when there is genuinely no meaningful underlying type to expose.
 
 #### Unit-magnitude-aware scaling (optional) { #unit-magnitude-aware-scaling }
@@ -328,7 +328,7 @@ public:
 };
 ```
 
-See [Unit-magnitude-aware scaling](../../users_guide/framework_basics/representation_types.md#unit-magnitude-aware-scaling)
+See [Unit-magnitude-aware scaling](../../users_guide/advanced_topics/representation_types.md#unit-magnitude-aware-scaling)
 in the User's Guide for the complete pattern and design rationale.
 
 ??? example "`MyFloat` — integrating a third-party floating-point type"
@@ -393,7 +393,7 @@ integer-to-integer conversions (fractional ratios such as `mm → m`) are explic
 require `value_cast` or a conversion with a rounding policy.
 
 If your type has different implicit-conversion semantics, specialize
-[`mp_units::implicitly_scalable`](../../users_guide/framework_basics/representation_types.md#implicitly_scalable):
+[`mp_units::implicitly_scalable`](../../users_guide/advanced_topics/representation_types.md#implicitly_scalable):
 
 ```cpp
 // Allow implicit narrowing from double to my_safe_decimal (it can represent any double value)
@@ -414,7 +414,7 @@ Skip this unless your representation carries a measurement uncertainty. Most con
 factors are exact, but one built from *measured* constants is not: converting a solar _mass_
 to kilograms goes through the CODATA value of `G`, so the factor is known only as well as
 `G` is. Provide
-[`fold_conversion_uncertainty`](../../users_guide/framework_basics/representation_types.md#fold_conversion_uncertainty)
+[`fold_conversion_uncertainty`](../../users_guide/advanced_topics/representation_types.md#fold_conversion_uncertainty)
 as a hidden friend to receive that figure during a conversion:
 
 ```cpp
@@ -571,7 +571,7 @@ public:
 };
 ```
 
-See [`value_type` or `element_type`](../../users_guide/framework_basics/representation_types.md#representation_underlying_type)
+See [`value_type` or `element_type`](../../users_guide/advanced_topics/representation_types.md#representation_underlying_type)
 for complete details.
 
 ### Place Customization Point Functions in the Same Namespace (ADL)
@@ -646,10 +646,10 @@ custom types.
 <!-- markdownlint-disable MD013 -->
 **User's Guide:**
 
-- [Representation Types](../../users_guide/framework_basics/representation_types.md) - Complete design and requirements reference
+- [Representation Types](../../users_guide/advanced_topics/representation_types.md) - Complete design and requirements reference
 - [Character of a Quantity](../../users_guide/framework_basics/character_of_a_quantity.md) - Understanding quantity characters
 - [Value Conversions](../../users_guide/framework_basics/value_conversions.md) - How `treat_as_floating_point` and `implicitly_scalable` affect conversions
-- [Concepts](../../users_guide/framework_basics/concepts.md#RepresentationOf) - The `RepresentationOf` concept definition
+- [Concepts](../../users_guide/advanced_topics/concepts.md#RepresentationOf) - The `RepresentationOf` concept definition
 
 **How-to Guides:**
 

@@ -76,6 +76,16 @@ static_assert(std::is_same_v<type_list_front<type_list<int>>, int>);
 static_assert(std::is_same_v<type_list_front<type_list<long, int>>, long>);
 static_assert(std::is_same_v<type_list_front<type_list<float, long, int>>, float>);
 
+// type_list_pop_front
+
+template<template<typename...> typename List>
+concept type_list_pop_front_invalid_for_empty_list = !requires { typename type_list_pop_front<List<>>; };
+
+static_assert(type_list_pop_front_invalid_for_empty_list<type_list>);
+static_assert(std::is_same_v<type_list_pop_front<type_list<int>>, type_list<>>);
+static_assert(std::is_same_v<type_list_pop_front<type_list<long, int>>, type_list<int>>);
+static_assert(std::is_same_v<type_list_pop_front<type_list<float, long, int>>, type_list<long, int>>);
+
 // type_list_back
 
 static_assert(std::is_same_v<type_list_back<type_list<int>>, int>);

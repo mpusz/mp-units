@@ -15,7 +15,7 @@ tags:
 ## Overview
 
 This example shows how a linear algebra library can be used **directly** as the
-[representation type](../users_guide/framework_basics/representation_types.md) of a vector
+[representation type](../users_guide/advanced_topics/representation_types.md) of a vector
 _quantity_. The exact same **mp-units** code is compiled against four different vector
 types: three mainstream third-party libraries
 ([Eigen](https://eigen.tuxfamily.org), [GLM](https://github.com/g-truc/glm), and
@@ -35,7 +35,7 @@ quantity velocity = isq::velocity(la::make_vec3(30, 40, 0) * km / h);
 
 For each third-party library, **mp-units** ships an opt-in plugin that wires the library's
 vector type into the representation
-[customization points](../users_guide/framework_basics/representation_types.md)
+[customization points](../users_guide/advanced_topics/representation_types.md)
 automatically, with no adapter code of your own. It is available both as a header and a named
 module:
 
@@ -125,7 +125,7 @@ cannot satisfy the representation requirements.
 ## See Also
 
 <!-- markdownlint-disable MD013 -->
-- [Representation Types](../users_guide/framework_basics/representation_types.md) - the customization
+- [Representation Types](../users_guide/advanced_topics/representation_types.md) - the customization
   points used here
 - [Using Custom Representation Types](../how_to_guides/integration/using_custom_representation_types.md) -
   how to integrate your own type

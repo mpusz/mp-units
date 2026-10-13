@@ -252,6 +252,12 @@ static_assert(get_common_quantity_spec(isq::distance, isq::path_length) == isq::
 Based on the same hierarchy of quantities of kind length, we can define quantity conversion
 rules.
 
+!!! note
+
+    This section shows the four outcomes on one hierarchy. The complete rules, including
+    quantity equations and quantity kinds, are described in
+    [Quantity Specification Conversions](../advanced_topics/quantity_spec_conversions.md).
+
 1. **Implicit conversions**
 
     - every _width_ is a _length_
@@ -394,17 +400,17 @@ that can be used to create them implicitly:
     static_assert(implicitly_convertible(isq::mass * pow<2>(isq::height) / pow<2>(isq::duration), isq::energy));
     ```
 
-- _mechanical energy_ is a more "specialized" quantity than _energy_ (not every _energy_ is
-  a _mechanical energy_). It is why an explicit cast is needed to convert from either
+- _potential energy_ is a more "specialized" quantity than _energy_ (not every _energy_ is
+  a _potential energy_). It is why an explicit conversion is needed to convert from either
   _energy_ or the results of its [quantity equation](../../reference/glossary.md#quantity-equation):
 
     ```cpp
-    static_assert(!implicitly_convertible(isq::energy, isq::mechanical_energy));
-    static_assert(explicitly_convertible(isq::energy, isq::mechanical_energy));
+    static_assert(!implicitly_convertible(isq::energy, isq::potential_energy));
+    static_assert(explicitly_convertible(isq::energy, isq::potential_energy));
     static_assert(!implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration),
-                                          isq::mechanical_energy));
+                                          isq::potential_energy));
     static_assert(explicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration),
-                                         isq::mechanical_energy));
+                                         isq::potential_energy));
     ```
 
 - _gravitational potential energy_ is not only even more specialized one but additionally,

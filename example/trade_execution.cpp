@@ -87,7 +87,8 @@ struct Fill {
 [[nodiscard]] Notional notional(const Fill& f)
 {
   const quantity price_in_usd8 = f.price.quantity_from_zero().in<std::int64_t>(us_dollar_8, rounded);
-  return price_in_usd8 * f.qty;
+  // `notional_value` is a kind of its own, so the product of a price and a quantity becomes one explicitly
+  return notional_value(price_in_usd8 * f.qty);
 }
 
 std::ostream& operator<<(std::ostream& os, const Fill& f) { return os << f.qty << " @ " << f.price; }

@@ -129,6 +129,18 @@ struct type_list_front_impl<List<T, Ts...>> {
 template<TypeList List>
 using type_list_front = type_list_front_impl<List>::type;
 
+// pop_front
+template<typename List>
+struct type_list_pop_front_impl;
+
+template<template<typename...> typename List, typename T, typename... Ts>
+struct type_list_pop_front_impl<List<T, Ts...>> {
+  using type = List<Ts...>;
+};
+
+template<TypeList List>
+using type_list_pop_front = type_list_pop_front_impl<List>::type;
+
 // back
 template<TypeList List>
 using type_list_back = type_list_element<List, type_list_size<List> - 1>;

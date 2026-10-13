@@ -51,62 +51,62 @@ static_assert(1. * GeV * (1. * GeV) * (1. / GeV) == 1. * GeV);  // force * lengt
 
 // Quantity equation tests — verify that the quantity equation is convertible to (and from) the quantity
 using namespace mp_units::detail;
-using enum specs_convertible_result;
+using enum conversion_rank;
 
 // speed = length / duration  (v = l/t; the l = v·t relation is derived from this equation)
-static_assert(convertible(natural::speed * natural::duration, natural::length) == yes);
-static_assert(convertible(natural::length, natural::speed* natural::duration) == yes);
-static_assert(convertible(natural::length / natural::duration, natural::speed) == yes);
+static_assert(convertible(natural::speed * natural::duration, natural::length) == implicit);
+static_assert(convertible(natural::length, natural::speed* natural::duration) == implicit);
+static_assert(convertible(natural::length / natural::duration, natural::speed) == implicit);
 
 // momentum = mass * velocity  (p = mv)
-static_assert(convertible(natural::mass * natural::velocity, natural::momentum) == yes);
-static_assert(convertible(natural::momentum, natural::mass* natural::velocity) == yes);
+static_assert(convertible(natural::mass * natural::velocity, natural::momentum) == implicit);
+static_assert(convertible(natural::momentum, natural::mass* natural::velocity) == implicit);
 
 // acceleration = velocity / duration  (a = dv/dt)
-static_assert(convertible(natural::velocity / natural::duration, natural::acceleration) == yes);
-static_assert(convertible(natural::acceleration, natural::velocity / natural::duration) == yes);
+static_assert(convertible(natural::velocity / natural::duration, natural::acceleration) == implicit);
+static_assert(convertible(natural::acceleration, natural::velocity / natural::duration) == implicit);
 
 // force = mass * acceleration  (F = ma)
-static_assert(convertible(natural::mass * natural::acceleration, natural::force) == yes);
-static_assert(convertible(natural::force, natural::mass* natural::acceleration) == yes);
+static_assert(convertible(natural::mass * natural::acceleration, natural::force) == implicit);
+static_assert(convertible(natural::force, natural::mass* natural::acceleration) == implicit);
 
 // Quantity hierarchy tests
 
-static_assert(convertible(natural::mass, natural::energy) == yes);
-static_assert(convertible(natural::energy, natural::mass) == explicit_conversion);
-static_assert(convertible(natural::energy, natural::momentum) == explicit_conversion);
+static_assert(convertible(natural::mass, natural::energy) == implicit);
+static_assert(convertible(natural::energy, natural::mass) == explicit_only);
+static_assert(convertible(natural::energy, natural::momentum) == explicit_only);
 static_assert(convertible(natural::mass, natural::momentum) == cast);
 
-static_assert(convertible(natural::momentum, natural::energy) == yes);
-static_assert(convertible(natural::acceleration, natural::energy) == yes);
-static_assert(convertible(natural::length, natural::inverse_energy) == yes);
-static_assert(convertible(natural::force, natural::energy_squared) == yes);
+static_assert(convertible(natural::momentum, natural::energy) == implicit);
+static_assert(convertible(natural::acceleration, natural::energy) == implicit);
+static_assert(convertible(natural::length, natural::inverse_energy) == implicit);
+static_assert(convertible(natural::force, natural::energy_squared) == implicit);
 
-static_assert(convertible(natural::duration, natural::inverse_energy) == yes);
-static_assert(convertible(natural::inverse_energy, natural::duration) == explicit_conversion);
-static_assert(convertible(natural::inverse_energy, natural::length) == explicit_conversion);
+static_assert(convertible(natural::duration, natural::inverse_energy) == implicit);
+static_assert(convertible(natural::inverse_energy, natural::duration) == explicit_only);
+static_assert(convertible(natural::inverse_energy, natural::length) == explicit_only);
 static_assert(convertible(natural::duration, natural::length) == cast);
 
 // Dimensionless quantity tests
-static_assert(convertible(natural::velocity, natural::speed) == yes);
-static_assert(convertible(natural::speed, natural::velocity) == explicit_conversion);
-// speed and angular_measure are separate kinds — explicit conversion needed to cross kind boundary
-static_assert(convertible(natural::speed, dimensionless) == explicit_conversion_beyond_kind);
-static_assert(convertible(natural::angular_measure, dimensionless) == explicit_conversion_beyond_kind);
-// different dimensionless kinds cannot even be cast to each other
-static_assert(convertible(natural::speed, natural::angular_measure) == no);
+static_assert(convertible(natural::velocity, natural::speed) == implicit);
+static_assert(convertible(natural::speed, natural::velocity) == explicit_only);
+// angular_measure is a kind and speed is a plain ratio, so only the angle needs an explicit conversion
+static_assert(convertible(natural::speed, dimensionless) == implicit);  // a plain ratio since speed is no longer a kind
+static_assert(convertible(natural::angular_measure, dimensionless) == explicit_only);
+// an angle and a plain ratio from another branch cannot even be cast to each other
+static_assert(convertible(natural::speed, natural::angular_measure) == none);
 
 // Acceleration tests (acceleration has dimension energy in natural units)
-static_assert(convertible(natural::acceleration, natural::energy) == yes);
-static_assert(convertible(natural::energy, natural::acceleration) == explicit_conversion);
+static_assert(convertible(natural::acceleration, natural::energy) == implicit);
+static_assert(convertible(natural::energy, natural::acceleration) == explicit_only);
 
 // Force tests
-static_assert(convertible(natural::force, natural::energy_squared) == yes);
-static_assert(convertible(natural::energy_squared, natural::force) == explicit_conversion);
+static_assert(convertible(natural::force, natural::energy_squared) == implicit);
+static_assert(convertible(natural::energy_squared, natural::force) == explicit_only);
 
 // Cross-hierarchy tests (should never convert)
-static_assert(convertible(natural::energy, natural::inverse_energy) == no);
-static_assert(convertible(natural::energy, natural::energy_squared) == no);
-static_assert(convertible(natural::energy, dimensionless) == no);
+static_assert(convertible(natural::energy, natural::inverse_energy) == none);
+static_assert(convertible(natural::energy, natural::energy_squared) == none);
+static_assert(convertible(natural::energy, dimensionless) == none);
 
 }  // namespace
