@@ -145,8 +145,10 @@ than one way, the conversion gets the best rank over all of them.
 
 The process runs in up to three steps. Step 1 picks the rule that applies. Between two
 single named quantities, or a named quantity and a kind, the tree rule or the kind rules
-decide the rank on their own. When a derived quantity is involved, the equation rule
-continues with steps 2 and 3, with `K` in place of a kind `kind_of<K>`:
+decide the rank on their own. When a derived quantity is involved, the factors common to
+both sides cancel first. If a single named quantity is left on each side, the same rules
+decide. Otherwise the equation rule continues with steps 2 and 3, with `K` in place of a
+kind `kind_of<K>`:
 
 ```mermaid
 flowchart TD
@@ -154,12 +156,14 @@ flowchart TD
     same -- yes --> r_yes([implicit])
     same -- no --> dim{same dimension?}
     dim -- no --> r_no([none])
-    dim -- yes --> common[cancel the factors<br>common to both sides]
-    common --> named{both sides a single named<br>quantity, or a kind of one?}
+    dim -- yes --> named{both sides a single named<br>quantity, or a kind of one?}
     named -- yes --> kind{a kind on<br>either side?}
     kind -- yes --> kinds([kind rules])
     kind -- no --> tree([tree rule])
-    named -- no --> eq([equation rule:<br>go to step 2])
+    named -- no --> common[cancel the factors<br>common to both sides]
+    common --> left{a single named quantity<br>left on both sides?}
+    left -- yes --> kind
+    left -- no --> eq([equation rule:<br>go to step 2])
 ```
 
 Step 2 makes one operation at a time. After each operation it starts again from the top,
