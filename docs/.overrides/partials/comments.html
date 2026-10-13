@@ -1,7 +1,10 @@
 {% if page.meta.comments %}
 <h2 id="__comments">{{ lang.t("meta.comments") }}</h2>
+<!-- The thread is keyed on the page path without the mike version segment, so `HEAD`, its
+     `latest` alias and every release snapshot of a post share one discussion. -->
 <script src="https://giscus.app/client.js" data-repo="mpusz/mp-units" data-repo-id="MDEwOlJlcG9zaXRvcnkxNDU2OTIwNDY="
-  data-category="Blog comments" data-category-id="DIC_kwDOCK8Vjs4Ci6_o" data-mapping="pathname" data-strict="0"
+  data-category="Blog comments" data-category-id="DIC_kwDOCK8Vjs4Ci6_o" data-mapping="specific"
+  data-term="{{ page.url }}" data-strict="1"
   data-reactions-enabled="1" data-emit-metadata="1" data-input-position="bottom" data-theme="preferred_color_scheme"
   data-lang="en" crossorigin="anonymous" async>
   </script>
