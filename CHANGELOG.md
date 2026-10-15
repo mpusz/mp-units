@@ -130,8 +130,8 @@ This page documents the version history and changes for the **mp-units** library
       `m / s`, where 2.5 reported the tree root's character. `quantity::character` and
       `quantity_point::character` exist only as deprecated members with the same rule,
       so they are ill-formed for every simple quantity such as `30.0 * km / h`. MSVC up
-      to 19.51 instantiates the initializer of every such member eagerly, so there the
-      quantity and point members are absent and a kind keeps its tree root's answer
+      to 19.51 instantiates the initializer of every such member eagerly, so there none
+      of these `character` members exist
 - (!) refactor: `quantity_spec::dimension` is deprecated in favour of `get_dimension(qs)`
 - feat: the GLM integration models the tuple protocol for `glm::vec`. GLM states a
       vector's length only through its static `length()`, so the plugin maps that onto

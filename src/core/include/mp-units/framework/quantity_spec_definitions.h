@@ -522,9 +522,11 @@ struct quantity_spec<Self, Dim, Args...> : detail::quantity_spec_interface<Self>
 
   [[deprecated("2.6.0: use `get_dimension(qs)` instead")]] static constexpr detail::BaseDimension auto dimension =
     _dimension_;
+#if !MP_UNITS_EAGER_STATIC_MEMBER_INIT_HACK
   [[deprecated(
     "2.6.0: character is no longer part of the public interface; ask the named quantity concepts "
     "instead")]] static constexpr quantity_character character = detail::definite_character<_character_>();
+#endif
 };
 
 /**
@@ -576,9 +578,11 @@ struct quantity_spec<Self, Eq, Args...> : detail::quantity_spec_interface<Self> 
   static constexpr bool _is_non_negative_ = mp_units::contains<struct non_negative, Args...>();
 
   [[deprecated("2.6.0: use `get_dimension(qs)` instead")]] static constexpr Dimension auto dimension = _dimension_;
+#if !MP_UNITS_EAGER_STATIC_MEMBER_INIT_HACK
   [[deprecated(
     "2.6.0: character is no longer part of the public interface; ask the named quantity concepts "
     "instead")]] static constexpr quantity_character character = detail::definite_character<_character_>();
+#endif
 };
 
 namespace detail {
@@ -644,9 +648,11 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
                                                            detail::is_real_scalar(_character_) && QS._is_non_negative_);
 
   [[deprecated("2.6.0: use `get_dimension(qs)` instead")]] static constexpr Dimension auto dimension = _dimension_;
+#if !MP_UNITS_EAGER_STATIC_MEMBER_INIT_HACK
   [[deprecated(
     "2.6.0: character is no longer part of the public interface; ask the named quantity concepts "
     "instead")]] static constexpr quantity_character character = detail::definite_character<_character_>();
+#endif
 };
 
 // clang-format off
@@ -706,9 +712,11 @@ struct quantity_spec<Self, QS, Eq, Args...> : detail::quantity_spec_interface<Se
                                                            detail::is_real_scalar(_character_) && QS._is_non_negative_);
 
   [[deprecated("2.6.0: use `get_dimension(qs)` instead")]] static constexpr Dimension auto dimension = _dimension_;
+#if !MP_UNITS_EAGER_STATIC_MEMBER_INIT_HACK
   [[deprecated(
     "2.6.0: character is no longer part of the public interface; ask the named quantity concepts "
     "instead")]] static constexpr quantity_character character = detail::definite_character<_character_>();
+#endif
 };
 
 namespace detail {
