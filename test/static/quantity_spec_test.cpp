@@ -257,6 +257,11 @@ static_assert(is_of_type<inverse(time) * dimensionless, derived_quantity_spec<di
 
 static_assert(is_of_type<length / length, dimensionless_>);
 static_assert(is_of_type<pow<2>(length / length), dimensionless_>);
+static_assert(is_of_type<pow<-1>(time), derived_quantity_spec<dimensionless_, per<time_>>>);
+static_assert(is_of_type<pow<-1>(length / time), derived_quantity_spec<time_, per<length_>>>);
+static_assert(is_of_type<pow<-1>(pow<-1>(time)), time_>);
+static_assert(std::is_same_v<decltype(pow<-1>(time)), decltype(inverse(time))>);
+static_assert(pow<-1>(kind_of<length>) == kind_of<dimensionless / length>);
 static_assert(is_of_type<pow<2>(length) / pow<2>(length), dimensionless_>);
 
 static_assert(is_of_type<pow<2>(length) / length, length_>);

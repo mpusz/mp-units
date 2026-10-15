@@ -347,6 +347,8 @@ This page documents the version history and changes for the **mp-units** library
 - (!) refactor: `pi_c`, the magnitude constant behind the `pi` unit, is an implementation
       detail now. Use the `pi` unit instead, e.g., `pi * metre` rather than
       `mag<pi_c> * metre`
+- fix: `pow()` of a dimension, a quantity specification, or a unit with a negative exponent
+      (e.g., `pow<-1>(metre)`) failed to compile and now yields the inverted expression
 - (!) refactor: `inverse()` of a dimension, a quantity specification, or a unit is now a
       hidden friend, like `pow()`, `sqrt()`, and `cbrt()`. An unqualified call works as
       before, but `mp_units::inverse(m)` no longer compiles and needs the qualification

@@ -248,6 +248,15 @@ static_assert(is_of_type<pow<1, 2>(length / time),
 static_assert(
   is_of_type<pow<1, 2>(length / (time * time)), derived_dimension<mp_units::power<length_, 1, 2>, per<time_>>>);
 
+// negative exponents
+static_assert(is_of_type<pow<-1>(length), derived_dimension<dimension_one_, per<length_>>>);
+static_assert(is_of_type<pow<-2>(length), derived_dimension<dimension_one_, per<mp_units::power<length_, 2>>>>);
+static_assert(is_of_type<pow<-1, 2>(length), derived_dimension<dimension_one_, per<mp_units::power<length_, 1, 2>>>>);
+static_assert(is_of_type<pow<1, -2>(length), derived_dimension<dimension_one_, per<mp_units::power<length_, 1, 2>>>>);
+static_assert(is_of_type<pow<-1>(length / time), derived_dimension<time_, per<length_>>>);
+static_assert(is_of_type<pow<-1>(pow<-1>(length)), length_>);
+static_assert(std::is_same_v<decltype(pow<-1>(length)), decltype(inverse(length))>);
+
 static_assert(std::is_same_v<decltype(pow<2>(length)), decltype(length * length)>);
 static_assert(std::is_same_v<decltype(pow<2>(length / time)), decltype(length * length / time / time)>);
 
