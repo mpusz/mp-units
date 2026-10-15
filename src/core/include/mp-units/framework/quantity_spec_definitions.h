@@ -186,11 +186,30 @@ template<auto... Args>
   return mask;
 }
 
+template<QuantitySpec auto... From, QuantitySpec Q>
+[[nodiscard]] consteval QuantitySpec auto clone_kind_of(Q q);
+
 template<QuantitySpec Q>
 [[nodiscard]] consteval QuantitySpec auto open_kinds(Q q);
 
 template<QuantitySpec auto... Operands, QuantitySpec Q>
 [[nodiscard]] consteval QuantitySpec auto close_kinds(Q q);
+
+template<typename List>
+constexpr bool any_kind_factor = false;
+
+template<typename... Ts>
+constexpr bool any_kind_factor<type_list<Ts...>> = (... || QuantityKindSpec<expr_type<Ts>>);
+
+// A derived quantity specification with a kind factor (one that mixes a kind with typed factors).
+template<typename Q>
+concept KindFactorBearing = is_specialization_of<Q, derived_quantity_spec> &&
+                            (any_kind_factor<typename Q::_num_> || any_kind_factor<typename Q::_den_>);
+
+// Whether an equation keeps a kind per factor: some operand is a kind or carries a kind factor, and
+// not every operand is a kind. All kinds, or no kind at all, take the path products always took.
+template<typename... Qs>
+concept KindsPerFactor = (... || (QuantityKindSpec<Qs> || KindFactorBearing<Qs>)) && !(... && QuantityKindSpec<Qs>);
 
 template<QuantitySpec Q>
 [[nodiscard]] consteval auto remove_kind(Q q);
@@ -258,17 +277,27 @@ struct quantity_spec_interface_base {
   template<QuantitySpec Lhs, QuantitySpec Rhs>
   [[nodiscard]] friend consteval QuantitySpec auto operator*(Lhs lhs, Rhs rhs)
   {
-    return detail::close_kinds<Lhs{}, Rhs{}>(
-      detail::expr_multiply<derived_quantity_spec, dimensionless, type_list_of_quantity_spec_less>(
-        detail::open_kinds(lhs), detail::open_kinds(rhs)));
+    if constexpr (detail::KindsPerFactor<Lhs, Rhs>)
+      return detail::close_kinds<Lhs{}, Rhs{}>(
+        detail::expr_multiply<derived_quantity_spec, dimensionless, type_list_of_quantity_spec_less>(
+          detail::open_kinds(lhs), detail::open_kinds(rhs)));
+    else
+      return detail::clone_kind_of<Lhs{}, Rhs{}>(
+        detail::expr_multiply<derived_quantity_spec, dimensionless, type_list_of_quantity_spec_less>(
+          detail::remove_kind(lhs), detail::remove_kind(rhs)));
   }
 
   template<QuantitySpec Lhs, QuantitySpec Rhs>
   [[nodiscard]] friend consteval QuantitySpec auto operator/(Lhs lhs, Rhs rhs)
   {
-    return detail::close_kinds<Lhs{}, Rhs{}>(
-      detail::expr_divide<derived_quantity_spec, dimensionless, type_list_of_quantity_spec_less>(
-        detail::open_kinds(lhs), detail::open_kinds(rhs)));
+    if constexpr (detail::KindsPerFactor<Lhs, Rhs>)
+      return detail::close_kinds<Lhs{}, Rhs{}>(
+        detail::expr_divide<derived_quantity_spec, dimensionless, type_list_of_quantity_spec_less>(
+          detail::open_kinds(lhs), detail::open_kinds(rhs)));
+    else
+      return detail::clone_kind_of<Lhs{}, Rhs{}>(
+        detail::expr_divide<derived_quantity_spec, dimensionless, type_list_of_quantity_spec_less>(
+          detail::remove_kind(lhs), detail::remove_kind(rhs)));
   }
 
   template<QuantitySpec Lhs, QuantitySpec Rhs>
@@ -285,25 +314,34 @@ struct quantity_spec_interface_base {
   //     requires(Den != 0)
   //   [[nodiscard]] friend consteval QuantitySpec auto pow(Q q)
   //   {
-  //     return detail::close_kinds<Q{}>(
+  //     return detail::clone_kind_of<Q{}>(
   //       detail::expr_pow<Num, Den, derived_quantity_spec, struct dimensionless,
-  //                        detail::type_list_of_quantity_spec_less>(detail::open_kinds(q)));
+  //                        detail::type_list_of_quantity_spec_less>(detail::remove_kind(q)));
   //   }
   template<std::intmax_t Num, std::intmax_t Den, QuantitySpec Q>
     requires(Den != 0)
   [[nodiscard]] friend consteval QuantitySpec auto pow(Q q)
   {
-    return detail::close_kinds<Q{}>(
-      detail::expr_pow<Num, Den, derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
-        detail::open_kinds(q)));
+    if constexpr (detail::KindsPerFactor<Q>)
+      return detail::close_kinds<Q{}>(detail::expr_pow<Num, Den, derived_quantity_spec, struct dimensionless,
+                                                       detail::type_list_of_quantity_spec_less>(detail::open_kinds(q)));
+    else
+      return detail::clone_kind_of<Q{}>(
+        detail::expr_pow<Num, Den, derived_quantity_spec, struct dimensionless,
+                         detail::type_list_of_quantity_spec_less>(detail::remove_kind(q)));
   }
 
   template<std::intmax_t Num, QuantitySpec Q>
   [[nodiscard]] friend consteval QuantitySpec auto pow(Q q)
   {
-    return detail::close_kinds<Q{}>(
-      detail::expr_pow<Num, 1, derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
-        detail::open_kinds(q)));
+    if constexpr (detail::KindsPerFactor<Q>)
+      return detail::close_kinds<Q{}>(
+        detail::expr_pow<Num, 1, derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
+          detail::open_kinds(q)));
+    else
+      return detail::clone_kind_of<Q{}>(
+        detail::expr_pow<Num, 1, derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
+          detail::remove_kind(q)));
   }
 
   [[nodiscard]] friend consteval QuantitySpec auto sqrt(QuantitySpec auto q) { return pow<1, 2>(q); }
@@ -832,16 +870,27 @@ template<QuantitySpec Q>
   }
 }
 
+template<typename List>
+constexpr bool all_kind_factors = false;
+
 template<typename... Ts>
-[[nodiscard]] consteval bool all_kind_factors(type_list<Ts...>)
+constexpr bool all_kind_factors<type_list<Ts...>> = (... && QuantityKindSpec<expr_type<Ts>>);
+
+// A result of operands that are all kinds is a kind; any other result is what the product gave.
+template<QuantitySpec auto... From, QuantitySpec Q>
+[[nodiscard]] consteval QuantitySpec auto clone_kind_of(Q q)
 {
-  return (... && QuantityKindSpec<expr_type<Ts>>);
+  if constexpr ((... && QuantityKindSpec<MP_UNITS_NTTP_HACK(decltype(From))>))
+    return kind_of<Q{}>;
+  else
+    return q;
 }
 
-// The canonical form of a result whose factors are all open is the kind of the product of what
-// they wrap, which is what two kinds multiplied have always produced. A result with at least one
-// typed factor keeps its kind factors as they are: a kind factor and a typed factor of one tree are
-// different factors, like `width` and `length`, and only the conversion engine relates them.
+// The canonical form of a result that kept a kind per factor: all factors open is the kind of the
+// product of what they wrap, which is what two kinds multiplied have always produced. A result with
+// at least one typed factor keeps its kind factors as they are: a kind factor and a typed factor of
+// one tree are different factors, like `width` and `length`, and only the conversion engine relates
+// them.
 template<QuantitySpec auto... Operands, QuantitySpec Q>
 [[nodiscard]] consteval QuantitySpec auto close_kinds(Q q)
 {
@@ -854,9 +903,9 @@ template<QuantitySpec auto... Operands, QuantitySpec Q>
     else
       return q;
   } else if constexpr (is_specialization_of<Q, derived_quantity_spec>) {
-    if constexpr (detail::all_kind_factors(typename Q::_num_{}) && detail::all_kind_factors(typename Q::_den_{}))
+    if constexpr (all_kind_factors<typename Q::_num_> && all_kind_factors<typename Q::_den_>)
       return kind_of<detail::expr_map<from_kind_factor, derived_quantity_spec, struct dimensionless,
-                                      type_list_of_quantity_spec_less>(q)>;
+                                      type_list_of_quantity_spec_less>(Q{})>;
     else
       return q;
   } else

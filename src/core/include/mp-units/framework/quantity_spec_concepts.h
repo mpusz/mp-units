@@ -82,30 +82,6 @@ template<QuantitySpec QS>
   return qs._character_;
 }
 
-// A factor of a derived quantity specification that has not committed to a quantity below `N`. It is
-// the conversion engine's reading of a `kind_of_<K>` factor, and of what such a factor expands to,
-// which is why `N` may be any named quantity and not only a kind root: an expansion keeps the names
-// of the equation it came from.
-template<typename N>
-struct open_factor {
-  static constexpr auto _dimension_ = N::_dimension_;
-};
-
-template<typename T>
-constexpr bool is_open_factor = false;
-
-template<typename N>
-constexpr bool is_open_factor<open_factor<N>> = true;
-
-template<typename T>
-struct unwrap_open_factor_impl : std::type_identity<T> {};
-
-template<typename N>
-struct unwrap_open_factor_impl<open_factor<N>> : std::type_identity<N> {};
-
-template<typename T>
-using unwrap_open_factor = unwrap_open_factor_impl<T>::type;
-
 }  // namespace detail
 
 namespace utility {

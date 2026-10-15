@@ -87,9 +87,22 @@ struct open_kind_elements<type_list<Ts...>> : std::type_identity<type_list<typen
 
 template<DerivedQuantitySpec Q>
 struct quantity_spec_factors<Q> {
+  using num = Q::_num_;
+  using den = Q::_den_;
+};
+
+template<DerivedQuantitySpec Q>
+  requires KindFactorBearing<Q>
+struct quantity_spec_factors<Q> {
   using num = open_kind_elements<typename Q::_num_>::type;
   using den = open_kind_elements<typename Q::_den_>::type;
 };
+
+template<typename List>
+constexpr bool any_open = false;
+
+template<typename... Ts>
+constexpr bool any_open<type_list<Ts...>> = (... || OpenFactor<expr_type<Ts>>);
 
 template<>
 struct quantity_spec_factors<struct dimensionless> {
@@ -203,8 +216,7 @@ template<typename... Ts>
 [[nodiscard]] consteval auto open_bases(type_list<Ts...>)
 {
   return type_list_join<
-    type_list<>,
-    std::conditional_t<is_open_factor<expr_type<Ts>>, type_list<unwrap_open_factor<expr_type<Ts>>>, type_list<>>...>{};
+    type_list<>, std::conditional_t<OpenFactor<expr_type<Ts>>, type_list<open_base<expr_type<Ts>>>, type_list<>>...>{};
 }
 
 template<typename G, typename... Bs>
@@ -261,9 +273,12 @@ template<typename FromNum, typename FromDen, typename ToNum, typename ToDen, boo
                 std::is_same_v<typename from::den, typename to::den>)
     // both sides carry the same declared kinds (most often none)
     return implicit;
-  else
+  else if constexpr (any_open<FromNum> || any_open<FromDen>)
     return detail::kind_boundary_rank<typename from::num, typename from::den, typename to::num, typename to::den,
                                       SourceIsKind, decltype(detail::open_bases(type_list_join<FromNum, FromDen>{}))>();
+  else
+    return detail::kind_boundary_rank<typename from::num, typename from::den, typename to::num, typename to::den,
+                                      SourceIsKind, type_list<>>();
 }
 
 // The tree rule looks only at positions in a hierarchy, so on its own it would let a conversion drop
@@ -328,10 +343,10 @@ template<typename M, bool SourceIsKind>
 // Whether a factor is open does not change which quantity it names, so lists are compared with
 // the open factors unwrapped.
 template<typename E>
-struct closed_element : std::type_identity<unwrap_open_factor<E>> {};
+struct closed_element : std::type_identity<open_base<E>> {};
 
 template<typename T, int... Ints>
-struct closed_element<power<T, Ints...>> : std::type_identity<power<unwrap_open_factor<T>, Ints...>> {};
+struct closed_element<power<T, Ints...>> : std::type_identity<power<open_base<T>, Ints...>> {};
 
 template<typename List>
 struct closed_elements;
@@ -345,10 +360,14 @@ template<typename E, typename EqNum, typename EqDen, typename OtherNum, typename
   if constexpr (type_list_size<EqNum> == type_list_size<OtherNum> &&
                 type_list_size<EqDen> == type_list_size<OtherDen>) {
     constexpr ratio exponent = detail::get_exponent(E{});
-    return std::is_same_v<typename closed_elements<OtherNum>::type,
-                          typename closed_elements<rational_power_list<EqNum, exponent>>::type> &&
-           std::is_same_v<typename closed_elements<OtherDen>::type,
-                          typename closed_elements<rational_power_list<EqDen, exponent>>::type>;
+    if constexpr (OpenFactor<expr_type<E>> || any_open<OtherNum> || any_open<OtherDen>)
+      return std::is_same_v<typename closed_elements<OtherNum>::type,
+                            typename closed_elements<rational_power_list<EqNum, exponent>>::type> &&
+             std::is_same_v<typename closed_elements<OtherDen>::type,
+                            typename closed_elements<rational_power_list<EqDen, exponent>>::type>;
+    else
+      return std::is_same_v<OtherNum, rational_power_list<EqNum, exponent>> &&
+             std::is_same_v<OtherDen, rational_power_list<EqDen, exponent>>;
   } else
     return false;
 }
@@ -438,10 +457,14 @@ template<typename F, typename FromRest, typename ToPre, typename ToPost, bool So
     using to_after = type_list_join<ToPre, power_or_T_list<to_base, to_exp - common>, type_list_pop_front<ToPost>>;
     using continued = decltype(detail::pair_tree_factors<from_after, to_after, SourceIsKind>());
     // an open source factor pairs as a kind does; an open target factor as the quantity it wraps
-    constexpr conversion_rank rank =
-      detail::weaker(detail::convertible_named<unwrap_open_factor<from_base>, unwrap_open_factor<to_base>,
-                                               SourceIsKind || is_open_factor<from_base>>(),
-                     continued::rank);
+    constexpr conversion_rank pair = [] {
+      if constexpr (OpenFactor<from_base> || OpenFactor<to_base>)
+        return detail::convertible_named<open_base<from_base>, open_base<to_base>,
+                                         SourceIsKind || OpenFactor<from_base>>();
+      else
+        return detail::convertible_named<from_base, to_base, SourceIsKind>();
+    }();
+    constexpr conversion_rank rank = detail::weaker(pair, continued::rank);
     if constexpr (rank == implicit)
       return pairing_result<implicit, typename continued::from_rest, typename continued::to_rest, true>{};
     else {
@@ -892,9 +915,9 @@ template<typename FromNum, typename FromDen, typename ToNum, typename ToDen, boo
 {
   if constexpr (is_single_named<FromNum, FromDen> && is_single_named<ToNum, ToDen>) {
     // what is left are two named quantities: they relate as the bare pair does
-    using from = unwrap_open_factor<type_list_front<FromNum>>;
-    using to = unwrap_open_factor<type_list_front<ToNum>>;
-    if constexpr (SourceIsKind || is_open_factor<type_list_front<FromNum>>)
+    using from = open_base<type_list_front<FromNum>>;
+    using to = open_base<type_list_front<ToNum>>;
+    if constexpr (SourceIsKind || OpenFactor<type_list_front<FromNum>>)
       return detail::with_kind_boundary<from, to, detail::convertible_from_kind<from, to>(), true>();
     else if constexpr (TargetIsKind)
       return detail::with_kind_boundary<from, to, detail::convertible_to_kind<from, to>()>();

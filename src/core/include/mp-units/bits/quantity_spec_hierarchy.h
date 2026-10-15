@@ -48,21 +48,20 @@ namespace mp_units::detail {
 template<typename Q>
 concept HasParent = requires { Q::_parent_; };
 
-// Either its own equation or the one propagated from the parent (see `propagate_equation`). An
-// open factor has the equation of the quantity it wraps, with every factor open in turn.
+// Either its own equation or the one propagated from the parent (see `propagate_equation`).
 template<typename Q>
-  struct has_equation : std::bool_constant < requires {
-  Q::_equation_;
-}>{};
-
-template<typename N>
-struct has_equation<open_factor<N>> : has_equation<N> {};
-
-template<typename Q>
-concept HasEquation = has_equation<Q>::value;
+concept HasEquation = requires { Q::_equation_; };
 
 template<HasParent Q>
 using parent_of = MP_UNITS_NONCONST_TYPE(Q::_parent_);
+
+template<HasEquation Q>
+using equation_of = MP_UNITS_NONCONST_TYPE(Q::_equation_);
+
+// open factors
+
+template<typename N>
+struct open_factor;
 
 template<typename E>
 struct open_element : std::type_identity<open_factor<E>> {};
@@ -76,20 +75,44 @@ struct open_elements;
 template<typename... Ts>
 struct open_elements<type_list<Ts...>> : std::type_identity<type_list<typename open_element<Ts>::type...>> {};
 
-template<typename Q>
-struct equation_of_impl : std::type_identity<MP_UNITS_NONCONST_TYPE(Q::_equation_)> {};
-
-template<typename N>
+// The equation of an open factor: the equation of the quantity it wraps, every factor open in turn.
+template<HasEquation N>
 struct open_equation {
-  using _num_ = open_elements<typename equation_of_impl<N>::type::_num_>::type;
-  using _den_ = open_elements<typename equation_of_impl<N>::type::_den_>::type;
+  using _num_ = open_elements<typename equation_of<N>::_num_>::type;
+  using _den_ = open_elements<typename equation_of<N>::_den_>::type;
 };
 
 template<typename N>
-struct equation_of_impl<open_factor<N>> : std::type_identity<open_equation<N>> {};
+struct open_factor_equation {};
 
-template<HasEquation Q>
-using equation_of = equation_of_impl<Q>::type;
+template<HasEquation N>
+struct open_factor_equation<N> {
+  static constexpr open_equation<N> _equation_{};
+};
+
+// A factor of a derived quantity specification that has not committed to a quantity below `N`. It is
+// the conversion engine's reading of a `kind_of_<K>` factor, and of what such a factor expands to,
+// which is why `N` may be any named quantity and not only a kind root: an expansion keeps the names
+// of the equation it came from. Its members are what the engine reads of a named quantity.
+template<typename N>
+struct open_factor : open_factor_equation<N> {
+  using _open_ = N;
+  static constexpr auto _dimension_ = N::_dimension_;
+};
+
+// Checked as a concept so that a typed factor costs no instantiation.
+template<typename T>
+concept OpenFactor = requires { typename T::_open_; };
+
+template<typename T>
+struct open_base_impl : std::type_identity<T> {};
+
+template<typename N>
+struct open_base_impl<open_factor<N>> : std::type_identity<N> {};
+
+// The named quantity behind a factor that may be open. Named only on paths that saw an open factor.
+template<typename T>
+using open_base = open_base_impl<T>::type;
 
 // root
 
@@ -136,8 +159,8 @@ template<typename Ancestor, typename Q>
 template<typename Q>
 [[nodiscard]] consteval bool defines_equation()
 {
-  if constexpr (is_open_factor<Q>)
-    return detail::defines_equation<unwrap_open_factor<Q>>();
+  if constexpr (OpenFactor<Q>)
+    return detail::defines_equation<typename Q::_open_>();
   else if constexpr (!HasEquation<Q>)
     return false;
   else if constexpr (!HasParent<Q>)
