@@ -134,7 +134,7 @@ static_assert(get_canonical_unit(radian).mag == mag<1>);
 
 static_assert(is_of_type<degree, degree_>);
 static_assert(is_of_type<get_canonical_unit(degree).reference_unit, one_>);
-static_assert(get_canonical_unit(degree).mag == mag<pi_c> / mag<180>);
+static_assert(get_canonical_unit(degree).mag == mag<detail::pi_c> / mag<180>);
 static_assert(radian != degree);
 static_assert(radian != one);
 
@@ -465,9 +465,9 @@ static_assert(equivalent(mag<1000> * metre, kilometre));
 static_assert(mag<60> * metre / second != metre / (mag_ratio<1, 60> * second));
 static_assert(equivalent(mag<60> * metre / second, metre / (mag_ratio<1, 60> * second)));
 
-// static_assert(mag<pi_c> * one * metre == mag<pi_c> * metre);
-// static_assert(mag<pi_c> * metre / (mag<pi_c> * one) == metre);
-// static_assert(mag<pi_c> * one / (mag<pi_c> * metre) == one / metre);
+// static_assert(mag<detail::pi_c> * one * metre == mag<detail::pi_c> * metre);
+// static_assert(mag<detail::pi_c> * metre / (mag<detail::pi_c> * one) == metre);
+// static_assert(mag<detail::pi_c> * one / (mag<detail::pi_c> * metre) == one / metre);
 
 static_assert(metre != kilometre);
 static_assert(mag<100> * metre != kilometre);

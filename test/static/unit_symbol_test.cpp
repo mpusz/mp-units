@@ -152,59 +152,60 @@ inline constexpr struct e final : mag_constant<"e", std::numbers::e_v<long doubl
 #endif
 } e;
 
-static_assert(unit_symbol(mag<pi_c> * one) == "(π)");
-static_assert(unit_symbol<usf{.char_set = basic}>(mag<pi_c> * one) == "(pi)");
-static_assert(unit_symbol(mag<pi_c> * metre) == "(π m)");
-static_assert(unit_symbol<usf{.char_set = basic}>(mag<pi_c> * metre) == "(pi m)");
-static_assert(unit_symbol(mag<2> * mag<pi_c> * metre) == "(2 π m)");
-static_assert(unit_symbol<usf{.char_set = basic}>(mag<2> * mag<pi_c> * metre) == "(2 pi m)");
-static_assert(unit_symbol<usf{.separator = half_high_dot}>(mag<2> * mag<pi_c> * metre) == "(2⋅π m)");
+static_assert(unit_symbol(mag<detail::pi_c> * one) == "(π)");
+static_assert(unit_symbol<usf{.char_set = basic}>(mag<detail::pi_c> * one) == "(pi)");
+static_assert(unit_symbol(mag<detail::pi_c> * metre) == "(π m)");
+static_assert(unit_symbol<usf{.char_set = basic}>(mag<detail::pi_c> * metre) == "(pi m)");
+static_assert(unit_symbol(mag<2> * mag<detail::pi_c> * metre) == "(2 π m)");
+static_assert(unit_symbol<usf{.char_set = basic}>(mag<2> * mag<detail::pi_c> * metre) == "(2 pi m)");
+static_assert(unit_symbol<usf{.separator = half_high_dot}>(mag<2> * mag<detail::pi_c> * metre) == "(2⋅π m)");
 
-static_assert(unit_symbol(mag<1> / mag<pi_c> * one) == "(1/π)");
-static_assert(unit_symbol<usf{.char_set = basic}>(mag<1> / mag<pi_c> * one) == "(1/pi)");
-static_assert(unit_symbol<usf{.solidus = never}>(mag<1> / mag<pi_c> * one) == "(π⁻¹)");
-static_assert(unit_symbol<usf{.char_set = basic, .solidus = never}>(mag<1> / mag<pi_c> * one) == "(pi^-1)");
+static_assert(unit_symbol(mag<1> / mag<detail::pi_c> * one) == "(1/π)");
+static_assert(unit_symbol<usf{.char_set = basic}>(mag<1> / mag<detail::pi_c> * one) == "(1/pi)");
+static_assert(unit_symbol<usf{.solidus = never}>(mag<1> / mag<detail::pi_c> * one) == "(π⁻¹)");
+static_assert(unit_symbol<usf{.char_set = basic, .solidus = never}>(mag<1> / mag<detail::pi_c> * one) == "(pi^-1)");
 
-static_assert(unit_symbol(mag<1> / mag<pi_c> * metre) == "(1/π m)");
-static_assert(unit_symbol<usf{.char_set = basic}>(mag<1> / mag<pi_c> * metre) == "(1/pi m)");
-static_assert(unit_symbol<usf{.solidus = never}>(mag<1> / mag<pi_c> * metre) == "(π⁻¹ m)");
-static_assert(unit_symbol<usf{.char_set = basic, .solidus = never}>(mag<1> / mag<pi_c> * metre) == "(pi^-1 m)");
+static_assert(unit_symbol(mag<1> / mag<detail::pi_c> * metre) == "(1/π m)");
+static_assert(unit_symbol<usf{.char_set = basic}>(mag<1> / mag<detail::pi_c> * metre) == "(1/pi m)");
+static_assert(unit_symbol<usf{.solidus = never}>(mag<1> / mag<detail::pi_c> * metre) == "(π⁻¹ m)");
+static_assert(unit_symbol<usf{.char_set = basic, .solidus = never}>(mag<1> / mag<detail::pi_c> * metre) == "(pi^-1 m)");
 
-static_assert(unit_symbol(mag<2> / mag<pi_c> * metre) == "(2/π m)");
-static_assert(unit_symbol<usf{.char_set = basic}>(mag<2> / mag<pi_c> * metre) == "(2/pi m)");
-static_assert(unit_symbol<usf{.solidus = never}>(mag<2> / mag<pi_c> * metre) == "(2 π⁻¹ m)");
-static_assert(unit_symbol<usf{.char_set = basic, .solidus = never}>(mag<2> / mag<pi_c> * metre) == "(2 pi^-1 m)");
-static_assert(unit_symbol<usf{.solidus = never, .separator = half_high_dot}>(mag<2> / mag<pi_c> * metre) ==
+static_assert(unit_symbol(mag<2> / mag<detail::pi_c> * metre) == "(2/π m)");
+static_assert(unit_symbol<usf{.char_set = basic}>(mag<2> / mag<detail::pi_c> * metre) == "(2/pi m)");
+static_assert(unit_symbol<usf{.solidus = never}>(mag<2> / mag<detail::pi_c> * metre) == "(2 π⁻¹ m)");
+static_assert(unit_symbol<usf{.char_set = basic, .solidus = never}>(mag<2> / mag<detail::pi_c> * metre) ==
+              "(2 pi^-1 m)");
+static_assert(unit_symbol<usf{.solidus = never, .separator = half_high_dot}>(mag<2> / mag<detail::pi_c> * metre) ==
               "(2⋅π⁻¹ m)");
 
-static_assert(unit_symbol(mag<1> / (mag<2> * mag<pi_c>)*metre) == "(2⁻¹ π⁻¹ m)");
-static_assert(unit_symbol<usf{.solidus = always}>(mag<1> / (mag<2> * mag<pi_c>)*metre) == "(1/(2 π) m)");
-static_assert(unit_symbol<usf{.char_set = basic, .solidus = always}>(mag<1> / (mag<2> * mag<pi_c>)*metre) ==
+static_assert(unit_symbol(mag<1> / (mag<2> * mag<detail::pi_c>)*metre) == "(2⁻¹ π⁻¹ m)");
+static_assert(unit_symbol<usf{.solidus = always}>(mag<1> / (mag<2> * mag<detail::pi_c>)*metre) == "(1/(2 π) m)");
+static_assert(unit_symbol<usf{.char_set = basic, .solidus = always}>(mag<1> / (mag<2> * mag<detail::pi_c>)*metre) ==
               "(1/(2 pi) m)");
-static_assert(unit_symbol(mag_ratio<1, 2> / mag<pi_c> * metre) == "(2⁻¹ π⁻¹ m)");
-static_assert(unit_symbol<usf{.solidus = always}>(mag_ratio<1, 2> / mag<pi_c> * metre) == "(1/(2 π) m)");
-static_assert(unit_symbol<usf{.char_set = basic, .solidus = always}>(mag_ratio<1, 2> / mag<pi_c> * metre) ==
+static_assert(unit_symbol(mag_ratio<1, 2> / mag<detail::pi_c> * metre) == "(2⁻¹ π⁻¹ m)");
+static_assert(unit_symbol<usf{.solidus = always}>(mag_ratio<1, 2> / mag<detail::pi_c> * metre) == "(1/(2 π) m)");
+static_assert(unit_symbol<usf{.char_set = basic, .solidus = always}>(mag_ratio<1, 2> / mag<detail::pi_c> * metre) ==
               "(1/(2 pi) m)");
-static_assert(unit_symbol(mag_ratio<1, 2> * mag<pi_c> * metre) == "(π/2 m)");
+static_assert(unit_symbol(mag_ratio<1, 2> * mag<detail::pi_c> * metre) == "(π/2 m)");
 
-static_assert(unit_symbol(mag_power<pi_c, 2> * one) == "(π²)");
-static_assert(unit_symbol<usf{.char_set = basic}>(mag_power<pi_c, 2> * one) == "(pi^2)");
-static_assert(unit_symbol(mag_power<pi_c, 1, 2> * metre) == "(π^(1/2) m)");
-static_assert(unit_symbol<usf{.char_set = basic}>(mag_power<pi_c, 1, 2> * metre) == "(pi^(1/2) m)");
+static_assert(unit_symbol(mag_power<detail::pi_c, 2> * one) == "(π²)");
+static_assert(unit_symbol<usf{.char_set = basic}>(mag_power<detail::pi_c, 2> * one) == "(pi^2)");
+static_assert(unit_symbol(mag_power<detail::pi_c, 1, 2> * metre) == "(π^(1/2) m)");
+static_assert(unit_symbol<usf{.char_set = basic}>(mag_power<detail::pi_c, 1, 2> * metre) == "(pi^(1/2) m)");
 
-static_assert(unit_symbol(mag<pi_c> * mag<e> * one) == "(e π)");
-static_assert(unit_symbol(mag<e> * mag<pi_c> * one) == "(e π)");
-static_assert(unit_symbol<usf{.char_set = basic}>(mag<pi_c> * mag<e> * one) == "(e pi)");
-static_assert(unit_symbol(mag<pi_c> / mag<e> * one) == "(π/e)");
-static_assert(unit_symbol(mag<1> / mag<e> * mag<pi_c> * one) == "(π/e)");
-static_assert(unit_symbol<usf{.solidus = never}>(mag<pi_c> / mag<e> * one) == "(π e⁻¹)");
-static_assert(unit_symbol(mag<e> / mag<pi_c> * one) == "(e/π)");
-static_assert(unit_symbol(mag<1> / mag<pi_c> * mag<e> * one) == "(e/π)");
-static_assert(unit_symbol<usf{.solidus = never}>(mag<e> / mag<pi_c> * one) == "(e π⁻¹)");
-static_assert(unit_symbol(mag<1> / (mag<pi_c> * mag<e>)*one) == "(e⁻¹ π⁻¹)");
-static_assert(unit_symbol<usf{.solidus = always}>(mag<1> / (mag<pi_c> * mag<e>)*one) == "(1/(e π))");
-static_assert(unit_symbol(mag<2> / (mag<pi_c> * mag<e>)*one) == "(2 e⁻¹ π⁻¹)");
-static_assert(unit_symbol<usf{.solidus = always}>(mag<2> / (mag<pi_c> * mag<e>)*one) == "(2/(e π))");
+static_assert(unit_symbol(mag<detail::pi_c> * mag<e> * one) == "(e π)");
+static_assert(unit_symbol(mag<e> * mag<detail::pi_c> * one) == "(e π)");
+static_assert(unit_symbol<usf{.char_set = basic}>(mag<detail::pi_c> * mag<e> * one) == "(e pi)");
+static_assert(unit_symbol(mag<detail::pi_c> / mag<e> * one) == "(π/e)");
+static_assert(unit_symbol(mag<1> / mag<e> * mag<detail::pi_c> * one) == "(π/e)");
+static_assert(unit_symbol<usf{.solidus = never}>(mag<detail::pi_c> / mag<e> * one) == "(π e⁻¹)");
+static_assert(unit_symbol(mag<e> / mag<detail::pi_c> * one) == "(e/π)");
+static_assert(unit_symbol(mag<1> / mag<detail::pi_c> * mag<e> * one) == "(e/π)");
+static_assert(unit_symbol<usf{.solidus = never}>(mag<e> / mag<detail::pi_c> * one) == "(e π⁻¹)");
+static_assert(unit_symbol(mag<1> / (mag<detail::pi_c> * mag<e>)*one) == "(e⁻¹ π⁻¹)");
+static_assert(unit_symbol<usf{.solidus = always}>(mag<1> / (mag<detail::pi_c> * mag<e>)*one) == "(1/(e π))");
+static_assert(unit_symbol(mag<2> / (mag<detail::pi_c> * mag<e>)*one) == "(2 e⁻¹ π⁻¹)");
+static_assert(unit_symbol<usf{.solidus = always}>(mag<2> / (mag<detail::pi_c> * mag<e>)*one) == "(2/(e π))");
 
 // common units
 static_assert(unit_symbol(get_common_unit(kilo<metre>, mile)) == "[(1/15625 km), (1/25146 mi)]");

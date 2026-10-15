@@ -61,8 +61,8 @@ static_assert(!UnitMagnitude<named_mag_2_>);
 // Non-magnitude types do not satisfy UnitMagnitude.
 static_assert(!UnitMagnitude<int>);
 static_assert(!UnitMagnitude<double>);
-// pi_c is a value; use decltype to obtain the type for concept testing.
-static_assert(!UnitMagnitude<decltype(pi_c)>);  // pi_c type is mag_constant, not unit_magnitude
+// detail::pi_c is a value; use decltype to obtain the type for concept testing.
+static_assert(!UnitMagnitude<decltype(detail::pi_c)>);  // detail::pi_c type is mag_constant, not unit_magnitude
 
 // ============================================================
 // MagArg concept: integers, ratio, mag_constant subtypes
@@ -71,7 +71,7 @@ static_assert(MagArg<int>);
 static_assert(MagArg<long>);
 static_assert(MagArg<std::intmax_t>);
 static_assert(MagArg<ratio>);
-// Note: pi_c structural type satisfies is_mag_constant; testing via get_base_value below
+// Note: detail::pi_c structural type satisfies is_mag_constant; testing via get_base_value below
 static_assert(!MagArg<double>);
 static_assert(!MagArg<float>);
 static_assert(!MagArg<unit_magnitude<2>>);
@@ -250,19 +250,19 @@ static_assert(magnitude_is_positive<mag_ratio<-3, -4>>);  // normalises to  3/4 
 // ============================================================
 static_assert(UnitMagnitude<std::remove_cv_t<decltype(mag_power<2, 2>)>>);
 static_assert(UnitMagnitude<std::remove_cv_t<decltype(mag_power<2, 1, 2>)>>);  // sqrt(2)
-static_assert(UnitMagnitude<std::remove_cv_t<decltype(mag_power<pi_c, 1>)>>);
-static_assert(UnitMagnitude<std::remove_cv_t<decltype(mag_power<pi_c, -1>)>>);
-static_assert(UnitMagnitude<std::remove_cv_t<decltype(mag_power<pi_c, 1, 2>)>>);  // sqrt(pi)
+static_assert(UnitMagnitude<std::remove_cv_t<decltype(mag_power<detail::pi_c, 1>)>>);
+static_assert(UnitMagnitude<std::remove_cv_t<decltype(mag_power<detail::pi_c, -1>)>>);
+static_assert(UnitMagnitude<std::remove_cv_t<decltype(mag_power<detail::pi_c, 1, 2>)>>);  // sqrt(pi)
 
 // mag_power requires is_positive_mag_arg<Base> (negative base is rejected at the requires clause)
 
 // ============================================================
-// mag<pi_c>: irrational magnitude
+// mag<detail::pi_c>: irrational magnitude
 // ============================================================
-static_assert(UnitMagnitude<std::remove_cv_t<decltype(mag<pi_c>)>>);
-static_assert(!is_rational(mag<pi_c>));
-static_assert(!is_integral(mag<pi_c>));
-static_assert(is_positive_integral_power(mag<pi_c>));  // pi^1: positive integer exponent
+static_assert(UnitMagnitude<std::remove_cv_t<decltype(mag<detail::pi_c>)>>);
+static_assert(!is_rational(mag<detail::pi_c>));
+static_assert(!is_integral(mag<detail::pi_c>));
+static_assert(is_positive_integral_power(mag<detail::pi_c>));  // pi^1: positive integer exponent
 
 // ============================================================
 // Equality
@@ -459,8 +459,8 @@ static_assert(!is_integral(mag_ratio<-1, 2>));
 static_assert(is_rational(mag_ratio<-1, 2>));
 
 // Irrational: neither rational nor integral
-static_assert(!is_rational(mag<pi_c>));
-static_assert(!is_integral(mag<pi_c>));
+static_assert(!is_rational(mag<detail::pi_c>));
+static_assert(!is_integral(mag<detail::pi_c>));
 
 // Irrational fractional power: not rational, not integral
 static_assert(!is_rational(mag_power<2, 1, 2>));  // sqrt(2)
@@ -537,7 +537,7 @@ static_assert(magnitude_is_positive<mag<1>>);
 static_assert(magnitude_is_positive<mag<2>>);
 static_assert(magnitude_is_positive<mag<412>>);
 static_assert(magnitude_is_positive<mag_ratio<3, 4>>);
-static_assert(magnitude_is_positive<mag<pi_c>>);
+static_assert(magnitude_is_positive<mag<detail::pi_c>>);
 
 // Negative magnitudes (have leading negative_tag)
 static_assert(!magnitude_is_positive<mag<-1>>);
@@ -618,22 +618,22 @@ static_assert(mag_symbol<mag_ratio<1, 2>>() == "1/2");
 static_assert(mag_symbol<mag_ratio<-3, 4>>() == "-3/4");
 
 // Irrational constant pi — UTF-8 (default char_set)
-static_assert(mag_symbol<mag<pi_c>>() == "π");
-static_assert(mag_symbol<pow<2>(mag<pi_c>)>() == "π²");
+static_assert(mag_symbol<mag<detail::pi_c>>() == "π");
+static_assert(mag_symbol<pow<2>(mag<detail::pi_c>)>() == "π²");
 
 // pi singleton in the denominator: solidus=one_denominator, den_size=1 → "1/π"
-static_assert(mag_symbol<pow<-1>(mag<pi_c>)>() == "1/π");
+static_assert(mag_symbol<pow<-1>(mag<detail::pi_c>)>() == "1/π");
 
 // Explicit solidus=never: denominator written as negative superscript
-static_assert(mag_symbol<pow<-1>(mag<pi_c>), usf{.solidus = never}>() == "π⁻¹");
+static_assert(mag_symbol<pow<-1>(mag<detail::pi_c>), usf{.solidus = never}>() == "π⁻¹");
 
 // Portable charset: ASCII symbols and exponents
-static_assert(mag_symbol<mag<pi_c>, usf{.char_set = basic}>() == "pi");
-static_assert(mag_symbol<pow<2>(mag<pi_c>), usf{.char_set = basic}>() == "pi^2");
-static_assert(mag_symbol<pow<-1>(mag<pi_c>), usf{.char_set = basic, .solidus = never}>() == "pi^-1");
+static_assert(mag_symbol<mag<detail::pi_c>, usf{.char_set = basic}>() == "pi");
+static_assert(mag_symbol<pow<2>(mag<detail::pi_c>), usf{.char_set = basic}>() == "pi^2");
+static_assert(mag_symbol<pow<-1>(mag<detail::pi_c>), usf{.char_set = basic, .solidus = never}>() == "pi^-1");
 
 // Two-constant denominator: solidus=one_denominator, den_size>1 → negative powers (no slash)
-// mag<1/(2*pi)> = pow<-1>(mag<2>) * pow<-1>(mag<pi_c>)
-static_assert(mag_symbol<mag<1> / (mag<2> * mag<pi_c>)>() == "2⁻¹ π⁻¹");
+// mag<1/(2*pi)> = pow<-1>(mag<2>) * pow<-1>(mag<detail::pi_c>)
+static_assert(mag_symbol<mag<1> / (mag<2> * mag<detail::pi_c>)>() == "2⁻¹ π⁻¹");
 
 }  // namespace
