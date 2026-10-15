@@ -344,6 +344,10 @@ This page documents the version history and changes for the **mp-units** library
       `mp_units::utility`. ADL doesn't find them there, so qualify the call:
       `utility::implicitly_convertible(isq::width, isq::length)`. A generic interface
       should constrain with `QuantityOf` or `QuantityPointOf` instead
+- (!) refactor: `inverse()` of a dimension, a quantity specification, or a unit is now a
+      hidden friend, like `pow()`, `sqrt()`, and `cbrt()`. An unqualified call works as
+      before, but `mp_units::inverse(m)` no longer compiles and needs the qualification
+      dropped
 - (!) refactor: the `std-format-spec` helpers that formatters are written against (`fmt_align`,
       `fill_t`, `fmt_arg_ref`, `fill_align_width_format_specs`, `parse_align`,
       `parse_dynamic_spec`, `parse_fill_align_width`, `parse_nonnegative_int`,

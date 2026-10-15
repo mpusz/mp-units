@@ -225,6 +225,9 @@ struct quantity_spec_less : std::bool_constant<quantity_spec_less_value<Lhs, Rhs
 template<typename T1, typename T2>
 using type_list_of_quantity_spec_less = expr_less<T1, T2, quantity_spec_less>;
 
+template<QuantitySpec Q>
+[[nodiscard]] consteval QuantitySpec auto inverse_impl(Q q);
+
 struct quantity_spec_interface_base {
   template<QuantitySpec QS>
   [[nodiscard]] friend consteval Dimension auto get_dimension(QS qs)
@@ -285,6 +288,7 @@ struct quantity_spec_interface_base {
 
   [[nodiscard]] friend consteval QuantitySpec auto sqrt(QuantitySpec auto q) { return pow<1, 2>(q); }
   [[nodiscard]] friend consteval QuantitySpec auto cbrt(QuantitySpec auto q) { return pow<1, 3>(q); }
+  [[nodiscard]] friend consteval QuantitySpec auto inverse(QuantitySpec auto q) { return detail::inverse_impl(q); }
 };
 
 [[nodiscard]] consteval bool explicitly_convertible_to_dimensionless(QuantitySpec auto qs);
@@ -795,6 +799,14 @@ template<QuantitySpec Q>
 
 }  // namespace detail
 
-MP_UNITS_EXPORT [[nodiscard]] consteval QuantitySpec auto inverse(QuantitySpec auto q) { return dimensionless / q; }
+namespace detail {
+
+template<QuantitySpec Q>
+[[nodiscard]] consteval QuantitySpec auto inverse_impl(Q q)
+{
+  return dimensionless / q;
+}
+
+}  // namespace detail
 
 }  // namespace mp_units
