@@ -74,7 +74,7 @@ According to the [ISQ](../../reference/glossary.md#isq), _work_ divided by _heat
 for the _thermodynamic efficiency_ quantity, thus:
 
 ```cpp
-static_assert(implicitly_convertible(q.quantity_spec, isq::thermodynamic_efficiency));
+static_assert(utility::implicitly_convertible(q.quantity_spec, isq::thermodynamic_efficiency));
 ```
 
 !!! note
@@ -339,9 +339,9 @@ but still allow the usage of `one` and its scaled versions for such quantities.
     explicit conversion. For example:
 
     ```cpp
-    static_assert(implicitly_convertible(isq::rotation, dimensionless));
-    static_assert(!implicitly_convertible(isq::angular_measure, dimensionless));
-    static_assert(explicitly_convertible(isq::angular_measure, dimensionless));
+    static_assert(utility::implicitly_convertible(isq::rotation, dimensionless));
+    static_assert(!utility::implicitly_convertible(isq::angular_measure, dimensionless));
+    static_assert(utility::explicitly_convertible(isq::angular_measure, dimensionless));
     ```
 
     This increases type safety and prevents accidental quantities with invalid units. For example,

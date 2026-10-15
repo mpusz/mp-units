@@ -947,7 +947,7 @@ public:
 
   // compound assignment operators
   template<auto R2, typename Rep2>
-    requires(mp_units::implicitly_convertible(get_quantity_spec(R2), quantity_spec)) &&
+    requires(mp_units::utility::implicitly_convertible(get_quantity_spec(R2), quantity_spec)) &&
             detail::ImplicitConversion<get_unit(R2), Rep2, unit, rep> &&
             requires(const quantity_type q) { quantity_from_origin_is_an_implementation_detail_ += q; }
   constexpr quantity_point& operator+=(const quantity<R2, Rep2>& q) &
@@ -959,7 +959,7 @@ public:
   }
 
   template<auto R2, typename Rep2>
-    requires(mp_units::implicitly_convertible(get_quantity_spec(R2), quantity_spec)) &&
+    requires(mp_units::utility::implicitly_convertible(get_quantity_spec(R2), quantity_spec)) &&
             detail::ImplicitConversion<get_unit(R2), Rep2, unit, rep> &&
             requires(const quantity_type q) { quantity_from_origin_is_an_implementation_detail_ -= q; }
   constexpr quantity_point& operator-=(const quantity<R2, Rep2>& q) &

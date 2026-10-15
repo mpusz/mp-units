@@ -530,9 +530,10 @@ static_assert(verify(isq::coherence_length, scalar, non_negative, m));
 // light and radiation hierarchy relations
 // attenuation is caused by absorption and scattering (ISO 80000-7, items 7-35 and 7-36), so an
 // absorption coefficient is a part of the corresponding attenuation coefficient and the two add
-static_assert(implicitly_convertible(isq::linear_absorption_coefficient, isq::linear_attenuation_coefficient));
-static_assert(implicitly_convertible(isq::mass_absorption_coefficient, isq::mass_attenuation_coefficient));
-static_assert(!implicitly_convertible(isq::linear_attenuation_coefficient, isq::linear_absorption_coefficient));
+static_assert(utility::implicitly_convertible(isq::linear_absorption_coefficient, isq::linear_attenuation_coefficient));
+static_assert(utility::implicitly_convertible(isq::mass_absorption_coefficient, isq::mass_attenuation_coefficient));
+static_assert(!utility::implicitly_convertible(isq::linear_attenuation_coefficient,
+                                               isq::linear_absorption_coefficient));
 static_assert(get_kind(isq::linear_absorption_coefficient) == get_kind(isq::linear_attenuation_coefficient));
 static_assert(requires { isq::linear_absorption_coefficient(1. / m) + isq::linear_attenuation_coefficient(1. / m); });
 static_assert(requires { isq::linear_absorption_coefficient(1. / m) < isq::linear_attenuation_coefficient(1. / m); });
@@ -544,52 +545,52 @@ static_assert(requires { isq::absorptance(0.3 * one) + isq::reflectance(0.2 * on
 
 // a photon number counts photons, so it does not mix with plain ratios (as `isq::storage_capacity`)
 static_assert(get_kind(isq::photon_number) != get_kind(isq::absorptance));
-static_assert(!implicitly_convertible(isq::photon_number, dimensionless));
+static_assert(!utility::implicitly_convertible(isq::photon_number, dimensionless));
 static_assert(get_kind(isq::photon_flux) != get_kind(isq::frequency));
 static_assert(get_kind(isq::photon_flux) != get_kind(isq::activity));
 
 // ISO 80000-3 item 3-22 and ISO 80000-12 item 12-9.1: k = 2π/λ, so the wave vector roots in
 // angular repetency, not repetency
-static_assert(implicitly_convertible(isq::wave_vector, isq::angular_repetency));
-static_assert(!implicitly_convertible(isq::wave_vector, isq::repetency));
+static_assert(utility::implicitly_convertible(isq::wave_vector, isq::angular_repetency));
+static_assert(!utility::implicitly_convertible(isq::wave_vector, isq::repetency));
 
 // every count of discrete entities shares the `number_of_entities` root (itself a kind, so counts
 // do not mix with plain ratios), and a photon count is additionally a kind of its own below it
-static_assert(!implicitly_convertible(dimensionless, isq::number_of_entities));
-static_assert(!implicitly_convertible(isq::photon_number, isq::number_of_entities));
-static_assert(explicitly_convertible(isq::photon_number, isq::number_of_entities));
+static_assert(!utility::implicitly_convertible(dimensionless, isq::number_of_entities));
+static_assert(!utility::implicitly_convertible(isq::photon_number, isq::number_of_entities));
+static_assert(utility::explicitly_convertible(isq::photon_number, isq::number_of_entities));
 
 // the energy densities of ISO 80000 parts 6, 7, and 8 share a common root
-static_assert(implicitly_convertible(isq::radiant_energy_density, isq::energy_density));
-static_assert(implicitly_convertible(isq::electromagnetic_energy_density, isq::energy_density));
+static_assert(utility::implicitly_convertible(isq::radiant_energy_density, isq::energy_density));
+static_assert(utility::implicitly_convertible(isq::electromagnetic_energy_density, isq::energy_density));
 static_assert(get_common_quantity_spec(isq::radiant_energy_density, isq::electromagnetic_energy_density) ==
               isq::energy_density);
 
 // condensed matter physics hierarchy relations
 // Bloch's theorem adds a reciprocal lattice vector to a wave vector, so item 12-2.1 has to be a
 // wave vector; both scale with 2π, which is why the wave vector roots in angular repetency
-static_assert(implicitly_convertible(isq::angular_reciprocal_lattice_vector, isq::wave_vector));
+static_assert(utility::implicitly_convertible(isq::angular_reciprocal_lattice_vector, isq::wave_vector));
 static_assert(get_kind(isq::angular_reciprocal_lattice_vector) == get_kind(isq::wave_vector));
-static_assert(implicitly_convertible(isq::Fermi_angular_wavenumber, isq::angular_repetency));
-static_assert(!implicitly_convertible(isq::Fermi_angular_wavenumber, isq::repetency));
+static_assert(utility::implicitly_convertible(isq::Fermi_angular_wavenumber, isq::angular_repetency));
+static_assert(!utility::implicitly_convertible(isq::Fermi_angular_wavenumber, isq::repetency));
 
 // the carrier densities of item 12-29 share one kind, because `n * p == pow<2>(n_i)` relates them
 // across species (ISO 80000-12 item 12-29.3)
 static_assert(get_common_quantity_spec(isq::electron_density, isq::hole_density) == isq::number_density);
-static_assert(implicitly_convertible(isq::electron_density * isq::hole_density, pow<2>(isq::number_density)));
-static_assert(explicitly_convertible(pow<1, 2>(isq::electron_density * isq::hole_density),
-                                     isq::intrinsic_carrier_density));
+static_assert(utility::implicitly_convertible(isq::electron_density * isq::hole_density, pow<2>(isq::number_density)));
+static_assert(utility::explicitly_convertible(pow<1, 2>(isq::electron_density * isq::hole_density),
+                                              isq::intrinsic_carrier_density));
 
 // vibrational modes and electronic states are both counts, but adding one to the other is
 // meaningless, so each is a kind of its own below the shared count parent
-static_assert(!implicitly_convertible(isq::number_of_states, isq::number_of_vibrational_modes));
-static_assert(!implicitly_convertible(dimensionless, isq::number_of_states));
-static_assert(explicitly_convertible(isq::number_of_states, isq::number_of_entities));
+static_assert(!utility::implicitly_convertible(isq::number_of_states, isq::number_of_vibrational_modes));
+static_assert(!utility::implicitly_convertible(dimensionless, isq::number_of_states));
+static_assert(utility::explicitly_convertible(isq::number_of_states, isq::number_of_entities));
 
 // an atomic scattering factor is an amplitude relative to a single electron, not a ratio of two
 // quantities of the same kind
-static_assert(!implicitly_convertible(dimensionless, isq::atomic_scattering_factor));
-static_assert(implicitly_convertible(isq::structure_factor, isq::atomic_scattering_factor));
+static_assert(!utility::implicitly_convertible(dimensionless, isq::atomic_scattering_factor));
+static_assert(utility::implicitly_convertible(isq::structure_factor, isq::atomic_scattering_factor));
 
 // the transition temperatures and critical flux densities compare through their shared parents
 static_assert(get_common_quantity_spec(isq::Curie_temperature, isq::Neel_temperature) ==
@@ -600,57 +601,57 @@ static_assert(get_common_quantity_spec(isq::lower_critical_magnetic_flux_density
 
 
 // distinct roots of one dimension stay apart inside products unless an equation relates them
-static_assert(!castable(isq::frequency * isq::width, isq::activity* isq::length));
-static_assert(implicitly_convertible(isq::radiant_intensity * isq::solid_angular_measure, isq::radiant_flux));
-static_assert(!castable(isq::irradiance / isq::wavelength, isq::spectral_radiant_exitance));
-static_assert(explicitly_convertible(isq::radiance, isq::radiant_flux / isq::area));
-static_assert(!implicitly_convertible(isq::radiance, isq::radiant_flux / isq::area));
+static_assert(!utility::castable(isq::frequency * isq::width, isq::activity* isq::length));
+static_assert(utility::implicitly_convertible(isq::radiant_intensity * isq::solid_angular_measure, isq::radiant_flux));
+static_assert(!utility::castable(isq::irradiance / isq::wavelength, isq::spectral_radiant_exitance));
+static_assert(utility::explicitly_convertible(isq::radiance, isq::radiant_flux / isq::area));
+static_assert(!utility::implicitly_convertible(isq::radiance, isq::radiant_flux / isq::area));
 
 // trading one declared kind for another is not a conversion
-static_assert(!castable(isq::photon_flux / isq::solid_angular_measure, isq::transfer_rate));
+static_assert(!utility::castable(isq::photon_flux / isq::solid_angular_measure, isq::transfer_rate));
 
 // angular repetency carries the angle like angular frequency does (k = 2π/λ), so a phase speed
 // converts to `length / time` implicitly and a plain 1/λ is only explicitly an angular repetency
-static_assert(implicitly_convertible(isq::phase_speed, isq::length / isq::time));
-static_assert(implicitly_convertible(isq::angular_frequency / isq::angular_repetency, isq::speed));
-static_assert(!implicitly_convertible(inverse(isq::wavelength), isq::angular_repetency));
-static_assert(explicitly_convertible(inverse(isq::wavelength), isq::angular_repetency));
+static_assert(utility::implicitly_convertible(isq::phase_speed, isq::length / isq::time));
+static_assert(utility::implicitly_convertible(isq::angular_frequency / isq::angular_repetency, isq::speed));
+static_assert(!utility::implicitly_convertible(inverse(isq::wavelength), isq::angular_repetency));
+static_assert(utility::explicitly_convertible(inverse(isq::wavelength), isq::angular_repetency));
 
 // inductance and reluctance are defined over the total magnetic flux (IEC 80000-6 6-41.1, 6-39), so
 // an inductance's equation is a permeance's only explicitly (magnetic tension is a child of current)
-static_assert(implicitly_convertible(isq::total_magnetic_flux / isq::electric_current, isq::inductance));
-static_assert(!implicitly_convertible(isq::inductance, isq::permeance));
-static_assert(explicitly_convertible(isq::total_magnetic_flux / isq::electric_current, isq::permeance));
+static_assert(utility::implicitly_convertible(isq::total_magnetic_flux / isq::electric_current, isq::inductance));
+static_assert(!utility::implicitly_convertible(isq::inductance, isq::permeance));
+static_assert(utility::explicitly_convertible(isq::total_magnetic_flux / isq::electric_current, isq::permeance));
 
 // entropy is defined over heat (the thermodynamic definition dS = δQ/T, and ISO 80000-5 item 5-15
 // gives heat capacity as dQ/dT), so entropy has the same equation as heat capacity but a different
 // root
-static_assert(implicitly_convertible(isq::heat / isq::thermodynamic_temperature, isq::entropy));
-static_assert(implicitly_convertible(isq::heat / isq::thermodynamic_temperature, isq::heat_capacity));
-static_assert(!castable(isq::entropy, isq::heat_capacity));
+static_assert(utility::implicitly_convertible(isq::heat / isq::thermodynamic_temperature, isq::entropy));
+static_assert(utility::implicitly_convertible(isq::heat / isq::thermodynamic_temperature, isq::heat_capacity));
+static_assert(!utility::castable(isq::entropy, isq::heat_capacity));
 
 // the magnetic and electric constants are the vacuum values of permeability and permittivity
 // (IEC 80000-6 6-26.1, 6-14.1), so the relative quantities are ratios inside one tree
-static_assert(implicitly_convertible(isq::magnetic_constant, isq::permeability));
-static_assert(!implicitly_convertible(isq::permeability, isq::magnetic_constant));
-static_assert(explicitly_convertible(isq::permeability, isq::magnetic_constant));
-static_assert(implicitly_convertible(isq::electric_constant, isq::permittivity));
-static_assert(implicitly_convertible(isq::permeability / isq::magnetic_constant, isq::relative_permeability));
-static_assert(!implicitly_convertible(isq::magnetic_flux_density, isq::magnetic_constant* isq::magnetization));
+static_assert(utility::implicitly_convertible(isq::magnetic_constant, isq::permeability));
+static_assert(!utility::implicitly_convertible(isq::permeability, isq::magnetic_constant));
+static_assert(utility::explicitly_convertible(isq::permeability, isq::magnetic_constant));
+static_assert(utility::implicitly_convertible(isq::electric_constant, isq::permittivity));
+static_assert(utility::implicitly_convertible(isq::permeability / isq::magnetic_constant, isq::relative_permeability));
+static_assert(!utility::implicitly_convertible(isq::magnetic_flux_density, isq::magnetic_constant* isq::magnetization));
 
 // the propagation coefficient is the complex parent of attenuation and phase coefficient (ISO 80000-3 3-26)
-static_assert(implicitly_convertible(isq::attenuation, isq::propagation_coefficient));
+static_assert(utility::implicitly_convertible(isq::attenuation, isq::propagation_coefficient));
 // the phase coefficient's equation carries a phase angle that the propagation coefficient doesn't,
 // so even this upcast is explicit: a declared kind is left explicitly on every path
-static_assert(!implicitly_convertible(isq::phase_coefficient, isq::propagation_coefficient));
-static_assert(explicitly_convertible(isq::phase_coefficient, isq::propagation_coefficient));
-static_assert(!implicitly_convertible(isq::phase_coefficient * isq::path_length, dimensionless));
-static_assert(!implicitly_convertible(pow<2>(isq::phase_coefficient), pow<2>(isq::propagation_coefficient)));
-static_assert(!explicitly_convertible(isq::attenuation, isq::phase_coefficient));
-static_assert(castable(isq::attenuation, isq::phase_coefficient));
-static_assert(castable(inverse(isq::repetency), isq::height));
-static_assert(!explicitly_convertible(inverse(isq::repetency), isq::height));
-static_assert(implicitly_convertible(isq::phase_angle / isq::path_length, isq::phase_coefficient));
+static_assert(!utility::implicitly_convertible(isq::phase_coefficient, isq::propagation_coefficient));
+static_assert(utility::explicitly_convertible(isq::phase_coefficient, isq::propagation_coefficient));
+static_assert(!utility::implicitly_convertible(isq::phase_coefficient * isq::path_length, dimensionless));
+static_assert(!utility::implicitly_convertible(pow<2>(isq::phase_coefficient), pow<2>(isq::propagation_coefficient)));
+static_assert(!utility::explicitly_convertible(isq::attenuation, isq::phase_coefficient));
+static_assert(utility::castable(isq::attenuation, isq::phase_coefficient));
+static_assert(utility::castable(inverse(isq::repetency), isq::height));
+static_assert(!utility::explicitly_convertible(inverse(isq::repetency), isq::height));
+static_assert(utility::implicitly_convertible(isq::phase_angle / isq::path_length, isq::phase_coefficient));
 
 // a product's unit may carry more angles than its quantity specification (moment of inertia is
 // defined as angular_momentum / angular_velocity). The units are equivalent, so the explicit
@@ -664,54 +665,56 @@ static_assert(
 
 // rotational mechanics under plain isq needs an explicit conversion. Torque has no angle and angular
 // velocity has one.
-static_assert(!implicitly_convertible(isq::torque * isq::angular_velocity, isq::power));
-static_assert(explicitly_convertible(isq::torque * isq::angular_velocity, isq::power));
+static_assert(!utility::implicitly_convertible(isq::torque * isq::angular_velocity, isq::power));
+static_assert(utility::explicitly_convertible(isq::torque * isq::angular_velocity, isq::power));
 
 // a factor common to both sides doesn't change how they relate
-static_assert(!implicitly_convertible(isq::phase_coefficient * isq::mass, isq::propagation_coefficient* isq::mass));
-static_assert(explicitly_convertible(isq::phase_coefficient * isq::mass, isq::propagation_coefficient* isq::mass));
-static_assert(!castable(isq::radiant_intensity * isq::mass, isq::radiant_flux* isq::mass));
-static_assert(implicitly_convertible(isq::velocity * isq::length / isq::time, isq::velocity* isq::speed));
+static_assert(!utility::implicitly_convertible(isq::phase_coefficient * isq::mass,
+                                               isq::propagation_coefficient* isq::mass));
+static_assert(utility::explicitly_convertible(isq::phase_coefficient * isq::mass,
+                                              isq::propagation_coefficient* isq::mass));
+static_assert(!utility::castable(isq::radiant_intensity * isq::mass, isq::radiant_flux* isq::mass));
+static_assert(utility::implicitly_convertible(isq::velocity * isq::length / isq::time, isq::velocity* isq::speed));
 
 // special cases: each one is a deliberate rule described in the user's guide chapter "Quantity
 // Specification Conversions". A simplification of the engine must keep every line below.
 
 // `dimensionless` is a named quantity, so the tree rule decides before any factor cancels
-static_assert(implicitly_convertible(isq::rotation, dimensionless));
-static_assert(!implicitly_convertible(isq::angular_measure, dimensionless));
-static_assert(explicitly_convertible(isq::angular_measure, dimensionless));
+static_assert(utility::implicitly_convertible(isq::rotation, dimensionless));
+static_assert(!utility::implicitly_convertible(isq::angular_measure, dimensionless));
+static_assert(utility::explicitly_convertible(isq::angular_measure, dimensionless));
 
 // a declared kind behaves much like a dimension: it doesn't convert to its inverse or its square
-static_assert(!castable(isq::angular_measure, inverse(isq::angular_measure)));
-static_assert(!castable(pow<2>(isq::angular_measure), isq::solid_angular_measure));
+static_assert(!utility::castable(isq::angular_measure, inverse(isq::angular_measure)));
+static_assert(!utility::castable(pow<2>(isq::angular_measure), isq::solid_angular_measure));
 
 // one declared kind lost and another gained is `none`, even with a factor common to both sides
-static_assert(!castable(isq::angular_measure * isq::length, isq::solid_angular_measure* isq::length));
+static_assert(!utility::castable(isq::angular_measure * isq::length, isq::solid_angular_measure* isq::length));
 
 // the kind boundary nets each side first: an angle in the numerator and one in the denominator
 // of the source cancel, so nothing is lost
-static_assert(!implicitly_convertible(isq::angular_velocity * isq::radius / isq::speed, dimensionless));
-static_assert(explicitly_convertible(isq::angular_velocity * isq::radius / isq::speed, dimensionless));
-static_assert(implicitly_convertible(isq::angular_velocity * isq::radius / isq::angular_measure / isq::speed,
-                                     dimensionless));
+static_assert(!utility::implicitly_convertible(isq::angular_velocity * isq::radius / isq::speed, dimensionless));
+static_assert(utility::explicitly_convertible(isq::angular_velocity * isq::radius / isq::speed, dimensionless));
+static_assert(utility::implicitly_convertible(isq::angular_velocity * isq::radius / isq::angular_measure / isq::speed,
+                                              dimensionless));
 
 // a source kind is exempt from the cap on gained kinds
-static_assert(implicitly_convertible(kind_of<dimensionless>, isq::angular_measure));
+static_assert(utility::implicitly_convertible(kind_of<dimensionless>, isq::angular_measure));
 
 // a kind of a derived quantity can still rank `cast`
-static_assert(castable(kind_of<inverse(isq::repetency)>, isq::height));
-static_assert(!explicitly_convertible(kind_of<inverse(isq::repetency)>, isq::height));
+static_assert(utility::castable(kind_of<inverse(isq::repetency)>, isq::height));
+static_assert(!utility::explicitly_convertible(kind_of<inverse(isq::repetency)>, isq::height));
 
 // different roots of one dimension stay apart unless an equation of one mentions the other's tree
-static_assert(!castable(isq::frequency * isq::width, isq::activity* isq::length));
-static_assert(implicitly_convertible(isq::radiant_intensity * isq::solid_angular_measure, isq::radiant_flux));
+static_assert(!utility::castable(isq::frequency * isq::width, isq::activity* isq::length));
+static_assert(utility::implicitly_convertible(isq::radiant_intensity * isq::solid_angular_measure, isq::radiant_flux));
 
 // expanding a target quantity ranks as the downcast from its defining ancestor: `frequency` defines
 // its equation, and `time` meets `period_duration` as a downcast
-static_assert(implicitly_convertible(inverse(isq::period_duration), isq::frequency));
-static_assert(!implicitly_convertible(inverse(isq::time), isq::frequency));
-static_assert(explicitly_convertible(inverse(isq::time), isq::frequency));
-static_assert(implicitly_convertible(isq::frequency, inverse(isq::time)));
+static_assert(utility::implicitly_convertible(inverse(isq::period_duration), isq::frequency));
+static_assert(!utility::implicitly_convertible(inverse(isq::time), isq::frequency));
+static_assert(utility::explicitly_convertible(inverse(isq::time), isq::frequency));
+static_assert(utility::implicitly_convertible(isq::frequency, inverse(isq::time)));
 
 // The verdict doesn't depend on the names of the quantities. `speed` and a climb rate tie as the
 // deepest factors, and a name decides which one expands first. Twins that differ only in their names,
@@ -719,14 +722,16 @@ static_assert(implicitly_convertible(isq::frequency, inverse(isq::time)));
 // every order of expansion.
 inline constexpr auto width_by_height_rate = isq::width * isq::height / pow<2>(isq::time);
 
-static_assert(explicitly_convertible(isq::speed * ::aaa_isq_test_climb, width_by_height_rate));
-static_assert(!implicitly_convertible(isq::speed * ::aaa_isq_test_climb, width_by_height_rate));
-static_assert(explicitly_convertible(isq::speed * ::zzz_isq_test_climb, width_by_height_rate));
-static_assert(!implicitly_convertible(isq::speed * ::zzz_isq_test_climb, width_by_height_rate));
-static_assert(implicitly_convertible(width_by_height_rate, isq::speed* ::aaa_isq_test_climb));
-static_assert(implicitly_convertible(width_by_height_rate, isq::speed* ::zzz_isq_test_climb));
-static_assert(explicitly_convertible(inverse(isq::speed * ::aaa_isq_test_climb), inverse(width_by_height_rate)));
-static_assert(explicitly_convertible(inverse(isq::speed * ::zzz_isq_test_climb), inverse(width_by_height_rate)));
+static_assert(utility::explicitly_convertible(isq::speed * ::aaa_isq_test_climb, width_by_height_rate));
+static_assert(!utility::implicitly_convertible(isq::speed * ::aaa_isq_test_climb, width_by_height_rate));
+static_assert(utility::explicitly_convertible(isq::speed * ::zzz_isq_test_climb, width_by_height_rate));
+static_assert(!utility::implicitly_convertible(isq::speed * ::zzz_isq_test_climb, width_by_height_rate));
+static_assert(utility::implicitly_convertible(width_by_height_rate, isq::speed* ::aaa_isq_test_climb));
+static_assert(utility::implicitly_convertible(width_by_height_rate, isq::speed* ::zzz_isq_test_climb));
+static_assert(utility::explicitly_convertible(inverse(isq::speed * ::aaa_isq_test_climb),
+                                              inverse(width_by_height_rate)));
+static_assert(utility::explicitly_convertible(inverse(isq::speed * ::zzz_isq_test_climb),
+                                              inverse(width_by_height_rate)));
 
 // The kind boundary lowers every verdict of the tree rule and of the kind rules, so a declared kind
 // carried only by an equation is never dropped or gained implicitly. A child whose equation lacks
@@ -742,24 +747,24 @@ QUANTITY_SPEC(plain_ratio, dimensionless, isq::length / isq::width);
 QUANTITY_SPEC(angled_ratio, dimensionless, isq::angular_measure* isq::length / isq::width);
 QUANTITY_SPEC(solid_angled_ratio, dimensionless, isq::solid_angular_measure* isq::length / isq::width);
 
-static_assert(!implicitly_convertible(kind_of<isq::angular_velocity>, turn_rate));
-static_assert(explicitly_convertible(kind_of<isq::angular_velocity>, turn_rate));
-static_assert(!implicitly_convertible(kind_of<isq::angular_velocity * isq::mass>, turn_rate* isq::mass));
-static_assert(!implicitly_convertible(kind_of<pow<2>(isq::angular_velocity)>, pow<2>(turn_rate)));
-static_assert(!implicitly_convertible(isq::angular_velocity, turn_rate));
-static_assert(explicitly_convertible(isq::angular_velocity, turn_rate));
-static_assert(!implicitly_convertible(turn_rate, isq::angular_velocity));
-static_assert(explicitly_convertible(turn_rate, isq::angular_velocity));
-static_assert(!castable(angled_ratio, solid_angled_ratio));
-static_assert(!castable(angled_ratio * isq::mass, solid_angled_ratio* isq::mass));
-static_assert(!castable(pow<2>(angled_ratio), pow<2>(solid_angled_ratio)));
-static_assert(castable(plain_ratio, angled_ratio));
-static_assert(!explicitly_convertible(plain_ratio, angled_ratio));
-static_assert(castable(pow<2>(plain_ratio), pow<2>(angled_ratio)));
-static_assert(explicitly_convertible(turn_rate_kind, isq::angular_velocity));
-static_assert(!implicitly_convertible(turn_rate_kind, isq::angular_velocity));
-static_assert(explicitly_convertible(isq::angular_velocity, turn_rate_kind));
-static_assert(explicitly_convertible(kind_of<isq::angular_velocity>, turn_rate_kind));
-static_assert(!implicitly_convertible(kind_of<isq::angular_velocity>, turn_rate_kind));
+static_assert(!utility::implicitly_convertible(kind_of<isq::angular_velocity>, turn_rate));
+static_assert(utility::explicitly_convertible(kind_of<isq::angular_velocity>, turn_rate));
+static_assert(!utility::implicitly_convertible(kind_of<isq::angular_velocity * isq::mass>, turn_rate* isq::mass));
+static_assert(!utility::implicitly_convertible(kind_of<pow<2>(isq::angular_velocity)>, pow<2>(turn_rate)));
+static_assert(!utility::implicitly_convertible(isq::angular_velocity, turn_rate));
+static_assert(utility::explicitly_convertible(isq::angular_velocity, turn_rate));
+static_assert(!utility::implicitly_convertible(turn_rate, isq::angular_velocity));
+static_assert(utility::explicitly_convertible(turn_rate, isq::angular_velocity));
+static_assert(!utility::castable(angled_ratio, solid_angled_ratio));
+static_assert(!utility::castable(angled_ratio * isq::mass, solid_angled_ratio* isq::mass));
+static_assert(!utility::castable(pow<2>(angled_ratio), pow<2>(solid_angled_ratio)));
+static_assert(utility::castable(plain_ratio, angled_ratio));
+static_assert(!utility::explicitly_convertible(plain_ratio, angled_ratio));
+static_assert(utility::castable(pow<2>(plain_ratio), pow<2>(angled_ratio)));
+static_assert(utility::explicitly_convertible(turn_rate_kind, isq::angular_velocity));
+static_assert(!utility::implicitly_convertible(turn_rate_kind, isq::angular_velocity));
+static_assert(utility::explicitly_convertible(isq::angular_velocity, turn_rate_kind));
+static_assert(utility::explicitly_convertible(kind_of<isq::angular_velocity>, turn_rate_kind));
+static_assert(!utility::implicitly_convertible(kind_of<isq::angular_velocity>, turn_rate_kind));
 
 }  // namespace

@@ -132,41 +132,41 @@ static_assert(verify(hep::phase, scalar, one));  // phase is dimensionless (cycl
 
 // Test quantity hierarchy conversions
 // All specialized lengths can be implicitly converted up the hierarchy to generic length
-static_assert(implicitly_convertible(hep::decay_length, hep::length));
-static_assert(implicitly_convertible(hep::nuclear_interaction_length, hep::interaction_length));
+static_assert(utility::implicitly_convertible(hep::decay_length, hep::length));
+static_assert(utility::implicitly_convertible(hep::nuclear_interaction_length, hep::interaction_length));
 
 // is_kind quantities form subkinds
-static_assert(!implicitly_convertible(hep::radiation_length, hep::length));
-static_assert(explicitly_convertible(hep::radiation_length, hep::length));
-static_assert(!implicitly_convertible(hep::interaction_length, hep::length));
-static_assert(explicitly_convertible(hep::interaction_length, hep::length));
+static_assert(!utility::implicitly_convertible(hep::radiation_length, hep::length));
+static_assert(utility::explicitly_convertible(hep::radiation_length, hep::length));
+static_assert(!utility::implicitly_convertible(hep::interaction_length, hep::length));
+static_assert(utility::explicitly_convertible(hep::interaction_length, hep::length));
 
-static_assert(!implicitly_convertible(hep::proper_time, hep::duration));
-static_assert(explicitly_convertible(hep::proper_time, hep::duration));
-static_assert(!implicitly_convertible(hep::coordinate_time, hep::duration));
-static_assert(explicitly_convertible(hep::coordinate_time, hep::duration));
+static_assert(!utility::implicitly_convertible(hep::proper_time, hep::duration));
+static_assert(utility::explicitly_convertible(hep::proper_time, hep::duration));
+static_assert(!utility::implicitly_convertible(hep::coordinate_time, hep::duration));
+static_assert(utility::explicitly_convertible(hep::coordinate_time, hep::duration));
 
 // But cannot be implicitly converted between each other (different physical concepts!)
-static_assert(!implicitly_convertible(hep::radiation_length, hep::decay_length));
-static_assert(!implicitly_convertible(hep::decay_length, hep::interaction_length));
-static_assert(!implicitly_convertible(hep::impact_parameter, hep::vertex_position));
+static_assert(!utility::implicitly_convertible(hep::radiation_length, hep::decay_length));
+static_assert(!utility::implicitly_convertible(hep::decay_length, hep::interaction_length));
+static_assert(!utility::implicitly_convertible(hep::impact_parameter, hep::vertex_position));
 
 // Specialized times: proper_time vs coordinate_time are distinct
-static_assert(!implicitly_convertible(hep::proper_time, hep::coordinate_time));
-static_assert(!implicitly_convertible(hep::coordinate_time, hep::proper_time));
+static_assert(!utility::implicitly_convertible(hep::proper_time, hep::coordinate_time));
+static_assert(!utility::implicitly_convertible(hep::coordinate_time, hep::proper_time));
 
 // Lifetime hierarchy
-static_assert(implicitly_convertible(hep::half_life, hep::lifetime));
-static_assert(implicitly_convertible(hep::mean_lifetime, hep::lifetime));
-static_assert(!implicitly_convertible(hep::half_life, hep::mean_lifetime));
+static_assert(utility::implicitly_convertible(hep::half_life, hep::lifetime));
+static_assert(utility::implicitly_convertible(hep::mean_lifetime, hep::lifetime));
+static_assert(!utility::implicitly_convertible(hep::half_life, hep::mean_lifetime));
 
 // Energy types are distinct
-static_assert(implicitly_convertible(hep::kinetic_energy, hep::total_energy));
-static_assert(implicitly_convertible(hep::rest_mass_energy, hep::total_energy));
-static_assert(implicitly_convertible(hep::total_energy, hep::energy));
-static_assert(!implicitly_convertible(hep::kinetic_energy, hep::rest_mass_energy));
-static_assert(!implicitly_convertible(hep::rest_mass_energy, hep::kinetic_energy));
-static_assert(!implicitly_convertible(hep::binding_energy, hep::kinetic_energy));
+static_assert(utility::implicitly_convertible(hep::kinetic_energy, hep::total_energy));
+static_assert(utility::implicitly_convertible(hep::rest_mass_energy, hep::total_energy));
+static_assert(utility::implicitly_convertible(hep::total_energy, hep::energy));
+static_assert(!utility::implicitly_convertible(hep::kinetic_energy, hep::rest_mass_energy));
+static_assert(!utility::implicitly_convertible(hep::rest_mass_energy, hep::kinetic_energy));
+static_assert(!utility::implicitly_convertible(hep::binding_energy, hep::kinetic_energy));
 
 // Total energy hierarchy: KE and E0 are children of total_energy
 // This ensures KE + E0 naturally gives total_energy
@@ -174,33 +174,33 @@ static_assert(std::same_as<decltype(quantity<hep::kinetic_energy[MeV]>{} + quant
                            quantity<hep::total_energy[MeV]>>);
 
 // Binding energy hierarchy
-static_assert(implicitly_convertible(hep::separation_energy, hep::binding_energy));
-static_assert(implicitly_convertible(hep::binding_energy, hep::energy));
+static_assert(utility::implicitly_convertible(hep::separation_energy, hep::binding_energy));
+static_assert(utility::implicitly_convertible(hep::binding_energy, hep::energy));
 
 // Mass types are distinct
-static_assert(implicitly_convertible(hep::rest_mass, hep::mass));
-static_assert(implicitly_convertible(hep::invariant_mass, hep::mass));
-static_assert(!implicitly_convertible(hep::rest_mass, hep::invariant_mass));
+static_assert(utility::implicitly_convertible(hep::rest_mass, hep::mass));
+static_assert(utility::implicitly_convertible(hep::invariant_mass, hep::mass));
+static_assert(!utility::implicitly_convertible(hep::rest_mass, hep::invariant_mass));
 
 // Momentum hierarchy
-static_assert(implicitly_convertible(hep::transverse_momentum, hep::momentum));
+static_assert(utility::implicitly_convertible(hep::transverse_momentum, hep::momentum));
 
 // Angular quantities
-static_assert(implicitly_convertible(hep::scattering_angle, hep::angle));
-static_assert(implicitly_convertible(hep::opening_angle, hep::angle));
-static_assert(!implicitly_convertible(hep::scattering_angle, hep::opening_angle));
+static_assert(utility::implicitly_convertible(hep::scattering_angle, hep::angle));
+static_assert(utility::implicitly_convertible(hep::opening_angle, hep::angle));
+static_assert(!utility::implicitly_convertible(hep::scattering_angle, hep::opening_angle));
 
 // Phase is a distinct kind (marked with is_kind) - cannot convert to/from angle
-static_assert(!implicitly_convertible(hep::phase, hep::angle));
-static_assert(!explicitly_convertible(hep::phase, hep::angle));
-static_assert(!castable(hep::phase, hep::angle));
-static_assert(!implicitly_convertible(hep::angle, hep::phase));
+static_assert(!utility::implicitly_convertible(hep::phase, hep::angle));
+static_assert(!utility::explicitly_convertible(hep::phase, hep::angle));
+static_assert(!utility::castable(hep::phase, hep::angle));
+static_assert(!utility::implicitly_convertible(hep::angle, hep::phase));
 
 // Test that specialized quantities cannot implicitly convert to siblings
 // (but they CAN be compared since they have same dimension - this is by design)
-static_assert(!implicitly_convertible(hep::decay_length, hep::radiation_length));
-static_assert(!implicitly_convertible(hep::kinetic_energy, hep::rest_mass_energy));
-static_assert(!implicitly_convertible(hep::proper_time, hep::coordinate_time));
+static_assert(!utility::implicitly_convertible(hep::decay_length, hep::radiation_length));
+static_assert(!utility::implicitly_convertible(hep::kinetic_energy, hep::rest_mass_energy));
+static_assert(!utility::implicitly_convertible(hep::proper_time, hep::coordinate_time));
 
 // Derived quantities using specialized quantities
 static_assert(verify(hep::speed, scalar, m / s, cm / ns));
@@ -218,31 +218,32 @@ static_assert(verify(hep::number_density, scalar, inverse(cm3)));
 
 // Test that derived quantity expressions using specialized quantities implicitly convert properly
 // speed is defined as path_length / duration
-static_assert(implicitly_convertible(hep::path_length / hep::duration, hep::speed));
+static_assert(utility::implicitly_convertible(hep::path_length / hep::duration, hep::speed));
 
 // velocity is defined as displacement / duration
-static_assert(implicitly_convertible(hep::displacement / hep::duration, hep::velocity));
+static_assert(utility::implicitly_convertible(hep::displacement / hep::duration, hep::velocity));
 
 // decay_constant (λ = 1/τ where τ is mean_lifetime) is not a frequency: nothing oscillates,
 // mirroring how the ISQ keeps activity out of the frequency family
-static_assert(!implicitly_convertible(hep::decay_constant, hep::frequency));
-static_assert(!implicitly_convertible(hep::frequency, hep::decay_constant));
-static_assert(implicitly_convertible(inverse(hep::mean_lifetime), hep::frequency));
+static_assert(!utility::implicitly_convertible(hep::decay_constant, hep::frequency));
+static_assert(!utility::implicitly_convertible(hep::frequency, hep::decay_constant));
+static_assert(utility::implicitly_convertible(inverse(hep::mean_lifetime), hep::frequency));
 
 // lorentz_factor and relativistic_beta are distinct dimensionless kinds
 // They cannot be created from arbitrary dimensionless values (marked with is_kind)
-static_assert(!implicitly_convertible(dimensionless, hep::lorentz_factor));
-static_assert(!implicitly_convertible(dimensionless, hep::relativistic_beta));
-static_assert(!implicitly_convertible(hep::lorentz_factor, hep::relativistic_beta));
+static_assert(!utility::implicitly_convertible(dimensionless, hep::lorentz_factor));
+static_assert(!utility::implicitly_convertible(dimensionless, hep::relativistic_beta));
+static_assert(!utility::implicitly_convertible(hep::lorentz_factor, hep::relativistic_beta));
 
 // cross_section is a specialized area
-static_assert(implicitly_convertible(hep::cross_section, hep::area));
+static_assert(utility::implicitly_convertible(hep::cross_section, hep::area));
 // But general area cannot implicitly become cross_section (preserves physics meaning)
-static_assert(!implicitly_convertible(hep::area, hep::cross_section));
+static_assert(!utility::implicitly_convertible(hep::area, hep::cross_section));
 
 // number_density is inverse(volume)
-static_assert(implicitly_convertible(inverse(hep::volume), hep::number_density));
-static_assert(!implicitly_convertible(hep::frequency, hep::number_density));  // both inverse dimensions but different
+static_assert(utility::implicitly_convertible(inverse(hep::volume), hep::number_density));
+static_assert(!utility::implicitly_convertible(hep::frequency,
+                                               hep::number_density));  // both inverse dimensions but different
 
 // unit prefix relationships
 static_assert(1'000 * eV / c2 == 1 * keV / c2);

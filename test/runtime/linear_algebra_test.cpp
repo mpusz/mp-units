@@ -266,7 +266,7 @@ TEST_CASE("linear algebra type as a quantity representation")
     CHECK(nv[1] == 0);
     CHECK(nv[2] == 30);
     // r x F has the quantity specification of a moment of force
-    static_assert(implicitly_convertible(decltype(moment)::quantity_spec, isq::moment_of_force));
+    static_assert(utility::implicitly_convertible(decltype(moment)::quantity_spec, isq::moment_of_force));
   }
 
   SECTION("vector addition with an automatic unit conversion of one operand")

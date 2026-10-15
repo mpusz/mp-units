@@ -67,6 +67,9 @@ namespace detail {
 template<typename... Expr>
 struct derived_dimension_impl : expr_fractions<dimension_one, Expr...> {};
 
+template<Dimension D>
+[[nodiscard]] consteval Dimension auto inverse_impl(D d);
+
 struct dimension_interface {
   template<Dimension Lhs, Dimension Rhs>
   [[nodiscard]] friend consteval Dimension auto operator*(Lhs, Rhs)
@@ -111,6 +114,7 @@ struct dimension_interface {
 
   [[nodiscard]] friend consteval Dimension auto sqrt(Dimension auto d) { return pow<1, 2>(d); }
   [[nodiscard]] friend consteval Dimension auto cbrt(Dimension auto d) { return pow<1, 3>(d); }
+  [[nodiscard]] friend consteval Dimension auto inverse(Dimension auto d) { return detail::inverse_impl(d); }
 };
 
 }  // namespace detail
@@ -205,9 +209,17 @@ MP_UNITS_EXPORT inline constexpr struct dimension_one final :
     detail::derived_dimension_impl<> {
 } dimension_one;
 
-MP_UNITS_EXPORT_BEGIN
+namespace detail {
 
-[[nodiscard]] consteval Dimension auto inverse(Dimension auto d) { return dimension_one / d; }
+template<Dimension D>
+[[nodiscard]] consteval Dimension auto inverse_impl(D d)
+{
+  return dimension_one / d;
+}
+
+}  // namespace detail
+
+MP_UNITS_EXPORT_BEGIN
 
 // The suppression covers the whole definition: Clang up to 21 reports the deprecated member from
 // the implicitly defined copy constructor, while a user naming `encoding` is still warned

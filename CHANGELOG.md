@@ -339,6 +339,29 @@ This page documents the version history and changes for the **mp-units** library
       or `codata::codata2014::magnetic_constant` for the exact pre-2019 one. These are NOT
       interchangeable with the `hep` constants of the same name, which belong to a
       different system of quantities
+- deprecated: `implicitly_convertible`, `explicitly_convertible` and `castable` in
+      `mp_units`. They are not proposed for standardization and have moved to
+      `mp_units::utility`. ADL doesn't find them there, so qualify the call:
+      `utility::implicitly_convertible(isq::width, isq::length)`. A generic interface
+      should constrain with `QuantityOf` or `QuantityPointOf` instead
+- (!) refactor: `pi_c`, the magnitude constant behind the `pi` unit, is an implementation
+      detail now. Use the `pi` unit instead, e.g., `pi * metre` rather than
+      `mag<pi_c> * metre`
+- fix: `pow()` of a dimension, a quantity specification, or a unit with a negative exponent
+      (e.g., `pow<-1>(metre)`) failed to compile and now yields the inverted expression
+- (!) refactor: a quantity equation keeps a kind per factor. A kind operand becomes a kind
+      factor of the result and a typed operand stays typed.
+      `kind_of<isq::length> / isq::duration` is now
+      `derived_quantity_spec<kind_of_<isq::length>, per<isq::duration>>` rather than
+      `isq::length / isq::duration`, so `42 * m / isq::duration(2 * s)` converts implicitly
+      to a child of `isq::speed` defined over `isq::height`, which it couldn't before. A
+      result whose factors are all kinds is a kind as before. A kind factor and a typed
+      factor of one tree stay separate, so `isq::duration(2 * s) / (1 * s)` is a ratio of
+      two _durations_ rather than `dimensionless`, and still converts to it implicitly
+- (!) refactor: `inverse()` of a dimension, a quantity specification, or a unit is now a
+      hidden friend, like `pow()`, `sqrt()`, and `cbrt()`. An unqualified call works as
+      before, but `mp_units::inverse(m)` no longer compiles and needs the qualification
+      dropped
 - (!) refactor: the `std-format-spec` helpers that formatters are written against (`fmt_align`,
       `fill_t`, `fmt_arg_ref`, `fill_align_width_format_specs`, `parse_align`,
       `parse_dynamic_spec`, `parse_fill_align_width`, `parse_nonnegative_int`,

@@ -264,9 +264,9 @@ rules.
     - every _radius_ is a _width_
 
     ```cpp
-    static_assert(implicitly_convertible(isq::width, isq::length));
-    static_assert(implicitly_convertible(isq::radius, isq::width));
-    static_assert(implicitly_convertible(isq::radius, isq::length));
+    static_assert(utility::implicitly_convertible(isq::width, isq::length));
+    static_assert(utility::implicitly_convertible(isq::radius, isq::width));
+    static_assert(utility::implicitly_convertible(isq::radius, isq::length));
     ```
 
     Implicit conversions are allowed on copy-initialization:
@@ -287,12 +287,12 @@ rules.
     - not every _width_ is a _radius_
 
     ```cpp
-    static_assert(!implicitly_convertible(isq::length, isq::width));
-    static_assert(!implicitly_convertible(isq::width, isq::radius));
-    static_assert(!implicitly_convertible(isq::length, isq::radius));
-    static_assert(explicitly_convertible(isq::length, isq::width));
-    static_assert(explicitly_convertible(isq::width, isq::radius));
-    static_assert(explicitly_convertible(isq::length, isq::radius));
+    static_assert(!utility::implicitly_convertible(isq::length, isq::width));
+    static_assert(!utility::implicitly_convertible(isq::width, isq::radius));
+    static_assert(!utility::implicitly_convertible(isq::length, isq::radius));
+    static_assert(utility::explicitly_convertible(isq::length, isq::width));
+    static_assert(utility::explicitly_convertible(isq::width, isq::radius));
+    static_assert(utility::explicitly_convertible(isq::length, isq::radius));
     ```
 
     Explicit conversions are forced by passing the quantity to a call operator of a `quantity_spec`
@@ -315,9 +315,9 @@ rules.
     - both _height_ and _width_ are quantities of kind _length_
 
     ```cpp
-    static_assert(!implicitly_convertible(isq::height, isq::width));
-    static_assert(!explicitly_convertible(isq::height, isq::width));
-    static_assert(castable(isq::height, isq::width));
+    static_assert(!utility::implicitly_convertible(isq::height, isq::width));
+    static_assert(!utility::explicitly_convertible(isq::height, isq::width));
+    static_assert(utility::castable(isq::height, isq::width));
     ```
 
     Explicit casts are forced with a dedicated `quantity_cast` function:
@@ -337,9 +337,9 @@ rules.
     - _time_ has nothing in common with _length_
 
     ```cpp
-    static_assert(!implicitly_convertible(isq::duration, isq::length));
-    static_assert(!explicitly_convertible(isq::duration, isq::length));
-    static_assert(!castable(isq::duration, isq::length));
+    static_assert(!utility::implicitly_convertible(isq::duration, isq::length));
+    static_assert(!utility::explicitly_convertible(isq::duration, isq::length));
+    static_assert(!utility::castable(isq::duration, isq::length));
     ```
 
     Even the explicit casts will not force such a conversion:
@@ -396,8 +396,8 @@ that can be used to create them implicitly:
   from any quantity of _mass_, _length_, and _time_:
 
     ```cpp
-    static_assert(implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration), isq::energy));
-    static_assert(implicitly_convertible(isq::mass * pow<2>(isq::height) / pow<2>(isq::duration), isq::energy));
+    static_assert(utility::implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration), isq::energy));
+    static_assert(utility::implicitly_convertible(isq::mass * pow<2>(isq::height) / pow<2>(isq::duration), isq::energy));
     ```
 
 - _potential energy_ is a more "specialized" quantity than _energy_ (not every _energy_ is
@@ -405,11 +405,11 @@ that can be used to create them implicitly:
   _energy_ or the results of its [quantity equation](../../reference/glossary.md#quantity-equation):
 
     ```cpp
-    static_assert(!implicitly_convertible(isq::energy, isq::potential_energy));
-    static_assert(explicitly_convertible(isq::energy, isq::potential_energy));
-    static_assert(!implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration),
+    static_assert(!utility::implicitly_convertible(isq::energy, isq::potential_energy));
+    static_assert(utility::explicitly_convertible(isq::energy, isq::potential_energy));
+    static_assert(!utility::implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration),
                                           isq::potential_energy));
-    static_assert(explicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration),
+    static_assert(utility::explicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration),
                                          isq::potential_energy));
     ```
 
@@ -420,13 +420,13 @@ that can be used to create them implicitly:
   `mass * acceleration_of_free_fall * height` is.
 
     ```cpp
-    static_assert(!implicitly_convertible(isq::energy, gravitational_potential_energy));
-    static_assert(explicitly_convertible(isq::energy, gravitational_potential_energy));
-    static_assert(!implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration),
+    static_assert(!utility::implicitly_convertible(isq::energy, gravitational_potential_energy));
+    static_assert(utility::explicitly_convertible(isq::energy, gravitational_potential_energy));
+    static_assert(!utility::implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration),
                                           gravitational_potential_energy));
-    static_assert(explicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration),
+    static_assert(utility::explicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration),
                                          gravitational_potential_energy));
-    static_assert(implicitly_convertible(isq::mass * isq::acceleration_of_free_fall * isq::height,
+    static_assert(utility::implicitly_convertible(isq::mass * isq::acceleration_of_free_fall * isq::height,
                                          gravitational_potential_energy));
     ```
 
@@ -449,8 +449,8 @@ Such an entity behaves as any quantity of its kind. This means that it is implic
 convertible to any quantity in a tree.
 
 ```cpp
-static_assert(!implicitly_convertible(isq::length, isq::height));
-static_assert(implicitly_convertible(kind_of<isq::length>, isq::height));
+static_assert(!utility::implicitly_convertible(isq::length, isq::height));
+static_assert(utility::implicitly_convertible(kind_of<isq::length>, isq::height));
 ```
 
 Additionally, the result of operations on quantity kinds is also a quantity kind:
@@ -459,13 +459,32 @@ Additionally, the result of operations on quantity kinds is also a quantity kind
 static_assert(same_type<kind_of<isq::length> / kind_of<isq::duration>, kind_of<isq::length / isq::duration>>);
 ```
 
-However, if at least one equation's operand is not a quantity kind, the result becomes a "strong"
-quantity where all the kinds are converted to the hierarchy tree's root quantities:
+When a kind meets a typed quantity in one equation, the typed factor stays typed, and the
+kind factor stays a kind, spelled `kind_of_<...>` inside the derived quantity:
 
 ```cpp
 static_assert(!same_type<kind_of<isq::length> / isq::duration, kind_of<isq::length / isq::duration>>);
-static_assert(same_type<kind_of<isq::length> / isq::duration, isq::length / isq::duration>);
+static_assert(!same_type<kind_of<isq::length> / isq::duration, isq::length / isq::duration>);
+// the type of `kind_of<isq::length> / isq::duration` is
+// `derived_quantity_spec<kind_of_<isq::length>, per<isq::duration>>`
 ```
+
+Each factor then converts on its own. `42 * m / isq::duration(2 * s)` may become a
+_rate of climb_ because its _length_ is a kind and a _height_ is a _length_, while
+`isq::height(42 * m) / (2 * s)` is never a _horizontal speed_ implicitly:
+
+```cpp
+inline constexpr struct rate_of_climb : quantity_spec<isq::speed, isq::height / isq::duration> {} rate_of_climb;
+inline constexpr struct horizontal_speed : quantity_spec<isq::speed, isq::width / isq::duration> {} horizontal_speed;
+
+static_assert(utility::implicitly_convertible((42 * m / isq::duration(2 * s)).quantity_spec, rate_of_climb));
+static_assert(utility::implicitly_convertible((isq::height(42 * m) / (2 * s)).quantity_spec, rate_of_climb));
+static_assert(!utility::implicitly_convertible((isq::height(42 * m) / (2 * s)).quantity_spec, horizontal_speed));
+```
+
+A kind factor and a typed factor of the same tree are different factors, like `isq::width`
+and `isq::length`, so `isq::duration(2 * s) / (1 * s)` is a ratio of two _durations_
+rather than `dimensionless`. It converts to `dimensionless` implicitly.
 
 !!! info
 
@@ -566,9 +585,9 @@ Quantities marked with `is_kind` behave differently from regular hierarchy membe
 1. **Cannot be implicitly converted to each other**:
 
     ```cpp
-    static_assert(!implicitly_convertible(fluid_head, water_head));
-    static_assert(!explicitly_convertible(fluid_head, water_head));
-    static_assert(!castable(fluid_head, water_head));
+    static_assert(!utility::implicitly_convertible(fluid_head, water_head));
+    static_assert(!utility::explicitly_convertible(fluid_head, water_head));
+    static_assert(!utility::castable(fluid_head, water_head));
     ```
 
 2. **Cannot be added or compared directly**:

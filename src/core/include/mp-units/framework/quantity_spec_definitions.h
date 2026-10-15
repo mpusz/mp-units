@@ -68,8 +68,12 @@ struct quantity_spec;
 template<detail::SymbolicTerm... Expr>
 struct derived_quantity_spec;
 
+namespace utility {
+
 MP_UNITS_EXPORT template<QuantitySpec From, QuantitySpec To>
 [[nodiscard]] consteval bool explicitly_convertible(From from, To to);
+
+}  // namespace utility
 
 namespace detail {
 
@@ -186,6 +190,28 @@ template<QuantitySpec auto... From, QuantitySpec Q>
 [[nodiscard]] consteval QuantitySpec auto clone_kind_of(Q q);
 
 template<QuantitySpec Q>
+[[nodiscard]] consteval QuantitySpec auto open_kinds(Q q);
+
+template<QuantitySpec auto... Operands, QuantitySpec Q>
+[[nodiscard]] consteval QuantitySpec auto close_kinds(Q q);
+
+template<typename List>
+constexpr bool any_kind_factor = false;
+
+template<typename... Ts>
+constexpr bool any_kind_factor<type_list<Ts...>> = (... || QuantityKindSpec<expr_type<Ts>>);
+
+// A derived quantity specification with a kind factor (one that mixes a kind with typed factors).
+template<typename Q>
+concept KindFactorBearing = is_specialization_of<Q, derived_quantity_spec> &&
+                            (any_kind_factor<typename Q::_num_> || any_kind_factor<typename Q::_den_>);
+
+// Whether an equation keeps a kind per factor: some operand is a kind or carries a kind factor, and
+// not every operand is a kind. All kinds, or no kind at all, take the path products always took.
+template<typename... Qs>
+concept KindsPerFactor = (... || (QuantityKindSpec<Qs> || KindFactorBearing<Qs>)) && !(... && QuantityKindSpec<Qs>);
+
+template<QuantitySpec Q>
 [[nodiscard]] consteval auto remove_kind(Q q);
 
 template<QuantitySpec Q>
@@ -198,28 +224,48 @@ struct kind_root_impl;
 // root, then the kind root, then the quantity itself. The roots are read from the class templates
 // behind `get_hierarchy_root` and `get_kind_tree_root`, so that no function is instantiated per
 // quantity.
+template<typename Q>
+struct quantity_spec_sort_key;
+
 template<NamedQuantitySpec Q>
-struct quantity_spec_sort_key {
+struct quantity_spec_sort_key<Q> {
   static constexpr std::string_view root = detail::type_name<hierarchy_root<Q>>();
   static constexpr std::string_view kind_root = detail::type_name<typename kind_root_impl<Q>::type>();
   static constexpr std::string_view name = detail::type_name<Q>();
+  static constexpr bool open = false;
 };
 
-template<NamedQuantitySpec Lhs, NamedQuantitySpec Rhs>
+// A kind factor sorts with the quantity it wraps, right after it, so that the two never merge and
+// a list keeps one element per name and openness.
+template<typename N>
+struct quantity_spec_sort_key<kind_of_<N>> : quantity_spec_sort_key<N> {
+  static constexpr bool open = true;
+};
+
+template<typename N>
+struct quantity_spec_sort_key<open_factor<N>> : quantity_spec_sort_key<N> {
+  static constexpr bool open = true;
+};
+
+template<typename Lhs, typename Rhs>
 consteval bool quantity_spec_less_value()
 {
   using lhs = quantity_spec_sort_key<Lhs>;
   using rhs = quantity_spec_sort_key<Rhs>;
   if (lhs::root != rhs::root) return lhs::root < rhs::root;
   if (lhs::kind_root != rhs::kind_root) return lhs::kind_root < rhs::kind_root;
-  return lhs::name < rhs::name;
+  if (lhs::name != rhs::name) return lhs::name < rhs::name;
+  return !lhs::open && rhs::open;
 }
 
-template<NamedQuantitySpec Lhs, NamedQuantitySpec Rhs>
+template<typename Lhs, typename Rhs>
 struct quantity_spec_less : std::bool_constant<quantity_spec_less_value<Lhs, Rhs>()> {};
 
 template<typename T1, typename T2>
 using type_list_of_quantity_spec_less = expr_less<T1, T2, quantity_spec_less>;
+
+template<QuantitySpec Q>
+[[nodiscard]] consteval QuantitySpec auto inverse_impl(Q q);
 
 struct quantity_spec_interface_base {
   template<QuantitySpec QS>
@@ -231,17 +277,27 @@ struct quantity_spec_interface_base {
   template<QuantitySpec Lhs, QuantitySpec Rhs>
   [[nodiscard]] friend consteval QuantitySpec auto operator*(Lhs lhs, Rhs rhs)
   {
-    return detail::clone_kind_of<Lhs{}, Rhs{}>(
-      detail::expr_multiply<derived_quantity_spec, dimensionless, type_list_of_quantity_spec_less>(
-        detail::remove_kind(lhs), detail::remove_kind(rhs)));
+    if constexpr (detail::KindsPerFactor<Lhs, Rhs>)
+      return detail::close_kinds<Lhs{}, Rhs{}>(
+        detail::expr_multiply<derived_quantity_spec, dimensionless, type_list_of_quantity_spec_less>(
+          detail::open_kinds(lhs), detail::open_kinds(rhs)));
+    else
+      return detail::clone_kind_of<Lhs{}, Rhs{}>(
+        detail::expr_multiply<derived_quantity_spec, dimensionless, type_list_of_quantity_spec_less>(
+          detail::remove_kind(lhs), detail::remove_kind(rhs)));
   }
 
   template<QuantitySpec Lhs, QuantitySpec Rhs>
   [[nodiscard]] friend consteval QuantitySpec auto operator/(Lhs lhs, Rhs rhs)
   {
-    return detail::clone_kind_of<Lhs{}, Rhs{}>(
-      detail::expr_divide<derived_quantity_spec, dimensionless, type_list_of_quantity_spec_less>(
-        detail::remove_kind(lhs), detail::remove_kind(rhs)));
+    if constexpr (detail::KindsPerFactor<Lhs, Rhs>)
+      return detail::close_kinds<Lhs{}, Rhs{}>(
+        detail::expr_divide<derived_quantity_spec, dimensionless, type_list_of_quantity_spec_less>(
+          detail::open_kinds(lhs), detail::open_kinds(rhs)));
+    else
+      return detail::clone_kind_of<Lhs{}, Rhs{}>(
+        detail::expr_divide<derived_quantity_spec, dimensionless, type_list_of_quantity_spec_less>(
+          detail::remove_kind(lhs), detail::remove_kind(rhs)));
   }
 
   template<QuantitySpec Lhs, QuantitySpec Rhs>
@@ -266,21 +322,31 @@ struct quantity_spec_interface_base {
     requires(Den != 0)
   [[nodiscard]] friend consteval QuantitySpec auto pow(Q q)
   {
-    return detail::clone_kind_of<Q{}>(
-      detail::expr_pow<Num, Den, derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
-        detail::remove_kind(q)));
+    if constexpr (detail::KindsPerFactor<Q>)
+      return detail::close_kinds<Q{}>(detail::expr_pow<Num, Den, derived_quantity_spec, struct dimensionless,
+                                                       detail::type_list_of_quantity_spec_less>(detail::open_kinds(q)));
+    else
+      return detail::clone_kind_of<Q{}>(
+        detail::expr_pow<Num, Den, derived_quantity_spec, struct dimensionless,
+                         detail::type_list_of_quantity_spec_less>(detail::remove_kind(q)));
   }
 
   template<std::intmax_t Num, QuantitySpec Q>
   [[nodiscard]] friend consteval QuantitySpec auto pow(Q q)
   {
-    return detail::clone_kind_of<Q{}>(
-      detail::expr_pow<Num, 1, derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
-        detail::remove_kind(q)));
+    if constexpr (detail::KindsPerFactor<Q>)
+      return detail::close_kinds<Q{}>(
+        detail::expr_pow<Num, 1, derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
+          detail::open_kinds(q)));
+    else
+      return detail::clone_kind_of<Q{}>(
+        detail::expr_pow<Num, 1, derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
+          detail::remove_kind(q)));
   }
 
   [[nodiscard]] friend consteval QuantitySpec auto sqrt(QuantitySpec auto q) { return pow<1, 2>(q); }
   [[nodiscard]] friend consteval QuantitySpec auto cbrt(QuantitySpec auto q) { return pow<1, 3>(q); }
+  [[nodiscard]] friend consteval QuantitySpec auto inverse(QuantitySpec auto q) { return detail::inverse_impl(q); }
 };
 
 [[nodiscard]] consteval bool explicitly_convertible_to_dimensionless(QuantitySpec auto qs);
@@ -299,7 +365,7 @@ struct quantity_spec_interface : quantity_spec_interface_base {
   }
 
   template<typename Self, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
-    requires(mp_units::explicitly_convertible(Q::quantity_spec, Self{})) &&
+    requires(mp_units::utility::explicitly_convertible(Q::quantity_spec, Self{})) &&
             requires { typename quantity<make_reference(Self{}, Q::unit), typename Q::rep>; }
   [[nodiscard]] constexpr Quantity auto operator()(this Self, FwdQ && q)
   {
@@ -308,7 +374,7 @@ struct quantity_spec_interface : quantity_spec_interface_base {
   }
 
   template<typename Self, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>>
-    requires(mp_units::explicitly_convertible(QP::quantity_spec, Self{})) &&
+    requires(mp_units::utility::explicitly_convertible(QP::quantity_spec, Self{})) &&
             requires { typename quantity_point<make_reference(Self{}, QP::unit), QP::point_origin, typename QP::rep>; }
   [[nodiscard]] constexpr QuantityPoint auto operator()(this Self self, FwdQP && qp)
   {
@@ -330,7 +396,7 @@ struct quantity_spec_interface : quantity_spec_interface_base {
   }
 
   template<typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>, typename Self_ = Self>
-    requires(mp_units::explicitly_convertible(Q::quantity_spec, Self_{})) &&
+    requires(mp_units::utility::explicitly_convertible(Q::quantity_spec, Self_{})) &&
             requires { typename quantity<make_reference(Self{}, Q::unit), typename Q::rep>; }
   [[nodiscard]] constexpr Quantity auto operator()(FwdQ && q) const
   {
@@ -339,7 +405,7 @@ struct quantity_spec_interface : quantity_spec_interface_base {
   }
 
   template<typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>, typename Self_ = Self>
-    requires(mp_units::explicitly_convertible(QP::quantity_spec, Self_{})) &&
+    requires(mp_units::utility::explicitly_convertible(QP::quantity_spec, Self_{})) &&
             requires { typename quantity_point<make_reference(Self{}, QP::unit), QP::point_origin, typename QP::rep>; }
   [[nodiscard]] constexpr QuantityPoint auto operator()(FwdQP && qp) const
   {
@@ -615,12 +681,12 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
 // clang-format on
 #if MP_UNITS_API_NO_CRTP
 template<detail::NamedQuantitySpec auto QS, detail::DerivedQuantitySpec auto Eq, detail::QSProperty auto... Args>
-  requires(mp_units::explicitly_convertible(Eq, QS))
+  requires(mp_units::utility::explicitly_convertible(Eq, QS))
 struct quantity_spec<QS, Eq, Args...> : detail::quantity_spec_interface {
 #else
 template<typename Self, detail::NamedQuantitySpec auto QS, detail::DerivedQuantitySpec auto Eq,
          detail::QSProperty auto... Args>
-  requires(mp_units::explicitly_convertible(Eq, QS))
+  requires(mp_units::utility::explicitly_convertible(Eq, QS))
 struct quantity_spec<Self, QS, Eq, Args...> : detail::quantity_spec_interface<Self> {
 #endif
   using _base_type_ = quantity_spec;
@@ -647,7 +713,7 @@ struct quantity_spec<Self, QS, Eq, Args...> : detail::quantity_spec_interface<Se
 
 namespace detail {
 
-template<NamedQuantitySpec Q>
+template<QuantitySpec Q>
   requires requires { get_dimension(Q{}); }
 using to_dimension = MP_UNITS_NONCONST_TYPE(get_dimension(Q{}));
 
@@ -669,9 +735,13 @@ struct derived_quantity_spec_impl :
   static constexpr bool _is_non_negative_ = false;
 
   [[deprecated("2.6.0: use `get_dimension(qs)` instead")]] static constexpr Dimension auto dimension = _dimension_;
+  // A specification with a kind factor admits several characters, like a quantity kind, so its
+  // member is ill-formed on use like a kind's, and the MSVC hack omits it for the same reason
+#if !MP_UNITS_EAGER_STATIC_MEMBER_INIT_HACK
   [[deprecated(
     "2.6.0: character is no longer part of the public interface; ask the named quantity concepts "
     "instead")]] static constexpr quantity_character character = detail::definite_character<_character_>();
+#endif
 };
 
 }  // namespace detail
@@ -771,12 +841,78 @@ constexpr kind_of_<MP_UNITS_NTTP_HACK(decltype(Q))> kind_of;
 
 namespace detail {
 
+// Kinds in a quantity equation are kept per factor. `open_kinds` turns an operand `kind_of<K>` into
+// the factors of `K`, each a `kind_of_<N>` (a kind factor), so that a product keeps what it knows
+// about every factor: a typed operand stays typed and a kind operand stays open. The kind of
+// `dimensionless` is the identity of the algebra, like `dimensionless` itself.
+template<NamedQuantitySpec Q>
+using to_kind_factor = kind_of_<Q>;
+
+template<typename Q>
+struct from_kind_factor_impl : std::type_identity<Q> {};
+
+template<typename N>
+struct from_kind_factor_impl<kind_of_<N>> : std::type_identity<N> {};
+
+template<typename Q>
+using from_kind_factor = from_kind_factor_impl<Q>::type;
+
+template<QuantitySpec Q>
+[[nodiscard]] consteval QuantitySpec auto open_kinds(Q q)
+{
+  if constexpr (!QuantityKindSpec<Q>)
+    return q;
+  else {
+    using kind = MP_UNITS_NONCONST_TYPE(Q::_quantity_spec_);
+    if constexpr (std::is_same_v<kind, struct dimensionless>)
+      return dimensionless;
+    else if constexpr (NamedQuantitySpec<kind>)
+      return q;
+    else
+      return detail::expr_map<to_kind_factor, derived_quantity_spec, struct dimensionless,
+                              type_list_of_quantity_spec_less>(kind{});
+  }
+}
+
+template<typename List>
+constexpr bool all_kind_factors = false;
+
+template<typename... Ts>
+constexpr bool all_kind_factors<type_list<Ts...>> = (... && QuantityKindSpec<expr_type<Ts>>);
+
+// A result of operands that are all kinds is a kind; any other result is what the product gave.
 template<QuantitySpec auto... From, QuantitySpec Q>
 [[nodiscard]] consteval QuantitySpec auto clone_kind_of(Q q)
 {
   if constexpr ((... && QuantityKindSpec<MP_UNITS_NTTP_HACK(decltype(From))>))
     return kind_of<Q{}>;
   else
+    return q;
+}
+
+// The canonical form of a result that kept a kind per factor: all factors open is the kind of the
+// product of what they wrap, which is what two kinds multiplied have always produced. A result with
+// at least one typed factor keeps its kind factors as they are: a kind factor and a typed factor of
+// one tree are different factors, like `width` and `length`, and only the conversion engine relates
+// them.
+template<QuantitySpec auto... Operands, QuantitySpec Q>
+[[nodiscard]] consteval QuantitySpec auto close_kinds(Q q)
+{
+  if constexpr (QuantityKindSpec<Q>)
+    return q;
+  else if constexpr (std::is_same_v<Q, struct dimensionless>) {
+    // everything canceled: a kind only when every operand was one
+    if constexpr ((... && QuantityKindSpec<MP_UNITS_NTTP_HACK(decltype(Operands))>))
+      return kind_of<Q{}>;
+    else
+      return q;
+  } else if constexpr (is_specialization_of<Q, derived_quantity_spec>) {
+    if constexpr (all_kind_factors<typename Q::_num_> && all_kind_factors<typename Q::_den_>)
+      return kind_of<detail::expr_map<from_kind_factor, derived_quantity_spec, struct dimensionless,
+                                      type_list_of_quantity_spec_less>(Q{})>;
+    else
+      return q;
+  } else
     return q;
 }
 
@@ -791,6 +927,14 @@ template<QuantitySpec Q>
 
 }  // namespace detail
 
-MP_UNITS_EXPORT [[nodiscard]] consteval QuantitySpec auto inverse(QuantitySpec auto q) { return dimensionless / q; }
+namespace detail {
+
+template<QuantitySpec Q>
+[[nodiscard]] consteval QuantitySpec auto inverse_impl(Q q)
+{
+  return dimensionless / q;
+}
+
+}  // namespace detail
 
 }  // namespace mp_units

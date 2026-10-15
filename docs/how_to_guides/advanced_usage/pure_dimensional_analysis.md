@@ -79,8 +79,8 @@ constexpr auto volume_spec = area_spec * isq::depth;
 // but they are implicitly convertible to them
 static_assert(area_spec != isq::area);
 static_assert(volume_spec != isq::volume);
-static_assert(implicitly_convertible(area_spec, isq::area));
-static_assert(implicitly_convertible(volume_spec, isq::volume));
+static_assert(utility::implicitly_convertible(area_spec, isq::area));
+static_assert(utility::implicitly_convertible(volume_spec, isq::volume));
 ```
 
 
@@ -142,7 +142,7 @@ void example()
   auto force = mass * acceleration;
   auto length = distance + distance;
 
-  static_assert(implicitly_convertible(speed.quantity_spec(), isq::speed));
+  static_assert(utility::implicitly_convertible(speed.quantity_spec(), isq::speed));
   static_assert(force.dimension() == get_dimension(isq::force));
 
   // This would fail to compile due to dimensional mismatch:

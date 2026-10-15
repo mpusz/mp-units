@@ -100,9 +100,11 @@ template<detail::MagArg auto Base, int Num, int Den = 1>
   requires detail::is_positive_mag_arg<Base>
 constexpr UnitMagnitude auto mag_power = pow<Num, Den>(mag<Base>);
 
-/**
- * @brief  A convenient Magnitude constant for pi, which we can manipulate like a regular number.
- */
+namespace detail {
+
+// The magnitude constant behind the `pi` unit. It has no public name because `pi` is the only
+// spelling users need, both on its own (`2 * pi`) and as a factor of a unit
+// (`mag_ratio<1, 180> * π * rad`).
 #if !MP_UNITS_HAS_FLOATING_POINT_NTTP
 inline constexpr struct pi_c final : mag_constant<symbol_text{u8"π" /* U+03C0 GREEK SMALL LETTER PI */, "pi"}> {
   static constexpr auto _value_ = std::numbers::pi_v<long double>;
@@ -112,7 +114,9 @@ inline constexpr struct pi_c final :
 #endif
 } pi_c;
 
-[[deprecated("2.3.0: Use `mag<pi>` instead")]] inline constexpr UnitMagnitude auto mag_pi = mag<pi_c>;
+}  // namespace detail
+
+[[deprecated("2.3.0: Use `mag<pi>` instead")]] inline constexpr UnitMagnitude auto mag_pi = mag<detail::pi_c>;
 
 MP_UNITS_EXPORT_END
 

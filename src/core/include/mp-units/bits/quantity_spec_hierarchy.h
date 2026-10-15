@@ -58,6 +58,62 @@ using parent_of = MP_UNITS_NONCONST_TYPE(Q::_parent_);
 template<HasEquation Q>
 using equation_of = MP_UNITS_NONCONST_TYPE(Q::_equation_);
 
+// open factors
+
+template<typename N>
+struct open_factor;
+
+template<typename E>
+struct open_element : std::type_identity<open_factor<E>> {};
+
+template<typename T, int... Ints>
+struct open_element<power<T, Ints...>> : std::type_identity<power<open_factor<T>, Ints...>> {};
+
+template<typename List>
+struct open_elements;
+
+template<typename... Ts>
+struct open_elements<type_list<Ts...>> : std::type_identity<type_list<typename open_element<Ts>::type...>> {};
+
+// The equation of an open factor: the equation of the quantity it wraps, every factor open in turn.
+template<HasEquation N>
+struct open_equation {
+  using _num_ = open_elements<typename equation_of<N>::_num_>::type;
+  using _den_ = open_elements<typename equation_of<N>::_den_>::type;
+};
+
+template<typename N>
+struct open_factor_equation {};
+
+template<HasEquation N>
+struct open_factor_equation<N> {
+  static constexpr open_equation<N> _equation_{};
+};
+
+// A factor of a derived quantity specification that has not committed to a quantity below `N`. It is
+// the conversion engine's reading of a `kind_of_<K>` factor, and of what such a factor expands to,
+// which is why `N` may be any named quantity and not only a kind root: an expansion keeps the names
+// of the equation it came from. Its members are what the engine reads of a named quantity.
+template<typename N>
+struct open_factor : open_factor_equation<N> {
+  using _open_ = N;
+  static constexpr auto _dimension_ = N::_dimension_;
+};
+
+// Checked as a concept so that a typed factor costs no instantiation.
+template<typename T>
+concept OpenFactor = requires { typename T::_open_; };
+
+template<typename T>
+struct open_base_impl : std::type_identity<T> {};
+
+template<typename N>
+struct open_base_impl<open_factor<N>> : std::type_identity<N> {};
+
+// The named quantity behind a factor that may be open. Named only on paths that saw an open factor.
+template<typename T>
+using open_base = open_base_impl<T>::type;
+
 // root
 
 template<typename Q>
@@ -65,6 +121,9 @@ struct hierarchy_root_impl : std::type_identity<Q> {};
 
 template<HasParent Q>
 struct hierarchy_root_impl<Q> : hierarchy_root_impl<parent_of<Q>> {};
+
+template<typename N>
+struct hierarchy_root_impl<open_factor<N>> : hierarchy_root_impl<N> {};
 
 template<typename Q>
 using hierarchy_root = hierarchy_root_impl<Q>::type;
@@ -100,7 +159,9 @@ template<typename Ancestor, typename Q>
 template<typename Q>
 [[nodiscard]] consteval bool defines_equation()
 {
-  if constexpr (!HasEquation<Q>)
+  if constexpr (OpenFactor<Q>)
+    return detail::defines_equation<typename Q::_open_>();
+  else if constexpr (!HasEquation<Q>)
     return false;
   else if constexpr (!HasParent<Q>)
     return true;
@@ -138,6 +199,9 @@ struct quantity_spec_depth : std::integral_constant<int, 0> {};
 
 template<HasEquation Q>
 struct quantity_spec_depth<Q> : std::integral_constant<int, detail::equation_depth<equation_of<Q>>()> {};
+
+template<typename N>
+struct quantity_spec_depth<open_factor<N>> : quantity_spec_depth<N> {};
 
 // nearest common ancestor
 
