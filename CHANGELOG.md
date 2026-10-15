@@ -43,6 +43,11 @@ This page documents the version history and changes for the **mp-units** library
 - fix: the inverse of an angle no longer converts implicitly to a plain number.
       `1 / isq::angular_measure` to `dimensionless` drops the angle, so it is explicit, and
       an angle doesn't convert to its own inverse, even with `quantity_cast`
+- fix: the kind boundary lowers every verdict between two named quantities, and between a
+      named quantity and a kind, where it used to lower only an `implicit` verdict, and
+      from a kind none at all. A `kind_of<isq::angular_velocity>` converts to a child
+      defined as `inverse(isq::duration)` only explicitly, and two siblings that each
+      carry a declared kind the other lacks don't convert, as their squares already didn't
 - (!) fix: ISQ definitions corrected against ISO/IEC 80000. `isq::angular_repetency` is
       `phase_angle / wavelength` (k = 2π/λ, like `angular_frequency`), so a phase speed
       ω/k converts to `length / time` implicitly and `1 / wavelength` is an angular

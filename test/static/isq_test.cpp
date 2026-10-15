@@ -726,4 +726,38 @@ static_assert(implicitly_convertible(width_by_height_rate, isq::speed* ::zzz_isq
 static_assert(explicitly_convertible(inverse(isq::speed * ::aaa_isq_test_climb), inverse(width_by_height_rate)));
 static_assert(explicitly_convertible(inverse(isq::speed * ::zzz_isq_test_climb), inverse(width_by_height_rate)));
 
+// The kind boundary lowers every verdict of the tree rule and of the kind rules, so a declared kind
+// carried only by an equation is never dropped or gained implicitly. A child whose equation lacks
+// its parent's angle is reached from the parent, or from a kind of it, and reaches the parent, only
+// explicitly. Two siblings that each carry a declared kind the other lacks don't convert, bare,
+// squared or in a product, while a sibling that carries one more kind than the other stays a cast.
+// A declared-kind child on a hierarchy edge gains its own kind and lacks the angle, yet stays
+// explicit both ways, and from a kind of the parent: the edge is not a trade between unrelated
+// kinds.
+QUANTITY_SPEC(turn_rate, isq::angular_velocity, inverse(isq::duration));
+QUANTITY_SPEC(turn_rate_kind, isq::angular_velocity, inverse(isq::duration), is_kind);
+QUANTITY_SPEC(plain_ratio, dimensionless, isq::length / isq::width);
+QUANTITY_SPEC(angled_ratio, dimensionless, isq::angular_measure* isq::length / isq::width);
+QUANTITY_SPEC(solid_angled_ratio, dimensionless, isq::solid_angular_measure* isq::length / isq::width);
+
+static_assert(!implicitly_convertible(kind_of<isq::angular_velocity>, turn_rate));
+static_assert(explicitly_convertible(kind_of<isq::angular_velocity>, turn_rate));
+static_assert(!implicitly_convertible(kind_of<isq::angular_velocity * isq::mass>, turn_rate* isq::mass));
+static_assert(!implicitly_convertible(kind_of<pow<2>(isq::angular_velocity)>, pow<2>(turn_rate)));
+static_assert(!implicitly_convertible(isq::angular_velocity, turn_rate));
+static_assert(explicitly_convertible(isq::angular_velocity, turn_rate));
+static_assert(!implicitly_convertible(turn_rate, isq::angular_velocity));
+static_assert(explicitly_convertible(turn_rate, isq::angular_velocity));
+static_assert(!castable(angled_ratio, solid_angled_ratio));
+static_assert(!castable(angled_ratio * isq::mass, solid_angled_ratio* isq::mass));
+static_assert(!castable(pow<2>(angled_ratio), pow<2>(solid_angled_ratio)));
+static_assert(castable(plain_ratio, angled_ratio));
+static_assert(!explicitly_convertible(plain_ratio, angled_ratio));
+static_assert(castable(pow<2>(plain_ratio), pow<2>(angled_ratio)));
+static_assert(explicitly_convertible(turn_rate_kind, isq::angular_velocity));
+static_assert(!implicitly_convertible(turn_rate_kind, isq::angular_velocity));
+static_assert(explicitly_convertible(isq::angular_velocity, turn_rate_kind));
+static_assert(explicitly_convertible(kind_of<isq::angular_velocity>, turn_rate_kind));
+static_assert(!implicitly_convertible(kind_of<isq::angular_velocity>, turn_rate_kind));
+
 }  // namespace

@@ -61,7 +61,8 @@ template<QuantitySpec From, QuantitySpec To>
     using to_root = decltype(detail::remove_kind(To{}));
     if constexpr (NamedQuantitySpec<from_root> && NamedQuantitySpec<to_root>) {
       if constexpr (QuantityKindSpec<From>)
-        return detail::convertible_from_kind<from_root, to_root>();
+        return detail::with_kind_boundary<from_root, to_root, detail::convertible_from_kind<from_root, to_root>(),
+                                          true>();
       else
         return detail::with_kind_boundary<from_root, to_root, detail::convertible_to_kind<from_root, to_root>()>();
     } else
