@@ -181,4 +181,14 @@
     MP_UNITS_EXPECTS_DEBUG(__VA_ARGS__);  \
     MP_UNITS_PRE_BODY_DEBUG(__VA_ARGS__); \
   } while (false)
+
+// A precondition GCC 16 cannot constant-evaluate as `pre` (see `MP_UNITS_CONSTEVAL_PRE_HACK`): there
+// it is checked in the body instead, by the backend-independent `MP_UNITS_PRECONDITION`
+#if MP_UNITS_CONSTEVAL_PRE_HACK
+#define MP_UNITS_PRE_CONSTEVAL_HACK(...)
+#define MP_UNITS_EXPECTS_CONSTEVAL_HACK(...) MP_UNITS_PRECONDITION(__VA_ARGS__)
+#else
+#define MP_UNITS_PRE_CONSTEVAL_HACK(...) MP_UNITS_PRE(__VA_ARGS__)
+#define MP_UNITS_EXPECTS_CONSTEVAL_HACK(...) MP_UNITS_EXPECTS(__VA_ARGS__)
+#endif
 // NOLINTEND(cppcoreguidelines-macro-usage)

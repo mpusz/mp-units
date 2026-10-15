@@ -28,9 +28,11 @@ inline constexpr struct sensor_scale_origin :
 quantity_point temp = sensor_scale_origin + 150 * deg_C;  // Out of range! (150°C > 85°C)
 ```
 
-By default, this **terminates the program** via contract violation. While appropriate for
-debugging and safety-critical systems with fail-fast requirements, production systems often
-need:
+The construction violates its
+[precondition](../../users_guide/framework_basics/the_affine_space.md#available-overflow-policies).
+In a debug build with the default contract configuration, this **terminates the program**.
+While appropriate for debugging and safety-critical systems with fail-fast requirements,
+production systems often need:
 
 - **Graceful degradation**: Log the error and use a fallback value
 - **Exception-based error handling**: Integrate with existing error propagation
@@ -39,8 +41,8 @@ need:
 
 !!! warning "Contract Checking Can Be Disabled"
 
-    **Critical**: Contract checking via `MP_UNITS_EXPECTS` may be **disabled at compile-time** by
-    setting the [`contracts` Conan option](../../getting_started/installation_and_usage.md#contracts) to `none`
+    **Critical**: Precondition checks may be **disabled at compile-time** by setting the
+    [`contracts` Conan option](../../getting_started/installation_and_usage.md#contracts) to `none`
     or the [`MP_UNITS_API_CONTRACTS` CMake option](../../getting_started/installation_and_usage.md#MP_UNITS_API_CONTRACTS)
     to `NONE`. When disabled, **all safety checks vanish** - invalid values pass through unchecked.
 
@@ -51,13 +53,16 @@ need:
 
 ## Understanding How Bounds Checking Works
 
-When you use `check_in_range` as a bounds policy on an origin, the library follows this logic:
+When you use `check_in_range` as a bounds policy on an origin, the policy tests each value.
+What happens to a rejected value depends on the representation type:
 
 1. **Check if the representation type has a `constraint_violation_handler`**
-    - If yes → Call `handler::on_violation()` with the error message
-    - If no → Fall back to `MP_UNITS_EXPECTS` (contract checking macro)
+    - If yes → The library calls `handler::on_violation()` with the error message
+    - If no → The value must lie within the bounds as a
+      [precondition](../../users_guide/framework_basics/the_affine_space.md#available-overflow-policies)
+      of the operation that stores it
 
-2. **Contract checking macros** (when no handler exists):
+2. **Precondition checks** (when no handler exists):
     - Depend on the [`contracts` configuration](../../getting_started/installation_and_usage.md#contracts)
     - May be **disabled** in release builds or when set to `none`
 
@@ -69,7 +74,7 @@ When you use `check_in_range` as a bounds policy on an origin, the library follo
 
     **mp-units** provides two complementary safety mechanisms:
 
-    - **Development safety**: Contract macros (GSL-Lite/MS-GSL) that may be disabled
+    - **Development safety**: Precondition checks that may be disabled
     - **Production safety**: `constraint_violation_handler` that always runs
 
     This tutorial focuses on production safety for guaranteed enforcement.
@@ -154,7 +159,9 @@ try {
 
 ## Complete Example: Sensor Validation
 
-Here's a production-ready example with guaranteed exception handling for temperature sensors:
+Here's a production-ready example for temperature sensors. Each reading is validated with
+`try_make`, and the throwing representation stays as a safety net for any violation that
+happens later, for example in arithmetic:
 
 ```cpp
 // ce-embed height=1300 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
@@ -180,18 +187,16 @@ inline constexpr struct sensor_scale_origin :
 // STEP 3: Use safe_double as representation type
 using safe_temp = quantity_point<deg_C, sensor_scale_origin, safe_double>;
 
-// STEP 4: Safe sensor reading function
+// STEP 4: Safe sensor reading function: a rejected reading throws nothing
 std::optional<safe_temp> read_sensor_safe(double raw_celsius)
 {
-  try {
-    return safe_temp{delta<deg_C>(raw_celsius), sensor_scale_origin};
-  } catch (const std::domain_error& e) {
-    std::cerr << "Sensor reading invalid: " << e.what() << "\n";
-    return std::nullopt;  // Signal failure
-  }
+  if (auto temp = try_make<safe_temp>(delta<deg_C>(raw_celsius), sensor_scale_origin))
+    return *temp;
+  std::cerr << "Sensor reading invalid: " << raw_celsius << " °C\n";
+  return std::nullopt;  // Signal failure
 }
 
-// STEP 6: Application logic with fallback
+// STEP 5: Application logic with fallback
 int main()
 {
   // Simulate sensor readings
@@ -214,12 +219,11 @@ int main()
 
 **Key points**:
 
-- ✅ Invalid readings (150 °C, 90 °C) throw exceptions **in all build modes**
+- ✅ Invalid readings (150 °C, 90 °C) are rejected without throwing an exception
+- ✅ A value that leaves the range later still throws, **in all build modes**
 - ✅ No dependency on contract checking configuration
 - ✅ Program continues with fallback values instead of crashing
-- ✅ Errors are captured for debugging and monitoring
-- ✅ Type safety is preserved - all valid operations still enforced
-
+- ✅ Rejected readings are logged with their value
 
 ## Custom Error Policies
 
@@ -287,7 +291,7 @@ using audited_double = constrained<double, audit_terminate_policy>;
 
 ❌ **Don't:**
 
-- **Don't rely only on contract macros** - they may be disabled in release builds
+- **Don't rely only on precondition checks** - they may be disabled in release builds
 - **Don't silently ignore violations** - always throw or terminate
 - **Don't put business logic in policies** - keep them focused on error handling
 - **Don't catch and discard** exceptions without consideration
@@ -340,7 +344,7 @@ rep.
 
 This tutorial covered how to ensure guaranteed bounds enforcement using `constrained<T, ErrorPolicy>`:
 
-- **The problem**: Contract checking via `MP_UNITS_EXPECTS` can be disabled at compile-time
+- **The problem**: Precondition checks can be disabled at compile-time
 - **The solution**: Use `constrained<T, ErrorPolicy>` to ensure violations are always handled
 - **Built-in policies**: `throw_policy` (exceptions) and `terminate_policy` (abort immediately)
 - **Custom policies**: Implement `on_constraint_violation(std::string_view)` for

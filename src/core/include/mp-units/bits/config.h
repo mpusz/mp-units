@@ -26,6 +26,11 @@
 #include <mp-units/bits/compiler.h>
 #include <mp-units/bits/hacks.h>
 
+// Library feature-test macros below need <version>. In an `import std;` build it is preloaded.
+#ifndef MP_UNITS_IMPORT_STD
+#include <version>
+#endif
+
 #if !defined MP_UNITS_HOSTED && defined __STDC_HOSTED__
 #define MP_UNITS_HOSTED __STDC_HOSTED__
 #endif
@@ -116,6 +121,13 @@
 
 #define MP_UNITS_API_THROWING_CONSTRAINTS 1
 
+#endif
+
+// `std::expected`, which `try_make` returns.
+#if __cpp_lib_expected >= 202202L
+#define MP_UNITS_HAS_EXPECTED 1
+#else
+#define MP_UNITS_HAS_EXPECTED 0
 #endif
 
 // NOLINTEND(cppcoreguidelines-macro-usage)

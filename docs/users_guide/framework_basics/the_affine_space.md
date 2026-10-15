@@ -592,7 +592,7 @@ In many domains, quantity points must stay within specific bounds. For example:
 - Temperature sensors: operating range [−40°C, 85°C]
 - Control systems: valid input range [0, 100] units
 
-The library provides four overflow policies that can be passed as template parameters to
+The library provides six overflow policies that can be passed as template parameters to
 point origins. These policies enforce bounds during construction, unit conversion, and
 arithmetic operations.
 
@@ -644,32 +644,78 @@ arithmetic operations.
 
 ### Available Overflow Policies
 
+A bounds policy has `min` and/or `max` data members, which declare its range. The library
+finds the policy among the template arguments of an origin by these members. It reports
+them through `quantity_point::min()` and `max()` and through `std::numeric_limits`, and it
+compares them in the nesting check described under _Hierarchical bounds validation_ below.
+
+The return type of the policy's `operator()` sets its kind:
+
+- A **checking** policy has the signature `bool operator()(const V& v) const`. It tells
+  whether `v` lies in its domain. The value is stored unchanged, and the library reports a
+  rejected one as the note below the table describes.
+- An **adjusting** policy has the signature `V operator()(V v) const` and returns the value
+  to store.
+
+A policy whose `operator()` returns anything else, even a type convertible to `bool`,
+doesn't compile.
+
+A plain quantity given as `min` or `max` is included in the range. `exclusive_bound` marks
+an end as excluded:
+
+```cpp
+check_in_range{0 * deg, exclusive_bound{360 * deg}}  // [0°, 360°)
+check_in_range{exclusive_bound{0 * m}, 100 * m}      // (0 m, 100 m]
+```
+
+`check_in_range` accepts `exclusive_bound` at either end. `wrap_to_range` excludes its
+maximum anyway, so it takes the maximum plain or as `exclusive_bound`. It rejects an
+excluded minimum, because a wrapped value can take that value. `clamp_to_range` and
+`reflect_in_range` reject `exclusive_bound` at compile time, since an excluded end leaves
+them no value to clamp or reflect to. No `quantity_point::min()` or `max()` is offered for
+an excluded end, including the maximum of `wrap_to_range`, and neither are the matching
+`std::numeric_limits` members.
+
 | Policy               | Behavior                                                                   | Error Handling       | Use Case                                                   |
 |----------------------|----------------------------------------------------------------------------|----------------------|------------------------------------------------------------|
-| `check_in_range`     | Reports violation via `constraint_violation_handler` or `MP_UNITS_EXPECTS` | Depends on rep type  | Bounds checking with customizable error behavior           |
+| `check_in_range`     | Tests whether the value lies between `min` and `max`                       | Depends on rep type  | Bounds checking with customizable error behavior           |
 | `clamp_to_range`     | Clamps to nearest boundary: `clamp(value, min, max)`                       | Silent correction    | Saturating arithmetic, sensor limits, UI controls          |
 | `wrap_to_range`      | Wraps circularly to `[min, max)`: modulo arithmetic                        | Value transformation | Periodic quantities (_angles_, _time-of-day_, _longitude_) |
 | `reflect_in_range`   | Reflects at boundaries (like a bouncing ball)                              | Value transformation | Geographic _elevation angle_, physical boundaries          |
-| `check_non_negative` | Reports violation if `value < 0`                                           | Depends on rep type  | Inherently non-negative quantities (_length_, _mass_)      |
+| `check_non_negative` | Tests whether the value is zero or positive                                | Depends on rep type  | Inherently non-negative quantities (_length_, _mass_)      |
 | `clamp_non_negative` | Clamps negative values to zero                                             | Silent correction    | FP rounding noise in non-negative domains                  |
+
+`check_in_range` and `check_non_negative` reject NaN. `wrap_to_range` and
+`reflect_in_range` reduce a finite value of any magnitude into the range and return NaN for
+an infinite or NaN input.
 
 !!! important
 
     The four bounded-range policies (`check_in_range`, `clamp_to_range`, `wrap_to_range`,
-    `reflect_in_range`) expose public `min` and `max` data members, enabling `std::numeric_limits`
-    specializations to reflect the constrained bounds. `check_non_negative` and
+    `reflect_in_range`) have both `min` and `max` data members. `check_non_negative` and
     `clamp_non_negative` are halfline policies with no upper bound and therefore do not
     expose `max`. See the `std::numeric_limits` note below for details.
 
-!!! info "Error behavior of `check_in_range`"
+!!! info "Error behavior of checking policies"
 
-    `check_in_range` delegates error reporting to the representation type:
+    What happens to a value that a checking policy such as `check_in_range` rejects
+    depends on the representation type:
 
     - If the rep has a [`constraint_violation_handler`](../advanced_topics/representation_types.md#constraint-violation-handler)
-      specialization (e.g. `constrained<double, throw_policy>`), the handler's `on_violation()` is called,
-      providing **guaranteed enforcement** regardless of build mode.
-    - Otherwise, falls back to [`MP_UNITS_EXPECTS`](../../how_to_guides/integration/wide_compatibility.md#contract-checking-macros),
-      which may be disabled in release builds.
+      specialization (e.g. `constrained<double, throw_policy>`), the operation has a wide
+      contract. The library calls the handler's `on_violation()` in every build mode. The
+      handler may throw, terminate, or log and return. If it returns, the value is stored
+      unchanged.
+    - Otherwise, the operation has a narrow contract. The value must lie within the
+      bounds as a precondition of construction of a point from a value, of the converting
+      constructors (including unit and origin conversion), and of `++`, `--`, `+=`, and
+      `-=`. The library declares this precondition with C++26 `pre` where it can and
+      otherwise checks it in the function body with the configured
+      [contract backend](../../how_to_guides/integration/wide_compatibility.md#contract-checking-macros),
+      if any. How a violation is handled follows the contract configuration of the build.
+
+    To test a value before storing it, use `is_within_bounds` or `try_make`, described in
+    [Validating Untrusted Values](#validating-untrusted-values).
 
     See [Tutorial: Custom Contract Handlers](../../tutorials/affine_space/custom_contract_handlers.md)
     for a step-by-step guide to implementing custom error policies, or
@@ -721,10 +767,11 @@ After each mutation the library transparently applies the bounds policy specifie
 
 ### Origin Inheritance
 
-A `relative_point_origin` that defines **no own bounds** automatically inherits the parent
-origin's enforcement. Bounds translate through the chain at compile time — the relative
-value is translated to the owning ancestor's frame, the policy is applied there, and the
-result is translated back:
+A `relative_point_origin` that defines **no own bounds** automatically inherits the
+enforcement of its nearest bounded ancestor. Bounds translate through the chain at compile
+time. The relative value is translated to the owning ancestor's frame and the policy is
+applied there. A value the policy changed is translated back, and a value it let through is
+stored as it was:
 
 ```cpp
 inline constexpr struct sea_level :
@@ -758,8 +805,9 @@ quantity_point low = average_height_origin - 1500.0 * m;
 ```
 
 When a `relative_point_origin` defines its **own bounds**, they are additionally checked at
-compile time to nest within the parent's bounds (see the _Hierarchical bounds validation_
-note in the [Custom Policies](#custom-policies-one-sided-bounds) section below).
+compile time to nest within the bounds of the nearest bounded origin above it (see the
+_Hierarchical bounds validation_ note in the
+[Custom Policies](#custom-policies-one-sided-bounds) section below).
 
 !!! info "`std::numeric_limits` integration"
 
@@ -770,23 +818,81 @@ note in the [Custom Policies](#custom-policies-one-sided-bounds) section below).
     // prime_meridian defined with wrap_to_range{-180 * deg, 180 * deg}
     using longitude = quantity_point<geo_longitude[deg], prime_meridian>;
 
-    quantity lon_min = std::numeric_limits<longitude>::min();  // prime_meridian - 180°
-    quantity lon_max = std::numeric_limits<longitude>::max();  // prime_meridian + 180°
+    quantity_point lon_min = std::numeric_limits<longitude>::min();  // prime_meridian - 180°
+    // auto lon_max = std::numeric_limits<longitude>::max();         // ❌ 180° is excluded
     ```
 
     This works because the policy struct exposes public `min` and `max` data members, which
-    `quantity_point::min()` and `max()` access to provide meaningful bounds. Without a
-    bounds policy, `std::numeric_limits` delegates to the representation type's limits.
+    `quantity_point::min()` and `max()` access to provide meaningful bounds. Without a bounds
+    policy, `std::numeric_limits` delegates to the representation type's limits.
+
+### Validating Untrusted Values
+
+A value read from a sensor, a bus, or persistent storage often has to be rejected without
+stopping the program. Catching the violation works only when the representation throws, and
+code built without exceptions has nothing to catch.
+
+`is_within_bounds` tells whether constructing the point from the same arguments would
+satisfy the bounds. It doesn't construct the point:
+
+```cpp
+inline constexpr struct trim_zero :
+    absolute_point_origin<isq::angular_measure, check_in_range{-10. * deg, 10. * deg}> {} trim_zero;
+
+using trim_angle =
+    quantity_point<si::degree, trim_zero, utility::constrained<double, utility::terminate_policy>>;
+
+std::optional<trim_angle> make_trim(quantity<si::degree> raw)
+{
+  if (!is_within_bounds<trim_angle>(raw, trim_zero)) return std::nullopt;
+  return trim_angle{raw, trim_zero};
+}
+```
+
+Where `<expected>` is available (C++23), `try_make` does the same in one call and returns
+a rejection as an error value:
+
+```cpp
+std::expected<trim_angle, bounds_violation> try_make_trim(quantity<si::degree> raw)
+{
+  return try_make<trim_angle>(raw, trim_zero);
+}
+```
+
+A rejected value is never passed to the constructor. The representation's violation
+handler is not called and no precondition is violated, so both functions work in code
+built with `-fno-exceptions` and under any contract evaluation semantic.
+
+The test follows construction in two steps:
+
+- The value is first converted to the point's quantity type, as the constructor does. An
+  integral narrowing conversion therefore happens before the test.
+- The value is tested against the bounds of the point's origin. For a
+  `relative_point_origin` without bounds of its own, the value is translated into the frame
+  of its nearest bounded ancestor and tested against that ancestor's bounds. The
+  compile-time nesting check (see _Hierarchical bounds validation_ below) makes testing
+  those bounds enough.
+
+The conversion and the translation into an ancestor's frame are done by the
+representation. A representation that checks its own arithmetic, such as
+[`safe_int`](safe_int.md), can still throw or terminate there.
+
+Both functions are available when the point's bounds are enforced by a
+[checking policy](#available-overflow-policies), a user-defined one included, and for a
+point without bounds, where `is_within_bounds` always returns `true`. They call the same
+predicate that construction calls. The library's adjusting policies replace an
+out-of-range value instead of rejecting it, so neither function is offered for them.
 
 ### Custom Policies (One-Sided Bounds)
 
 The library ships two built-in one-sided halfline policies for `[0, +∞)` domains:
-`check_non_negative` (reports a violation when the value is negative) and
+`check_non_negative` (rejects a negative or NaN value) and
 `clamp_non_negative` (silently clamps negative values to zero). These are automatically
 applied to any `quantity_point` whose origin is a `natural_point_origin` of a non-negative
 quantity spec (such as `isq::length`, `isq::mass`, or `isq::duration`).
 
-For other one-sided constraints, you can create a fully custom policy:
+For other one-sided constraints, you can create a fully custom policy. This one is an
+adjusting policy:
 
 ```cpp
 template<Quantity Q>
@@ -806,11 +912,63 @@ hydraulic_pressure p1 = atmospheric_pressure + 2000 * kPa;  // OK: 2000 kPa
 hydraulic_pressure p2 = atmospheric_pressure + 500 * kPa;   // Clamped to 1000 kPa (min operating pressure)
 ```
 
+A range with an excluded end doesn't need a custom policy. A _heading_ in `[0°, 360°)` is
+`check_in_range` with an `exclusive_bound` maximum:
+
+```cpp
+inline constexpr struct heading_zero :
+    absolute_point_origin<isq::angular_measure, check_in_range{0. * deg, exclusive_bound{360. * deg}}> {} heading_zero;
+```
+
+A custom checking policy is for a domain that is not an interval. A transmitter, for
+example, may only be tuned within its allowed bands, here from 2.4 GHz to 2.4835 GHz and
+from 5.725 GHz to 5.875 GHz:
+
+```cpp
+template<Quantity Q>
+struct check_in_bands {
+  Q min;              // first band: [min, first_band_max]
+  Q first_band_max;
+  Q second_band_min;  // second band: [second_band_min, max]
+  Q max;
+
+  template<Quantity V>
+  constexpr bool operator()(const V& v) const
+  {
+    return (v >= V{min} && v <= V{first_band_max}) || (v >= V{second_band_min} && v <= V{max});
+  }
+};
+
+inline constexpr struct tuning_zero :
+    absolute_point_origin<isq::frequency, check_in_bands{2.4 * GHz, 2.4835 * GHz, 5.725 * GHz, 5.875 * GHz}> {} tuning_zero;
+
+using tx_frequency = quantity_point<isq::frequency[GHz], tuning_zero>;
+
+static_assert(is_within_bounds<tx_frequency>(2.45 * GHz, tuning_zero));
+static_assert(!is_within_bounds<tx_frequency>(3. * GHz, tuning_zero));
+```
+
+Its `min` and `max` declare the outer ends of the domain, which `quantity_point::min()` and
+`max()` report.
+
 !!! important "Hierarchical bounds validation"
 
-    When a `relative_point_origin` defines bounds and its parent origin also has bounds, the
-    library enforces at **compile time** that the child's bounds fit within the parent's bounds
-    (after translating to the parent's reference frame).
+    When a `relative_point_origin` defines bounds, the library enforces at **compile
+    time** that they fit within the bounds of its nearest bounded ancestor (after
+    translating to that ancestor's reference frame). Origins without bounds of their own
+    between the two are skipped. If that ancestor has a lower or an upper bound, the child
+    must declare that bound too. The bounds are compared by value and by exclusivity. Where
+    the ancestor excludes an end and the child includes it, the child's end must lie
+    strictly inside the ancestor's range. A child of a `wrap_to_range` ancestor must thus
+    end strictly below the ancestor's maximum, unless it excludes its own maximum too. A
+    user-defined checking policy is compared by its `min` and `max` as well, and its
+    predicate is not consulted. A value inside an origin's own bounds therefore lies between
+    the `min` and `max` of every bounded origin above it, up to rounding with floating-point
+    offsets.
+
+    Defining the origin or naming a point type doesn't trigger the check. It fires when the
+    origin's bounds are first used, for example when a point is constructed from a value, in
+    arithmetic, in `is_within_bounds` or `try_make`, or in `min()` and `max()`.
 
     This hierarchical validation ensures semantic correctness: if you model origin `B` as
     relative to origin `A`, and `A` has operational constraints, then `B` inheriting those

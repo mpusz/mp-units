@@ -29,6 +29,8 @@
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
+#include <cmath>
+#include <limits>
 #include <stdexcept>
 #endif
 
@@ -159,5 +161,152 @@ TEST_CASE("check_non_negative propagates through relative_point_origin - mutatin
     CHECK(pt.quantity_from(average_height_origin).numerical_value_in(m) == -1600.0);
   }
 }
+
+// ============================================================================
+// NaN is outside every range, so the checking policies reject it.
+// ============================================================================
+
+namespace {
+
+constexpr double not_a_number = std::numeric_limits<double>::quiet_NaN();
+
+}  // namespace
+
+TEST_CASE("check_in_range reports NaN", "[bounded][check][nan]")
+{
+  CHECK_THROWS_AS(qp_check(not_a_number * test_angle_check[deg], check_origin), std::domain_error);
+}
+
+// A user-defined checking policy only tests the value. The library reports a value it rejects.
+// Here a domain that is not an interval: the allowed bands of a transmitter.
+namespace {
+
+template<Quantity Q>
+struct check_in_bands {
+  Q min;  // first band: [min, first_band_max]
+  Q first_band_max;
+  Q second_band_min;  // second band: [second_band_min, max]
+  Q max;
+
+  template<Quantity V>
+  [[nodiscard]] constexpr bool operator()(const V& v) const
+  {
+    return (v >= V{min} && v <= V{first_band_max}) || (v >= V{second_band_min} && v <= V{max});
+  }
+};
+
+#if !MP_UNITS_HAS_AGGREGATE_CTAD
+template<Quantity Q>
+check_in_bands(Q, Q, Q, Q) -> check_in_bands<Q>;
+#endif
+
+inline constexpr struct tuning_zero final :
+    absolute_point_origin<isq::frequency, check_in_bands{2.4 * GHz, 2.4835 * GHz, 5.725 * GHz, 5.875 * GHz}> {
+} tuning_zero;
+
+using tx_frequency = quantity_point<isq::frequency[GHz], tuning_zero, constrained<double, throw_policy>>;
+
+inline constexpr struct heading_zero final :
+    absolute_point_origin<isq::angular_measure, check_in_range{0. * deg, exclusive_bound{360. * deg}}> {
+} heading_zero;
+
+using heading = quantity_point<si::degree, heading_zero, constrained<double, throw_policy>>;
+
+}  // namespace
+
+TEST_CASE("a user-defined checking policy's rejection is reported", "[bounded][check]")
+{
+  CHECK_NOTHROW(tx_frequency(2.45 * GHz, tuning_zero));
+  CHECK_THROWS_AS(tx_frequency(3. * GHz, tuning_zero), std::domain_error);
+  CHECK_THROWS_AS(tx_frequency(not_a_number * GHz, tuning_zero), std::domain_error);
+}
+
+TEST_CASE("wrap_to_range and reflect_in_range turn a non-finite value into NaN", "[bounded][nan]")
+{
+  constexpr double inf = std::numeric_limits<double>::infinity();
+  constexpr wrap_to_range wrap{0. * deg, 360. * deg};
+  constexpr reflect_in_range reflect{-90. * deg, 90. * deg};
+  CHECK(std::isnan(wrap(inf * deg).numerical_value_in(deg)));
+  CHECK(std::isnan(wrap(-inf * deg).numerical_value_in(deg)));
+  CHECK(std::isnan(wrap(not_a_number * deg).numerical_value_in(deg)));
+  CHECK(std::isnan(reflect(inf * deg).numerical_value_in(deg)));
+  CHECK(std::isnan(reflect(not_a_number * deg).numerical_value_in(deg)));
+}
+
+TEST_CASE("wrap_to_range never returns its excluded max", "[bounded][wrap]")
+{
+  // -1e-14° is 360° - 1e-14°, which rounds to 360° in a double: the same point as 0°.
+  CHECK(wrap_to_range{0. * deg, 360. * deg}(-1e-14 * deg) == 0. * deg);
+}
+
+TEST_CASE("check_in_range reports a value at an excluded bound", "[bounded][check]")
+{
+  CHECK_NOTHROW(heading(359.5 * deg, heading_zero));
+  CHECK_THROWS_AS(heading(360. * deg, heading_zero), std::domain_error);
+}
+
+TEST_CASE("check_non_negative reports NaN", "[bounded][non_negative][nan]")
+{
+  CHECK_THROWS_AS(qp_avg_safe(not_a_number * avg_height_qs[m], average_height_origin), std::domain_error);
+}
+
+// ============================================================================
+// is_within_bounds and try_make hand a violation back as a value: the
+// representation's policy is never invoked, whether it throws or terminates.
+// ============================================================================
+
+namespace {
+
+inline constexpr struct trim_zero final :
+    absolute_point_origin<isq::angular_measure, check_in_range{-10. * deg, 10. * deg}> {
+} trim_zero;
+
+using trim_angle_throwing = quantity_point<si::degree, trim_zero, constrained<double, throw_policy>>;
+using trim_angle_terminating = quantity_point<si::degree, trim_zero, constrained<double, terminate_policy>>;
+
+inline constexpr struct trim_centre final :
+    relative_point_origin<quantity_point<si::degree, trim_zero, double>{4. * deg, trim_zero},
+                          check_in_range{-5. * deg, 5. * deg}> {
+} trim_centre;
+
+inline constexpr struct trim_centre_plus_one final : relative_point_origin<trim_centre + 1. * deg> {
+} trim_centre_plus_one;
+
+using trim_offset2 = quantity_point<si::degree, trim_centre_plus_one, constrained<double, terminate_policy>>;
+
+}  // namespace
+
+TEST_CASE("is_within_bounds rejects NaN through a relative origin without own bounds", "[bounded][nan]")
+{
+  CHECK_FALSE(is_within_bounds<trim_offset2>(not_a_number * deg, trim_centre_plus_one));
+  CHECK(is_within_bounds<trim_offset2>(4. * deg, trim_centre_plus_one));
+}
+
+#if MP_UNITS_HAS_EXPECTED
+
+TEST_CASE("try_make does not invoke a throwing policy", "[bounded][try_make]")
+{
+  CHECK_NOTHROW(try_make<trim_angle_throwing>(11. * deg, trim_zero));
+  CHECK_NOTHROW(try_make<trim_angle_throwing>(not_a_number * deg, trim_zero));
+  CHECK_FALSE(try_make<trim_angle_throwing>(11. * deg, trim_zero).has_value());
+  CHECK_FALSE(try_make<trim_angle_throwing>(not_a_number * deg, trim_zero).has_value());
+  CHECK(try_make<trim_angle_throwing>(10. * deg, trim_zero).has_value());
+}
+
+TEST_CASE("try_make does not invoke a terminating policy", "[bounded][try_make]")
+{
+  // Reaching the checks at all shows nothing aborted.
+  CHECK_FALSE(try_make<trim_angle_terminating>(-11. * deg, trim_zero).has_value());
+  CHECK_FALSE(try_make<trim_angle_terminating>(not_a_number * deg, trim_zero).has_value());
+  CHECK(try_make<trim_angle_terminating>(-10. * deg, trim_zero).has_value());
+}
+
+TEST_CASE("try_make rejects NaN through a relative origin without own bounds", "[bounded][try_make][nan]")
+{
+  CHECK_FALSE(try_make<trim_offset2>(not_a_number * deg, trim_centre_plus_one).has_value());
+  CHECK(try_make<trim_offset2>(4. * deg, trim_centre_plus_one).has_value());
+}
+
+#endif  // MP_UNITS_HAS_EXPECTED
 
 #endif  // MP_UNITS_HOSTED
