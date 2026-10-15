@@ -84,11 +84,15 @@ template<QuantitySpec QS>
 
 }  // namespace detail
 
+namespace utility {
+
 MP_UNITS_EXPORT template<QuantitySpec From, QuantitySpec To>
 [[nodiscard]] consteval bool implicitly_convertible(From from, To to);
 
 MP_UNITS_EXPORT template<QuantitySpec From, QuantitySpec To>
 [[nodiscard]] consteval bool explicitly_convertible(From from, To to);
+
+}  // namespace utility
 
 /**
  * @brief A concept matching all quantity specifications of a provided property
@@ -108,7 +112,7 @@ MP_UNITS_EXPORT template<QuantitySpec From, QuantitySpec To>
  */
 MP_UNITS_EXPORT template<typename T, auto V>
 concept QuantitySpecOf =
-  QuantitySpec<T> && ((QuantitySpec<MP_UNITS_NTTP_HACK(decltype(V))> && mp_units::implicitly_convertible(T{}, V)) ||
+  QuantitySpec<T> && ((QuantitySpec<MP_UNITS_NTTP_HACK(decltype(V))> && mp_units::utility::implicitly_convertible(T{}, V)) ||
                       (detail::CharacterValue<V> &&
                        detail::overlaps(detail::admitted_character(T{}).order, detail::axis_mask<V>().order) &&
                        detail::overlaps(detail::admitted_character(T{}).field, detail::axis_mask<V>().field)));

@@ -51,10 +51,10 @@ QUANTITY_SPEC(notional_value, currency, currency* market_quantity, is_kind);
 
 inline constexpr auto Qty = market_quantity;
 
-static_assert(!implicitly_convertible(notional_value, currency));
-static_assert(!implicitly_convertible(currency, notional_value));
-static_assert(explicitly_convertible(notional_value, currency));
-static_assert(explicitly_convertible(currency, notional_value));
+static_assert(!utility::implicitly_convertible(notional_value, currency));
+static_assert(!utility::implicitly_convertible(currency, notional_value));
+static_assert(utility::explicitly_convertible(notional_value, currency));
+static_assert(utility::explicitly_convertible(currency, notional_value));
 
 // clang-format off
 inline constexpr struct us_dollar   final : named_unit<"USD",   kind_of<currency>>             {} us_dollar;

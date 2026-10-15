@@ -107,7 +107,8 @@ concept ImplicitConversion = ExplicitlyCastable<FromUnit, ToUnit, ToRep> &&
 
 template<typename QTo, typename QFrom>
 concept QuantityConstructibleFrom =
-  Quantity<QTo> && Quantity<QFrom> && mp_units::explicitly_convertible(QFrom::quantity_spec, QTo::quantity_spec) &&
+  Quantity<QTo> && Quantity<QFrom> &&
+  mp_units::utility::explicitly_convertible(QFrom::quantity_spec, QTo::quantity_spec) &&
   RepConstructibleFrom<typename QTo::rep, typename QFrom::rep> &&
   ImplicitConversion<QFrom::unit, typename QFrom::rep, QTo::unit, typename QTo::rep>;
 
@@ -123,11 +124,12 @@ concept UnitOne = Reference<MP_UNITS_NTTP_HACK(decltype(R))> &&
                   (equivalent(get_unit(R), one) && detail::get_associated_quantity(get_unit(R)) == dimensionless);
 
 template<auto R>
-concept ExplicitFromNumber = UnitOne<R> && (mp_units::explicitly_convertible(get_quantity_spec(R), dimensionless));
+concept ExplicitFromNumber =
+  UnitOne<R> && (mp_units::utility::explicitly_convertible(get_quantity_spec(R), dimensionless));
 
 template<auto R>
 concept ImplicitFromNumber =
-  ExplicitFromNumber<R> && (mp_units::implicitly_convertible(get_quantity_spec(R), dimensionless));
+  ExplicitFromNumber<R> && (mp_units::utility::implicitly_convertible(get_quantity_spec(R), dimensionless));
 
 template<typename Q>
 concept ImplicitFromNumberQuantity = Quantity<Q> && ImplicitFromNumber<Q::reference>;
@@ -655,7 +657,8 @@ public:
   {
   }
 
-  [[nodiscard]] constexpr explicit(!mp_units::implicitly_convertible(quantity_spec, dimensionless)) quantity(rep val)
+  [[nodiscard]] constexpr explicit(!mp_units::utility::implicitly_convertible(quantity_spec, dimensionless))
+    quantity(rep val)
     requires detail::ExplicitFromNumber<reference>
       : numerical_value_is_an_implementation_detail_(std::move(val))
   {
@@ -671,7 +674,7 @@ public:
   template<typename Value>
     requires detail::ExplicitFromNumber<reference> && (!detail::RepConstructibleFrom<rep, Value>)
   constexpr explicit(!std::convertible_to<Value, rep> ||
-                     !mp_units::implicitly_convertible(quantity_spec, dimensionless)) quantity(Value val)
+                     !mp_units::utility::implicitly_convertible(quantity_spec, dimensionless)) quantity(Value val)
 #if MP_UNITS_HAS_DELETED_FUNCTION_MESSAGE
     = delete ("Conversion is truncating");
 #else
@@ -682,7 +685,7 @@ public:
     requires detail::QuantityConstructibleFrom<quantity, quantity<R2, Rep2>> && (equivalent(unit, get_unit(R2)))
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   [[nodiscard]] constexpr explicit(!std::convertible_to<Rep2, rep> ||
-                                   !mp_units::implicitly_convertible(get_quantity_spec(R2), quantity_spec) ||
+                                   !mp_units::utility::implicitly_convertible(get_quantity_spec(R2), quantity_spec) ||
                                    !mp_units::implicitly_scalable<get_unit(R2), Rep2, unit, rep>)
     quantity(const quantity<R2, Rep2>& q) :
       // the units are equivalent, so the stored value is already the value in `unit`. `q`'s unit
@@ -697,7 +700,7 @@ public:
     requires detail::QuantityConstructibleFrom<quantity, quantity<R2, Rep2>> && (!equivalent(unit, get_unit(R2)))
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   [[nodiscard]] constexpr explicit(!std::convertible_to<Rep2, rep> ||
-                                   !mp_units::implicitly_convertible(get_quantity_spec(R2), quantity_spec) ||
+                                   !mp_units::utility::implicitly_convertible(get_quantity_spec(R2), quantity_spec) ||
                                    !mp_units::implicitly_scalable<get_unit(R2), Rep2, unit, rep>)
     quantity(const quantity<R2, Rep2>& q) :
       quantity(detail::sudo_cast<quantity>(q))
@@ -933,7 +936,7 @@ public:
 
   // compound assignment operators
   template<auto R2, typename Rep2>
-    requires(mp_units::implicitly_convertible(get_quantity_spec(R2), quantity_spec)) &&
+    requires(mp_units::utility::implicitly_convertible(get_quantity_spec(R2), quantity_spec)) &&
             detail::ImplicitConversion<get_unit(R2), Rep2, unit, rep> && requires(rep& a, const Rep2 b) {
               { a += b } -> std::same_as<rep&>;
             }
@@ -947,7 +950,7 @@ public:
   }
 
   template<auto R2, typename Rep2>
-    requires(mp_units::implicitly_convertible(get_quantity_spec(R2), quantity_spec)) &&
+    requires(mp_units::utility::implicitly_convertible(get_quantity_spec(R2), quantity_spec)) &&
             detail::ImplicitConversion<get_unit(R2), Rep2, unit, rep> && requires(rep& a, const Rep2 b) {
               { a -= b } -> std::same_as<rep&>;
             }
@@ -962,7 +965,7 @@ public:
 
   template<auto R2, typename Rep2>
     requires(!treat_as_floating_point<rep>) &&
-            (mp_units::implicitly_convertible(get_quantity_spec(R2), quantity_spec)) &&
+            (mp_units::utility::implicitly_convertible(get_quantity_spec(R2), quantity_spec)) &&
             detail::ImplicitConversion<get_unit(R2), Rep2, unit, rep> && requires(rep& a, const Rep2 b) {
               { a %= b } -> std::same_as<rep&>;
             }

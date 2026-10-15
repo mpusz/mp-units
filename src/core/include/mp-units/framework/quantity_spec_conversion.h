@@ -30,30 +30,58 @@
 
 namespace mp_units {
 
+namespace utility {
+
+// The framework's constraints are specified in terms of these conversion relations. They are not
+// meant for `std`, but they let users check how their own quantity hierarchies convert, hence they
+// live in the `mp_units::utility` namespace.
+
+MP_UNITS_EXPORT template<QuantitySpec From, QuantitySpec To>
+[[nodiscard]] consteval bool implicitly_convertible(From from, To to)
+{
+  return mp_units::detail::convertible(from, to) == mp_units::detail::conversion_rank::implicit;
+}
+
+MP_UNITS_EXPORT template<QuantitySpec From, QuantitySpec To>
+[[nodiscard]] consteval bool explicitly_convertible(From from, To to)
+{
+  return mp_units::detail::convertible(from, to) >= mp_units::detail::conversion_rank::explicit_only;
+}
+
+MP_UNITS_EXPORT template<QuantitySpec From, QuantitySpec To>
+[[nodiscard]] consteval bool castable(From from, To to)
+{
+  return mp_units::detail::convertible(from, to) >= mp_units::detail::conversion_rank::cast;
+}
+
+}  // namespace utility
+
 MP_UNITS_EXPORT_BEGIN
 
 template<QuantitySpec From, QuantitySpec To>
-[[nodiscard]] consteval bool implicitly_convertible(From from, To to)
+[[deprecated("2.6.0: Use `utility::implicitly_convertible` instead")]] [[nodiscard]] consteval bool
+implicitly_convertible(From from, To to)
 {
-  return detail::convertible(from, to) == detail::conversion_rank::implicit;
+  return mp_units::utility::implicitly_convertible(from, to);
 }
 
 template<QuantitySpec From, QuantitySpec To>
-[[nodiscard]] consteval bool explicitly_convertible(From from, To to)
+[[deprecated("2.6.0: Use `utility::explicitly_convertible` instead")]] [[nodiscard]] consteval bool
+explicitly_convertible(From from, To to)
 {
-  return detail::convertible(from, to) >= detail::conversion_rank::explicit_only;
+  return mp_units::utility::explicitly_convertible(from, to);
 }
 
 template<QuantitySpec From, QuantitySpec To>
-[[nodiscard]] consteval bool castable(From from, To to)
+[[deprecated("2.6.0: Use `utility::castable` instead")]] [[nodiscard]] consteval bool castable(From from, To to)
 {
-  return detail::convertible(from, to) >= detail::conversion_rank::cast;
+  return mp_units::utility::castable(from, to);
 }
 
 template<QuantitySpec QS1, QuantitySpec QS2>
 [[nodiscard]] consteval bool interconvertible(QS1 qs1, QS2 qs2)
 {
-  return mp_units::implicitly_convertible(qs1, qs2) && mp_units::implicitly_convertible(qs2, qs1);
+  return mp_units::utility::implicitly_convertible(qs1, qs2) && mp_units::utility::implicitly_convertible(qs2, qs1);
 }
 
 template<QuantitySpec Q>

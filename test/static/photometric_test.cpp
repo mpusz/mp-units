@@ -73,10 +73,10 @@ static_assert(get_kind(luminance_of<mesopic_vision<50>>) != get_kind(luminance_o
 static_assert(get_kind(luminance_of<mesopic_vision<50>>) != get_kind(luminance));
 
 // quantities of different photometric conditions can never be mixed or converted
-static_assert(!implicitly_convertible(luminous_flux_of<scotopic_vision>, luminous_flux));
-static_assert(!explicitly_convertible(luminous_flux_of<scotopic_vision>, luminous_flux));
-static_assert(!castable(luminous_flux_of<scotopic_vision>, luminous_flux));
-static_assert(!castable(illuminance_of<scotopic_vision>, illuminance));
+static_assert(!utility::implicitly_convertible(luminous_flux_of<scotopic_vision>, luminous_flux));
+static_assert(!utility::explicitly_convertible(luminous_flux_of<scotopic_vision>, luminous_flux));
+static_assert(!utility::castable(luminous_flux_of<scotopic_vision>, luminous_flux));
+static_assert(!utility::castable(illuminance_of<scotopic_vision>, illuminance));
 
 // each condition's tree accepts only its own units
 static_assert(can_use_unit<luminous_intensity_of<scotopic_vision>, si::candela_of<scotopic_vision>>);
@@ -90,16 +90,18 @@ static_assert(!can_use_unit<luminous_flux, si::lumen_of<scotopic_vision>>);
 static_assert(!can_use_unit<illuminance, si::lux_of<scotopic_vision>>);
 
 // the whole derived tree works within one condition
-static_assert(implicitly_convertible(luminous_intensity_of<scotopic_vision> * isq::solid_angular_measure,
-                                     luminous_flux_of<scotopic_vision>));
-static_assert(implicitly_convertible(luminous_flux_of<scotopic_vision> / isq::area, illuminance_of<scotopic_vision>));
-static_assert(implicitly_convertible(luminous_flux_of<scotopic_vision> * isq::time,
-                                     luminous_energy_of<scotopic_vision>));
-static_assert(implicitly_convertible(illuminance_of<scotopic_vision> * isq::time,
-                                     luminous_exposure_of<scotopic_vision>));
-static_assert(implicitly_convertible(maximum_luminous_efficacy_of<scotopic_vision>,
-                                     luminous_efficacy_of_radiation_of<scotopic_vision>));
-static_assert(!implicitly_convertible(maximum_luminous_efficacy_of<scotopic_vision>, luminous_efficacy_of_radiation));
+static_assert(utility::implicitly_convertible(luminous_intensity_of<scotopic_vision> * isq::solid_angular_measure,
+                                              luminous_flux_of<scotopic_vision>));
+static_assert(utility::implicitly_convertible(luminous_flux_of<scotopic_vision> / isq::area,
+                                              illuminance_of<scotopic_vision>));
+static_assert(utility::implicitly_convertible(luminous_flux_of<scotopic_vision> * isq::time,
+                                              luminous_energy_of<scotopic_vision>));
+static_assert(utility::implicitly_convertible(illuminance_of<scotopic_vision> * isq::time,
+                                              luminous_exposure_of<scotopic_vision>));
+static_assert(utility::implicitly_convertible(maximum_luminous_efficacy_of<scotopic_vision>,
+                                              luminous_efficacy_of_radiation_of<scotopic_vision>));
+static_assert(!utility::implicitly_convertible(maximum_luminous_efficacy_of<scotopic_vision>,
+                                               luminous_efficacy_of_radiation));
 
 // quotients across conditions stay well-formed and reduce to a pure number (e.g. the S/P ratio)
 constexpr quantity sp_ratio =
@@ -109,12 +111,12 @@ static_assert(sp_ratio.numerical_value_in(one) == 1.7);
 // the two "luminous efficacy" items of ISO 80000-7 share lm/W but are distinct subkinds:
 // crossing between them requires the radiant efficiency of the source (like fluid and water head)
 static_assert(get_kind(luminous_efficacy_of_radiation) != get_kind(luminous_efficacy_of_source));
-static_assert(!implicitly_convertible(luminous_efficacy_of_radiation, luminous_efficacy_of_source));
-static_assert(!explicitly_convertible(luminous_efficacy_of_radiation, luminous_efficacy_of_source));
-static_assert(!castable(luminous_efficacy_of_radiation, luminous_efficacy_of_source));
-static_assert(explicitly_convertible(luminous_efficacy_of_radiation, luminous_efficacy));
-static_assert(explicitly_convertible(luminous_efficacy_of_source, luminous_efficacy));
-static_assert(!implicitly_convertible(luminous_efficacy_of_radiation, luminous_efficacy));
+static_assert(!utility::implicitly_convertible(luminous_efficacy_of_radiation, luminous_efficacy_of_source));
+static_assert(!utility::explicitly_convertible(luminous_efficacy_of_radiation, luminous_efficacy_of_source));
+static_assert(!utility::castable(luminous_efficacy_of_radiation, luminous_efficacy_of_source));
+static_assert(utility::explicitly_convertible(luminous_efficacy_of_radiation, luminous_efficacy));
+static_assert(utility::explicitly_convertible(luminous_efficacy_of_source, luminous_efficacy));
+static_assert(!utility::implicitly_convertible(luminous_efficacy_of_radiation, luminous_efficacy));
 static_assert(can_use_unit<luminous_efficacy_of_radiation, si::lumen / si::watt>);
 static_assert(can_use_unit<luminous_efficacy_of_source, si::lumen / si::watt>);
 static_assert(can_use_unit<luminous_efficacy_of_source_of<scotopic_vision>, si::lumen_of<scotopic_vision> / si::watt>);
@@ -123,8 +125,8 @@ static_assert(get_kind(luminous_efficacy_of_source_of<scotopic_vision>) != get_k
 
 // dimensionless ratios share the dimensionless kind (like other efficiencies and factors)
 // but stay distinct specs with no sideways implicit conversion
-static_assert(!implicitly_convertible(luminous_reflectance_of<scotopic_vision>, luminous_reflectance));
-static_assert(!implicitly_convertible(luminous_reflectance, luminous_reflectance_of<scotopic_vision>));
-static_assert(implicitly_convertible(luminous_reflectance_of<scotopic_vision>, dimensionless));
+static_assert(!utility::implicitly_convertible(luminous_reflectance_of<scotopic_vision>, luminous_reflectance));
+static_assert(!utility::implicitly_convertible(luminous_reflectance, luminous_reflectance_of<scotopic_vision>));
+static_assert(utility::implicitly_convertible(luminous_reflectance_of<scotopic_vision>, dimensionless));
 
 }  // namespace

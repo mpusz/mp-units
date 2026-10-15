@@ -125,8 +125,7 @@ All operations preserve dimensional correctness:
 === "State Update"
 
     ```cpp
-    template<typename QP, QuantityPoint QM, QuantityOf<dimensionless> K>
-      requires(implicitly_convertible(QM::quantity_spec, QP::quantity_spec))
+    template<typename QP, QuantityPointOf<QP::quantity_spec> QM, QuantityOf<dimensionless> K>
     [[nodiscard]] constexpr system_state<QP> state_update(const system_state<QP>& predicted,
                                                           QM measured, K gain)
     {
