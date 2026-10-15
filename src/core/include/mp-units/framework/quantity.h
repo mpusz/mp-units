@@ -539,13 +539,14 @@ struct quantity_iface {
     return lhs.numerical_value_ref_in(get_unit(R1)) <=> representation_values<Rep1>::zero();
   }
 
-  // tuple-like decomposition of a vector quantity into named 1D-vector components (see
-  // framework/vector_components.h).
+  // tuple-like decomposition of a vector quantity into 1D-vector components (see
+  // framework/vector_components.h). A component carries its declared axis spec when the whole
+  // declares its axes, and the whole's kind otherwise.
   template<std::size_t Idx, auto R1, typename Rep1>
     requires DecomposableIndex<get_quantity_spec(R1), Rep1, Idx>
   [[nodiscard]] friend constexpr Quantity auto get(const quantity<R1, Rep1>& q)
   {
-    constexpr auto comp = vector_components<get_quantity_spec(R1)>::template axis<Idx>;
+    constexpr auto comp = component_spec<get_quantity_spec(R1), Rep1, Idx>();
     return component_access<Idx>(q.numerical_value_in(get_unit(R1))) * comp[get_unit(R1)];
   }
 
@@ -575,6 +576,66 @@ struct quantity_iface {
 
 #endif  // MP_UNITS_HOSTED
 };
+
+// Component-wise construction of a vector quantity from its component quantities, the inverse of the
+// decomposition above and available in both of its modes, so that what `get` takes apart can be put
+// back together. Declaring the axes upgrades what is checked, exactly as it does for decomposition:
+// each argument is then matched against the spec declared for its position rather than against the
+// whole's own spec.
+
+// The quantity type of the `Idx`-th component: what the component-wise constructor accepts in that
+// position, in the whole's unit and over the representation's element type.
+template<auto R, typename Rep, std::size_t Idx>
+using component_quantity = quantity<component_spec<get_quantity_spec(R), Rep, Idx>()[get_unit(R)], value_type_t<Rep>>;
+
+// The element type each component contributes, spelled per index so that the pack can be expanded
+// once per component.
+template<std::size_t, typename T>
+using component_element_type = T;
+
+// Every argument is implicitly convertible to the component quantity of its position. That single
+// rule is what makes a swapped pair of axis-typed arguments ill-formed, and it deliberately goes no
+// further: a quantity kind converts into every quantity of its hierarchy, so a unit-only argument
+// such as `30 * km / h` fits every position and any order of those compiles. Refusing one here would
+// make this the only place in the library that second-guesses that conversion, and reaching for a
+// kind quantity is the documented way to opt out of kind safety. The argument pack and the index pack
+// have equal length (guaranteed by the count check in `ComposableFrom`), so the fold expands them in
+// lockstep.
+template<auto R, typename Rep, typename... Qs, std::size_t... Idxs>
+[[nodiscard]] consteval bool axis_quantities_convertible(std::index_sequence<Idxs...>)
+{
+  return (... && std::convertible_to<Qs, component_quantity<R, Rep, Idxs>>);
+}
+
+// The representation can be built from one element value per component. This asks for *braced*
+// initialization, which is what `compose_representation` below performs, rather than
+// `std::constructible_from`: that concept spells parenthesized direct-initialization, which does not
+// see a vector type whose only element-wise constructor takes an `initializer_list`
+// (`blaze::StaticVector` is one). Asking the narrower question would leave such a backend able to
+// decompose but not to recompose, and the two directions are meant to close on each other.
+template<typename Rep, std::size_t... Idxs>
+[[nodiscard]] consteval bool rep_constructible_from_elements(std::index_sequence<Idxs...>)
+{
+  return requires(component_element_type<Idxs, value_type_t<Rep>>... elems) { Rep{elems...}; };
+}
+
+// The two-argument floor keeps this away from the one-argument constructors above, which a
+// single-element representation would otherwise collide with. A declared decomposition always has at
+// least two axes, so the floor only ever bites an undeclared one.
+template<auto R, typename Rep, typename... Qs>
+concept ComposableFrom = Decomposable<get_quantity_spec(R), Rep> && (sizeof...(Qs) >= 2) &&
+                         (sizeof...(Qs) == decomposition_size<get_quantity_spec(R), Rep>()) &&
+                         axis_quantities_convertible<R, Rep, Qs...>(std::index_sequence_for<Qs...>{}) &&
+                         rep_constructible_from_elements<Rep>(std::index_sequence_for<Qs...>{});
+
+// Materializes the representation from the component quantities. Each argument is converted to its
+// position's component quantity type first, which is where the unit conversion and the axis check
+// happen, and only then handed to the representation as a plain element value.
+template<auto R, typename Rep, std::size_t... Idxs, typename... Qs>
+[[nodiscard]] constexpr Rep compose_representation(std::index_sequence<Idxs...>, const Qs&... qs)
+{
+  return Rep{component_quantity<R, Rep, Idxs>{qs}.numerical_value_in(get_unit(R))...};
+}
 
 }  // namespace detail
 
@@ -678,6 +739,20 @@ public:
 #else
     = delete;
 #endif
+
+  // Component-wise construction from the component quantities of a decomposition (see
+  // framework/vector_components.h). This type pins the unit, so every argument is converted into it
+  // under the ordinary conversion rules. Each argument must convert to the component quantity of its
+  // position: the declared axis when the whole declares its axes, which is what makes a swapped pair
+  // of arguments a compile-time error, and the whole's kind otherwise. `ComposableFrom` asks for at
+  // least two arguments, so this never competes with the one-argument constructors above.
+  template<typename... Qs>
+    requires detail::ComposableFrom<reference, rep, Qs...>
+  [[nodiscard]] constexpr quantity(const Qs&... qs) :
+      numerical_value_is_an_implementation_detail_(
+        detail::compose_representation<reference, rep>(std::index_sequence_for<Qs...>{}, qs...))
+  {
+  }
 
   template<auto R2, typename Rep2>
     requires detail::QuantityConstructibleFrom<quantity, quantity<R2, Rep2>> && (equivalent(unit, get_unit(R2)))
@@ -1048,7 +1123,7 @@ template<QuantitySpec auto QS, typename FwdValue>
 template<auto R, typename Rep>
   requires mp_units::detail::Decomposable<get_quantity_spec(R), Rep>
 struct std::tuple_size<mp_units::quantity<R, Rep>> :
-    std::integral_constant<std::size_t, mp_units::vector_components<get_quantity_spec(R)>::size> {};
+    std::integral_constant<std::size_t, mp_units::detail::decomposition_size<get_quantity_spec(R), Rep>()> {};
 
 template<std::size_t Idx, auto R, typename Rep>
   requires mp_units::detail::DecomposableIndex<get_quantity_spec(R), Rep, Idx>

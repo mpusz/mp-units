@@ -3,9 +3,11 @@
 This guide shows how to split a
 [vector quantity](../../users_guide/framework_basics/character_of_a_quantity.md) into
 named, strongly-typed 1D-vector component quantities, reachable by index (`get<Idx>`), by
-quantity spec (`get<QS>`), and through structured bindings. It covers how the quantity
-hierarchy must be formed, what the representation must provide, and the `tuple_size` /
-`tuple_element` protocol for compile-time code.
+quantity spec (`get<QS>`), and through structured bindings, and how to build the whole back
+up from those components. It covers how the quantity hierarchy must be formed, what the
+representation must provide, and the `tuple_size` / `tuple_element` protocol for
+compile-time code. Naming the axes is optional, and the guide also covers what a vector
+quantity that does not name them can still do.
 
 A vector _quantity_ stores one physical vector, such as a drone's _velocity_, under a
 single unit. Sooner or later you need to talk about its individual axes: the _forward
@@ -221,6 +223,143 @@ const double climb_rate = get<vertical_velocity>(v).numerical_value_in(km / h);
 ```
 
 
+## Constructing From Components
+
+Decomposition has an inverse: the whole can be built from its component _quantities_, each
+checked against the axis declared for its position.
+
+```cpp
+const quantity<flight_velocity[km / h], cartesian_vector<double>> v = {forward_velocity(30 * km / h),
+                                                                       lateral_velocity(10 * km / h),
+                                                                       vertical_velocity(-2 * km / h)};
+```
+
+**Getting the order wrong does not compile.** Compare that with the alternative:
+
+```cpp
+// error: position 1 wants a lateral velocity, and a vertical velocity is a different kind
+// auto swapped = quantity<flight_velocity[km / h], cartesian_vector<double>>{forward_velocity(30 * km / h),
+//                                                                            vertical_velocity(-2 * km / h),
+//                                                                            lateral_velocity(10 * km / h)};
+
+// compiles, and silently means something else: the drone now climbs at 10 km/h and drifts by -2
+const quantity oops = flight_velocity(cartesian_vector{30.0, -2.0, 10.0} * km / h);
+```
+
+The second line is the spelling you are stuck with when the components are bare numbers
+in positional order. Nothing in it is wrong as far as the type system can tell, and naming
+the axes is what changes that.
+
+Each argument has to be implicitly convertible to the _quantity spec_ declared for its
+position. A plain number is not, and neither is a quantity of the whole's own spec, since
+`isq::velocity` converts to an axis only explicitly:
+
+```cpp
+// error: neither names an axis of this decomposition
+// auto by_number = quantity<flight_velocity[km / h], cartesian_vector<double>>{30.0, 10.0, -2.0};
+// auto by_whole = quantity<flight_velocity[km / h], cartesian_vector<double>>{isq::velocity(30 * km / h),
+//                                                                             isq::velocity(10 * km / h),
+//                                                                             isq::velocity(-2 * km / h)};
+```
+
+!!! info "Simple quantities forfeit the order check"
+
+    A [quantity kind](../../users_guide/framework_basics/simple_and_typed_quantities.md)
+    converts into every quantity of its hierarchy, so `30 * km / h` fits *every* axis and any
+    order of such arguments compiles:
+
+    ```cpp
+    // compiles: a kind quantity names no position
+    const quantity<flight_velocity[km / h], cartesian_vector<double>> unchecked = {30 * km / h,
+                                                                                   10 * km / h,
+                                                                                   -2 * km / h};
+    ```
+
+    This is the same trade the library offers everywhere: reaching for a simple _quantity_ opts
+    out of kind safety, and this constructor does not second-guess that choice. Pass axis-typed
+    components when you want the positions checked.
+
+The type being constructed pins the unit, so each argument is converted into it under the
+[ordinary conversion rules](../../users_guide/framework_basics/value_conversions.md), and
+a truncating argument is caught the same way it would be anywhere else:
+
+```cpp
+// 10 m/s is converted into the km/h this type stores
+const quantity<flight_velocity[km / h], cartesian_vector<double>> mixed = {forward_velocity(30 * km / h),
+                                                                           lateral_velocity(10 * m / s),
+                                                                           vertical_velocity(-2 * km / h)};
+```
+
+There is no CTAD for this: neither the whole nor the representation can be deduced from
+the components, since an axis list has no reverse mapping back to a whole and the library
+has no opinion about which vector type you want. Naming the type is where both come
+from.
+
+## Working Without Naming the Axes
+
+Declaring the axes is optional. A vector _quantity_ whose spec has no `vector_components`
+specialization still takes apart and goes back together, and each component then carries
+**the whole's kind**:
+
+```cpp
+const quantity v = isq::velocity(cartesian_vector{30.0, 10.0, -2.0} * km / h);
+
+const quantity forward = get<0>(v);           // a 1D-vector quantity of the isq::speed kind
+const auto [x, y, z] = v;                     // three components of that same kind
+
+const quantity<isq::velocity[km / h], cartesian_vector<double>> back = {x, y, z};   // and back again
+```
+
+Both directions stay available, and both check less. Everything that needs an axis to
+refer to is gone: access by _quantity spec_, and the positional checking of the
+constructor's arguments. Index access, structured bindings, the tuple protocol, and
+component-wise construction remain, with the count read from the representation and each
+argument converted into the unit the type pins.
+
+This mode is weaker than a declared decomposition, and deliberately so. All the components
+share one kind, so what a declared decomposition rejects is accepted here in both
+directions:
+
+```cpp
+const quantity nonsense = get<0>(v) + get<1>(v);   // compiles, and means nothing physically
+
+// compiles: with one kind for every position, no order is more correct than another
+const quantity<isq::velocity[km / h], cartesian_vector<double>> reordered = {z, x, y};
+```
+
+It is still a strict improvement on the alternative it replaces, which is reaching into the
+representation by hand:
+
+```cpp
+const double forward = v.numerical_value_in(km / h)[0];   // no unit, no quantity, no bound
+```
+
+The undeclared mode keeps the unit, the character, the component count, and the
+compile-time bound. Naming the axes adds the one thing it cannot have: a distinct type per
+axis, and with it the positional safety in both directions.
+
+!!! question "Why the whole's *kind* rather than the whole's own spec?"
+
+    Because a component is not the whole. An undeclared decomposition knows only that each
+    component belongs to the whole's kind, and handing back `isq::velocity` would claim more than
+    it knows: a single component could then stand in wherever the complete vector _quantity_ is
+    expected.
+
+    The kind does not cost the component its character, even though the kind of a vector
+    _quantity_ is rooted in the _scalar_ one it descends from:
+
+    ```cpp
+    static_assert(get_kind(isq::velocity) == get_kind(isq::speed));
+    ```
+
+    A kind admits every character and leaves the choice to the representation, so the `vector`
+    character that [a component keeps](#a-component-is-a-1d-vector) survives.
+
+    Note `get_kind(isq::velocity)` and not `kind_of<isq::velocity>`. The latter is ill-formed,
+    because `kind_of` requires its argument to be its own kind-tree root, which a vector spec
+    is not.
+
+
 ## What the Representation Must Satisfy
 
 Decomposition reuses the same representation that already backs the vector _quantity_. On
@@ -234,25 +373,30 @@ need not be `constexpr`. The library accepts either form:
 - a tuple-like `get<Idx>(rep)` found by argument-dependent lookup, or
 - a subscript `rep[Idx]`.
 
+It must also state **how many components it holds**, through `std::tuple_size`. That is
+where the library reads the length of an undeclared decomposition, and where it checks
+that you have not declared more axes than the representation can hold.
+
 `cartesian_vector`, `Eigen::Vector3d`, `glm::dvec3`, and `blaze::StaticVector<double, 3>`
-all qualify through one or the other, so decomposition works against every backend the
-[linear algebra example](../../examples/linear_algebra.md) uses.
+all satisfy both, so decomposition works against every backend the
+[linear algebra example](../../examples/linear_algebra.md) uses. `cartesian_vector` and
+Blaze provide the tuple protocol themselves, while the Eigen and GLM
+[plugins](../integration/using_linear_algebra_libraries.md) map each library's own
+compile-time shape onto it.
+
+A representation with no compile-time length, such as `Eigen::VectorXd` or
+`blaze::DynamicVector<double>`, is deliberately left out. A compile-time index cannot be
+bounds-checked against a length that only exists at run time.
 
 The component _quantity's_ representation is the vector's element type, its `value_type`.
 A component of a `cartesian_vector<double>` is therefore a `quantity<…, double>`: a
 1D-vector _quantity_ holding a single value.
 
-!!! info "Optional: a compile-time size check"
+!!! info "The index stops at the last declared axis"
 
-    If the representation models `std::tuple_size` (as `cartesian_vector` does), the library
-    also verifies at compile time that you did not declare more axes than the representation
-    holds. Types that do not expose `std::tuple_size` (such as Eigen's vectors) simply skip
-    that one check. Every other rule still applies.
-
-    This is a separate bound from the per-access one. `get<Idx>` and `std::tuple_element<Idx>`
-    always reject an `Idx` past the last declared axis (see [By index](#by-index) above),
-    whether or not the representation exposes `std::tuple_size`. The check here instead guards
-    the declaration: the axis count must not exceed what the representation can hold.
+    `get<Idx>` and `std::tuple_element<Idx>` reject an `Idx` past the last component, which for
+    a declared decomposition is the last *declared axis* even when the representation is longer
+    (see [By index](#by-index) above).
 
 
 ## Compile-Time Introspection

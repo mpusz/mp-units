@@ -31,6 +31,7 @@ import std;
 #else
 #include <complex>
 #include <type_traits>
+#include <vector>
 #endif
 
 using namespace mp_units;
@@ -39,6 +40,7 @@ using namespace mp_units::si::unit_symbols;
 namespace {
 
 using vec3 = utility::cartesian_vector<double>;
+using vec3i = utility::cartesian_vector<int>;
 
 // the aviation hierarchy: a 3D whole plus 1D-vector component axes (each its own kind)
 QUANTITY_SPEC(flight_velocity, isq::velocity);
@@ -137,7 +139,7 @@ concept invalid_decompositions = requires {
   requires !detail::Decomposable<w_axis_eq_whole, vec3>;    // an axis shares the whole's kind
   requires !detail::Decomposable<w_too_many, vec3>;         // more axes than the representation holds
   requires !detail::Decomposable<w_no_base, vec3>;          // vector_components does not derive vector_axes
-  requires !detail::Decomposable<isq::speed, double>;       // a scalar whole (no vector_components)
+  requires !detail::Decomposable<isq::speed, double>;       // a scalar whole and a scalar representation
   requires !detail::Decomposable<flight_velocity, double>;  // a non-indexable (scalar) representation
 };
 static_assert(invalid_decompositions<>);
@@ -177,5 +179,124 @@ static_assert(!detail::ValidVectorAxes<cplx_forward, cplx_speed, cplx_sink>);
 static_assert(QuantityOf<decltype(get<0>(cv)), cplx_forward>);
 static_assert(get<0>(cv).numerical_value_in(km / h) == std::complex{30.0, 1.0});
 static_assert(get<2>(cv).numerical_value_in(km / h) == std::complex{-2.5, 2.0});
+
+}  // namespace
+
+// ---- unnamed decomposition: a vector quantity that declares no axes ----
+namespace {
+
+using U = quantity<isq::velocity[km / h], vec3>;
+inline constexpr U uv = isq::velocity(vec3{30.0, -4.0, -2.5} * km / h);
+
+static_assert(detail::UnnamedDecomposable<isq::velocity, vec3>);
+static_assert(!detail::NamedDecomposable<isq::velocity, vec3>);
+
+// a component carries the whole's *kind*, not the whole's own spec: it belongs to that kind without
+// being a complete `isq::velocity`. The kind admits every character, so the vector character comes
+// from the representation and survives. The rep is the vector's value_type.
+static_assert(decltype(get<0>(uv))::quantity_spec == get_kind(isq::velocity));
+static_assert(QuantityOf<decltype(get<0>(uv)), isq::velocity>);
+static_assert(std::is_same_v<decltype(get<0>(uv))::rep, double>);
+static_assert(get<0>(uv).numerical_value_in(km / h) == 30.0);
+static_assert(get<2>(uv).numerical_value_in(km / h) == -2.5);
+
+// the component count comes from the representation, which bounds the index and drives the tuple
+// protocol (and therefore structured bindings)
+static_assert(std::tuple_size_v<U> == 3);
+static_assert(std::is_same_v<std::tuple_element_t<2, U>, decltype(get<2>(uv))>);
+static_assert(detail::DecomposableIndex<isq::velocity, vec3, 2>);
+static_assert(!detail::DecomposableIndex<isq::velocity, vec3, 3>);
+
+// a quantity kind is character-agnostic, so a unit-only vector quantity decomposes as well
+inline constexpr quantity kv = vec3{1.0, 2.0, 3.0} * m;
+static_assert(std::tuple_size_v<decltype(kv)> == 3);
+static_assert(get<2>(kv).numerical_value_in(m) == 3.0);
+
+// unnamed components share a single kind, so cross-component arithmetic is *not* rejected here:
+// that safety is exactly what declaring the axes buys
+static_assert(addable<decltype(get<0>(uv)), decltype(get<1>(uv))>);
+
+template<typename = void>
+concept invalid_unnamed_accesses = requires {
+  // lookup by axis spec is a named-mode privilege
+  requires !detail::DecomposableAxis<isq::velocity, vec3, isq::velocity>;
+  // a representation with no compile-time length cannot bound a compile-time index
+  requires !detail::Decomposable<isq::velocity, std::vector<double>>;
+};
+static_assert(invalid_unnamed_accesses<>);
+
+}  // namespace
+
+// ---- component-wise construction, the inverse of decomposition and graded the same way ----
+namespace {
+
+inline constexpr Q composed = {30.0 * forward_velocity[km / h], -4.0 * wind_drift[km / h], -2.5 * sink_rate[km / h]};
+static_assert(composed == v);
+
+// the constructed type pins the unit, so each argument is converted into it
+inline constexpr Q converted = {30.0 * forward_velocity[km / h], 10.0 * wind_drift[m / s], -2.5 * sink_rate[km / h]};
+static_assert(get<wind_drift>(converted).numerical_value_in(km / h) == 36.0);
+
+using fwd_q = quantity<forward_velocity[km / h]>;
+using drift_q = quantity<wind_drift[km / h]>;
+using sink_q = quantity<sink_rate[km / h]>;
+
+template<typename... Qs>
+concept composable = requires(Qs... qs) { Q{qs...}; };
+
+template<typename... Qs>
+concept composable_undeclared = requires(Qs... qs) { U{qs...}; };
+
+template<typename... Qs>
+concept composable_integral = requires(Qs... qs) { quantity<flight_velocity[km / h], vec3i>{qs...}; };
+
+template<typename = void>
+concept invalid_compositions = requires {
+  requires composable<fwd_q, drift_q, sink_q>;                                // the valid call
+  requires !composable<drift_q, fwd_q, sink_q>;                               // two axes swapped
+  requires !composable<fwd_q, drift_q>;                                       // fewer arguments than axes
+  requires !composable<fwd_q, drift_q, sink_q, sink_q>;                       // more arguments than axes
+  requires !composable<fwd_q, drift_q, quantity<isq::velocity[km / h]>>;      // a bare velocity is not an axis
+  requires !composable<fwd_q, drift_q, quantity<isq::acceleration[m / s2]>>;  // an unrelated kind
+  requires !composable<double, double, double>;                               // plain numbers name no axis
+  // a quantity kind converts into every quantity of its hierarchy, so it fits every position and
+  // forfeits the order check: reaching for one is the usual way to opt out of kind safety, and this
+  // constructor does not second-guess it
+  requires composable<quantity<km / h>, quantity<km / h>, quantity<km / h>>;
+  requires composable<fwd_q, drift_q, quantity<km / h>>;
+  // a unit conversion per argument is fine as long as it is value-preserving
+  requires composable<fwd_q, quantity<wind_drift[m / s]>, sink_q>;
+  // and the ordinary truncation rules apply to each argument on its own: a floating-point component
+  // does not narrow into an integral representation, and m/s does not scale into an integral km/h one
+  requires composable_integral<quantity<forward_velocity[km / h], int>, quantity<wind_drift[km / h], int>,
+                               quantity<sink_rate[km / h], int>>;
+  requires !composable_integral<fwd_q, drift_q, sink_q>;
+  requires !composable_integral<quantity<forward_velocity[km / h], int>, quantity<wind_drift[m / s], int>,
+                                quantity<sink_rate[km / h], int>>;
+};
+static_assert(invalid_compositions<>);
+
+// an undeclared whole composes too, from quantities of its own spec. There are no positions to tell
+// apart there, so order is unchecked and a quantity kind is accepted, but the count still is and each
+// argument is still converted into the unit the type pins.
+inline constexpr U undeclared_composed = {30.0 * isq::velocity[km / h], 10.0 * isq::velocity[m / s],
+                                          -2.5 * isq::velocity[km / h]};
+static_assert(get<1>(undeclared_composed).numerical_value_in(km / h) == 36.0);
+
+// so both round trips close: what `get` takes apart goes back together
+static_assert(U{get<0>(uv), get<1>(uv), get<2>(uv)} == uv);
+static_assert(Q{get<0>(v), get<1>(v), get<2>(v)} == v);
+
+using vel_q = quantity<isq::velocity[km / h]>;
+
+template<typename = void>
+concept undeclared_compositions = requires {
+  requires composable_undeclared<vel_q, vel_q, vel_q>;
+  requires composable_undeclared<quantity<km / h>, quantity<km / h>, quantity<km / h>>;
+  requires !composable_undeclared<vel_q, vel_q>;  // the representation holds three
+  requires !composable_undeclared<vel_q, vel_q, vel_q, vel_q>;
+  requires !composable_undeclared<fwd_q, drift_q, sink_q>;  // an axis is not a velocity of this kind
+};
+static_assert(undeclared_compositions<>);
 
 }  // namespace

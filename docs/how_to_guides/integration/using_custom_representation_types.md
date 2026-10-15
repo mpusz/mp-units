@@ -193,13 +193,14 @@ quantity speed = magnitude(v);  // 5 m/s
     V2 — they would need to return a _different_ quantity kind, which V2 _references_ cannot
     express. Compute those on the raw representation and re-attach the reference yourself.
 
-!!! info "Enabling decomposition into named components"
+!!! info "Enabling decomposition into components"
 
-    To let a vector _quantity_ built on your type split into named component
-    _quantities_, the type must be **indexable by a compile-time constant index** (the
-    index is a template argument, and the access need not be `constexpr`), through either
-    a tuple-like `get<Idx>` or a subscript `operator[]`. `cartesian_vector` and the
-    supported third-party vectors already qualify, so no extra code is needed there. See
+    To let a vector _quantity_ built on your type split into component _quantities_, the
+    type must be **indexable by a compile-time constant index** (the index is a template
+    argument, and the access need not be `constexpr`), through either a tuple-like
+    `get<Idx>` or a subscript `operator[]`, and it must report its length through
+    `std::tuple_size`. `cartesian_vector` and the supported third-party fixed-size vectors
+    already qualify, so no extra code is needed there. See
     [Decompose a Vector Quantity into Components](../advanced_usage/decompose_vector_quantity.md)
     for the full recipe.
 
