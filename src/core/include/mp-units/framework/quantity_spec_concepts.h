@@ -26,6 +26,7 @@
 #include <mp-units/bits/config.h>
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
+#include <mp-units/framework/quantity_character.h>
 #include <mp-units/framework/symbolic_expression.h>
 
 namespace mp_units {
@@ -70,6 +71,17 @@ namespace detail {
 template<typename T>
 concept QuantityKindSpec = QuantitySpec<T> && is_specialization_of<std::remove_const_t<T>, kind_of_>;
 
+// What a quantity specification admits, as a flag set per axis. Deliberately not public, and named
+// for the question it answers rather than for the old public `get_character`: a concrete
+// specification admits one character, while a quantity kind admits every one of them, and only
+// `admits()` / `admits_only()` can tell those apart. Public code asks `QuantitySpecOf` with a
+// character, or `QuantityOf` / `QuantityPointOf`, which also weigh the representation.
+template<QuantitySpec QS>
+[[nodiscard]] consteval character_mask admitted_character(QS qs)
+{
+  return qs._character_;
+}
+
 }  // namespace detail
 
 MP_UNITS_EXPORT template<QuantitySpec From, QuantitySpec To>
@@ -79,13 +91,26 @@ MP_UNITS_EXPORT template<QuantitySpec From, QuantitySpec To>
 [[nodiscard]] consteval bool explicitly_convertible(From from, To to);
 
 /**
- * @brief A concept matching all quantity specifications of a provided quantity spec value
+ * @brief A concept matching all quantity specifications of a provided property
  *
- * Satisfied by all quantity specifications that are implicitly convertible to the provided @c QS
- * value.
+ * `V` may be another quantity specification, in which case this is satisfied by every specification
+ * implicitly convertible to it, or a character (a bare `quantity_tensor_order`, a bare
+ * `quantity_field`, or a full `quantity_character`), in which case it is satisfied by every
+ * specification that *admits* that character.
+ *
+ * The two readings are guarded by disjoint argument types and never widen each other. "Admits"
+ * rather than "is": a concrete specification admits exactly one character, while a quantity kind
+ * admits every one of them, because a quantity of that kind may hold any. That is why this is the
+ * question to ask a specification, and why there is no character value to read back out of one.
+ *
+ * Ask this where no quantity exists yet to ask `QuantityOf` about, such as constraining a reference
+ * taken as a template parameter (`utility::polar_vector` requires a scalar radius exactly this way).
  */
-MP_UNITS_EXPORT template<typename T, auto QS>
+MP_UNITS_EXPORT template<typename T, auto V>
 concept QuantitySpecOf =
-  QuantitySpec<T> && QuantitySpec<MP_UNITS_NTTP_HACK(decltype(QS))> && (mp_units::implicitly_convertible(T{}, QS));
+  QuantitySpec<T> && ((QuantitySpec<MP_UNITS_NTTP_HACK(decltype(V))> && mp_units::implicitly_convertible(T{}, V)) ||
+                      (detail::CharacterValue<V> &&
+                       detail::overlaps(detail::admitted_character(T{}).order, detail::axis_mask<V>().order) &&
+                       detail::overlaps(detail::admitted_character(T{}).field, detail::axis_mask<V>().field)));
 
 }  // namespace mp_units

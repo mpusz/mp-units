@@ -62,7 +62,10 @@ static_assert(detail::Decomposable<flight_velocity, vec3>);
 // ---- get<Idx> and get<QS> return 1D-vector quantities of the right axis spec ----
 static_assert(QuantityOf<decltype(get<0>(v)), forward_velocity>);
 static_assert(QuantityOf<decltype(get<2>(v)), sink_rate>);
-static_assert(decltype(get<0>(v))::character == quantity_character{quantity_tensor_order::vector});
+// a component keeps the vector character of the whole, with the vector's element type
+static_assert(QuantityOf<decltype(get<0>(v)), quantity_tensor_order::vector>);
+static_assert(detail::admits_only(detail::admitted_character(decltype(get<0>(v))::quantity_spec).order,
+                                  quantity_tensor_order::vector));
 static_assert(std::is_same_v<decltype(get<0>(v))::rep, double>);  // component rep is the vector's value_type
 static_assert(std::is_same_v<decltype(get<2>(v)), decltype(get<sink_rate>(v))>);
 

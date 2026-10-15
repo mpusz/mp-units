@@ -56,6 +56,7 @@ add_library(
     natural_test.cpp
     photometric_test.cpp
     prime_test.cpp
+    quantity_character_test.cpp
     quantity_point_test.cpp
     quantity_spec_test.cpp
     ratio_test.cpp

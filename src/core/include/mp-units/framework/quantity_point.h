@@ -309,7 +309,11 @@ template<PointOrigin PO>
 // static_assert fires exactly once per (PO) rather than at each enforce_bounds call.
 template<PointOrigin PO>
 constexpr bool has_quantity_bounds_v = [] {
-  if constexpr (get_character(get_quantity_spec(PO{})) == quantity_character{}) {
+  // Named rather than nested in the condition: Clang 16 does not treat a consteval call whose argument
+  // is itself a consteval call as an immediate invocation inside a template, and a `constexpr` local
+  // makes each of the two calls one on its own.
+  constexpr detail::character_mask mask = detail::admitted_character(get_quantity_spec(PO{}));
+  if constexpr (detail::is_real_scalar(mask)) {
     if constexpr (requires { PO::_bounds_; } && utility::specified<decltype(PO::_bounds_)>) {
       static_assert(
         requires { PO::_bounds_.min; } || requires { PO::_bounds_.max; },
@@ -561,7 +565,15 @@ public:
   static constexpr Reference auto reference = R;
   static constexpr QuantitySpec auto quantity_spec = get_quantity_spec(reference);
   static constexpr Dimension auto dimension = get_dimension(quantity_spec);
-  static constexpr quantity_character character = get_character(quantity_spec);
+  // Kept for one release. It is ill-formed for a quantity kind, which admits every character and so
+  // has none to report; that is the very case where this member used to answer `scalar` for a
+  // vector-backed quantity. The initializer of a static data member is instantiated only on use, so
+  // merely naming such a quantity type stays fine.
+  [[deprecated(
+    "2.6.0: a quantity's character is no longer a value to inspect; ask "
+    "`QuantityPointOf<QP, quantity_tensor_order::vector>`, `QuantityPointOf<QP, quantity_field::complex>`, or "
+    "another character instead")]] static constexpr quantity_character character =
+    detail::definite_character<detail::admitted_character(quantity_spec)>();
   static constexpr Unit auto unit = get_unit(reference);
   static constexpr PointOrigin auto absolute_point_origin = detail::get_absolute_point_origin(PO);
   static constexpr PointOrigin auto point_origin = PO;

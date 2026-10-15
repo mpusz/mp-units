@@ -103,6 +103,41 @@ This page documents the version history and changes for the **mp-units** library
       `unit_symbol_formatting` and `dimension_symbol_formatting` now initialize their
       members with the concrete values those defaults pointed at, so behaviour is
       unchanged
+- (!) feat: a quantity kind no longer claims a character. A kind spans its whole quantity
+      tree (the `isq::speed` kind holds the scalar `isq::speed` and the vector
+      `isq::velocity` alike), and a simple quantity is of a kind as well, since the
+      specification its unit yields is a `kind_of<…>`, so
+      `cartesian_vector{3., 4., 0.} * m / s` is an ordinary vector quantity of that kind.
+      The character a kind used to report was inherited from its tree root, which made such
+      a quantity claim `scalar` and cost it `magnitude()`. A kind now constrains neither
+      axis, and the representation decides
+- (!) feat: `QuantityOf`, `QuantityPointOf`, and `QuantitySpecOf` now take a character in
+      place of a quantity specification, and that is how a character is asked about from now
+      on. No new concept is introduced: `QuantityPointOf` already dispatched on its second
+      argument (a specification or a point origin) and `RepresentationOf` already took this
+      exact character vocabulary, so both spellings and shape are ones the library already
+      had. `QuantityOf` with a character holds when the quantity's specification admits it
+      *and* the representation can fill the slot, which is the only formulation that works
+      for both halves of the problem: a kind admits every character, while `double` is a
+      valid scalar, 1D-vector, and degenerate tensor representation. The order axis stays
+      rank-ordered per clause 18 of ISO 80000-2:2019, so a 1D velocity stored in a `double`
+      is a vector quantity. `QuantitySpecOf` answers the same question where no quantity
+      exists yet, which is how `utility::polar_vector` requires a scalar radius. A specification
+      argument keeps its quantity-tree meaning throughout: the two readings are guarded by
+      disjoint argument types, so neither silently widens the other
+- fix: a quantity *point* can be asked about its character. `QuantityPointOf` takes a
+      character like `QuantityOf` does, so the guidance on the deprecated
+      `quantity_point::character` now names something a point can actually satisfy
+- (!) refactor: `get_character()` is no longer part of the public interface, and
+      `quantity::character` / `quantity_point::character` are deprecated in favour of the
+      character-taking concepts above. What a specification *admits* is now a set rather
+      than a value, so a raw character invited `== quantity_tensor_order::vector`, which
+      silently answered `false` for a kind that admits vector. The deprecated members
+      still report one for every concrete specification, and are ill-formed only for a
+      quantity kind, which is exactly the case they used to answer wrongly
+- fix: `magnitude()` is available again on a vector- or tensor-backed quantity of a kind
+      (e.g. `cartesian_vector{3., 4., 0.} * m / s`), and stays unavailable on a definite
+      scalar
 - feat: the GLM integration models the tuple protocol for `glm::vec`. GLM states a
       vector's length only through its static `length()`, so the plugin maps that onto
       `std::tuple_size` and adds the matching `std::tuple_element` and `get<I>`. A GLM

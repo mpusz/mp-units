@@ -26,23 +26,45 @@ Like other symbolic constants (units, references, point origins), a `quantity_sp
 expose public static data members. Its metadata is obtained through non-member functions:
 
 - `get_dimension(qs)` - extracts the dimension
-- `get_character(qs)` - extracts the character, a pair of `order` (scalar, vector, tensor)
-  and `field` (real, complex) axes
 
 !!! example
 
     ```cpp
     static_assert(get_dimension(isq::length) == isq::dim_length);
-    static_assert(get_character(isq::length) == quantity_character{});
-
     static_assert(get_dimension(isq::velocity) == isq::dim_length / isq::dim_time);
-    static_assert(get_character(isq::velocity) == quantity_character{quantity_tensor_order::vector});
-
-    // the character is a pair of orthogonal axes, each queryable on its own
-    static_assert(get_character(isq::length).order == quantity_tensor_order::scalar);
-    static_assert(get_character(isq::length).field == quantity_field::real);
-    static_assert(get_character(isq::velocity).order == quantity_tensor_order::vector);
     ```
+
+A quantity's [character](character_of_a_quantity.md) is deliberately **not** introspectable
+as a value. Ask what a quantity *is* instead, by handing
+[`QuantityOf`](concepts.md#QuantityOf) a character rather than a specification:
+
+!!! example
+
+    ```cpp
+    using enum quantity_tensor_order;
+
+    static_assert(QuantityOf<quantity<isq::speed[m / s], double>, scalar>);
+    static_assert(QuantityOf<quantity<isq::velocity[m / s], double>, vector>);   // a 1D velocity
+    static_assert(QuantityOf<quantity<isq::velocity[m / s], cartesian_vector<double>>, vector>);
+    static_assert(QuantityOf<quantity<isq::stress[Pa], cartesian_tensor<double>>, tensor>);
+    static_assert(QuantityOf<quantity<V, std::complex<double>>, quantity_field::complex>);
+    ```
+
+The reason is that a _quantity spec_ alone does not always have a character to report. A
+concrete one does, but a [quantity kind](systems_of_quantities.md) constrains neither axis:
+whichever representation you store decides. A
+[simple quantity](simple_and_typed_quantities.md) is of a kind too, since its spec is the
+`kind_of<…>` its unit yields, so there is no concrete quantity type in the hierarchy to
+narrow it down.
+
+```cpp
+const quantity a = cartesian_vector{3.0, 4.0, 0.0} * m / s;   // a vector quantity of the speed kind
+const quantity b = cartesian_tensor<double>{} * m / s;        // a tensor quantity of the same kind
+```
+
+Both are ordinary quantities, and no single value could describe the character of the kind
+they share. The concepts above answer for each *quantity*, weighing its spec together with
+its representation, which is the only place both halves of the question are known.
 
 
 ## `unit` and `Reference`

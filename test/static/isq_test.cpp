@@ -45,12 +45,14 @@ inline constexpr quantity_character tensor{quantity_tensor_order::tensor};
 // omitting it asserts the quantity is signed.
 [[nodiscard]] consteval bool verify(QuantitySpec auto q, quantity_character ch, Unit auto... units)
 {
-  return get_character(q) == ch && !is_non_negative(q) && (... && requires { q[units]; });
+  return detail::admits_only(detail::admitted_character(q), ch) && !is_non_negative(q) &&
+         (... && requires { q[units]; });
 }
 
 [[nodiscard]] consteval bool verify(QuantitySpec auto q, quantity_character ch, struct non_negative, Unit auto... units)
 {
-  return get_character(q) == ch && is_non_negative(q) && (... && requires { q[units]; });
+  return detail::admits_only(detail::admitted_character(q), ch) && is_non_negative(q) &&
+         (... && requires { q[units]; });
 }
 
 // space and time
