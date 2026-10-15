@@ -160,7 +160,7 @@ concept OrderRaisingRepresentation = requires { requires tensor_order<T> >= 1; }
 // a real->complex field mismatch is not bridged either.
 template<auto QS>
 concept ScalarCharacterSpec =
-  QuantitySpec<MP_UNITS_NTTP_HACK(decltype(QS))> && (get_character(QS).order == quantity_tensor_order::scalar);
+  QuantitySpec<MP_UNITS_NTTP_HACK(decltype(QS))> && admits(admitted_character(QS).order, quantity_tensor_order::scalar);
 
 template<auto QS, typename Func, typename T, typename U>
 concept ScalableResultOf =
@@ -596,7 +596,17 @@ public:
   static constexpr Reference auto reference = R;
   static constexpr QuantitySpec auto quantity_spec = get_quantity_spec(reference);
   static constexpr Dimension auto dimension = get_dimension(quantity_spec);
-  static constexpr quantity_character character = get_character(quantity_spec);
+#if !MP_UNITS_EAGER_STATIC_MEMBER_INIT_HACK
+  // Kept for one release. It is ill-formed for a quantity kind, which admits every character and so
+  // has none to report; that is the very case where this member used to answer `scalar` for a
+  // vector-backed quantity. The initializer of a static data member is instantiated only on use, so
+  // merely naming such a quantity type stays fine.
+  [[deprecated(
+    "2.6.0: a quantity's character is no longer a value to inspect; ask "
+    "`QuantityOf<Q, quantity_tensor_order::vector>`, `QuantityOf<Q, quantity_field::complex>`, or "
+    "another character instead")]] static constexpr quantity_character character =
+    detail::definite_character<detail::admitted_character(quantity_spec)>();
+#endif
   static constexpr Unit auto unit = get_unit(reference);
   using rep = Rep;
 
@@ -791,7 +801,13 @@ public:
   // built from scalar base units (e.g. `km/h`); for one tied to a vector spec (e.g. `N`) the result
   // keeps `vector` character, so one could even take the magnitude of a magnitude. A known V2 limitation.
   [[nodiscard]] constexpr Quantity auto magnitude() const
-    requires(get_character(quantity_spec).order >= quantity_tensor_order::vector) && detail::HasMagnitude<rep>
+    // A magnitude belongs to a vector or a tensor, never to a scalar (ISO 80000-2:2019, 18), and the
+    // representation has to be able to produce one. The two questions are separate: a quantity kind
+    // permits both orders, and `double` fills either slot, but neither fact alone says the value has a
+    // norm to compute.
+    requires(QuantityOf<quantity, quantity_tensor_order::vector> ||
+             QuantityOf<quantity, quantity_tensor_order::tensor>) &&
+            detail::HasMagnitude<rep>
   {
     return ::mp_units::magnitude(numerical_value_is_an_implementation_detail_) * unit;
   }

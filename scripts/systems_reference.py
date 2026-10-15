@@ -4588,14 +4588,17 @@ class CppMetadataExtractor:
                 "",
                 "constexpr std::string_view character_to_string(quantity_character ch)",
                 "{",
-                '  if (ch == quantity_character{}) return "scalar";',
-                '  if (ch == quantity_character{quantity_field::complex}) return "complex scalar";',
-                '  if (ch == quantity_character{quantity_tensor_order::vector}) return "vector";',
-                "  if (ch == quantity_character{quantity_tensor_order::vector, quantity_field::complex}) "
-                'return "complex vector";',
-                '  if (ch == quantity_character{quantity_tensor_order::tensor}) return "tensor";',
-                "  if (ch == quantity_character{quantity_tensor_order::tensor, quantity_field::complex}) "
-                'return "complex tensor";',
+                "  // `quantity_character` has no comparison operators (both axes are flag sets), so"
+                " read the axes",
+                "  const bool is_complex = ch.field == quantity_field::complex;",
+                "  switch (ch.order) {",
+                "    case quantity_tensor_order::scalar:",
+                '      return is_complex ? "complex scalar" : "scalar";',
+                "    case quantity_tensor_order::vector:",
+                '      return is_complex ? "complex vector" : "vector";',
+                "    case quantity_tensor_order::tensor:",
+                '      return is_complex ? "complex tensor" : "tensor";',
+                "  }",
                 '  return "unknown";',
                 "}",
                 "",
@@ -4605,8 +4608,9 @@ class CppMetadataExtractor:
                 "{",
                 '  std::cout << namespace_name << ","'
                 '            << name << ","'
-                '            << character_to_string(qs.character) << ","'
-                '            << dimension_symbol(qs.dimension) << ","'
+                "            << character_to_string("
+                'detail::definite_character<detail::admitted_character(QS{})>()) << ","'
+                '            << dimension_symbol(get_dimension(qs)) << ","'
                 '            << std::boolalpha << (qs == detail::get_kind_tree_root(qs)) << ","'
                 '            << detail::type_name<decltype(get_kind(qs))>() << ","'
                 '            << get_parent(qs) << ","'

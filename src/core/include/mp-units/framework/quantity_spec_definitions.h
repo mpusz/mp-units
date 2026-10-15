@@ -118,21 +118,40 @@ template<QuantitySpec QS, UnitOf<QS{}> U>
     return reference<QS, U>{};
 }
 
-template<std::same_as<quantity_character>... Ts>
-[[nodiscard]] consteval quantity_character common_quantity_character(Ts... args)
+// The character of a quantity formed from other quantities. Per axis, the highest rank among the
+// factors wins (`displacement / duration` is a vector because `displacement` is), except that a
+// factor constraining nothing makes the result constrain nothing: `kind_of<length> / kind_of<time>`
+// admits whatever representation the user stores, so claiming `scalar` for it would be the same
+// fabrication a kind's own character used to make.
+template<std::same_as<character_mask>... Ts>
+[[nodiscard]] consteval character_mask common_quantity_character(Ts... args)
 {
-  return detail::max({args...});
+  quantity_tensor_order order = quantity_tensor_order::scalar;
+  quantity_field field = quantity_field::real;
+  bool order_unconstrained = false;
+  bool field_unconstrained = false;
+  for (const character_mask mask : {args...}) {
+    if (!is_definite(mask.order))
+      order_unconstrained = true;
+    else
+      order = detail::max(order, highest_order(mask.order));
+    if (!is_definite(mask.field))
+      field_unconstrained = true;
+    else
+      field = detail::max(field, highest_field(mask.field));
+  }
+  return character_mask{order_unconstrained ? any_order : to_flags(order),
+                        field_unconstrained ? any_field : to_flags(field)};
 }
 
 template<typename... Qs1, typename... Qs2>
-[[nodiscard]] consteval quantity_character derived_quantity_character(const type_list<Qs1...>&,
-                                                                      const type_list<Qs2...>&)
+[[nodiscard]] consteval character_mask derived_quantity_character(const type_list<Qs1...>&, const type_list<Qs2...>&)
 {
-  constexpr quantity_character num =
-    detail::common_quantity_character(quantity_character{}, get_character(expr_type<Qs1>{})...);
-  constexpr quantity_character den =
-    detail::common_quantity_character(quantity_character{}, get_character(expr_type<Qs2>{})...);
-  return detail::max(num, den);
+  constexpr character_mask num =
+    detail::common_quantity_character(character_mask{}, detail::admitted_character(expr_type<Qs1>{})...);
+  constexpr character_mask den =
+    detail::common_quantity_character(character_mask{}, detail::admitted_character(expr_type<Qs2>{})...);
+  return detail::common_quantity_character(num, den);
 }
 
 /**
@@ -142,20 +161,25 @@ template<typename... Qs1, typename... Qs2>
  * Otherwise, an inherited/derived value provided through the function argument is returned.
  */
 template<auto... Args>
-[[nodiscard]] consteval quantity_character quantity_character_init(quantity_character inherited)
+[[nodiscard]] consteval character_mask quantity_character_init(character_mask inherited)
 {
-  quantity_character ch = inherited;
+  quantity_character ch{};
+  bool declared = false;
   // public compatibility spelling: `quantity_character::vector` etc. set both axes at once
   MP_UNITS_DIAGNOSTIC_PUSH
   MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
-  if constexpr (mp_units::contains<quantity_character_legacy, Args...>())
+  if constexpr (mp_units::contains<quantity_character_legacy, Args...>()) {
     ch = mp_units::get<quantity_character_legacy, Args...>();
+    declared = true;
+  }
   MP_UNITS_DIAGNOSTIC_POP
   // two-axis spelling: each axis may be overridden independently, inheriting the other
+  character_mask mask = declared ? to_mask(ch) : inherited;
   if constexpr (mp_units::contains<quantity_tensor_order, Args...>())
-    ch.order = mp_units::get<quantity_tensor_order, Args...>();
-  if constexpr (mp_units::contains<quantity_field, Args...>()) ch.field = mp_units::get<quantity_field, Args...>();
-  return ch;
+    mask.order = to_flags(mp_units::get<quantity_tensor_order, Args...>());
+  if constexpr (mp_units::contains<quantity_field, Args...>())
+    mask.field = to_flags(mp_units::get<quantity_field, Args...>());
+  return mask;
 }
 
 template<QuantitySpec auto... From, QuantitySpec Q>
@@ -202,12 +226,6 @@ struct quantity_spec_interface_base {
   [[nodiscard]] friend consteval Dimension auto get_dimension(QS qs)
   {
     return qs._dimension_;
-  }
-
-  template<QuantitySpec QS>
-  [[nodiscard]] friend consteval quantity_character get_character(QS qs)
-  {
-    return qs._character_;
   }
 
   template<QuantitySpec Lhs, QuantitySpec Rhs>
@@ -427,8 +445,9 @@ struct quantity_spec<Self, Dim, Args...> : detail::quantity_spec_interface<Self>
 #endif
   using _base_type_ = quantity_spec;
   static constexpr detail::BaseDimension auto _dimension_ = Dim;
-  static constexpr quantity_character _character_ = detail::quantity_character_init<Args...>(quantity_character{});
-  static_assert(!mp_units::contains<struct non_negative, Args...>() || _character_ == quantity_character{},
+  static constexpr detail::character_mask _character_ =
+    detail::quantity_character_init<Args...>(detail::character_mask{});
+  static_assert(!mp_units::contains<struct non_negative, Args...>() || detail::is_real_scalar(_character_),
                 "non_negative can only be applied to real scalar quantities");
   static_assert(!(mp_units::contains<struct non_negative, Args...>() &&
                   mp_units::contains<struct possibly_negative, Args...>()),
@@ -437,7 +456,9 @@ struct quantity_spec<Self, Dim, Args...> : detail::quantity_spec_interface<Self>
 
   [[deprecated("2.6.0: use `get_dimension(qs)` instead")]] static constexpr detail::BaseDimension auto dimension =
     _dimension_;
-  [[deprecated("2.6.0: use `get_character(qs)` instead")]] static constexpr quantity_character character = _character_;
+  [[deprecated(
+    "2.6.0: character is no longer part of the public interface; ask the named quantity concepts "
+    "instead")]] static constexpr quantity_character character = detail::definite_character<_character_>();
 };
 
 /**
@@ -479,8 +500,9 @@ struct quantity_spec<Self, Eq, Args...> : detail::quantity_spec_interface<Self> 
   static constexpr auto _equation_ = Eq;
   static constexpr Dimension auto _dimension_ = get_dimension(Eq);
 
-  static constexpr quantity_character _character_ = detail::quantity_character_init<Args...>(get_character(Eq));
-  static_assert(!mp_units::contains<struct non_negative, Args...>() || _character_ == quantity_character{},
+  static constexpr detail::character_mask _character_ =
+    detail::quantity_character_init<Args...>(detail::admitted_character(Eq));
+  static_assert(!mp_units::contains<struct non_negative, Args...>() || detail::is_real_scalar(_character_),
                 "non_negative can only be applied to real scalar quantities");
   static_assert(!(mp_units::contains<struct non_negative, Args...>() &&
                   mp_units::contains<struct possibly_negative, Args...>()),
@@ -488,7 +510,9 @@ struct quantity_spec<Self, Eq, Args...> : detail::quantity_spec_interface<Self> 
   static constexpr bool _is_non_negative_ = mp_units::contains<struct non_negative, Args...>();
 
   [[deprecated("2.6.0: use `get_dimension(qs)` instead")]] static constexpr Dimension auto dimension = _dimension_;
-  [[deprecated("2.6.0: use `get_character(qs)` instead")]] static constexpr quantity_character character = _character_;
+  [[deprecated(
+    "2.6.0: character is no longer part of the public interface; ask the named quantity concepts "
+    "instead")]] static constexpr quantity_character character = detail::definite_character<_character_>();
 };
 
 namespace detail {
@@ -542,18 +566,21 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
   using _base_type_ = quantity_spec;
   static constexpr auto _parent_ = QS;
   static constexpr Dimension auto _dimension_ = get_dimension(_parent_);
-  static constexpr quantity_character _character_ = detail::quantity_character_init<Args...>(get_character(QS));
-  static_assert(!mp_units::contains<struct non_negative, Args...>() || _character_ == quantity_character{},
+  static constexpr detail::character_mask _character_ =
+    detail::quantity_character_init<Args...>(detail::admitted_character(QS));
+  static_assert(!mp_units::contains<struct non_negative, Args...>() || detail::is_real_scalar(_character_),
                 "non_negative can only be applied to real scalar quantities");
   static_assert(!(mp_units::contains<struct non_negative, Args...>() &&
                   mp_units::contains<struct possibly_negative, Args...>()),
                 "non_negative and possibly_negative are mutually exclusive");
   static constexpr bool _is_non_negative_ =
     mp_units::contains<struct non_negative, Args...>() || (!mp_units::contains<struct possibly_negative, Args...>() &&
-                                                           _character_ == quantity_character{} && QS._is_non_negative_);
+                                                           detail::is_real_scalar(_character_) && QS._is_non_negative_);
 
   [[deprecated("2.6.0: use `get_dimension(qs)` instead")]] static constexpr Dimension auto dimension = _dimension_;
-  [[deprecated("2.6.0: use `get_character(qs)` instead")]] static constexpr quantity_character character = _character_;
+  [[deprecated(
+    "2.6.0: character is no longer part of the public interface; ask the named quantity concepts "
+    "instead")]] static constexpr quantity_character character = detail::definite_character<_character_>();
 };
 
 // clang-format off
@@ -601,18 +628,21 @@ struct quantity_spec<Self, QS, Eq, Args...> : detail::quantity_spec_interface<Se
   static constexpr auto _equation_ = Eq;
   static constexpr Dimension auto _dimension_ = get_dimension(_parent_);
 
-  static constexpr quantity_character _character_ = detail::quantity_character_init<Args...>(get_character(Eq));
-  static_assert(!mp_units::contains<struct non_negative, Args...>() || _character_ == quantity_character{},
+  static constexpr detail::character_mask _character_ =
+    detail::quantity_character_init<Args...>(detail::admitted_character(Eq));
+  static_assert(!mp_units::contains<struct non_negative, Args...>() || detail::is_real_scalar(_character_),
                 "non_negative can only be applied to real scalar quantities");
   static_assert(!(mp_units::contains<struct non_negative, Args...>() &&
                   mp_units::contains<struct possibly_negative, Args...>()),
                 "non_negative and possibly_negative are mutually exclusive");
   static constexpr bool _is_non_negative_ =
     mp_units::contains<struct non_negative, Args...>() || (!mp_units::contains<struct possibly_negative, Args...>() &&
-                                                           _character_ == quantity_character{} && QS._is_non_negative_);
+                                                           detail::is_real_scalar(_character_) && QS._is_non_negative_);
 
   [[deprecated("2.6.0: use `get_dimension(qs)` instead")]] static constexpr Dimension auto dimension = _dimension_;
-  [[deprecated("2.6.0: use `get_character(qs)` instead")]] static constexpr quantity_character character = _character_;
+  [[deprecated(
+    "2.6.0: character is no longer part of the public interface; ask the named quantity concepts "
+    "instead")]] static constexpr quantity_character character = detail::definite_character<_character_>();
 };
 
 namespace detail {
@@ -634,12 +664,14 @@ struct derived_quantity_spec_impl :
 
   static constexpr Dimension auto _dimension_ =
     detail::expr_map<to_dimension, derived_dimension, struct dimension_one>(_base_{});
-  static constexpr quantity_character _character_ =
+  static constexpr detail::character_mask _character_ =
     detail::derived_quantity_character(typename _base_::_num_{}, typename _base_::_den_{});
   static constexpr bool _is_non_negative_ = false;
 
   [[deprecated("2.6.0: use `get_dimension(qs)` instead")]] static constexpr Dimension auto dimension = _dimension_;
-  [[deprecated("2.6.0: use `get_character(qs)` instead")]] static constexpr quantity_character character = _character_;
+  [[deprecated(
+    "2.6.0: character is no longer part of the public interface; ask the named quantity concepts "
+    "instead")]] static constexpr quantity_character character = detail::definite_character<_character_>();
 };
 
 }  // namespace detail
@@ -725,6 +757,12 @@ struct kind_of_<Q> : quantity_spec<kind_of_<Q>, Q{}>::_base_type_ {
   // coordinates (e.g. displacement, altitude, depth) — so it can never be universally
   // non-negative, even when the tree root carries a non_negative tag.
   static constexpr bool _is_non_negative_ = false;
+  // For exactly the same reason it constrains neither character axis. The tree cannot tell us which
+  // orders a kind admits: a user may store a vector or a tensor representation in a kind quantity
+  // without ever declaring a quantity specification for it (that is what a simple quantity is), so
+  // inheriting the root's character would claim `scalar` for a value that is nothing of the sort.
+  // A kind therefore names every flag on both axes, and the representation decides.
+  static constexpr detail::character_mask _character_{detail::any_order, detail::any_field};
 };
 
 MP_UNITS_EXPORT template<QuantitySpec auto Q>
