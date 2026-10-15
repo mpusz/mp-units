@@ -717,22 +717,6 @@ template<QuantitySpec Q>
   requires requires { get_dimension(Q{}); }
 using to_dimension = MP_UNITS_NONCONST_TYPE(get_dimension(Q{}));
 
-// What the deprecated `character` of a derived quantity specification reports. A specification that
-// keeps a kind per factor admits several characters, like a quantity kind, so it has none to report:
-// its member is a tag that no use compiles with. A definite mask reports as before. MSVC evaluates
-// the initializer of a static member at class instantiation, so the tag has to be a constant rather
-// than the ill-formed evaluation `definite_character` gives a kind.
-struct no_character_of_a_kind_factor {};
-
-template<character_mask Mask>
-[[nodiscard]] constexpr auto deprecated_derived_character()
-{
-  if constexpr (is_definite(Mask.order) && is_definite(Mask.field))
-    return detail::definite_character<Mask>();
-  else
-    return no_character_of_a_kind_factor{};
-}
-
 template<typename... Expr>
 struct derived_quantity_spec_impl :
 #if MP_UNITS_API_NO_CRTP
@@ -751,9 +735,13 @@ struct derived_quantity_spec_impl :
   static constexpr bool _is_non_negative_ = false;
 
   [[deprecated("2.6.0: use `get_dimension(qs)` instead")]] static constexpr Dimension auto dimension = _dimension_;
+  // A specification with a kind factor admits several characters, like a quantity kind, so its
+  // member is ill-formed on use like a kind's, and the MSVC hack omits it for the same reason
+#if !MP_UNITS_EAGER_STATIC_MEMBER_INIT_HACK
   [[deprecated(
     "2.6.0: character is no longer part of the public interface; ask the named quantity concepts "
-    "instead")]] static constexpr auto character = detail::deprecated_derived_character<_character_>();
+    "instead")]] static constexpr quantity_character character = detail::definite_character<_character_>();
+#endif
 };
 
 }  // namespace detail
