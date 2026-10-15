@@ -48,15 +48,48 @@ namespace mp_units::detail {
 template<typename Q>
 concept HasParent = requires { Q::_parent_; };
 
-// Either its own equation or the one propagated from the parent (see `propagate_equation`).
+// Either its own equation or the one propagated from the parent (see `propagate_equation`). An
+// open factor has the equation of the quantity it wraps, with every factor open in turn.
 template<typename Q>
-concept HasEquation = requires { Q::_equation_; };
+  struct has_equation : std::bool_constant < requires {
+  Q::_equation_;
+}>{};
+
+template<typename N>
+struct has_equation<open_factor<N>> : has_equation<N> {};
+
+template<typename Q>
+concept HasEquation = has_equation<Q>::value;
 
 template<HasParent Q>
 using parent_of = MP_UNITS_NONCONST_TYPE(Q::_parent_);
 
+template<typename E>
+struct open_element : std::type_identity<open_factor<E>> {};
+
+template<typename T, int... Ints>
+struct open_element<power<T, Ints...>> : std::type_identity<power<open_factor<T>, Ints...>> {};
+
+template<typename List>
+struct open_elements;
+
+template<typename... Ts>
+struct open_elements<type_list<Ts...>> : std::type_identity<type_list<typename open_element<Ts>::type...>> {};
+
+template<typename Q>
+struct equation_of_impl : std::type_identity<MP_UNITS_NONCONST_TYPE(Q::_equation_)> {};
+
+template<typename N>
+struct open_equation {
+  using _num_ = open_elements<typename equation_of_impl<N>::type::_num_>::type;
+  using _den_ = open_elements<typename equation_of_impl<N>::type::_den_>::type;
+};
+
+template<typename N>
+struct equation_of_impl<open_factor<N>> : std::type_identity<open_equation<N>> {};
+
 template<HasEquation Q>
-using equation_of = MP_UNITS_NONCONST_TYPE(Q::_equation_);
+using equation_of = equation_of_impl<Q>::type;
 
 // root
 
@@ -65,6 +98,9 @@ struct hierarchy_root_impl : std::type_identity<Q> {};
 
 template<HasParent Q>
 struct hierarchy_root_impl<Q> : hierarchy_root_impl<parent_of<Q>> {};
+
+template<typename N>
+struct hierarchy_root_impl<open_factor<N>> : hierarchy_root_impl<N> {};
 
 template<typename Q>
 using hierarchy_root = hierarchy_root_impl<Q>::type;
@@ -100,7 +136,9 @@ template<typename Ancestor, typename Q>
 template<typename Q>
 [[nodiscard]] consteval bool defines_equation()
 {
-  if constexpr (!HasEquation<Q>)
+  if constexpr (is_open_factor<Q>)
+    return detail::defines_equation<unwrap_open_factor<Q>>();
+  else if constexpr (!HasEquation<Q>)
     return false;
   else if constexpr (!HasParent<Q>)
     return true;
@@ -138,6 +176,9 @@ struct quantity_spec_depth : std::integral_constant<int, 0> {};
 
 template<HasEquation Q>
 struct quantity_spec_depth<Q> : std::integral_constant<int, detail::equation_depth<equation_of<Q>>()> {};
+
+template<typename N>
+struct quantity_spec_depth<open_factor<N>> : quantity_spec_depth<N> {};
 
 // nearest common ancestor
 

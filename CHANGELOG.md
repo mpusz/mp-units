@@ -349,6 +349,15 @@ This page documents the version history and changes for the **mp-units** library
       `mag<pi_c> * metre`
 - fix: `pow()` of a dimension, a quantity specification, or a unit with a negative exponent
       (e.g., `pow<-1>(metre)`) failed to compile and now yields the inverted expression
+- (!) refactor: a quantity equation keeps a kind per factor. A kind operand becomes a kind
+      factor of the result and a typed operand stays typed.
+      `kind_of<isq::length> / isq::duration` is now
+      `derived_quantity_spec<kind_of_<isq::length>, per<isq::duration>>` rather than
+      `isq::length / isq::duration`, so `42 * m / isq::duration(2 * s)` converts implicitly
+      to a child of `isq::speed` defined over `isq::height`, which it couldn't before. A
+      result whose factors are all kinds is a kind as before. A kind factor and a typed
+      factor of one tree stay separate, so `isq::duration(2 * s) / (1 * s)` is a ratio of
+      two _durations_ rather than `dimensionless`, and still converts to it implicitly
 - (!) refactor: `inverse()` of a dimension, a quantity specification, or a unit is now a
       hidden friend, like `pow()`, `sqrt()`, and `cbrt()`. An unqualified call works as
       before, but `mp_units::inverse(m)` no longer compiles and needs the qualification

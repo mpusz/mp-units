@@ -164,11 +164,14 @@ static_assert(
   is_of_type<
     2 / time[second],
     quantity<reference<derived_quantity_spec<dimensionless_, per<time_>>, derived_unit<one_, per<second_>>>{}, int>>);
+// a unit's factor stays open (a `kind_of_` factor): the unit does not say which time it is
 static_assert(
-  is_of_type<1 * time[second] * second, quantity<reference<decltype(pow<2>(time)), decltype(pow<2>(second))>{}, int>>);
+  is_of_type<1 * time[second] * second,
+             quantity<reference<derived_quantity_spec<time_, kind_of_<time_>>, decltype(pow<2>(second))>{}, int>>);
 static_assert(is_of_type<1 * time[second] * time[second],
                          quantity<reference<decltype(pow<2>(time)), decltype(pow<2>(second))>{}, int>>);
-static_assert(is_of_type<1 * time[second] / second, quantity<reference<dimensionless_, one_>{}, int>>);
+static_assert(is_of_type<1 * time[second] / second,
+                         quantity<reference<derived_quantity_spec<time_, per<kind_of_<time_>>>, one_>{}, int>>);
 static_assert(is_of_type<1 * time[second] / time[second], quantity<reference<dimensionless_, one_>{}, int>>);
 
 static_assert(
@@ -221,11 +224,20 @@ static_assert(time[second] != second);
 static_assert(second * second != time[second] * time[second]);
 static_assert(second * time[second] == time[second] * second);
 static_assert(is_of_type<second * time[second], decltype(time[second] * second)>);
-static_assert(is_of_type<second * time[second], decltype(time[second] * time[second])>);
+static_assert(!is_of_type<second * time[second], decltype(time[second] * time[second])>);
+static_assert(
+  is_of_type<second * time[second],
+             reference<derived_quantity_spec<time_, kind_of_<time_>>, derived_unit<mp_units::power<second_, 2>>>>);
 static_assert(metre / second != length[metre] / time[second]);
-static_assert(metre / time[second] == length[metre] / second);
-static_assert(is_of_type<metre / time[second], decltype(length[metre] / second)>);
-static_assert(is_of_type<metre / time[second], decltype(length[metre] / time[second])>);
+// each of the two opens a different factor
+static_assert(metre / time[second] != length[metre] / second);
+static_assert(
+  is_of_type<metre / time[second],
+             reference<derived_quantity_spec<kind_of_<length_>, per<time_>>, derived_unit<metre_, per<second_>>>>);
+static_assert(
+  is_of_type<length[metre] / second,
+             reference<derived_quantity_spec<length_, per<kind_of_<time_>>>, derived_unit<metre_, per<second_>>>>);
+static_assert(!is_of_type<metre / time[second], decltype(length[metre] / time[second])>);
 static_assert(kind_of<length>[metre] == metre);
 
 template<auto QS, auto U>

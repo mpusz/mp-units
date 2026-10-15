@@ -78,11 +78,18 @@ template<HasParent Q>
   requires(!DeclaredKind<Q>)
 struct kind_root_impl<Q> : kind_root_impl<parent_of<Q>> {};
 
+// A kind factor wraps a kind root, and an open factor has the kind root of what it wraps.
+template<typename N>
+struct kind_root_impl<kind_of_<N>> : std::type_identity<N> {};
+
+template<typename N>
+struct kind_root_impl<open_factor<N>> : kind_root_impl<N> {};
+
 // The nearest ancestor-or-self declared with `is_kind`, else the root of the tree.
 template<typename Q>
 using kind_root = kind_root_impl<Q>::type;
 
-template<NamedQuantitySpec Q>
+template<QuantitySpec Q>
 using to_kind_root = kind_root<Q>;
 
 template<QuantitySpec Q>

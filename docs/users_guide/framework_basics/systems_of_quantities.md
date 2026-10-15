@@ -459,13 +459,32 @@ Additionally, the result of operations on quantity kinds is also a quantity kind
 static_assert(same_type<kind_of<isq::length> / kind_of<isq::duration>, kind_of<isq::length / isq::duration>>);
 ```
 
-However, if at least one equation's operand is not a quantity kind, the result becomes a "strong"
-quantity where all the kinds are converted to the hierarchy tree's root quantities:
+When a kind meets a typed quantity in one equation, the typed factor stays typed, and the
+kind factor stays a kind, spelled `kind_of_<...>` inside the derived quantity:
 
 ```cpp
 static_assert(!same_type<kind_of<isq::length> / isq::duration, kind_of<isq::length / isq::duration>>);
-static_assert(same_type<kind_of<isq::length> / isq::duration, isq::length / isq::duration>);
+static_assert(!same_type<kind_of<isq::length> / isq::duration, isq::length / isq::duration>);
+// the type of `kind_of<isq::length> / isq::duration` is
+// `derived_quantity_spec<kind_of_<isq::length>, per<isq::duration>>`
 ```
+
+Each factor then converts on its own. `42 * m / isq::duration(2 * s)` may become a
+_rate of climb_ because its _length_ is a kind and a _height_ is a _length_, while
+`isq::height(42 * m) / (2 * s)` is never a _horizontal speed_ implicitly:
+
+```cpp
+inline constexpr struct rate_of_climb : quantity_spec<isq::speed, isq::height / isq::duration> {} rate_of_climb;
+inline constexpr struct horizontal_speed : quantity_spec<isq::speed, isq::width / isq::duration> {} horizontal_speed;
+
+static_assert(utility::implicitly_convertible((42 * m / isq::duration(2 * s)).quantity_spec, rate_of_climb));
+static_assert(utility::implicitly_convertible((isq::height(42 * m) / (2 * s)).quantity_spec, rate_of_climb));
+static_assert(!utility::implicitly_convertible((isq::height(42 * m) / (2 * s)).quantity_spec, horizontal_speed));
+```
+
+A kind factor and a typed factor of the same tree are different factors, like `isq::width`
+and `isq::length`, so `isq::duration(2 * s) / (1 * s)` is a ratio of two _durations_
+rather than `dimensionless`. It converts to `dimensionless` implicitly.
 
 !!! info
 

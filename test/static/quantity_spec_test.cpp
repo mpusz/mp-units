@@ -226,14 +226,15 @@ static_assert(!detail::NamedQuantitySpec<decltype(kind_of<length> / kind_of<leng
 static_assert(!detail::DerivedQuantitySpec<decltype(kind_of<length> / kind_of<length>)>);
 static_assert(detail::QuantityKindSpec<decltype(kind_of<length> / kind_of<length>)>);
 
+// a kind factor and a typed factor of one tree are different factors, like `width / length`
 static_assert(QuantitySpec<decltype(kind_of<length> / length)>);
-static_assert(detail::NamedQuantitySpec<decltype(kind_of<length> / length)>);
-static_assert(!detail::DerivedQuantitySpec<decltype(kind_of<length> / length)>);
+static_assert(!detail::NamedQuantitySpec<decltype(kind_of<length> / length)>);
+static_assert(detail::DerivedQuantitySpec<decltype(kind_of<length> / length)>);
 static_assert(!detail::QuantityKindSpec<decltype(kind_of<length> / length)>);
 
 static_assert(QuantitySpec<decltype(length / kind_of<length>)>);
-static_assert(detail::NamedQuantitySpec<decltype(length / kind_of<length>)>);
-static_assert(!detail::DerivedQuantitySpec<decltype(length / kind_of<length>)>);
+static_assert(!detail::NamedQuantitySpec<decltype(length / kind_of<length>)>);
+static_assert(detail::DerivedQuantitySpec<decltype(length / kind_of<length>)>);
 static_assert(!detail::QuantityKindSpec<decltype(length / kind_of<length>)>);
 
 static_assert(QuantitySpec<decltype(width / kind_of<length>)>);
@@ -500,6 +501,47 @@ static_assert(get_kind(angular_measure) == kind_of<angular_measure>);
 static_assert(get_kind(phase_angle) == kind_of<angular_measure>);
 static_assert(get_kind(rotational_displacement) == kind_of<angular_measure>);
 
+// kind factors: a quantity equation keeps what it knows about every factor. A typed operand stays
+// typed and a kind operand stays open (a `kind_of_` factor), and only a result whose factors are
+// all open is a kind of their product. Nothing a user states about one factor changes what is
+// known about another.
+static_assert(is_of_type<kind_of<length> / time, derived_quantity_spec<kind_of_<length_>, per<time_>>>);
+static_assert(is_of_type<height / kind_of<time>, derived_quantity_spec<height_, per<kind_of_<time_>>>>);
+static_assert(is_of_type<kind_of<length> * time, derived_quantity_spec<kind_of_<length_>, time_>>);
+static_assert(is_of_type<time * kind_of<length>, derived_quantity_spec<kind_of_<length_>, time_>>);
+// a kind factor and a typed factor of one tree are different factors, like `width / length`: they
+// never merge, so the result of an equation does not depend on how it is bracketed
+static_assert(is_of_type<kind_of<length> / length, derived_quantity_spec<kind_of_<length_>, per<length_>>>);
+static_assert(is_of_type<kind_of<length> / height, derived_quantity_spec<kind_of_<length_>, per<height_>>>);
+static_assert(is_of_type<kind_of<length> * length, derived_quantity_spec<length_, kind_of_<length_>>>);
+static_assert(
+  is_of_type<kind_of<length / time> * time, derived_quantity_spec<kind_of_<length_>, time_, per<kind_of_<time_>>>>);
+static_assert(is_of_type<(kind_of<length> / length) * length, kind_of_<length_>>);
+static_assert(is_of_type<kind_of<length>*(length / length), kind_of_<length_>>);
+static_assert(
+  is_of_type<(kind_of<length> / length) * height, derived_quantity_spec<height_, kind_of_<length_>, per<length_>>>);
+static_assert(
+  is_of_type<kind_of<length>*(height / length), derived_quantity_spec<height_, kind_of_<length_>, per<length_>>>);
+static_assert(is_of_type<(height * kind_of<time>) / time, derived_quantity_spec<height_, kind_of_<time_>, per<time_>>>);
+static_assert(is_of_type<(kind_of<length> / time) * (time / kind_of<length>), dimensionless_>);
+static_assert(is_of_type<(height / kind_of<time>)*kind_of<time>, height_>);
+static_assert(is_of_type<pow<2>(height / kind_of<time>),
+                         derived_quantity_spec<mp_units::power<height_, 2>, per<mp_units::power<kind_of_<time_>, 2>>>>);
+// all factors open: the kind of the product, as two kinds multiplied have always produced
+static_assert(is_of_type<kind_of<length> * kind_of<time>, kind_of_<derived_quantity_spec<length_, time_>>>);
+static_assert(is_of_type<(kind_of<length> * time) / time, kind_of_<length_>>);
+static_assert(
+  is_of_type<(height / kind_of<time>) / height, kind_of_<derived_quantity_spec<dimensionless_, per<time_>>>>);
+static_assert(is_of_type<inverse(kind_of<length>), kind_of_<derived_quantity_spec<dimensionless_, per<length_>>>>);
+static_assert(is_of_type<pow<-1>(kind_of<length>), kind_of_<derived_quantity_spec<dimensionless_, per<length_>>>>);
+// the kind of `dimensionless` is the identity of the algebra, like `dimensionless` itself
+static_assert(is_of_type<kind_of<dimensionless> * height, height_>);
+static_assert(is_of_type<kind_of<dimensionless> * kind_of<length>, kind_of_<length_>>);
+static_assert(is_of_type<kind_of<dimensionless> * kind_of<dimensionless>, kind_of_<dimensionless_>>);
+
+static_assert(get_kind(kind_of<length> / time) == kind_of<length / time>);
+static_assert(get_kind(height / kind_of<time>) == kind_of<length / time>);
+
 // comparisons of the same dimensions
 static_assert(length == length);
 static_assert(speed == speed);
@@ -510,6 +552,31 @@ static_assert(length / length == dimensionless);
 using namespace detail;
 
 using enum conversion_rank;
+
+// an open factor converts as a kind does, a typed factor as a typed quantity does
+static_assert(convertible(height / kind_of<time>, rate_of_climb) == implicit);
+static_assert(convertible(height / kind_of<time>, speed) == implicit);
+static_assert(convertible(height / kind_of<time>, horizontal_speed) == cast);  // the stated `height` is kept
+static_assert(convertible(height / kind_of<time>, special_speed) == explicit_only);
+static_assert(convertible(kind_of<length> / time, rate_of_climb) == implicit);  // the open `length` may be a `height`
+static_assert(convertible(kind_of<length> / time, horizontal_speed) == implicit);
+static_assert(convertible(kind_of<length> / time, special_speed) == explicit_only);
+static_assert(convertible(kind_of<length> / time, kind_of<length> / time) == implicit);
+static_assert(convertible(kind_of<length / time>, height / kind_of<time>) == implicit);
+static_assert(convertible(height / kind_of<time>, kind_of<length / time>) == implicit);
+static_assert(convertible(height / kind_of<time>, height / time) == implicit);
+static_assert(convertible(height / time, height / kind_of<time>) == implicit);
+static_assert(convertible(height / kind_of<time>, height / period_duration) == implicit);
+static_assert(convertible(height / time, height / period_duration) == explicit_only);
+static_assert(convertible(kind_of<length> / length, dimensionless) == implicit);
+static_assert(convertible(dimensionless, kind_of<length> / length) == explicit_only);
+static_assert(convertible(kind_of<length> / height, dimensionless) == implicit);
+static_assert(convertible(dimensionless, kind_of<length> / height) == explicit_only);
+// an open angle is still an angle
+static_assert(convertible(height / kind_of<angular_measure>, height) == explicit_only);
+static_assert(convertible(height / kind_of<angular_measure>, height / angular_measure) == implicit);
+static_assert(convertible(height / kind_of<angular_measure>, height / phase_angle) == implicit);
+static_assert(convertible(height / kind_of<angular_measure>, height / solid_angular_measure) == none);
 
 // different dimensions
 static_assert(convertible(mass, length) == none);

@@ -186,8 +186,11 @@ template<auto... Args>
   return mask;
 }
 
-template<QuantitySpec auto... From, QuantitySpec Q>
-[[nodiscard]] consteval QuantitySpec auto clone_kind_of(Q q);
+template<QuantitySpec Q>
+[[nodiscard]] consteval QuantitySpec auto open_kinds(Q q);
+
+template<QuantitySpec auto... Operands, QuantitySpec Q>
+[[nodiscard]] consteval QuantitySpec auto close_kinds(Q q);
 
 template<QuantitySpec Q>
 [[nodiscard]] consteval auto remove_kind(Q q);
@@ -202,24 +205,41 @@ struct kind_root_impl;
 // root, then the kind root, then the quantity itself. The roots are read from the class templates
 // behind `get_hierarchy_root` and `get_kind_tree_root`, so that no function is instantiated per
 // quantity.
+template<typename Q>
+struct quantity_spec_sort_key;
+
 template<NamedQuantitySpec Q>
-struct quantity_spec_sort_key {
+struct quantity_spec_sort_key<Q> {
   static constexpr std::string_view root = detail::type_name<hierarchy_root<Q>>();
   static constexpr std::string_view kind_root = detail::type_name<typename kind_root_impl<Q>::type>();
   static constexpr std::string_view name = detail::type_name<Q>();
+  static constexpr bool open = false;
 };
 
-template<NamedQuantitySpec Lhs, NamedQuantitySpec Rhs>
+// A kind factor sorts with the quantity it wraps, right after it, so that the two never merge and
+// a list keeps one element per name and openness.
+template<typename N>
+struct quantity_spec_sort_key<kind_of_<N>> : quantity_spec_sort_key<N> {
+  static constexpr bool open = true;
+};
+
+template<typename N>
+struct quantity_spec_sort_key<open_factor<N>> : quantity_spec_sort_key<N> {
+  static constexpr bool open = true;
+};
+
+template<typename Lhs, typename Rhs>
 consteval bool quantity_spec_less_value()
 {
   using lhs = quantity_spec_sort_key<Lhs>;
   using rhs = quantity_spec_sort_key<Rhs>;
   if (lhs::root != rhs::root) return lhs::root < rhs::root;
   if (lhs::kind_root != rhs::kind_root) return lhs::kind_root < rhs::kind_root;
-  return lhs::name < rhs::name;
+  if (lhs::name != rhs::name) return lhs::name < rhs::name;
+  return !lhs::open && rhs::open;
 }
 
-template<NamedQuantitySpec Lhs, NamedQuantitySpec Rhs>
+template<typename Lhs, typename Rhs>
 struct quantity_spec_less : std::bool_constant<quantity_spec_less_value<Lhs, Rhs>()> {};
 
 template<typename T1, typename T2>
@@ -238,17 +258,17 @@ struct quantity_spec_interface_base {
   template<QuantitySpec Lhs, QuantitySpec Rhs>
   [[nodiscard]] friend consteval QuantitySpec auto operator*(Lhs lhs, Rhs rhs)
   {
-    return detail::clone_kind_of<Lhs{}, Rhs{}>(
+    return detail::close_kinds<Lhs{}, Rhs{}>(
       detail::expr_multiply<derived_quantity_spec, dimensionless, type_list_of_quantity_spec_less>(
-        detail::remove_kind(lhs), detail::remove_kind(rhs)));
+        detail::open_kinds(lhs), detail::open_kinds(rhs)));
   }
 
   template<QuantitySpec Lhs, QuantitySpec Rhs>
   [[nodiscard]] friend consteval QuantitySpec auto operator/(Lhs lhs, Rhs rhs)
   {
-    return detail::clone_kind_of<Lhs{}, Rhs{}>(
+    return detail::close_kinds<Lhs{}, Rhs{}>(
       detail::expr_divide<derived_quantity_spec, dimensionless, type_list_of_quantity_spec_less>(
-        detail::remove_kind(lhs), detail::remove_kind(rhs)));
+        detail::open_kinds(lhs), detail::open_kinds(rhs)));
   }
 
   template<QuantitySpec Lhs, QuantitySpec Rhs>
@@ -265,25 +285,25 @@ struct quantity_spec_interface_base {
   //     requires(Den != 0)
   //   [[nodiscard]] friend consteval QuantitySpec auto pow(Q q)
   //   {
-  //     return detail::clone_kind_of<Q{}>(
+  //     return detail::close_kinds<Q{}>(
   //       detail::expr_pow<Num, Den, derived_quantity_spec, struct dimensionless,
-  //                        detail::type_list_of_quantity_spec_less>(detail::remove_kind(q)));
+  //                        detail::type_list_of_quantity_spec_less>(detail::open_kinds(q)));
   //   }
   template<std::intmax_t Num, std::intmax_t Den, QuantitySpec Q>
     requires(Den != 0)
   [[nodiscard]] friend consteval QuantitySpec auto pow(Q q)
   {
-    return detail::clone_kind_of<Q{}>(
+    return detail::close_kinds<Q{}>(
       detail::expr_pow<Num, Den, derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
-        detail::remove_kind(q)));
+        detail::open_kinds(q)));
   }
 
   template<std::intmax_t Num, QuantitySpec Q>
   [[nodiscard]] friend consteval QuantitySpec auto pow(Q q)
   {
-    return detail::clone_kind_of<Q{}>(
+    return detail::close_kinds<Q{}>(
       detail::expr_pow<Num, 1, derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
-        detail::remove_kind(q)));
+        detail::open_kinds(q)));
   }
 
   [[nodiscard]] friend consteval QuantitySpec auto sqrt(QuantitySpec auto q) { return pow<1, 2>(q); }
@@ -655,7 +675,7 @@ struct quantity_spec<Self, QS, Eq, Args...> : detail::quantity_spec_interface<Se
 
 namespace detail {
 
-template<NamedQuantitySpec Q>
+template<QuantitySpec Q>
   requires requires { get_dimension(Q{}); }
 using to_dimension = MP_UNITS_NONCONST_TYPE(get_dimension(Q{}));
 
@@ -779,12 +799,67 @@ constexpr kind_of_<MP_UNITS_NTTP_HACK(decltype(Q))> kind_of;
 
 namespace detail {
 
-template<QuantitySpec auto... From, QuantitySpec Q>
-[[nodiscard]] consteval QuantitySpec auto clone_kind_of(Q q)
+// Kinds in a quantity equation are kept per factor. `open_kinds` turns an operand `kind_of<K>` into
+// the factors of `K`, each a `kind_of_<N>` (a kind factor), so that a product keeps what it knows
+// about every factor: a typed operand stays typed and a kind operand stays open. The kind of
+// `dimensionless` is the identity of the algebra, like `dimensionless` itself.
+template<NamedQuantitySpec Q>
+using to_kind_factor = kind_of_<Q>;
+
+template<typename Q>
+struct from_kind_factor_impl : std::type_identity<Q> {};
+
+template<typename N>
+struct from_kind_factor_impl<kind_of_<N>> : std::type_identity<N> {};
+
+template<typename Q>
+using from_kind_factor = from_kind_factor_impl<Q>::type;
+
+template<QuantitySpec Q>
+[[nodiscard]] consteval QuantitySpec auto open_kinds(Q q)
 {
-  if constexpr ((... && QuantityKindSpec<MP_UNITS_NTTP_HACK(decltype(From))>))
-    return kind_of<Q{}>;
-  else
+  if constexpr (!QuantityKindSpec<Q>)
+    return q;
+  else {
+    using kind = MP_UNITS_NONCONST_TYPE(Q::_quantity_spec_);
+    if constexpr (std::is_same_v<kind, struct dimensionless>)
+      return dimensionless;
+    else if constexpr (NamedQuantitySpec<kind>)
+      return q;
+    else
+      return detail::expr_map<to_kind_factor, derived_quantity_spec, struct dimensionless,
+                              type_list_of_quantity_spec_less>(kind{});
+  }
+}
+
+template<typename... Ts>
+[[nodiscard]] consteval bool all_kind_factors(type_list<Ts...>)
+{
+  return (... && QuantityKindSpec<expr_type<Ts>>);
+}
+
+// The canonical form of a result whose factors are all open is the kind of the product of what
+// they wrap, which is what two kinds multiplied have always produced. A result with at least one
+// typed factor keeps its kind factors as they are: a kind factor and a typed factor of one tree are
+// different factors, like `width` and `length`, and only the conversion engine relates them.
+template<QuantitySpec auto... Operands, QuantitySpec Q>
+[[nodiscard]] consteval QuantitySpec auto close_kinds(Q q)
+{
+  if constexpr (QuantityKindSpec<Q>)
+    return q;
+  else if constexpr (std::is_same_v<Q, struct dimensionless>) {
+    // everything canceled: a kind only when every operand was one
+    if constexpr ((... && QuantityKindSpec<MP_UNITS_NTTP_HACK(decltype(Operands))>))
+      return kind_of<Q{}>;
+    else
+      return q;
+  } else if constexpr (is_specialization_of<Q, derived_quantity_spec>) {
+    if constexpr (detail::all_kind_factors(typename Q::_num_{}) && detail::all_kind_factors(typename Q::_den_{}))
+      return kind_of<detail::expr_map<from_kind_factor, derived_quantity_spec, struct dimensionless,
+                                      type_list_of_quantity_spec_less>(q)>;
+    else
+      return q;
+  } else
     return q;
 }
 
