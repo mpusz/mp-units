@@ -118,15 +118,15 @@ A conversion gets one of four ranks, ordered from worst to best:
 |------------|--------------------------------------------------------------------------------------------------------------|
 | `none`     | the quantities have nothing in common                                                                        |
 | `cast`     | same kind, different branches (`quantity_cast` is required)                                                  |
-| `explicit` | the target is more specific than the source, or the source carries a declared kind the target doesn't        |
+| `explicit` | the target is more specific than the source, or a declared kind is lost or gained                            |
 | `implicit` | every source quantity is a target quantity, or the source is an uncommitted kind that the target specializes |
 
 `implicitly_convertible()` is `true` for `implicit`, `explicitly_convertible()` for
 `implicit` and `explicit`, and `castable()` for all but `none`.
 
 A conversion is `explicit` for one of two reasons: the target is more specific than
-the source (a downcast), or the conversion drops a declared kind. The two reasons lead to
-the same rank with one exception, a source that is a kind, such as the
+the source (a downcast), or the conversion drops or gains a declared kind. The two
+reasons lead to the same rank with one exception, a source that is a kind, such as the
 `kind_of<isq::length>` that `42 * m` carries (see [Kinds](#kinds)). A kind hasn't
 committed to any quantity of its tree yet, so a downcast from it takes nothing away and is
 `implicit`: `kind_of<inverse(isq::time)>` converts to `isq::frequency` implicitly.
@@ -221,8 +221,10 @@ saying where. A conversion between a kind of a named quantity and a named quanti
 ranks `cast`.
 
 When the source is a kind, the target is `implicit` if it lies in the tree below `K`,
-sub-kinds included. If the target is above `K`, the kind has to leave its declared kind
-and the rank is `explicit`. Anything else is `none`:
+sub-kinds included, unless its equation lacks a declared kind that `K` carries, which
+makes it `explicit`. A child of _angular velocity_ defined as `inverse(duration)` is
+reached only explicitly. If the target is above `K`, the kind has to leave its declared
+kind and the rank is `explicit`. Anything else is `none`:
 
 ```cpp
 static_assert(implicitly_convertible(kind_of<isq::length>, isq::width));
@@ -236,10 +238,11 @@ This is why `quantity<isq::height[m]> tower_height = 42 * m;` compiles: the righ
 side is a quantity of kind _length_ and _height_ is a _length_.
 
 When the target is a kind, asking for "any quantity of kind `K`" is the same as asking for
-`K` itself. A source below `K` is `implicit`, or `explicit` if a declared kind lies
-on the way up, the source included and `K` excluded. A source above `K` is `explicit`,
-like any other downcast. Any other source, from another branch of the same tree or from a
-different tree, is `none`:
+`K` itself. A source below `K` is `implicit`, or `explicit` if one of them carries a
+declared kind the other doesn't, lying on the way up, the source included and `K`
+excluded, or carried by an equation. A source above `K` is `explicit`, like any other
+downcast. Any other source, from another branch of the same tree or from a different
+tree, is `none`:
 
 ```cpp
 static_assert(implicitly_convertible(isq::width, kind_of<isq::length>));
@@ -267,18 +270,22 @@ _frequency_ is defined over _period duration_, so this one needs `isq::frequency
 ## Two named quantities
 
 Between two named quantities their positions in the hierarchy decide. Equations are
-consulted only for the declared kinds they carry, as the kind boundary in
-[Derived quantities](#derived-quantities) describes.
+consulted only for the declared kinds they carry. The kind boundary described in
+[Derived quantities](#derived-quantities) lowers the rank of every rule below where a
+declared kind is lost or gained.
 
 1. Different trees: `none`. _Frequency_ and _activity_ both have the dimension of inverse
    time and have nothing in common.
-2. The source is a descendant of the target: `implicit`, unless the source carries a
-   declared kind that the target doesn't, which makes it `explicit`. The kind may lie on
+2. The source is a descendant of the target: `implicit`, unless one carries a declared
+   kind the other doesn't, which makes it `explicit`. A kind the source carries may lie on
    the way up, the source included and the target excluded, or come from the source's
    equation: _phase coefficient_ is defined as `phase_angle / path_length`, so it carries
-   a phase angle that its parent _propagation coefficient_ doesn't.
+   a phase angle that its parent _propagation coefficient_ doesn't. The reverse happens
+   too. A child defined as `inverse(duration)` under _angular velocity_ lacks the angle
+   its parent's equation carries, so its upcast is `explicit` as well.
 3. The target is a descendant of the source: `explicit`.
-4. Neither: `cast` if both have the same kind root, otherwise `none`.
+4. Neither: `cast` if both have the same kind root, otherwise `none`. Two such quantities
+   that each carry a declared kind the other lacks are `none` as well.
 
 ```cpp
 static_assert(!castable(isq::frequency, isq::activity));                     // 1
@@ -626,5 +633,5 @@ lower the result.
     `inverse(isq::period_duration)` to _frequency_, while `inverse(isq::time)` converts to
     _frequency_ only explicitly. Two exceptions: a declared kind is gained implicitly only
     from a source kind, and a source kind `kind_of<K>` converts implicitly to anything
-    below `K`, so `1 / (2 * s)`, a kind of `inverse(isq::time)`, converts to _frequency_
-    implicitly.
+    below `K` that keeps the kinds `K` carries, so `1 / (2 * s)`, a kind of
+    `inverse(isq::time)`, converts to _frequency_ implicitly.

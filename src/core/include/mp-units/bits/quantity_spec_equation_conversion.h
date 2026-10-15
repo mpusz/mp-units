@@ -225,18 +225,43 @@ template<typename FromNum, typename FromDen, typename ToNum, typename ToDen, boo
                                       SourceIsKind>();
 }
 
-// The tree rule looks only at positions in a hierarchy, so on its own it would let an upcast drop a
-// declared kind that only the source's equation carries: `isq::phase_coefficient`, defined as
-// `phase_angle / path_length`, below `isq::propagation_coefficient`, which carries no angle. Where the
-// tree rule says `implicit`, the kind boundary of the two quantities decides. Below `implicit` the
-// tree rule's answer stands.
-template<typename From, typename To, conversion_rank TreeRank>
+// The tree rule looks only at positions in a hierarchy, so on its own it would let a conversion drop
+// a declared kind that only the source's equation carries: `isq::phase_coefficient`, defined as
+// `phase_angle / path_length`, below `isq::propagation_coefficient`, which carries no angle. The kind
+// boundary of the two quantities lowers every answer of the tree rule, so a pair and its square rank
+// alike wherever a kind is only lost or only gained, and a kind source keeps its exemption for a
+// gained kind.
+// Between two single quantities the boundary needs no merge: if the target carries no declared kind,
+// the source can only lose one, and if the source carries none, it can only gain one. Only when both
+// carry kinds that differ is the comparison by parts needed, and a kind lost together with one gained
+// is a trade only between quantities that are not one another's ancestors. On a hierarchy edge the
+// two are ancestor and descendant, not unrelated kinds, so there the boundary lowers the rank to
+// `explicit_only` and never to `none`.
+template<typename From, typename To, conversion_rank TreeRank, bool SourceIsKind = false>
 [[nodiscard]] consteval conversion_rank with_kind_boundary()
 {
-  if constexpr (TreeRank != conversion_rank::implicit)
+  using enum conversion_rank;
+  using from = carried_kinds<From>;
+  using to = carried_kinds<To>;
+  constexpr bool from_carries = type_list_size<typename from::num> + type_list_size<typename from::den> > 0;
+  constexpr bool to_carries = type_list_size<typename to::num> + type_list_size<typename to::den> > 0;
+  if constexpr (TreeRank == none)
+    return none;
+  else if constexpr (std::is_same_v<typename from::num, typename to::num> &&
+                     std::is_same_v<typename from::den, typename to::den>)
     return TreeRank;
-  else
-    return detail::kind_boundary<type_list<From>, type_list<>, type_list<To>, type_list<>, false>();
+  else if constexpr (!to_carries)
+    return detail::weaker(TreeRank, explicit_only);
+  else if constexpr (!from_carries)
+    return SourceIsKind ? TreeRank : detail::weaker(TreeRank, explicit_only);
+  else {
+    constexpr conversion_rank boundary = detail::kind_boundary_rank<typename from::num, typename from::den,
+                                                                    typename to::num, typename to::den, SourceIsKind>();
+    if constexpr (boundary == none && TreeRank >= explicit_only)
+      return explicit_only;
+    else
+      return detail::weaker(TreeRank, boundary);
+  }
 }
 
 // operation ranks
@@ -808,7 +833,7 @@ template<typename FromNum, typename FromDen, typename ToNum, typename ToDen, boo
     using from = type_list_front<FromNum>;
     using to = type_list_front<ToNum>;
     if constexpr (SourceIsKind)
-      return detail::convertible_from_kind<from, to>();
+      return detail::with_kind_boundary<from, to, detail::convertible_from_kind<from, to>(), true>();
     else if constexpr (TargetIsKind)
       return detail::with_kind_boundary<from, to, detail::convertible_to_kind<from, to>()>();
     else
