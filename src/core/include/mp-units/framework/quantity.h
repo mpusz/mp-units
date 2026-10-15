@@ -596,6 +596,7 @@ public:
   static constexpr Reference auto reference = R;
   static constexpr QuantitySpec auto quantity_spec = get_quantity_spec(reference);
   static constexpr Dimension auto dimension = get_dimension(quantity_spec);
+#if !MP_UNITS_EAGER_STATIC_MEMBER_INIT_HACK
   // Kept for one release. It is ill-formed for a quantity kind, which admits every character and so
   // has none to report; that is the very case where this member used to answer `scalar` for a
   // vector-backed quantity. The initializer of a static data member is instantiated only on use, so
@@ -605,6 +606,7 @@ public:
     "`QuantityOf<Q, quantity_tensor_order::vector>`, `QuantityOf<Q, quantity_field::complex>`, or "
     "another character instead")]] static constexpr quantity_character character =
     detail::definite_character<detail::admitted_character(quantity_spec)>();
+#endif
   static constexpr Unit auto unit = get_unit(reference);
   using rep = Rep;
 

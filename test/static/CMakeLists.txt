@@ -56,7 +56,6 @@ add_library(
     natural_test.cpp
     photometric_test.cpp
     prime_test.cpp
-    quantity_character_test.cpp
     quantity_point_test.cpp
     quantity_spec_test.cpp
     ratio_test.cpp
@@ -74,8 +73,8 @@ add_library(
 
 if(NOT MP_UNITS_API_FREESTANDING)
     target_sources(
-        unit_tests_static PRIVATE fractional_exponent_quantity.cpp math_test.cpp uncertain_test.cpp
-                                  vector_components_test.cpp
+        unit_tests_static PRIVATE fractional_exponent_quantity.cpp math_test.cpp quantity_character_test.cpp
+                                  uncertain_test.cpp vector_components_test.cpp
     )
 endif()
 

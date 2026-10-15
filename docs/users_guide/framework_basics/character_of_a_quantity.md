@@ -261,9 +261,10 @@ static_assert(QuantityOf<quantity<V, std::complex<double>>, quantity_field::comp
 
 The same `QuantityOf` you already use to pin a _kind_ answers this, with a character in
 place of a specification. The two readings are guarded by disjoint argument types: a
-specification still means the quantity-tree question and never silently becomes a character
-one. A _quantity point_ asks [`QuantityPointOf`](concepts.md#QuantityPointOf) the same way,
-since a _point_ is not a `Quantity`.
+specification still means the quantity-tree question and never silently becomes a
+character one. A _quantity point_ asks
+[`QuantityPointOf`](../advanced_topics/concepts.md#QuantityPointOf) the same way, since a
+_point_ is not a `Quantity`.
 
 Neither half of that question is sufficient alone. A spec is not, because a kind admits
 every character. A representation is not either, because `double` is a valid scalar,

@@ -134,7 +134,9 @@ This page documents the version history and changes for the **mp-units** library
       than a value, so a raw character invited `== quantity_tensor_order::vector`, which
       silently answered `false` for a kind that admits vector. The deprecated members
       still report one for every concrete specification, and are ill-formed only for a
-      quantity kind, which is exactly the case they used to answer wrongly
+      quantity kind, which is exactly the case they used to answer wrongly. MSVC 19.51 and
+      older don't get them at all: they instantiate the initializer of every such member
+      eagerly, so a kind quantity wouldn't compile there
 - fix: `magnitude()` is available again on a vector- or tensor-backed quantity of a kind
       (e.g. `cartesian_vector{3., 4., 0.} * m / s`), and stays unavailable on a definite
       scalar

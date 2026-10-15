@@ -34,8 +34,8 @@ expose public static data members. Its metadata is obtained through non-member f
     static_assert(get_dimension(isq::velocity) == isq::dim_length / isq::dim_time);
     ```
 
-A quantity's [character](character_of_a_quantity.md) is deliberately **not** introspectable
-as a value. Ask what a quantity *is* instead, by handing
+A quantity's [character](../framework_basics/character_of_a_quantity.md) is deliberately
+**not** introspectable as a value. Ask what a quantity *is* instead, by handing
 [`QuantityOf`](concepts.md#QuantityOf) a character rather than a specification:
 
 !!! example
@@ -51,11 +51,11 @@ as a value. Ask what a quantity *is* instead, by handing
     ```
 
 The reason is that a _quantity spec_ alone does not always have a character to report. A
-concrete one does, but a [quantity kind](systems_of_quantities.md) constrains neither axis:
-whichever representation you store decides. A
-[simple quantity](simple_and_typed_quantities.md) is of a kind too, since its spec is the
-`kind_of<…>` its unit yields, so there is no concrete quantity type in the hierarchy to
-narrow it down.
+concrete one does, but a [quantity kind](../framework_basics/systems_of_quantities.md)
+constrains neither axis: whichever representation you store decides. A [simple
+quantity](../framework_basics/simple_and_typed_quantities.md) is of a kind too, since its
+spec is the `kind_of<…>` its unit yields, so there is no concrete quantity type in the
+hierarchy to narrow it down.
 
 ```cpp
 const quantity a = cartesian_vector{3.0, 4.0, 0.0} * m / s;   // a vector quantity of the speed kind

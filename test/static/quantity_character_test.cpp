@@ -223,10 +223,12 @@ static_assert(!spec_of<isq::velocity, isq::position_vector>);
 static_assert(spec_of<isq::velocity, isq::speed>);
 
 // ---- the deprecated character member reports only definite characters ----
+#if !MP_UNITS_EAGER_STATIC_MEMBER_INIT_HACK
 MP_UNITS_DIAGNOSTIC_PUSH
 MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
 static_assert(quantity<isq::velocity[m / s], vec3>::character.order == quantity_tensor_order::vector);
 static_assert(quantity<isq::speed[m / s], double>::character.order == quantity_tensor_order::scalar);
 MP_UNITS_DIAGNOSTIC_POP
+#endif
 
 }  // namespace
