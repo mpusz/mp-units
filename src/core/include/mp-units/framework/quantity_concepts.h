@@ -93,8 +93,14 @@ concept QuantityLikeImpl = requires(const T& qty, const Traits<T>::rep& num) {
 MP_UNITS_EXPORT template<typename Q, auto V>
 concept QuantityOf =
   Quantity<Q> && ((QuantitySpec<MP_UNITS_NTTP_HACK(decltype(V))> && ReferenceOf<decltype(Q::reference), V>) ||
-                  (detail::CharacterValue<V> && QuantitySpecOf<decltype(Q::quantity_spec), V> &&
-                   RepresentationOf<typename Q::rep, V>));
+                  // The character branch is wrapped in a requires-expression so that it forms one atomic
+                  // constraint. As plain concept-ids it normalizes through every disjunction under
+                  // `RepresentationOf`. Comparing two candidates by their constraints, as `a <=> b` does
+                  // with its reversed candidate, then exhausts the heap of MSVC 19.51. Satisfaction is
+                  // the same either way.
+                  (detail::CharacterValue<V> && requires {
+                    requires QuantitySpecOf<decltype(Q::quantity_spec), V> && RepresentationOf<typename Q::rep, V>;
+                  }));
 
 /**
  * @brief A concept matching all external quantities like types

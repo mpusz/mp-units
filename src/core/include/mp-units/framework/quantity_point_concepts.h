@@ -142,10 +142,12 @@ concept SameAbsolutePointOriginAs =
  */
 MP_UNITS_EXPORT template<typename QP, auto V>
 concept QuantityPointOf =
-  QuantityPoint<QP> && ((QuantitySpec<MP_UNITS_NTTP_HACK(decltype(V))> && ReferenceOf<decltype(QP::reference), V>) ||
-                        detail::SameAbsolutePointOriginAs<decltype(QP::absolute_point_origin), V> ||
-                        (detail::CharacterValue<V> && QuantitySpecOf<decltype(QP::quantity_spec), V> &&
-                         RepresentationOf<typename QP::rep, V>));
+  QuantityPoint<QP> &&
+  ((QuantitySpec<MP_UNITS_NTTP_HACK(decltype(V))> && ReferenceOf<decltype(QP::reference), V>) ||
+   detail::SameAbsolutePointOriginAs<decltype(QP::absolute_point_origin), V> ||
+   // Atomic for the same reason as the character branch of `QuantityOf`.
+   (detail::CharacterValue<V> &&
+    requires { requires QuantitySpecOf<decltype(QP::quantity_spec), V> && RepresentationOf<typename QP::rep, V>; }));
 
 /**
  * @brief A concept matching all external quantity point like types
