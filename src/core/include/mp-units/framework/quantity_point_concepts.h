@@ -135,17 +135,15 @@ concept SameAbsolutePointOriginAs =
  * `absolute_point_origin`, or quantity points of the character named by `V` (a bare
  * `quantity_tensor_order`, a bare `quantity_field`, or a full `quantity_character`).
  *
- * The character reading is the same question `QuantityOf` answers, asked of the point's own
- * specification and representation, so a point and its `quantity_from()` difference agree on it. A
- * point is not a `Quantity`, so `QuantityOf` cannot be asked about one, and this is where a point
- * user asks instead.
+ * A point isn't a `Quantity`, so `QuantityPointOf` is where its character is asked.
  */
 MP_UNITS_EXPORT template<typename QP, auto V>
 concept QuantityPointOf =
   QuantityPoint<QP> &&
   ((QuantitySpec<MP_UNITS_NTTP_HACK(decltype(V))> && ReferenceOf<decltype(QP::reference), V>) ||
    detail::SameAbsolutePointOriginAs<decltype(QP::absolute_point_origin), V> ||
-   // Atomic for the same reason as the character branch of `QuantityOf`.
+   // One atomic requires-expression, as in `QuantityOf`, so MSVC 19.51 doesn't run out of heap comparing
+   // constraints.
    (detail::CharacterValue<V> &&
     requires { requires QuantitySpecOf<decltype(QP::quantity_spec), V> && RepresentationOf<typename QP::rep, V>; }));
 

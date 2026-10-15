@@ -74,30 +74,24 @@ concept QuantityLikeImpl = requires(const T& qty, const Traits<T>::rep& num) {
  * `V` may be a quantity specification, in which case this is satisfied by all quantities with the
  * reference satisfying @c ReferenceOf<V>, or a character (a bare `quantity_tensor_order`, a bare
  * `quantity_field`, or a full `quantity_character`), in which case it is satisfied by all quantities
- * of that character.
+ * whose specification admits that character and whose representation can fill it.
  *
- * The character reading weighs *both* halves of the quantity, and neither is sufficient alone. The
- * specification is not, because a quantity kind admits every character and the representation is what
- * decides. The representation is not, because `double` fills a scalar, a vector, and a tensor slot
- * alike, so it cannot say what the quantity is. Requiring both is what makes
- * `cartesian_vector{1., 2., 3.} * m` a vector quantity while an `isq::speed` never is, whatever its
- * representation.
+ * A scalar representation fills a vector or a tensor slot, a library rule generalizing clause 18 of
+ * ISO 80000-2:2019 (a scalar is a tensor of order zero, a vector one of order one). So a 1D velocity
+ * stored in a `double` is a vector quantity, and a quantity kind stored in a `double` matches every
+ * order. The specification side stays exact, so an `isq::speed` is never a vector quantity.
  *
- * The rank ordering of ISO 80000-2:2019, 18 lives on the representation side: a scalar representation
- * fills a vector or a tensor slot, which is what makes a 1D velocity stored in a `double` a vector
- * quantity. The specification side stays exact, so a definite scalar is never a vector one.
- *
- * A specification argument keeps the quantity-tree meaning it always had and does *not* additionally
- * constrain the character. The two guards are disjoint by argument type, so neither widens the other.
+ * The type of `V` selects the reading: a specification asks only the quantity-tree question, and a
+ * character only the character question.
  */
 MP_UNITS_EXPORT template<typename Q, auto V>
 concept QuantityOf =
   Quantity<Q> && ((QuantitySpec<MP_UNITS_NTTP_HACK(decltype(V))> && ReferenceOf<decltype(Q::reference), V>) ||
-                  // The character branch is wrapped in a requires-expression so that it forms one atomic
-                  // constraint. As plain concept-ids it normalizes through every disjunction under
-                  // `RepresentationOf`. Comparing two candidates by their constraints, as `a <=> b` does
-                  // with its reversed candidate, then exhausts the heap of MSVC 19.51. Satisfaction is
-                  // the same either way.
+                  // The `QuantitySpecOf` and `RepresentationOf` part of the character branch is
+                  // wrapped in a requires-expression so that it forms one atomic constraint. As plain
+                  // concept-ids they normalize through every disjunction under `RepresentationOf`.
+                  // Comparing two candidates by their constraints, as `a <=> b` does with its reversed
+                  // candidate, then exhausts the heap of MSVC 19.51. Satisfaction is the same either way.
                   (detail::CharacterValue<V> && requires {
                     requires QuantitySpecOf<decltype(Q::quantity_spec), V> && RepresentationOf<typename Q::rep, V>;
                   }));

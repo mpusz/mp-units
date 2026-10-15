@@ -302,16 +302,16 @@ template<PointOrigin PO>
   return PO::_quantity_point_.quantity_from(parent_po);
 }
 
-// Cached boolean: true iff PO has a _bounds_ member that is not undefined_t.
+// Cached boolean: true iff PO is an origin of a real scalar quantity and has a _bounds_ member that is
+// not undefined_t.
 // When PO is a relative_point_origin whose direct parent also has bounds, the
 // lambda also validates at compile time that PO's range nests within the parent's.
 // The result is cached by the compiler as a variable template instantiation, so the
 // static_assert fires exactly once per (PO) rather than at each enforce_bounds call.
 template<PointOrigin PO>
 constexpr bool has_quantity_bounds_v = [] {
-  // Named rather than nested in the condition: Clang 16 does not treat a consteval call whose argument
-  // is itself a consteval call as an immediate invocation inside a template, and a `constexpr` local
-  // makes each of the two calls one on its own.
+  // Clang 16 rejects (and Clang 17 crashes on) the nested consteval calls inside the `if constexpr`
+  // condition. A `constexpr` local avoids both.
   constexpr detail::character_mask mask = detail::admitted_character(get_quantity_spec(PO{}));
   if constexpr (detail::is_real_scalar(mask)) {
     if constexpr (requires { PO::_bounds_; } && utility::specified<decltype(PO::_bounds_)>) {
@@ -566,10 +566,8 @@ public:
   static constexpr QuantitySpec auto quantity_spec = get_quantity_spec(reference);
   static constexpr Dimension auto dimension = get_dimension(quantity_spec);
 #if !MP_UNITS_EAGER_STATIC_MEMBER_INIT_HACK
-  // Kept for one release. It is ill-formed for a quantity kind, which admits every character and so
-  // has none to report; that is the very case where this member used to answer `scalar` for a
-  // vector-backed quantity. The initializer of a static data member is instantiated only on use, so
-  // merely naming such a quantity type stays fine.
+  // Deprecated in 2.6.0. Ill-formed for a point of a quantity kind, which admits every character. Omitted on
+  // MSVC up to 19.51 (see `MP_UNITS_EAGER_STATIC_MEMBER_INIT_HACK`).
   [[deprecated(
     "2.6.0: a quantity's character is no longer a value to inspect; ask "
     "`QuantityPointOf<QP, quantity_tensor_order::vector>`, `QuantityPointOf<QP, quantity_field::complex>`, or "

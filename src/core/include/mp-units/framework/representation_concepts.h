@@ -331,29 +331,27 @@ concept HasMagnitude = requires(const T& v) {
 };
 
 // The order axis as rank-ordered character concepts: a `Scalar` is also a degenerate `Vector` and
-// `Tensor`, and a `Vector` a degenerate `Tensor` (ISO 80000-2:2019, 18). `Scalar` carries the
+// `Tensor`, and a `Vector` a degenerate `Tensor` (clause 18 of ISO 80000-2:2019). `Scalar` carries the
 // per-field element algebra; an order >= 1 representation adds regular addition and an L2 magnitude
 // (its element contracts are then enforced by the container type itself, e.g.
 // `cartesian_vector<detail::Scalar T>`). These deliberately omit the representation-validity checks
 // (`disable_representation`, `UnitMagnitudeScalable`) so that they can also classify a quantity by its
 // character.
 //
-// The nesting is what makes each concept *subsume* the next, so an overload constrained on
+// The nesting makes each concept *subsume* the next, so an overload constrained on
 // `ScalarRepresentation` is preferred over one constrained on `VectorRepresentation` for a scalar
-// type. That ordering is a property the library and its users rely on, and it is why the degenerate
-// rank rule is stated here rather than only as a flag set: a set is a value, and values do not
-// subsume. The mask below is *derived* from these, so the rule still has a single home.
+// type. That is why the order rule lives in these concepts: a flag set is a value, and values don't
+// subsume. The mask below is derived from them.
 template<typename T>
 concept Vector = Scalar<T> || (requires { requires tensor_order<T> == 1; } && RegularAddable<T> && HasMagnitude<T>);
 
 template<typename T>
 concept Tensor = Vector<T> || (requires { requires tensor_order<T> == 2; } && RegularAddable<T> && HasMagnitude<T>);
 
-// The characters a representation can represent, read off the concepts above. On the order axis a
-// scalar fills every slot, a vector fills vector and tensor, a tensor only tensor. The field axis has
-// no such degeneracy: a real representation can't stand in for a complex quantity, nor the reverse,
-// so it names a single flag (or none, for a type whose field is unspecified). Matching a
-// representation against a specification is then one intersection per axis.
+// The characters a representation can fill, read off the concepts above. On the order axis a scalar
+// fills every slot, a vector fills vector and tensor, a tensor only tensor. The library applies no
+// such degeneracy on the field axis, so a representation names a single field flag (or none, for a
+// type whose field is unspecified).
 //
 // The work is done by a function and the result is held in a variable template, so the mask is
 // computed once per type however many axes ask for it. The computation is not a `consteval` lambda
@@ -400,18 +398,14 @@ concept TensorRepresentation = RepresentationBaseline<T> && Tensor<T>;
 template<typename T>
 concept SomeRepresentation = TensorRepresentation<T>;
 
-// What a `RepresentationOf` argument may be, and the character it stands for. A quantity
-// specification contributes its own character, which for a quantity kind admits everything, so a kind
-// needs no special case here. A bare axis constrains only that axis and leaves the other free, which
-// is now expressible directly: the free axis is simply every flag.
+// What a `RepresentationOf` argument may be: a quantity specification or a character value.
 MP_UNITS_DIAGNOSTIC_PUSH
 MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
 template<auto V>
 concept CharacterConstraint = QuantitySpec<MP_UNITS_NTTP_HACK(decltype(V))> || CharacterValue<V>;
 
-// A representation has no quantity tree to sit in, so here a specification means only the character it
-// admits. This is the one place where a specification and a bare axis answer the *same* question,
-// which is why `RepresentationOf` accepts both without the two guards having to stay disjoint.
+// A representation has no quantity tree, so a specification stands only for the character it admits.
+// A quantity kind admits every character, so it needs no special case.
 template<auto V>
   requires CharacterConstraint<V>
 [[nodiscard]] consteval character_mask character_constraint()
@@ -426,14 +420,11 @@ MP_UNITS_DIAGNOSTIC_POP
 }  // namespace detail
 
 // Matching is one intersection per axis: the slots the representation can fill have to meet the
-// orders the constraint admits, and likewise for the field. A quantity kind admits every flag, so it
-// needs no case of its own here.
+// orders the constraint admits, and likewise for the field.
 //
 // `SomeRepresentation<T>` leads the conjunction so that a non-representation (in particular a
-// `quantity`, which `disable_representation` rejects) never reaches the character machinery; that
-// hoist used to be an Apple-Clang-specific workaround and is now simply the shape of the concept.
-// The `CharacterConstraint<V>` guard follows, so an argument that is not a character at all answers
-// `false` instead of hard-erroring on a substitution into the wrong axis type.
+// `quantity`, which `disable_representation` rejects) never reaches the character machinery. The
+// `CharacterConstraint<V>` guard follows, so a non-character fails early on the guard.
 MP_UNITS_EXPORT template<typename T, auto V>
 concept RepresentationOf =
   detail::SomeRepresentation<T> && detail::CharacterConstraint<V> &&

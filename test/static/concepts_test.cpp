@@ -303,8 +303,9 @@ static_assert(!ReferenceOf<decltype(dimensionless[one]), isq::angular_measure>);
 
 // RepresentationOf
 // int: real scalar and, as degenerate lower-rank cases, also vector and tensor, but not complex.
-// A tensor of order zero is a scalar and a tensor of order one is a vector (ISO 80000-2:2019, 18),
-// so a lower-rank representation can stand in for a higher-rank quantity (never the reverse).
+// A tensor of order zero is a scalar and a tensor of order one is a vector (clause 18 of ISO 80000-2:2019).
+// The library generalizes that: a lower-order representation can stand in for a higher-order quantity
+// (never the reverse).
 static_assert(RepresentationOf<int, quantity_field::real>);
 static_assert(!RepresentationOf<int, quantity_field::complex>);
 static_assert(RepresentationOf<int, quantity_tensor_order::scalar>);

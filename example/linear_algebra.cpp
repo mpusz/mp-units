@@ -129,13 +129,11 @@ struct mp_units::vector_components<flight_velocity> :
 
 namespace {
 
-// Whether there are components to bracket is a question about the *representation*, not about the
-// quantity's character: a 1D velocity stored in a `double` is every bit a vector quantity, and has a
-// single value rather than components.
+// The representation decides the bracketing: a 1D velocity stored in a `double` is a vector quantity
+// with a single value.
 template<typename Q>
 concept has_vector_components = requires { requires tensor_order<typename Q::rep> == 1; };
 
-// A multi-component quantity is printed as bracketed components, anything else as a plain value.
 template<Quantity Q>
   requires has_vector_components<Q>
 void print(std::string_view name, const Q& q)

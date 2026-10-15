@@ -108,43 +108,31 @@ This page documents the version history and changes for the **mp-units** library
       `unit_symbol_formatting` and `dimension_symbol_formatting` now initialize their
       members with the concrete values those defaults pointed at, so behaviour is
       unchanged
-- (!) feat: a quantity kind no longer claims a character. A kind spans its whole quantity
-      tree (the `isq::speed` kind holds the scalar `isq::speed` and the vector
+- (!) feat: a quantity kind admits every character. A kind spans its whole quantity tree
+      (the kind of `isq::speed` holds the scalar `isq::speed` and the vector
       `isq::velocity` alike), and a simple quantity is of a kind as well, since the
-      specification its unit yields is a `kind_of<…>`, so
-      `cartesian_vector{3., 4., 0.} * m / s` is an ordinary vector quantity of that kind.
-      The character a kind used to report was inherited from its tree root, which made such
-      a quantity claim `scalar` and cost it `magnitude()`. A kind now constrains neither
-      axis, and the representation decides
-- (!) feat: `QuantityOf`, `QuantityPointOf`, and `QuantitySpecOf` now take a character in
-      place of a quantity specification, and that is how a character is asked about from now
-      on. No new concept is introduced: `QuantityPointOf` already dispatched on its second
-      argument (a specification or a point origin) and `RepresentationOf` already took this
-      exact character vocabulary, so both spellings and shape are ones the library already
-      had. `QuantityOf` with a character holds when the quantity's specification admits it
-      *and* the representation can fill the slot, which is the only formulation that works
-      for both halves of the problem: a kind admits every character, while `double` is a
-      valid scalar, 1D-vector, and degenerate tensor representation. The order axis stays
-      rank-ordered per clause 18 of ISO 80000-2:2019, so a 1D velocity stored in a `double`
-      is a vector quantity. `QuantitySpecOf` answers the same question where no quantity
-      exists yet, which is how `utility::polar_vector` requires a scalar radius. A specification
-      argument keeps its quantity-tree meaning throughout: the two readings are guarded by
-      disjoint argument types, so neither silently widens the other
-- fix: a quantity *point* can be asked about its character. `QuantityPointOf` takes a
-      character like `QuantityOf` does, so the guidance on the deprecated
-      `quantity_point::character` now names something a point can actually satisfy
-- (!) refactor: `get_character()` is no longer part of the public interface, and
-      `quantity::character` / `quantity_point::character` are deprecated in favour of the
-      character-taking concepts above. What a specification *admits* is now a set rather
-      than a value, so a raw character invited `== quantity_tensor_order::vector`, which
-      silently answered `false` for a kind that admits vector. The deprecated members
-      still report one for every concrete specification, and are ill-formed only for a
-      quantity kind, which is exactly the case they used to answer wrongly. MSVC 19.51 and
-      older don't get them at all: they instantiate the initializer of every such member
-      eagerly, so a kind quantity wouldn't compile there
-- fix: `magnitude()` is available again on a vector- or tensor-backed quantity of a kind
-      (e.g. `cartesian_vector{3., 4., 0.} * m / s`), and stays unavailable on a definite
-      scalar
+      specification its unit yields is a `kind_of<…>`. Only the representation can
+      restrict a kind's character, so `cartesian_vector{3., 4., 0.} * m / s` is a vector
+      quantity of the kind of `m / s`, and a kind stored in `double` admits every order.
+      `magnitude()` exists when the quantity may be a vector or a tensor and its
+      representation can produce a norm, and never on a concrete scalar such as
+      `isq::speed`
+- (!) feat: `QuantityOf`, `QuantityPointOf`, `QuantitySpecOf`, and `ReferenceOf` take a
+      character in place of a quantity specification. `QuantityOf` and `QuantityPointOf`
+      hold when the specification admits the character *and* the representation can fill
+      the slot. `QuantitySpecOf` and `ReferenceOf` ask only the specification, which is
+      how `utility::polar_vector` requires a scalar radius. A specification argument keeps
+      its quantity-tree meaning
+- (!) refactor: `quantity_spec::character` is deprecated in favour of the character-taking
+      concepts above, since a kind admits every character and a single value can't
+      describe that. It reports the character of a concrete specification and is
+      ill-formed for a kind such as `kind_of<isq::speed>` or the specification of
+      `m / s`, where 2.5 reported the tree root's character. `quantity::character` and
+      `quantity_point::character` exist only as deprecated members with the same rule,
+      so they are ill-formed for every simple quantity such as `30.0 * km / h`. MSVC up
+      to 19.51 instantiates the initializer of every such member eagerly, so there the
+      quantity and point members are absent and a kind keeps its tree root's answer
+- (!) refactor: `quantity_spec::dimension` is deprecated in favour of `get_dimension(qs)`
 - feat: the GLM integration models the tuple protocol for `glm::vec`. GLM states a
       vector's length only through its static `length()`, so the plugin maps that onto
       `std::tuple_size` and adds the matching `std::tuple_element` and `get<I>`. A GLM
