@@ -411,7 +411,7 @@ template<auto V>
 [[nodiscard]] consteval character_mask character_constraint()
 {
   if constexpr (QuantitySpec<MP_UNITS_NTTP_HACK(decltype(V))>)
-    return admitted_character(V);
+    return V._character_;
   else
     return axis_mask<V>();
 }

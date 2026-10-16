@@ -46,7 +46,7 @@ struct base_dimension;
  * Satisfied by all dimension types in the library.
  */
 MP_UNITS_EXPORT template<typename T>
-concept Dimension = std::derived_from<T, detail::dimension_interface> && detail::SymbolicConstant<T> &&
+concept Dimension = std::is_base_of_v<detail::dimension_interface, T> && detail::SymbolicConstant<T> &&
                     !is_specialization_of_v<std::remove_const_t<T>, base_dimension>;
 
 namespace detail {

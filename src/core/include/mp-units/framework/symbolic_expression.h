@@ -85,8 +85,16 @@ concept SymbolicArg = !std::is_const_v<T> && !std::is_reference_v<T>;
 #endif
 
 // Possibly const-qualified, the way the standard's type categories are: `const second` is still a unit.
+//
+// The traits are folded into one variable template so that the concept has a single atomic
+// constraint. Written as the `&&` chain directly, parentheses notwithstanding, the concept would
+// normalize into five atoms, each evaluated and cached separately for every type that meets a
+// `Unit`, `QuantitySpec`, `Dimension` or `PointOrigin` constraint.
 template<typename T>
-concept SymbolicConstant = MP_UNITS_SYMBOLIC_CONSTANT_TRAITS(T);
+constexpr bool symbolic_constant_traits = MP_UNITS_SYMBOLIC_CONSTANT_TRAITS(T);
+
+template<typename T>
+concept SymbolicConstant = symbolic_constant_traits<T>;
 
 // A term of a symbolic expression must not be const-qualified, or `const second / second` would not
 // simplify, because `const second` and `second` are different types.

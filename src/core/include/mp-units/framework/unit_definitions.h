@@ -52,6 +52,10 @@ namespace mp_units {
 MP_UNITS_EXPORT template<symbol_text Symbol, Unit auto U, auto...>
 struct named_constant;
 
+MP_UNITS_EXPORT template<symbol_text Symbol, UnitMagnitude auto M, PrefixableUnit auto U>
+  requires(!Symbol.empty() && M != mag<1>)
+struct prefixed_unit;
+
 namespace detail {
 
 template<UnitMagnitude auto M, Unit U>
@@ -108,6 +112,9 @@ template<Unit T, typename... Expr>
 template<Unit T, auto M, typename U>
 [[nodiscard]] consteval auto get_canonical_unit_impl(T, const scaled_unit_impl<M, U>&);
 
+template<Unit T, symbol_text Symbol, auto M, auto U>
+[[nodiscard]] consteval auto get_canonical_unit_impl(T, const prefixed_unit<Symbol, M, U>&);
+
 template<Unit T, typename... Us>
 [[nodiscard]] consteval auto get_canonical_unit_impl(T, const common_unit<Us...>&);
 
@@ -131,6 +138,9 @@ template<typename... Expr>
 
 template<auto M, typename U>
 [[nodiscard]] consteval bool unit_mag_is_positive(const scaled_unit_impl<M, U>&);
+
+template<symbol_text Symbol, auto M, auto U>
+[[nodiscard]] consteval bool unit_mag_is_positive(const prefixed_unit<Symbol, M, U>&);
 
 template<typename... Us>
 [[nodiscard]] consteval bool unit_mag_is_positive(const common_unit<Us...>&);
@@ -380,7 +390,7 @@ struct named_unit;
  */
 template<symbol_text Symbol, detail::QuantityKindSpec auto QS>
   requires(!Symbol.empty()) &&
-          (detail::BaseDimension<decltype(get_dimension(QS))> || detail::remove_kind(QS) == dimensionless)
+          (detail::BaseDimension<MP_UNITS_NONCONST_TYPE(QS._dimension_)> || detail::remove_kind(QS) == dimensionless)
 struct named_unit<Symbol, QS> : detail::unit_interface {
   using _base_type_ = named_unit;           // exposition only
   static constexpr auto _symbol_ = Symbol;  ///< Unique base unit identifier
@@ -389,7 +399,7 @@ struct named_unit<Symbol, QS> : detail::unit_interface {
 
 template<symbol_text Symbol, detail::QuantityKindSpec auto QS, PointOrigin auto PO>
   requires(!Symbol.empty()) &&
-          (detail::BaseDimension<decltype(get_dimension(QS))> || detail::remove_kind(QS) == dimensionless)
+          (detail::BaseDimension<MP_UNITS_NONCONST_TYPE(QS._dimension_)> || detail::remove_kind(QS) == dimensionless)
 struct named_unit<Symbol, QS, PO> : detail::unit_interface {
   using _base_type_ = named_unit;           // exposition only
   static constexpr auto _symbol_ = Symbol;  ///< Unique base unit identifier
@@ -430,7 +440,7 @@ struct named_unit<Symbol, U, PO> : decltype(U)::_base_type_ {
  * @tparam QuantitySpec a specification of a quantity to be measured with this unit
  */
 template<symbol_text Symbol, Unit auto U, detail::QuantityKindSpec auto QS>
-  requires(!Symbol.empty()) && (get_dimension(QS) == get_dimension(detail::get_associated_quantity(U))) &&
+  requires(!Symbol.empty()) && (QS._dimension_ == detail::get_associated_quantity(U)._dimension_) &&
           detail::is_positive_canonical_unit_mag<U>
 struct named_unit<Symbol, U, QS> : decltype(U)::_base_type_ {
   using _base_type_ = named_unit;           // exposition only
@@ -439,7 +449,7 @@ struct named_unit<Symbol, U, QS> : decltype(U)::_base_type_ {
 };
 
 template<symbol_text Symbol, Unit auto U, detail::QuantityKindSpec auto QS, PointOrigin auto PO>
-  requires(!Symbol.empty()) && (get_dimension(QS) == get_dimension(detail::get_associated_quantity(U))) &&
+  requires(!Symbol.empty()) && (QS._dimension_ == detail::get_associated_quantity(U)._dimension_) &&
           detail::is_positive_canonical_unit_mag<U>
 struct named_unit<Symbol, U, QS, PO> : decltype(U)::_base_type_ {
   using _base_type_ = named_unit;           // exposition only
@@ -652,11 +662,15 @@ MP_UNITS_EXPORT template<MeasuredConstant U>
  */
 MP_UNITS_EXPORT template<symbol_text Symbol, UnitMagnitude auto M, PrefixableUnit auto U>
   requires(!Symbol.empty() && M != mag<1>)  // `scaled_unit` rejected a unit-magnitude prefix; keep doing so
-// `PrefixableUnit` guarantees a named unit, so `M * U` always reduces to `scaled_unit<M, U>`, whose `_base_type_` is
-// `scaled_unit_impl<M, U>`. Naming that base directly avoids instantiating the `operator*` machinery, and also the
-// `scaled_unit` specialization itself, for every prefix and unit combination (a quarter of `unit_symbols.h`).
-struct prefixed_unit : detail::scaled_unit_impl<M, MP_UNITS_NTTP_HACK(decltype(U))> {
+// `PrefixableUnit` guarantees a named unit, so `M * U` always reduces to `scaled_unit<M, U>`. A prefixed unit is
+// that scaled unit with a symbol of its own, and it carries the two members of `scaled_unit_impl` itself instead
+// of deriving from it: `si/unit_symbols.h` defines one prefixed unit per prefix and unit, about 670 per translation
+// unit, and the base would be one more class instantiation for each of them. The conversion engine and the text
+// output dispatch on `prefixed_unit` next to `scaled_unit_impl`.
+struct prefixed_unit : detail::unit_interface, detail::propagate_point_origin<MP_UNITS_NTTP_HACK(decltype(U))> {
   using _base_type_ = prefixed_unit;  // exposition only
+  static constexpr UnitMagnitude auto _mag_ = M;
+  static constexpr MP_UNITS_NTTP_HACK(decltype(U)) _reference_unit_{};
   static constexpr auto _symbol_ = Symbol + U._symbol_;
 };
 

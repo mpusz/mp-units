@@ -312,7 +312,7 @@ template<PointOrigin PO>
 {
   // Clang 16 rejects (and Clang 17 crashes on) the nested consteval calls inside the `if constexpr`
   // condition. A `constexpr` local avoids both.
-  constexpr detail::character_mask mask = detail::admitted_character(get_quantity_spec(PO{}));
+  constexpr detail::character_mask mask = get_quantity_spec(PO{})._character_;
   if constexpr (detail::is_real_scalar(mask)) {
     if constexpr (requires { PO::_bounds_; })
       return utility::specified<decltype(PO::_bounds_)>;
@@ -743,7 +743,7 @@ public:
   // member types and values
   static constexpr Reference auto reference = R;
   static constexpr QuantitySpec auto quantity_spec = get_quantity_spec(reference);
-  static constexpr Dimension auto dimension = get_dimension(quantity_spec);
+  static constexpr Dimension auto dimension = quantity_spec._dimension_;
 #if !MP_UNITS_EAGER_STATIC_MEMBER_INIT_HACK
   // Deprecated in 2.6.0. Ill-formed for a point of a quantity kind, which admits every character. Omitted on
   // MSVC up to 19.51 (see `MP_UNITS_EAGER_STATIC_MEMBER_INIT_HACK`).
@@ -751,7 +751,7 @@ public:
     "2.6.0: a quantity's character is no longer a value to inspect; ask "
     "`QuantityPointOf<QP, quantity_tensor_order::vector>`, `QuantityPointOf<QP, quantity_field::complex>`, or "
     "another character instead")]] static constexpr quantity_character character =
-    detail::definite_character<detail::admitted_character(quantity_spec)>();
+    detail::definite_character<quantity_spec._character_>();
 #endif
   static constexpr Unit auto unit = get_unit(reference);
   static constexpr PointOrigin auto absolute_point_origin = detail::get_absolute_point_origin(PO);

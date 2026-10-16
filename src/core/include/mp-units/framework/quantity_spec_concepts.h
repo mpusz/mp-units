@@ -60,7 +60,7 @@ constexpr bool is_specialization_of_quantity_spec<quantity_spec<Derived, Params.
 }  // namespace detail
 
 MP_UNITS_EXPORT template<typename T>
-concept QuantitySpec = std::derived_from<T, detail::quantity_spec_interface_base> && detail::SymbolicConstant<T> &&
+concept QuantitySpec = std::is_base_of_v<detail::quantity_spec_interface_base, T> && detail::SymbolicConstant<T> &&
                        !detail::is_specialization_of_quantity_spec<std::remove_const_t<T>>;
 
 template<typename Q>
@@ -109,8 +109,7 @@ MP_UNITS_EXPORT template<typename T, auto V>
 concept QuantitySpecOf =
   QuantitySpec<T> &&
   ((QuantitySpec<MP_UNITS_NTTP_HACK(decltype(V))> && mp_units::utility::implicitly_convertible(T{}, V)) ||
-   (detail::CharacterValue<V> &&
-    detail::overlaps(detail::admitted_character(T{}).order, detail::axis_mask<V>().order) &&
-    detail::overlaps(detail::admitted_character(T{}).field, detail::axis_mask<V>().field)));
+   (detail::CharacterValue<V> && detail::overlaps(T::_character_.order, detail::axis_mask<V>().order) &&
+    detail::overlaps(T::_character_.field, detail::axis_mask<V>().field)));
 
 }  // namespace mp_units

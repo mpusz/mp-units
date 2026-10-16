@@ -151,10 +151,8 @@ template<std::same_as<character_mask>... Ts>
 template<typename... Qs1, typename... Qs2>
 [[nodiscard]] consteval character_mask derived_quantity_character(const type_list<Qs1...>&, const type_list<Qs2...>&)
 {
-  constexpr character_mask num =
-    detail::common_quantity_character(character_mask{}, detail::admitted_character(expr_type<Qs1>{})...);
-  constexpr character_mask den =
-    detail::common_quantity_character(character_mask{}, detail::admitted_character(expr_type<Qs2>{})...);
+  constexpr character_mask num = detail::common_quantity_character(character_mask{}, expr_type<Qs1>::_character_...);
+  constexpr character_mask den = detail::common_quantity_character(character_mask{}, expr_type<Qs2>::_character_...);
   return detail::common_quantity_character(num, den);
 }
 
@@ -579,10 +577,9 @@ struct quantity_spec<Self, Eq, Args...> : detail::quantity_spec_interface<Self> 
 #endif
   using _base_type_ = quantity_spec;
   static constexpr auto _equation_ = Eq;
-  static constexpr Dimension auto _dimension_ = get_dimension(Eq);
+  static constexpr Dimension auto _dimension_ = Eq._dimension_;
 
-  static constexpr detail::character_mask _character_ =
-    detail::quantity_character_init<Args...>(detail::admitted_character(Eq));
+  static constexpr detail::character_mask _character_ = detail::quantity_character_init<Args...>(Eq._character_);
   static_assert(!mp_units::contains<struct non_negative, Args...>() || detail::is_real_scalar(_character_),
                 "non_negative can only be applied to real scalar quantities");
   static_assert(!(mp_units::contains<struct non_negative, Args...>() &&
@@ -648,9 +645,8 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
 #endif
   using _base_type_ = quantity_spec;
   static constexpr auto _parent_ = QS;
-  static constexpr Dimension auto _dimension_ = get_dimension(_parent_);
-  static constexpr detail::character_mask _character_ =
-    detail::quantity_character_init<Args...>(detail::admitted_character(QS));
+  static constexpr Dimension auto _dimension_ = _parent_._dimension_;
+  static constexpr detail::character_mask _character_ = detail::quantity_character_init<Args...>(QS._character_);
   static_assert(!mp_units::contains<struct non_negative, Args...>() || detail::is_real_scalar(_character_),
                 "non_negative can only be applied to real scalar quantities");
   static_assert(!(mp_units::contains<struct non_negative, Args...>() &&
@@ -711,10 +707,9 @@ struct quantity_spec<Self, QS, Eq, Args...> : detail::quantity_spec_interface<Se
   using _base_type_ = quantity_spec;
   static constexpr auto _parent_ = QS;
   static constexpr auto _equation_ = Eq;
-  static constexpr Dimension auto _dimension_ = get_dimension(_parent_);
+  static constexpr Dimension auto _dimension_ = _parent_._dimension_;
 
-  static constexpr detail::character_mask _character_ =
-    detail::quantity_character_init<Args...>(detail::admitted_character(Eq));
+  static constexpr detail::character_mask _character_ = detail::quantity_character_init<Args...>(Eq._character_);
   static_assert(!mp_units::contains<struct non_negative, Args...>() || detail::is_real_scalar(_character_),
                 "non_negative can only be applied to real scalar quantities");
   static_assert(!(mp_units::contains<struct non_negative, Args...>() &&
@@ -735,8 +730,8 @@ struct quantity_spec<Self, QS, Eq, Args...> : detail::quantity_spec_interface<Se
 namespace detail {
 
 template<QuantitySpec Q>
-  requires requires { get_dimension(Q{}); }
-using to_dimension = MP_UNITS_NONCONST_TYPE(get_dimension(Q{}));
+  requires requires { Q::_dimension_; }
+using to_dimension = MP_UNITS_NONCONST_TYPE(Q::_dimension_);
 
 template<typename... Expr>
 struct derived_quantity_spec_impl :

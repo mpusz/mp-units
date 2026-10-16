@@ -59,6 +59,10 @@ struct type_list_size_impl<List<Types...>> : std::integral_constant<std::size_t,
 template<TypeList List>
 constexpr std::size_t type_list_size = type_list_size_impl<List>::value;
 
+// Every actual list hits this partial specialization, so no class is instantiated per list.
+template<template<typename...> typename List, typename... Types>
+constexpr std::size_t type_list_size<List<Types...>> = sizeof...(Types);
+
 // map
 template<typename T, template<typename...> typename To>
 struct type_list_map_impl;

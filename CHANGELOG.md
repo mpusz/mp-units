@@ -291,6 +291,16 @@ This page documents the version history and changes for the **mp-units** library
       operand on every product. The component-wise `quantity` constructor orders its
       constraint cheapest-first, so the `{value, reference}` construction behind
       `42 * m` no longer runs the decomposition checks of every new quantity type
+- perf: four more cuts found by the same attribution. `Unit`, `QuantitySpec`, `Dimension`
+      and `PointOrigin` check their base with `is_base_of_v` (one atom instead of
+      `derived_from`'s two) and fold the `SymbolicConstant` traits into one atom: the
+      `isq.h` umbrella evaluates 12 % fewer constant expressions. `type_list_size` is a
+      variable template specialization, so no class is instantiated per list (698
+      fewer instantiations in that umbrella). The framework reads `_character_` and
+      `_dimension_` directly where it already holds the type instead of instantiating an
+      accessor per type (651 fewer). `prefixed_unit` carries the two members of
+      `scaled_unit_impl` itself instead of deriving from it, one class instantiation
+      fewer for each of the ~670 prefixed symbols of `si/unit_symbols.h`
 - fix: `basic_fixed_string::swap` never compiled — it called an undeclared `swap_ranges`
       through `begin()`/`end()`, which yield `const_iterator` and cannot be written through.
       Nothing called it, so it was never instantiated. It now exchanges the contents

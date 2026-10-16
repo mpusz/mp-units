@@ -162,7 +162,7 @@ concept OrderRaisingRepresentation = requires { requires tensor_order<T> >= 1; }
 // a real->complex field mismatch is not bridged either.
 template<auto QS>
 concept ScalarCharacterSpec =
-  QuantitySpec<MP_UNITS_NTTP_HACK(decltype(QS))> && admits(admitted_character(QS).order, quantity_tensor_order::scalar);
+  QuantitySpec<MP_UNITS_NTTP_HACK(decltype(QS))> && admits(QS._character_.order, quantity_tensor_order::scalar);
 
 template<auto QS, typename Func, typename T, typename U>
 concept ScalableResultOf =
@@ -664,7 +664,7 @@ public:
   // member types and values
   static constexpr Reference auto reference = R;
   static constexpr QuantitySpec auto quantity_spec = get_quantity_spec(reference);
-  static constexpr Dimension auto dimension = get_dimension(quantity_spec);
+  static constexpr Dimension auto dimension = quantity_spec._dimension_;
 #if !MP_UNITS_EAGER_STATIC_MEMBER_INIT_HACK
   // Deprecated in 2.6.0. Ill-formed for a quantity kind, which admits every character. Omitted on MSVC up to
   // 19.51 (see `MP_UNITS_EAGER_STATIC_MEMBER_INIT_HACK`).
@@ -672,7 +672,7 @@ public:
     "2.6.0: a quantity's character is no longer a value to inspect; ask "
     "`QuantityOf<Q, quantity_tensor_order::vector>`, `QuantityOf<Q, quantity_field::complex>`, or "
     "another character instead")]] static constexpr quantity_character character =
-    detail::definite_character<detail::admitted_character(quantity_spec)>();
+    detail::definite_character<quantity_spec._character_>();
 #endif
   static constexpr Unit auto unit = get_unit(reference);
   using rep = Rep;

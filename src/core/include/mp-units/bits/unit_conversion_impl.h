@@ -60,6 +60,13 @@ template<Unit T, typename... Us>
   return mp_units::get_canonical_unit(u._common_unit_);
 }
 
+template<Unit T, symbol_text Symbol, auto M, auto U>
+[[nodiscard]] consteval auto get_canonical_unit_impl(T, const prefixed_unit<Symbol, M, U>&)
+{
+  auto base = mp_units::get_canonical_unit(U);
+  return canonical_unit{M * base.mag, base.reference_unit};
+}
+
 template<Unit T, symbol_text Symbol, auto... Args>
 [[nodiscard]] consteval auto get_canonical_unit_impl(T t, const named_unit<Symbol, Args...>&)
 {
@@ -165,6 +172,12 @@ template<auto M, typename U>
   return check_magnitude_is_positive(M) == mp_units::detail::unit_mag_is_positive(U{});
 }
 
+template<symbol_text Symbol, auto M, auto U>
+[[nodiscard]] consteval bool unit_mag_is_positive(const prefixed_unit<Symbol, M, U>&)
+{
+  return check_magnitude_is_positive(M) == mp_units::detail::unit_mag_is_positive(U);
+}
+
 template<typename... Us>
 [[nodiscard]] consteval bool unit_mag_is_positive(const common_unit<Us...>& u)
 {
@@ -236,6 +249,10 @@ template<typename T, auto M, typename U>
 consteval void collect_measured_constants(T, const scaled_unit_impl<M, U>&, measured_constant_contributions&,
                                           std::intmax_t, std::intmax_t);
 
+template<typename T, symbol_text Symbol, auto M, auto U>
+consteval void collect_measured_constants(T, const prefixed_unit<Symbol, M, U>&, measured_constant_contributions&,
+                                          std::intmax_t, std::intmax_t);
+
 template<typename T, typename... Us>
 consteval void collect_measured_constants(T, const common_unit<Us...>&, measured_constant_contributions&, std::intmax_t,
                                           std::intmax_t);
@@ -299,6 +316,13 @@ consteval void collect_measured_constants(T, const scaled_unit_impl<M, U>&, meas
                                           std::intmax_t num, std::intmax_t den)
 {
   mp_units::detail::collect_measured_constants(U{}, U{}, out, num, den);
+}
+
+template<typename T, symbol_text Symbol, auto M, auto U>
+consteval void collect_measured_constants(T, const prefixed_unit<Symbol, M, U>&, measured_constant_contributions& out,
+                                          std::intmax_t num, std::intmax_t den)
+{
+  mp_units::detail::collect_measured_constants(U, U, out, num, den);
 }
 
 template<typename T, typename... Us>

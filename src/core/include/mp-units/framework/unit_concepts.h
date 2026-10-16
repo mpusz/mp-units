@@ -51,7 +51,7 @@ struct named_unit;
  * Satisfied by all unit types provided by the library.
  */
 MP_UNITS_EXPORT template<typename T>
-concept Unit = std::derived_from<T, detail::unit_interface> && detail::SymbolicConstant<T> &&
+concept Unit = std::is_base_of_v<detail::unit_interface, T> && detail::SymbolicConstant<T> &&
                !is_specialization_of_v<std::remove_const_t<T>, named_unit> &&
                !detail::is_specialization_of_prefixed_unit<std::remove_const_t<T>>;
 
