@@ -1260,7 +1260,9 @@ template<QuantityPoint QP, typename FwdQ, QuantityOf<QP::quantity_spec> Q = std:
  * The error returned by @ref try_make for a value that @ref is_within_bounds rejects.
  */
 struct bounds_violation {
-  [[nodiscard]] friend constexpr bool operator==(bounds_violation, bounds_violation) = default;
+  // By reference: MSVC 14.51 rejects copying this empty class out of a std::expected in a
+  // constant expression as a read of an uninitialized member.
+  [[nodiscard]] friend constexpr bool operator==(const bounds_violation&, const bounds_violation&) = default;
 };
 
 /**
