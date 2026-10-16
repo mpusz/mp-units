@@ -301,6 +301,14 @@ This page documents the version history and changes for the **mp-units** library
       accessor per type (651 fewer). `prefixed_unit` carries the two members of
       `scaled_unit_impl` itself instead of deriving from it, one class instantiation
       fewer for each of the ~670 prefixed symbols of `si/unit_symbols.h`
+- perf: `type_list_element`, `type_list_split` and `type_list_extract` use the
+      `__type_pack_element` builtin where the compiler provides it (Clang, GCC 14 and
+      later), the C++20/23 counterpart of the C++26 pack-indexing path. The indexed
+      multiple-inheritance trick they used costs three class instantiations per list on
+      every spec or unit product; the `isq.h` umbrella drops 6.7 % of its instantiations and
+      14 % of its constant evaluations at C++23. GCC 12, GCC 13 and MSVC keep the trick. The
+      factor ordering predicate of quantity specs is an expression rather than a function,
+      one instantiation fewer per pair of factors compared
 - fix: `basic_fixed_string::swap` never compiled — it called an undeclared `swap_ranges`
       through `begin()`/`end()`, which yield `const_iterator` and cannot be written through.
       Nothing called it, so it was never instantiated. It now exchanges the contents

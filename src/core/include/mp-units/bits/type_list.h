@@ -92,6 +92,20 @@ struct type_list_element_impl<List<Types...>, I> {
 template<TypeList List, std::size_t I>
 using type_list_element = type_list_element_impl<List, I>::type;
 
+#elif MP_UNITS_HAS_BUILTIN(__type_pack_element)
+
+// Clang, and GCC from 14: the builtin is O(1) and instantiates nothing, like pack indexing.
+template<typename List, std::size_t I>
+struct type_list_element_impl;
+
+template<template<typename...> typename List, typename... Types, std::size_t I>
+struct type_list_element_impl<List<Types...>, I> {
+  using type = __type_pack_element<I, Types...>;
+};
+
+template<TypeList List, std::size_t I>
+using type_list_element = type_list_element_impl<List, I>::type;
+
 #else
 
 // C++20/23: Use the "indexed" multiple-inheritance trick to avoid O(N) recursive
@@ -219,6 +233,14 @@ struct type_list_split_impl<List<Args...>, std::index_sequence<First...>, std::i
   using second_list = List<Args...[sizeof...(First) + Second]...>;
 };
 
+#elif MP_UNITS_HAS_BUILTIN(__type_pack_element)
+
+template<template<typename...> typename List, typename... Args, std::size_t... First, std::size_t... Second>
+struct type_list_split_impl<List<Args...>, std::index_sequence<First...>, std::index_sequence<Second...>> {
+  using first_list = List<__type_pack_element<First, Args...>...>;
+  using second_list = List<__type_pack_element<sizeof...(First) + Second, Args...>...>;
+};
+
 #else
 
 template<template<typename...> typename List, typename... Args, std::size_t... First, std::size_t... Second>
@@ -259,6 +281,23 @@ template<template<typename...> typename List, typename... Args, std::size_t... P
 struct type_list_extract_impl<List<Args...>, std::index_sequence<Pre...>, std::index_sequence<Post...>> {
   using element = Args...[sizeof...(Pre)];
   using rest = List<Args...[Pre]..., Args...[sizeof...(Pre) + 1 + Post]...>;
+};
+
+template<TypeList List, std::size_t N>
+  requires(type_list_size<List> > N)
+struct type_list_extract :
+    type_list_extract_impl<List, std::make_index_sequence<N>, std::make_index_sequence<type_list_size<List> - N - 1>> {
+};
+
+#elif MP_UNITS_HAS_BUILTIN(__type_pack_element)
+
+template<typename List, typename Pre, typename Post>
+struct type_list_extract_impl;
+
+template<template<typename...> typename List, typename... Args, std::size_t... Pre, std::size_t... Post>
+struct type_list_extract_impl<List<Args...>, std::index_sequence<Pre...>, std::index_sequence<Post...>> {
+  using element = __type_pack_element<sizeof...(Pre), Args...>;
+  using rest = List<__type_pack_element<Pre, Args...>..., __type_pack_element<sizeof...(Pre) + 1 + Post, Args...>...>;
 };
 
 template<TypeList List, std::size_t N>

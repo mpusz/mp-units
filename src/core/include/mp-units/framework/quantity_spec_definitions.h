@@ -247,23 +247,17 @@ struct quantity_spec_sort_key<open_factor<N>> : quantity_spec_sort_key<N> {
   static constexpr bool open = true;
 };
 
-template<typename Lhs, typename Rhs>
-consteval bool quantity_spec_less_value()
-{
-  using lhs = quantity_spec_sort_key<Lhs>;
-  using rhs = quantity_spec_sort_key<Rhs>;
-  // `compare` rather than the comparison operators: an operator on `std::string_view` is resolved
-  // against every operator of namespace `std`, and each candidate taking a `std::error_code` or a
-  // `std::error_condition` is probed for a conversion from `std::string_view` first, which costs
-  // several constant evaluations per comparison. A member call resolves within the class.
-  if (const int order = lhs::root.compare(rhs::root); order != 0) return order < 0;
-  if (const int order = lhs::kind_root.compare(rhs::kind_root); order != 0) return order < 0;
-  if (const int order = lhs::name.compare(rhs::name); order != 0) return order < 0;
-  return !lhs::open && rhs::open;
-}
+// A variable template rather than a function: a function would be instantiated once per pair of
+// factors compared, and the sort runs on every quantity-spec product.
+template<typename Lhs, typename Rhs, typename L = quantity_spec_sort_key<Lhs>, typename R = quantity_spec_sort_key<Rhs>>
+constexpr bool quantity_spec_less_value =
+  L::root.compare(R::root) != 0             ? L::root.compare(R::root) < 0
+  : L::kind_root.compare(R::kind_root) != 0 ? L::kind_root.compare(R::kind_root) < 0
+  : L::name.compare(R::name) != 0           ? L::name.compare(R::name) < 0
+                                            : (!L::open && R::open);
 
 template<typename Lhs, typename Rhs>
-struct quantity_spec_less : std::bool_constant<quantity_spec_less_value<Lhs, Rhs>()> {};
+struct quantity_spec_less : std::bool_constant<quantity_spec_less_value<Lhs, Rhs>> {};
 
 template<typename T1, typename T2>
 using type_list_of_quantity_spec_less = expr_less<T1, T2, quantity_spec_less>;
