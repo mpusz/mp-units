@@ -834,10 +834,12 @@ public:
     requires std::constructible_from<quantity_type, typename QP::quantity_type>
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   [[nodiscard]] constexpr explicit(!std::convertible_to<typename QP::quantity_type, quantity_type>)
-    quantity_point(const QP& qp) MP_UNITS_PRE(detail::bounds_precondition<point_origin>(quantity_from_point(qp))) :
+    quantity_point(const QP& qp)
+      MP_UNITS_PRE_CONSTEVAL_HACK(detail::bounds_precondition<point_origin>(quantity_from_point(qp))) :
       quantity_from_origin_is_an_implementation_detail_(detail::enforce_bounds<point_origin>(quantity_from_point(qp)))
   {
-    MP_UNITS_EXPECTS(detail::bounds_precondition<point_origin>(quantity_from_origin_is_an_implementation_detail_));
+    MP_UNITS_EXPECTS_CONSTEVAL_HACK(
+      detail::bounds_precondition<point_origin>(quantity_from_origin_is_an_implementation_detail_));
   }
 
   template<QuantityPoint QP>
@@ -846,11 +848,12 @@ public:
       quantity_type{src.point_for(point_origin) - point_origin};
     }
   [[nodiscard]] constexpr explicit quantity_point(const QP& qp)
-    MP_UNITS_PRE(detail::bounds_precondition<point_origin>(quantity_from_projected_point(qp))) :
+    MP_UNITS_PRE_CONSTEVAL_HACK(detail::bounds_precondition<point_origin>(quantity_from_projected_point(qp))) :
       quantity_from_origin_is_an_implementation_detail_(
         detail::enforce_bounds<point_origin>(quantity_from_projected_point(qp)))
   {
-    MP_UNITS_EXPECTS(detail::bounds_precondition<point_origin>(quantity_from_origin_is_an_implementation_detail_));
+    MP_UNITS_EXPECTS_CONSTEVAL_HACK(
+      detail::bounds_precondition<point_origin>(quantity_from_origin_is_an_implementation_detail_));
   }
 
   template<QuantityPointLike QP>
@@ -862,11 +865,13 @@ public:
     !std::convertible_to<
       quantity<quantity_point_like_traits<QP>::reference, typename quantity_point_like_traits<QP>::rep>, quantity_type>)
     // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
-    quantity_point(const QP& qp) MP_UNITS_PRE(detail::bounds_precondition<point_origin>(quantity_from_point_like(qp))) :
+    quantity_point(const QP& qp)
+      MP_UNITS_PRE_CONSTEVAL_HACK(detail::bounds_precondition<point_origin>(quantity_from_point_like(qp))) :
       quantity_from_origin_is_an_implementation_detail_(
         detail::enforce_bounds<point_origin>(quantity_from_point_like(qp)))
   {
-    MP_UNITS_EXPECTS(detail::bounds_precondition<point_origin>(quantity_from_origin_is_an_implementation_detail_));
+    MP_UNITS_EXPECTS_CONSTEVAL_HACK(
+      detail::bounds_precondition<point_origin>(quantity_from_origin_is_an_implementation_detail_));
   }
 
   template<detail::SameAbsolutePointOriginAs<absolute_point_origin> NewPO>

@@ -176,8 +176,9 @@ inline constexpr bool is_complete = requires { sizeof(T) > 0; };
 #endif
 
 // Hack for a compiler bug: GCC 16 fails to constant-evaluate a contract predicate in some valid
-// contexts, e.g. the precondition of a constructor called in a template argument ("contract condition
-// is not constant"), which is how a relative point origin is defined. Wrap such a precondition in
+// contexts ("contract condition is not constant"): the precondition of a constructor called in a
+// template argument, which is how a relative point origin is defined, or in the initializer of a static
+// variable, which GCC tries to constant-initialize. Wrap such a precondition in
 // `MP_UNITS_PRE_CONSTEVAL_HACK` and its in-body check in `MP_UNITS_EXPECTS_CONSTEVAL_HACK` (both in
 // `compat_macros.h`): on GCC 16 the check moves into the body, where `MP_UNITS_PRE_BODY` evaluates it
 // without a contract during constant evaluation. Use them only where the plain `MP_UNITS_PRE` fails.
