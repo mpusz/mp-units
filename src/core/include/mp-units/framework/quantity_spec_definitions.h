@@ -124,9 +124,9 @@ template<QuantitySpec QS, UnitOf<QS{}> U>
 
 // The character of a quantity formed from other quantities: per axis, the highest order or field among
 // the factors wins (`displacement / duration` is a vector because `displacement` is), and an axis that
-// one factor leaves unconstrained stays unconstrained. Kinds never get here as factors, since a product
-// or quotient of kinds is itself a kind (`clone_kind_of`), but a specification defined by a kind
-// equation (`quantity_spec<kind_of<isq::length> / kind_of<isq::time>>`) admits every character too.
+// one factor leaves unconstrained stays unconstrained. Such a factor is a kind factor of a mixed equation
+// (`isq::speed * kind_of<isq::time>`) or a specification defined by a kind equation
+// (`quantity_spec<kind_of<isq::length> / kind_of<isq::time>>`).
 template<std::same_as<character_mask>... Ts>
 [[nodiscard]] consteval character_mask common_quantity_character(Ts... args)
 {

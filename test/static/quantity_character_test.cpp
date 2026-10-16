@@ -70,6 +70,8 @@ static_assert(detail::admits_only(detail::admitted_character(isq::length / isq::
                                   quantity_tensor_order::scalar));
 // a product or quotient of kinds is itself a kind (`clone_kind_of`), so it constrains nothing
 static_assert(!detail::is_definite(detail::admitted_character(get_kind(isq::length) / get_kind(isq::time)).order));
+// a kind factor of a mixed equation constrains nothing
+static_assert(!detail::is_definite(detail::admitted_character(isq::speed * get_kind(isq::time)).order));
 // a specification defined by a kind equation constrains nothing, and neither does a product with it
 static_assert(!detail::is_definite(detail::admitted_character(kind_equation_speed).order));
 static_assert(!detail::is_definite(detail::admitted_character(kind_equation_speed * isq::time).order));
