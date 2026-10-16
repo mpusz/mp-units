@@ -35,5 +35,5 @@
 
 | Name | Symbol | unit_symbol | Definition |
 |------|:------:|:------------:|------------|
-| <span id="pi"></span><code>pi</code> | π (pi) | — | <code>mag<pi_c> * <wbr>[one](core.md#one)</code> |
+| <span id="pi"></span><code>pi</code> | π (pi) | — | <code>mag<detail::pi_c> * <wbr>[one](core.md#one)</code> |
 | <span id="π"></span><code>π</code> | π (pi) | — | alias to [pi](core.md#pi) |
