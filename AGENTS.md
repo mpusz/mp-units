@@ -121,18 +121,19 @@ code:
   either way is a hidden friend: only ADL can find one, so those are always called
   unqualified.
 - **No local or parameter may be named after a unit symbol, and none may be one lowercase
-  letter.** The `unit_symbols` namespaces declare over 900 names: every lowercase letter
-  except `i`, `j`, `v`, `w`, and `x`, and many short names such as `ch`, `in`, `ms`, and
-  `st`. A test or a user brings them into scope with `using namespace`, and a local or
-  parameter of the same name in a header then shadows one. MSVC reports that as C4456–C4459,
-  which never reproduces under GCC or Clang. One-letter names are banned outright because
-  they also collide with the one-letter globals that tests declare. Check every new local,
-  parameter, and lambda capture against the full list, which this prints:
+  letter.** The `unit_symbols` namespaces declare over 900 names, among them single
+  letters such as `m`, `s`, `t`, and `l`, and many short names such as `ch`, `in`, `ms`,
+  and `st`. A test or a user brings them into scope with `using namespace`, and a local or
+  parameter of the same name in a header then shadows one. MSVC reports that as
+  C4456–C4459, which never reproduces under GCC or Clang. One-letter names are banned
+  outright because they also collide with the one-letter globals that tests declare. Check
+  every new local, parameter, and lambda capture against the full list, which this prints:
 
   ```bash
   awk '/namespace ([a-z_]+::)*unit_symbols/ {in_ns=1} in_ns && /^}/ {in_ns=0}
-       in_ns && match($0, /inline constexpr (auto|struct [A-Za-z_0-9]+) [A-Za-z_][A-Za-z_0-9]*/) {
-         n=split(substr($0, RSTART, RLENGTH), w, " "); print w[n] }' \
+       in_ns && match($0, /inline constexpr (auto|struct [A-Za-z_0-9]+) [A-Za-z_][A-Za-z_0-9]*( =|;)/) {
+         decl=substr($0, RSTART, RLENGTH); sub(/( =|;)$/, "", decl)
+         n=split(decl, w, " "); print w[n] }' \
     $(grep -rlE 'namespace ([a-z_]+::)*unit_symbols' src/systems/include) | sort -u
   ```
 
