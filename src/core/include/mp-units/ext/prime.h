@@ -473,6 +473,18 @@ constexpr auto get_first_of(const Rng& rng, UnaryFunction f)
 template<std::size_t N>
 constexpr auto first_n_primes_result = first_n_primes<N>();
 
+// The first 100 primes as a literal. `first_n_primes<100>()` computes them with a probable-prime test
+// per candidate, about 30 ms of constant evaluation in every translation unit that factorizes a
+// magnitude, which is every one that includes a system header. The static tests check the table
+// against the function.
+inline constexpr std::array<std::uintmax_t, 100> first_100_primes{
+  2,   3,   5,   7,   11,  13,  17,  19,  23,  29,  31,  37,  41,  43,  47,  53,  59,  61,  67,  71,
+  73,  79,  83,  89,  97,  101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173,
+  179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281,
+  283, 293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409,
+  419, 421, 431, 433, 439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541,
+};
+
 // One run of Pollard's rho on the polynomial `x^2 + c (mod n)`, with Brent's cycle detection and
 // batched gcd checks: the |tortoise - hare| differences are accumulated as a running product
 // modulo `n`, and a single gcd is taken per batch, with a one-step replay from the batch start
@@ -566,8 +578,6 @@ constexpr auto first_n_primes_result = first_n_primes<N>();
 
 [[nodiscard]] consteval std::uintmax_t find_first_factor(std::uintmax_t n)
 {
-  constexpr auto first_100_primes = first_n_primes_result<100>;
-
   for (const auto& p : first_100_primes) {
     if (n % p == 0u) {
       return p;

@@ -197,4 +197,7 @@ static_assert(find_first_factor(600'851'475'143u) == 71u, "Composite with severa
 static_assert(find_first_factor(1'000'036'000'099u) == 1'000'003u,  // 1'000'003 * 1'000'033
               "Smallest prime reported even when rho may split off the larger one first");
 
+// the literal table that factorization starts from is the function's result
+static_assert(first_100_primes == first_n_primes<100>());
+
 }  // namespace

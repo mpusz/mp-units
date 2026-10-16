@@ -309,6 +309,10 @@ This page documents the version history and changes for the **mp-units** library
       14 % of its constant evaluations at C++23. GCC 12, GCC 13 and MSVC keep the trick. The
       factor ordering predicate of quantity specs is an expression rather than a function,
       one instantiation fewer per pair of factors compared
+- perf: the first 100 primes that magnitude factorization starts from are a literal table.
+      Computing them with a probable-prime test per candidate cost about 30 ms of constant
+      evaluation in every translation unit that includes a system header, which charged
+      even a TU that includes only the core and defines nothing
 - fix: `basic_fixed_string::swap` never compiled — it called an undeclared `swap_ranges`
       through `begin()`/`end()`, which yield `const_iterator` and cannot be written through.
       Nothing called it, so it was never instantiated. It now exchanges the contents
