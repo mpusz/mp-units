@@ -672,9 +672,13 @@ struct quantity_point_iface {
   }
 
   // operator==
+  // Across origins, the operands are compared as offsets from the absolute origin, which can need
+  // arithmetic that comparing the stored quantities does not, so that expression is checked too.
   template<auto R1, auto PO1, typename Rep1, QuantityPointOf<mp_units::detail::get_absolute_point_origin(PO1)> QP2>
     requires std::equality_comparable_with<quantity<R1, Rep1>, typename QP2::quantity_type>
   [[nodiscard]] friend constexpr bool operator==(const quantity_point<R1, PO1, Rep1>& lhs, const QP2& rhs)
+    requires(PO1 == QP2::point_origin) ||
+            requires { lhs - lhs.absolute_point_origin == rhs - rhs.absolute_point_origin; }
   {
     if constexpr (PO1 == QP2::point_origin)
       return lhs.quantity_ref_from(PO1) == rhs.quantity_ref_from(QP2::point_origin);
@@ -686,6 +690,8 @@ struct quantity_point_iface {
   template<auto R1, auto PO1, typename Rep1, QuantityPointOf<mp_units::detail::get_absolute_point_origin(PO1)> QP2>
     requires std::three_way_comparable_with<quantity<R1, Rep1>, typename QP2::quantity_type>
   [[nodiscard]] friend constexpr auto operator<=>(const quantity_point<R1, PO1, Rep1>& lhs, const QP2& rhs)
+    requires(PO1 == QP2::point_origin) ||
+            requires { lhs - lhs.absolute_point_origin <=> rhs - rhs.absolute_point_origin; }
   {
     if constexpr (PO1 == QP2::point_origin)
       return lhs.quantity_ref_from(PO1) <=> rhs.quantity_ref_from(QP2::point_origin);

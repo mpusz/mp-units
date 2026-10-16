@@ -1306,6 +1306,22 @@ static_assert(!is_within_bounds<trim_offset2>(4.5 * deg, trim_centre_plus_one));
 static_assert(!is_within_bounds<trim_offset2>(-6.5 * deg, trim_centre_plus_one));
 // NaN through a translated origin: see the runtime test (clang refuses NaN arithmetic in constant evaluation).
 
+// Comparing points of different origins translates by the offset between them, a plain `double` here.
+// `constrained` has no arithmetic with a plain scalar, so these two do not compare, which the constraint
+// of `==` and `<=>` has to say rather than their bodies. With a plain representation they compare.
+template<typename QP1, typename QP2>
+concept can_compare_points = requires(const QP1& lhs, const QP2& rhs) {
+  lhs == rhs;
+  lhs <=> rhs;
+};
+
+static_assert(can_compare_points<trim_angle, trim_angle>);
+static_assert(!can_compare_points<trim_offset, trim_angle>);
+static_assert(!can_compare_points<trim_angle, trim_offset>);
+static_assert(can_compare_points<trim_angle_plain, quantity_point<si::degree, trim_centre, double>>);
+static_assert(trim_angle_plain{4. * deg, trim_zero} ==
+              quantity_point<si::degree, trim_centre, double>{0. * deg, trim_centre});
+
 // A checking policy reached through an ancestor never changes the value: translating it into the
 // ancestor's frame and back would turn 0.1 into 0.099999999999909051 here.
 static_assert(qp_avg_height(0.1 * m, average_height_origin).quantity_from(average_height_origin) == 0.1 * m);
