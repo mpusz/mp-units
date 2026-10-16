@@ -289,7 +289,7 @@ template<Quantity V>
 //   Note: reflect_non_negative and wrap_non_negative are not provided — [0, ∞) has no
 //   upper bound, so neither reflection nor wrapping is physically well-defined.
 //
-// `is_within_bounds()` and `quantity_point::try_make()` are offered for points whose enforced
+// `quantity_point::is_within_bounds()` and `try_make()` are offered for points whose enforced
 // policy is a checking one. They test a value with the predicate that construction applies.
 // ============================================================================
 
@@ -320,7 +320,7 @@ struct check_in_range {
    * Tells whether `v` lies between `min` and `max`, each included unless given as
    * @ref exclusive_bound. Returns `false` for NaN.
    *
-   * @see @ref is_within_bounds for the test applied before constructing a point
+   * @see @ref quantity_point::is_within_bounds for the test applied before constructing a point
    */
   template<Quantity V>
   [[nodiscard]] constexpr bool operator()(const V& v) const
@@ -540,7 +540,7 @@ MP_UNITS_EXPORT struct check_non_negative {
   /**
    * Tells whether `v` is zero or positive. Returns `false` for NaN.
    *
-   * @see @ref is_within_bounds for the test applied before constructing a point
+   * @see @ref quantity_point::is_within_bounds for the test applied before constructing a point
    */
   template<Quantity V>
   [[nodiscard]] constexpr bool operator()(const V& v) const

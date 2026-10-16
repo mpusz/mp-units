@@ -868,8 +868,8 @@ A value read from a sensor, a bus, or persistent storage often has to be rejecte
 stopping the program. Catching the violation works only when the representation throws, and
 code built without exceptions has nothing to catch.
 
-`is_within_bounds` tells whether constructing the point from the same arguments would
-satisfy the bounds. It doesn't construct the point:
+The static member function `is_within_bounds` tells whether constructing the point from
+the same arguments would satisfy the bounds. It doesn't construct the point:
 
 ```cpp
 inline constexpr struct trim_zero :
@@ -880,7 +880,7 @@ using trim_angle =
 
 std::optional<trim_angle> make_trim(quantity<si::degree> raw)
 {
-  if (!is_within_bounds<trim_angle>(raw, trim_zero)) return std::nullopt;
+  if (!trim_angle::is_within_bounds(raw, trim_zero)) return std::nullopt;
   return trim_angle{raw, trim_zero};
 }
 ```
@@ -980,8 +980,8 @@ inline constexpr struct tuning_zero :
 
 using tx_frequency = quantity_point<isq::frequency[GHz], tuning_zero>;
 
-static_assert(is_within_bounds<tx_frequency>(2.45 * GHz, tuning_zero));
-static_assert(!is_within_bounds<tx_frequency>(3. * GHz, tuning_zero));
+static_assert(tx_frequency::is_within_bounds(2.45 * GHz, tuning_zero));
+static_assert(!tx_frequency::is_within_bounds(3. * GHz, tuning_zero));
 ```
 
 Its `min` and `max` declare the outer ends of the domain, which `quantity_point::min()` and

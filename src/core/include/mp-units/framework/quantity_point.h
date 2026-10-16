@@ -898,46 +898,11 @@ template<PointOrigin auto PO, Quantity Q, bool Lower>
 
 MP_UNITS_EXPORT_BEGIN
 
-/**
- * Tells whether constructing `QP{q, po}` would pass the bounds of the point's origin.
- *
- * `q` is converted to `QP::quantity_type` and passed to the `bool operator()` of the bounds policy
- * that construction enforces. That is the policy of `QP::point_origin` or, for a relative origin
- * without bounds of its own, the policy of its nearest bounded ancestor, with `q` translated into
- * that ancestor's frame. Origins further up are not tested, and construction does not apply their
- * policies either. The compile-time nesting check places the enforced bounds within theirs, up to
- * rounding of floating-point offsets. No point is constructed, so a rejected value neither calls the
- * representation's violation handler nor violates a precondition.
- *
- * Offered when the enforced bounds policy is a checking policy, such as @ref check_in_range,
- * @ref check_non_negative, or a user-defined policy whose `operator()` returns `bool`. Also offered
- * when the point has no bounds, where it always returns `true`.
- *
- * @see @ref quantity_point::try_make for the same test returning the constructed point
- */
-template<QuantityPoint QP, typename FwdQ, QuantityOf<QP::quantity_spec> Q = std::remove_cvref_t<FwdQ>>
-  requires(detail::bounds_exact_in<QP::point_origin, typename QP::quantity_type>()) &&
-          (detail::enforced_bounds_check<QP::point_origin, typename QP::quantity_type>()) &&
-          std::constructible_from<typename QP::quantity_type, FwdQ>
-[[nodiscard]] constexpr bool is_within_bounds(FwdQ&& q, decltype(QP::point_origin))
-{
-  return detail::bounds_contain<QP::point_origin>(typename QP::quantity_type{std::forward<FwdQ>(q)});
-}
-
-template<QuantityPoint QP, typename FwdQ, QuantityOf<QP::quantity_spec> Q = std::remove_cvref_t<FwdQ>>
-  requires(detail::bounds_exact_in<QP::point_origin, typename QP::quantity_type>()) &&
-          (detail::enforced_bounds_check<QP::point_origin, typename QP::quantity_type>()) &&
-          std::constructible_from<typename QP::quantity_type, FwdQ> &&
-          (QP::point_origin == default_point_origin(QP::reference))
-[[nodiscard]] constexpr bool is_within_bounds(FwdQ&& q)
-{
-  return detail::bounds_contain<QP::point_origin>(typename QP::quantity_type{std::forward<FwdQ>(q)});
-}
-
 #if MP_UNITS_HAS_EXPECTED
 
 /**
- * The error returned by @ref quantity_point::try_make for a value that @ref is_within_bounds rejects.
+ * The error returned by @ref quantity_point::try_make for a value that
+ * @ref quantity_point::is_within_bounds rejects.
  */
 struct bounds_violation {
   // By reference: MSVC 14.51 rejects copying this empty class out of a std::expected in a
@@ -1026,6 +991,39 @@ public:
     return {quantity_type::zero(), PO};
   }
 
+  /**
+   * Tells whether constructing `quantity_point{q, po}` would pass the bounds of the point's origin.
+   *
+   * `q` is converted to `quantity_type` and passed to the `bool operator()` of the bounds policy that
+   * construction enforces. That is the policy of `point_origin` or, for a relative origin without
+   * bounds of its own, the policy of its nearest bounded ancestor, with `q` translated into that
+   * ancestor's frame. Origins further up are not tested, and construction does not apply their
+   * policies either. The compile-time nesting check places the enforced bounds within theirs, up to
+   * rounding of floating-point offsets. No point is constructed, so a rejected value neither calls the
+   * representation's violation handler nor violates a precondition.
+   *
+   * Offered when the enforced bounds policy is a checking policy, such as @ref check_in_range,
+   * @ref check_non_negative, or a user-defined policy whose `operator()` returns `bool`. Also offered
+   * when the point has no bounds, where it always returns `true`.
+   *
+   * @see @ref try_make for the same test returning the constructed point
+   */
+  template<typename FwdQ, QuantityOf<quantity_spec> Q = std::remove_cvref_t<FwdQ>>
+    requires(detail::bounds_exact_in<PO, quantity_type>()) && (detail::enforced_bounds_check<PO, quantity_type>()) &&
+            std::constructible_from<quantity_type, FwdQ>
+  [[nodiscard]] static constexpr bool is_within_bounds(FwdQ&& q, decltype(PO))
+  {
+    return detail::bounds_contain<PO>(quantity_type{std::forward<FwdQ>(q)});
+  }
+
+  template<typename FwdQ, QuantityOf<quantity_spec> Q = std::remove_cvref_t<FwdQ>>
+    requires(detail::bounds_exact_in<PO, quantity_type>()) && (detail::enforced_bounds_check<PO, quantity_type>()) &&
+            std::constructible_from<quantity_type, FwdQ> && (PO == default_point_origin(R))
+  [[nodiscard]] static constexpr bool is_within_bounds(FwdQ&& q)
+  {
+    return detail::bounds_contain<PO>(quantity_type{std::forward<FwdQ>(q)});
+  }
+
 #if MP_UNITS_HAS_EXPECTED
   /**
    * Constructs `quantity_point{q, po}`, or returns @ref bounds_violation for a value that
@@ -1040,20 +1038,19 @@ public:
    * @see @ref is_within_bounds for the test alone
    */
   template<typename FwdQ>
-    requires requires(const FwdQ& q) { mp_units::is_within_bounds<quantity_point>(q, PO); } &&
+    requires requires(const FwdQ& q) { is_within_bounds(q, PO); } &&
              std::constructible_from<quantity_point, FwdQ, decltype(PO)>
   [[nodiscard]] static constexpr std::expected<quantity_point, bounds_violation> try_make(FwdQ&& q, decltype(PO) po)
   {
-    if (!mp_units::is_within_bounds<quantity_point>(std::as_const(q), po)) return std::unexpected(bounds_violation{});
+    if (!is_within_bounds(std::as_const(q), po)) return std::unexpected(bounds_violation{});
     return quantity_point{std::forward<FwdQ>(q), po};
   }
 
   template<typename FwdQ>
-    requires requires(const FwdQ& q) { mp_units::is_within_bounds<quantity_point>(q); } &&
-             std::constructible_from<quantity_point, FwdQ>
+    requires requires(const FwdQ& q) { is_within_bounds(q); } && std::constructible_from<quantity_point, FwdQ>
   [[nodiscard]] static constexpr std::expected<quantity_point, bounds_violation> try_make(FwdQ&& q)
   {
-    if (!mp_units::is_within_bounds<quantity_point>(std::as_const(q))) return std::unexpected(bounds_violation{});
+    if (!is_within_bounds(std::as_const(q))) return std::unexpected(bounds_violation{});
     return quantity_point{std::forward<FwdQ>(q)};
   }
 #endif

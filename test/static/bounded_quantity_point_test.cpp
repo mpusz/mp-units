@@ -1204,38 +1204,38 @@ inline constexpr struct trim_zero final :
 
 using trim_angle = quantity_point<si::degree, trim_zero, constrained<double, terminate_policy>>;
 
-static_assert(is_within_bounds<trim_angle>(0. * deg, trim_zero));
-static_assert(is_within_bounds<trim_angle>(10. * deg, trim_zero));
-static_assert(is_within_bounds<trim_angle>(-10. * deg, trim_zero));
-static_assert(!is_within_bounds<trim_angle>(just_above_10 * deg, trim_zero));
-static_assert(!is_within_bounds<trim_angle>(just_below_minus_10 * deg, trim_zero));
-static_assert(!is_within_bounds<trim_angle>(not_a_number * deg, trim_zero));
+static_assert(trim_angle::is_within_bounds(0. * deg, trim_zero));
+static_assert(trim_angle::is_within_bounds(10. * deg, trim_zero));
+static_assert(trim_angle::is_within_bounds(-10. * deg, trim_zero));
+static_assert(!trim_angle::is_within_bounds(just_above_10 * deg, trim_zero));
+static_assert(!trim_angle::is_within_bounds(just_below_minus_10 * deg, trim_zero));
+static_assert(!trim_angle::is_within_bounds(not_a_number * deg, trim_zero));
 
 // The value is converted to the point's quantity type first, as the constructor does.
-static_assert(is_within_bounds<trim_angle>(0.17 * rad, trim_zero));   // 9.74°
-static_assert(!is_within_bounds<trim_angle>(0.18 * rad, trim_zero));  // 10.31°
+static_assert(trim_angle::is_within_bounds(0.17 * rad, trim_zero));   // 9.74°
+static_assert(!trim_angle::is_within_bounds(0.18 * rad, trim_zero));  // 10.31°
 
 // A plain double representation: a rejected value never reaches MP_UNITS_PRECONDITION.
 using trim_angle_plain = quantity_point<si::degree, trim_zero, double>;
-static_assert(!is_within_bounds<trim_angle_plain>(11. * deg, trim_zero));
+static_assert(!trim_angle_plain::is_within_bounds(11. * deg, trim_zero));
 
 // Default origin: the natural origin of a non-negative quantity carries check_non_negative,
 // which has a lower bound only.
 using bav_height = quantity_point<isq::height[m]>;
-static_assert(is_within_bounds<bav_height>(0. * m));
-static_assert(is_within_bounds<bav_height>(1e300 * m));
-static_assert(!is_within_bounds<bav_height>(-1e-300 * m));
-static_assert(!is_within_bounds<bav_height>(not_a_number * m));
+static_assert(bav_height::is_within_bounds(0. * m));
+static_assert(bav_height::is_within_bounds(1e300 * m));
+static_assert(!bav_height::is_within_bounds(-1e-300 * m));
+static_assert(!bav_height::is_within_bounds(not_a_number * m));
 
 // No bounds anywhere: nothing can be violated.
-static_assert(is_within_bounds<quantity_point<mission_range[m], home_base>>(1e300 * m, home_base));
+static_assert(quantity_point<mission_range[m], home_base>::is_within_bounds(1e300 * m, home_base));
 
 // ----------------------------------------------------------------------------
 // Offered only where the enforced policy is a checking one.
 // ----------------------------------------------------------------------------
 
 template<typename QP, auto PO, typename Q>
-concept can_query_bounds = requires(Q q) { is_within_bounds<QP>(q, PO); };
+concept can_query_bounds = requires(Q q) { QP::is_within_bounds(q, PO); };
 
 static_assert(can_query_bounds<trim_angle, trim_zero, quantity<deg, double>>);
 static_assert(!can_query_bounds<quantity_point<test_angle_clamp[deg], clamp_origin>, clamp_origin,
@@ -1258,8 +1258,8 @@ inline constexpr struct bav_mixed_rel final :
 } bav_mixed_rel;
 
 static_assert(can_query_bounds<quantity_point<bav_mixed[m], bav_mixed_rel>, bav_mixed_rel, quantity<m, double>>);
-static_assert(is_within_bounds<quantity_point<bav_mixed[m], bav_mixed_rel>>(5. * m, bav_mixed_rel));
-static_assert(!is_within_bounds<quantity_point<bav_mixed[m], bav_mixed_rel>>(6. * m, bav_mixed_rel));
+static_assert(quantity_point<bav_mixed[m], bav_mixed_rel>::is_within_bounds(5. * m, bav_mixed_rel));
+static_assert(!quantity_point<bav_mixed[m], bav_mixed_rel>::is_within_bounds(6. * m, bav_mixed_rel));
 
 // An adjusting origin under a checking one: construction clamps, so the query is not offered.
 QUANTITY_SPEC(bav_mixed2, isq::length);
@@ -1296,18 +1296,18 @@ static_assert(
   !can_query_bounds<quantity_point<bav_rail[m], bav_rail_half, int>, bav_rail_half, quantity<bav_rail[m], int>>);
 static_assert(!std::constructible_from<quantity_point<bav_rail[m], bav_rail_half, int>, quantity<bav_rail[m], int>,
                                        decltype(bav_rail_half)>);
-static_assert(is_within_bounds<quantity_point<bav_rail[m], bav_rail_half, double>>(9'999.5 * m, bav_rail_half));
-static_assert(!is_within_bounds<quantity_point<bav_rail[m], bav_rail_half, double>>(9'999.75 * m, bav_rail_half));
+static_assert(quantity_point<bav_rail[m], bav_rail_half, double>::is_within_bounds(9'999.5 * m, bav_rail_half));
+static_assert(!quantity_point<bav_rail[m], bav_rail_half, double>::is_within_bounds(9'999.75 * m, bav_rail_half));
 
 static_assert(!can_query_bounds<quantity_point<bav_rail[km], bav_rail_station, int>, bav_rail_station,
                                 quantity<bav_rail[km], int>>);
 static_assert(!std::constructible_from<quantity_point<bav_rail[km], bav_rail_station, int>, quantity<bav_rail[km], int>,
                                        decltype(bav_rail_station)>);
-static_assert(is_within_bounds<quantity_point<bav_rail[m], bav_rail_station, int>>(8'500 * m, bav_rail_station));
-static_assert(!is_within_bounds<quantity_point<bav_rail[m], bav_rail_station, int>>(8'501 * m, bav_rail_station));
+static_assert(quantity_point<bav_rail[m], bav_rail_station, int>::is_within_bounds(8'500 * m, bav_rail_station));
+static_assert(!quantity_point<bav_rail[m], bav_rail_station, int>::is_within_bounds(8'501 * m, bav_rail_station));
 
-static_assert(is_within_bounds<quantity_point<bav_rail[km], bav_rail_depot, int>>(8 * km, bav_rail_depot));
-static_assert(!is_within_bounds<quantity_point<bav_rail[km], bav_rail_depot, int>>(9 * km, bav_rail_depot));
+static_assert(quantity_point<bav_rail[km], bav_rail_depot, int>::is_within_bounds(8 * km, bav_rail_depot));
+static_assert(!quantity_point<bav_rail[km], bav_rail_depot, int>::is_within_bounds(9 * km, bav_rail_depot));
 static_assert(quantity_point<bav_rail[km], bav_rail_depot, int>{8 * km, bav_rail_depot}.quantity_from(bav_rail_start) ==
               10'000 * m);
 
@@ -1331,12 +1331,12 @@ static_assert(!std::constructible_from<quantity_point<bav_tape[m], bav_tape_wide
                                        decltype(bav_tape_wide)>);
 static_assert(
   !can_query_bounds<quantity_point<bav_tape[m], bav_tape_fine, float>, bav_tape_fine, quantity<bav_tape[m], float>>);
-static_assert(is_within_bounds<quantity_point<bav_tape[m], bav_tape_fine_f, float>>(0.1f * m, bav_tape_fine_f));
-static_assert(!is_within_bounds<quantity_point<bav_tape[m], bav_tape_fine_f, float>>(0.099999994f * m,
+static_assert(quantity_point<bav_tape[m], bav_tape_fine_f, float>::is_within_bounds(0.1f * m, bav_tape_fine_f));
+static_assert(!quantity_point<bav_tape[m], bav_tape_fine_f, float>::is_within_bounds(0.099999994f * m,
                                                                                      bav_tape_fine_f));
-static_assert(is_within_bounds<quantity_point<bav_tape[m], bav_tape_whole, float>>(-90.f * m, bav_tape_whole));
-static_assert(!is_within_bounds<quantity_point<bav_tape[m], bav_tape_wide, double>>(16'777'218. * m, bav_tape_wide));
-static_assert(is_within_bounds<quantity_point<bav_tape[m], bav_tape_fine, double>>(0.1 * m, bav_tape_fine));
+static_assert(quantity_point<bav_tape[m], bav_tape_whole, float>::is_within_bounds(-90.f * m, bav_tape_whole));
+static_assert(!quantity_point<bav_tape[m], bav_tape_wide, double>::is_within_bounds(16'777'218. * m, bav_tape_wide));
+static_assert(quantity_point<bav_tape[m], bav_tape_fine, double>::is_within_bounds(0.1 * m, bav_tape_fine));
 
 // A floating-point bound outside the range of an integral representation is rejected as well, not
 // converted (which would be undefined behavior).
@@ -1345,7 +1345,7 @@ inline constexpr struct bav_tape_huge final : absolute_point_origin<bav_tape, ch
 
 static_assert(
   !can_query_bounds<quantity_point<bav_tape[m], bav_tape_huge, int>, bav_tape_huge, quantity<bav_tape[m], int>>);
-static_assert(is_within_bounds<quantity_point<bav_tape[m], bav_tape_huge, double>>(1e19 * m, bav_tape_huge));
+static_assert(quantity_point<bav_tape[m], bav_tape_huge, double>::is_within_bounds(1e19 * m, bav_tape_huge));
 
 // An adjusting policy converts its bounds the same way, so an exact bound that converts only
 // explicitly (a `double` -90 m into an `int` point, 10'000 m into `int` kilometres) works there too.
@@ -1376,12 +1376,12 @@ inline constexpr struct trim_centre final :
 
 using trim_offset = quantity_point<si::degree, trim_centre, constrained<double, terminate_policy>>;
 
-static_assert(is_within_bounds<trim_offset>(0. * deg, trim_centre));
-static_assert(is_within_bounds<trim_offset>(5. * deg, trim_centre));
-static_assert(is_within_bounds<trim_offset>(-5. * deg, trim_centre));
-static_assert(!is_within_bounds<trim_offset>(5.000000000000001 * deg, trim_centre));
-static_assert(!is_within_bounds<trim_offset>(-5.000000000000001 * deg, trim_centre));
-static_assert(!is_within_bounds<trim_offset>(not_a_number * deg, trim_centre));
+static_assert(trim_offset::is_within_bounds(0. * deg, trim_centre));
+static_assert(trim_offset::is_within_bounds(5. * deg, trim_centre));
+static_assert(trim_offset::is_within_bounds(-5. * deg, trim_centre));
+static_assert(!trim_offset::is_within_bounds(5.000000000000001 * deg, trim_centre));
+static_assert(!trim_offset::is_within_bounds(-5.000000000000001 * deg, trim_centre));
+static_assert(!trim_offset::is_within_bounds(not_a_number * deg, trim_centre));
 
 // An origin without bounds of its own is checked against its nearest bounded ancestor,
 // translated exactly as enforce_bounds translates it: here [-6°, 4°] in its own frame.
@@ -1390,10 +1390,10 @@ inline constexpr struct trim_centre_plus_one final : relative_point_origin<trim_
 
 using trim_offset2 = quantity_point<si::degree, trim_centre_plus_one, constrained<double, terminate_policy>>;
 
-static_assert(is_within_bounds<trim_offset2>(4. * deg, trim_centre_plus_one));
-static_assert(is_within_bounds<trim_offset2>(-6. * deg, trim_centre_plus_one));
-static_assert(!is_within_bounds<trim_offset2>(4.5 * deg, trim_centre_plus_one));
-static_assert(!is_within_bounds<trim_offset2>(-6.5 * deg, trim_centre_plus_one));
+static_assert(trim_offset2::is_within_bounds(4. * deg, trim_centre_plus_one));
+static_assert(trim_offset2::is_within_bounds(-6. * deg, trim_centre_plus_one));
+static_assert(!trim_offset2::is_within_bounds(4.5 * deg, trim_centre_plus_one));
+static_assert(!trim_offset2::is_within_bounds(-6.5 * deg, trim_centre_plus_one));
 // NaN through a translated origin: see the runtime test (clang refuses NaN arithmetic in constant evaluation).
 
 // Comparing points of different origins translates by the offset between them, a plain `double` here.
@@ -1428,7 +1428,7 @@ inline constexpr struct bav_sensor final :
                           check_in_range{-10. * deg, 349. * deg}> {
 } bav_sensor;
 
-static_assert(is_within_bounds<quantity_point<bav_azimuth[deg], bav_sensor>>(349. * deg, bav_sensor));
+static_assert(quantity_point<bav_azimuth[deg], bav_sensor>::is_within_bounds(349. * deg, bav_sensor));
 
 // exclusive_bound excludes an end from the range: a heading in [0°, 360°).
 QUANTITY_SPEC(bav_heading, isq::angular_measure);
@@ -1438,10 +1438,10 @@ inline constexpr struct bav_heading_zero final :
 } bav_heading_zero;
 
 using bav_heading_pt = quantity_point<bav_heading[deg], bav_heading_zero>;
-static_assert(is_within_bounds<bav_heading_pt>(0. * deg, bav_heading_zero));
-static_assert(is_within_bounds<bav_heading_pt>(359.5 * deg, bav_heading_zero));
-static_assert(!is_within_bounds<bav_heading_pt>(360. * deg, bav_heading_zero));
-static_assert(!is_within_bounds<bav_heading_pt>(not_a_number * deg, bav_heading_zero));
+static_assert(bav_heading_pt::is_within_bounds(0. * deg, bav_heading_zero));
+static_assert(bav_heading_pt::is_within_bounds(359.5 * deg, bav_heading_zero));
+static_assert(!bav_heading_pt::is_within_bounds(360. * deg, bav_heading_zero));
+static_assert(!bav_heading_pt::is_within_bounds(not_a_number * deg, bav_heading_zero));
 
 // ... and a strictly positive length in (0 m, 100 m].
 QUANTITY_SPEC(bav_gap, isq::length);
@@ -1451,9 +1451,9 @@ inline constexpr struct bav_gap_zero final :
 } bav_gap_zero;
 
 using bav_gap_pt = quantity_point<bav_gap[m], bav_gap_zero>;
-static_assert(!is_within_bounds<bav_gap_pt>(0. * m, bav_gap_zero));
-static_assert(is_within_bounds<bav_gap_pt>(1e-300 * m, bav_gap_zero));
-static_assert(is_within_bounds<bav_gap_pt>(100. * m, bav_gap_zero));
+static_assert(!bav_gap_pt::is_within_bounds(0. * m, bav_gap_zero));
+static_assert(bav_gap_pt::is_within_bounds(1e-300 * m, bav_gap_zero));
+static_assert(bav_gap_pt::is_within_bounds(100. * m, bav_gap_zero));
 
 // No min() (max()) is offered for an excluded end.
 template<typename QP>
@@ -1496,8 +1496,8 @@ inline constexpr struct bav_sector final :
                           check_in_range{0. * deg, exclusive_bound{350. * deg}}> {
 } bav_sector;
 
-static_assert(is_within_bounds<quantity_point<bav_heading[deg], bav_sector>>(349.5 * deg, bav_sector));
-static_assert(!is_within_bounds<quantity_point<bav_heading[deg], bav_sector>>(350. * deg, bav_sector));
+static_assert(quantity_point<bav_heading[deg], bav_sector>::is_within_bounds(349.5 * deg, bav_sector));
+static_assert(!quantity_point<bav_heading[deg], bav_sector>::is_within_bounds(350. * deg, bav_sector));
 
 // wrap_to_range and reflect_in_range reduce any finite value in O(log) steps: subtracting the range
 // once per step would never terminate here, as 1e20 - 360 == 1e20 in a double.
@@ -1573,12 +1573,12 @@ inline constexpr struct bav_tuning_zero final :
 } bav_tuning_zero;
 
 using bav_tx_frequency = quantity_point<isq::frequency[GHz], bav_tuning_zero>;
-static_assert(is_within_bounds<bav_tx_frequency>(2.45 * GHz, bav_tuning_zero));
-static_assert(is_within_bounds<bav_tx_frequency>(2.4835 * GHz, bav_tuning_zero));
-static_assert(is_within_bounds<bav_tx_frequency>(5.8 * GHz, bav_tuning_zero));
-static_assert(!is_within_bounds<bav_tx_frequency>(3. * GHz, bav_tuning_zero));
-static_assert(!is_within_bounds<bav_tx_frequency>(6. * GHz, bav_tuning_zero));
-static_assert(!is_within_bounds<bav_tx_frequency>(not_a_number * GHz, bav_tuning_zero));
+static_assert(bav_tx_frequency::is_within_bounds(2.45 * GHz, bav_tuning_zero));
+static_assert(bav_tx_frequency::is_within_bounds(2.4835 * GHz, bav_tuning_zero));
+static_assert(bav_tx_frequency::is_within_bounds(5.8 * GHz, bav_tuning_zero));
+static_assert(!bav_tx_frequency::is_within_bounds(3. * GHz, bav_tuning_zero));
+static_assert(!bav_tx_frequency::is_within_bounds(6. * GHz, bav_tuning_zero));
+static_assert(!bav_tx_frequency::is_within_bounds(not_a_number * GHz, bav_tuning_zero));
 static_assert(bav_tx_frequency::max().quantity_from(bav_tuning_zero) == 5.875 * GHz);
 
 // enforce_bounds keeps an adjusting policy's result on the inherited path: a user-defined clamp
@@ -1643,10 +1643,10 @@ using bav_strip_pt = quantity_point<bav_strip[m], bav_strip_mark, double>;
 
 static_assert(bav_strip_pt::min().quantity_from(bav_strip_mark) == -0.5999999999999999 * m);
 static_assert(bav_strip_pt::max().quantity_from(bav_strip_mark) == 0.2000000000000001 * m);
-static_assert(is_within_bounds<bav_strip_pt>(-0.5999999999999999 * m, bav_strip_mark));
-static_assert(!is_within_bounds<bav_strip_pt>(-0.6 * m, bav_strip_mark));
-static_assert(is_within_bounds<bav_strip_pt>(0.2000000000000001 * m, bav_strip_mark));
-static_assert(!is_within_bounds<bav_strip_pt>(0.20000000000000015 * m, bav_strip_mark));
+static_assert(bav_strip_pt::is_within_bounds(-0.5999999999999999 * m, bav_strip_mark));
+static_assert(!bav_strip_pt::is_within_bounds(-0.6 * m, bav_strip_mark));
+static_assert(bav_strip_pt::is_within_bounds(0.2000000000000001 * m, bav_strip_mark));
+static_assert(!bav_strip_pt::is_within_bounds(0.20000000000000015 * m, bav_strip_mark));
 
 // With an integral representation the translation is exact.
 inline constexpr struct bav_strip_int_start final : absolute_point_origin<bav_strip, check_in_range{-10 * m, 10 * m}> {

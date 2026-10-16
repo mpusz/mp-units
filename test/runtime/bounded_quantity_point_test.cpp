@@ -278,8 +278,8 @@ using trim_offset2 = quantity_point<si::degree, trim_centre_plus_one, constraine
 
 TEST_CASE("is_within_bounds rejects NaN through a relative origin without own bounds", "[bounded][nan]")
 {
-  CHECK_FALSE(is_within_bounds<trim_offset2>(not_a_number * deg, trim_centre_plus_one));
-  CHECK(is_within_bounds<trim_offset2>(4. * deg, trim_centre_plus_one));
+  CHECK_FALSE(trim_offset2::is_within_bounds(not_a_number * deg, trim_centre_plus_one));
+  CHECK(trim_offset2::is_within_bounds(4. * deg, trim_centre_plus_one));
 }
 
 TEST_CASE("a throwing handler leaves a point unchanged", "[bounded][handler]")

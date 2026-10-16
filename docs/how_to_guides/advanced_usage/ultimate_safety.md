@@ -131,7 +131,7 @@ using checked_latitude = quantity_point<geo_latitude[deg], equator, checked_doub
 
 std::optional<checked_latitude> read_latitude(double raw_lat)
 {
-  if (!is_within_bounds<checked_latitude>(raw_lat * deg, equator)) return std::nullopt;
+  if (!checked_latitude::is_within_bounds(raw_lat * deg, equator)) return std::nullopt;
   return checked_latitude{raw_lat * deg, equator};
 }
 ```

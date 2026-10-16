@@ -459,7 +459,7 @@ This page documents the version history and changes for the **mp-units** library
 - fix: `==` and `<=>` between points of different origins are offered only when the
         translation their bodies perform compiles (a `constrained` representation has no
         arithmetic with a plain origin offset)
-- feat: `is_within_bounds<QP>(q, origin)` and the static member function
+- feat: the static member functions `QP::is_within_bounds(q, origin)` and
         `QP::try_make(q, origin)` added for points with a checking policy or without bounds
         (`try_make` returns `std::expected<QP, bounds_violation>`)
 - feat: `quantity_from_unit_zero()` member function added (replaces `quantity_from_zero()`)
