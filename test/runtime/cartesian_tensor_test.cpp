@@ -84,7 +84,7 @@ static_assert(
 static_assert(!tensor_producible<utility::cartesian_vector<double, 2>, utility::cartesian_vector<double, 3>>);
 static_assert(!std::constructible_from<utility::cartesian_tensor<double, 3>, utility::cartesian_tensor<double, 2>>);
 
-// A second-order Cartesian tensor as defined by ISO 80000-2:2019, 18.
+// A second-order Cartesian tensor as defined by clause 18 of ISO 80000-2:2019.
 TEST_CASE("cartesian_tensor operations", "[tensor]")
 {
   SECTION("initialization and access")

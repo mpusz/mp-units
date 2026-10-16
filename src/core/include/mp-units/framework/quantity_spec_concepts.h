@@ -71,10 +71,8 @@ namespace detail {
 template<typename T>
 concept QuantityKindSpec = QuantitySpec<T> && is_specialization_of<std::remove_const_t<T>, kind_of_>;
 
-// What a quantity specification admits, as a flag set per axis. Deliberately not public, and named
-// for the question it answers rather than for the old public `get_character`: a concrete
-// specification admits one character, while a quantity kind admits every one of them, and only
-// `admits()` / `admits_only()` can tell those apart. Public code asks `QuantitySpecOf` with a
+// What a quantity specification admits, as a flag set per axis. Not public, as a quantity kind admits
+// every character and no public value expresses that. Public code asks `QuantitySpecOf` with a
 // character, or `QuantityOf` / `QuantityPointOf`, which also weigh the representation.
 template<QuantitySpec QS>
 [[nodiscard]] consteval character_mask admitted_character(QS qs)
@@ -100,15 +98,12 @@ MP_UNITS_EXPORT template<QuantitySpec From, QuantitySpec To>
  * `V` may be another quantity specification, in which case this is satisfied by every specification
  * implicitly convertible to it, or a character (a bare `quantity_tensor_order`, a bare
  * `quantity_field`, or a full `quantity_character`), in which case it is satisfied by every
- * specification that *admits* that character.
- *
- * The two readings are guarded by disjoint argument types and never widen each other. "Admits"
- * rather than "is": a concrete specification admits exactly one character, while a quantity kind
- * admits every one of them, because a quantity of that kind may hold any. That is why this is the
- * question to ask a specification, and why there is no character value to read back out of one.
+ * specification that *admits* that character. A quantity kind admits every character. As in
+ * `QuantityOf`, the type of `V` selects the reading.
  *
  * Ask this where no quantity exists yet to ask `QuantityOf` about, such as constraining a reference
- * taken as a template parameter (`utility::polar_vector` requires a scalar radius exactly this way).
+ * taken as a template parameter (`utility::polar_vector` requires a radius whose specification admits
+ * scalar).
  */
 MP_UNITS_EXPORT template<typename T, auto V>
 concept QuantitySpecOf =

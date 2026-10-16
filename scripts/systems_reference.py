@@ -4588,8 +4588,7 @@ class CppMetadataExtractor:
                 "",
                 "constexpr std::string_view character_to_string(quantity_character ch)",
                 "{",
-                "  // `quantity_character` has no comparison operators (both axes are flag sets), so"
-                " read the axes",
+                "  // `quantity_character` has no comparison operators, so read the axes",
                 "  const bool is_complex = ch.field == quantity_field::complex;",
                 "  switch (ch.order) {",
                 "    case quantity_tensor_order::scalar:",

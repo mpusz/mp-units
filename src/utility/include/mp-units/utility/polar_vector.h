@@ -135,10 +135,10 @@ template<typename To, typename... Cs>
 // A representation usable as a facade's Cartesian source *and* target: an `N`-dimensional vector
 // representation that is also structured-bindings-compliant. We use the exported `utility::Vector`
 // concept (order-1, magnitude-bearing, addable) rather than `RepresentationOf<V, ...vector>`: the
-// latter is semantically a touch stronger (it also carries `RepresentationBaseline`) but its
-// character-matching sub-expressions hard-error under GCC when the character-keyed concept is
-// *nested* inside another one like this (fine at top level, not when normalized here). The output
-// side still gets its full representation check from the `quantity{...}` construction in the body.
+// latter is semantically a touch stronger (it also carries `RepresentationBaseline`) but, with the
+// pre-2.6 `RepresentationOf`, its character sub-expression hard-errored under GCC when nested inside
+// another concept like this (fine at top level). The output side still gets its full representation
+// check from the `quantity{...}` construction in the body.
 // Dimension reads from `std::tuple_size`, element type from `std::tuple_element`, components via
 // `get`; those probes guard the reads below. `cartesian_vector<T, N>` models it, and so does any such
 // vector rep (e.g. an Eigen/Blaze one) - the facades are not tied to `cartesian_vector`.
@@ -152,8 +152,8 @@ concept VectorRepOf = Vector<V> && requires {
 // quantity (e.g. `isq::velocity[m/s]`) has a `magnitude()`, so we take that magnitude's reference: a
 // kind over the unit in V2, upgrading for free to the strong scalar sibling (e.g. `isq::speed`, or a
 // `magnitude<...>` expression) once V3 names it. A bare-unit vector quantity (`cartesian_vector * m`)
-// has a scalar-character spec with a vector rep and thus no `magnitude()`; there is no strong scalar
-// to recover, so we fall back to the plain unit.
+// is of a kind, so its `magnitude()` is in the plain unit already. A representation without a magnitude
+// falls back to the plain unit as well.
 template<Reference auto VR, typename V>
 constexpr Reference auto magnitude_reference_of = [] {
   if constexpr (requires(quantity<VR, V> v) { v.magnitude(); })

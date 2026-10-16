@@ -599,10 +599,8 @@ public:
   static constexpr QuantitySpec auto quantity_spec = get_quantity_spec(reference);
   static constexpr Dimension auto dimension = get_dimension(quantity_spec);
 #if !MP_UNITS_EAGER_STATIC_MEMBER_INIT_HACK
-  // Kept for one release. It is ill-formed for a quantity kind, which admits every character and so
-  // has none to report; that is the very case where this member used to answer `scalar` for a
-  // vector-backed quantity. The initializer of a static data member is instantiated only on use, so
-  // merely naming such a quantity type stays fine.
+  // Deprecated in 2.6.0. Ill-formed for a quantity kind, which admits every character. Omitted on MSVC up to
+  // 19.51 (see `MP_UNITS_EAGER_STATIC_MEMBER_INIT_HACK`).
   [[deprecated(
     "2.6.0: a quantity's character is no longer a value to inspect; ask "
     "`QuantityOf<Q, quantity_tensor_order::vector>`, `QuantityOf<Q, quantity_field::complex>`, or "
@@ -804,10 +802,8 @@ public:
   // built from scalar base units (e.g. `km/h`); for one tied to a vector spec (e.g. `N`) the result
   // keeps `vector` character, so one could even take the magnitude of a magnitude. A known V2 limitation.
   [[nodiscard]] constexpr Quantity auto magnitude() const
-    // A magnitude belongs to a vector or a tensor, never to a scalar (ISO 80000-2:2019, 18), and the
-    // representation has to be able to produce one. The two questions are separate: a quantity kind
-    // permits both orders, and `double` fills either slot, but neither fact alone says the value has a
-    // norm to compute.
+    // Only a quantity that may be a vector or a tensor gets a magnitude (a kind quantity in a `double`
+    // qualifies), and its representation has to be able to produce one.
     requires(QuantityOf<quantity, quantity_tensor_order::vector> ||
              QuantityOf<quantity, quantity_tensor_order::tensor>) &&
             detail::HasMagnitude<rep>

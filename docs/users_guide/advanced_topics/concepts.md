@@ -61,9 +61,9 @@ concept and matches the following value `V`:
 | a character    | `T` **admits** the character named by `V`. |
 
 A character is a bare `quantity_tensor_order`, a bare `quantity_field`, or a full
-`quantity_character`. "Admits" rather than "is": a concrete specification admits exactly one
-character, while a [quantity kind](../../reference/glossary.md#kind) admits every one of
-them, because a _quantity_ of that kind may hold any.
+`quantity_character`. A concrete specification admits exactly one character. A
+[quantity kind](../../reference/glossary.md#kind) admits every character, because a
+_quantity_ of that kind may hold any.
 
 Ask this where no _quantity_ exists yet to ask [`QuantityOf`](#QuantityOf) about,
 such as constraining a _reference_ taken as a template parameter.
@@ -148,6 +148,9 @@ A `Reference` can either be:
 `ReferenceOf` concept is satisfied by references `T` which have a quantity specification
 that satisfies [`QuantitySpecOf<V>`](#QuantitySpecOf) concept.
 
+`V` may also be a character. A _reference_ has no representation, so only its
+specification is asked. To ask about a _quantity_, use [`QuantityOf`](#QuantityOf).
+
 
 ## `RepresentationOf<T, V>` { #RepresentationOf }
 
@@ -177,7 +180,7 @@ trait):
 - if the type of `V` satisfies [`QuantitySpec`](#QuantitySpec): by representation types
   whose field and order match the [character](../../reference/glossary.md#character) `V`
   admits. A [quantity kind](../../reference/glossary.md#kind) admits every character, so
-  every representation type matches one.
+  every representation type matches a kind.
 - if `V` is a `quantity_character`, or a bare `quantity_tensor_order` or `quantity_field`
   axis: by representation types matching the stated axis, with the other axis left free.
 
@@ -189,9 +192,8 @@ quantity.
 See [Representation Types](representation_types.md) for the full requirements and available
 customization points.
 
-To ask about a *quantity* rather than constrain a representation, pass the same character
-to [`QuantityOf`](#QuantityOf): it weighs the specification and the
-representation together, which is what the question actually depends on.
+To ask about a _quantity_, pass the same character to [`QuantityOf`](#QuantityOf), which
+weighs the specification and the representation together.
 
 
 ## `Quantity<T>` { #Quantity }
@@ -212,18 +214,19 @@ value `V`:
 | a character    | `T`'s specification admits that character **and** its representation can fill the slot. |
 
 A character is a bare `quantity_tensor_order`, a bare `quantity_field`, or a full
-`quantity_character`. The type of `V` selects the reading: a specification is checked
-against the quantity tree, and a character only against the character.
+`quantity_character`. The two readings are guarded by disjoint argument types, so a
+specification argument keeps its quantity-tree meaning.
 
-Both halves of the character reading are needed. A
+The character reading needs both halves. A
 [quantity kind](../../reference/glossary.md#kind) admits every character, so only its
-representation can restrict it, while a `double` fills every order slot, so it can't say
-what the quantity is on its own.
+representation can restrict it. A `double` fills every order slot, so it can't say what
+the quantity is on its own.
 
-The rank ordering of clause 18 of ISO 80000-2:2019 applies to the representation half: a
-scalar representation fills a vector or a tensor slot, which is why a 1D _velocity_ stored
-in a `double` is a vector _quantity_. The specification half stays exact, so an
-_isq::speed_ is never a vector one whatever its representation.
+The representation half is rank-ordered. The library lets a scalar representation fill a
+vector or a tensor slot and a vector one fill a tensor slot, generalizing clause 18 of
+ISO 80000-2:2019. This is why a 1D _velocity_ stored in a `double` is a vector _quantity_.
+The specification half stays exact, so an `isq::speed` quantity is never a vector one,
+whatever its representation.
 
 ```cpp
 static_assert(QuantityOf<quantity<isq::speed[m / s], double>, quantity_tensor_order::scalar>);
@@ -233,12 +236,12 @@ static_assert(QuantityOf<quantity<isq::stress[Pa], cartesian_tensor<double>>, qu
 static_assert(QuantityOf<quantity<km / h, cartesian_vector<double>>, quantity_tensor_order::vector>);  // a kind
 ```
 
-When both halves are permissive, every order is admitted. A _quantity_ of a kind stored in
-a `double` satisfies the `scalar`, `vector`, and `tensor` readings alike, so overloads
-constrained on different orders are ambiguous for it.
+A _quantity_ of a kind admits every order its representation fills, so it can satisfy
+several readings at once. One stored in a `double` matches `scalar`, `vector`, and
+`tensor`, and one stored in a `cartesian_vector<double>` matches `vector` and `tensor`.
+Overloads constrained on different orders are then ambiguous for it.
 
-The field axis is disjoint rather than rank-ordered: a _quantity_ is real or complex, never
-both.
+The field axis isn't rank-ordered: a _quantity_ is either real or complex.
 
 ```cpp
 static_assert(QuantityOf<quantity<isq::speed[m / s], double>, quantity_field::real>);
@@ -343,8 +346,8 @@ a
 | `PointOrigin`  | The _point_ and `V` have the same absolute point origin.                                      |
 | a character    | The _point_ satisfies the condition [`QuantityOf<V>`](#QuantityOf) states for a _quantity_.   |
 
-A _point_ is not a [`Quantity`](#Quantity), so [`QuantityOf`](#QuantityOf) cannot
-be asked about one. This is where a _point_ asks instead, and it agrees with the
+A _point_ isn't a [`Quantity`](#Quantity), so [`QuantityOf`](#QuantityOf) can't be asked
+about one. A _point_ asks `QuantityPointOf` instead, and the answer agrees with the
 _quantity_ of the same _reference_ and representation.
 
 ```cpp

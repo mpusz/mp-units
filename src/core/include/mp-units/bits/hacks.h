@@ -163,11 +163,12 @@ inline constexpr bool is_complete = requires { sizeof(T) > 0; };
 
 // Hack for a compiler bug: MSVC instantiates the initializer of a `constexpr` static data member of
 // a class template together with the class, instead of only when the member is used ([temp.inst]).
-// The deprecated `quantity::character` and `quantity_point::character` members are ill-formed for a
-// quantity kind by design, so on MSVC every kind quantity fails with C3615, and the hack omits those
-// two members there. Confirmed on MSVC 19.51 (`_MSC_VER` 1951). Older versions were not tested and
-// keep the hack. Extend the branch to a newer version only after that version is confirmed to have
-// the same bug.
+// The deprecated `character` members of quantity specifications, `quantity`, and `quantity_point` are
+// ill-formed when the character isn't definite (a quantity kind, a specification with a kind factor,
+// or one defined by a kind equation), so on MSVC every such type fails (C3615 or C2131). The hack omits
+// all of those members there. Confirmed on MSVC 19.51 (`_MSC_VER` 1951). Older versions are untested and
+// keep the hack. Extend the branch to a newer version only after that version is confirmed to have the
+// same bug.
 #if MP_UNITS_COMP_MSVC && MP_UNITS_COMP_MSVC <= 1951
 #define MP_UNITS_EAGER_STATIC_MEMBER_INIT_HACK 1
 #else

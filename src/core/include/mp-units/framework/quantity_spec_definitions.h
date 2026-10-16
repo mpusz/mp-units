@@ -122,11 +122,11 @@ template<QuantitySpec QS, UnitOf<QS{}> U>
     return reference<QS, U>{};
 }
 
-// The character of a quantity formed from other quantities. Per axis, the highest rank among the
-// factors wins (`displacement / duration` is a vector because `displacement` is), except that a
-// factor constraining nothing makes the result constrain nothing: `kind_of<length> / kind_of<time>`
-// admits whatever representation the user stores, so claiming `scalar` for it would be the same
-// fabrication a kind's own character used to make.
+// The character of a quantity formed from other quantities: per axis, the highest order or field among
+// the factors wins (`displacement / duration` is a vector because `displacement` is), and an axis that
+// one factor leaves unconstrained stays unconstrained. Such a factor is a kind factor of a mixed equation
+// (`isq::speed * kind_of<isq::time>`) or a specification defined by a kind equation
+// (`quantity_spec<kind_of<isq::length> / kind_of<isq::time>>`).
 template<std::same_as<character_mask>... Ts>
 [[nodiscard]] consteval character_mask common_quantity_character(Ts... args)
 {
@@ -522,9 +522,11 @@ struct quantity_spec<Self, Dim, Args...> : detail::quantity_spec_interface<Self>
 
   [[deprecated("2.6.0: use `get_dimension(qs)` instead")]] static constexpr detail::BaseDimension auto dimension =
     _dimension_;
+#if !MP_UNITS_EAGER_STATIC_MEMBER_INIT_HACK
   [[deprecated(
     "2.6.0: character is no longer part of the public interface; ask the named quantity concepts "
     "instead")]] static constexpr quantity_character character = detail::definite_character<_character_>();
+#endif
 };
 
 /**
@@ -576,9 +578,11 @@ struct quantity_spec<Self, Eq, Args...> : detail::quantity_spec_interface<Self> 
   static constexpr bool _is_non_negative_ = mp_units::contains<struct non_negative, Args...>();
 
   [[deprecated("2.6.0: use `get_dimension(qs)` instead")]] static constexpr Dimension auto dimension = _dimension_;
+#if !MP_UNITS_EAGER_STATIC_MEMBER_INIT_HACK
   [[deprecated(
     "2.6.0: character is no longer part of the public interface; ask the named quantity concepts "
     "instead")]] static constexpr quantity_character character = detail::definite_character<_character_>();
+#endif
 };
 
 namespace detail {
@@ -644,9 +648,11 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
                                                            detail::is_real_scalar(_character_) && QS._is_non_negative_);
 
   [[deprecated("2.6.0: use `get_dimension(qs)` instead")]] static constexpr Dimension auto dimension = _dimension_;
+#if !MP_UNITS_EAGER_STATIC_MEMBER_INIT_HACK
   [[deprecated(
     "2.6.0: character is no longer part of the public interface; ask the named quantity concepts "
     "instead")]] static constexpr quantity_character character = detail::definite_character<_character_>();
+#endif
 };
 
 // clang-format off
@@ -706,9 +712,11 @@ struct quantity_spec<Self, QS, Eq, Args...> : detail::quantity_spec_interface<Se
                                                            detail::is_real_scalar(_character_) && QS._is_non_negative_);
 
   [[deprecated("2.6.0: use `get_dimension(qs)` instead")]] static constexpr Dimension auto dimension = _dimension_;
+#if !MP_UNITS_EAGER_STATIC_MEMBER_INIT_HACK
   [[deprecated(
     "2.6.0: character is no longer part of the public interface; ask the named quantity concepts "
     "instead")]] static constexpr quantity_character character = detail::definite_character<_character_>();
+#endif
 };
 
 namespace detail {
@@ -827,12 +835,19 @@ struct kind_of_<Q> : quantity_spec<kind_of_<Q>, Q{}>::_base_type_ {
   // coordinates (e.g. displacement, altitude, depth) — so it can never be universally
   // non-negative, even when the tree root carries a non_negative tag.
   static constexpr bool _is_non_negative_ = false;
-  // For exactly the same reason it constrains neither character axis. The tree cannot tell us which
-  // orders a kind admits: a user may store a vector or a tensor representation in a kind quantity
-  // without ever declaring a quantity specification for it (that is what a simple quantity is), so
-  // inheriting the root's character would claim `scalar` for a value that is nothing of the sort.
-  // A kind therefore names every flag on both axes, and the representation decides.
+  // The tree can't tell which orders a kind's quantities hold, as a simple quantity of a kind may store
+  // any representation. A kind admits every flag on both axes, and only the representation can restrict it.
   static constexpr detail::character_mask _character_{detail::any_order, detail::any_field};
+#if !MP_UNITS_EAGER_STATIC_MEMBER_INIT_HACK
+  // Redeclared so that the one inherited from the tree root, built from the root's character, doesn't
+  // answer for the kind. Ill-formed on use, as a kind admits every character. The mask is read through
+  // `kind_of_<Q>{}` to keep the call dependent: `_character_` alone is a constant, and Clang would
+  // evaluate the call while parsing the template.
+  [[deprecated(
+    "2.6.0: character is no longer part of the public interface; ask the named quantity concepts "
+    "instead")]] static constexpr quantity_character character =
+    detail::definite_character<detail::admitted_character(kind_of_<Q>{})>();
+#endif
 };
 
 MP_UNITS_EXPORT template<QuantitySpec auto Q>

@@ -34,9 +34,9 @@ expose public static data members. Its metadata is obtained through non-member f
     static_assert(get_dimension(isq::velocity) == isq::dim_length / isq::dim_time);
     ```
 
-A quantity's [character](../framework_basics/character_of_a_quantity.md) is deliberately
-**not** introspectable as a value. Ask what a quantity *is* instead, by handing
-[`QuantityOf`](concepts.md#QuantityOf) a character rather than a specification:
+A quantity's [character](../framework_basics/character_of_a_quantity.md) isn't available
+as a value. To ask about it, hand [`QuantityOf`](concepts.md#QuantityOf) a character in
+place of a specification:
 
 !!! example
 
@@ -50,21 +50,19 @@ A quantity's [character](../framework_basics/character_of_a_quantity.md) is deli
     static_assert(QuantityOf<quantity<V, std::complex<double>>, quantity_field::complex>);
     ```
 
-The reason is that a _quantity spec_ alone does not always have a character to report. A
-concrete one does, but a [quantity kind](../framework_basics/systems_of_quantities.md)
-constrains neither axis: whichever representation you store decides. A [simple
+A concrete _quantity spec_ has one character, but a
+[quantity kind](../framework_basics/systems_of_quantities.md) admits every character, and
+only the representation can restrict it. A [simple
 quantity](../framework_basics/simple_and_typed_quantities.md) is of a kind too, since its
-spec is the `kind_of<…>` its unit yields, so there is no concrete quantity type in the
-hierarchy to narrow it down.
+spec is the `kind_of<…>` its unit yields. Both quantities below are of the kind of `m / s`:
 
 ```cpp
-const quantity a = cartesian_vector{3.0, 4.0, 0.0} * m / s;   // a vector quantity of the speed kind
-const quantity b = cartesian_tensor<double>{} * m / s;        // a tensor quantity of the same kind
+const quantity a = cartesian_vector{3.0, 4.0, 0.0} * m / s;   // a vector representation
+const quantity b = cartesian_tensor<double>{} * m / s;        // a tensor representation
 ```
 
-Both are ordinary quantities, and no single value could describe the character of the kind
-they share. The concepts above answer for each *quantity*, weighing its spec together with
-its representation, which is the only place both halves of the question are known.
+See [`QuantityOf`](concepts.md#QuantityOf) for how the spec and the representation
+combine.
 
 
 ## `unit` and `Reference`

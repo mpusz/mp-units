@@ -67,7 +67,7 @@ template<typename F, std::size_t... Is>
 }
 
 // `cartesian_tensor` models a second-order Cartesian tensor in ordinary N-dimensional space (a fixed
-// N×N array of components), as described in ISO 80000-2:2019, 18 (items 2-18.19 to 2-18.25). As with
+// N×N array of components), as described in clause 18 of ISO 80000-2:2019 (items 2-18.19 to 2-18.25). As with
 // `cartesian_vector`, all operations live in this hidden-friend interface so that both operands of
 // a binary operation are deduced symmetrically (neither side undergoes an implicit conversion), and
 // each binary operation deduces a single dimension N for both operands - so mixing a 2x2 and a 3x3
