@@ -181,19 +181,19 @@ template<Quantity V>
   return diff;
 }
 
-// (x - origin) modulo a positive m, in [0, m), for a representation with an exact remainder (an
-// integral one), without forming x - origin, which can overflow near the representation's limits.
-// Each remainder lies in (-m, m) and their difference in (-m, m), so no intermediate value
-// exceeds m.
+// (x - origin) modulo a positive modulus, in [0, modulus), for a representation with an exact
+// remainder (an integral one), without forming x - origin, which can overflow near the
+// representation's limits. Each remainder lies in (-modulus, modulus) and their difference in
+// (-modulus, modulus), so no intermediate value exceeds the modulus.
 template<Quantity V>
-[[nodiscard]] constexpr V offset_modulo(const V& x, const V& origin, const V& m)
+[[nodiscard]] constexpr V offset_modulo(const V& x, const V& origin, const V& modulus)
 {
   const auto non_negative_remainder = [&](const V& value) {
-    const V r{value % m};
-    return r < V::zero() ? V{r + m} : r;
+    const V remainder{value % modulus};
+    return remainder < V::zero() ? V{remainder + modulus} : remainder;
   };
-  const V d{non_negative_remainder(x) - non_negative_remainder(origin)};
-  return d < V::zero() ? V{d + m} : d;
+  const V diff{non_negative_remainder(x) - non_negative_remainder(origin)};
+  return diff < V::zero() ? V{diff + modulus} : diff;
 }
 
 // True for an infinite or NaN floating-point value: v - v is NaN exactly then, and always zero for
