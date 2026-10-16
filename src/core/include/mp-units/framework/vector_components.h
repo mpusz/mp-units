@@ -130,7 +130,11 @@ concept ValidVectorAxes =
  * pairwise-distinct kinds (declare each with `is_kind`). A specialization that violates them is
  * ill-formed at the point of definition. The relational preconditions (axes share the whole's
  * hierarchy root, differ from the whole's kind, and fit the representation) need the whole and the
- * representation, so they are enforced by the `Decomposable` concept.
+ * representation, so they are enforced when a `quantity` is actually decomposed.
+ *
+ * Specializing this template is optional. A vector quantity without one still decomposes, with each
+ * component carrying the whole's kind instead of an axis of its own, and access by axis spec
+ * unavailable. The declaration buys that per-axis type safety.
  */
 MP_UNITS_EXPORT template<QuantitySpec auto... Axes>
   requires detail::ValidVectorAxes<Axes...>
@@ -171,14 +175,20 @@ template<QuantitySpec auto QS, QuantitySpec auto... Axes>
   return found;
 }
 
-// Internal gate for the decomposition `get`/tuple protocol: the quantity's spec has a
+// The user opted the whole into a *named* decomposition by specializing `vector_components`. This
+// picks between the two decomposition modes below, and it is deliberately message-free: a quantity
+// with no specialization qualifies for the unnamed mode instead.
+template<auto QS>
+concept HasVectorAxes = QuantitySpec<MP_UNITS_NTTP_HACK(decltype(QS))> && requires { vector_components<QS>::size; };
+
+// The named mode of the decomposition `get`/tuple protocol: the quantity's spec has a
 // `vector_components` specialization, the representation is element-accessible, and the axes are
 // relationally valid against the whole. Only the quantity spec is needed (never the unit), so it is
 // taken directly rather than the full reference. `QS` is an unconstrained `auto` because a
 // constrained `auto` is not allowed on a concept's own template parameter.
 template<auto QS, typename Rep>
-concept Decomposable =
-  QuantitySpec<MP_UNITS_NTTP_HACK(decltype(QS))> && requires { vector_components<QS>::size; } &&
+concept NamedDecomposable =
+  HasVectorAxes<QS> &&
   (is_derived_from_specialization_of_v<vector_components<QS>, vector_axes> ||
    unsatisfied<"vector_components must inherit from a vector_axes specialization">()) &&
   (requires(const Rep& r) { component_access<0>(r); } ||
@@ -190,13 +200,75 @@ concept Decomposable =
   (extent<Rep>() == dynamic_extent || vector_components<QS>::size <= extent<Rep>() ||
    unsatisfied<"more component axes declared than the representation holds">());
 
+// A representation that can supply the components of an undeclared decomposition: an order-1
+// container that is element-accessible and states its length at compile time. The length has to come
+// from here because there is no axis count to bound a compile-time index against, and
+// `std::tuple_size` is the tuple protocol's own way to spell it. Written as nested requirements so
+// that a type for which `tensor_order` is unspecified is simply not satisfied rather than a hard
+// error.
+template<typename Rep>
+concept ComponentAccessible = requires {
+  requires tensor_order<Rep> == 1;
+  requires requires(const Rep& r) { component_access<0>(r); };
+  requires extent<Rep>() != dynamic_extent;
+};
+
+// The unnamed mode: no axes are declared, so a component carries the whole's kind rather than an axis
+// of its own, and eligibility is read off the representation alone. The whole's
+// own character is not checked: it is the vector one whenever the spec is concrete
+// (`RepresentationOf` already pins order there), and a quantity kind is deliberately
+// character-agnostic (`cartesian_vector{1., 2., 3.} * m` is a vector quantity of the length kind).
+//
+// Unlike the named mode this is message-free, because it is also used as a *query*: `std::tuple_size`
+// of a quantity is constrained on it, so an ordinary scalar quantity has to answer "no" rather than
+// diagnose.
+template<auto QS, typename Rep>
+concept UnnamedDecomposable =
+  QuantitySpec<MP_UNITS_NTTP_HACK(decltype(QS))> && !HasVectorAxes<QS> && ComponentAccessible<Rep>;
+
+template<auto QS, typename Rep>
+concept Decomposable = NamedDecomposable<QS, Rep> || UnnamedDecomposable<QS, Rep>;
+
+// The number of components: the declared axis count in the named mode, the representation's own
+// length in the unnamed one.
+template<auto QS, typename Rep>
+  requires Decomposable<QS, Rep>
+[[nodiscard]] consteval std::size_t decomposition_size()
+{
+  if constexpr (NamedDecomposable<QS, Rep>)
+    return vector_components<QS>::size;
+  else
+    return extent<Rep>();
+}
+
+// The quantity spec the `Idx`-th component carries: its declared axis in the named mode, the whole's
+// *kind* in the unnamed one. The kind is the honest answer, because a component is not the whole: an
+// undeclared decomposition knows the component belongs to the whole's kind, but nothing entitles it
+// to claim the whole's own spec. Handing back `QS` would assert that a single component *is* an
+// `isq::velocity`, letting it stand in wherever the complete vector quantity is expected.
+//
+// The component keeps the vector character even though that kind is rooted in a scalar quantity
+// (`get_kind(isq::velocity)` is the `isq::speed` kind), because a kind admits every character and the
+// representation decides. `get_kind` rather than `kind_of<QS>`: the latter requires `QS` to be its
+// own tree root, which a vector spec never is.
+template<auto QS, typename Rep, std::size_t Idx>
+  requires Decomposable<QS, Rep>
+[[nodiscard]] consteval QuantitySpec auto component_spec()
+{
+  if constexpr (NamedDecomposable<QS, Rep>)
+    return vector_components<QS>::template axis<Idx>;
+  else
+    return get_kind(QS);
+}
+
 // `Decomposable` plus a bounds check. The bound is guarded behind `Decomposable` so it is only
 // formed once that holds (it short-circuits for non-decomposable specs, avoiding a hard error).
 template<auto QS, typename Rep, std::size_t Idx>
-concept DecomposableIndex = Decomposable<QS, Rep> && (Idx < vector_components<QS>::size);
+concept DecomposableIndex = Decomposable<QS, Rep> && (Idx < decomposition_size<QS, Rep>());
 
+// Lookup by axis spec is a named-mode privilege: an unnamed decomposition has no axis to name.
 template<auto QS, typename Rep, auto Axis>
-concept DecomposableAxis = Decomposable<QS, Rep> && QuantitySpec<MP_UNITS_NTTP_HACK(decltype(Axis))> &&
+concept DecomposableAxis = NamedDecomposable<QS, Rep> && QuantitySpec<MP_UNITS_NTTP_HACK(decltype(Axis))> &&
                            (axis_index_of<Axis>(vector_components<QS>{}) < vector_components<QS>::size);
 
 }  // namespace detail

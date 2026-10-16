@@ -146,10 +146,23 @@ static_assert(!RepresentationOf<decltype(make_vec3(0, 0, 0) * isq::velocity[m / 
 // `magnitude()` of a vector quantity is a scalar quantity in the same unit.
 static_assert(QuantityOf<decltype(magnitude(make_vec3(3, 4, 0) * isq::velocity[m / s])), isq::speed>);
 
-// The backend models the tuple protocol: element access plus a length known at compile time.
-// `cartesian_vector` and `blaze::StaticVector` ship it themselves, while the Eigen and GLM plugins
-// add it from each library's own compile-time shape.
+// The backend models the tuple protocol a vector quantity needs to decompose: element access plus a
+// length known at compile time. `cartesian_vector` and `blaze::StaticVector` ship it themselves,
+// while the Eigen and GLM plugins add it from each library's own compile-time shape.
 static_assert(std::tuple_size_v<vec3> == 3);
+
+using velocity_vec3 = quantity<isq::velocity[m / s], vec3>;
+
+// `isq::velocity` declares no component axes, so this is the unnamed decomposition: three components
+// carrying the whole's kind over the vector's element type.
+static_assert(std::tuple_size_v<velocity_vec3> == 3);
+static_assert(QuantityOf<std::tuple_element_t<0, velocity_vec3>, isq::velocity>);
+static_assert(std::same_as<std::tuple_element_t<0, velocity_vec3>::rep, double>);
+
+// Composition is available for every backend, including one whose only element-wise constructor
+// takes an `initializer_list` rather than a value per component.
+static_assert(std::constructible_from<velocity_vec3, std::tuple_element_t<0, velocity_vec3>,
+                                      std::tuple_element_t<1, velocity_vec3>, std::tuple_element_t<2, velocity_vec3>>);
 
 }  // namespace
 
@@ -164,6 +177,23 @@ TEST_CASE("linear algebra type as a quantity representation")
     CHECK(nv[0] == 1);
     CHECK(nv[1] == 2);
     CHECK(nv[2] == 3);
+  }
+
+  SECTION("decomposition into component quantities, and back")
+  {
+    const velocity_vec3 v = make_vec3(1, 2, 3) * isq::velocity[m / s];
+
+    CHECK(get<0>(v) == 1. * isq::velocity[m / s]);
+    CHECK(get<2>(v) == 3. * isq::velocity[m / s]);
+
+    const auto [x, y, z] = v;
+    CHECK(x == 1. * isq::velocity[m / s]);
+    CHECK(y == 2. * isq::velocity[m / s]);
+    CHECK(z == 3. * isq::velocity[m / s]);
+
+    // the round trip closes: what `get` takes apart goes back together
+    const velocity_vec3 back = {x, y, z};
+    CHECK(back == v);
   }
 
   SECTION("exact unit conversion (km -> m) of a vector quantity")

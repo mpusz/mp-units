@@ -114,7 +114,7 @@ documented in [Project Structure](../../getting_started/project_structure.md).
 Any _weakly-regular_ vector type (copyable, with `bool`-returning equality) that exposes a
 Euclidean norm can serve as a representation. The bundled plugins wire up exactly the
 customization points described here, and they are the template for adapting any other library.
-Five things vary between libraries:
+Six things vary between libraries:
 
 - **Underlying type.** Eigen and GLM expose a `value_type` member, so
   [`representation_underlying_type`](../../users_guide/advanced_topics/representation_types.md#representation_underlying_type)
@@ -132,6 +132,14 @@ Five things vary between libraries:
   [`tensor_order`](../../users_guide/advanced_topics/representation_types.md#tensor_order)
   has no default for it and its plugin specializes it from the compile-time shape. GLM and
   Blaze, whose vectors and matrices are structurally distinct types, need no such override.
+- **Element access and length.** A vector quantity
+  [decomposes into components](../advanced_usage/decompose_vector_quantity.md) by reading
+  elements through `get<I>` or `operator[]` and the component count through
+  `std::tuple_size`. `cartesian_vector` and `blaze::StaticVector` model the tuple protocol
+  themselves, while the Eigen and GLM plugins add it for fixed-size vectors from each
+  library's own compile-time shape (Eigen's `SizeAtCompileTime`, GLM's static `length()`).
+  Dynamically sized vectors are deliberately left out, since a compile-time index cannot be
+  bounds-checked against a length that only exists at run time.
 - **Field.** No override is needed:
   [`numeric_field`](../../users_guide/advanced_topics/representation_types.md#numeric_field)
   reads the field off a scalar element, so a real matrix of `double` is real even though Eigen
