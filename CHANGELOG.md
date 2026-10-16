@@ -449,9 +449,10 @@ This page documents the version history and changes for the **mp-units** library
         (accepted by `check_in_range` at either end and by `wrap_to_range` at its max)
 - feat: each bound of a bounds policy must be exactly representable in the quantity type
         of a point checked against it, and so must the offset to a bounded ancestor for a
-        point with a representation that is not floating-point; otherwise the point is not
-        constructible from a quantity and offers no `is_within_bounds` or `try_make`
-        (a `float` point needs `float` bounds: `0.1 * m` isn't a `float`)
+        point with a representation that is not floating-point
+- feat: a point that breaks that rule is not constructible from a quantity and offers no
+        `is_within_bounds` or `try_make` (a `float` point needs `float` bounds: the
+        `double` value of `0.1` isn't a `float` value)
 - feat: `min()` and `max()` of a point whose origin has no bounds of its own report the
         bounds of its nearest bounded ancestor in the point's frame (with a floating-point
         representation, the extreme values those bounds accept after rounding)

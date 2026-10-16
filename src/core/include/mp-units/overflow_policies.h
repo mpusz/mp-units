@@ -36,6 +36,7 @@
 import std;
 #else
 #include <concepts>
+#include <limits>
 #include <type_traits>
 #include <utility>
 #endif
@@ -109,8 +110,8 @@ template<Quantity V>
 }
 
 // True iff a policy bound converts into the type of the checked value V without changing its value,
-// tested by converting it back. The check compares in V, so a bound V cannot hold would be checked
-// somewhere else than declared, such as an `int` bound of 16'777'217 m in a `float` V. For a
+// tested by converting it back. The check compares in V, so a bound that V can't hold would be compared
+// after rounding, such as an `int` bound of 16'777'217 m in a `float` V. For a
 // floating-point V only the representation is tested: scaling to another unit rounds whenever the
 // factor has no exact binary form (0.3048 for ft to m), and that rounding is accepted, as it is for
 // the offset of a relative origin.
@@ -130,9 +131,17 @@ template<Quantity V, typename B>
         return false;
     } else if constexpr (requires {
                            value_cast<bound_type::unit, typename bound_type::rep>(value_cast<V::unit, rep>(value));
-                         })
+                         }) {
+      // Converting a floating-point value outside the range of an integral type is undefined behavior,
+      // so such a bound is rejected before it is converted.
+      if constexpr (treat_as_floating_point<typename bound_type::rep> && std::numeric_limits<rep>::is_specialized) {
+        const auto scaled = value_cast<V::unit, long double>(value).numerical_value_in(V::unit);
+        if (!(scaled >= static_cast<long double>(std::numeric_limits<rep>::lowest()) &&
+              scaled <= static_cast<long double>(std::numeric_limits<rep>::max())))
+          return false;
+      }
       return value_cast<bound_type::unit, typename bound_type::rep>(value_cast<V::unit, rep>(value)) == value;
-    else
+    } else
       return false;
   }
 }
@@ -341,8 +350,8 @@ struct clamp_to_range {
   template<Quantity V>
   constexpr V operator()(V v) const
   {
-    const V vmin{min};
-    const V vmax{max};
+    const V vmin = detail::bound_in<V>(min);
+    const V vmax = detail::bound_in<V>(max);
     if (v < vmin) return vmin;
     if (v > vmax) return vmax;
     return v;
@@ -380,8 +389,8 @@ struct wrap_to_range {
   template<Quantity V>
   constexpr V operator()(V v) const
   {
-    const V vmin{min};
-    const V vmax{max.value};
+    const V vmin = detail::bound_in<V>(min);
+    const V vmax = detail::bound_in<V>(max);
     if (detail::is_non_finite(v)) return v - v;  // no position on the circle: NaN
     if (v >= vmin && v < vmax) return v;
     const V range = vmax - vmin;
@@ -420,8 +429,8 @@ struct reflect_in_range {
   template<Quantity V>
   constexpr V operator()(V v) const
   {
-    const V vmin{min};
-    const V vmax{max};
+    const V vmin = detail::bound_in<V>(min);
+    const V vmax = detail::bound_in<V>(max);
     if (detail::is_non_finite(v)) return v - v;  // no reflected position: NaN
     if (v >= vmin && v <= vmax) return v;
     const V range = vmax - vmin;

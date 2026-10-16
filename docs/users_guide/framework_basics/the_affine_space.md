@@ -768,9 +768,10 @@ After each mutation the library transparently applies the bounds policy specifie
 ### Bounds the Point Can Hold
 
 A policy compares a value with its bounds in the value's own type. Each bound therefore has
-to be exactly representable in the point's quantity type, or the range would be checked
-somewhere else than declared. A point whose quantity type can't hold a bound offers no
-constructor from a quantity, no `is_within_bounds`, and no `try_make`:
+to be exactly representable in the point's quantity type (for a floating-point
+representation, in the bound's own unit). Otherwise the policy would compare against a
+rounded bound. A point whose quantity type can't hold a bound offers no constructor from a
+quantity, no `is_within_bounds`, and no `try_make`:
 
 ```cpp
 inline constexpr struct tape_start :
@@ -780,11 +781,12 @@ using tape_point = quantity_point<isq::length[m], tape_start>;
 using tape_point_f = quantity_point<isq::length[m], tape_start, float>;
 
 tape_point p1{0.5 * m, tape_start};       // OK
-// tape_point_f p2{0.5f * m, tape_start};  // ❌ 0.1 m isn't a float
+// tape_point_f p2{0.5f * m, tape_start};  // ❌ the double 0.1 isn't a float value
 ```
 
-A `float` point needs `float` bounds, such as `0.1f * m`. A bound with an integral value,
-such as `-90. * deg`, is exact in any floating-point type that can hold its magnitude.
+A `float` point needs `float` bounds, such as `0.1f * m`. A bound with a small integral
+value, such as `-90. * deg`, is exact in `float`, which holds every integer up to
+16'777'216.
 
 A point checked against the bounds of an ancestor is translated by the offset to that
 ancestor. With an integral representation, the point's quantity type must hold that offset
@@ -855,8 +857,9 @@ _Hierarchical bounds validation_ note in the
     origin without bounds of its own reports those of its nearest bounded ancestor,
     translated into its frame. With a floating-point representation the translation rounds,
     so `min()` and `max()` report the lowest and highest values that ancestor's bounds
-    actually accept, which can differ from the translated bound by a few ulps. Without a
-    bounds policy, `std::numeric_limits` delegates to the representation type's limits.
+    accept, which can differ from the translated bound by the rounding of each offset.
+    Without a bounds policy, `std::numeric_limits` delegates to the representation type's
+    limits.
 
 ### Validating Untrusted Values
 
@@ -996,7 +999,7 @@ Its `min` and `max` declare the outer ends of the domain, which `quantity_point:
     user-defined checking policy is compared by its `min` and `max` as well, and its
     predicate is not consulted. A value inside an origin's own bounds therefore lies between
     the `min` and `max` of every bounded origin above it, up to rounding with floating-point
-    offsets. Each floating-point offset in the chain rounds, so a value at the very edge of a
+    offsets. Each floating-point offset in the chain rounds, so a value at the edge of a
     child's range can end up one ulp outside an ancestor's range several levels up.
 
     Defining the origin or naming a point type doesn't trigger the check. It fires when the

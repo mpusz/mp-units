@@ -1338,6 +1338,31 @@ static_assert(is_within_bounds<quantity_point<bav_tape[m], bav_tape_whole, float
 static_assert(!is_within_bounds<quantity_point<bav_tape[m], bav_tape_wide, double>>(16'777'218. * m, bav_tape_wide));
 static_assert(is_within_bounds<quantity_point<bav_tape[m], bav_tape_fine, double>>(0.1 * m, bav_tape_fine));
 
+// A floating-point bound outside the range of an integral representation is rejected as well, not
+// converted (which would be undefined behavior).
+inline constexpr struct bav_tape_huge final : absolute_point_origin<bav_tape, check_in_range{0. * m, 1e20 * m}> {
+} bav_tape_huge;
+
+static_assert(
+  !can_query_bounds<quantity_point<bav_tape[m], bav_tape_huge, int>, bav_tape_huge, quantity<bav_tape[m], int>>);
+static_assert(is_within_bounds<quantity_point<bav_tape[m], bav_tape_huge, double>>(1e19 * m, bav_tape_huge));
+
+// An adjusting policy converts its bounds the same way, so an exact bound that converts only
+// explicitly (a `double` -90 m into an `int` point, 10'000 m into `int` kilometres) works there too.
+inline constexpr struct bav_tape_clamp final : absolute_point_origin<bav_tape, clamp_to_range{-90. * m, 90. * m}> {
+} bav_tape_clamp;
+inline constexpr struct bav_tape_wrap final : absolute_point_origin<bav_tape, wrap_to_range{0 * m, 10'000 * m}> {
+} bav_tape_wrap;
+inline constexpr struct bav_tape_reflect final : absolute_point_origin<bav_tape, reflect_in_range{0 * m, 10'000 * m}> {
+} bav_tape_reflect;
+
+static_assert(quantity_point<bav_tape[m], bav_tape_clamp, int>{100 * m, bav_tape_clamp}.quantity_from(bav_tape_clamp) ==
+              90 * m);
+static_assert(quantity_point<bav_tape[km], bav_tape_wrap, int>{12 * km, bav_tape_wrap}.quantity_from(bav_tape_wrap) ==
+              2 * km);
+static_assert(quantity_point<bav_tape[km], bav_tape_reflect, int>{12 * km, bav_tape_reflect}.quantity_from(
+                bav_tape_reflect) == 8 * km);
+
 
 // ----------------------------------------------------------------------------
 // Relative origins: the query tests the bounds construction enforces. The nesting check

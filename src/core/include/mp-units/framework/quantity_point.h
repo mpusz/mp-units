@@ -490,8 +490,8 @@ template<Quantity V, typename Policy>
 }
 
 // The offset from PO's frame to the frame of its bounds owner, in the representation of Q. A
-// floating-point representation keeps the offset's unit. Any other one takes Q's unit as well, so the
-// translated value stays in Q's quantity type, which bounds_exact_in requires to be exact.
+// floating-point representation keeps the offset's unit. Any other one is converted to Q's unit too, so
+// the translated value stays in Q's quantity type, which bounds_exact_in requires to be exact.
 // Only valid when !HasQuantityBounds<PO> && any_ancestor_has_bounds(PO) is true.
 template<PointOrigin auto PO, Quantity Q>
 [[nodiscard]] constexpr Quantity auto bounds_offset_in()
@@ -503,10 +503,9 @@ template<PointOrigin auto PO, Quantity Q>
     return value_cast<Q::unit, typename Q::rep>(off);
 }
 
-// True iff every constant that checking a value of Q at PO uses is exact in the type the check runs
-// in: each bound of the bounds owner, and the offset into the owner's frame unless Q's representation
-// is a floating-point one, whose rounding of that offset is accepted. A truncated constant would check
-// the bounds somewhere else than declared.
+// True iff each bound of the bounds owner is exact in the type the check runs in. So must be the
+// offset into the owner's frame, unless Q's representation is a floating-point one. A truncated
+// constant would move the bound.
 template<PointOrigin auto PO, Quantity Q>
 [[nodiscard]] consteval bool bounds_exact_in()
 {
@@ -721,8 +720,9 @@ struct quantity_point_iface {
   }
 
   // operator==
-  // Across origins, the operands are compared as offsets from the absolute origin, which can need
-  // arithmetic that comparing the stored quantities does not, so that expression is checked too.
+  // Across origins, both sides are first expressed as offsets from the absolute origin. That needs
+  // arithmetic with the origin offset, which a representation such as `constrained` may not support,
+  // so that expression is part of the constraint.
   template<auto R1, auto PO1, typename Rep1, QuantityPointOf<mp_units::detail::get_absolute_point_origin(PO1)> QP2>
     requires std::equality_comparable_with<quantity<R1, Rep1>, typename QP2::quantity_type>
   [[nodiscard]] friend constexpr bool operator==(const quantity_point<R1, PO1, Rep1>& lhs, const QP2& rhs)
@@ -861,8 +861,8 @@ template<PointOrigin auto PO, Quantity Q, bool Lower>
 // The lowest (Lower) or highest value of Q at PO that the bound of PO's nearest bounded ancestor
 // accepts. It is translated from that bound in one step, which is exact for a representation that
 // is not floating-point. A floating-point one rounds, so the result is then moved one value at a
-// time until it is the extreme value that the comparison the policy makes, after the same
-// translation that enforcement does, accepts.
+// time to the last one that the policy's comparison still accepts after the translation that
+// enforcement applies.
 template<PointOrigin auto PO, Quantity Q, bool Lower>
 [[nodiscard]] consteval Q inherited_limit()
 {
@@ -984,9 +984,10 @@ public:
   quantity_type quantity_from_origin_is_an_implementation_detail_;  // needs to be public for a structural type
 
   // static member functions
-  // min() (max()) reports the lowest (highest) value the bounds accept: those of the origin, or of its
-  // nearest bounded ancestor translated into the point's frame. It is not offered when those bounds
-  // exclude that end, and without a bound on that side it reports the representation's limit.
+  // min() reports the lowest value the bounds accept: those of the origin, or those of its nearest
+  // bounded ancestor translated into the point's frame. max() reports the highest. Neither is offered
+  // when those bounds exclude that end, and without a bound on that side each reports the
+  // representation's limit.
   [[nodiscard]] static constexpr quantity_point min() noexcept
     requires(detail::limit_source<PO, quantity_type, true>() != detail::point_limit_source::none)
   {
