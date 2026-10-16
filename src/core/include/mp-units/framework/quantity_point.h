@@ -40,7 +40,9 @@
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
+#include <bit>
 #include <compare>  // IWYU pragma: export
+#include <cstdint>
 #include <limits>
 #include <type_traits>
 #if MP_UNITS_HAS_EXPECTED
@@ -774,6 +776,122 @@ template<RoundingPolicy Policy, Quantity ToQ, Quantity Q>
     return value_cast<ToQ>(bound, Policy{});
 }
 
+// The floating-point type a representation is stepped through by one value at a time: the
+// representation itself, or the one it wraps (constrained<double>). void when there is none.
+template<typename Rep>
+[[nodiscard]] consteval auto stepping_type()
+{
+  if constexpr (std::floating_point<Rep>)
+    return std::type_identity<Rep>{};
+  else if constexpr (requires { typename representation_underlying_type<Rep>::type; }) {
+    using underlying = representation_underlying_type<Rep>::type;
+    if constexpr (std::floating_point<underlying>)
+      return std::type_identity<underlying>{};
+    else
+      return std::type_identity<void>{};
+  } else
+    return std::type_identity<void>{};
+}
+
+template<typename Rep>
+using stepping_type_t = decltype(stepping_type<Rep>())::type;
+
+// True iff next_after can step T at compile time: an IEEE 754 binary32 or binary64 type, whose
+// neighbouring values have neighbouring bit patterns.
+template<typename T>
+[[nodiscard]] consteval bool is_steppable()
+{
+  if constexpr (std::floating_point<T>)
+    return std::numeric_limits<T>::is_iec559 && (sizeof(T) == 4 || sizeof(T) == 8);
+  else
+    return false;
+}
+
+template<typename T>
+constexpr bool steppable = is_steppable<T>();
+
+// The neighbour of a finite x towards positive (up) or negative infinity.
+template<typename T>
+  requires steppable<T>
+[[nodiscard]] constexpr T next_after(T x, bool up)
+{
+  using bits_type = std::conditional_t<sizeof(T) == 4, std::uint32_t, std::uint64_t>;
+  if (x == T{0}) return up ? std::numeric_limits<T>::denorm_min() : -std::numeric_limits<T>::denorm_min();
+  auto bits = std::bit_cast<bits_type>(x);
+  if ((x > T{0}) == up)
+    ++bits;
+  else
+    --bits;
+  return std::bit_cast<T>(bits);
+}
+
+// Where min() (Lower) or max() of a point of Q at PO comes from.
+enum class point_limit_source : std::uint8_t { none, own_bound, inherited_bound, representation };
+
+template<PointOrigin auto PO, Quantity Q, bool Lower>
+[[nodiscard]] consteval point_limit_source limit_source()
+{
+  constexpr bool rep_limit = Lower ? requires { Q::min(); } : requires { Q::max(); };
+  constexpr auto rep_source = rep_limit ? point_limit_source::representation : point_limit_source::none;
+  if constexpr (!bounds_exact_in<PO, Q>())
+    return point_limit_source::none;
+  else if constexpr (HasQuantityBounds<MP_UNITS_NONCONST_TYPE(PO)>) {
+    if constexpr (Lower ? requires { PO._bounds_.min; } : requires { PO._bounds_.max; })
+      return (Lower ? excludes_min(PO._bounds_) : excludes_max(PO._bounds_)) ? point_limit_source::none
+                                                                             : point_limit_source::own_bound;
+    else
+      return rep_source;
+  } else if constexpr (any_ancestor_has_bounds(PO)) {
+    constexpr auto bpo = bounds_po_for(PO);
+    if constexpr (Lower ? requires { bpo._bounds_.min; } : requires { bpo._bounds_.max; }) {
+      if constexpr (Lower ? excludes_min(bpo._bounds_) : excludes_max(bpo._bounds_))
+        return point_limit_source::none;
+      else if constexpr (treat_as_floating_point<typename Q::rep> && !steppable<stepping_type_t<typename Q::rep>>)
+        return point_limit_source::none;
+      else
+        return point_limit_source::inherited_bound;
+    } else
+      return rep_source;
+  } else
+    return rep_source;
+}
+
+// The lowest (Lower) or highest value of Q at PO that the bound of PO's nearest bounded ancestor
+// accepts. It is translated from that bound in one step, which is exact for a representation that
+// is not floating-point. A floating-point one rounds, so the result is then moved one value at a
+// time until it is the extreme value that the comparison the policy makes, after the same
+// translation that enforcement does, accepts.
+template<PointOrigin auto PO, Quantity Q, bool Lower>
+[[nodiscard]] consteval Q inherited_limit()
+{
+  constexpr auto bpo = bounds_po_for(PO);
+  const auto offset = bounds_offset_in<PO, Q>();
+  using translated = decltype(std::declval<const Q&>() + offset);
+  const auto accepts = [&](const Q& candidate) {
+    if constexpr (Lower)
+      return above_lower_bound(translated{candidate + offset}, bpo._bounds_.min);
+    else
+      return below_upper_bound(translated{candidate + offset}, bpo._bounds_.max);
+  };
+  Q limit = [&] {
+    if constexpr (Lower)
+      return Q{bound_in<translated>(bpo._bounds_.min) - offset};
+    else
+      return Q{bound_in<translated>(bpo._bounds_.max) - offset};
+  }();
+  if constexpr (treat_as_floating_point<typename Q::rep>) {
+    using step_type = stepping_type_t<typename Q::rep>;
+    const auto step = [](const Q& value, bool up) {
+      const auto next = next_after(static_cast<step_type>(value.numerical_value_in(Q::unit)), up);
+      return Q{static_cast<typename Q::rep>(next), Q::reference};
+    };
+    // Inwards (up for a lower bound) until accepted, then outwards while still accepted.
+    while (!accepts(limit)) limit = step(limit, Lower);
+    while (accepts(step(limit, !Lower))) limit = step(limit, !Lower);
+  }
+  return limit;
+}
+
 }  // namespace detail
 
 MP_UNITS_EXPORT_BEGIN
@@ -864,30 +982,38 @@ public:
   quantity_type quantity_from_origin_is_an_implementation_detail_;  // needs to be public for a structural type
 
   // static member functions
-  // min() (max()) is not offered when the bounds policy excludes that end from the range.
+  // min() (max()) reports the lowest (highest) value the bounds accept: those of the origin, or of its
+  // nearest bounded ancestor translated into the point's frame. It is not offered when those bounds
+  // exclude that end, and without a bound on that side it reports the representation's limit.
   [[nodiscard]] static constexpr quantity_point min() noexcept
-    requires(!detail::excludes_min(PO._bounds_)) &&
-            (requires { PO._bounds_.min; } || requires { quantity_type::min(); })
+    requires(detail::limit_source<PO, quantity_type, true>() != detail::point_limit_source::none)
   {
-    if constexpr (requires { PO._bounds_.min; }) {
+    constexpr auto source = detail::limit_source<PO, quantity_type, true>();
+    if constexpr (source == detail::point_limit_source::own_bound) {
       // zero_quantity_t signals a [0, ∞) policy: return the natural zero for this
       // quantity type directly — correct quantity spec, no unit scaling required.
       if constexpr (std::same_as<std::remove_cvref_t<decltype(PO._bounds_.min)>, detail::zero_quantity_t>)
         return {quantity_type::zero(), PO};
       else
         return {detail::bound_as<rounded_up_t, quantity_type>(detail::bound_value(PO._bounds_.min)), PO};
+    } else if constexpr (source == detail::point_limit_source::inherited_bound) {
+      constexpr quantity_type limit = detail::inherited_limit<PO, quantity_type, true>();
+      return {limit, PO};
     } else {
       return {quantity_type::min(), PO};
     }
   }
 
   [[nodiscard]] static constexpr quantity_point max() noexcept
-    requires(!detail::excludes_max(PO._bounds_)) &&
-            (requires { PO._bounds_.max; } || requires { quantity_type::max(); })
+    requires(detail::limit_source<PO, quantity_type, false>() != detail::point_limit_source::none)
   {
-    if constexpr (requires { PO._bounds_.max; })
+    constexpr auto source = detail::limit_source<PO, quantity_type, false>();
+    if constexpr (source == detail::point_limit_source::own_bound)
       return {detail::bound_as<rounded_down_t, quantity_type>(detail::bound_value(PO._bounds_.max)), PO};
-    else
+    else if constexpr (source == detail::point_limit_source::inherited_bound) {
+      constexpr quantity_type limit = detail::inherited_limit<PO, quantity_type, false>();
+      return {limit, PO};
+    } else
       return {quantity_type::max(), PO};
   }
 

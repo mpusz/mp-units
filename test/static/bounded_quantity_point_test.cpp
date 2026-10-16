@@ -1338,6 +1338,7 @@ static_assert(is_within_bounds<quantity_point<bav_tape[m], bav_tape_whole, float
 static_assert(!is_within_bounds<quantity_point<bav_tape[m], bav_tape_wide, double>>(16'777'218. * m, bav_tape_wide));
 static_assert(is_within_bounds<quantity_point<bav_tape[m], bav_tape_fine, double>>(0.1 * m, bav_tape_fine));
 
+
 // ----------------------------------------------------------------------------
 // Relative origins: the query tests the bounds construction enforces. The nesting check
 // keeps those inside the bounds of every origin above, so they are the only ones that matter.
@@ -1600,6 +1601,62 @@ static_assert(
 // cannot be probed here):
 // - a child declaring only a lower bound (check_non_negative) under an origin with an upper bound;
 // - a child whose range exceeds a bounded origin two levels up, with an unbounded origin between.
+
+// min() and max() of a point whose origin has no bounds of its own report the extreme values that
+// the bounds of the nearest bounded ancestor accept, translated into the point's frame. 0.1 m - 0.7 m
+// is -0.6 m, but -0.6 m + 0.7 m rounds to 0.09999999999999998 m, below the ancestor's 0.1 m, so min()
+// is the next double up. 0.9 m - 0.7 m is 0.20000000000000007 m, and the next double up still maps
+// to 0.9 m, so that one is max().
+QUANTITY_SPEC(bav_strip, isq::length);
+
+inline constexpr struct bav_strip_start final : absolute_point_origin<bav_strip, check_in_range{0.1 * m, 0.9 * m}> {
+} bav_strip_start;
+inline constexpr struct bav_strip_mark final :
+    relative_point_origin<quantity_point<bav_strip[m], bav_strip_start, double>{0.7 * m, bav_strip_start}> {
+} bav_strip_mark;
+using bav_strip_pt = quantity_point<bav_strip[m], bav_strip_mark, double>;
+
+static_assert(bav_strip_pt::min().quantity_from(bav_strip_mark) == -0.5999999999999999 * m);
+static_assert(bav_strip_pt::max().quantity_from(bav_strip_mark) == 0.2000000000000001 * m);
+static_assert(is_within_bounds<bav_strip_pt>(-0.5999999999999999 * m, bav_strip_mark));
+static_assert(!is_within_bounds<bav_strip_pt>(-0.6 * m, bav_strip_mark));
+static_assert(is_within_bounds<bav_strip_pt>(0.2000000000000001 * m, bav_strip_mark));
+static_assert(!is_within_bounds<bav_strip_pt>(0.20000000000000015 * m, bav_strip_mark));
+
+// With an integral representation the translation is exact.
+inline constexpr struct bav_strip_int_start final : absolute_point_origin<bav_strip, check_in_range{-10 * m, 10 * m}> {
+} bav_strip_int_start;
+inline constexpr struct bav_strip_int_mark final :
+    relative_point_origin<quantity_point<bav_strip[m], bav_strip_int_start, int>{3 * m, bav_strip_int_start}> {
+} bav_strip_int_mark;
+using bav_strip_int_pt = quantity_point<bav_strip[m], bav_strip_int_mark, int>;
+
+static_assert(bav_strip_int_pt::min().quantity_from(bav_strip_int_mark) == -13 * m);
+static_assert(bav_strip_int_pt::max().quantity_from(bav_strip_int_mark) == 7 * m);
+
+// A wrapper representation is stepped through the value it wraps: [-6°, 4°], as is_within_bounds says.
+static_assert(trim_offset2::min() == trim_offset2{-6. * deg, trim_centre_plus_one});
+static_assert(trim_offset2::max() == trim_offset2{4. * deg, trim_centre_plus_one});
+
+// An end the bounded ancestor excludes is not reported, as for an origin's own bounds.
+inline constexpr struct bav_east final :
+    relative_point_origin<quantity_point<bav_azimuth[deg], bav_north, double>{90. * deg, bav_north}> {
+} bav_east;
+using bav_east_pt = quantity_point<bav_azimuth[deg], bav_east, double>;
+
+template<typename QP>
+concept has_point_max = requires { QP::max(); };
+
+static_assert(bav_east_pt::min().quantity_from(bav_east) == -90. * deg);
+static_assert(!has_point_max<bav_east_pt>);
+
+// Nor is a bound the point's quantity type can't hold (0.1 m in a `float` point).
+template<typename QP>
+concept has_point_min = requires { QP::min(); };
+
+static_assert(!has_point_min<quantity_point<bav_tape[m], bav_tape_fine, float>>);
+static_assert(!has_point_max<quantity_point<bav_tape[m], bav_tape_fine, float>>);
+static_assert(has_point_min<quantity_point<bav_tape[m], bav_tape_fine, double>>);
 
 // ----------------------------------------------------------------------------
 // try_make: available with <expected> only.

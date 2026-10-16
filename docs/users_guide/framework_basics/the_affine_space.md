@@ -851,8 +851,12 @@ _Hierarchical bounds validation_ note in the
     ```
 
     This works because the policy struct exposes public `min` and `max` data members, which
-    `quantity_point::min()` and `max()` access to provide meaningful bounds. Without a bounds
-    policy, `std::numeric_limits` delegates to the representation type's limits.
+    `quantity_point::min()` and `max()` access to provide meaningful bounds. A relative
+    origin without bounds of its own reports those of its nearest bounded ancestor,
+    translated into its frame. With a floating-point representation the translation rounds,
+    so `min()` and `max()` report the lowest and highest values that ancestor's bounds
+    actually accept, which can differ from the translated bound by a few ulps. Without a
+    bounds policy, `std::numeric_limits` delegates to the representation type's limits.
 
 ### Validating Untrusted Values
 

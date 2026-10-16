@@ -452,6 +452,9 @@ This page documents the version history and changes for the **mp-units** library
         point with a representation that is not floating-point; otherwise the point is not
         constructible from a quantity and offers no `is_within_bounds` or `try_make`
         (a `float` point needs `float` bounds: `0.1 * m` isn't a `float`)
+- feat: `min()` and `max()` of a point whose origin has no bounds of its own report the
+        bounds of its nearest bounded ancestor in the point's frame (with a floating-point
+        representation, the extreme values those bounds accept after rounding)
 - fix: `==` and `<=>` between points of different origins are offered only when the
         translation their bodies perform compiles (a `constrained` representation has no
         arithmetic with a plain origin offset)
