@@ -64,16 +64,22 @@ template<typename N>
 struct open_factor;
 
 template<typename E>
-struct open_element : std::type_identity<open_factor<E>> {};
+struct open_element {
+  using type = open_factor<E>;
+};
 
 template<typename T, int... Ints>
-struct open_element<power<T, Ints...>> : std::type_identity<power<open_factor<T>, Ints...>> {};
+struct open_element<power<T, Ints...>> {
+  using type = power<open_factor<T>, Ints...>;
+};
 
 template<typename List>
 struct open_elements;
 
 template<typename... Ts>
-struct open_elements<type_list<Ts...>> : std::type_identity<type_list<typename open_element<Ts>::type...>> {};
+struct open_elements<type_list<Ts...>> {
+  using type = type_list<typename open_element<Ts>::type...>;
+};
 
 // The equation of an open factor: the equation of the quantity it wraps, every factor open in turn.
 template<HasEquation N>
@@ -105,10 +111,14 @@ template<typename T>
 concept OpenFactor = requires { typename T::_open_; };
 
 template<typename T>
-struct open_base_impl : std::type_identity<T> {};
+struct open_base_impl {
+  using type = T;
+};
 
 template<typename N>
-struct open_base_impl<open_factor<N>> : std::type_identity<N> {};
+struct open_base_impl<open_factor<N>> {
+  using type = N;
+};
 
 // The named quantity behind a factor that may be open. Named only on paths that saw an open factor.
 template<typename T>
@@ -117,7 +127,9 @@ using open_base = open_base_impl<T>::type;
 // root
 
 template<typename Q>
-struct hierarchy_root_impl : std::type_identity<Q> {};
+struct hierarchy_root_impl {
+  using type = Q;
+};
 
 template<HasParent Q>
 struct hierarchy_root_impl<Q> : hierarchy_root_impl<parent_of<Q>> {};

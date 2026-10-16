@@ -71,19 +71,27 @@ struct quantity_spec_factors {
 
 // A kind factor of the specification enters the engine as an open factor.
 template<typename E>
-struct open_kind_element : std::type_identity<E> {};
+struct open_kind_element {
+  using type = E;
+};
 
 template<typename N>
-struct open_kind_element<kind_of_<N>> : std::type_identity<open_factor<N>> {};
+struct open_kind_element<kind_of_<N>> {
+  using type = open_factor<N>;
+};
 
 template<typename N, int... Ints>
-struct open_kind_element<power<kind_of_<N>, Ints...>> : std::type_identity<power<open_factor<N>, Ints...>> {};
+struct open_kind_element<power<kind_of_<N>, Ints...>> {
+  using type = power<open_factor<N>, Ints...>;
+};
 
 template<typename List>
 struct open_kind_elements;
 
 template<typename... Ts>
-struct open_kind_elements<type_list<Ts...>> : std::type_identity<type_list<typename open_kind_element<Ts>::type...>> {};
+struct open_kind_elements<type_list<Ts...>> {
+  using type = type_list<typename open_kind_element<Ts>::type...>;
+};
 
 template<DerivedQuantitySpec Q>
 struct quantity_spec_factors<Q> {
@@ -297,28 +305,32 @@ template<typename From, typename To, conversion_rank TreeRank, bool SourceIsKind
 [[nodiscard]] consteval conversion_rank with_kind_boundary()
 {
   using enum conversion_rank;
-  using from = carried_kinds<From>;
-  using to = carried_kinds<To>;
-  constexpr bool from_carries = type_list_size<typename from::num> + type_list_size<typename from::den> > 0;
-  constexpr bool to_carries = type_list_size<typename to::num> + type_list_size<typename to::den> > 0;
-  if constexpr (TreeRank == none)
-    return none;
-  else if constexpr (std::is_same_v<typename from::num, typename to::num> &&
-                     std::is_same_v<typename from::den, typename to::den>)
+  if constexpr (TreeRank == none || std::is_same_v<From, To>)
+    // nothing left to lower, or a quantity and itself, which carry the same kinds. Decided before
+    // the carried kinds are looked up, so that neither case instantiates them.
     return TreeRank;
-  else if constexpr (!to_carries)
-    return detail::weaker(TreeRank, explicit_only);
-  else if constexpr (!from_carries)
-    return SourceIsKind ? TreeRank : detail::weaker(TreeRank, explicit_only);
   else {
-    // two named quantities: no open factor on the source side
-    constexpr conversion_rank boundary =
-      detail::kind_boundary_rank<typename from::num, typename from::den, typename to::num, typename to::den,
-                                 SourceIsKind, type_list<>>();
-    if constexpr (boundary == none && TreeRank >= explicit_only)
-      return explicit_only;
-    else
-      return detail::weaker(TreeRank, boundary);
+    using from = carried_kinds<From>;
+    using to = carried_kinds<To>;
+    constexpr bool from_carries = type_list_size<typename from::num> + type_list_size<typename from::den> > 0;
+    constexpr bool to_carries = type_list_size<typename to::num> + type_list_size<typename to::den> > 0;
+    if constexpr (std::is_same_v<typename from::num, typename to::num> &&
+                  std::is_same_v<typename from::den, typename to::den>)
+      return TreeRank;
+    else if constexpr (!to_carries)
+      return detail::weaker(TreeRank, explicit_only);
+    else if constexpr (!from_carries)
+      return SourceIsKind ? TreeRank : detail::weaker(TreeRank, explicit_only);
+    else {
+      // two named quantities: no open factor on the source side
+      constexpr conversion_rank boundary =
+        detail::kind_boundary_rank<typename from::num, typename from::den, typename to::num, typename to::den,
+                                   SourceIsKind, type_list<>>();
+      if constexpr (boundary == none && TreeRank >= explicit_only)
+        return explicit_only;
+      else
+        return detail::weaker(TreeRank, boundary);
+    }
   }
 }
 
@@ -343,16 +355,22 @@ template<typename M, bool SourceIsKind>
 // Whether a factor is open does not change which quantity it names, so lists are compared with
 // the open factors unwrapped.
 template<typename E>
-struct closed_element : std::type_identity<open_base<E>> {};
+struct closed_element {
+  using type = open_base<E>;
+};
 
 template<typename T, int... Ints>
-struct closed_element<power<T, Ints...>> : std::type_identity<power<open_base<T>, Ints...>> {};
+struct closed_element<power<T, Ints...>> {
+  using type = power<open_base<T>, Ints...>;
+};
 
 template<typename List>
 struct closed_elements;
 
 template<typename... Ts>
-struct closed_elements<type_list<Ts...>> : std::type_identity<type_list<typename closed_element<Ts>::type...>> {};
+struct closed_elements<type_list<Ts...>> {
+  using type = type_list<typename closed_element<Ts>::type...>;
+};
 
 template<typename E, typename EqNum, typename EqDen, typename OtherNum, typename OtherDen>
 [[nodiscard]] consteval bool recipe_matches()

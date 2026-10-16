@@ -280,6 +280,17 @@ This page documents the version history and changes for the **mp-units** library
       `quantity` specialization — 476 in a unit-composition-heavy TU). Declarations drop
       2.1–3.3% of all function declarations per TU. Template instantiations are unchanged
       by construction: this is declaration cost, which no instantiation count can see
+- perf: three compile-time costs of this release's framework extensions trimmed where the
+      work was redundant. The sort predicates behind every quantity-spec and unit product
+      compare type names with `string_view::compare` instead of the comparison operators,
+      whose overload resolution probed the `std::error_code` converting constructors on
+      each call: an `isq.h` umbrella translation unit evaluates about 24 % fewer constant
+      expressions (Clang 23, C++26). The kinds-per-factor test of the spec operators is a
+      variable template rather than a concept, because at `-std=c++26` a concept's folds
+      are normalized per operand (P2963) and re-evaluated the `QuantitySpec` atoms of every
+      operand on every product. The component-wise `quantity` constructor orders its
+      constraint cheapest-first, so the `{value, reference}` construction behind
+      `42 * m` no longer runs the decomposition checks of every new quantity type
 - fix: `basic_fixed_string::swap` never compiled — it called an undeclared `swap_ranges`
       through `begin()`/`end()`, which yield `const_iterator` and cannot be written through.
       Nothing called it, so it was never instantiated. It now exchanges the contents

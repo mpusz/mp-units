@@ -72,7 +72,9 @@ concept DeclaredKind = is_declared_kind_impl<typename Q::_base_type_>::value;
 // kind roots
 
 template<typename Q>
-struct kind_root_impl : std::type_identity<Q> {};
+struct kind_root_impl {
+  using type = Q;
+};
 
 template<HasParent Q>
   requires(!DeclaredKind<Q>)
@@ -80,7 +82,9 @@ struct kind_root_impl<Q> : kind_root_impl<parent_of<Q>> {};
 
 // A kind factor wraps a kind root, and an open factor has the kind root of what it wraps.
 template<typename N>
-struct kind_root_impl<kind_of_<N>> : std::type_identity<N> {};
+struct kind_root_impl<kind_of_<N>> {
+  using type = N;
+};
 
 template<typename N>
 struct kind_root_impl<open_factor<N>> : kind_root_impl<N> {};

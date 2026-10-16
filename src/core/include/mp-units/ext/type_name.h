@@ -46,7 +46,7 @@ template<typename T>
 }
 
 template<typename Lhs, typename Rhs>
-struct type_name_less : std::bool_constant<type_name<Lhs>() < type_name<Rhs>()> {};
+struct type_name_less : std::bool_constant<(type_name<Lhs>().compare(type_name<Rhs>()) < 0)> {};
 
 template<typename T>
 [[nodiscard]] consteval std::string_view type_name(T)
@@ -65,7 +65,7 @@ template<typename T1, typename T2>
     return v1;
   else if constexpr (type_name<T2>().size() < type_name<T1>().size())
     return v2;
-  else if constexpr (type_name<T1>() < type_name<T2>())
+  else if constexpr (type_name<T1>().compare(type_name<T2>()) < 0)
     return v1;
   else
     return v2;

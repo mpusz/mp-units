@@ -208,8 +208,10 @@ concept KindFactorBearing = is_specialization_of<Q, derived_quantity_spec> &&
 
 // Whether an equation keeps a kind per factor: some operand is a kind or carries a kind factor, and
 // not every operand is a kind. All kinds, or no kind at all, take the path products always took.
+// A variable template rather than a concept, as it is only ever asked in an `if constexpr`.
 template<typename... Qs>
-concept KindsPerFactor = (... || (QuantityKindSpec<Qs> || KindFactorBearing<Qs>)) && !(... && QuantityKindSpec<Qs>);
+constexpr bool kinds_per_factor =
+  (... || (QuantityKindSpec<Qs> || KindFactorBearing<Qs>)) && !(... && QuantityKindSpec<Qs>);
 
 template<QuantitySpec Q>
 [[nodiscard]] consteval auto remove_kind(Q q);
@@ -252,9 +254,13 @@ consteval bool quantity_spec_less_value()
 {
   using lhs = quantity_spec_sort_key<Lhs>;
   using rhs = quantity_spec_sort_key<Rhs>;
-  if (lhs::root != rhs::root) return lhs::root < rhs::root;
-  if (lhs::kind_root != rhs::kind_root) return lhs::kind_root < rhs::kind_root;
-  if (lhs::name != rhs::name) return lhs::name < rhs::name;
+  // `compare` rather than the comparison operators: an operator on `std::string_view` is resolved
+  // against every operator of namespace `std`, and each candidate taking a `std::error_code` or a
+  // `std::error_condition` is probed for a conversion from `std::string_view` first, which costs
+  // several constant evaluations per comparison. A member call resolves within the class.
+  if (const int order = lhs::root.compare(rhs::root); order != 0) return order < 0;
+  if (const int order = lhs::kind_root.compare(rhs::kind_root); order != 0) return order < 0;
+  if (const int order = lhs::name.compare(rhs::name); order != 0) return order < 0;
   return !lhs::open && rhs::open;
 }
 
@@ -274,7 +280,7 @@ struct quantity_spec_interface_base {
   template<QuantitySpec Lhs, QuantitySpec Rhs>
   [[nodiscard]] friend consteval QuantitySpec auto operator*(Lhs lhs, Rhs rhs)
   {
-    if constexpr (detail::KindsPerFactor<Lhs, Rhs>)
+    if constexpr (detail::kinds_per_factor<Lhs, Rhs>)
       return detail::close_kinds<Lhs{}, Rhs{}>(
         detail::expr_multiply<derived_quantity_spec, dimensionless, type_list_of_quantity_spec_less>(
           detail::open_kinds(lhs), detail::open_kinds(rhs)));
@@ -287,7 +293,7 @@ struct quantity_spec_interface_base {
   template<QuantitySpec Lhs, QuantitySpec Rhs>
   [[nodiscard]] friend consteval QuantitySpec auto operator/(Lhs lhs, Rhs rhs)
   {
-    if constexpr (detail::KindsPerFactor<Lhs, Rhs>)
+    if constexpr (detail::kinds_per_factor<Lhs, Rhs>)
       return detail::close_kinds<Lhs{}, Rhs{}>(
         detail::expr_divide<derived_quantity_spec, dimensionless, type_list_of_quantity_spec_less>(
           detail::open_kinds(lhs), detail::open_kinds(rhs)));
@@ -319,7 +325,7 @@ struct quantity_spec_interface_base {
     requires(Den != 0)
   [[nodiscard]] friend consteval QuantitySpec auto pow(Q q)
   {
-    if constexpr (detail::KindsPerFactor<Q>)
+    if constexpr (detail::kinds_per_factor<Q>)
       return detail::close_kinds<Q{}>(detail::expr_pow<Num, Den, derived_quantity_spec, struct dimensionless,
                                                        detail::type_list_of_quantity_spec_less>(detail::open_kinds(q)));
     else
@@ -331,7 +337,7 @@ struct quantity_spec_interface_base {
   template<std::intmax_t Num, QuantitySpec Q>
   [[nodiscard]] friend consteval QuantitySpec auto pow(Q q)
   {
-    if constexpr (detail::KindsPerFactor<Q>)
+    if constexpr (detail::kinds_per_factor<Q>)
       return detail::close_kinds<Q{}>(
         detail::expr_pow<Num, 1, derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
           detail::open_kinds(q)));
@@ -348,7 +354,7 @@ struct quantity_spec_interface_base {
   template<QuantitySpec Q>
   [[nodiscard]] friend consteval QuantitySpec auto inverse(Q q)
   {
-    if constexpr (detail::KindsPerFactor<Q>)
+    if constexpr (detail::kinds_per_factor<Q>)
       return detail::close_kinds<Q{}>(detail::expr_invert<derived_quantity_spec, dimensionless>(detail::open_kinds(q)));
     else
       return detail::clone_kind_of<Q{}>(
@@ -871,10 +877,14 @@ template<NamedQuantitySpec Q>
 using to_kind_factor = kind_of_<Q>;
 
 template<typename Q>
-struct from_kind_factor_impl : std::type_identity<Q> {};
+struct from_kind_factor_impl {
+  using type = Q;
+};
 
 template<typename N>
-struct from_kind_factor_impl<kind_of_<N>> : std::type_identity<N> {};
+struct from_kind_factor_impl<kind_of_<N>> {
+  using type = N;
+};
 
 template<typename Q>
 using from_kind_factor = from_kind_factor_impl<Q>::type;

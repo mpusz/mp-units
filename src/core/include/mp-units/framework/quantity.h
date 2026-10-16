@@ -622,11 +622,17 @@ template<typename Rep, std::size_t... Idxs>
 // The two-argument floor keeps this away from the one-argument constructors above, which a
 // single-element representation would otherwise collide with. A declared decomposition always has at
 // least two axes, so the floor only ever bites an undeclared one.
+//
+// The order of the conjunction is deliberate. This constructor is a candidate for every construction
+// of a quantity, including the `{value, reference}` shape behind `42 * m`, so the two checks that
+// depend only on the argument count and the representation come first: they are decided once per
+// representation type and argument count, whereas the decomposition checks are decided once per
+// quantity type.
 template<auto R, typename Rep, typename... Qs>
-concept ComposableFrom = Decomposable<get_quantity_spec(R), Rep> && (sizeof...(Qs) >= 2) &&
-                         (sizeof...(Qs) == decomposition_size<get_quantity_spec(R), Rep>()) &&
-                         axis_quantities_convertible<R, Rep, Qs...>(std::index_sequence_for<Qs...>{}) &&
-                         rep_constructible_from_elements<Rep>(std::index_sequence_for<Qs...>{});
+concept ComposableFrom =
+  (sizeof...(Qs) >= 2) && rep_constructible_from_elements<Rep>(std::index_sequence_for<Qs...>{}) &&
+  Decomposable<get_quantity_spec(R), Rep> && (sizeof...(Qs) == decomposition_size<get_quantity_spec(R), Rep>()) &&
+  axis_quantities_convertible<R, Rep, Qs...>(std::index_sequence_for<Qs...>{});
 
 // Materializes the representation from the component quantities. Each argument is converted to its
 // position's component quantity type first, which is where the unit conversion and the axis check
