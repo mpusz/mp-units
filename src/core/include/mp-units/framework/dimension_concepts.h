@@ -45,6 +45,8 @@ struct base_dimension;
  *
  * Satisfied by all dimension types in the library.
  */
+// `is_base_of_v` rather than `derived_from`: one constraint atom instead of two, evaluated per type; the base is
+// always public and unambiguous, so the convertibility atom `derived_from` adds can never fail here.
 MP_UNITS_EXPORT template<typename T>
 concept Dimension = std::is_base_of_v<detail::dimension_interface, T> && detail::SymbolicConstant<T> &&
                     !is_specialization_of_v<std::remove_const_t<T>, base_dimension>;

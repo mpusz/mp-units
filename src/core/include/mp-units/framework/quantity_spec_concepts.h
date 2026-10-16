@@ -59,6 +59,8 @@ constexpr bool is_specialization_of_quantity_spec<quantity_spec<Derived, Params.
 
 }  // namespace detail
 
+// `is_base_of_v` rather than `derived_from`: one constraint atom instead of two, evaluated per type; the base is
+// always public and unambiguous, so the convertibility atom `derived_from` adds can never fail here.
 MP_UNITS_EXPORT template<typename T>
 concept QuantitySpec = std::is_base_of_v<detail::quantity_spec_interface_base, T> && detail::SymbolicConstant<T> &&
                        !detail::is_specialization_of_quantity_spec<std::remove_const_t<T>>;

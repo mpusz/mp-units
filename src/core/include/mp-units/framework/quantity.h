@@ -664,6 +664,8 @@ public:
   // member types and values
   static constexpr Reference auto reference = R;
   static constexpr QuantitySpec auto quantity_spec = get_quantity_spec(reference);
+  // The member is read directly rather than through `get_dimension(quantity_spec)`: the same value, without one
+  // accessor instantiation per quantity type.
   static constexpr Dimension auto dimension = quantity_spec._dimension_;
 #if !MP_UNITS_EAGER_STATIC_MEMBER_INIT_HACK
   // Deprecated in 2.6.0. Ill-formed for a quantity kind, which admits every character. Omitted on MSVC up to

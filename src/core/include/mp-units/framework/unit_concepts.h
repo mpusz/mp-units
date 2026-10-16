@@ -50,6 +50,8 @@ struct named_unit;
  *
  * Satisfied by all unit types provided by the library.
  */
+// `is_base_of_v` rather than `derived_from`: one constraint atom instead of two, evaluated per type; the base is
+// always public and unambiguous, so the convertibility atom `derived_from` adds can never fail here.
 MP_UNITS_EXPORT template<typename T>
 concept Unit = std::is_base_of_v<detail::unit_interface, T> && detail::SymbolicConstant<T> &&
                !is_specialization_of_v<std::remove_const_t<T>, named_unit> &&
