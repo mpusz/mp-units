@@ -447,9 +447,9 @@ This page documents the version history and changes for the **mp-units** library
         violates the precondition of the operation storing it)
 - feat: `exclusive_bound{q}` added to exclude an end from the range of a bounds policy
         (accepted by `check_in_range` at either end and by `wrap_to_range` at its max)
-- feat: `is_within_bounds<QP>(q, origin)` and `try_make<QP>(q, origin)` added for points
-        with a checking policy or without bounds (`try_make` returns
-        `std::expected<QP, bounds_violation>`)
+- feat: `is_within_bounds<QP>(q, origin)` and the static member function
+        `QP::try_make(q, origin)` added for points with a checking policy or without bounds
+        (`try_make` returns `std::expected<QP, bounds_violation>`)
 - feat: `quantity_from_unit_zero()` member function added (replaces `quantity_from_zero()`)
 - feat: `numerical_value_in(Unit)` and `force_numerical_value_in(Unit)` member functions
         added to `quantity_point` (extract the raw value of a default-origin point; the

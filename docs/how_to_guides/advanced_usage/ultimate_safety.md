@@ -106,7 +106,7 @@ using latitude = quantity_point<geo_latitude[deg], equator, safe_double>;
 
 std::expected<latitude, bounds_violation> read_latitude(double raw_lat)
 {
-  return try_make<latitude>(raw_lat * deg, equator);
+  return latitude::try_make(raw_lat * deg, equator);
 }
 ```
 

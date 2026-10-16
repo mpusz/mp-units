@@ -849,13 +849,13 @@ std::optional<trim_angle> make_trim(quantity<si::degree> raw)
 }
 ```
 
-Where `<expected>` is available (C++23), `try_make` does the same in one call and returns
-a rejection as an error value:
+Where `<expected>` is available (C++23), the static member function `try_make` does the same
+in one call and returns a rejection as an error value:
 
 ```cpp
 std::expected<trim_angle, bounds_violation> try_make_trim(quantity<si::degree> raw)
 {
-  return try_make<trim_angle>(raw, trim_zero);
+  return trim_angle::try_make(raw, trim_zero);
 }
 ```
 

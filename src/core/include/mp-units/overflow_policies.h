@@ -234,8 +234,8 @@ template<Quantity V>
 //   Note: reflect_non_negative and wrap_non_negative are not provided — [0, ∞) has no
 //   upper bound, so neither reflection nor wrapping is physically well-defined.
 //
-// `is_within_bounds()` and `try_make()` are offered for points whose enforced policy is a checking
-// one. They test a value with the predicate that construction applies.
+// `is_within_bounds()` and `quantity_point::try_make()` are offered for points whose enforced
+// policy is a checking one. They test a value with the predicate that construction applies.
 // ============================================================================
 
 /**

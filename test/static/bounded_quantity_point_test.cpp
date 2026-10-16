@@ -1543,35 +1543,35 @@ static_assert(
 
 #if MP_UNITS_HAS_EXPECTED
 
-static_assert(try_make<trim_angle>(0. * deg, trim_zero).has_value());
-static_assert(try_make<trim_angle>(10. * deg, trim_zero) == trim_angle{10. * deg, trim_zero});
-static_assert(try_make<trim_angle>(-10. * deg, trim_zero) == trim_angle{-10. * deg, trim_zero});
-static_assert(try_make<trim_angle>(just_above_10 * deg, trim_zero).error() == bounds_violation{});
-static_assert(try_make<trim_angle>(just_below_minus_10 * deg, trim_zero).error() == bounds_violation{});
-static_assert(try_make<trim_angle>(not_a_number * deg, trim_zero).error() == bounds_violation{});
-static_assert(!try_make<trim_angle_plain>(11. * deg, trim_zero).has_value());
+static_assert(trim_angle::try_make(0. * deg, trim_zero).has_value());
+static_assert(trim_angle::try_make(10. * deg, trim_zero) == trim_angle{10. * deg, trim_zero});
+static_assert(trim_angle::try_make(-10. * deg, trim_zero) == trim_angle{-10. * deg, trim_zero});
+static_assert(trim_angle::try_make(just_above_10 * deg, trim_zero).error() == bounds_violation{});
+static_assert(trim_angle::try_make(just_below_minus_10 * deg, trim_zero).error() == bounds_violation{});
+static_assert(trim_angle::try_make(not_a_number * deg, trim_zero).error() == bounds_violation{});
+static_assert(!trim_angle_plain::try_make(11. * deg, trim_zero).has_value());
 
-static_assert(try_make<bav_height>(0. * m)->quantity_from_zero() == 0. * m);
-static_assert(!try_make<bav_height>(-1. * m).has_value());
+static_assert(bav_height::try_make(0. * m)->quantity_from_zero() == 0. * m);
+static_assert(!bav_height::try_make(-1. * m).has_value());
 
-static_assert(try_make<trim_offset>(5. * deg, trim_centre) == trim_offset{5. * deg, trim_centre});
-static_assert(try_make<quantity_point<si::degree, trim_centre, double>>(5. * deg, trim_centre)
+static_assert(trim_offset::try_make(5. * deg, trim_centre) == trim_offset{5. * deg, trim_centre});
+static_assert(quantity_point<si::degree, trim_centre, double>::try_make(5. * deg, trim_centre)
                 ->quantity_from(trim_zero) == 9. * deg);
-static_assert(!try_make<trim_offset>(6. * deg, trim_centre).has_value());
-static_assert(try_make<trim_offset2>(4. * deg, trim_centre_plus_one).has_value());
+static_assert(!trim_offset::try_make(6. * deg, trim_centre).has_value());
+static_assert(trim_offset2::try_make(4. * deg, trim_centre_plus_one).has_value());
 
 template<typename QP, auto PO, typename Q>
-concept can_try_make = requires(Q q) { try_make<QP>(q, PO); };
+concept can_try_make = requires(Q q) { QP::try_make(q, PO); };
 
 static_assert(can_try_make<trim_angle, trim_zero, quantity<deg, double>>);
 static_assert(!can_try_make<quantity_point<test_angle_clamp[deg], clamp_origin>, clamp_origin,
                             quantity<test_angle_clamp[deg], double>>);
 static_assert(can_try_make<quantity_point<bav_mixed[m], bav_mixed_rel>, bav_mixed_rel, quantity<m, double>>);
 static_assert(!can_try_make<quantity_point<bav_mixed2[m], bav_mixed2_rel>, bav_mixed2_rel, quantity<m, double>>);
-static_assert(try_make<bav_heading_pt>(359.5 * deg, bav_heading_zero).has_value());
-static_assert(try_make<bav_heading_pt>(360. * deg, bav_heading_zero).error() == bounds_violation{});
-static_assert(try_make<bav_tx_frequency>(5.8 * GHz, bav_tuning_zero).has_value());
-static_assert(!try_make<bav_tx_frequency>(3. * GHz, bav_tuning_zero).has_value());
+static_assert(bav_heading_pt::try_make(359.5 * deg, bav_heading_zero).has_value());
+static_assert(bav_heading_pt::try_make(360. * deg, bav_heading_zero).error() == bounds_violation{});
+static_assert(bav_tx_frequency::try_make(5.8 * GHz, bav_tuning_zero).has_value());
+static_assert(!bav_tx_frequency::try_make(3. * GHz, bav_tuning_zero).has_value());
 
 #endif  // MP_UNITS_HAS_EXPECTED
 
