@@ -175,6 +175,20 @@ inline constexpr bool is_complete = requires { sizeof(T) > 0; };
 #define MP_UNITS_EAGER_STATIC_MEMBER_INIT_HACK 0
 #endif
 
+// Hack for a compiler bug: GCC 16 fails to constant-evaluate a contract predicate in some valid
+// contexts ("contract condition is not constant"): the precondition of a constructor called in a
+// template argument, which is how a relative point origin is defined, or in the initializer of a static
+// variable, which GCC tries to constant-initialize. Wrap such a precondition in
+// `MP_UNITS_PRE_CONSTEVAL_HACK` and its in-body check in `MP_UNITS_EXPECTS_CONSTEVAL_HACK` (both in
+// `compat_macros.h`): on GCC 16 the check moves into the body, where `MP_UNITS_PRE_BODY` evaluates it
+// without a contract during constant evaluation. Use them only where the plain `MP_UNITS_PRE` fails.
+// Extend the branch to a newer version only after that version is confirmed to have the same bug.
+#if MP_UNITS_COMP_GCC == 16
+#define MP_UNITS_CONSTEVAL_PRE_HACK 1
+#else
+#define MP_UNITS_CONSTEVAL_PRE_HACK 0
+#endif
+
 // Hack: before C++23 the standard library has no `std::from_range`, which the `fixed_string`
 // constructor taking a range relies on. Declaring it in `namespace std` is undefined behavior
 // ([namespace.std]), accepted here so that C++20 users can spell the same constructor call.

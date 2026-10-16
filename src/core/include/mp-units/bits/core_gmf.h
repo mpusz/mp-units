@@ -54,6 +54,9 @@
 #include <type_traits>
 #include <utility>
 #include <version>
+#if MP_UNITS_HAS_EXPECTED
+#include <expected>
+#endif
 #if __cpp_lib_text_encoding
 #include <text_encoding>
 #endif

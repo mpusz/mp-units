@@ -415,6 +415,20 @@ This page documents the version history and changes for the **mp-units** library
 - feat: type conversions improved to raise compile-time warnings on truncation
 - feat: `natural_point_origin<QuantitySpec>` added (replaces `zeroth_point_origin<QuantitySpec>`)
 - feat: `is_natural_point_origin<T>` added (replaces `is_zeroth_point_origin<T>`)
+- feat: range-validated quantity points added (the bounds policy of an origin, such as
+        `check_in_range` or `wrap_to_range`, is enforced on construction from a value, on
+        unit and origin conversion, and in arithmetic)
+- feat: the bounds of a relative origin are checked at compile time to nest within those
+        of its nearest bounded ancestor
+- feat: a bounds policy with `bool operator()(const V& v) const` is a checking policy and
+        one with `V operator()(V v) const` is an adjusting policy (a value a checking
+        policy rejects goes to `constraint_violation_handler<Rep>`, and without one it
+        violates the precondition of the operation storing it)
+- feat: `exclusive_bound{q}` added to exclude an end from the range of a bounds policy
+        (accepted by `check_in_range` at either end and by `wrap_to_range` at its max)
+- feat: `is_within_bounds<QP>(q, origin)` and `try_make<QP>(q, origin)` added for points
+        with a checking policy or without bounds (`try_make` returns
+        `std::expected<QP, bounds_violation>`)
 - feat: `quantity_from_unit_zero()` member function added (replaces `quantity_from_zero()`)
 - feat: `numerical_value_in(Unit)` and `force_numerical_value_in(Unit)` member functions
         added to `quantity_point` (extract the raw value of a default-origin point; the

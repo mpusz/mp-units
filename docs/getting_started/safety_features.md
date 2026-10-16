@@ -190,9 +190,9 @@ static_assert(!is_non_negative(isq::velocity));   // ❌ Vector character — ex
           [`constraint_violation_handler`](../users_guide/advanced_topics/representation_types.md#constraint-violation-handler)
           specialization (e.g., a `constrained<T, Policy>` rep), the handler is invoked on
           violation — behaviour is guaranteed regardless of build mode.
-        - For plain types (like `double`) the library falls back to
-          [`MP_UNITS_EXPECTS`](../how_to_guides/integration/wide_compatibility.md#contract-checking-macros),
-          which may be disabled in release builds.
+        - For plain types (like `double`) the value must lie within the bounds as a
+          [precondition](../users_guide/framework_basics/the_affine_space.md#available-overflow-policies)
+          of the operation that stores it.
 
         You can override the default policy for a specific quantity spec by defining a
         custom origin with different bounds:

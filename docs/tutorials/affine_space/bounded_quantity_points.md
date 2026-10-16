@@ -44,20 +44,25 @@ Six concrete policies are available, all in `<mp-units/overflow_policies.h>`:
 | `clamp_to_range{min, max}`   | Saturate to nearest boundary (silent correction)                  |
 | `wrap_to_range{min, max}`    | Cyclic modulo into `[min, max)`, e.g. angles                      |
 | `reflect_in_range{min, max}` | Bounce/fold at both boundaries, e.g. latitude                     |
-| `check_in_range{min, max}`   | Report a violation via contract / handler                         |
-| `check_non_negative{}`       | Report a violation when the value drops below zero                |
+| `check_in_range{min, max}`   | Test `[min, max]`, enforced by the handler or as a precondition  |
+| `check_non_negative{}`       | Test `>= 0`, like `check_in_range`                                |
 | `clamp_non_negative{}`       | Saturate to zero for values below zero (tolerates rounding noise) |
 
 Bounds are expressed as `quantity` **displacements** from the origin, not as absolute
 `quantity_point` values. A policy written in one unit works equally for any unit the
 `quantity_point` uses — bounds in metres apply transparently to a point in kilometres.
 
-The last two are half-line policies for inherently non-negative domains. They carry no
-upper bound — only a `min` member (the natural zero).
+Wrapping a bound in `exclusive_bound` excludes it from the range, as in
+`check_in_range{0 * deg, exclusive_bound{360 * deg}}`. `check_in_range` accepts it at
+either end, and `wrap_to_range` at its max.
+
+The last two policies in the table are half-line policies for inherently non-negative
+domains. They carry no upper bound — only a `min` member (the natural zero).
 
 In general, whenever a policy exposes a `min` or `max` member, `quantity_point::min()`,
 `quantity_point::max()`, and the corresponding `std::numeric_limits` functions reflect
-those bounds instead of the representation type's own extremes.
+those bounds instead of the representation type's own extremes. No `min()` or `max()` is
+offered for an excluded end, such as the max of `wrap_to_range`.
 
 ## Try It: Drone Altitude Zones
 
@@ -111,8 +116,8 @@ provides them.
 ## Origin Inheritance
 
 A `relative_point_origin` that defines **no own bounds** automatically inherits the
-parent's enforcement. When own bounds are provided they are checked at compile time to
-nest strictly inside the parent's range:
+enforcement of its nearest bounded ancestor. When own bounds are provided they are checked
+at compile time to nest inside that ancestor's range:
 
 ```cpp
 // Relative origin — no own bounds; inherits clamping from sea_level.
@@ -162,7 +167,7 @@ int main()
   std::cout << "Start:  " << start << "\n";
   std::cout << "Finish: " << finish << "\n";
 
-  // quantity_point bad(distance_traveled(-1.0 * cm));  // ❌ contract violation
+  // quantity_point bad(distance_traveled(-1.0 * cm));  // ❌ precondition violation
   // std::cout << "Bad:    " << bad << "\n";
 }
 ```
@@ -201,10 +206,12 @@ quantity_point ground = average_height_origin - 1700.0 * m;
 ```
 
 The enforcement is a single flat translation: the library converts the relative value
-to the absolute frame, applies `check_non_negative` there, then converts back.  The
-result is always the original value (no clamping), so the violation is *reported* but
-the stored value is unchanged — unless you use a `constrained<T, Policy>` representation
-that throws or terminates unconditionally.
+to the absolute frame and tests it with `check_non_negative` there. The stored value
+is always the original one (no clamping). With a plain `double`, a value outside the
+bounds violates the
+[precondition](../../users_guide/framework_basics/the_affine_space.md#available-overflow-policies)
+of the operation that stores it. A `constrained<T, Policy>` representation passes it to
+its error policy in every build mode.
 
 ### Kinds are never auto-bounded
 
