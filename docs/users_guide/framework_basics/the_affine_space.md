@@ -776,16 +776,17 @@ quantity, no `is_within_bounds`, and no `try_make`:
 ```cpp
 inline constexpr struct tape_start :
     absolute_point_origin<isq::length, check_in_range{0.1 * m, 10. * m}> {} tape_start;
+inline constexpr struct tape_start_f :
+    absolute_point_origin<isq::length, check_in_range{0.1f * m, 10.f * m}> {} tape_start_f;
 
-using tape_point = quantity_point<isq::length[m], tape_start>;
-using tape_point_f = quantity_point<isq::length[m], tape_start, float>;
-
-tape_point p1{0.5 * m, tape_start};       // OK
-// tape_point_f p2{0.5f * m, tape_start};  // ❌ the double 0.1 isn't a float value
+quantity_point<isq::length[m], tape_start> p1{0.5 * m, tape_start};             // OK
+quantity_point<isq::length[m], tape_start_f, float> p2{0.5f * m, tape_start_f};  // OK
+// quantity_point<isq::length[m], tape_start, float> p3{0.5f * m, tape_start};   // ❌
 ```
 
-A `float` point needs `float` bounds, such as `0.1f * m`. A bound with a small integral
-value, such as `-90. * deg`, is exact in `float`, which holds every integer up to
+`p3` doesn't compile because the `double` value of `0.1` isn't a `float` value. A `float`
+point needs an origin with `float` bounds, such as `tape_start_f`. A bound with a small
+integral value, such as `-90. * deg`, is exact in `float`, which holds every integer up to
 16'777'216.
 
 A point checked against the bounds of an ancestor is translated by the offset to that
