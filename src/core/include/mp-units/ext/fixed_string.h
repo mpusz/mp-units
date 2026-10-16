@@ -242,7 +242,7 @@ public:
   [[nodiscard]] constexpr basic_fixed_string(std::from_range_t, R&& r)
   {
     MP_UNITS_PRECONDITION(std::ranges::size(r) == N);
-    for (auto it = data_; auto&& ch : std::forward<R>(r)) *it++ = std::forward<decltype(ch)>(ch);
+    for (auto it = data_; auto&& element : std::forward<R>(r)) *it++ = std::forward<decltype(element)>(element);
   }
 
   [[nodiscard]] constexpr basic_fixed_string(const basic_fixed_string&) noexcept = default;
