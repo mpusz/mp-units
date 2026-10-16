@@ -120,9 +120,23 @@ code:
   qualify every call, which speeds up lookup and cuts compile times. The exception
   either way is a hidden friend: only ADL can find one, so those are always called
   unqualified.
-- **No one-letter lowercase locals or parameters.** `unit_symbols` defines `m`, `s`, `l`,
-  `h`, and others, so a one-letter local collides with one of them and MSVC reports it
-  as a shadowing warning (C4456–C4459) — which never reproduces under GCC or Clang. Use
+- **No local or parameter may be named after a unit symbol, and none may be one lowercase
+  letter.** The `unit_symbols` namespaces declare over 900 names: every lowercase letter
+  except `i`, `j`, `v`, `w`, and `x`, and many short names such as `ch`, `in`, `ms`, and
+  `st`. A test or a user brings them into scope with `using namespace`, and a local or
+  parameter of the same name in a header then shadows one. MSVC reports that as C4456–C4459,
+  which never reproduces under GCC or Clang. One-letter names are banned outright because
+  they also collide with the one-letter globals that tests declare. Check every new local,
+  parameter, and lambda capture against the full list, which this prints:
+
+  ```bash
+  awk '/namespace ([a-z_]+::)*unit_symbols/ {in_ns=1} in_ns && /^}/ {in_ns=0}
+       in_ns && match($0, /inline constexpr (auto|struct [A-Za-z_0-9]+) [A-Za-z_][A-Za-z_0-9]*/) {
+         n=split(substr($0, RSTART, RLENGTH), w, " "); print w[n] }' \
+    $(grep -rlE 'namespace ([a-z_]+::)*unit_symbols' src/systems/include) | sort -u
+  ```
+
+  Pipe it into `grep -xE 'name1|name2'` with your names, and any output is a collision. Use
   descriptive names, and `lhs`/`rhs` for the two sides of a binary operator. Single-uppercase
   template parameters (`T`, `Rep`, `To`) are idiomatic and fine.
 - **Express preconditions as constraints, never as a hard `static_assert`.** A `static_assert`
