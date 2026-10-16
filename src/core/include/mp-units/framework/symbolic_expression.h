@@ -549,7 +549,9 @@ template<template<typename...> typename To, SymbolicArg OneType,
 template<template<typename...> typename To, SymbolicArg OneType, typename T>
 [[nodiscard]] consteval auto expr_invert(T)
 {
-  if constexpr (is_specialization_of<T, To>)
+  if constexpr (std::is_same_v<T, OneType>)
+    return OneType{};
+  else if constexpr (is_specialization_of<T, To>)
     // the usage of `identity_fn` below helps to resolve an using alias identifier to the actual
     // type identifier in the clang compile-time errors
     return identity_fn{}(expr_make_spec_impl<typename T::_den_, typename T::_num_, OneType, To>());

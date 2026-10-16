@@ -67,9 +67,6 @@ namespace detail {
 template<typename... Expr>
 struct derived_dimension_impl : expr_fractions<dimension_one, Expr...> {};
 
-template<Dimension D>
-[[nodiscard]] consteval Dimension auto inverse_impl(D d);
-
 struct dimension_interface {
   template<Dimension Lhs, Dimension Rhs>
   [[nodiscard]] friend consteval Dimension auto operator*(Lhs, Rhs)
@@ -114,7 +111,11 @@ struct dimension_interface {
 
   [[nodiscard]] friend consteval Dimension auto sqrt(Dimension auto d) { return pow<1, 2>(d); }
   [[nodiscard]] friend consteval Dimension auto cbrt(Dimension auto d) { return pow<1, 3>(d); }
-  [[nodiscard]] friend consteval Dimension auto inverse(Dimension auto d) { return detail::inverse_impl(d); }
+  // `dimension_one` is defined after this interface, so the identity is passed as a type
+  [[nodiscard]] friend consteval Dimension auto inverse(Dimension auto d)
+  {
+    return detail::expr_invert<derived_dimension, struct dimension_one>(d);
+  }
 };
 
 }  // namespace detail
@@ -208,16 +209,6 @@ MP_UNITS_EXPORT inline constexpr struct dimension_one final :
     detail::dimension_interface,
     detail::derived_dimension_impl<> {
 } dimension_one;
-
-namespace detail {
-
-template<Dimension D>
-[[nodiscard]] consteval Dimension auto inverse_impl(D d)
-{
-  return dimension_one / d;
-}
-
-}  // namespace detail
 
 MP_UNITS_EXPORT_BEGIN
 

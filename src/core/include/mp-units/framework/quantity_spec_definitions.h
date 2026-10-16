@@ -264,9 +264,6 @@ struct quantity_spec_less : std::bool_constant<quantity_spec_less_value<Lhs, Rhs
 template<typename T1, typename T2>
 using type_list_of_quantity_spec_less = expr_less<T1, T2, quantity_spec_less>;
 
-template<QuantitySpec Q>
-[[nodiscard]] consteval QuantitySpec auto inverse_impl(Q q);
-
 struct quantity_spec_interface_base {
   template<QuantitySpec QS>
   [[nodiscard]] friend consteval Dimension auto get_dimension(QS qs)
@@ -346,7 +343,17 @@ struct quantity_spec_interface_base {
 
   [[nodiscard]] friend consteval QuantitySpec auto sqrt(QuantitySpec auto q) { return pow<1, 2>(q); }
   [[nodiscard]] friend consteval QuantitySpec auto cbrt(QuantitySpec auto q) { return pow<1, 3>(q); }
-  [[nodiscard]] friend consteval QuantitySpec auto inverse(QuantitySpec auto q) { return detail::inverse_impl(q); }
+  // `dimensionless` is still incomplete here, so the identity is passed as a type; the kinds are kept
+  // per factor as `operator/` keeps them
+  template<QuantitySpec Q>
+  [[nodiscard]] friend consteval QuantitySpec auto inverse(Q q)
+  {
+    if constexpr (detail::KindsPerFactor<Q>)
+      return detail::close_kinds<Q{}>(detail::expr_invert<derived_quantity_spec, dimensionless>(detail::open_kinds(q)));
+    else
+      return detail::clone_kind_of<Q{}>(
+        detail::expr_invert<derived_quantity_spec, dimensionless>(detail::remove_kind(q)));
+  }
 };
 
 [[nodiscard]] consteval bool explicitly_convertible_to_dimensionless(QuantitySpec auto qs);
@@ -938,16 +945,6 @@ template<QuantitySpec Q>
     return Q::_quantity_spec_;
   else
     return q;
-}
-
-}  // namespace detail
-
-namespace detail {
-
-template<QuantitySpec Q>
-[[nodiscard]] consteval QuantitySpec auto inverse_impl(Q q)
-{
-  return dimensionless / q;
 }
 
 }  // namespace detail

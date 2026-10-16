@@ -34,16 +34,6 @@
 
 namespace mp_units {
 
-namespace detail {
-
-template<Unit U>
-[[nodiscard]] MP_UNITS_CONSTEVAL_HACK Unit auto inverse_impl(U u)
-{
-  return one / u;
-}
-
-}  // namespace detail
-
 MP_UNITS_EXPORT_BEGIN
 
 // common dimensionless units
