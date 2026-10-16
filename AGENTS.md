@@ -164,6 +164,11 @@ code:
   the namespace: an entity can stay in `mp_units::detail` while living in a public
   header, since being reachable to importers and being supported API are different
   things.
+- **Rejected alternatives go in the FAQ, not the User's Guide.** The guide is the Diátaxis
+  explanation: each chapter starts from the reader's problem and says why the design is
+  what it is. A "why is X missing?" or "why not Y?" answer belongs in
+  `docs/getting_started/faq.md`, and the guide links to that entry. See
+  [Documentation structure](CONTRIBUTING.md#documentation-structure).
 - **Never put an `#include` in the middle or at the end of a header.** When splitting a
   large header, decompose it into self-contained components in a linear dependency chain
   plus a thin aggregator whose includes all sit at the top, and keep the public aggregator

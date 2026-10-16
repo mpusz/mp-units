@@ -355,6 +355,19 @@ you write **mp-units** code:
   compiler-bug workarounds, standard-mandated subtleties, invariants, and references to a
   specification.
 
+### Documentation structure
+
+The documentation follows [Diátaxis](https://diataxis.fr), and the User's Guide
+(_docs/users_guide/_) is its explanation part. A User's Guide chapter opens with a problem
+the reader has, builds up the concepts that solve it, and says why the library is designed
+that way. It also teaches the domain (ISO 80000, the ISQ, the metrology vocabulary),
+because most C++ developers have never met it. Define each term before its first use.
+
+Rejected design alternatives and "why is X missing?" questions do not belong in the User's
+Guide. They go in the [FAQ](https://mpusz.github.io/mp-units/latest/getting_started/faq),
+and the chapter links to the FAQ entry where the question arises, as _the_affine_space.md_
+does for the quantity point constructor.
+
 ### Unified code formatting
 
 A formatting standard is enforced with the `pre-commit` script. Before committing your changes,
