@@ -169,6 +169,15 @@ code:
   plus a thin aggregator whose includes all sit at the top, and keep the public aggregator
   path stable so existing include sites are unaffected. Propose the layout before carrying
   out such a split.
+- **A public API spelled the cheaper way carries a one-line comment saying why.** Where a
+  public concept, member, or signature deviates from the obvious or the best-practice
+  spelling because the obvious one compiles slower (`std::is_base_of_v` where
+  `std::derived_from` would be expected, a member read where the public accessor exists, a
+  variable template behind a concept so that its traits form one atom), the line next to
+  it states the reason in one sentence, with the number when there is one. The API is
+  reviewed by people who have not seen the measurements, and they ask exactly that
+  question. Add such a comment with every such change and never remove one; private code
+  under `detail` or `bits/` needs none.
 
 ## Git and GitHub
 
