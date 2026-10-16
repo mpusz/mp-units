@@ -84,6 +84,13 @@ struct ratio {
 
   [[nodiscard]] friend MP_UNITS_CONSTEVAL_HACK bool operator==(ratio, ratio) = default;
   [[nodiscard]] friend MP_UNITS_CONSTEVAL_HACK auto operator<=>(ratio lhs, ratio rhs) { return (lhs - rhs).num <=> 0; }
+  // Explicit relational operators: a comparison rewritten through `<=>` compares the resulting
+  // `std::strong_ordering` with the literal 0, and that comparison is resolved through libc++'s
+  // constrained `__cmp_unspecified_param` constructor, several constant evaluations per comparison.
+  [[nodiscard]] friend MP_UNITS_CONSTEVAL_HACK bool operator<(ratio lhs, ratio rhs) { return (lhs - rhs).num < 0; }
+  [[nodiscard]] friend MP_UNITS_CONSTEVAL_HACK bool operator>(ratio lhs, ratio rhs) { return rhs < lhs; }
+  [[nodiscard]] friend MP_UNITS_CONSTEVAL_HACK bool operator<=(ratio lhs, ratio rhs) { return !(rhs < lhs); }
+  [[nodiscard]] friend MP_UNITS_CONSTEVAL_HACK bool operator>=(ratio lhs, ratio rhs) { return !(lhs < rhs); }
 
   [[nodiscard]] friend MP_UNITS_CONSTEVAL_HACK ratio operator-(ratio r) { return ratio{-r.num, r.den}; }
 

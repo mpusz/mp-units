@@ -610,7 +610,7 @@ template<typename From, typename To, typename All, bool SourceIsKind>
           return paired{};
       } else
         return paired{};
-    } else if constexpr (quantity_spec_sort_key<from_root>::name < quantity_spec_sort_key<to_root>::name) {
+    } else if constexpr (quantity_spec_sort_key<from_root>::name.compare(quantity_spec_sort_key<to_root>::name) < 0) {
       using tail = decltype(detail::pair_lists<type_list_pop_front<From>, To, All, SourceIsKind>());
       return pairing_result<tail::rank, type_list_push_front<typename tail::from_rest, type_list_front<From>>,
                             typename tail::to_rest, tail::paired, tail::has_cast>{};
