@@ -459,9 +459,21 @@ This page documents the version history and changes for the **mp-units** library
         violates the precondition of the operation storing it)
 - feat: `exclusive_bound{q}` added to exclude an end from the range of a bounds policy
         (accepted by `check_in_range` at either end and by `wrap_to_range` at its max)
-- feat: `is_within_bounds<QP>(q, origin)` and `try_make<QP>(q, origin)` added for points
-        with a checking policy or without bounds (`try_make` returns
-        `std::expected<QP, bounds_violation>`)
+- feat: each bound of a bounds policy must be exactly representable in the quantity type
+        of a point checked against it, and so must the offset to a bounded ancestor for a
+        point with a representation that is not floating-point
+- feat: a point that breaks that rule is not constructible from a quantity and offers no
+        `is_within_bounds` or `try_make` (a `float` point needs `float` bounds: the
+        `double` value of `0.1` isn't a `float` value)
+- feat: `min()` and `max()` of a point whose origin has no bounds of its own report the
+        bounds of its nearest bounded ancestor in the point's frame (with a floating-point
+        representation, the extreme values those bounds accept after rounding)
+- fix: `==` and `<=>` between points of different origins are offered only when the
+        translation their bodies perform compiles (a `constrained` representation has no
+        arithmetic with a plain origin offset)
+- feat: the static member functions `QP::is_within_bounds(q, origin)` and
+        `QP::try_make(q, origin)` added for points with a checking policy or without bounds
+        (`try_make` returns `std::expected<QP, bounds_violation>`)
 - feat: `quantity_from_unit_zero()` member function added (replaces `quantity_from_zero()`)
 - feat: `numerical_value_in(Unit)` and `force_numerical_value_in(Unit)` member functions
         added to `quantity_point` (extract the raw value of a default-origin point; the

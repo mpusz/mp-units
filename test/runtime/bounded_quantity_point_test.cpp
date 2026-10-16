@@ -278,33 +278,55 @@ using trim_offset2 = quantity_point<si::degree, trim_centre_plus_one, constraine
 
 TEST_CASE("is_within_bounds rejects NaN through a relative origin without own bounds", "[bounded][nan]")
 {
-  CHECK_FALSE(is_within_bounds<trim_offset2>(not_a_number * deg, trim_centre_plus_one));
-  CHECK(is_within_bounds<trim_offset2>(4. * deg, trim_centre_plus_one));
+  CHECK_FALSE(trim_offset2::is_within_bounds(not_a_number * deg, trim_centre_plus_one));
+  CHECK(trim_offset2::is_within_bounds(4. * deg, trim_centre_plus_one));
+}
+
+TEST_CASE("a throwing handler leaves a point unchanged", "[bounded][handler]")
+{
+  const trim_angle_throwing at_max{10. * deg, trim_zero};
+  const trim_angle_throwing at_min{-10. * deg, trim_zero};
+
+  trim_angle_throwing p = at_max;
+  CHECK_THROWS_AS(p += 1. * deg, std::domain_error);
+  CHECK(p == at_max);
+  CHECK_THROWS_AS(++p, std::domain_error);
+  CHECK(p == at_max);
+  CHECK_THROWS_AS(p++, std::domain_error);
+  CHECK(p == at_max);
+
+  p = at_min;
+  CHECK_THROWS_AS(p -= 1. * deg, std::domain_error);
+  CHECK(p == at_min);
+  CHECK_THROWS_AS(--p, std::domain_error);
+  CHECK(p == at_min);
+  CHECK_THROWS_AS(p--, std::domain_error);
+  CHECK(p == at_min);
 }
 
 #if MP_UNITS_HAS_EXPECTED
 
 TEST_CASE("try_make does not invoke a throwing policy", "[bounded][try_make]")
 {
-  CHECK_NOTHROW(try_make<trim_angle_throwing>(11. * deg, trim_zero));
-  CHECK_NOTHROW(try_make<trim_angle_throwing>(not_a_number * deg, trim_zero));
-  CHECK_FALSE(try_make<trim_angle_throwing>(11. * deg, trim_zero).has_value());
-  CHECK_FALSE(try_make<trim_angle_throwing>(not_a_number * deg, trim_zero).has_value());
-  CHECK(try_make<trim_angle_throwing>(10. * deg, trim_zero).has_value());
+  CHECK_NOTHROW(trim_angle_throwing::try_make(11. * deg, trim_zero));
+  CHECK_NOTHROW(trim_angle_throwing::try_make(not_a_number * deg, trim_zero));
+  CHECK_FALSE(trim_angle_throwing::try_make(11. * deg, trim_zero).has_value());
+  CHECK_FALSE(trim_angle_throwing::try_make(not_a_number * deg, trim_zero).has_value());
+  CHECK(trim_angle_throwing::try_make(10. * deg, trim_zero).has_value());
 }
 
 TEST_CASE("try_make does not invoke a terminating policy", "[bounded][try_make]")
 {
   // Reaching the checks at all shows nothing aborted.
-  CHECK_FALSE(try_make<trim_angle_terminating>(-11. * deg, trim_zero).has_value());
-  CHECK_FALSE(try_make<trim_angle_terminating>(not_a_number * deg, trim_zero).has_value());
-  CHECK(try_make<trim_angle_terminating>(-10. * deg, trim_zero).has_value());
+  CHECK_FALSE(trim_angle_terminating::try_make(-11. * deg, trim_zero).has_value());
+  CHECK_FALSE(trim_angle_terminating::try_make(not_a_number * deg, trim_zero).has_value());
+  CHECK(trim_angle_terminating::try_make(-10. * deg, trim_zero).has_value());
 }
 
 TEST_CASE("try_make rejects NaN through a relative origin without own bounds", "[bounded][try_make][nan]")
 {
-  CHECK_FALSE(try_make<trim_offset2>(not_a_number * deg, trim_centre_plus_one).has_value());
-  CHECK(try_make<trim_offset2>(4. * deg, trim_centre_plus_one).has_value());
+  CHECK_FALSE(trim_offset2::try_make(not_a_number * deg, trim_centre_plus_one).has_value());
+  CHECK(trim_offset2::try_make(4. * deg, trim_centre_plus_one).has_value());
 }
 
 #endif  // MP_UNITS_HAS_EXPECTED

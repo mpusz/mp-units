@@ -123,7 +123,7 @@
 
 #endif
 
-// `std::expected`, which `try_make` returns.
+// `std::expected`, which `quantity_point::try_make` returns.
 #if __cpp_lib_expected >= 202202L
 #define MP_UNITS_HAS_EXPECTED 1
 #else
