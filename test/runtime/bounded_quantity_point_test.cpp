@@ -282,6 +282,28 @@ TEST_CASE("is_within_bounds rejects NaN through a relative origin without own bo
   CHECK(is_within_bounds<trim_offset2>(4. * deg, trim_centre_plus_one));
 }
 
+TEST_CASE("a throwing handler leaves a point unchanged", "[bounded][handler]")
+{
+  const trim_angle_throwing at_max{10. * deg, trim_zero};
+  const trim_angle_throwing at_min{-10. * deg, trim_zero};
+
+  trim_angle_throwing p = at_max;
+  CHECK_THROWS_AS(p += 1. * deg, std::domain_error);
+  CHECK(p == at_max);
+  CHECK_THROWS_AS(++p, std::domain_error);
+  CHECK(p == at_max);
+  CHECK_THROWS_AS(p++, std::domain_error);
+  CHECK(p == at_max);
+
+  p = at_min;
+  CHECK_THROWS_AS(p -= 1. * deg, std::domain_error);
+  CHECK(p == at_min);
+  CHECK_THROWS_AS(--p, std::domain_error);
+  CHECK(p == at_min);
+  CHECK_THROWS_AS(p--, std::domain_error);
+  CHECK(p == at_min);
+}
+
 #if MP_UNITS_HAS_EXPECTED
 
 TEST_CASE("try_make does not invoke a throwing policy", "[bounded][try_make]")

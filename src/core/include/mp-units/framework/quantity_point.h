@@ -611,7 +611,9 @@ template<PointOrigin auto PO, Quantity Q>
     return true;
 }
 
-// The values a compound assignment or an increment would store, for its precondition.
+// The value a compound assignment or an increment computes. Its precondition tests that value, and
+// the operation stores it only after the bounds policy has seen it, so a handler that throws leaves
+// the point unchanged.
 template<Quantity Q, Quantity Q2>
 [[nodiscard]] constexpr Q added(Q lhs, const Q2& rhs)
 {
@@ -1365,9 +1367,8 @@ public:
   {
     MP_UNITS_EXPECTS_CONSTEVAL_HACK(detail::bounds_precondition<point_origin>(
       detail::incremented(quantity_from_origin_is_an_implementation_detail_)));
-    ++quantity_from_origin_is_an_implementation_detail_;
     quantity_from_origin_is_an_implementation_detail_ =
-      detail::enforce_bounds<point_origin>(quantity_from_origin_is_an_implementation_detail_);
+      detail::enforce_bounds<point_origin>(detail::incremented(quantity_from_origin_is_an_implementation_detail_));
     return *this;
   }
 
@@ -1379,9 +1380,8 @@ public:
     MP_UNITS_EXPECTS_CONSTEVAL_HACK(detail::bounds_precondition<point_origin>(
       detail::incremented(quantity_from_origin_is_an_implementation_detail_)));
     auto old_quantity = quantity_from_origin_is_an_implementation_detail_;
-    [[maybe_unused]] auto _ = quantity_from_origin_is_an_implementation_detail_++;
     quantity_from_origin_is_an_implementation_detail_ =
-      detail::enforce_bounds<point_origin>(quantity_from_origin_is_an_implementation_detail_);
+      detail::enforce_bounds<point_origin>(detail::incremented(quantity_from_origin_is_an_implementation_detail_));
     return {old_quantity, PO};
   }
 
@@ -1392,9 +1392,8 @@ public:
   {
     MP_UNITS_EXPECTS_CONSTEVAL_HACK(detail::bounds_precondition<point_origin>(
       detail::decremented(quantity_from_origin_is_an_implementation_detail_)));
-    --quantity_from_origin_is_an_implementation_detail_;
     quantity_from_origin_is_an_implementation_detail_ =
-      detail::enforce_bounds<point_origin>(quantity_from_origin_is_an_implementation_detail_);
+      detail::enforce_bounds<point_origin>(detail::decremented(quantity_from_origin_is_an_implementation_detail_));
     return *this;
   }
 
@@ -1406,9 +1405,8 @@ public:
     MP_UNITS_EXPECTS_CONSTEVAL_HACK(detail::bounds_precondition<point_origin>(
       detail::decremented(quantity_from_origin_is_an_implementation_detail_)));
     auto old_quantity = quantity_from_origin_is_an_implementation_detail_;
-    [[maybe_unused]] auto _ = quantity_from_origin_is_an_implementation_detail_--;
     quantity_from_origin_is_an_implementation_detail_ =
-      detail::enforce_bounds<point_origin>(quantity_from_origin_is_an_implementation_detail_);
+      detail::enforce_bounds<point_origin>(detail::decremented(quantity_from_origin_is_an_implementation_detail_));
     return {old_quantity, PO};
   }
 
@@ -1423,9 +1421,8 @@ public:
   {
     MP_UNITS_EXPECTS_CONSTEVAL_HACK(
       detail::bounds_precondition<point_origin>(detail::added(quantity_from_origin_is_an_implementation_detail_, q)));
-    quantity_from_origin_is_an_implementation_detail_ += q;
     quantity_from_origin_is_an_implementation_detail_ =
-      detail::enforce_bounds<point_origin>(quantity_from_origin_is_an_implementation_detail_);
+      detail::enforce_bounds<point_origin>(detail::added(quantity_from_origin_is_an_implementation_detail_, q));
     return *this;
   }
 
@@ -1439,9 +1436,8 @@ public:
   {
     MP_UNITS_EXPECTS_CONSTEVAL_HACK(detail::bounds_precondition<point_origin>(
       detail::subtracted(quantity_from_origin_is_an_implementation_detail_, q)));
-    quantity_from_origin_is_an_implementation_detail_ -= q;
     quantity_from_origin_is_an_implementation_detail_ =
-      detail::enforce_bounds<point_origin>(quantity_from_origin_is_an_implementation_detail_);
+      detail::enforce_bounds<point_origin>(detail::subtracted(quantity_from_origin_is_an_implementation_detail_, q));
     return *this;
   }
 
