@@ -789,12 +789,8 @@ point needs an origin with `float` bounds, such as `tape_start_f`. A bound with 
 integral value, such as `-90. * deg`, is exact in `float`, which holds every integer up to
 16'777'216.
 
-A point checked against the bounds of an ancestor is translated by the offset to that
-ancestor. With an integral representation, the point's quantity type must hold that offset
-exactly too: an `int` point measured from an origin 0.5 m above its bounded ancestor, or an
-`int` kilometre point 1500 m above it, is rejected the same way. With a floating-point
-representation, rounding the offset or scaling a bound to the point's unit is accepted,
-because neither can be exact in general (0.3048 m per foot has no exact binary form).
+With a floating-point representation, scaling a bound to the point's unit is accepted,
+because it can't be exact in general (0.3048 m per foot has no exact binary form).
 
 ### Origin Inheritance
 
@@ -834,6 +830,13 @@ quantity_point low = average_height_origin - 1500.0 * m;
 // −1701 m relative = −1 m absolute → check_non_negative fires.
 // quantity_point bad = average_height_origin - 1701.0 * m;  // ❌
 ```
+
+A point is translated into the frame of its bounded ancestor by the offset to that
+ancestor. With an integral representation, the point's quantity type must hold that offset
+exactly, as it must hold the bounds (see
+[Bounds the Point Can Hold](#bounds-the-point-can-hold)): an `int` point measured from an
+origin 0.5 m above its bounded ancestor, or an `int` kilometre point 1500 m above it, is
+rejected. With a floating-point representation, rounding the offset is accepted.
 
 When a `relative_point_origin` defines its **own bounds**, they are additionally checked at
 compile time to nest within the bounds of the nearest bounded origin above it (see the
