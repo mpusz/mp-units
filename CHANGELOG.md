@@ -447,6 +447,14 @@ This page documents the version history and changes for the **mp-units** library
         violates the precondition of the operation storing it)
 - feat: `exclusive_bound{q}` added to exclude an end from the range of a bounds policy
         (accepted by `check_in_range` at either end and by `wrap_to_range` at its max)
+- feat: each bound of a bounds policy must be exactly representable in the quantity type
+        of a point checked against it, and so must the offset to a bounded ancestor for a
+        point with a representation that is not floating-point; otherwise the point is not
+        constructible from a quantity and offers no `is_within_bounds` or `try_make`
+        (a `float` point needs `float` bounds: `0.1 * m` isn't a `float`)
+- fix: `==` and `<=>` between points of different origins are offered only when the
+        translation their bodies perform compiles (a `constrained` representation has no
+        arithmetic with a plain origin offset)
 - feat: `is_within_bounds<QP>(q, origin)` and the static member function
         `QP::try_make(q, origin)` added for points with a checking policy or without bounds
         (`try_make` returns `std::expected<QP, bounds_violation>`)

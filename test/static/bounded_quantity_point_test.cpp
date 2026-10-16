@@ -1274,6 +1274,70 @@ inline constexpr struct bav_mixed2_rel final :
 
 static_assert(!can_query_bounds<quantity_point<bav_mixed2[m], bav_mixed2_rel>, bav_mixed2_rel, quantity<m, double>>);
 
+// A point checked against an ancestor's bounds is translated by the offset to that ancestor, in the
+// point's own quantity type. An integral representation has to hold that offset exactly: 0.5 m as an
+// `int` would be 0 m, and 1500 m as `int` kilometres would be 1 km, so the bounds would be checked
+// somewhere else than declared. Such a point offers no bounds queries. A floating-point one does.
+QUANTITY_SPEC(bav_rail, isq::length);
+
+inline constexpr struct bav_rail_start final : absolute_point_origin<bav_rail, check_in_range{0 * m, 10'000 * m}> {
+} bav_rail_start;
+inline constexpr struct bav_rail_half final :
+    relative_point_origin<quantity_point<bav_rail[m], bav_rail_start, double>{0.5 * m, bav_rail_start}> {
+} bav_rail_half;
+inline constexpr struct bav_rail_station final :
+    relative_point_origin<quantity_point<bav_rail[m], bav_rail_start, int>{1500 * m, bav_rail_start}> {
+} bav_rail_station;
+inline constexpr struct bav_rail_depot final :
+    relative_point_origin<quantity_point<bav_rail[m], bav_rail_start, int>{2000 * m, bav_rail_start}> {
+} bav_rail_depot;
+
+static_assert(
+  !can_query_bounds<quantity_point<bav_rail[m], bav_rail_half, int>, bav_rail_half, quantity<bav_rail[m], int>>);
+static_assert(!std::constructible_from<quantity_point<bav_rail[m], bav_rail_half, int>, quantity<bav_rail[m], int>,
+                                       decltype(bav_rail_half)>);
+static_assert(is_within_bounds<quantity_point<bav_rail[m], bav_rail_half, double>>(9'999.5 * m, bav_rail_half));
+static_assert(!is_within_bounds<quantity_point<bav_rail[m], bav_rail_half, double>>(9'999.75 * m, bav_rail_half));
+
+static_assert(!can_query_bounds<quantity_point<bav_rail[km], bav_rail_station, int>, bav_rail_station,
+                                quantity<bav_rail[km], int>>);
+static_assert(!std::constructible_from<quantity_point<bav_rail[km], bav_rail_station, int>, quantity<bav_rail[km], int>,
+                                       decltype(bav_rail_station)>);
+static_assert(is_within_bounds<quantity_point<bav_rail[m], bav_rail_station, int>>(8'500 * m, bav_rail_station));
+static_assert(!is_within_bounds<quantity_point<bav_rail[m], bav_rail_station, int>>(8'501 * m, bav_rail_station));
+
+static_assert(is_within_bounds<quantity_point<bav_rail[km], bav_rail_depot, int>>(8 * km, bav_rail_depot));
+static_assert(!is_within_bounds<quantity_point<bav_rail[km], bav_rail_depot, int>>(9 * km, bav_rail_depot));
+static_assert(quantity_point<bav_rail[km], bav_rail_depot, int>{8 * km, bav_rail_depot}.quantity_from(bav_rail_start) ==
+              10'000 * m);
+
+// A policy compares a value with a bound in the value's own type, so each bound has to be exact in
+// it. 16'777'217 m is not a `float`, and neither is 0.1 m: a `float` point needs `float` bounds.
+// A bound with an integral value converts exactly, and a `double` point holds either bound.
+QUANTITY_SPEC(bav_tape, isq::length);
+
+inline constexpr struct bav_tape_wide final : absolute_point_origin<bav_tape, check_in_range{0 * m, 16'777'217 * m}> {
+} bav_tape_wide;
+inline constexpr struct bav_tape_fine final : absolute_point_origin<bav_tape, check_in_range{0.1 * m, 10. * m}> {
+} bav_tape_fine;
+inline constexpr struct bav_tape_fine_f final : absolute_point_origin<bav_tape, check_in_range{0.1f * m, 10.f * m}> {
+} bav_tape_fine_f;
+inline constexpr struct bav_tape_whole final : absolute_point_origin<bav_tape, check_in_range{-90. * m, 90. * m}> {
+} bav_tape_whole;
+
+static_assert(
+  !can_query_bounds<quantity_point<bav_tape[m], bav_tape_wide, float>, bav_tape_wide, quantity<bav_tape[m], float>>);
+static_assert(!std::constructible_from<quantity_point<bav_tape[m], bav_tape_wide, float>, quantity<bav_tape[m], float>,
+                                       decltype(bav_tape_wide)>);
+static_assert(
+  !can_query_bounds<quantity_point<bav_tape[m], bav_tape_fine, float>, bav_tape_fine, quantity<bav_tape[m], float>>);
+static_assert(is_within_bounds<quantity_point<bav_tape[m], bav_tape_fine_f, float>>(0.1f * m, bav_tape_fine_f));
+static_assert(!is_within_bounds<quantity_point<bav_tape[m], bav_tape_fine_f, float>>(0.099999994f * m,
+                                                                                     bav_tape_fine_f));
+static_assert(is_within_bounds<quantity_point<bav_tape[m], bav_tape_whole, float>>(-90.f * m, bav_tape_whole));
+static_assert(!is_within_bounds<quantity_point<bav_tape[m], bav_tape_wide, double>>(16'777'218. * m, bav_tape_wide));
+static_assert(is_within_bounds<quantity_point<bav_tape[m], bav_tape_fine, double>>(0.1 * m, bav_tape_fine));
+
 // ----------------------------------------------------------------------------
 // Relative origins: the query tests the bounds construction enforces. The nesting check
 // keeps those inside the bounds of every origin above, so they are the only ones that matter.

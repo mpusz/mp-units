@@ -477,12 +477,60 @@ template<PointOrigin PO>
     return off + bounds_offset(parent_po);
 }
 
+// True iff each bound of the policy is exact in V (see bound_exact_in).
+template<Quantity V, typename Policy>
+[[nodiscard]] consteval bool policy_bounds_exact_in(const Policy& policy)
+{
+  bool exact = true;
+  if constexpr (requires { policy.min; }) exact = exact && bound_exact_in<V>(policy.min);
+  if constexpr (requires { policy.max; }) exact = exact && bound_exact_in<V>(policy.max);
+  return exact;
+}
+
+// The offset from PO's frame to the frame of its bounds owner, in the representation of Q. A
+// floating-point representation keeps the offset's unit. Any other one takes Q's unit as well, so the
+// translated value stays in Q's quantity type, which bounds_exact_in requires to be exact.
+// Only valid when !HasQuantityBounds<PO> && any_ancestor_has_bounds(PO) is true.
+template<PointOrigin auto PO, Quantity Q>
+[[nodiscard]] constexpr Quantity auto bounds_offset_in()
+{
+  constexpr auto off = bounds_offset(PO);
+  if constexpr (treat_as_floating_point<typename Q::rep>)
+    return value_cast<typename Q::rep>(off);
+  else
+    return value_cast<Q::unit, typename Q::rep>(off);
+}
+
+// True iff every constant that checking a value of Q at PO uses is exact in the type the check runs
+// in: each bound of the bounds owner, and the offset into the owner's frame unless Q's representation
+// is a floating-point one, whose rounding of that offset is accepted. A truncated constant would check
+// the bounds somewhere else than declared.
+template<PointOrigin auto PO, Quantity Q>
+[[nodiscard]] consteval bool bounds_exact_in()
+{
+  if constexpr (HasQuantityBounds<MP_UNITS_NONCONST_TYPE(PO)>)
+    return policy_bounds_exact_in<Q>(PO._bounds_);
+  else if constexpr (!any_ancestor_has_bounds(PO))
+    return true;
+  else if constexpr (!requires { value_cast<Q::unit, typename Q::rep>(bounds_offset(PO)); })
+    return false;
+  else {
+    constexpr auto bpo = bounds_po_for(PO);
+    using translated = decltype(std::declval<const Q&>() + bounds_offset_in<PO, Q>());
+    if constexpr (!treat_as_floating_point<typename Q::rep>)
+      if (bounds_offset_in<PO, Q>() != bounds_offset(PO)) return false;
+    return policy_bounds_exact_in<translated>(bpo._bounds_);
+  }
+}
+
 // Apply bounds to q (expressed relative to PO's origin frame).
 // Uses compile-time lookup to find the bounds owner and its offset from PO — at most a
 // single runtime translate/apply/un-translate with no recursive function calls.
 template<PointOrigin auto PO, auto R, typename Rep>
 constexpr quantity<R, Rep> enforce_bounds(quantity<R, Rep> q)
 {
+  static_assert(bounds_exact_in<PO, quantity<R, Rep>>(),
+                "the point's quantity type cannot hold a bound or the offset to the origin whose bounds apply");
   if constexpr (HasQuantityBounds<MP_UNITS_NONCONST_TYPE(PO)>) {
     // Direct bounds on PO — apply without any translation.
     return apply_bounds_policy(PO._bounds_, q);
@@ -490,11 +538,10 @@ constexpr quantity<R, Rep> enforce_bounds(quantity<R, Rep> q)
     // No direct bounds — locate the bounds-owning ancestor and its cumulative offset,
     // both resolved entirely at compile time.
     constexpr auto bpo = bounds_po_for(PO);
-    constexpr auto off = bounds_offset(PO);
-    // Cast offset to the same rep as q so that the arithmetic preserves Rep
-    // (e.g., constrained<double, throw_policy>) and check_non_negative uses the
-    // correct violation handler instead of making the bounds a precondition.
-    const auto typed_off = value_cast<Rep>(off);
+    // The offset in the same rep as q, so that the arithmetic preserves Rep (e.g.,
+    // constrained<double, throw_policy>) and check_non_negative uses the correct violation
+    // handler instead of making the bounds a precondition.
+    const auto typed_off = bounds_offset_in<PO, quantity<R, Rep>>();
     // Single flat: translate to owner's frame, apply policy, translate back. When the policy let
     // the value through unchanged, q itself is returned: translating back could round it to a
     // neighboring value in a floating-point representation.
@@ -518,13 +565,13 @@ constexpr quantity<R, Rep> enforce_bounds(quantity<R, Rep> q)
 template<PointOrigin auto PO, Quantity Q>
 [[nodiscard]] constexpr bool bounds_contain(const Q& q)
 {
+  static_assert(bounds_exact_in<PO, Q>(),
+                "the point's quantity type cannot hold a bound or the offset to the origin whose bounds apply");
   if constexpr (HasQuantityBounds<MP_UNITS_NONCONST_TYPE(PO)>) {
     return PO._bounds_(q);
   } else if constexpr (any_ancestor_has_bounds(PO)) {
     constexpr auto bpo = bounds_po_for(PO);
-    constexpr auto off = bounds_offset(PO);
-    const auto typed_off = value_cast<typename Q::rep>(off);
-    return bpo._bounds_(q + typed_off);
+    return bpo._bounds_(q + bounds_offset_in<PO, Q>());
   } else {
     return true;
   }
@@ -541,9 +588,7 @@ template<PointOrigin auto PO, Quantity Q>
     return CheckingPolicyFor<decltype(PO._bounds_), Q>;
   } else if constexpr (any_ancestor_has_bounds(PO)) {
     constexpr auto bpo = bounds_po_for(PO);
-    constexpr auto off = bounds_offset(PO);
-    return CheckingPolicyFor<decltype(bpo._bounds_),
-                             decltype(std::declval<const Q&>() + value_cast<typename Q::rep>(off))>;
+    return CheckingPolicyFor<decltype(bpo._bounds_), decltype(std::declval<const Q&>() + bounds_offset_in<PO, Q>())>;
   } else {
     return true;
   }
@@ -751,7 +796,8 @@ MP_UNITS_EXPORT_BEGIN
  * @see @ref quantity_point::try_make for the same test returning the constructed point
  */
 template<QuantityPoint QP, typename FwdQ, QuantityOf<QP::quantity_spec> Q = std::remove_cvref_t<FwdQ>>
-  requires(detail::enforced_bounds_check<QP::point_origin, typename QP::quantity_type>()) &&
+  requires(detail::bounds_exact_in<QP::point_origin, typename QP::quantity_type>()) &&
+          (detail::enforced_bounds_check<QP::point_origin, typename QP::quantity_type>()) &&
           std::constructible_from<typename QP::quantity_type, FwdQ>
 [[nodiscard]] constexpr bool is_within_bounds(FwdQ&& q, decltype(QP::point_origin))
 {
@@ -759,7 +805,8 @@ template<QuantityPoint QP, typename FwdQ, QuantityOf<QP::quantity_spec> Q = std:
 }
 
 template<QuantityPoint QP, typename FwdQ, QuantityOf<QP::quantity_spec> Q = std::remove_cvref_t<FwdQ>>
-  requires(detail::enforced_bounds_check<QP::point_origin, typename QP::quantity_type>()) &&
+  requires(detail::bounds_exact_in<QP::point_origin, typename QP::quantity_type>()) &&
+          (detail::enforced_bounds_check<QP::point_origin, typename QP::quantity_type>()) &&
           std::constructible_from<typename QP::quantity_type, FwdQ> &&
           (QP::point_origin == default_point_origin(QP::reference))
 [[nodiscard]] constexpr bool is_within_bounds(FwdQ&& q)
@@ -886,7 +933,8 @@ public:
   [[nodiscard]] quantity_point() = default;
 
   template<typename FwdQ, QuantityOf<quantity_spec> Q = std::remove_cvref_t<FwdQ>>
-    requires std::constructible_from<quantity_type, FwdQ> && (point_origin == default_point_origin(R))
+    requires std::constructible_from<quantity_type, FwdQ> && (point_origin == default_point_origin(R)) &&
+             (detail::bounds_exact_in<PO, quantity_type>())
   [[nodiscard]] constexpr explicit quantity_point(FwdQ&& q)
     MP_UNITS_PRE_CONSTEVAL_HACK(detail::bounds_precondition<point_origin>(quantity_type{q})) :
       quantity_from_origin_is_an_implementation_detail_(
@@ -897,7 +945,7 @@ public:
   }
 
   template<typename FwdQ, QuantityOf<quantity_spec> Q = std::remove_cvref_t<FwdQ>>
-    requires std::constructible_from<quantity_type, FwdQ>
+    requires std::constructible_from<quantity_type, FwdQ> && (detail::bounds_exact_in<PO, quantity_type>())
   [[nodiscard]] constexpr quantity_point(FwdQ&& q, decltype(PO))
     MP_UNITS_PRE_CONSTEVAL_HACK(detail::bounds_precondition<point_origin>(quantity_type{q})) :
       quantity_from_origin_is_an_implementation_detail_(
@@ -909,7 +957,9 @@ public:
 
   template<typename FwdQ, PointOrigin PO2, Quantity Q = std::remove_cvref_t<FwdQ>>
     requires PointOriginFor<PO2, Q::quantity_spec> && std::constructible_from<quantity_type, FwdQ> &&
-             detail::SameAbsolutePointOriginAs<PO2, PO>
+             detail::SameAbsolutePointOriginAs<PO2, PO> &&
+             (detail::bounds_exact_in<PO2{}, quantity<Q::reference, typename Q::rep>>()) &&
+             (detail::bounds_exact_in<PO, quantity_type>())
   [[nodiscard]] constexpr quantity_point(FwdQ&& q, PO2) :
       quantity_point(
         quantity_point<std::remove_reference_t<Q>::reference, PO2{}, typename std::remove_reference_t<Q>::rep>{

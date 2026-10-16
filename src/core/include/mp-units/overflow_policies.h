@@ -29,6 +29,7 @@
 #include <mp-units/ext/type_traits.h>
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/quantity_concepts.h>
+#include <mp-units/framework/value_cast.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #ifdef MP_UNITS_IMPORT_STD
@@ -96,12 +97,57 @@ template<typename B>
 
 struct zero_quantity_t;
 
-// Re-expresses a policy bound in the type of the checked value V.
+// The representation a bound's exactness in V is judged by: the one a wrapper such as
+// constrained<double> wraps, or V's own.
+template<Quantity V>
+[[nodiscard]] consteval auto exactness_rep()
+{
+  if constexpr (requires { typename representation_underlying_type_t<typename V::rep>; })
+    return std::type_identity<representation_underlying_type_t<typename V::rep>>{};
+  else
+    return std::type_identity<typename V::rep>{};
+}
+
+// True iff a policy bound converts into the type of the checked value V without changing its value,
+// tested by converting it back. The check compares in V, so a bound V cannot hold would be checked
+// somewhere else than declared, such as an `int` bound of 16'777'217 m in a `float` V. For a
+// floating-point V only the representation is tested: scaling to another unit rounds whenever the
+// factor has no exact binary form (0.3048 for ft to m), and that rounding is accepted, as it is for
+// the offset of a relative origin.
+template<Quantity V, typename B>
+[[nodiscard]] consteval bool bound_exact_in(const B& bound)
+{
+  if constexpr (std::same_as<B, zero_quantity_t>)
+    return true;
+  else {
+    using rep = typename decltype(exactness_rep<V>())::type;
+    using bound_type = bound_value_t<B>;
+    const bound_type& value = bound_value(bound);
+    if constexpr (treat_as_floating_point<rep>) {
+      if constexpr (requires { value_cast<typename bound_type::rep>(value_cast<rep>(value)); })
+        return value_cast<typename bound_type::rep>(value_cast<rep>(value)) == value;
+      else
+        return false;
+    } else if constexpr (requires {
+                           value_cast<bound_type::unit, typename bound_type::rep>(value_cast<V::unit, rep>(value));
+                         })
+      return value_cast<bound_type::unit, typename bound_type::rep>(value_cast<V::unit, rep>(value)) == value;
+    else
+      return false;
+  }
+}
+
+// Re-expresses a policy bound in the type of the checked value V. The conversion is explicit, so one
+// that is exact but not implicit, such as 10'000 m to `int` kilometres, works too: bound_exact_in
+// guards its value. A representation without an explicit cast from the bound's, such as
+// constrained<double>, is constructed from the bound.
 template<Quantity V, typename B>
 [[nodiscard]] constexpr V bound_in(const B& bound)
 {
   if constexpr (std::same_as<B, zero_quantity_t>)
     return V::zero();
+  else if constexpr (requires { value_cast<V::unit, typename V::rep>(bound_value(bound)); })
+    return V{value_cast<V::unit, typename V::rep>(bound_value(bound))};
   else
     return V{bound_value(bound)};
 }
