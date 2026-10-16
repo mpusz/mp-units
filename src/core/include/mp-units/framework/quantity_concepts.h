@@ -35,6 +35,12 @@ namespace mp_units {
 MP_UNITS_EXPORT template<Reference auto R, RepresentationOf<get_quantity_spec(R)> Rep>
 class quantity;
 
+// Matched by pattern, so that a quantity meeting a `Value` parameter of an operator is rejected without
+// instantiating the primary template's search for an element type, and without evaluating any
+// constraint for the many other types that ask this.
+template<auto R, typename Rep>
+inline constexpr bool disable_representation<quantity<R, Rep>> = true;
+
 namespace detail {
 
 template<auto R, typename Rep>

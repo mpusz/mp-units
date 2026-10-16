@@ -90,6 +90,11 @@ MP_UNITS_EXPORT template<Reference auto R, PointOriginFor<get_quantity_spec(R)> 
                          RepresentationOf<get_quantity_spec(R)> Rep>
 class quantity_point;
 
+// Matched by pattern, as for `quantity`: a point is rejected as a representation before anything is
+// evaluated on it.
+template<auto R, auto PO, typename Rep>
+inline constexpr bool disable_representation<quantity_point<R, PO, Rep>> = true;
+
 namespace detail {
 
 template<auto R, auto PO, typename Rep>
@@ -165,16 +170,6 @@ template<auto From, auto To>
 concept HasFrameProjection =
   AbsolutePointOrigin<MP_UNITS_NTTP_HACK(decltype(From))> && AbsolutePointOrigin<MP_UNITS_NTTP_HACK(decltype(To))> &&
   utility::specified<decltype(frame_projection<From, To>)>;
-
-}  // namespace detail
-
-namespace detail {
-
-// A point is not a representation either, so `disable_representation` rejects it on its first atom
-// instead of walking the whole representation hierarchy to the same answer.
-template<typename T>
-  requires QuantityPoint<T> || QuantityPointLike<T>
-constexpr bool is_quantity_abstraction<T> = true;
 
 }  // namespace detail
 

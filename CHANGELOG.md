@@ -313,16 +313,15 @@ This page documents the version history and changes for the **mp-units** library
       Computing them with a probable-prime test per candidate cost about 30 ms of constant
       evaluation in every translation unit that includes a system header, which charged
       even a TU that includes only the core and defines nothing
-- perf: the overloads of `quantity`'s operators that take a plain value (`q + 2`, `2 * q`,
-      `q == 2`, ...) reject a quantity, a point or a symbolic constant with one cheap atom
-      and keep their real constraints in a requires-expression behind it, and
-      `RepresentationOf`
-      matches the character lazily behind its two guards. Clang substitutes the template
-      arguments of every atom of a constraint whether it evaluates them or not, so a candidate
-      that failed its first atom still paid for `get_quantity_spec(R)` and for computing the
-      character of the rejected type; `RepresentationOf` on a `quantity_point` went from 2,707
-      constraint checks to 262. `disable_representation` now rejects every quantity abstraction
-      (points included, which it missed) before searching the type for an element type
+- perf: `RepresentationOf` matches the character inside a requires-expression behind its two
+      guards, and `disable_representation` rejects a `quantity` or a `quantity_point` by a
+      pattern-matched specialization. Clang substitutes the template arguments of every atom
+      of a constraint whether it evaluates the atom or not, so a rejected type still had
+      `representable_character<T>` instantiated for it, which evaluates `Scalar`, `Vector`
+      and `Tensor` on the type: `RepresentationOf` on a point went from 2,707 constraint
+      checks to 262. Measured on the benchmark corpus with no loss on any workflow; a wider
+      rewrite of the operators' `Value` overloads around the same finding was measured as
+      mixed on the gate and not kept
 - fix: `basic_fixed_string::swap` never compiled — it called an undeclared `swap_ranges`
       through `begin()`/`end()`, which yield `const_iterator` and cannot be written through.
       Nothing called it, so it was never instantiated. It now exchanges the contents
