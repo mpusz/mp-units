@@ -190,7 +190,7 @@ using safe_temp = quantity_point<deg_C, sensor_scale_origin, safe_double>;
 // STEP 4: Safe sensor reading function: a rejected reading throws nothing
 std::optional<safe_temp> read_sensor_safe(double raw_celsius)
 {
-  if (auto temp = try_make<safe_temp>(delta<deg_C>(raw_celsius), sensor_scale_origin))
+  if (auto temp = safe_temp::try_make(delta<deg_C>(raw_celsius), sensor_scale_origin))
     return *temp;
   std::cerr << "Sensor reading invalid: " << raw_celsius << " °C\n";
   return std::nullopt;  // Signal failure

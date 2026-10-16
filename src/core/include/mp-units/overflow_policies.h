@@ -29,12 +29,14 @@
 #include <mp-units/ext/type_traits.h>
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/quantity_concepts.h>
+#include <mp-units/framework/value_cast.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
 #include <concepts>
+#include <limits>
 #include <type_traits>
 #include <utility>
 #endif
@@ -96,12 +98,65 @@ template<typename B>
 
 struct zero_quantity_t;
 
-// Re-expresses a policy bound in the type of the checked value V.
+// The representation a bound's exactness in V is judged by: the one a wrapper such as
+// constrained<double> wraps, or V's own.
+template<Quantity V>
+[[nodiscard]] consteval auto exactness_rep()
+{
+  if constexpr (requires { typename representation_underlying_type_t<typename V::rep>; })
+    return std::type_identity<representation_underlying_type_t<typename V::rep>>{};
+  else
+    return std::type_identity<typename V::rep>{};
+}
+
+// True iff a policy bound converts into the type of the checked value V without changing its value,
+// tested by converting it back. The check compares in V, so a bound that V can't hold would be compared
+// after rounding, such as an `int` bound of 16'777'217 m in a `float` V. For a
+// floating-point V only the representation is tested: scaling to another unit rounds whenever the
+// factor has no exact binary form (0.3048 for ft to m), and that rounding is accepted, as it is for
+// the offset of a relative origin.
+template<Quantity V, typename B>
+[[nodiscard]] consteval bool bound_exact_in(const B& bound)
+{
+  if constexpr (std::same_as<B, zero_quantity_t>)
+    return true;
+  else {
+    using rep = typename decltype(exactness_rep<V>())::type;
+    using bound_type = bound_value_t<B>;
+    const bound_type& value = bound_value(bound);
+    if constexpr (treat_as_floating_point<rep>) {
+      if constexpr (requires { value_cast<typename bound_type::rep>(value_cast<rep>(value)); })
+        return value_cast<typename bound_type::rep>(value_cast<rep>(value)) == value;
+      else
+        return false;
+    } else if constexpr (requires {
+                           value_cast<bound_type::unit, typename bound_type::rep>(value_cast<V::unit, rep>(value));
+                         }) {
+      // Converting a floating-point value outside the range of an integral type is undefined behavior,
+      // so such a bound is rejected before it is converted.
+      if constexpr (treat_as_floating_point<typename bound_type::rep> && std::numeric_limits<rep>::is_specialized) {
+        const auto scaled = value_cast<V::unit, long double>(value).numerical_value_in(V::unit);
+        if (!(scaled >= static_cast<long double>(std::numeric_limits<rep>::lowest()) &&
+              scaled <= static_cast<long double>(std::numeric_limits<rep>::max())))
+          return false;
+      }
+      return value_cast<bound_type::unit, typename bound_type::rep>(value_cast<V::unit, rep>(value)) == value;
+    } else
+      return false;
+  }
+}
+
+// Re-expresses a policy bound in the type of the checked value V. The conversion is explicit, so one
+// that is exact but not implicit, such as 10'000 m to `int` kilometres, works too: bound_exact_in
+// guards its value. A representation without an explicit cast from the bound's, such as
+// constrained<double>, is constructed from the bound.
 template<Quantity V, typename B>
 [[nodiscard]] constexpr V bound_in(const B& bound)
 {
   if constexpr (std::same_as<B, zero_quantity_t>)
     return V::zero();
+  else if constexpr (requires { value_cast<V::unit, typename V::rep>(bound_value(bound)); })
+    return V{value_cast<V::unit, typename V::rep>(bound_value(bound))};
   else
     return V{bound_value(bound)};
 }
@@ -234,8 +289,8 @@ template<Quantity V>
 //   Note: reflect_non_negative and wrap_non_negative are not provided — [0, ∞) has no
 //   upper bound, so neither reflection nor wrapping is physically well-defined.
 //
-// `is_within_bounds()` and `try_make()` are offered for points whose enforced policy is a checking
-// one. They test a value with the predicate that construction applies.
+// `quantity_point::is_within_bounds()` and `try_make()` are offered for points whose enforced
+// policy is a checking one. They test a value with the predicate that construction applies.
 // ============================================================================
 
 /**
@@ -265,7 +320,7 @@ struct check_in_range {
    * Tells whether `v` lies between `min` and `max`, each included unless given as
    * @ref exclusive_bound. Returns `false` for NaN.
    *
-   * @see @ref is_within_bounds for the test applied before constructing a point
+   * @see @ref quantity_point::is_within_bounds for the test applied before constructing a point
    */
   template<Quantity V>
   [[nodiscard]] constexpr bool operator()(const V& v) const
@@ -295,8 +350,8 @@ struct clamp_to_range {
   template<Quantity V>
   constexpr V operator()(V v) const
   {
-    const V vmin{min};
-    const V vmax{max};
+    const V vmin = detail::bound_in<V>(min);
+    const V vmax = detail::bound_in<V>(max);
     if (v < vmin) return vmin;
     if (v > vmax) return vmax;
     return v;
@@ -334,8 +389,8 @@ struct wrap_to_range {
   template<Quantity V>
   constexpr V operator()(V v) const
   {
-    const V vmin{min};
-    const V vmax{max.value};
+    const V vmin = detail::bound_in<V>(min);
+    const V vmax = detail::bound_in<V>(max);
     if (detail::is_non_finite(v)) return v - v;  // no position on the circle: NaN
     if (v >= vmin && v < vmax) return v;
     const V range = vmax - vmin;
@@ -374,8 +429,8 @@ struct reflect_in_range {
   template<Quantity V>
   constexpr V operator()(V v) const
   {
-    const V vmin{min};
-    const V vmax{max};
+    const V vmin = detail::bound_in<V>(min);
+    const V vmax = detail::bound_in<V>(max);
     if (detail::is_non_finite(v)) return v - v;  // no reflected position: NaN
     if (v >= vmin && v <= vmax) return v;
     const V range = vmax - vmin;
@@ -485,7 +540,7 @@ MP_UNITS_EXPORT struct check_non_negative {
   /**
    * Tells whether `v` is zero or positive. Returns `false` for NaN.
    *
-   * @see @ref is_within_bounds for the test applied before constructing a point
+   * @see @ref quantity_point::is_within_bounds for the test applied before constructing a point
    */
   template<Quantity V>
   [[nodiscard]] constexpr bool operator()(const V& v) const

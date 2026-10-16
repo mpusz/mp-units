@@ -765,6 +765,33 @@ Bounds are enforced at these points:
 
 After each mutation the library transparently applies the bounds policy specified on the origin.
 
+### Bounds the Point Can Hold
+
+A policy compares a value with its bounds in the value's own type. Each bound therefore has
+to be exactly representable in the point's quantity type (for a floating-point
+representation, in the bound's own unit). Otherwise the policy would compare against a
+rounded bound. A point whose quantity type can't hold a bound offers no constructor from a
+quantity, no `is_within_bounds`, and no `try_make`:
+
+```cpp
+inline constexpr struct tape_start :
+    absolute_point_origin<isq::length, check_in_range{0.1 * m, 10. * m}> {} tape_start;
+inline constexpr struct tape_start_f :
+    absolute_point_origin<isq::length, check_in_range{0.1f * m, 10.f * m}> {} tape_start_f;
+
+quantity_point<isq::length[m], tape_start> p1{0.5 * m, tape_start};             // OK
+quantity_point<isq::length[m], tape_start_f, float> p2{0.5f * m, tape_start_f};  // OK
+// quantity_point<isq::length[m], tape_start, float> p3{0.5f * m, tape_start};   // ❌
+```
+
+`p3` doesn't compile because the `double` value of `0.1` isn't a `float` value. A `float`
+point needs an origin with `float` bounds, such as `tape_start_f`. A bound with a small
+integral value, such as `-90. * deg`, is exact in `float`, which holds every integer up to
+16'777'216.
+
+With a floating-point representation, scaling a bound to the point's unit is accepted,
+because it can't be exact in general (0.3048 m per foot has no exact binary form).
+
 ### Origin Inheritance
 
 A `relative_point_origin` that defines **no own bounds** automatically inherits the
@@ -804,6 +831,13 @@ quantity_point low = average_height_origin - 1500.0 * m;
 // quantity_point bad = average_height_origin - 1701.0 * m;  // ❌
 ```
 
+A point is translated into the frame of its bounded ancestor by the offset to that
+ancestor. With an integral representation, the point's quantity type must hold that offset
+exactly, as it must hold the bounds (see
+[Bounds the Point Can Hold](#bounds-the-point-can-hold)): an `int` point measured from an
+origin 0.5 m above its bounded ancestor, or an `int` kilometre point 1500 m above it, is
+rejected. With a floating-point representation, rounding the offset is accepted.
+
 When a `relative_point_origin` defines its **own bounds**, they are additionally checked at
 compile time to nest within the bounds of the nearest bounded origin above it (see the
 _Hierarchical bounds validation_ note in the
@@ -823,8 +857,13 @@ _Hierarchical bounds validation_ note in the
     ```
 
     This works because the policy struct exposes public `min` and `max` data members, which
-    `quantity_point::min()` and `max()` access to provide meaningful bounds. Without a bounds
-    policy, `std::numeric_limits` delegates to the representation type's limits.
+    `quantity_point::min()` and `max()` access to provide meaningful bounds. A relative
+    origin without bounds of its own reports those of its nearest bounded ancestor,
+    translated into its frame. With a floating-point representation the translation rounds,
+    so `min()` and `max()` report the lowest and highest values that ancestor's bounds
+    accept, which can differ from the translated bound by the rounding of each offset.
+    Without a bounds policy, `std::numeric_limits` delegates to the representation type's
+    limits.
 
 ### Validating Untrusted Values
 
@@ -832,8 +871,8 @@ A value read from a sensor, a bus, or persistent storage often has to be rejecte
 stopping the program. Catching the violation works only when the representation throws, and
 code built without exceptions has nothing to catch.
 
-`is_within_bounds` tells whether constructing the point from the same arguments would
-satisfy the bounds. It doesn't construct the point:
+The static member function `is_within_bounds` tells whether constructing the point from
+the same arguments would satisfy the bounds. It doesn't construct the point:
 
 ```cpp
 inline constexpr struct trim_zero :
@@ -844,18 +883,18 @@ using trim_angle =
 
 std::optional<trim_angle> make_trim(quantity<si::degree> raw)
 {
-  if (!is_within_bounds<trim_angle>(raw, trim_zero)) return std::nullopt;
+  if (!trim_angle::is_within_bounds(raw, trim_zero)) return std::nullopt;
   return trim_angle{raw, trim_zero};
 }
 ```
 
-Where `<expected>` is available (C++23), `try_make` does the same in one call and returns
-a rejection as an error value:
+Where `<expected>` is available (C++23), the static member function `try_make` does the same
+in one call and returns a rejection as an error value:
 
 ```cpp
 std::expected<trim_angle, bounds_violation> try_make_trim(quantity<si::degree> raw)
 {
-  return try_make<trim_angle>(raw, trim_zero);
+  return trim_angle::try_make(raw, trim_zero);
 }
 ```
 
@@ -944,8 +983,8 @@ inline constexpr struct tuning_zero :
 
 using tx_frequency = quantity_point<isq::frequency[GHz], tuning_zero>;
 
-static_assert(is_within_bounds<tx_frequency>(2.45 * GHz, tuning_zero));
-static_assert(!is_within_bounds<tx_frequency>(3. * GHz, tuning_zero));
+static_assert(tx_frequency::is_within_bounds(2.45 * GHz, tuning_zero));
+static_assert(!tx_frequency::is_within_bounds(3. * GHz, tuning_zero));
 ```
 
 Its `min` and `max` declare the outer ends of the domain, which `quantity_point::min()` and
@@ -964,7 +1003,8 @@ Its `min` and `max` declare the outer ends of the domain, which `quantity_point:
     user-defined checking policy is compared by its `min` and `max` as well, and its
     predicate is not consulted. A value inside an origin's own bounds therefore lies between
     the `min` and `max` of every bounded origin above it, up to rounding with floating-point
-    offsets.
+    offsets. Each floating-point offset in the chain rounds, so a value at the edge of a
+    child's range can end up one ulp outside an ancestor's range several levels up.
 
     Defining the origin or naming a point type doesn't trigger the check. It fires when the
     origin's bounds are first used, for example when a point is constructed from a value, in
