@@ -425,10 +425,15 @@ MP_UNITS_DIAGNOSTIC_POP
 // `SomeRepresentation<T>` leads the conjunction so that a non-representation (in particular a
 // `quantity`, which `disable_representation` rejects) never reaches the character machinery. The
 // `CharacterConstraint<V>` guard follows, so a non-character fails early on the guard.
+// The two guards lead the conjunction, and the character match sits inside a requires-expression so that it is
+// one atom whose operands are substituted only when the guards hold. Written as plain atoms, their mapping
+// would be substituted whenever the concept is checked, and that instantiates `representable_character<T>`
+// for every `T` that reaches a `RepresentationOf` constraint, including every quantity and point that meets
+// a `Value` parameter of an operator; computing it means evaluating `Scalar`, `Vector` and `Tensor` on `T`.
 MP_UNITS_EXPORT template<typename T, auto V>
-concept RepresentationOf =
-  detail::SomeRepresentation<T> && detail::CharacterConstraint<V> &&
-  detail::overlaps(detail::representable_character<T>.order, detail::character_constraint<V>().order) &&
-  detail::overlaps(detail::representable_character<T>.field, detail::character_constraint<V>().field);
+concept RepresentationOf = detail::SomeRepresentation<T> && detail::CharacterConstraint<V> && requires {
+  requires detail::overlaps(detail::representable_character<T>.order, detail::character_constraint<V>().order) &&
+             detail::overlaps(detail::representable_character<T>.field, detail::character_constraint<V>().field);
+};
 
 }  // namespace mp_units

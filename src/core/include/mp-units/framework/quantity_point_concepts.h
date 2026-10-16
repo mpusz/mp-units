@@ -168,4 +168,14 @@ concept HasFrameProjection =
 
 }  // namespace detail
 
+namespace detail {
+
+// A point is not a representation either, so `disable_representation` rejects it on its first atom
+// instead of walking the whole representation hierarchy to the same answer.
+template<typename T>
+  requires QuantityPoint<T> || QuantityPointLike<T>
+constexpr bool is_quantity_abstraction<T> = true;
+
+}  // namespace detail
+
 }  // namespace mp_units

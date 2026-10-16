@@ -441,6 +441,14 @@ constexpr bool disable_representation = detail::is_quantity_abstraction<detail::
 template<>
 inline constexpr bool disable_representation<bool> = true;
 
+// A quantity abstraction itself is rejected by this specialization, so that the primary template's
+// search for an element type, which walks the container and range protocols to find none on such a
+// type, is never instantiated for it. Overload resolution asks this of every quantity and point that
+// meets a `Value` parameter.
+template<typename T>
+  requires detail::is_quantity_abstraction<T>
+inline constexpr bool disable_representation<T> = true;
+
 // A representation carries a runtime value, which a stateless type cannot do. Rejecting empty tag
 // types here also short-circuits the whole representation-concept chain (`WeaklyRegular`, scaling,
 // and character detection) that overload resolution of symbolic expressions like `mag * unit` would

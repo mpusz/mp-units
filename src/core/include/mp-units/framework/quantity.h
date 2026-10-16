@@ -364,15 +364,25 @@ struct quantity_iface {
                     ret::reference};
   }
 
-  template<auto R1, typename Rep1, RepresentationOf<get_quantity_spec(R1)> Value>
-    requires ImplicitFromNumber<R1> && InvokeResultOf<get_quantity_spec(R1), std::plus<>, Rep1, const Value&>
+  // Every overload taking a plain `Value` is spelled this way rather than with a `RepresentationOf<...> Value`
+  // type-constraint: the opt-out is one cheap atom that rejects a quantity, a point, or a symbolic constant,
+  // and the real constraints sit in a requires-expression so that their template arguments are substituted
+  // only for a `Value` that passed it. These overloads are candidates for every operator call on a quantity.
+  template<auto R1, typename Rep1, typename Value>
+    requires(!disable_representation<Value>) && requires {
+      requires RepresentationOf<Value, get_quantity_spec(R1)> && ImplicitFromNumber<R1> &&
+                 InvokeResultOf<get_quantity_spec(R1), std::plus<>, Rep1, const Value&>;
+    }
   [[nodiscard]] friend constexpr Quantity auto operator+(const quantity<R1, Rep1>& lhs, const Value& rhs)
   {
     return lhs + quantity{rhs};
   }
 
-  template<auto R1, typename Rep1, RepresentationOf<get_quantity_spec(R1)> Value>
-    requires ImplicitFromNumber<R1> && InvokeResultOf<get_quantity_spec(R1), std::plus<>, Rep1, const Value&>
+  template<auto R1, typename Rep1, typename Value>
+    requires(!disable_representation<Value>) && requires {
+      requires RepresentationOf<Value, get_quantity_spec(R1)> && ImplicitFromNumber<R1> &&
+                 InvokeResultOf<get_quantity_spec(R1), std::plus<>, Rep1, const Value&>;
+    }
   [[nodiscard]] friend constexpr Quantity auto operator+(const Value& lhs, const quantity<R1, Rep1>& rhs)
   {
     return quantity{lhs} + rhs;
@@ -390,15 +400,21 @@ struct quantity_iface {
                     ret::reference};
   }
 
-  template<auto R1, typename Rep1, RepresentationOf<get_quantity_spec(R1)> Value>
-    requires ImplicitFromNumber<R1> && InvokeResultOf<get_quantity_spec(R1), std::minus<>, Rep1, const Value&>
+  template<auto R1, typename Rep1, typename Value>
+    requires(!disable_representation<Value>) && requires {
+      requires RepresentationOf<Value, get_quantity_spec(R1)> && ImplicitFromNumber<R1> &&
+                 InvokeResultOf<get_quantity_spec(R1), std::minus<>, Rep1, const Value&>;
+    }
   [[nodiscard]] friend constexpr Quantity auto operator-(const quantity<R1, Rep1>& lhs, const Value& rhs)
   {
     return lhs - quantity{rhs};
   }
 
-  template<auto R1, typename Rep1, RepresentationOf<get_quantity_spec(R1)> Value>
-    requires ImplicitFromNumber<R1> && InvokeResultOf<get_quantity_spec(R1), std::minus<>, Rep1, const Value&>
+  template<auto R1, typename Rep1, typename Value>
+    requires(!disable_representation<Value>) && requires {
+      requires RepresentationOf<Value, get_quantity_spec(R1)> && ImplicitFromNumber<R1> &&
+                 InvokeResultOf<get_quantity_spec(R1), std::minus<>, Rep1, const Value&>;
+    }
   [[nodiscard]] friend constexpr Quantity auto operator-(const Value& lhs, const quantity<R1, Rep1>& rhs)
   {
     return quantity{lhs} - rhs;
@@ -418,15 +434,21 @@ struct quantity_iface {
                     ret::reference};
   }
 
-  template<auto R1, typename Rep1, RepresentationOf<get_quantity_spec(R1)> Value>
-    requires ImplicitFromNumber<R1> && InvokeResultOf<get_quantity_spec(R1), std::modulus<>, Rep1, const Value&>
+  template<auto R1, typename Rep1, typename Value>
+    requires(!disable_representation<Value>) && requires {
+      requires RepresentationOf<Value, get_quantity_spec(R1)> && ImplicitFromNumber<R1> &&
+                 InvokeResultOf<get_quantity_spec(R1), std::modulus<>, Rep1, const Value&>;
+    }
   [[nodiscard]] friend constexpr Quantity auto operator%(const quantity<R1, Rep1>& lhs, const Value& rhs)
   {
     return lhs % quantity{rhs};
   }
 
-  template<auto R1, typename Rep1, RepresentationOf<get_quantity_spec(R1)> Value>
-    requires ImplicitFromNumber<R1> && InvokeResultOf<get_quantity_spec(R1), std::modulus<>, Rep1, const Value&>
+  template<auto R1, typename Rep1, typename Value>
+    requires(!disable_representation<Value>) && requires {
+      requires RepresentationOf<Value, get_quantity_spec(R1)> && ImplicitFromNumber<R1> &&
+                 InvokeResultOf<get_quantity_spec(R1), std::modulus<>, Rep1, const Value&>;
+    }
   [[nodiscard]] friend constexpr Quantity auto operator%(const Value& lhs, const quantity<R1, Rep1>& rhs)
   {
     return quantity{lhs} % rhs;
@@ -441,8 +463,8 @@ struct quantity_iface {
   }
 
   template<auto R1, typename Rep1, typename Value>
-    requires(!Quantity<Value>) && (!Reference<Value>) &&
-            ScalableResultOf<get_quantity_spec(R1), std::multiplies<>, Rep1, const Value&>
+    requires(!disable_representation<Value>) &&
+            requires { requires ScalableResultOf<get_quantity_spec(R1), std::multiplies<>, Rep1, const Value&>; }
   [[nodiscard]] friend constexpr Quantity auto operator*(const quantity<R1, Rep1>& q, const Value& val)
   {
     return quantity{
@@ -452,8 +474,8 @@ struct quantity_iface {
   }
 
   template<typename Value, auto R1, typename Rep1>
-    requires(!Quantity<Value>) && (!Reference<Value>) &&
-            ScalableResultOf<get_quantity_spec(R1), std::multiplies<>, const Value&, Rep1>
+    requires(!disable_representation<Value>) &&
+            requires { requires ScalableResultOf<get_quantity_spec(R1), std::multiplies<>, const Value&, Rep1>; }
   [[nodiscard]] friend constexpr Quantity auto operator*(const Value& val, const quantity<R1, Rep1>& q)
   {
     return quantity{
@@ -472,8 +494,8 @@ struct quantity_iface {
   }
 
   template<auto R1, typename Rep1, typename Value>
-    requires(!Quantity<Value>) && (!Reference<Value>) &&
-            InvokeResultOf<get_quantity_spec(R1), std::divides<>, Rep1, const Value&>
+    requires(!disable_representation<Value>) &&
+            requires { requires InvokeResultOf<get_quantity_spec(R1), std::divides<>, Rep1, const Value&>; }
   [[nodiscard]] friend constexpr QuantityOf<get_quantity_spec(R1)> auto operator/(const quantity<R1, Rep1>& q,
                                                                                   const Value& val)
   {
@@ -482,8 +504,8 @@ struct quantity_iface {
   }
 
   template<typename Value, auto R1, typename Rep1>
-    requires(!Quantity<Value>) && (!Reference<Value>) &&
-            ScalableResultOf<get_quantity_spec(one / R1), std::divides<>, const Value&, Rep1>
+    requires(!disable_representation<Value>) &&
+            requires { requires ScalableResultOf<get_quantity_spec(one / R1), std::divides<>, const Value&, Rep1>; }
   [[nodiscard]] friend constexpr Quantity auto operator/(const Value& val, const quantity<R1, Rep1>& q)
   {
     MP_UNITS_PRECONDITION_DEBUG(q != 0);
@@ -502,8 +524,11 @@ struct quantity_iface {
     return compare_quantities(lhs, rhs, std::equal_to{});
   }
 
-  template<auto R1, typename Rep1, RepresentationOf<get_quantity_spec(R1)> Value>
-    requires ImplicitFromNumber<R1> && std::equality_comparable_with<Rep1, Value>
+  template<auto R1, typename Rep1, typename Value>
+    requires(!disable_representation<Value>) && requires {
+      requires RepresentationOf<Value, get_quantity_spec(R1)> && ImplicitFromNumber<R1> &&
+                 std::equality_comparable_with<Rep1, Value>;
+    }
   [[nodiscard]] friend constexpr bool operator==(const quantity<R1, Rep1>& lhs, const Value& rhs)
   {
     return lhs.numerical_value_ref_in(get_unit(R1)) == rhs;
@@ -525,8 +550,11 @@ struct quantity_iface {
     return compare_quantities(lhs, rhs, std::compare_three_way{});
   }
 
-  template<auto R1, typename Rep1, RepresentationOf<get_quantity_spec(R1)> Value>
-    requires ImplicitFromNumber<R1> && std::three_way_comparable_with<Rep1, Value>
+  template<auto R1, typename Rep1, typename Value>
+    requires(!disable_representation<Value>) && requires {
+      requires RepresentationOf<Value, get_quantity_spec(R1)> && ImplicitFromNumber<R1> &&
+                 std::three_way_comparable_with<Rep1, Value>;
+    }
   [[nodiscard]] friend constexpr auto operator<=>(const quantity<R1, Rep1>& lhs, const Value& rhs)
   {
     return lhs.numerical_value_ref_in(get_unit(R1)) <=> rhs;
@@ -1152,14 +1180,21 @@ struct std::common_type<mp_units::quantity<R1, Rep1>, mp_units::quantity<R2, Rep
   using type = mp_units::quantity<mp_units::get_common_reference(R1, R2), std::common_type_t<Rep1, Rep2>>;
 };
 
-template<auto R, typename Rep, mp_units::RepresentationOf<get_quantity_spec(R)> Value>
-  requires(get_unit(R) == mp_units::one) && requires { typename mp_units::quantity<R, std::common_type_t<Rep, Value>>; }
+// The same shape as the `Value` overloads of `quantity`: a cheap opt-out first, the real constraints lazily.
+template<auto R, typename Rep, typename Value>
+  requires(!mp_units::disable_representation<Value>) && requires {
+    requires mp_units::RepresentationOf<Value, get_quantity_spec(R)> && (get_unit(R) == mp_units::one);
+    typename mp_units::quantity<R, std::common_type_t<Rep, Value>>;
+  }
 struct std::common_type<mp_units::quantity<R, Rep>, Value> {
   using type = mp_units::quantity<R, std::common_type_t<Rep, Value>>;
 };
 
-template<auto R, typename Rep, mp_units::RepresentationOf<get_quantity_spec(R)> Value>
-  requires requires { typename std::common_type<mp_units::quantity<R, Rep>, Value>; }
+template<auto R, typename Rep, typename Value>
+  requires(!mp_units::disable_representation<Value>) && requires {
+    requires mp_units::RepresentationOf<Value, get_quantity_spec(R)>;
+    typename std::common_type<mp_units::quantity<R, Rep>, Value>;
+  }
 struct std::common_type<Value, mp_units::quantity<R, Rep>> : std::common_type<mp_units::quantity<R, Rep>, Value> {};
 
 template<auto R, typename Rep>
