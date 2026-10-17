@@ -193,4 +193,4 @@ code:
   bodies, review comments, and job summaries are GitHub-flavored Markdown with hard line
   breaks enabled, so a newline inside a paragraph arrives as a `<br>` and source-wrapped prose
   renders as a ragged column. Only checked-in `docs/**/*.md` is wrapped, to 90 columns, where
-  MkDocs joins the soft breaks back together.
+  ProperDocs joins the soft breaks back together.

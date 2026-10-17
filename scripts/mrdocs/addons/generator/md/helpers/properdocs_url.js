@@ -1,15 +1,15 @@
-// Turn a MrDocs page path into the URL MkDocs serves it at.
+// Turn a MrDocs page path into the URL ProperDocs serves it at.
 //
-// With `use_directory_urls` (the default) MkDocs serves `a/b.md` from `a/b/`,
-// one level deeper than the source file, while `index.md` is served from its
-// own directory. MrDocs hands templates absolute page paths such as
+// With `use_directory_urls` (the default) ProperDocs serves `a/b.md` from
+// `a/b/`, one level deeper than the source file, while `index.md` is served
+// from its own directory. MrDocs hands templates absolute page paths such as
 // `/mp_units/quantity-01.md`, so a link has to be computed against where the
 // *current* page is served rather than where its file sits.
 //
 // Doing it here rather than post-processing the output keeps the knowledge in
-// one place and means MkDocs never has to rewrite links inside raw HTML, which
-// it does not parse.
-function mkdocs_url(href, from) {
+// one place and means ProperDocs never has to rewrite links inside raw HTML,
+// which it does not parse.
+function properdocs_url(href, from) {
   if (!href) return '';
   href = String(href);
   // Leave anything that is not a local page alone.

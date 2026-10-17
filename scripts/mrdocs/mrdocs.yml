@@ -76,7 +76,7 @@ addons-supplemental:
 
 ## `generator: [md, mkdocs-nav]` with per-generator `output` works and keeps both
 ## outputs flat in one directory, but the `mkdocs-nav` script generator never
-## completes on this corpus (~7500 symbols) - see addons/extensions/. The MkDocs
+## completes on this corpus (~7500 symbols) - see addons/extensions/. The ProperDocs
 ## hook derives the nav itself for now.
 ## `copy-dependencies` (the default) copies members of an undocumented base into
 ## the derived class, which drags libstdc++ internals into the reference: the

@@ -4,7 +4,7 @@
     python scripts/mrdocs/run.py
 
 Runs the same way from cmd.exe, PowerShell, Git Bash and a Unix shell, needing
-nothing beyond the Python that MkDocs already requires. Python rather than a
+nothing beyond the Python that ProperDocs already requires. Python rather than a
 shell script because Windows would otherwise need a POSIX shell, `unzip` (which
 Git for Windows does not ship), `cygpath`, and a PowerShell fallback for
 checksums - where `zipfile`, `tarfile`, `hashlib` and `urllib` are all standard
@@ -227,11 +227,11 @@ def nest_namespace_pages(root: Path) -> int:
     MrDocs writes a namespace's page *beside* its directory (`mp_units.md` next
     to `mp_units/`). Material's `navigation.indexes` only folds a page into its
     section when the page is `index.md`, so left as-is every namespace appears
-    twice in the sidebar. Moving it changes no URL, because MkDocs serves
+    twice in the sidebar. Moving it changes no URL, because ProperDocs serves
     `a/b.md` and `a/b/index.md` from the same `a/b/`.
 
     Namespaces only, which the tagfile identifies. Doing the same to a class
-    page would make Material absorb it into whichever section the MkDocs hook
+    page would make Material absorb it into whichever section the ProperDocs hook
     nests it under, hiding the class's own members.
     """
     tagfile = root / "reference.tag.xml"
@@ -256,14 +256,14 @@ def nest_namespace_pages(root: Path) -> int:
 # --------------------------------------------------------------------------
 # Deciding whether to regenerate
 #
-# MkDocs calls this on every build, so the common case has to be free. The
+# ProperDocs calls this on every build, so the common case has to be free. The
 # hash covers everything that can change a rendered page: the headers, the
 # MrDocs configuration, the Handlebars templates, and the pinned release.
 # --------------------------------------------------------------------------
 
 
 def _input_hash() -> str:
-    import yaml  # a MkDocs dependency, so always available where this matters
+    import yaml  # a ProperDocs dependency, so always available where this matters
 
     hasher = hashlib.sha256()
     hasher.update(VERSION.encode())
@@ -315,12 +315,12 @@ NO_CLANG_FORMAT = (
 def _exclusive(timeout: float = 900.0):
     """Serialise generation across processes.
 
-    MkDocs regenerates from its own `on_config`, so a `properdocs serve` rebuild
+    ProperDocs regenerates from its own `on_config`, so a `properdocs serve` rebuild
     and a hand-run of this script can otherwise wipe and rewrite the same tree
     at the same time, which fails with a bare `Directory not empty`.
 
     `mkdir` rather than a lock file, because it is atomic on Windows too. The
-    lock lives beside the download cache, outside the docs tree, so MkDocs
+    lock lives beside the download cache, outside the docs tree, so ProperDocs
     neither serves it nor treats creating it as a change to rebuild for.
     """
     lock = _cache_root() / "generate.lock"
@@ -503,7 +503,7 @@ def _derived_style(binary: str, directory: Path) -> Path | None:
     one. Both also move the type names carrying the cross-reference links,
     which are reattached by position afterwards.
     """
-    import yaml  # a MkDocs dependency, so always available where this matters
+    import yaml  # a ProperDocs dependency, so always available where this matters
 
     dumped = subprocess.run(
         [

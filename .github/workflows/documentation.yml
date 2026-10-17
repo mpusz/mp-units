@@ -84,7 +84,7 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  # MkDocs logs a broken link and carries on, so a build is green with dead links in it. This job
+  # ProperDocs logs a broken link and carries on, so a build is green with dead links in it. This job
   # rejects them: before a pull request merges, and before `deploy` can publish them.
   link-check:
     name: Check links
@@ -239,5 +239,5 @@ jobs:
           else
             echo "❌ **Documentation build failed**" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
-            echo "Please check the build logs for API reference generation or MkDocs issues." >> $GITHUB_STEP_SUMMARY
+            echo "Please check the build logs for API reference generation or ProperDocs issues." >> $GITHUB_STEP_SUMMARY
           fi

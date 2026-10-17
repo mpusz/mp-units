@@ -1,4 +1,4 @@
-"""MkDocs hook for the MrDocs-generated API reference.
+"""ProperDocs hook for the MrDocs-generated API reference.
 
 MrDocs writes ~5300 Markdown pages under `API_DIR`. Listing them all in `nav`
 makes the sidebar unusable and Material renders the whole tree into every page,
@@ -20,8 +20,8 @@ namespace for its own render. This hook does three things:
    block cannot go through Pygments because MrDocs has already linked the types
    in it, but the keywords are plain text between those links.
 
-Link URLs are not handled here: the `mkdocs_url` Handlebars helper in the
-generator emits MkDocs-style directory URLs directly, where the page paths are
+Link URLs are not handled here: the `properdocs_url` Handlebars helper in the
+generator emits ProperDocs-style directory URLs directly, where the page paths are
 known.
 """
 
@@ -64,7 +64,7 @@ REPLACES = LANDING
 _REF = re.compile(r"\]\[([A-Za-z_]\w*(?:::[\w~+\-*/%^&|!=<>\[\]()]+)+)\]")
 
 # A category heading on a namespace page, and the member links beneath it. The
-# generator emits MkDocs directory URLs, relative to where the page is *served*.
+# generator emits ProperDocs directory URLs, relative to where the page is *served*.
 _HEADING = re.compile(r"^## (.+)$", re.MULTILINE)
 _MEMBER_LINK = re.compile(r'href="([^":#?]+/)"')
 
@@ -290,9 +290,9 @@ def _splice(nav, subtree) -> bool:
 
 
 def _page_url(uri: str) -> str:
-    """A page's URL relative to the site root, in MkDocs directory form.
+    """A page's URL relative to the site root, in ProperDocs directory form.
 
-    mkdocs resolves a nav `Link` URL against the site root and makes it
+    ProperDocs resolves a nav `Link` URL against the site root and makes it
     page-relative itself, so handing it an already-relative path resolves
     against the wrong base and lands on the site root.
     """
@@ -470,7 +470,7 @@ def _definitions(markdown: str, src_uri: str) -> str:
 
 
 # --------------------------------------------------------------------------
-# MkDocs events
+# ProperDocs events
 # --------------------------------------------------------------------------
 
 
@@ -478,10 +478,10 @@ def _generate_api_reference(docs_dir: Path) -> None:
     """Regenerate the MrDocs output, unless nothing it depends on changed.
 
     Loaded by path rather than imported, because scripts/ is not a package and
-    MkDocs runs a hook from wherever it was launched.
+    ProperDocs runs a hook from wherever it was launched.
 
     This has to happen in `on_config` rather than the more natural
-    `on_pre_build`: MkDocs fires `on_config` first, and the tagfile is read
+    `on_pre_build`: ProperDocs fires `on_config` first, and the tagfile is read
     below.
     """
     run_py = docs_dir.parent / "scripts" / "mrdocs" / "run.py"
@@ -571,9 +571,9 @@ def on_nav(nav, config, files, **kwargs):
 def on_page_context(context, page, config, nav, **kwargs):
     """Give the page its namespace's sidebar, for this render only.
 
-    A page outside `nav` has no parent, so mkdocs never marks anything active
+    A page outside `nav` has no parent, so ProperDocs never marks anything active
     and Material renders a bare sidebar. Grafting it on just before its template
-    renders fixes that without putting 5300 entries in `nav`; mkdocs resets
+    renders fixes that without putting 5300 entries in `nav`; ProperDocs resets
     `active` in a `finally` after each render, and the graft is undone when the
     next page starts.
     """
@@ -625,7 +625,7 @@ def on_page_context(context, page, config, nav, **kwargs):
 
     _graft = _insert(section, _category_nodes(_corpus, ns_uri, category, node), touched)
     _graft.opened = _open_namespaces(section)
-    # Re-assert: mkdocs set this before the page had a parent, so the activation
+    # Re-assert: ProperDocs set this before the page had a parent, so the activation
     # never propagated up the tree.
     page.active = True
     return context
@@ -665,7 +665,7 @@ def on_post_page(output: str, page, config, **kwargs):
         )
         if index is not None:
             output = _collapse(output, get_relative_url(index.url, page.url))
-        # Cleared here rather than when the graft is undone. mkdocs marks the
+        # Cleared here rather than when the graft is undone. ProperDocs marks the
         # next page active before calling `on_page_context`, so clearing it
         # there would undo an activation it had just propagated, and a section
         # the reader is actually inside would come out pruned.

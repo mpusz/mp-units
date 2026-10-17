@@ -80,7 +80,7 @@ theme:
     code: Roboto Mono
 
 # A broken link still builds a page, so it is found by a reader rather than by CI. Only
-# `links.not_found` warns by default; a dead `#fragment` and a link MkDocs cannot resolve
+# `links.not_found` warns by default; a dead `#fragment` and a link ProperDocs cannot resolve
 # are reported at INFO, which is why they accumulated through green builds. Raised to
 # warnings, `properdocs build --strict` rejects them - see the `link-check` job in
 # `.github/workflows/documentation.yml`.

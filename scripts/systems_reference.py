@@ -2179,14 +2179,14 @@ class DocumentationGenerator:
         """Get display name for a system namespace."""
         return system_display_name(namespace)
 
-    def update_mkdocs_config(self, mkdocs_path: Path):
+    def update_properdocs_config(self, properdocs_path: Path):
         """Update properdocs.yml with generated pages"""
-        if not mkdocs_path.exists():
-            print(f"Warning: properdocs.yml not found at {mkdocs_path}")
+        if not properdocs_path.exists():
+            print(f"Warning: properdocs.yml not found at {properdocs_path}")
             return
 
         try:
-            content = mkdocs_path.read_text()
+            content = properdocs_path.read_text()
             ref_start = content.find("  - Reference:")
             if ref_start == -1:
                 print("Warning: Could not find Reference section in properdocs.yml")
@@ -2234,7 +2234,7 @@ class DocumentationGenerator:
                     print("Warning: Could not find insertion point in properdocs.yml")
                     return
 
-            mkdocs_path.write_text(new_content)
+            properdocs_path.write_text(new_content)
             print("  ✓ Updated properdocs.yml with generated pages")
 
         except Exception as e:
@@ -4765,7 +4765,7 @@ def main():
     project_root = script_dir.parent
     systems_dir = project_root / "src" / "systems" / "include" / "mp-units" / "systems"
     output_dir = project_root / "docs" / "reference" / "systems_reference"
-    mkdocs_file = project_root / "properdocs.yml"
+    properdocs_file = project_root / "properdocs.yml"
 
     if not systems_dir.exists():
         print(f"Error: Systems directory not found: {systems_dir}", file=sys.stderr)
@@ -4811,8 +4811,8 @@ def main():
     generator.generate_hierarchies_overview()
     generator.generate_per_system_pages()
 
-    print("\nUpdating mkdocs configuration...")
-    generator.update_mkdocs_config(mkdocs_file)
+    print("\nUpdating properdocs configuration...")
+    generator.update_properdocs_config(properdocs_file)
 
     total_dims = sum(len(s.dimensions) for s in parser.systems.values())
     total_qtys = sum(len(s.quantities) for s in parser.systems.values())
@@ -4910,10 +4910,10 @@ def generate_if_needed(source_root: Path, force: bool = False) -> int:
     return result
 
 
-# MkDocs hook integration
+# ProperDocs hook integration
 def on_pre_build(config, **kwargs):
-    """MkDocs hook: generate systems reference before building docs"""
-    # Determine source root from mkdocs config
+    """ProperDocs hook: generate systems reference before building docs"""
+    # Determine source root from properdocs config
     docs_dir = Path(config["docs_dir"])
     source_root = docs_dir.parent
 

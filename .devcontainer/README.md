@@ -73,7 +73,7 @@ The development environment includes all compilers and tools used for comprehens
 - **Standard Library**: libc++-18 for backward compatibility with clang-16
 - **Build Tools**: CMake, Ninja, Conan package manager
 - **Code Quality**: clang-format, clang-tidy, include-what-you-use
-- **Documentation**: MkDocs with Material theme
+- **Documentation**: ProperDocs with Material theme
 - **VS Code Extensions**: C++ IntelliSense, CMake Tools, Python support
 - **Pre-configured Conan Profiles**: All compiler configurations ready to use
 - **Pre-compiled dependencies**: Conan cache is persistent and pre-compiled dependencies

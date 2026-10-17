@@ -5,9 +5,9 @@ Thank you for your interest in contributing to **mp-units**! 👍🎉
 Before contributing, we strongly recommend familiarizing yourself with the
 [official documentation](https://mpusz.github.io/mp-units).
 
-??? info "This file is a part of MkDocs documentation"
+??? info "This file is a part of ProperDocs documentation"
 
-    This file is part of the documentation and uses some MkDocs‑specific formatting that may
+    This file is part of the documentation and uses some ProperDocs‑specific formatting that may
     look unusual in a plain Markdown renderer. For the fully rendered version, visit the
     [Contributing](https://mpusz.github.io/mp-units/latest/getting_started/contributing)
     chapter.
