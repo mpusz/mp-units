@@ -238,7 +238,7 @@ template<Reference R, typename Q>
   requires Quantity<std::remove_cvref_t<Q>>
 // NOLINTNEXTLINE(cppcoreguidelines-missing-std-forward)
 constexpr auto operator*(R, Q&& q)
-#if __cpp_deleted_function
+#if MP_UNITS_HAS_DELETED_FUNCTION_MESSAGE
   = delete ("To multiply a `quantity` by a unit use `Q * R`");
 #else
   = delete;
@@ -248,7 +248,7 @@ template<Reference R, typename Q>
   requires Quantity<std::remove_cvref_t<Q>>
 // NOLINTNEXTLINE(cppcoreguidelines-missing-std-forward)
 constexpr auto operator/(R, Q&& q)
-#if __cpp_deleted_function
+#if MP_UNITS_HAS_DELETED_FUNCTION_MESSAGE
   = delete ("Create a `quantity` from the unit before dividing it by another `quantity`");
 #else
   = delete;
