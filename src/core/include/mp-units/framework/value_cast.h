@@ -178,8 +178,10 @@ constexpr bool implicitly_scalable =
  * Implicit conversions between quantities of different types are allowed only for "safe"
  * (e.g. non-truncating) conversion. In truncating cases an explicit cast have to be used.
  *
+ * @code{.cpp}
  * auto d = value_cast<si::second>(1234 * ms);
  * auto e = value_cast<si::second>(1567 * ms, rounded);
+ * @endcode
  *
  * @tparam ToU a unit to use for a target quantity
  * @param policy an optional rounding policy (`truncated` when not provided)
@@ -200,8 +202,10 @@ template<auto ToU, typename FwdQ, RoundingPolicy Policy = truncated_t, Quantity 
  * Implicit conversions between quantities of different types are allowed only for "safe"
  * (e.g. non-truncating) conversion. In truncating cases an explicit cast have to be used.
  *
+ * @code{.cpp}
  * auto q = value_cast<int>(1.23 * ms);
  * auto r = value_cast<int>(1.55 * ms, rounded);
+ * @endcode
  *
  * @tparam ToRep a representation type to use for a target quantity
  * @param policy an optional rounding policy (`truncated` when not provided)
@@ -220,7 +224,9 @@ template<typename ToRep, typename FwdQ, RoundingPolicy Policy = truncated_t, Qua
  * Implicit conversions between quantities of different types are allowed only for "safe"
  * (e.g. non-truncating) conversion. In truncating cases an explicit cast have to be used.
  *
+ * @code{.cpp}
  * auto q = value_cast<us, int>(1.23 * ms);
+ * @endcode
  *
  * @tparam ToU a unit to use for the target quantity
  * @tparam ToRep a representation type to use for the target quantity
@@ -254,8 +260,10 @@ template<typename ToRep, Unit auto ToU, typename FwdQ, RoundingPolicy Policy = t
  * Implicit conversions between quantities of different types are allowed only for "safe"
  * (e.g. non-truncating) conversion. In truncating cases an explicit cast have to be used.
  *
+ * @code{.cpp}
  * using ToQ = quantity<us, int>;
  * auto q = value_cast<ToQ>(1.23 * ms);
+ * @endcode
  *
  * Note that value_cast only changes the "representation aspects" (unit and representation
  * type), but not the "meaning" (quantity type).
@@ -279,7 +287,9 @@ template<Quantity ToQ, typename FwdQ, RoundingPolicy Policy = truncated_t, Quant
  * Implicit conversions between quantity points of different types are allowed only for "safe"
  * (e.g. non-truncating) conversion. In truncating cases an explicit cast have to be used.
  *
+ * @code{.cpp}
  * auto qp = value_cast<si::second>(quantity_point{1234 * ms});
+ * @endcode
  *
  * @tparam ToU a unit to use for a target quantity point
  * @param policy an optional rounding policy (`truncated` when not provided)
@@ -302,7 +312,9 @@ template<Unit auto ToU, typename FwdQP, RoundingPolicy Policy = truncated_t,
  * Implicit conversions between quantity points of different types are allowed only for "safe"
  * (e.g. non-truncating) conversion. In truncating cases an explicit cast have to be used.
  *
+ * @code{.cpp}
  * auto qp = value_cast<int>(quantity_point{1.23 * ms});
+ * @endcode
  *
  * @tparam ToRep a representation type to use for a target quantity point
  * @param policy an optional rounding policy (`truncated` when not provided)
@@ -324,7 +336,9 @@ template<typename ToRep, typename FwdQP, RoundingPolicy Policy = truncated_t,
  * Implicit conversions between quantities of different types are allowed only for "safe"
  * (e.g. non-truncating) conversion. In truncating cases an explicit cast have to be used.
  *
+ * @code{.cpp}
  * auto qp = value_cast<us, int>(quantity_point{1.23 * ms});
+ * @endcode
  *
  * @tparam ToU a unit to use for the target quantity
  * @tparam ToRep a representation type to use for the target quantity
@@ -358,10 +372,12 @@ template<typename ToRep, Unit auto ToU, typename FwdQP, RoundingPolicy Policy = 
  * Implicit conversions between quantities of different types are allowed only for "safe"
  * (e.g. non-truncating) conversion. In truncating cases an explicit cast have to be used.
  *
- * inline constexpr struct A : absolute_point_origin<A, isq::distance> A;
+ * @code{.cpp}
+ * inline constexpr struct start final : absolute_point_origin<isq::distance> {} start;
  *
  * using ToQ = quantity<mm, int>;
- * auto qp = value_cast<ToQ>(quantity_point{1.23 * m});
+ * auto qp = value_cast<ToQ>(quantity_point{1.23 * m, start});
+ * @endcode
  *
  * Note that value_cast only changes the "representation aspects" (unit and representation
  * type), but not the "meaning" (quantity type or the actual point that is being described).
@@ -388,11 +404,13 @@ template<Quantity ToQ, typename FwdQP, RoundingPolicy Policy = truncated_t,
  * Implicit conversions between quantities of different types are allowed only for "safe"
  * (e.g. non-truncating) conversion. In truncating cases an explicit cast have to be used.
  *
- * inline constexpr struct A : absolute_point_origin<A, isq::distance> A;
- * inline constexpr struct B : relative_point_origin<A + 1*m> B;
+ * @code{.cpp}
+ * inline constexpr struct start final : absolute_point_origin<isq::distance> {} start;
+ * inline constexpr struct checkpoint final : relative_point_origin<start + 1 * m> {} checkpoint;
  *
- * using ToQP = quantity_point<mm, B, int>;
- * auto qp = value_cast<ToQP>(quantity_point{1.23 * m});
+ * using ToQP = quantity_point<mm, checkpoint, int>;
+ * auto qp = value_cast<ToQP>(quantity_point{1.23 * m, start});
+ * @endcode
  *
  * Note that value_cast only changes the "representation aspects" (unit, representation
  * type and point origin), but not the "meaning" (quantity type or the actual point that is
