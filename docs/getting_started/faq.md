@@ -194,6 +194,32 @@ quantity<isq::torque[J]> torque = isq::torque(40 * N * m);   // OK
 ```
 
 
+## Why can't I wrap `omega * inertia` in `isq::angular_momentum(...)`?
+
+We want to read the product of an _angular velocity_ in `rad / s` and a _moment of
+inertia_ in `kg * m2` as an _angular momentum_. The problem is the unit. The call
+`isq::angular_momentum(q)` keeps the unit of `q`, here `kg * m² * rad / s`, and that is
+no unit of _angular momentum_: ISQ defines it as a _position vector_ times a _momentum_,
+which holds no angle, while the unit carries a radian. The solution is to name a unit
+without the angle, which says the radian goes:
+
+```cpp
+quantity omega = isq::angular_velocity(2.0 * rad / s);
+quantity inertia = isq::moment_of_inertia(3.0 * kg * m2);
+
+quantity<isq::angular_momentum[kg * m2 / s]> l1 = omega * inertia;                    // OK
+quantity l2 = quantity<isq::angular_momentum[kg * m2 / s]>(omega * inertia);          // OK
+// Compile-time error: kg * m² * rad / s is no unit of angular momentum
+// quantity l3 = isq::angular_momentum(omega * inertia);
+```
+
+The library doesn't drop the radian on its own, because whether it is an angle or just
+a number is the author's decision, and the unit is where it is written. The same holds
+for every ISQ quantity whose definition has no angle while a factor's unit has one, such
+as _power_ from a _torque_ and an _angular velocity_. The `isq_angle` system defines
+_torque_ with the angle, so that case stays implicit there, see
+[Strong Angular System](../users_guide/systems/strong_angular_system.md).
+
 ## Why a Dimensionless Quantity Is Not Just a Fundamental Arithmetic Type
 
 In the initial design of this library, the resulting type of division of two quantities was

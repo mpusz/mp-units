@@ -673,6 +673,9 @@ lower the result.
     quantity energy = quantity<isq::kinetic_energy[J]>(inertia * pow<2>(omega));
     ```
 
+    [The FAQ](../../getting_started/faq.md#why-cant-i-wrap-omega-inertia-in-isqangular_momentum)
+    shows the same for _angular momentum_.
+
     !!! tip
 
         The `isq_angle` system defines _torque_ with the angle, so there the angle cancels
