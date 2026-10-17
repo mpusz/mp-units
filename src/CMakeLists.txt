@@ -52,7 +52,6 @@ message(STATUS "MP_UNITS_BUILD_INTEGRATION_BLAZE: ${MP_UNITS_BUILD_INTEGRATION_B
 # check for C++ features
 check_cxx_feature_supported(__cpp_lib_format MP_UNITS_LIB_FORMAT_SUPPORTED)
 check_cxx_feature_supported(__cpp_explicit_this_parameter MP_UNITS_EXPLICIT_THIS_PARAMETER_SUPPORTED)
-check_cxx_feature_supported("__cpp_constexpr_exceptions >= 202411L" MP_UNITS_CONSTEXPR_EXCEPTIONS_SUPPORTED)
 
 # libc++ has a basic supports for std::format but does not set __cpp_lib_format
 # https://github.com/llvm/llvm-project/issues/77773
@@ -89,7 +88,7 @@ endif()
 # project API settings
 option(MP_UNITS_API_STD_FORMAT "Enable `std::format` support" ${MP_UNITS_LIB_FORMAT_SUPPORTED})
 option(MP_UNITS_API_NO_CRTP "Enable class definitions without CRTP idiom" ${MP_UNITS_EXPLICIT_THIS_PARAMETER_SUPPORTED})
-option(MP_UNITS_API_THROWING_CONSTRAINTS "Enable throwing constraints" MP_UNITS_CONSTEXPR_EXCEPTIONS_SUPPORTED)
+option(MP_UNITS_API_THROWING_CONSTRAINTS "Enable throwing constraints" OFF)
 option(MP_UNITS_API_FREESTANDING "Builds only freestanding part of the library" OFF)
 set(MP_UNITS_API_CONTRACTS GSL-LITE CACHE STRING "Enable contract checking")
 check_cache_var_values(MP_UNITS_API_CONTRACTS NONE STD GSL-LITE MS-GSL)

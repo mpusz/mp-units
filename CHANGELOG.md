@@ -176,6 +176,9 @@ This page documents the version history and changes for the **mp-units** library
       `numerical_value_in()` already did. It used to check only that the unit is
       equivalent, so for `quantity f = 50. * Hz;` the call `f.numerical_value_ref_in(Bq)`
       compiled and handed out the number of a frequency "in becquerel"
+- (!) refactor: throwing constraints are off unless `MP_UNITS_API_THROWING_CONSTRAINTS`
+      is enabled. The headers used to turn them on whenever `__cpp_constexpr_exceptions`
+      was at least `202411L`
 - feat: vector quantity decomposition added. A vector quantity splits into 1D-vector
       component quantities through `get<Idx>`, `std::tuple_size` / `std::tuple_element`, and
       structured bindings, provided its representation offers element access (`get<I>` or
