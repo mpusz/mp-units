@@ -610,6 +610,23 @@ static_assert(!utility::implicitly_convertible(isq::radiance, isq::radiant_flux 
 // trading one declared kind for another is not a conversion
 static_assert(!utility::castable(isq::photon_flux / isq::solid_angular_measure, isq::transfer_rate));
 
+// the unit of a product measures the product: `kg m² rad/s` carries one angle, and `angular_velocity *
+// moment_of_inertia` carries one and takes one away again (a moment of inertia is defined over an
+// angular velocity), so for a kind source the target's angles are compared before they net out
+static_assert(
+  utility::implicitly_convertible(kind_of<isq::angular_measure * isq::mass * pow<2>(isq::length) / isq::time>,
+                                  isq::angular_velocity* isq::moment_of_inertia));
+// from a kind, a sibling pairing that would refuse waits while a remaining factor mentions the tree, however
+// deep: the angle of `rad/s` is for the `angular_displacement` inside `angular_velocity`, not for the
+// `rotation` beside it, and inside `angular_acceleration` it sits two equations down
+static_assert(utility::implicitly_convertible(kind_of<isq::angular_measure / isq::time>,
+                                              isq::rotation* isq::angular_velocity));
+static_assert(utility::implicitly_convertible(kind_of<isq::angular_measure / pow<2>(isq::time)>,
+                                              isq::rotation* isq::angular_acceleration));
+// neither reading lets a quantity of another tree in
+static_assert(!utility::castable(kind_of<isq::energy * isq::mass>, isq::torque* isq::mass));
+static_assert(!utility::castable(kind_of<isq::frequency * isq::duration>, isq::activity* isq::period_duration));
+
 // angular repetency carries the angle like angular frequency does (k = 2π/λ), so a phase speed
 // converts to `length / time` implicitly and a plain 1/λ is only explicitly an angular repetency
 static_assert(utility::implicitly_convertible(isq::phase_speed, isq::length / isq::time));

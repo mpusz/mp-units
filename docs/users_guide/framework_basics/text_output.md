@@ -29,13 +29,13 @@ composes to express dimensions and units of derived quantities.
     inline constexpr struct gram : named_unit<"g", kind_of<isq::mass>> {} gram;
     inline constexpr auto kilogram = kilo<gram>;
 
-    inline constexpr struct newton : named_unit<"N", kilogram * metre / square(second), kind_of<isq::force>> {} newton;
-    inline constexpr struct joule : named_unit<"J", newton * metre, kind_of<isq::energy>> {} joule;
+    inline constexpr struct newton : named_unit<"N", kilogram * metre / square(second)> {} newton;
+    inline constexpr struct joule : named_unit<"J", newton * metre> {} joule;
     inline constexpr struct watt : named_unit<"W", joule / second> {} watt;
     inline constexpr struct coulomb : named_unit<"C", ampere * second> {} coulomb;
-    inline constexpr struct volt : named_unit<"V", watt / ampere, kind_of<isq::electric_potential>> {} volt;
-    inline constexpr struct farad : named_unit<"F", coulomb / volt, kind_of<isq::capacitance>> {} farad;
-    inline constexpr struct ohm : named_unit<{u8"Ω", "ohm"}, volt / ampere, kind_of<isq::impedance>> {} ohm;
+    inline constexpr struct volt : named_unit<"V", watt / ampere> {} volt;
+    inline constexpr struct farad : named_unit<"F", coulomb / volt> {} farad;
+    inline constexpr struct ohm : named_unit<{u8"Ω", "ohm"}, volt / ampere> {} ohm;
     ```
 
 === "Prefixes"

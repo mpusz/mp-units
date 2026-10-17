@@ -26,6 +26,7 @@
 #include <mp-units/ext/fixed_string.h>
 #include <mp-units/ext/type_traits.h>
 #include <mp-units/systems/isq/electromagnetism.h>
+#include <mp-units/systems/isq/light_and_radiation.h>
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>
@@ -715,6 +716,78 @@ constexpr QuantityOf<isq::length> auto get_length_child_quantity() noexcept
 }
 static_assert(get_length_child_quantity() == 1 * m);
 
+
+//////////////////////////////////////
+// a product converts to its own unit
+//////////////////////////////////////
+
+// `q1 * q2` has the unit `U1 * U2` and the quantity specification `Q1 * Q2`, and the kind of
+// `U1 * U2` is the kinds of `U1` and `U2` multiplied into one product, so the product converts to
+// its own unit only if that one kind reaches `Q1 * Q2`. Angles, solid angles, and plain numbers are
+// where that used to fail: `kg m² rad/s` carries one angle, and `angular_velocity *
+// moment_of_inertia` carries one and takes one away again (a moment of inertia is defined over an
+// angular velocity), so read as one product the angle looked lost, and the angle of `rad/s` died
+// against the `rotation` in `rotation * angular_velocity` before `angular_velocity` was expanded.
+template<auto R>
+concept has_own_unit =
+  UnitOf<MP_UNITS_NONCONST_TYPE(get_unit(R)), get_quantity_spec(R)> && requires(quantity<R> q) { q.in(get_unit(R)); };
+
+template<auto R1, auto R2>
+consteval bool products_have_own_units()
+{
+  bool result = true;
+  if constexpr (requires { R1 * R2; }) result = result && has_own_unit<R1 * R2>;
+  if constexpr (requires { R1 / R2; }) result = result && has_own_unit<R1 / R2>;
+  return result;
+}
+
+template<auto R, auto... Rs>
+consteval bool products_with_each_have_own_units()
+{
+  return (... && products_have_own_units<R, Rs>());
+}
+
+// every ordered pair of the references, products and quotients
+template<auto... Rs>
+consteval bool all_products_have_own_units()
+{
+  return (... && products_with_each_have_own_units<Rs, Rs...>());
+}
+
+static_assert(all_products_have_own_units<isq::angular_velocity[rad / s], isq::angular_measure[rad],
+                                          isq::solid_angular_measure[sr], isq::radiant_intensity[W / sr],
+                                          isq::radiance[W / (sr * m2)], isq::rotation[one], dimensionless[percent],
+                                          isq::moment_of_inertia[kg * m2], isq::power[W], isq::action[J * s]>());
+
+// the pairs that regressed when the conversion engine was rewritten
+static_assert(has_own_unit<isq::angular_velocity[rad / s] * isq::moment_of_inertia[kg * m2]>);  // L = I ω
+static_assert(has_own_unit<isq::moment_of_inertia[kg * m2] * isq::angular_velocity[rad / s]>);
+static_assert(has_own_unit<isq::angular_acceleration[rad / s2] * isq::moment_of_inertia[kg * m2]>);  // M = I α
+static_assert(has_own_unit<isq::torque[N * m] * isq::power[W]>);
+static_assert(has_own_unit<isq::torque[N * m] * isq::radiant_intensity[W / sr]>);
+static_assert(has_own_unit<isq::action[J * s] * isq::torque[N * m]>);
+static_assert(has_own_unit<isq::rotation[one] * isq::angular_velocity[rad / s]>);  // the angle hides in the velocity
+static_assert(has_own_unit<isq::rotation[one] / isq::radiance[W / (sr * m2)]>);
+static_assert(has_own_unit<isq::radiant_intensity[W / sr] / isq::rotation[one]>);
+
+// units that cancel between the operands
+static_assert(has_own_unit<isq::angular_impulse[N * m * s] * isq::power[W]>);  // `s` against the `1/s` in `W`
+static_assert(has_own_unit<isq::power[W] * isq::angular_impulse[N * m * s]>);
+static_assert(has_own_unit<isq::angular_impulse[N * m * s] * isq::radiant_intensity[W / sr]>);
+static_assert(has_own_unit<isq::torque[N * m] * isq::radiance[W / (sr * m2)]>);                  // `m` against `m⁻²`
+static_assert(has_own_unit<isq::phase_coefficient[rad / m] * isq::moment_of_inertia[kg * m2]>);  // `kg m rad`
+static_assert(has_own_unit<isq::angular_repetency[rad / m] * isq::moment_of_inertia[kg * m2]>);
+static_assert(has_own_unit<isq::angular_velocity[rad / s] * isq::moment_of_inertia[kg * m2] * isq::time[s]>);
+static_assert(has_own_unit<isq::torque[N * m] * isq::power[W] / isq::area[m2]>);
+static_assert(has_own_unit<isq::torque[N * m] * isq::power[W] / isq::acceleration[m / s2]>);
+static_assert(has_own_unit<isq::torque[N * m] * isq::radiant_intensity[W / sr] / isq::acceleration[m / s2]>);
+
+// a typed quantity times a simple one: the simple one's kinds become kind factors of the product
+static_assert(has_own_unit<isq::angular_velocity[rad / s] * (kg * m2)>);
+static_assert(has_own_unit<(rad / s) * isq::moment_of_inertia[kg * m2]>);
+static_assert(has_own_unit<isq::torque[N * m] * W>);
+static_assert(has_own_unit<isq::angular_impulse[N * m * s] * W>);
+static_assert(has_own_unit<isq::torque[N * m] * isq::power[W] / m2>);
 
 /////////
 // CTAD

@@ -23,6 +23,7 @@
 #include <mp-units/bits/compiler.h>
 #include <mp-units/bits/config.h>
 #include <mp-units/bits/hacks.h>
+#include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/si.h>
 #ifdef MP_UNITS_IMPORT_STD
 import std;
@@ -172,5 +173,17 @@ static_assert(validate_prefix(-1.5, si::kilo<si::volt>, -1500.0 * V, si::volt));
 static_assert(validate_prefix(-1.5, si::milli<si::volt>, -0.0015 * V, si::volt));
 
 #endif
+
+// a named unit carries a kind only where the SI brochure keeps the name for one quantity; the joule
+// is a plain `N * m`, so the ISO 80000-1 convention that it is not used for a moment of force is the
+// author's to keep, while the hertz and the becquerel stay apart, alone and inside products
+static_assert(UnitOf<struct si::joule, isq::torque>);
+static_assert(UnitOf<struct si::joule, isq::energy>);
+static_assert(UnitOf<struct si::newton, isq::force>);
+static_assert(!UnitOf<struct si::hertz, isq::activity>);
+static_assert(!UnitOf<struct si::becquerel, isq::frequency>);
+static_assert(!UnitOf<MP_UNITS_NONCONST_TYPE(si::becquerel / si::metre), isq::frequency / isq::length>);
+static_assert(!UnitOf<struct si::gray, isq::dose_equivalent>);
+static_assert(!UnitOf<struct si::radian, dimensionless>);
 
 }  // namespace
