@@ -17,7 +17,8 @@ The development environment is built on a layered Docker image stack:
    Adds Conan 2.x and base compiler profiles
 4. **[`trainiteu/mp-units`](https://github.com/train-it-eu/docker-images/blob/main/mp-units/Dockerfile)**:
    **mp-units-specific extensions** including:
-   - Extended compiler matrix (GCC 12-15, Clang 16-21)
+   - Extended compiler matrix (GCC 12-16, Clang 16-18 and 20-24, each Clang with its own libc++),
+     set up by [`setup_compilers.sh`](setup_compilers.sh)
    - Python documentation ecosystem via pipx
    - Pre-configured Conan remotes and profiles for all compiler combinations
    - Development aliases and optimized build configuration
