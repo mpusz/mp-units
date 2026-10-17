@@ -61,6 +61,35 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
+      - name: Check that every VS Code extension exists
+        # The runner has no VS Code, so the dev container below never installs the extensions, and
+        # an ID that does not exist would pass unnoticed while breaking the installation in a real
+        # Codespace. Ask the Marketplace instead.
+        shell: python
+        run: |
+          import json, re, sys, urllib.request
+
+          with open(".devcontainer/devcontainer.json") as f:
+              config = json.loads(re.sub(r"^\s*//.*$", "", f.read(), flags=re.M))
+          missing = []
+          for extension in config["customizations"]["vscode"]["extensions"]:
+              query = {"filters": [{"criteria": [{"filterType": 7, "value": extension}]}], "flags": 0}
+              request = urllib.request.Request(
+                  "https://marketplace.visualstudio.com/_apis/public/gallery/extensionquery",
+                  data=json.dumps(query).encode(),
+                  headers={
+                      "Content-Type": "application/json",
+                      "Accept": "application/json;api-version=7.2-preview.1",
+                  },
+              )
+              with urllib.request.urlopen(request) as response:
+                  found = json.load(response)["results"][0]["extensions"]
+              print("✅" if found else "❌", extension)
+              if not found:
+                  missing.append(extension)
+          if missing:
+              sys.exit(f"Not on the VS Code Marketplace: {', '.join(missing)}")
+
       - name: Pull latest Docker image
         run: docker pull trainiteu/mp-units:latest
 
