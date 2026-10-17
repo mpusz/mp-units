@@ -418,13 +418,42 @@ The official list of supported compilers can always be found in the
 [C++ compiler support (API/ABI)](https://mpusz.github.io/mp-units/latest/getting_started/cpp_compiler_support)
 chapter of our documentation.
 
+### Commit messages
+
+Commit messages follow [Conventional Commits](https://www.conventionalcommits.org). The
+subject line has the form `type(scope): summary`, and the Conventional Commits extension in
+the dev container helps to compose it.
+
+The `type` says what kind of change it is:
+
+- `feat` adds a feature,
+- `fix` fixes a bug,
+- `perf` makes the library faster, or cheaper to compile,
+- `refactor` restructures code without changing its behavior,
+- `docs` changes only the documentation,
+- `test` changes only the tests,
+- `build` changes the build, the packaging, or the development environment,
+- `ci` changes the CI workflows,
+- `style` reformats, or changes the formatting tools,
+- `chore` is any other maintenance.
+
+The `scope` is optional and names the part of the repository that changed, for example
+`core`, `systems`, `utility`, `example`, `docs`, or `devcontainer`. The summary starts
+with a lowercase letter, unless its first word is a name such as `MSVC`, and has no
+trailing period.
+
+A `!` after the scope, as in `feat(core)!: ...`, marks a breaking change, and the body then
+explains what breaks and how to migrate. The body also says why the change was needed. If
+the commit resolves an issue, put `Resolves #123` in the body, and GitHub closes the issue
+when the commit reaches `master`.
+
 
 ## CI/CD Integration
 
 Each pull request triggers a comprehensive CI pipeline:
 
 <!-- markdownlint-disable-next-line MD013 -->
-- **Multi-compiler builds**: GCC 12-16, [Clang 16-21 except Clang-19](https://mpusz.github.io/mp-units/latest/getting_started/cpp_compiler_support),
+- **Multi-compiler builds**: GCC 12-16, [Clang 16-18, 20, 21, and 23](https://mpusz.github.io/mp-units/latest/getting_started/cpp_compiler_support),
   Apple Clang, and MSVC, across C++20/23/26 and the library's configuration options
 - **Code formatting**: clang-format and pre-commit checks
 - **Static analysis**: clang-tidy analysis for code quality
