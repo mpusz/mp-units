@@ -188,17 +188,38 @@ struct side_carried_kinds {
   using normalised = carried_kinds_result<type_list<>, type_list<>>;
   using num = type_list<>;
   using den = type_list<>;
+  using positive = type_list<>;
+  using num_part = carried_kinds_result<type_list<>, type_list<>>;
+  using den_part = carried_kinds_result<type_list<>, type_list<>>;
 };
 
 template<typename Num, typename Den>
 struct side_carried_kinds<Num, Den, true> {
   using num_part = decltype(detail::list_carried_kinds<Num>());
   using den_part = decltype(detail::list_carried_kinds<Den>());
+  using positive = merge_quantity_spec_factors<typename num_part::num, typename den_part::den>;
   using normalised =
-    simplify_quantity_spec_factors<merge_quantity_spec_factors<typename num_part::num, typename den_part::den>,
+    simplify_quantity_spec_factors<positive,
                                    merge_quantity_spec_factors<typename num_part::den, typename den_part::num>>;
   using num = normalised::num;
   using den = normalised::den;
+};
+
+// The same side as the target of a kind source. ISQ takes the radian for one, so an ISQ definition
+// may carry an angle that its coherent unit does not show: `moment_of_inertia` is `kg m²`, defined
+// as `angular_momentum / angular_velocity`. The library tracks the radian as a kind, so for a unit's
+// kind only the angles written in the unit and in the user's expression may count. What the user
+// divides by nets against the positive part as above, but what the equation of a numerator factor
+// takes away stays apart, as a gain the kind source is exempt from (the exemption that already lets
+// `kg m²` be a unit of `moment_of_inertia`), rather than canceling the angle another factor carries
+// into a loss of the source's. A separate template, so that a conversion from a typed source never
+// instantiates it.
+template<typename Num, typename Den>
+struct kind_target_carried_kinds {
+  using side = side_carried_kinds<Num, Den>;
+  using explicit_netted = simplify_quantity_spec_factors<typename side::positive, typename side::den_part::num>;
+  using num = explicit_netted::num;
+  using den = merge_quantity_spec_factors<typename explicit_netted::den, typename side::num_part::den>;
 };
 
 // What a named quantity carries: its `is_kind` chain (every `is_kind` ancestor-or-self) and
@@ -270,7 +291,15 @@ template<typename FromNum, typename FromDen, typename ToNum, typename ToDen, boo
 
 // The kind boundary of a conversion from the side `FromNum / FromDen` to the side `ToNum / ToDen`.
 // Both sides most often carry the same declared kinds, usually none, and then nothing is lost or
-// gained.
+// gained. A source `kind_of<K>` is exempt from the cap on gained kinds (ISQ's definitions may hide an
+// angle its units do not show, see `kind_target_carried_kinds`), and that exemption has to
+// survive the target netting a gained kind against a matching one: `kind_of<angular_measure * mass *
+// length² / time>`, the kind of `kg m² rad/s`, converts to `angular_velocity * moment_of_inertia`,
+// where the angle the velocity carries is what the source has and the inverse angle the moment of
+// inertia carries (it is defined over `angular_velocity`) is a creation. Netted, the target carries
+// no angle and the source would seem to lose one, so for a kind source what a numerator factor's
+// equation takes away is kept apart from what the other factors carry. What the user divides by
+// still nets it out: `rad/s` is not a unit of `angular_velocity / angular_measure`.
 template<typename FromNum, typename FromDen, typename ToNum, typename ToDen, bool SourceIsKind>
 [[nodiscard]] consteval conversion_rank kind_boundary()
 {
@@ -284,7 +313,11 @@ template<typename FromNum, typename FromDen, typename ToNum, typename ToDen, boo
   else if constexpr (any_open<FromNum> || any_open<FromDen>)
     return detail::kind_boundary_rank<typename from::num, typename from::den, typename to::num, typename to::den,
                                       SourceIsKind, decltype(detail::open_bases(type_list_join<FromNum, FromDen>{}))>();
-  else
+  else if constexpr (SourceIsKind) {
+    using kind_to = kind_target_carried_kinds<ToNum, ToDen>;
+    return detail::kind_boundary_rank<typename from::num, typename from::den, typename kind_to::num,
+                                      typename kind_to::den, SourceIsKind, type_list<>>();
+  } else
     return detail::kind_boundary_rank<typename from::num, typename from::den, typename to::num, typename to::den,
                                       SourceIsKind, type_list<>>();
 }
@@ -441,14 +474,15 @@ struct is_own_tree_product<type_list<>, type_list<E>> : is_own_tree_product_quan
 
 // pair
 
-// `has_cast` records whether a tree ranked `cast`, the only case in which `pair_lists` reads `All`.
-template<conversion_rank Rank, typename FromRest, typename ToRest, bool Paired, bool HasCast = false>
+// `has_deferrable` records whether a tree ranked `cast`, or `none` from a kind source, the only cases
+// in which `pair_lists` reads `All`.
+template<conversion_rank Rank, typename FromRest, typename ToRest, bool Paired, bool HasDeferrable = false>
 struct pairing_result {
   static constexpr conversion_rank rank = Rank;
   using from_rest = FromRest;
   using to_rest = ToRest;
   static constexpr bool paired = Paired;
-  static constexpr bool has_cast = HasCast;
+  static constexpr bool has_deferrable = HasDeferrable;
 };
 
 template<typename FromFactors, typename ToFactors, bool SourceIsKind>
@@ -566,20 +600,45 @@ template<typename Root, typename Q>
     }(type_list_join<typename equation_of<Q>::_num_, typename equation_of<Q>::_den_>{});
 }
 
+// ... and recursively through the equations of the factors it mentions: `angular_acceleration`
+// mentions `angular_velocity`, which mentions the dimensionless tree through `angular_displacement`.
+template<typename Root, typename Q>
+[[nodiscard]] consteval bool equation_mentions_transitively()
+{
+  if constexpr (!HasEquation<Q>)
+    return false;
+  else
+    return []<typename... Ts>(type_list<Ts...>) {
+      return (... || (std::is_same_v<hierarchy_root<expr_type<Ts>>, Root> ||
+                      detail::equation_mentions_transitively<Root, expr_type<Ts>>()));
+    }(type_list_join<typename equation_of<Q>::_num_, typename equation_of<Q>::_den_>{});
+}
+
 // Whether a factor outside the tree `Root` has an equation that mentions that tree. The factors of
-// the tree itself are the ones being paired, so they are not "remaining" and do not count.
-template<typename Root, typename... Ts>
+// the tree itself are the ones being paired, so they are not "remaining" and do not count. A pair
+// that would rank `none` is deferred on a mention anywhere down the equations, since for it the whole
+// conversion is at stake and not only the rank: the angle of `rad/s` must wait for the
+// `angular_displacement` inside `angular_acceleration`, two equations down, rather than die against
+// a `rotation` in `rotation * angular_acceleration`.
+template<typename Root, bool Transitive, typename... Ts>
 [[nodiscard]] consteval bool any_remaining_equation_mentions(type_list<Ts...>)
 {
-  return (... ||
-          (!std::is_same_v<hierarchy_root<expr_type<Ts>>, Root> && detail::equation_mentions<Root, expr_type<Ts>>()));
+  if constexpr (Transitive)
+    return (... || (!std::is_same_v<hierarchy_root<expr_type<Ts>>, Root> &&
+                    detail::equation_mentions_transitively<Root, expr_type<Ts>>()));
+  else
+    return (... ||
+            (!std::is_same_v<hierarchy_root<expr_type<Ts>>, Root> && detail::equation_mentions<Root, expr_type<Ts>>()));
 }
 
 // Pairing: one merge walk over two lists of the same sign pairs every tree that appears on both
 // sides. Both lists are sorted by the root name first, so the factors of one tree are adjacent and
-// aligned across the lists. `All` holds every factor of both sides: a tree that would rank `cast` is
-// deferred while a remaining factor (one of another tree) has an equation that mentions this tree,
-// so that the decision between siblings is made with every factor of the tree present.
+// aligned across the lists. `All` holds every factor of both sides: a tree that would rank `cast`, or
+// `none` from a kind source, is deferred while a remaining factor (one of another tree) has an
+// equation that mentions this tree, so that the decision between siblings is made with every factor
+// of the tree present. A kind pairs with a sibling branch as `none` (its named root would), which is
+// why only a kind source needs the `none` deferral: the angle of `rad/s` must not die against a
+// `rotation` before the `angular_displacement` inside `angular_velocity` is on the table.
 template<typename From, typename To, typename All, bool SourceIsKind>
 [[nodiscard]] consteval auto pair_lists()
 {
@@ -596,13 +655,14 @@ template<typename From, typename To, typename All, bool SourceIsKind>
         decltype(detail::pair_tree_factors<typename from_split::factors, typename to_split::factors, SourceIsKind>());
       using tail =
         decltype(detail::pair_lists<typename from_split::rest, typename to_split::rest, All, SourceIsKind>());
+      constexpr bool deferrable = matched::rank == cast || (SourceIsKind && matched::rank == none);
       using paired = pairing_result<detail::weaker(matched::rank, tail::rank),
                                     type_list_join<typename matched::from_rest, typename tail::from_rest>,
                                     type_list_join<typename matched::to_rest, typename tail::to_rest>, true,
-                                    matched::rank == cast || tail::has_cast>;
-      // nested so that the scan of `All` is instantiated only for a tree that actually ranks `cast`
-      if constexpr (matched::rank == cast) {
-        if constexpr (detail::any_remaining_equation_mentions<from_root>(All{}))
+                                    deferrable || tail::has_deferrable>;
+      // nested so that the scan of `All` is instantiated only for a tree that may actually be deferred
+      if constexpr (deferrable) {
+        if constexpr (detail::any_remaining_equation_mentions<from_root, matched::rank == none>(All{}))
           return pairing_result<tail::rank, type_list_join<typename from_split::factors, typename tail::from_rest>,
                                 type_list_join<typename to_split::factors, typename tail::to_rest>, tail::paired,
                                 true>{};
@@ -613,17 +673,17 @@ template<typename From, typename To, typename All, bool SourceIsKind>
     } else if constexpr (quantity_spec_sort_key<from_root>::name.compare(quantity_spec_sort_key<to_root>::name) < 0) {
       using tail = decltype(detail::pair_lists<type_list_pop_front<From>, To, All, SourceIsKind>());
       return pairing_result<tail::rank, type_list_push_front<typename tail::from_rest, type_list_front<From>>,
-                            typename tail::to_rest, tail::paired, tail::has_cast>{};
+                            typename tail::to_rest, tail::paired, tail::has_deferrable>{};
     } else {
       using tail = decltype(detail::pair_lists<From, type_list_pop_front<To>, All, SourceIsKind>());
       return pairing_result<tail::rank, typename tail::from_rest,
                             type_list_push_front<typename tail::to_rest, type_list_front<To>>, tail::paired,
-                            tail::has_cast>{};
+                            tail::has_deferrable>{};
     }
   }
 }
 
-template<bool HasCast, typename NumAlone, typename DenAlone, typename FromNum, typename FromDen, typename ToNum,
+template<bool HasDeferrable, typename NumAlone, typename DenAlone, typename FromNum, typename FromDen, typename ToNum,
          typename ToDen, bool SourceIsKind>
 struct paired_sides {
   using num = NumAlone;
@@ -880,11 +940,11 @@ template<conversion_rank Rank, typename FromNum, typename FromDen, typename ToNu
     constexpr std::size_t from_size = type_list_size<FromNum> + type_list_size<FromDen>;
     constexpr std::size_t to_size = type_list_size<ToNum> + type_list_size<ToDen>;
     // Paired first without `All`, which keeps the pairing of one list pair the same instantiation in
-    // every step that meets it. Only when a tree ranks `cast` does the deferral need every factor.
+    // every step that meets it. Only a tree that may be deferred needs every factor.
     using num_alone = decltype(detail::pair_lists<FromNum, ToNum, type_list<>, SourceIsKind>());
     using den_alone = decltype(detail::pair_lists<FromDen, ToDen, type_list<>, SourceIsKind>());
-    using sides = paired_sides<num_alone::has_cast || den_alone::has_cast, num_alone, den_alone, FromNum, FromDen,
-                               ToNum, ToDen, SourceIsKind>;
+    using sides = paired_sides<num_alone::has_deferrable || den_alone::has_deferrable, num_alone, den_alone, FromNum,
+                               FromDen, ToNum, ToDen, SourceIsKind>;
     using num = sides::num;
     using den = sides::den;
     // same-tree factors pair first (the best pairing), so only what they leave can pair across trees

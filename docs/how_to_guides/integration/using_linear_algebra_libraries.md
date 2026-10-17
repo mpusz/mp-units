@@ -102,7 +102,7 @@ documented in [Project Structure](../../getting_started/project_structure.md).
     A vector quantity supports `magnitude()` directly, but the result drops the precise
     _quantity spec_ down to the unit's kind. V2 cannot yet express a dedicated
     scalar-magnitude quantity spec. As a result the magnitude keeps `vector` character
-    whenever the unit is tied to a vector quantity spec (e.g. `N` is `kind_of<isq::force>`),
+    whenever the unit's kind admits a vector (e.g. `N`),
     and only collapses to scalar character for units built from scalar base units (e.g.
     `km/h`). For the same reason quantity-level `scalar_product()` / `vector_product()`
     (dot/cross) are **not** provided in V2. They must return a _different_ quantity kind,
