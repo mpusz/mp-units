@@ -32,7 +32,8 @@ template<typename T>
 #elif defined(__GNUC__)
   name = __PRETTY_FUNCTION__;
   prefix = "consteval std::string_view mp_units::detail::type_name() [with T = ";
-  suffix = "]";
+  // GCC also spells out the `std::string_view` alias that the signature uses
+  suffix = "; std::string_view = std::basic_string_view<char>]";
 #elif defined(_MSC_VER)
   name = __FUNCSIG__;
   prefix = "class std::basic_string_view<char,struct std::char_traits<char> > __cdecl mp_units::detail::type_name<";

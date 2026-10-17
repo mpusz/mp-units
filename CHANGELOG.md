@@ -172,6 +172,25 @@ This page documents the version history and changes for the **mp-units** library
 - fix: the GLM integration header no longer breaks an `import std;` build. Its own GLM
       includes now precede the standard-library import, since GLM pulls in `<cmath>`
       textually and libstdc++ requires every such include to come first
+- (!) fix: `numerical_value_ref_in` now constrains its unit the way `in()` and
+      `numerical_value_in()` already did. It used to check only that the unit is
+      equivalent, so for `quantity f = 50. * Hz;` the call `f.numerical_value_ref_in(Bq)`
+      compiled and handed out the number of a frequency "in becquerel"
+- (!) refactor: throwing constraints are off unless `MP_UNITS_API_THROWING_CONSTRAINTS`
+      is enabled. The headers used to turn them on whenever `__cpp_constexpr_exceptions`
+      was at least `202411L`
+- fix: the library compiles in a hosted build with exceptions disabled
+      (`-fno-exceptions`). Text-formatting errors, `basic_fixed_string::at` and
+      `inplace_vector` go through `MP_UNITS_THROW`, which aborts without exceptions.
+      `throw_policy` and `safe_int_throw_policy` are provided only when exceptions are
+      enabled, so `constrained` and `safe_int` default to the terminating policies
+      otherwise. Throwing constraints fall back to plain constraint failures, without the
+      formatted message. A new `unit_tests_no_exceptions` target builds every public
+      header with `-fno-exceptions`
+- fix: on GCC, type names in constraint diagnostics no longer end in
+      `; std::string_view = std::basic_string_view<char>`. The same suffix could make GCC
+      order a type whose name is a prefix of another's differently from Clang when sorting
+      the terms of a symbolic expression
 - feat: vector quantity decomposition added. A vector quantity splits into 1D-vector
       component quantities through `get<Idx>`, `std::tuple_size` / `std::tuple_element`, and
       structured bindings, provided its representation offers element access (`get<I>` or

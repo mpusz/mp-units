@@ -895,21 +895,21 @@ public:
   }
 
   // data access
-  template<Unit U>
+  template<UnitOf<quantity_spec> U>
     requires(equivalent(U{}, unit))
   [[nodiscard]] constexpr rep& numerical_value_ref_in(U) & noexcept
   {
     return numerical_value_is_an_implementation_detail_;
   }
 
-  template<Unit U>
+  template<UnitOf<quantity_spec> U>
     requires(equivalent(U{}, unit))
   [[nodiscard]] constexpr const rep& numerical_value_ref_in(U) const& noexcept
   {
     return numerical_value_is_an_implementation_detail_;
   }
 
-  template<Unit U>
+  template<UnitOf<quantity_spec> U>
     requires(equivalent(U{}, unit))
   constexpr const rep&& numerical_value_ref_in(U) const&& noexcept
 #if MP_UNITS_HAS_DELETED_FUNCTION_MESSAGE
