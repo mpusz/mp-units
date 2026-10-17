@@ -148,8 +148,8 @@ concept invalid_operations = requires {
   requires !requires { s < s; };
   requires !requires { s + 1 * time[second]; };
   requires !requires { s - 1 * time[second]; };
-  requires !requires { s * 1 * time[second]; };
-  requires !requires { s / 1 * time[second]; };
+  requires !requires { s * (1 * time[second]); };
+  requires !requires { s / (1 * time[second]); };
   requires !requires { s == 1 * time[second]; };
   requires !requires { s < 1 * time[second]; };
   requires !requires { 1 * time[second] + s; };

@@ -423,10 +423,10 @@ concept invalid_operations = requires {
   requires !requires { isq::duration[second] - s; };
   requires !requires { s + 1 * isq::duration[second]; };
   requires !requires { s - 1 * isq::duration[second]; };
-  requires !requires { s * 1 * isq::duration[second]; };
-  requires !requires { s / 1 * isq::duration[second]; };
+  requires !requires { s * (1 * isq::duration[second]); };
+  requires !requires { s / (1 * isq::duration[second]); };
   requires !requires { s == 1 * isq::duration[second]; };
-  requires !requires { s == 1 * isq::duration[second]; };
+  requires !requires { s < 1 * isq::duration[second]; };
   requires !requires { 1 * isq::duration[second] + s; };
   requires !requires { 1 * isq::duration[second] - s; };
   requires !requires { 1 * isq::duration[second] == s; };
