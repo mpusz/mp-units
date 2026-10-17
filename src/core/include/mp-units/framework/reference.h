@@ -237,12 +237,22 @@ template<typename FwdQ, Reference R, Quantity Q = std::remove_cvref_t<FwdQ>>
 template<Reference R, typename Q>
   requires Quantity<std::remove_cvref_t<Q>>
 // NOLINTNEXTLINE(cppcoreguidelines-missing-std-forward)
-constexpr auto operator*(R, Q&& q) = delete;
+constexpr auto operator*(R, Q&& q)
+#if __cpp_deleted_function
+  = delete ("To multiply a `quantity` by a unit use `Q * R`");
+#else
+  = delete;
+#endif
 
 template<Reference R, typename Q>
   requires Quantity<std::remove_cvref_t<Q>>
 // NOLINTNEXTLINE(cppcoreguidelines-missing-std-forward)
-constexpr auto operator/(R, Q&& q) = delete;
+constexpr auto operator/(R, Q&& q)
+#if __cpp_deleted_function
+  = delete ("Create a `quantity` from the unit before dividing it by another `quantity`");
+#else
+  = delete;
+#endif
 
 [[nodiscard]] consteval Unit auto get_common_unit(Unit auto u);
 

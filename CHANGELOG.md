@@ -105,6 +105,13 @@ This page documents the version history and changes for the **mp-units** library
       defining `__cpp_lib_format`. It now skips only that library
 - fix: the deprecated `mp_units::cartesian_vector` and random-distribution aliases warn on
       GCC 12 as well. They were plain using-declarations there
+- fix: Clang diagnostics print the representation type of a deduced `quantity` or
+      `quantity_point`, and of the `std::common_type` of two quantities, as the plain type
+      (`int`) instead of the library's internal spelling
+      (`representation_canonical_type_t<int>`, `typename Q::rep`, or
+      `std::common_type_t<short, unsigned char>`). Multiplying or dividing a unit by a
+      `quantity` now states why it is ill-formed, as multiplying a unit by a number already
+      did.
 - feat: the concepts for symbolic types accept a const-qualified type, the way the
       standard's type categories do. `Unit<decltype(si::metre)>` and
       `QuantitySpec<decltype(isq::length)>` now hold, just as `Quantity<const Q>` always
