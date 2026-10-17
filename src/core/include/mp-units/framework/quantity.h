@@ -1102,16 +1102,21 @@ public:
 // The stored representation is canonicalized (see `representation_canonical_type`) so that an
 // expression-template value (e.g. the result of `Eigen::Vector3d * double`) is materialized to
 // its evaluated concrete type instead of being stored as a proxy holding dangling references.
-template<Reference R, typename Value>
-  requires RepresentationOf<representation_canonical_type_t<Value>, get_quantity_spec(R{})>
-quantity(Value v, R) -> quantity<R{}, representation_canonical_type_t<Value>>;
+// The deduced representation type is a defaulted template parameter instead of being spelled in
+// the guide's result. Clang prints a result type as it is spelled, so users would otherwise see
+// `quantity<R, representation_canonical_type_t<Value>>` in diagnostics. The defaulted parameter
+// reaches them as the plain type, e.g. `quantity<R, double>`. A deduction guide can't be given
+// explicit template arguments, so the extra parameter isn't observable.
+template<Reference R, typename Value, typename Rep = representation_canonical_type_t<Value>>
+  requires RepresentationOf<Rep, get_quantity_spec(R{})>
+quantity(Value v, R) -> quantity<R{}, Rep>;
 
-template<Reference auto R = one, typename Value>
-  requires RepresentationOf<representation_canonical_type_t<Value>, get_quantity_spec(R)>
-quantity(Value) -> quantity<R, representation_canonical_type_t<Value>>;
+template<Reference auto R = one, typename Value, typename Rep = representation_canonical_type_t<Value>>
+  requires RepresentationOf<Rep, get_quantity_spec(R)>
+quantity(Value) -> quantity<R, Rep>;
 
-template<QuantityLike Q>
-quantity(Q) -> quantity<quantity_like_traits<Q>::reference, typename quantity_like_traits<Q>::rep>;
+template<QuantityLike Q, typename Rep = quantity_like_traits<Q>::rep>
+quantity(Q) -> quantity<quantity_like_traits<Q>::reference, Rep>;
 
 MP_UNITS_EXPORT_END
 
@@ -1122,6 +1127,14 @@ template<QuantitySpec auto QS, typename FwdValue>
 {
   return quantity{std::forward<FwdValue>(val), QS[one]};
 }
+
+// Defines the result of the `std::common_type` specializations below. The common representation is a
+// defaulted template parameter so that Clang diagnostics show the plain type (e.g. `int`) rather
+// than `std::common_type_t<short, unsigned char>`.
+template<auto R, typename Rep1, typename Rep2, typename Rep = std::common_type_t<Rep1, Rep2>>
+struct common_quantity_type {
+  using type = quantity<R, Rep>;
+};
 
 }  // namespace detail
 
@@ -1148,15 +1161,12 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
     requires mp_units::RepresentationOf<
       std::common_type_t<Rep1, Rep2>, mp_units::get_common_quantity_spec(get_quantity_spec(R1), get_quantity_spec(R2))>;
   }
-struct std::common_type<mp_units::quantity<R1, Rep1>, mp_units::quantity<R2, Rep2>> {
-  using type = mp_units::quantity<mp_units::get_common_reference(R1, R2), std::common_type_t<Rep1, Rep2>>;
-};
+struct std::common_type<mp_units::quantity<R1, Rep1>, mp_units::quantity<R2, Rep2>> :
+    mp_units::detail::common_quantity_type<mp_units::get_common_reference(R1, R2), Rep1, Rep2> {};
 
 template<auto R, typename Rep, mp_units::RepresentationOf<get_quantity_spec(R)> Value>
   requires(get_unit(R) == mp_units::one) && requires { typename mp_units::quantity<R, std::common_type_t<Rep, Value>>; }
-struct std::common_type<mp_units::quantity<R, Rep>, Value> {
-  using type = mp_units::quantity<R, std::common_type_t<Rep, Value>>;
-};
+struct std::common_type<mp_units::quantity<R, Rep>, Value> : mp_units::detail::common_quantity_type<R, Rep, Value> {};
 
 template<auto R, typename Rep, mp_units::RepresentationOf<get_quantity_spec(R)> Value>
   requires requires { typename std::common_type<mp_units::quantity<R, Rep>, Value>; }
