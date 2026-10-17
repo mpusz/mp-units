@@ -325,8 +325,13 @@ done
 for v in "${ALL_CLANG[@]}"; do
   command -v clang++-"$v" >/dev/null 2>&1 || { echo "  ⚠️  clang++-$v not installed"; continue; }
   if clang++-"$v" -std=c++20 -stdlib=libc++ "$t" -o "$out" 2>/tmp/cxx_err; then
-    hdr="$(echo '' | clang++-"$v" -stdlib=libc++ -x c++ -E -v - 2>&1 | grep -m1 "llvm-$v.*c++/v1" | tr -d ' ')"
-    ldd "$out" 2>/dev/null | grep -qiE "libc\+\+|unwind" \
+    # Capture clang's output before searching it. Piped straight into `grep -m1`, clang can still
+    # be writing when grep exits, fails with EX_IOERR (74), and `pipefail` + `set -e` abort the script.
+    search="$(echo '' | clang++-"$v" -stdlib=libc++ -x c++ -E -v - 2>&1 || true)"
+    # The include-search line, not the `-cc1` command line that also names the directory.
+    hdr="$(grep -m1 -E "^ +/.*llvm-$v/.*c\+\+/v1$" <<< "$search" | tr -d ' ' || true)"
+    # Absorb `ldd`'s status for the same reason as `nm` above: a SIGPIPE must not read as "static".
+    { ldd "$out" 2>/dev/null || true; } | grep -qiE "libc\+\+|unwind" \
       && echo "  ⚠️  clang++-$v links libc++ dynamically (expected static)" \
       || echo "  ✅ clang++-$v (own libc++, static; headers: ${hdr:-?})"
   else
