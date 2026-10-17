@@ -63,6 +63,7 @@ add_library(
     si_test.cpp
     symbol_text_test.cpp
     type_list_test.cpp
+    type_name_test.cpp
     typographic_test.cpp
     unit_magnitude_test.cpp
     unit_symbol_test.cpp

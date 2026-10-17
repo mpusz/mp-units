@@ -187,6 +187,10 @@ This page documents the version history and changes for the **mp-units** library
       otherwise. Throwing constraints fall back to plain constraint failures, without the
       formatted message. A new `unit_tests_no_exceptions` target builds every public
       header with `-fno-exceptions`
+- fix: on GCC, type names in constraint diagnostics no longer end in
+      `; std::string_view = std::basic_string_view<char>`. The same suffix could make GCC
+      order a type whose name is a prefix of another's differently from Clang when sorting
+      the terms of a symbolic expression
 - feat: vector quantity decomposition added. A vector quantity splits into 1D-vector
       component quantities through `get<Idx>`, `std::tuple_size` / `std::tuple_element`, and
       structured bindings, provided its representation offers element access (`get<I>` or
