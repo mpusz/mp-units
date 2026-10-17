@@ -24,10 +24,23 @@ name: Codespaces Test
 
 on:
   workflow_dispatch:
+  # Everything the dev container's `postCreateCommand` runs or reads: the `.devcontainer/` scripts,
+  # and `check_all.sh … install`, which runs `conan install` with `conanfile.py`, which in turn
+  # reads the library version from `src/CMakeLists.txt`.
   push:
     paths:
       - ".devcontainer/**"
       - ".github/workflows/codespaces-test.yml"
+      - "conanfile.py"
+      - "src/CMakeLists.txt"
+  # The same paths on a pull request, so a change that breaks the dev container is caught before
+  # it reaches `master` rather than after.
+  pull_request:
+    paths:
+      - ".devcontainer/**"
+      - ".github/workflows/codespaces-test.yml"
+      - "conanfile.py"
+      - "src/CMakeLists.txt"
   schedule:
     # Test weekly to catch base image changes
     - cron: "0 6 * * 1"
