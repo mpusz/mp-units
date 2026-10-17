@@ -155,10 +155,10 @@ concept invalid_operations = requires {
   requires !requires { q_time[second] < t; };
   requires !requires { t + 1 * q_time[second]; };
   requires !requires { t - 1 * q_time[second]; };
-  requires !requires { t * 1 * q_time[second]; };
-  requires !requires { t / 1 * q_time[second]; };
+  requires !requires { t * (1 * q_time[second]); };
+  requires !requires { t / (1 * q_time[second]); };
   requires !requires { t == 1 * q_time[second]; };
-  requires !requires { t == 1 * q_time[second]; };
+  requires !requires { t < 1 * q_time[second]; };
   requires !requires { 1 * q_time[second] + t; };
   requires !requires { 1 * q_time[second] - t; };
   requires !requires { 1 * q_time[second] * t; };

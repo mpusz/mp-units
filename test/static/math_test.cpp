@@ -46,6 +46,20 @@ template<typename T1, typename T2, typename... Ts>
   return std::is_same_v<T1, T2> && v1 == v2 && (... && (v1 == vs));
 }
 
+template<auto Length, auto Time>
+concept invalid_math_arguments = requires {
+  requires !requires { exp(Length); };       // not dimensionless
+  requires !requires { floor<s>(Length); };  // unit of a different quantity
+  requires !requires { ceil<s>(Length); };
+  requires !requires { round<s>(Length); };
+  requires !requires { hypot(Length, Time); };  // no common quantity
+  requires !requires { fmod(Length, Time); };
+  requires !requires { remainder(Length, Time); };
+  requires !requires { inverse<m>(Time); };   // the inverse of a duration is not a length
+  requires !requires { pow<1, 0>(Length); };  // zero denominator
+};
+static_assert(invalid_math_arguments<2. * m, 2. * s>);
+
 #if __cpp_lib_constexpr_cmath || MP_UNITS_COMP_GCC
 
 template<auto One>

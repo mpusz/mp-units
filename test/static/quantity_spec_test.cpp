@@ -402,10 +402,10 @@ concept invalid_operations = requires {
   requires !requires { time[second] < t; };
   requires !requires { t + 1 * time[second]; };
   requires !requires { t - 1 * time[second]; };
-  requires !requires { t * 1 * time[second]; };
-  requires !requires { t / 1 * time[second]; };
+  requires !requires { t * (1 * time[second]); };
+  requires !requires { t / (1 * time[second]); };
   requires !requires { t == 1 * time[second]; };
-  requires !requires { t == 1 * time[second]; };
+  requires !requires { t < 1 * time[second]; };
   requires !requires { 1 * time[second] + t; };
   requires !requires { 1 * time[second] - t; };
   requires !requires { 1 * time[second] * t; };

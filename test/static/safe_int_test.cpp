@@ -207,8 +207,8 @@ static_assert(ScalarRepresentation<safe_int<long>>);
 static_assert(ScalarRepresentation<safe_int<unsigned short>>);
 
 // floating-point types must NOT be accepted
-static_assert(!requires { requires(!treat_as_floating_point<double>) && mp_units::detail::RealScalar<double>; });
-static_assert(!requires { requires(!treat_as_floating_point<float>) && mp_units::detail::RealScalar<float>; });
+static_assert(!(!treat_as_floating_point<double> && mp_units::detail::RealScalar<double>));
+static_assert(!(!treat_as_floating_point<float> && mp_units::detail::RealScalar<float>));
 
 // ============================================================================
 // std::numeric_limits

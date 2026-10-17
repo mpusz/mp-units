@@ -1466,21 +1466,22 @@ private:
 };
 
 // CTAD
+// The representation type is spelled through a defaulted template parameter so that Clang
+// diagnostics show the plain type rather than `typename Q::rep` (see the `quantity` guides).
 #if MP_UNITS_QUANTITY_POINT_CTAD_HACK
-template<QuantityPoint QP>
-quantity_point(QP qp) -> quantity_point<QP::reference, QP::point_origin, typename QP::rep>;
+template<QuantityPoint QP, typename Rep = QP::rep>
+quantity_point(QP qp) -> quantity_point<QP::reference, QP::point_origin, Rep>;
 #endif
 
-template<Quantity Q>
-quantity_point(Q q) -> quantity_point<Q::reference, default_point_origin(Q::reference), typename Q::rep>;
+template<Quantity Q, typename Rep = Q::rep>
+quantity_point(Q q) -> quantity_point<Q::reference, default_point_origin(Q::reference), Rep>;
 
-template<Quantity Q, PointOriginFor<Q::quantity_spec> PO>
-quantity_point(Q q, PO) -> quantity_point<Q::reference, PO{}, typename Q::rep>;
+template<Quantity Q, PointOriginFor<Q::quantity_spec> PO, typename Rep = Q::rep>
+quantity_point(Q q, PO) -> quantity_point<Q::reference, PO{}, Rep>;
 
-template<QuantityPointLike QP>
+template<QuantityPointLike QP, typename Rep = quantity_point_like_traits<QP>::rep>
 quantity_point(QP)
-  -> quantity_point<quantity_point_like_traits<QP>::reference, quantity_point_like_traits<QP>::point_origin,
-                    typename quantity_point_like_traits<QP>::rep>;
+  -> quantity_point<quantity_point_like_traits<QP>::reference, quantity_point_like_traits<QP>::point_origin, Rep>;
 
 
 MP_UNITS_EXPORT_END

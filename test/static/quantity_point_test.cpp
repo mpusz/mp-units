@@ -1136,8 +1136,37 @@ concept invalid_compound_assignments = requires() {
   // no unit constants
   requires !requires(QP<isq::height[m], mean_sea_level, int> l) { l += m; };
   requires !requires(QP<isq::height[m], mean_sea_level, int> l) { l -= m; };
+
+  // only quantities implicitly convertible to the point's quantity
+  requires !requires(QP<isq::height[m], mean_sea_level, int> l) { l += 2 * isq::length[m]; };
+  requires !requires(QP<isq::height[m], mean_sea_level, int> l) { l -= 2 * isq::length[m]; };
+  requires !requires(QP<isq::height[m], mean_sea_level, int> l) { l += 2 * isq::width[m]; };
+  requires !requires(QP<isq::height[m], mean_sea_level, int> l) { l += 2 * s; };
+
+  // points cannot be scaled
+  requires !requires(QP<isq::height[m], mean_sea_level, int> l) { l *= 2; };
+  requires !requires(QP<isq::height[m], mean_sea_level, int> l) { l /= 2; };
 };
 static_assert(invalid_compound_assignments<quantity_point>);
+
+template<auto Origin, auto OtherOrigin>
+concept invalid_origin_queries = requires {
+  requires !requires { (Origin + 2 * isq::height[m]).quantity_from_zero(); };  // not the natural origin
+  requires !requires { quantity_point<isq::height[m], Origin>::zero(); };
+  requires !requires { (Origin + 2 * isq::height[m]).quantity_from(OtherOrigin); };  // unrelated origin
+  requires !requires { (Origin + 2 * isq::height[m]).quantity_from(zeroth_length); };
+};
+static_assert(invalid_origin_queries<mean_sea_level, other_absolute_level>);
+
+template<auto QP>
+concept invalid_point_scaling = requires {
+  requires !requires { QP * 2; };
+  requires !requires { 2 * QP; };
+  requires !requires { QP / 2; };
+  requires !requires { QP * QP; };
+  requires !requires { QP / QP; };
+};
+static_assert(invalid_point_scaling<mean_sea_level + 2 * isq::height[m]>);
 
 
 ////////////////////
