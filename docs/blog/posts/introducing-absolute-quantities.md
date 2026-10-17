@@ -310,8 +310,8 @@ inline constexpr struct nhn_sea_level : absolute_point_origin<isq::altitude> {} 
 
 quantity<m> alt1 = 42 * m;
 quantity<point<m>> alt2(alt1);                     // OK
-// quantity<point<m>, nhn_sea_level> alt3(alt1);   // Compile-time error
-quantity<point<m>, nhn_sea_level> alt4 = nhn_sea_level + alt1.delta();
+// quantity<point<m, nhn_sea_level>> alt3(alt1);   // Compile-time error
+quantity<point<m, nhn_sea_level>> alt4 = nhn_sea_level + alt1.delta();
 ```
 
 If the user used an offset unit, then a conversion should work fine as long as the point
