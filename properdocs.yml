@@ -11,7 +11,7 @@ repo_url: https://github.com/mpusz/mp-units
 # Copyright
 copyright: Copyright &copy; 2018-2023 Mateusz Pusz
 
-# Watch additional directories for changes during 'mkdocs serve'
+# Watch additional directories for changes during 'properdocs serve'
 watch:
   - src/systems/include/mp-units/systems
 
@@ -82,7 +82,7 @@ theme:
 # A broken link still builds a page, so it is found by a reader rather than by CI. Only
 # `links.not_found` warns by default; a dead `#fragment` and a link MkDocs cannot resolve
 # are reported at INFO, which is why they accumulated through green builds. Raised to
-# warnings, `mkdocs build --strict` rejects them - see the `link-check` job in
+# warnings, `properdocs build --strict` rejects them - see the `link-check` job in
 # `.github/workflows/documentation.yml`.
 validation:
   links:

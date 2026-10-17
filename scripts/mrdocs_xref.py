@@ -35,8 +35,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from mkdocs.structure.nav import Link, Section
-from mkdocs.utils import get_relative_url
+from properdocs.structure.nav import Link, Section
+from properdocs.utils import get_relative_url
 
 # Where `mrdocs` writes its output, relative to `docs_dir`.
 API_DIR = "reference/api_reference/mrdocs"

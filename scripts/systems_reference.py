@@ -2180,16 +2180,16 @@ class DocumentationGenerator:
         return system_display_name(namespace)
 
     def update_mkdocs_config(self, mkdocs_path: Path):
-        """Update mkdocs.yml with generated pages"""
+        """Update properdocs.yml with generated pages"""
         if not mkdocs_path.exists():
-            print(f"Warning: mkdocs.yml not found at {mkdocs_path}")
+            print(f"Warning: properdocs.yml not found at {mkdocs_path}")
             return
 
         try:
             content = mkdocs_path.read_text()
             ref_start = content.find("  - Reference:")
             if ref_start == -1:
-                print("Warning: Could not find Reference section in mkdocs.yml")
+                print("Warning: Could not find Reference section in properdocs.yml")
                 return
 
             ref_end = content.find("\n  - ", ref_start + 1)
@@ -2231,14 +2231,14 @@ class DocumentationGenerator:
                         + content[line_end + 1 :]
                     )
                 else:
-                    print("Warning: Could not find insertion point in mkdocs.yml")
+                    print("Warning: Could not find insertion point in properdocs.yml")
                     return
 
             mkdocs_path.write_text(new_content)
-            print("  ✓ Updated mkdocs.yml with generated pages")
+            print("  ✓ Updated properdocs.yml with generated pages")
 
         except Exception as e:
-            print(f"Warning: Could not update mkdocs.yml: {e}")
+            print(f"Warning: Could not update properdocs.yml: {e}")
 
     def _build_systems_reference_yaml(self):
         """Build the YAML text for Systems Reference section"""
@@ -4765,7 +4765,7 @@ def main():
     project_root = script_dir.parent
     systems_dir = project_root / "src" / "systems" / "include" / "mp-units" / "systems"
     output_dir = project_root / "docs" / "reference" / "systems_reference"
-    mkdocs_file = project_root / "mkdocs.yml"
+    mkdocs_file = project_root / "properdocs.yml"
 
     if not systems_dir.exists():
         print(f"Error: Systems directory not found: {systems_dir}", file=sys.stderr)

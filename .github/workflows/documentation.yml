@@ -39,7 +39,7 @@ on:
       - "CONTRIBUTING.md"
       - "CONTRIBUTORS.md"
       - "LICENSE.md"
-      - "mkdocs.yml"
+      - "properdocs.yml"
       - "example/**"
       - "scripts/**"
       - "src/**"
@@ -54,14 +54,14 @@ on:
       - "CONTRIBUTING.md"
       - "CONTRIBUTORS.md"
       - "LICENSE.md"
-      - "mkdocs.yml"
+      - "properdocs.yml"
       - "example/**"
       - "scripts/**"
       - "src/**"
 
   # A nightly rebuild, so a scheduled blog post publishes itself.
   #
-  # The site is static and `blog.draft_if_future_date` (mkdocs.yml) is evaluated at *build* time: a
+  # The site is static and `blog.draft_if_future_date` (properdocs.yml) is evaluated at *build* time: a
   # post whose `date` is still in the future is dropped from the build, and it reappears only when
   # something builds the site again on or after that date. Without this, a post dated next Thursday
   # sits invisible until somebody happens to push a docs change, which is exactly the manual step
@@ -106,7 +106,7 @@ jobs:
         # are still generated, but to MrDocs' layout rather than this project's.
         # Keep the version in step with requirements.txt.
         run: |
-          pip install mkdocs-material mkdocs-rss-plugin mkdocs-redirects clang-format==21.1.8
+          pip install properdocs mkdocs-material mkdocs-rss-plugin mkdocs-redirects clang-format==21.1.8
       - name: Install a newer libstdc++
         # MrDocs brings its own Clang and parses the headers against whichever
         # libstdc++ it finds. The runner's is old enough to make the `std::pair`
@@ -133,11 +133,11 @@ jobs:
           # Check a scheduled post's links now, rather than the morning it publishes itself.
           MP_UNITS_BLOG_DRAFT_IF_FUTURE_DATE: false
           MP_UNITS_SOCIAL_CARDS: false
-        # `--strict` is what makes the `validation:` warnings in `mkdocs.yml` exit non-zero.
+        # `--strict` is what makes the `validation:` warnings in `properdocs.yml` exit non-zero.
         # Without the raised levels there it would still pass: a dead `#fragment` is reported at
         # INFO, which strict mode does not act on.
         run: |
-          mkdocs build --strict
+          properdocs build --strict
 
   deploy:
     needs: link-check
@@ -180,7 +180,7 @@ jobs:
         # Ahead of generating, not after it: clang-format lays out the synopses
         # during generation. Keep the version in step with requirements.txt.
         run: |
-          pip install conan mkdocs-material mkdocs-rss-plugin mkdocs-redirects mkdocs-material[imaging] mike \
+          pip install conan properdocs mkdocs-materialmkdocs-rss-plugin mkdocs-redirects mkdocs-material[imaging] mike \
                       clang-format==21.1.8
       - name: Install a newer libstdc++
         # MrDocs brings its own Clang and parses the headers against whichever

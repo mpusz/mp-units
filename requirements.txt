@@ -5,6 +5,7 @@ pre-commit
 # get formatted by different rules.
 clang-format==21.1.8
 identify
+properdocs
 mkdocs-material
 mkdocs-rss-plugin
 mkdocs-redirects

@@ -22,7 +22,7 @@ repos:
         exclude: ^scripts/codata/|\.hbs$
         exclude_types: [binary]
       - id: check-yaml
-        args: [--unsafe] # mkdocs.yml uses !ENV and !!python/name: tags
+        args: [--unsafe] # properdocs.yml uses !ENV and !!python/name: tags
       - id: check-json
         exclude: ^\.devcontainer/devcontainer\.json$ # JSONC (allows comments)
       - id: check-merge-conflict

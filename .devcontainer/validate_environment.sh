@@ -10,7 +10,7 @@ echo ""
 
 # Verify essential tools are available in the base image
 echo "📋 Verifying essential tools:"
-tools=(gcc g++ clang clang++ cmake ninja conan pre-commit mkdocs)
+tools=(gcc g++ clang clang++ cmake ninja conan pre-commit properdocs)
 all_found=true
 for tool in "${tools[@]}"; do
   if command -v "$tool" >/dev/null 2>&1; then
@@ -37,7 +37,7 @@ cmake --version | head -1
 ninja --version
 conan --version
 pre-commit --version
-mkdocs --version
+properdocs --version
 
 echo ""
 echo "📋 Verifying compiler matrix:"

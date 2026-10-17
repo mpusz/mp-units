@@ -315,7 +315,7 @@ NO_CLANG_FORMAT = (
 def _exclusive(timeout: float = 900.0):
     """Serialise generation across processes.
 
-    MkDocs regenerates from its own `on_config`, so a `mkdocs serve` rebuild
+    MkDocs regenerates from its own `on_config`, so a `properdocs serve` rebuild
     and a hand-run of this script can otherwise wipe and rewrite the same tree
     at the same time, which fails with a bare `Directory not empty`.
 

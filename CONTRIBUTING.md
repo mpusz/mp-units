@@ -70,7 +70,7 @@ conan build . -pr gcc15 -c user.mp-units.build:all=True -b missing
 python scripts/mrdocs/run.py
 
 # Preview documentation locally
-mkdocs serve
+properdocs serve
 
 # Run pre-commit checks
 pre-commit run --all-files
@@ -173,13 +173,13 @@ For more, see the [official documentation](https://mpusz.github.io/mp-units) and
     - easily [start a live server to preview the documentation as you write](https://squidfunk.github.io/mkdocs-material/creating-your-site/#previewing-as-you-write)
 
         ```shell
-        mkdocs serve
+        properdocs serve
         ```
 
     - [build the documentation](https://squidfunk.github.io/mkdocs-material/creating-your-site/#building-your-site)
 
         ```shell
-        mkdocs build
+        properdocs build
         ```
 
     ### Generating the API reference
@@ -197,7 +197,7 @@ For more, see the [official documentation](https://mpusz.github.io/mp-units) and
     generated pages land in _docs/reference/api_reference/mrdocs/_ and are not
     committed.
 
-    Running it by hand is optional: `mkdocs serve` and `mkdocs build` call it
+    Running it by hand is optional: `properdocs serve` and `properdocs build` call it
     themselves. Either way it regenerates only when something it depends on
     changed, which takes about a minute for the whole library, and otherwise
     costs a hash of the inputs. Pass `--force` to regenerate regardless.

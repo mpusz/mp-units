@@ -35,7 +35,7 @@
         "clang-format.executable": "/usr/bin/clang-format",
         "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
         "yaml.schemas": {
-          "https://squidfunk.github.io/mkdocs-material/schema.json": "mkdocs.yml"
+          "https://squidfunk.github.io/mkdocs-material/schema.json": "properdocs.yml"
         },
         "yaml.customTags": [
           "!ENV scalar",
@@ -74,7 +74,7 @@
     "--init"
   ],
   "postCreateCommand": "bash -c 'bash .devcontainer/install_extensions.sh && pipx upgrade-all && .devcontainer/validate_environment.sh && .devcontainer/check_all.sh -d ${CI_NEVER_BUILD:+-n} install'",
-  "postStartCommand": "echo '🚀 mp-units development environment ready!' && echo '🧪 Use `.devcontainer/check_all.sh [-d] build` to test all compiler configurations.' && echo '📖 Use `python scripts/mrdocs/run.py` to generate the API reference, then `mkdocs serve`.'",
+  "postStartCommand": "echo '🚀 mp-units development environment ready!' && echo '🧪 Use `.devcontainer/check_all.sh [-d] build` to test all compiler configurations.' && echo '📖 Use `python scripts/mrdocs/run.py` to generate the API reference, then `properdocs serve`.'",
   "forwardPorts": [
     8000
   ],

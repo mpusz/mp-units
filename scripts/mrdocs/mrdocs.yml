@@ -115,4 +115,4 @@ warn-if-undoc-enum-val: false
 ## <table> in libstdc++'s <bits/random.h>, which the `random.h` wrappers
 ## derive from. There is no way to limit warnings to the configured `input`,
 ## so that one is noise we carry.
-report: 2
+log-level: info

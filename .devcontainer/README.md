@@ -118,14 +118,14 @@ that cache does not survive a rebuild, so the first run after one downloads
 again (about 45 MB, a few seconds).
 
 The generated pages are written to `docs/reference/api_reference/mrdocs/` and
-are not committed. `mkdocs serve` shows whatever was generated last, so run the
+are not committed. `properdocs serve` shows whatever was generated last, so run the
 script again after changing a header you want to see documented.
 
 ### Documentation
 
 ```bash
 # Serve documentation locally
-mkdocs serve
+properdocs serve
 ```
 
 The documentation will be available at `http://localhost:8000` and will
