@@ -179,6 +179,14 @@ This page documents the version history and changes for the **mp-units** library
 - (!) refactor: throwing constraints are off unless `MP_UNITS_API_THROWING_CONSTRAINTS`
       is enabled. The headers used to turn them on whenever `__cpp_constexpr_exceptions`
       was at least `202411L`
+- fix: the library compiles in a hosted build with exceptions disabled
+      (`-fno-exceptions`). Text-formatting errors, `basic_fixed_string::at` and
+      `inplace_vector` go through `MP_UNITS_THROW`, which aborts without exceptions.
+      `throw_policy` and `safe_int_throw_policy` are provided only when exceptions are
+      enabled, so `constrained` and `safe_int` default to the terminating policies
+      otherwise. Throwing constraints fall back to plain constraint failures, without the
+      formatted message. A new `unit_tests_no_exceptions` target builds every public
+      header with `-fno-exceptions`
 - feat: vector quantity decomposition added. A vector quantity splits into 1D-vector
       component quantities through `get<Idx>`, `std::tuple_size` / `std::tuple_element`, and
       structured bindings, provided its representation offers element access (`get<I>` or

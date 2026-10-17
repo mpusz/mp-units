@@ -62,7 +62,7 @@ struct unsatisfied_constraints {
 template<mp_units::basic_fixed_string Fmt, typename... Args>
 [[nodiscard]] consteval bool unsatisfied([[maybe_unused]] Args&&... args)
 {
-#if MP_UNITS_API_THROWING_CONSTRAINTS
+#if MP_UNITS_API_THROWING_CONSTRAINTS && MP_UNITS_HAS_EXCEPTIONS
   throw unsatisfied_constraints{constexpr_format(FMT_COMPILE(Fmt.c_str()), std::forward<Args>(args)...)};
 #endif
   return false;

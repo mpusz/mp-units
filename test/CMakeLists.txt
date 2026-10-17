@@ -22,5 +22,10 @@
 
 if(NOT MP_UNITS_API_FREESTANDING)
     add_subdirectory(runtime)
+    # MSVC disables exceptions differently (`/EHs-c-` with `_HAS_EXCEPTIONS=0`), and the `std`
+    # module is built with exceptions, so `import std` cannot be combined with `-fno-exceptions`
+    if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND NOT CMAKE_CXX_MODULE_STD)
+        add_subdirectory(no_exceptions)
+    endif()
 endif()
 add_subdirectory(static)
