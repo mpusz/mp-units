@@ -668,17 +668,26 @@ static_assert(quantity<isq::length[km], int>(2 * km).numerical_value_in(m) == 20
 
 template<template<auto, typename> typename Q>
 concept invalid_getter_with_unit_conversion = requires {
-  requires !requires { Q<isq::length[m], int>(2000 * m).numerical_value_in(km); };  // truncating conversion
-  requires !requires { Q<isq::length[m], int>(2 * m).numerical_value_in(s); };      // invalid unit
+  requires !requires { Q<isq::length[m], int>(2000 * m).numerical_value_in(km); };     // truncating conversion
+  requires !requires { Q<isq::length[m], int>(2 * m).numerical_value_in(s); };         // invalid unit
+  requires !requires { Q<isq::frequency[Hz], int>(60 * Hz).numerical_value_in(Bq); };  // unit of a different kind
 };
 static_assert(invalid_getter_with_unit_conversion<quantity>);
 
+// a reference to the stored number is handed out in an equivalent unit of the same kind
+static_assert(requires(quantity<isq::frequency[Hz], int> freq) {
+  { freq.numerical_value_ref_in(one / s) } -> std::same_as<int&>;
+});
+
 template<template<auto, typename> typename Q>
-concept invalid_reference_getter = requires(Q<isq::length[m], int> q) {
-  requires !requires { q.numerical_value_ref_in(km); };                             // non-equivalent unit
-  requires !requires { q.numerical_value_ref_in(s); };                              // unit of a different quantity
-  requires !requires { Q<isq::length[m], int>(2 * m).numerical_value_ref_in(m); };  // temporary
-};
+concept invalid_reference_getter =
+  requires(Q<isq::length[m], int> q, Q<isq::frequency[Hz], int> freq, const Q<isq::frequency[Hz], int> const_freq) {
+    requires !requires { q.numerical_value_ref_in(km); };                             // non-equivalent unit
+    requires !requires { q.numerical_value_ref_in(s); };                              // unit of a different quantity
+    requires !requires { Q<isq::length[m], int>(2 * m).numerical_value_ref_in(m); };  // temporary
+    requires !requires { freq.numerical_value_ref_in(Bq); };        // unit of a different kind (same magnitude)
+    requires !requires { const_freq.numerical_value_ref_in(Bq); };  // unit of a different kind (same magnitude)
+  };
 static_assert(invalid_reference_getter<quantity>);
 
 

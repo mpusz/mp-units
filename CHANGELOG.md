@@ -172,6 +172,10 @@ This page documents the version history and changes for the **mp-units** library
 - fix: the GLM integration header no longer breaks an `import std;` build. Its own GLM
       includes now precede the standard-library import, since GLM pulls in `<cmath>`
       textually and libstdc++ requires every such include to come first
+- (!) fix: `numerical_value_ref_in` now constrains its unit the way `in()` and
+      `numerical_value_in()` already did. It used to check only that the unit is
+      equivalent, so for `quantity f = 50. * Hz;` the call `f.numerical_value_ref_in(Bq)`
+      compiled and handed out the number of a frequency "in becquerel"
 - feat: vector quantity decomposition added. A vector quantity splits into 1D-vector
       component quantities through `get<Idx>`, `std::tuple_size` / `std::tuple_element`, and
       structured bindings, provided its representation offers element access (`get<I>` or
