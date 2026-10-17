@@ -48,7 +48,7 @@
 set -euo pipefail
 
 # --- Build-matrix compiler versions (see .devcontainer/check_all.sh) ---------
-GCC_VERSIONS=(12 13 14 15)
+GCC_VERSIONS=(12 13 14 15 16)
 # clang libc++ sourced from apt -dev packages:
 APT_CLANG_VERSIONS=(17 18 20 21 22 23 24)
 # clang sourced from upstream LLVM release tarballs (version -> URL). clang-16
