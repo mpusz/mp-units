@@ -111,6 +111,13 @@ if(NOT MP_UNITS_API_FREESTANDING AND MP_UNITS_API_STD_FORMAT AND NOT MP_UNITS_LI
     message(FATAL_ERROR "`std::format` enabled but not supported")
 endif()
 
+# throwing constraints format their message at compile time, which the library does only through {fmt}
+if(MP_UNITS_API_THROWING_CONSTRAINTS AND (MP_UNITS_API_FREESTANDING OR MP_UNITS_API_STD_FORMAT))
+    message(FATAL_ERROR "'MP_UNITS_API_THROWING_CONSTRAINTS' needs a hosted build with {fmt} "
+                        "('MP_UNITS_API_STD_FORMAT' set to OFF)"
+    )
+endif()
+
 if(MP_UNITS_API_NO_CRTP AND NOT MP_UNITS_EXPLICIT_THIS_PARAMETER_SUPPORTED)
     message(FATAL_ERROR "`NO_CRTP` mode enabled but explicit `this` parameter is not supported")
 endif()

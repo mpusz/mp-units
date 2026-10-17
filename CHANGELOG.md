@@ -178,7 +178,9 @@ This page documents the version history and changes for the **mp-units** library
       compiled and handed out the number of a frequency "in becquerel"
 - (!) refactor: throwing constraints are off unless `MP_UNITS_API_THROWING_CONSTRAINTS`
       is enabled. The headers used to turn them on whenever `__cpp_constexpr_exceptions`
-      was at least `202411L`
+      was at least `202411L`. Their message is formatted at compile time, which the
+      library does only through {fmt}, so enabling them together with `std::format` now
+      stops the CMake configure step, and an `#error` does the same for header-only use
 - fix: the library compiles in a hosted build with exceptions disabled
       (`-fno-exceptions`). Text-formatting errors, `basic_fixed_string::at` and
       `inplace_vector` go through `MP_UNITS_THROW`, which aborts without exceptions.

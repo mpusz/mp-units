@@ -27,6 +27,10 @@
 
 #if MP_UNITS_API_THROWING_CONSTRAINTS
 #include <mp-units/bits/constexpr_format.h>
+#if !MP_UNITS_USE_FMTLIB
+// the message is formatted at compile time, which the library does only through {fmt}
+#error "Throwing constraints need {fmt} (MP_UNITS_API_STD_FORMAT=0)"
+#endif
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #ifdef MP_UNITS_IMPORT_STD
 import std;
