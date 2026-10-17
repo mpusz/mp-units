@@ -223,6 +223,8 @@ A kind `kind_of<K>` names a quantity somewhere in the tree below the kind root `
 saying where. A conversion between a kind of a named quantity and a named quantity never
 ranks `cast`.
 
+### A kind as the source
+
 When the source is a kind, the target is `implicit` if it lies in the tree below `K`,
 sub-kinds included, unless its equation lacks a declared kind that `K` carries, which
 makes it `explicit`. A child of _angular velocity_ defined as `inverse(duration)` is
@@ -240,6 +242,8 @@ static_assert(!utility::castable(kind_of<isq::frequency>, isq::activity));
 This is why `quantity<isq::height[m]> tower_height = 42 * m;` compiles: the right-hand
 side is a quantity of kind _length_ and _height_ is a _length_.
 
+### A kind as the target
+
 When the target is a kind, asking for "any quantity of kind `K`" is the same as asking for
 `K` itself. A source below `K` is `implicit`, or `explicit` if one of them carries a
 declared kind the other doesn't, lying on the way up, the source included and `K`
@@ -254,6 +258,8 @@ static_assert(!utility::implicitly_convertible(isq::angular_measure, kind_of<dim
 static_assert(utility::explicitly_convertible(dimensionless, kind_of<isq::angular_measure>));
 static_assert(!utility::implicitly_convertible(dimensionless, kind_of<isq::angular_measure>));
 ```
+
+### Kinds in equations
 
 When a derived quantity is involved, the equation rules below run with `K` in place of the
 kind. Every downcast step from a source kind ranks `implicit`, while dropping a declared
@@ -295,6 +301,26 @@ lengths, and the last two keep the product apart against the merged `pow<2>(isq:
 Only a result whose factors are all kinds is a kind itself,
 `kind_of<isq::length / isq::duration>` for `42 * m / (2 * s)`.
 
+### The unit of a product
+
+The unit of `q1 * q2` is `U1 * U2`, and the product converts to it as to every unit whose
+kind converts implicitly to its specification. A unit's kind is the product of its
+factors' kinds, and only some named units carry a kind of their own, mainly the base
+units, the angle units, and the ones the SI brochure keeps for one quantity, `Hz`, `Bq`,
+`Gy`, `Sv` and `kat`.
+[The FAQ](../../getting_started/faq.md#why-do-only-some-named-units-carry-a-quantity-kind)
+has the full list and the reasons. Every other named unit has the kind of its definition:
+`N` is `kg * m / s²`, `J` is `N * m` and `W` is `J / s`, so the kind of `N * m * W` is a
+product of base kinds, and it converts to `torque * power` the way `kg * m² / s²` converts
+to an _energy_. That the joule is not written for a _moment of force_ is a convention ISO
+80000-1:2009 states and the library leaves to the author. What the brochure keeps for one
+quantity stays so alone and inside a product:
+
+```cpp
+static_assert(UnitOf<decltype(J), isq::torque>);
+static_assert(!UnitOf<decltype(Hz), isq::activity>);
+static_assert(!UnitOf<decltype(Bq / m), isq::frequency / isq::length>);
+```
 
 ## Two named quantities
 

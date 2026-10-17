@@ -43,6 +43,24 @@ This page documents the version history and changes for the **mp-units** library
 - fix: the inverse of an angle no longer converts implicitly to a plain number.
       `1 / isq::angular_measure` to `dimensionless` drops the angle, so it is explicit, and
       an angle doesn't convert to its own inverse, even with `quantity_cast`
+- (!) refactor: `si::newton`, `si::pascal`, `si::joule`, `si::volt`, `si::farad`,
+      `si::ohm`, `si::siemens`, and `si::tesla` no longer carry a quantity kind. A named
+      unit carries one where the SI brochure keeps the name for one quantity, `Hz`, `Bq`,
+      `Gy`, `Sv` and `kat`, where the library needs it for its own distinctions, `rad`,
+      `sr`, the base units, the photometric units, and IEC's `var`, `bit`, `baud` and
+      `erlang`. So `quantity<isq::torque[J]>` is well-formed and `1 * J` converts to a
+      torque, as `1 * N * m` always converted to an energy, while `1 * Hz` still doesn't
+      convert to an activity, nor `Bq / m` to a frequency per length. ISO 80000-1:2009
+      notes that the joule is not written for a moment of force, and that convention is
+      left to the author
+- fix: a product of typed quantities converts to its own unit again. `omega * inertia`
+      with `omega` in `rad / s` has the unit `kg m² rad/s`, and a moment of inertia is
+      defined over an angular velocity, so its specification takes the angle away that the
+      velocity brings and the angle looked lost. For a kind source, what a factor's
+      definition takes away now stays apart from what the other factors carry. The angle
+      of `rad / s` also died against the `rotation` in `rotation * angular_velocity`
+      before the velocity was expanded. From a kind source, a pairing that would refuse
+      now waits for a factor that mentions the tree, however deep
 - fix: the kind boundary lowers every verdict between two named quantities, and between a
       named quantity and a kind, where it used to lower only an `implicit` verdict, and
       from a kind none at all. A `kind_of<isq::angular_velocity>` converts to a child

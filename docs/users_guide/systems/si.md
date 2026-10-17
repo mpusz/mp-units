@@ -94,19 +94,19 @@ inline constexpr struct radian : named_unit<"rad", metre / metre, kind_of<isq::a
 inline constexpr struct steradian : named_unit<"sr", square(metre) / square(metre), kind_of<isq::solid_angular_measure>> {} steradian;
 
 // Mechanics
-inline constexpr struct newton : named_unit<"N", kilogram * metre / square(second), kind_of<isq::force>> {} newton;
-inline constexpr struct pascal : named_unit<"Pa", newton / square(metre), kind_of<isq::pressure>> {} pascal;
-inline constexpr struct joule : named_unit<"J", newton * metre, kind_of<isq::energy>> {} joule;
+inline constexpr struct newton : named_unit<"N", kilogram * metre / square(second)> {} newton;
+inline constexpr struct pascal : named_unit<"Pa", newton / square(metre)> {} pascal;
+inline constexpr struct joule : named_unit<"J", newton * metre> {} joule;
 inline constexpr struct watt : named_unit<"W", joule / second> {} watt;
 
 // Electricity and magnetism
 inline constexpr struct coulomb : named_unit<"C", ampere * second> {} coulomb;
-inline constexpr struct volt : named_unit<"V", watt / ampere, kind_of<isq::electric_potential>> {} volt;
-inline constexpr struct farad : named_unit<"F", coulomb / volt, kind_of<isq::capacitance>> {} farad;
-inline constexpr struct ohm : named_unit<symbol_text{u8"Ω", "ohm"}, volt / ampere, kind_of<isq::impedance>> {} ohm;
-inline constexpr struct siemens : named_unit<"S", one / ohm, kind_of<isq::admittance>> {} siemens;
+inline constexpr struct volt : named_unit<"V", watt / ampere> {} volt;
+inline constexpr struct farad : named_unit<"F", coulomb / volt> {} farad;
+inline constexpr struct ohm : named_unit<symbol_text{u8"Ω", "ohm"}, volt / ampere> {} ohm;
+inline constexpr struct siemens : named_unit<"S", one / ohm> {} siemens;
 inline constexpr struct weber : named_unit<"Wb", volt * second> {} weber;
-inline constexpr struct tesla : named_unit<"T", weber / square(metre), kind_of<isq::magnetic_flux_density>> {} tesla;
+inline constexpr struct tesla : named_unit<"T", weber / square(metre)> {} tesla;
 inline constexpr struct henry : named_unit<"H", weber / ampere> {} henry;
 
 // Photometry
