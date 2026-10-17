@@ -42,8 +42,8 @@ properdocs --version
 echo ""
 echo "📋 Verifying compiler matrix:"
 
-# Expected GCC versions (12, 13, 14, 15)
-expected_gcc=(12 13 14 15)
+# The compilers .devcontainer/check_all.sh builds with (set up by setup_compilers.sh)
+expected_gcc=(12 13 14 15 16)
 for version in "${expected_gcc[@]}"; do
   if command -v "gcc-$version" >/dev/null 2>&1 && command -v "g++-$version" >/dev/null 2>&1; then
     echo "  ✅ GCC-$version"
@@ -53,8 +53,8 @@ for version in "${expected_gcc[@]}"; do
   fi
 done
 
-# Expected Clang versions (16, 17, 18, 19, 20, 21)
-expected_clang=(16 17 18 19 20 21)
+# clang-19 cannot compile mp-units (https://github.com/llvm/llvm-project/pull/118288)
+expected_clang=(16 17 18 20 21 22 23)
 for version in "${expected_clang[@]}"; do
   if command -v "clang-$version" >/dev/null 2>&1 && command -v "clang++-$version" >/dev/null 2>&1; then
     echo "  ✅ Clang-$version"
@@ -68,7 +68,7 @@ echo ""
 echo "📦 Verifying Conan profiles exist in image:"
 
 # Verify expected Conan profiles exist in the Docker image
-expected_profiles=(gcc12 gcc13 gcc14 gcc15 clang16 clang17 clang18 clang19 clang20 clang21)
+expected_profiles=(gcc12 gcc13 gcc14 gcc15 gcc16 clang16 clang17 clang18 clang20 clang21 clang22 clang23)
 for profile in "${expected_profiles[@]}"; do
   if conan profile show -pr "$profile" >/dev/null 2>&1; then
     echo "  ✅ Profile $profile"
