@@ -29,6 +29,7 @@
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/quantity_spec_hierarchy.h>
+#include <mp-units/bits/unsatisfied.h>
 #include <mp-units/compat_macros.h>
 #include <mp-units/ext/algorithm.h>
 #include <mp-units/ext/type_name.h>
@@ -370,7 +371,9 @@ struct quantity_spec_interface : quantity_spec_interface_base {
   }
 
   template<typename Self, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
-    requires(mp_units::utility::explicitly_convertible(Q::quantity_spec, Self{})) &&
+    requires(mp_units::utility::explicitly_convertible(Q::quantity_spec, Self{}) ||
+             detail::unsatisfied<"A quantity of '{}' is not convertible to '{}'">(detail::type_name(Q::quantity_spec),
+                                                                                  detail::type_name(Self{}))) &&
             requires { typename quantity<make_reference(Self{}, Q::unit), typename Q::rep>; }
   [[nodiscard]] constexpr Quantity auto operator()(this Self, FwdQ && q)
   {
@@ -379,7 +382,9 @@ struct quantity_spec_interface : quantity_spec_interface_base {
   }
 
   template<typename Self, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>>
-    requires(mp_units::utility::explicitly_convertible(QP::quantity_spec, Self{})) &&
+    requires(mp_units::utility::explicitly_convertible(QP::quantity_spec, Self{}) ||
+             detail::unsatisfied<"A quantity of '{}' is not convertible to '{}'">(detail::type_name(QP::quantity_spec),
+                                                                                  detail::type_name(Self{}))) &&
             requires { typename quantity_point<make_reference(Self{}, QP::unit), QP::point_origin, typename QP::rep>; }
   [[nodiscard]] constexpr QuantityPoint auto operator()(this Self self, FwdQP && qp)
   {
@@ -388,7 +393,9 @@ struct quantity_spec_interface : quantity_spec_interface_base {
   }
 
   template<typename Self, typename FwdValue, RepresentationOf<Self{}> Value = std::remove_cvref_t<FwdValue>>
-    requires(detail::explicitly_convertible_to_dimensionless(Self{}))
+    requires(detail::explicitly_convertible_to_dimensionless(Self{}) ||
+             detail::unsatisfied<"'{}' is not dimensionless, so it cannot be made from a raw number">(
+               detail::type_name(Self{})))
   [[nodiscard]] constexpr Quantity auto operator()(this Self, FwdValue && val)
   {
     return make_quantity_of_one<Self{}>(std::forward<FwdValue>(val));
@@ -401,7 +408,9 @@ struct quantity_spec_interface : quantity_spec_interface_base {
   }
 
   template<typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>, typename Self_ = Self>
-    requires(mp_units::utility::explicitly_convertible(Q::quantity_spec, Self_{})) &&
+    requires(mp_units::utility::explicitly_convertible(Q::quantity_spec, Self_{}) ||
+             detail::unsatisfied<"A quantity of '{}' is not convertible to '{}'">(detail::type_name(Q::quantity_spec),
+                                                                                  detail::type_name(Self_{}))) &&
             requires { typename quantity<make_reference(Self{}, Q::unit), typename Q::rep>; }
   [[nodiscard]] constexpr Quantity auto operator()(FwdQ && q) const
   {
@@ -410,7 +419,9 @@ struct quantity_spec_interface : quantity_spec_interface_base {
   }
 
   template<typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>, typename Self_ = Self>
-    requires(mp_units::utility::explicitly_convertible(QP::quantity_spec, Self_{})) &&
+    requires(mp_units::utility::explicitly_convertible(QP::quantity_spec, Self_{}) ||
+             detail::unsatisfied<"A quantity of '{}' is not convertible to '{}'">(detail::type_name(QP::quantity_spec),
+                                                                                  detail::type_name(Self_{}))) &&
             requires { typename quantity_point<make_reference(Self{}, QP::unit), QP::point_origin, typename QP::rep>; }
   [[nodiscard]] constexpr QuantityPoint auto operator()(FwdQP && qp) const
   {
@@ -419,7 +430,9 @@ struct quantity_spec_interface : quantity_spec_interface_base {
   }
 
   template<typename FwdValue, typename Self_ = Self, RepresentationOf<Self_{}> Value = std::remove_cvref_t<FwdValue>>
-    requires(detail::explicitly_convertible_to_dimensionless(Self_{}))
+    requires(detail::explicitly_convertible_to_dimensionless(Self_{}) ||
+             detail::unsatisfied<"'{}' is not dimensionless, so it cannot be made from a raw number">(
+               detail::type_name(Self_{})))
   [[nodiscard]] constexpr Quantity auto operator()(FwdValue && val) const
   {
     return make_quantity_of_one<Self{}>(std::forward<FwdValue>(val));

@@ -112,6 +112,28 @@ This page documents the version history and changes for the **mp-units** library
       `std::common_type_t<short, unsigned char>`). Multiplying or dividing a unit by a
       `quantity` now states why it is ill-formed, as multiplying a unit by a number already
       did.
+- fix: a rejected `+`, `-`, `%`, `==` or `<=>` on two quantities of different kinds, and a
+      rejected `hypot`, report that the quantities have no common quantity instead of an
+      invalid call to `get_common_reference`. Three more mistakes get a sentence: a raw
+      number in `+`, `-` or `%` with a dimensioned quantity, `quantity_from()` with an
+      unrelated origin, and `quantity_from_zero()` on a point whose origin is not the
+      natural one. A `QuantityOf`, `QuantitySpecOf` or `QuantityPointOf` asked with a quantity
+      specification no longer explains the rejected character branch through every
+      `std::is_same_v` under it, which cut Clang's notes for a mismatched `QuantityOf`
+      parameter from 149 lines to 31
+- fix: a quantity or a point that meets a representation constraint is rejected in one
+      note (`!disable_representation<…>`) instead of three layers of representation
+      concepts, a vector added to a scalar quantity of the same kind reports the
+      representations that have no sum instead of an ill-formed `std::invoke_result`, and
+      a representation whose character the quantity does not admit fails a named
+      `CharacterAdmitted` concept. Sentences now also name a quantity of another kind
+      added to or subtracted from a point, a difference or comparison of points with
+      unrelated origins, component-wise construction whose arguments do not fit the axes,
+      `fma`, `fmod` and `remainder` on quantities of different kinds, `floor`, `ceil`,
+      `round` and `inverse` to a unit of another kind, `quantity_cast` to a specification
+      it cannot reach, `value_cast` to a quantity type of another specification, and a
+      quantity specification called with a quantity it cannot convert or with a raw number
+      when it is not dimensionless
 - feat: the concepts for symbolic types accept a const-qualified type, the way the
       standard's type categories do. `Unit<decltype(si::metre)>` and
       `QuantitySpec<decltype(isq::length)>` now hold, just as `Quantity<const Q>` always

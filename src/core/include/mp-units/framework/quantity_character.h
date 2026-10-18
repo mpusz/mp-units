@@ -258,12 +258,18 @@ struct character_mask {
 // The spellings that name a character directly: one axis, both axes, or the legacy flat enum. A
 // quantity specification is excluded, because the `…Of` concepts give it the quantity-tree reading
 // (see `QuantityOf`).
+//
+// A variable template behind the concept so that it forms one atom. `QuantityOf` and its siblings ask
+// it in their character branch, which a quantity specification argument fails by design, and Clang
+// reports a failed disjunction of `std::same_as` through every `is_same_v` under it.
 MP_UNITS_DIAGNOSTIC_PUSH
 MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
+template<typename T>
+constexpr bool is_character_value =
+  CharacterAxis<T> || std::is_same_v<T, quantity_character> || std::is_same_v<T, quantity_character_legacy>;
+
 template<auto V>
-concept CharacterValue =
-  CharacterAxis<MP_UNITS_NTTP_HACK(decltype(V))> || std::same_as<MP_UNITS_NTTP_HACK(decltype(V)), quantity_character> ||
-  std::same_as<MP_UNITS_NTTP_HACK(decltype(V)), quantity_character_legacy>;
+concept CharacterValue = is_character_value<MP_UNITS_NTTP_HACK(decltype(V))>;
 
 // A bare axis constrains only its own axis, so the other one gets every flag.
 template<auto V>

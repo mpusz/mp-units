@@ -24,6 +24,7 @@
 
 // IWYU pragma: private, include <mp-units/framework.h>
 #include <mp-units/bits/module_macros.h>
+#include <mp-units/bits/unsatisfied.h>
 #include <mp-units/compat_macros.h>
 #include <mp-units/framework/quantity_concepts.h>
 #include <mp-units/framework/quantity_point_concepts.h>
@@ -58,7 +59,9 @@ namespace mp_units {
  * @tparam ToQS a quantity specification to use for a target quantity
  */
 template<QuantitySpec auto ToQS, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
-  requires(mp_units::utility::castable(Q::quantity_spec, ToQS)) &&
+  requires(mp_units::utility::castable(Q::quantity_spec, ToQS) ||
+           detail::unsatisfied<"'{}' cannot be cast to '{}'">(detail::type_name(Q::quantity_spec),
+                                                              detail::type_name(ToQS))) &&
           requires { typename quantity<make_reference(ToQS, Q::unit), typename Q::rep>; }
 [[nodiscard]] constexpr Quantity auto quantity_cast(FwdQ&& q)
 {
@@ -83,7 +86,9 @@ template<QuantitySpec auto ToQS, typename FwdQ, Quantity Q = std::remove_cvref_t
  * @tparam ToQS a quantity specification to use for a target quantity point
  */
 template<QuantitySpec auto ToQS, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>>
-  requires(mp_units::utility::castable(QP::quantity_spec, ToQS)) &&
+  requires(mp_units::utility::castable(QP::quantity_spec, ToQS) ||
+           detail::unsatisfied<"'{}' cannot be cast to '{}'">(detail::type_name(QP::quantity_spec),
+                                                              detail::type_name(ToQS))) &&
           requires { typename quantity_point<make_reference(ToQS, QP::unit), QP::point_origin, typename QP::rep>; }
 [[nodiscard]] constexpr QuantityPoint auto quantity_cast(FwdQP&& qp)
 {

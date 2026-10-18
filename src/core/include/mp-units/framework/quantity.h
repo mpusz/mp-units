@@ -134,6 +134,15 @@ concept ImplicitFromNumber =
 template<typename Q>
 concept ImplicitFromNumberQuantity = Quantity<Q> && ImplicitFromNumber<Q::reference>;
 
+// The number operand of `+`, `-` and `%`. The comparisons keep the bare `ImplicitFromNumber`, because
+// `q == 0` on a dimensioned quantity is valid and evaluates it to false on the way to the `zero`
+// overload, so a sentence there would be a wrong diagnosis.
+template<auto R>
+concept ImplicitFromNumberOperand =
+  ImplicitFromNumber<R> ||
+  unsatisfied<"'{}' is not a dimensionless quantity in unit 'one', which a raw number operand requires">(
+    type_name(remove_kind(get_quantity_spec(R))));
+
 // The invocation result is canonicalized (see `representation_canonical_type`) so that
 // expression-template results (e.g. Eigen, Blaze) are checked and stored as their evaluated
 // concrete type rather than the lazy proxy type.
@@ -184,6 +193,21 @@ template<Reference auto R, typename Res>
     return get_kind(get_quantity_spec(R))[get_unit(R)];
 }
 
+// Quantities whose specifications have a common one, which is what adding, subtracting and comparing
+// them needs. Asked before the common reference is formed, so that `length + time` is reported in these
+// words rather than as an invalid call to `get_common_reference`. Only the two-quantity overloads of
+// the operators and `hypot` evaluate it, and only with operands that are the mistake, so the sentence
+// is not gated.
+template<auto QS1, auto QS2>
+concept QuantitySpecsOfTheSameKind =
+  have_common_quantity_spec(QS1, QS2) ||
+  unsatisfied<"'{}' and '{}' are quantities of different kinds and have no common quantity">(
+    type_name(remove_kind(QS1)), type_name(remove_kind(QS2)));
+
+template<typename Q1, typename Q2>
+concept QuantitiesOfTheSameKind =
+  Quantity<Q1> && Quantity<Q2> && QuantitySpecsOfTheSameKind<Q1::quantity_spec, Q2::quantity_spec>;
+
 template<auto R1, auto R2>
 concept HaveCommonReference = requires { mp_units::get_common_reference(R1, R2); };
 
@@ -199,12 +223,15 @@ template<typename Rep, Unit U1, Unit U2>
   return scaling_overflows_non_zero_values<Rep>(u1, cu) || scaling_overflows_non_zero_values<Rep>(u2, cu);
 }
 
+// `InvocableQuantities` precedes the conversions to the common quantity because it names the
+// representations that have no sum, whereas `common_quantity_for` would report an ill-formed
+// `std::invoke_result` for a vector added to a scalar.
 template<typename Func, typename Q1, typename Q2>
 concept CommonlyInvocableQuantities =
-  Quantity<Q1> && Quantity<Q2> && HaveCommonReference<Q1::reference, Q2::reference> &&
+  QuantitiesOfTheSameKind<Q1, Q2> && HaveCommonReference<Q1::reference, Q2::reference> &&
+  InvocableQuantities<Func, Q1, Q2, mp_units::get_common_quantity_spec(Q1::quantity_spec, Q2::quantity_spec)> &&
   std::convertible_to<Q1, common_quantity_for<Func, Q1, Q2>> &&
   std::convertible_to<Q2, common_quantity_for<Func, Q1, Q2>> &&
-  InvocableQuantities<Func, Q1, Q2, mp_units::get_common_quantity_spec(Q1::quantity_spec, Q2::quantity_spec)> &&
   !overflows_non_zero_common_values<
     representation_canonical_type_t<std::invoke_result_t<Func, typename Q1::rep, typename Q2::rep>>>(Q1::unit,
                                                                                                      Q2::unit);
@@ -226,7 +253,7 @@ template<typename Q1, typename Q2>
 
 template<typename Q1, typename Q2>
 concept CommonlyComparableQuantities =
-  Quantity<Q1> && Quantity<Q2> && HaveCommonReference<Q1::reference, Q2::reference> &&
+  QuantitiesOfTheSameKind<Q1, Q2> && HaveCommonReference<Q1::reference, Q2::reference> &&
   requires { typename std::common_type_t<Q1, Q2>; } && comparable_in_wide_type<Q1, Q2>();
 
 // Sign-aware integer comparisons with `std::cmp_less`/`std::cmp_equal` semantics.  Written by
@@ -365,14 +392,14 @@ struct quantity_iface {
   }
 
   template<auto R1, typename Rep1, RepresentationOf<get_quantity_spec(R1)> Value>
-    requires ImplicitFromNumber<R1> && InvokeResultOf<get_quantity_spec(R1), std::plus<>, Rep1, const Value&>
+    requires ImplicitFromNumberOperand<R1> && InvokeResultOf<get_quantity_spec(R1), std::plus<>, Rep1, const Value&>
   [[nodiscard]] friend constexpr Quantity auto operator+(const quantity<R1, Rep1>& lhs, const Value& rhs)
   {
     return lhs + quantity{rhs};
   }
 
   template<auto R1, typename Rep1, RepresentationOf<get_quantity_spec(R1)> Value>
-    requires ImplicitFromNumber<R1> && InvokeResultOf<get_quantity_spec(R1), std::plus<>, Rep1, const Value&>
+    requires ImplicitFromNumberOperand<R1> && InvokeResultOf<get_quantity_spec(R1), std::plus<>, Rep1, const Value&>
   [[nodiscard]] friend constexpr Quantity auto operator+(const Value& lhs, const quantity<R1, Rep1>& rhs)
   {
     return quantity{lhs} + rhs;
@@ -391,14 +418,14 @@ struct quantity_iface {
   }
 
   template<auto R1, typename Rep1, RepresentationOf<get_quantity_spec(R1)> Value>
-    requires ImplicitFromNumber<R1> && InvokeResultOf<get_quantity_spec(R1), std::minus<>, Rep1, const Value&>
+    requires ImplicitFromNumberOperand<R1> && InvokeResultOf<get_quantity_spec(R1), std::minus<>, Rep1, const Value&>
   [[nodiscard]] friend constexpr Quantity auto operator-(const quantity<R1, Rep1>& lhs, const Value& rhs)
   {
     return lhs - quantity{rhs};
   }
 
   template<auto R1, typename Rep1, RepresentationOf<get_quantity_spec(R1)> Value>
-    requires ImplicitFromNumber<R1> && InvokeResultOf<get_quantity_spec(R1), std::minus<>, Rep1, const Value&>
+    requires ImplicitFromNumberOperand<R1> && InvokeResultOf<get_quantity_spec(R1), std::minus<>, Rep1, const Value&>
   [[nodiscard]] friend constexpr Quantity auto operator-(const Value& lhs, const quantity<R1, Rep1>& rhs)
   {
     return quantity{lhs} - rhs;
@@ -419,14 +446,14 @@ struct quantity_iface {
   }
 
   template<auto R1, typename Rep1, RepresentationOf<get_quantity_spec(R1)> Value>
-    requires ImplicitFromNumber<R1> && InvokeResultOf<get_quantity_spec(R1), std::modulus<>, Rep1, const Value&>
+    requires ImplicitFromNumberOperand<R1> && InvokeResultOf<get_quantity_spec(R1), std::modulus<>, Rep1, const Value&>
   [[nodiscard]] friend constexpr Quantity auto operator%(const quantity<R1, Rep1>& lhs, const Value& rhs)
   {
     return lhs % quantity{rhs};
   }
 
   template<auto R1, typename Rep1, RepresentationOf<get_quantity_spec(R1)> Value>
-    requires ImplicitFromNumber<R1> && InvokeResultOf<get_quantity_spec(R1), std::modulus<>, Rep1, const Value&>
+    requires ImplicitFromNumberOperand<R1> && InvokeResultOf<get_quantity_spec(R1), std::modulus<>, Rep1, const Value&>
   [[nodiscard]] friend constexpr Quantity auto operator%(const Value& lhs, const quantity<R1, Rep1>& rhs)
   {
     return quantity{lhs} % rhs;
@@ -632,7 +659,9 @@ template<auto R, typename Rep, typename... Qs>
 concept ComposableFrom =
   (sizeof...(Qs) >= 2) && rep_constructible_from_elements<Rep>(std::index_sequence_for<Qs...>{}) &&
   Decomposable<get_quantity_spec(R), Rep> && (sizeof...(Qs) == decomposition_size<get_quantity_spec(R), Rep>()) &&
-  axis_quantities_convertible<R, Rep, Qs...>(std::index_sequence_for<Qs...>{});
+  (axis_quantities_convertible<R, Rep, Qs...>(std::index_sequence_for<Qs...>{}) ||
+   unsatisfied<"Not every argument converts to the component quantity of its position in '{}'">(
+     type_name<quantity<R, Rep>>()));
 
 // Materializes the representation from the component quantities. Each argument is converted to its
 // position's component quantity type first, which is where the unit conversion and the axis check
