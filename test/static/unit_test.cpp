@@ -385,6 +385,15 @@ static_assert(!valid_named_unit<helion_g_factor * metre>);
 static_assert(!valid_named_unit<one / helion_g_factor>);   // negative denominator flips the sign
 static_assert(!valid_named_unit<cubic(helion_g_factor)>);  // odd power stays negative
 
+// a base unit and a unit restricted to a quantity take a quantity kind, not the quantity itself
+template<auto... Args>
+concept named_unit_arguments = requires { named_unit<"tst", Args...>{}; };
+
+static_assert(named_unit_arguments<kind_of<isq::length>>);
+static_assert(!named_unit_arguments<isq::length>);
+static_assert(named_unit_arguments<inverse(second), kind_of<isq::frequency>>);
+static_assert(!named_unit_arguments<inverse(second), isq::frequency>);
+
 // operations commutativity
 constexpr auto u1 = mag<1000> * kilometre / hour;
 static_assert(is_of_type<u1, derived_unit<scaled_unit<mag<1000>, kilo_<metre_>>, per<hour_>>>);

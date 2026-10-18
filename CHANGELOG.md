@@ -138,6 +138,10 @@ This page documents the version history and changes for the **mp-units** library
       * Zm + 1 * am` with `int`, is an unsatisfied constraint on Clang as it is on GCC. It
       was a hard error there, since `try_get_value` returned its disengaged
       `std::optional` by copy, which Clang rejects in constant evaluation with libstdc++
+- fix: a `named_unit` given a quantity specification where a quantity kind is
+      required, `named_unit<"x", isq::length>` instead of `named_unit<"x",
+      kind_of<isq::length>>`, fails the `NamedUnitArguments` constraint with a sentence
+      naming `kind_of` instead of as an incomplete type
 - feat: the concepts for symbolic types accept a const-qualified type, the way the
       standard's type categories do. `Unit<decltype(si::metre)>` and
       `QuantitySpec<decltype(isq::length)>` now hold, just as `Quantity<const Q>` always

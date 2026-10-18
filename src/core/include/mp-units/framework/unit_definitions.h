@@ -369,7 +369,8 @@ constexpr bool is_specialization_of_scaled_unit<scaled_unit<M, U>> = true;
  *
  * @tparam Symbol a short text representation of the unit
  */
-MP_UNITS_EXPORT template<symbol_text Symbol, auto...>
+MP_UNITS_EXPORT template<symbol_text Symbol, auto... Args>
+  requires detail::NamedUnitArguments<Args...>
 struct named_unit;
 
 /**
