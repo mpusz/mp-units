@@ -284,6 +284,86 @@ static_assert(!ReferenceOf<struct si::second, isq::dim_length>);
 
 static_assert(ReferenceOf<struct one, dimensionless>);
 static_assert(ReferenceOf<decltype(dimensionless[one]), dimensionless>);
+
+// Overload sets that rank by these concepts. `Unit` is a disjunct of `Reference`, so a unit picks the
+// `Unit` overload and any other reference the `Reference` one. `QuantityOf` is `Quantity` plus a
+// constraint, so a `Quantity` overload is the fallback for quantities of other kinds.
+namespace concept_subsumption {
+
+constexpr int unit_or_reference(Unit auto) { return 1; }
+constexpr int unit_or_reference(Reference auto) { return 2; }
+static_assert(unit_or_reference(si::metre) == 1);
+static_assert(unit_or_reference(si::metre / si::second) == 1);
+static_assert(unit_or_reference(isq::height[si::metre]) == 2);
+
+// GCC 12 to 15 do not rank templates whose class-type non-type parameters are constrained with
+// `Unit auto` and `Reference auto` (a reproducer without the library fails there too), GCC 16 does.
+#if !MP_UNITS_COMP_GCC || MP_UNITS_COMP_GCC >= 16
+template<Unit auto U>
+constexpr int quantity_in_unit_or_reference(quantity<U, double>)
+{
+  return 1;
+}
+template<Reference auto R>
+constexpr int quantity_in_unit_or_reference(quantity<R, double>)
+{
+  return 2;
+}
+static_assert(quantity_in_unit_or_reference(1. * si::metre) == 1);
+static_assert(quantity_in_unit_or_reference(isq::height(1. * si::metre)) == 2);
+#endif
+
+constexpr int length_or_any(Quantity auto) { return 1; }
+constexpr int length_or_any(QuantityOf<isq::length> auto) { return 2; }
+static_assert(length_or_any(isq::height(1. * si::metre)) == 2);
+static_assert(length_or_any(1. * si::metre) == 2);
+static_assert(length_or_any(1. * si::second) == 1);
+
+// A height overload with a length fallback. With concrete parameter types the exact match wins, so a
+// height picks the height overload and every other length, the bare `1 * m` included, the fallback.
+constexpr int height_or_length(quantity<si::metre, double>) { return 1; }
+constexpr int height_or_length(quantity<isq::height[si::metre], double>) { return 2; }
+static_assert(height_or_length(isq::height(1. * si::metre)) == 2);
+static_assert(height_or_length(isq::width(1. * si::metre)) == 1);
+static_assert(height_or_length(isq::length(1. * si::metre)) == 1);
+static_assert(height_or_length(1. * si::metre) == 1);
+
+// Two `QuantityOf` overloads do not rank: both are the same atom with a different quantity
+// specification, and subsumption does not see that `isq::height` is a `isq::length`. A height, and a
+// bare `1 * m`, which converts to a height as well, match both.
+constexpr int generic_height_or_length(QuantityOf<isq::length> auto) { return 1; }
+constexpr int generic_height_or_length(QuantityOf<isq::height> auto) { return 2; }
+template<typename Q>
+concept generic_height_or_length_ambiguous = !requires(Q qty) { generic_height_or_length(qty); };
+static_assert(generic_height_or_length_ambiguous<quantity<isq::height[si::metre]>>);
+static_assert(generic_height_or_length_ambiguous<quantity<si::metre>>);
+static_assert(generic_height_or_length(isq::width(1. * si::metre)) == 1);
+
+// Asking for the kind instead of `isq::length` does not change that: the two constraints are still the
+// same concept with different values.
+constexpr int generic_height_or_length_kind(QuantityOf<kind_of<isq::length>> auto) { return 1; }
+constexpr int generic_height_or_length_kind(QuantityOf<isq::height> auto) { return 2; }
+template<typename Q>
+concept generic_height_or_length_kind_ambiguous = !requires(Q qty) { generic_height_or_length_kind(qty); };
+static_assert(generic_height_or_length_kind_ambiguous<quantity<isq::height[si::metre]>>);
+static_assert(generic_height_or_length_kind_ambiguous<quantity<si::metre>>);
+static_assert(generic_height_or_length_kind(isq::width(1. * si::metre)) == 1);
+
+// The fallback has to exclude the specific case. A bare `1 * m` then goes to the height overload,
+// because a quantity of the length kind is also a height.
+template<QuantityOf<isq::length> Q>
+  requires(!QuantityOf<Q, isq::height>)
+constexpr int generic_height_or_other_length(Q)
+{
+  return 1;
+}
+constexpr int generic_height_or_other_length(QuantityOf<isq::height> auto) { return 2; }
+static_assert(generic_height_or_other_length(isq::height(1. * si::metre)) == 2);
+static_assert(generic_height_or_other_length(isq::width(1. * si::metre)) == 1);
+static_assert(generic_height_or_other_length(isq::length(1. * si::metre)) == 1);
+static_assert(generic_height_or_other_length(1. * si::metre) == 2);
+
+}  // namespace concept_subsumption
 static_assert(ReferenceOf<decltype(isq::rotation[one]), isq::rotation>);
 static_assert(ReferenceOf<decltype(isq::rotation[one]), dimensionless>);
 static_assert(ReferenceOf<struct si::radian, isq::angular_measure>);
