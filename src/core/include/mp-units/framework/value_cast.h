@@ -26,6 +26,7 @@
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/sudo_cast.h>
+#include <mp-units/bits/unsatisfied.h>
 #include <mp-units/compat_macros.h>
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/quantity_concepts.h>
@@ -272,7 +273,11 @@ template<typename ToRep, Unit auto ToU, typename FwdQ, RoundingPolicy Policy = t
  * @param policy an optional rounding policy (`truncated` when not provided)
  */
 template<Quantity ToQ, typename FwdQ, RoundingPolicy Policy = truncated_t, Quantity Q = std::remove_cvref_t<FwdQ>>
-  requires(ToQ::quantity_spec == Q::quantity_spec) && UnitOf<decltype(ToQ::unit), Q::quantity_spec> &&
+  requires(ToQ::quantity_spec == Q::quantity_spec ||
+           detail::unsatisfied<
+             "'value_cast' changes only the unit and the representation type, not the quantity type ('{}' to '{}')">(
+             detail::type_name(Q::quantity_spec), detail::type_name(ToQ::quantity_spec))) &&
+          UnitOf<decltype(ToQ::unit), Q::quantity_spec> &&
           std::constructible_from<typename ToQ::rep, typename Q::rep> &&
           detail::ExplicitlyCastable<Q::unit, ToQ::unit, typename ToQ::rep> &&
           detail::ValidRoundingPolicyFor<Policy, typename Q::rep, typename ToQ::rep>
@@ -387,7 +392,11 @@ template<typename ToRep, Unit auto ToU, typename FwdQP, RoundingPolicy Policy = 
  */
 template<Quantity ToQ, typename FwdQP, RoundingPolicy Policy = truncated_t,
          QuantityPoint QP = std::remove_cvref_t<FwdQP>>
-  requires(ToQ::quantity_spec == QP::quantity_spec) && UnitOf<decltype(ToQ::unit), QP::quantity_spec> &&
+  requires(ToQ::quantity_spec == QP::quantity_spec ||
+           detail::unsatisfied<
+             "'value_cast' changes only the unit and the representation type, not the quantity type ('{}' to '{}')">(
+             detail::type_name(QP::quantity_spec), detail::type_name(ToQ::quantity_spec))) &&
+          UnitOf<decltype(ToQ::unit), QP::quantity_spec> &&
           std::constructible_from<typename ToQ::rep, typename QP::rep> &&
           detail::ExplicitlyCastable<QP::unit, ToQ::unit, typename ToQ::rep> &&
           detail::ValidRoundingPolicyFor<Policy, typename QP::rep, typename ToQ::rep>

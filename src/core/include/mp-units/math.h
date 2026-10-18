@@ -286,7 +286,7 @@ template<auto R, auto PO, typename Rep>
  * @return Quantity: The nearest floating point representable to ax+b
  */
 template<auto R, auto S, auto T, typename Rep1, typename Rep2, typename Rep3>
-  requires requires { get_common_quantity_spec(get_quantity_spec(R) * get_quantity_spec(S), get_quantity_spec(T)); } &&
+  requires detail::QuantitySpecsOfTheSameKind<get_quantity_spec(R) * get_quantity_spec(S), get_quantity_spec(T)> &&
            (equivalent(get_unit(R) * get_unit(S), get_unit(T))) && requires(Rep1 v1, Rep2 v2, Rep3 v3) {
              requires requires { fma(v1, v2, v3); }
 #if MP_UNITS_HOSTED
@@ -315,7 +315,7 @@ fma(const quantity<R, Rep1>& a, const quantity<S, Rep2>& x, const quantity<T, Re
  * @return QuantityPoint: The nearest floating point representable to ax+b
  */
 template<auto R, auto S, auto T, auto Origin, typename Rep1, typename Rep2, typename Rep3>
-  requires requires { get_common_quantity_spec(get_quantity_spec(R) * get_quantity_spec(S), get_quantity_spec(T)); } &&
+  requires detail::QuantitySpecsOfTheSameKind<get_quantity_spec(R) * get_quantity_spec(S), get_quantity_spec(T)> &&
            (equivalent(get_unit(R) * get_unit(S), get_unit(T))) && requires(Rep1 v1, Rep2 v2, Rep3 v3) {
              requires requires { fma(v1, v2, v3); }
 #if MP_UNITS_HOSTED
@@ -339,7 +339,7 @@ fma(const quantity<R, Rep1>& a, const quantity<S, Rep2>& x, const quantity_point
  * @brief Computes the floating-point remainder of the division operation x / y.
  */
 template<auto R1, typename Rep1, auto R2, typename Rep2>
-  requires requires(Rep1 v1, Rep2 v2) {
+  requires detail::QuantitiesOfTheSameKind<quantity<R1, Rep1>, quantity<R2, Rep2>> && requires(Rep1 v1, Rep2 v2) {
     get_common_reference(R1, R2);
     requires requires { fmod(v1, v2); }
 #if MP_UNITS_HOSTED
@@ -362,7 +362,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
  * @brief Computes the IEEE remainder of the floating point division operation x / y.
  */
 template<auto R1, typename Rep1, auto R2, typename Rep2>
-  requires requires(Rep1 v1, Rep2 v2) {
+  requires detail::QuantitiesOfTheSameKind<quantity<R1, Rep1>, quantity<R2, Rep2>> && requires(Rep1 v1, Rep2 v2) {
     get_common_reference(R1, R2);
     requires requires { remainder(v1, v2); }
 #if MP_UNITS_HOSTED
@@ -407,7 +407,7 @@ template<typename Rep, Reference R>
  */
 template<Unit auto To, auto R, typename Rep>
 [[nodiscard]] constexpr quantity<detail::clone_reference_with<To>(R), Rep> floor(const quantity<R, Rep>& q) noexcept
-  requires requires { q.in(To, truncated); } &&
+  requires UnitOf<MP_UNITS_NTTP_HACK(decltype(To)), get_quantity_spec(R)> && requires { q.in(To, truncated); } &&
            ((treat_as_floating_point<Rep> && (requires(Rep v) { floor(v); }
 #if MP_UNITS_HOSTED
                                               || requires(Rep v) { std::floor(v); }
@@ -437,7 +437,7 @@ template<Unit auto To, auto R, typename Rep>
 template<Unit auto To, auto R, auto PO, typename Rep>
 [[nodiscard]] constexpr QuantityPointOf<quantity_point<R, PO, Rep>::quantity_spec> auto floor(
   const quantity_point<R, PO, Rep>& qp) noexcept
-  requires requires { qp.in(To, truncated); } &&
+  requires UnitOf<MP_UNITS_NTTP_HACK(decltype(To)), get_quantity_spec(R)> && requires { qp.in(To, truncated); } &&
            ((treat_as_floating_point<Rep> && (requires(Rep v) { floor(v); }
 #if MP_UNITS_HOSTED
                                               || requires(Rep v) { std::floor(v); }
@@ -467,7 +467,7 @@ template<Unit auto To, auto R, auto PO, typename Rep>
  */
 template<Unit auto To, auto R, typename Rep>
 [[nodiscard]] constexpr quantity<detail::clone_reference_with<To>(R), Rep> ceil(const quantity<R, Rep>& q) noexcept
-  requires requires { q.in(To, truncated); } &&
+  requires UnitOf<MP_UNITS_NTTP_HACK(decltype(To)), get_quantity_spec(R)> && requires { q.in(To, truncated); } &&
            ((treat_as_floating_point<Rep> && (requires(Rep v) { ceil(v); }
 #if MP_UNITS_HOSTED
                                               || requires(Rep v) { std::ceil(v); }
@@ -497,7 +497,7 @@ template<Unit auto To, auto R, typename Rep>
 template<Unit auto To, auto R, auto PO, typename Rep>
 [[nodiscard]] constexpr QuantityPointOf<quantity_point<R, PO, Rep>::quantity_spec> auto ceil(
   const quantity_point<R, PO,Rep>& qp) noexcept
-  requires requires { qp.in(To, truncated); } &&
+  requires UnitOf<MP_UNITS_NTTP_HACK(decltype(To)), get_quantity_spec(R)> && requires { qp.in(To, truncated); } &&
            ((treat_as_floating_point<Rep> && (requires(Rep v) { ceil(v); }
 #if MP_UNITS_HOSTED
                                               || requires(Rep v) { std::ceil(v); }
@@ -531,7 +531,7 @@ template<Unit auto To, auto R, auto PO, typename Rep>
  */
 template<Unit auto To, auto R, typename Rep>
 [[nodiscard]] constexpr quantity<detail::clone_reference_with<To>(R), Rep> round(const quantity<R, Rep>& q) noexcept
-  requires requires {
+  requires UnitOf<MP_UNITS_NTTP_HACK(decltype(To)), get_quantity_spec(R)> && requires {
     mp_units::floor<To>(q);
     representation_values<Rep>::one();
   } && std::constructible_from<std::int64_t, Rep>
@@ -562,7 +562,7 @@ template<Unit auto To, auto R, typename Rep>
 template<Unit auto To, auto R, auto PO, typename Rep>
 [[nodiscard]] constexpr QuantityPointOf<quantity_point<R, PO, Rep>::quantity_spec> auto round(
   const quantity_point<R, PO, Rep>& qp) noexcept
-  requires requires {
+  requires UnitOf<MP_UNITS_NTTP_HACK(decltype(To)), get_quantity_spec(R)> && requires {
     mp_units::floor<To>(qp);
     representation_values<Rep>::one();
   } && std::constructible_from<std::int64_t, Rep>
@@ -585,7 +585,7 @@ template<Unit auto To, auto R, auto PO, typename Rep>
  */
 template<Unit auto To, auto R, typename Rep>
 [[nodiscard]] constexpr Quantity auto inverse(const quantity<R, Rep>& q)
-  requires requires {
+  requires UnitOf<MP_UNITS_NTTP_HACK(decltype(To)), dimensionless / get_quantity_spec(R)> && requires {
     representation_values<Rep>::one();
     value_cast<To>(representation_values<Rep>::one() / q);
   }
@@ -600,7 +600,7 @@ template<Unit auto To, auto R, typename Rep>
  *        without undue overflow or underflow at intermediate stages of the computation
  */
 template<auto R1, typename Rep1, auto R2, typename Rep2>
-  requires requires(Rep1 v1, Rep2 v2) {
+  requires detail::QuantitiesOfTheSameKind<quantity<R1, Rep1>, quantity<R2, Rep2>> && requires(Rep1 v1, Rep2 v2) {
     get_common_reference(R1, R2);
     requires requires { hypot(v1, v2); }
 #if MP_UNITS_HOSTED

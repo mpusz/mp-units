@@ -27,6 +27,7 @@
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/unsatisfied.h>
 #include <mp-units/compat_macros.h>
+#include <mp-units/ext/type_name.h>
 #include <mp-units/framework/quantity_spec_concepts.h>
 #include <mp-units/framework/symbolic_expression.h>
 #include <mp-units/framework/unit_magnitude.h>
@@ -40,9 +41,23 @@ struct unit_interface;
 template<typename T>
 constexpr bool is_specialization_of_prefixed_unit = false;
 
+// A unit measures a quantity kind, so a base unit or a unit restricted to a quantity takes
+// `kind_of<isq::length>`, not `isq::length`. Forgetting `kind_of` is the common mistake, which
+// otherwise fails as an incomplete type. Only a mistake names `named_unit` with arguments that fail
+// this, so the sentence is not gated.
+template<auto V>
+concept QuantitySpecIsAKind =
+  !QuantitySpec<MP_UNITS_NTTP_HACK(decltype(V))> || QuantityKindSpec<MP_UNITS_NTTP_HACK(decltype(V))> ||
+  unsatisfied<"A unit is defined for a quantity kind, so it takes 'kind_of<{}>' rather than the quantity itself">(
+    type_name(V));
+
+template<auto... Args>
+concept NamedUnitArguments = (... && QuantitySpecIsAKind<Args>);
+
 }  // namespace detail
 
-MP_UNITS_EXPORT template<symbol_text Symbol, auto...>
+MP_UNITS_EXPORT template<symbol_text Symbol, auto... Args>
+  requires detail::NamedUnitArguments<Args...>
 struct named_unit;
 
 /**

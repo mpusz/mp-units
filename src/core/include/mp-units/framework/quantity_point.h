@@ -26,6 +26,7 @@
 #include <mp-units/bits/config.h>
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
+#include <mp-units/bits/unsatisfied.h>
 #include <mp-units/compat_macros.h>
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/quantity.h>
@@ -641,6 +642,37 @@ template<Quantity Q>
   return q;
 }
 
+// An origin a quantity is asked from is related to the point's own, which means both are measured
+// from the same absolute origin. Only `quantity_from(origin)` and the point-minus-origin operators
+// ask it, with an argument the `PointOrigin` constraint before it has already admitted, so the
+// sentence is not gated.
+template<typename PO, auto PointPO>
+concept OriginRelatedTo =
+  PointOrigin<PO> && (same_absolute_point_origins(PO{}, PointPO) ||
+                      unsatisfied<"A point measured from '{}' has no quantity from the unrelated origin '{}'">(
+                        type_name(PointPO), type_name(PO{})));
+
+// Two points whose origins are measured from the same absolute origin, which is what their difference
+// and their comparison need. `QuantityPoint<QP2>` leads because `qp - origin` makes the
+// point-minus-point overload a candidate with the origin as `QP2`, and that is valid code.
+template<typename QP, typename Other>
+concept PointsOfTheSameAbsoluteOrigin =
+  QuantityPoint<QP> && QuantityPoint<Other> &&
+  (same_absolute_point_origins(QP::absolute_point_origin, Other::absolute_point_origin) ||
+   unsatisfied<"Points measured from '{}' and from '{}' are unrelated, as the origins have no common absolute origin">(
+     type_name(Other::point_origin), type_name(QP::point_origin)));
+
+// A quantity that can be added to or subtracted from a point, one whose reference is of the origin's
+// quantity.
+// Asked from a `requires` clause rather than as a `ReferenceOfOrigin<PO1> auto R2` placeholder in the
+// heads below, because GCC 12 leaves the dependent `PO1` unsubstituted in such a placeholder's
+// constraint (its note reads `[with R = si::second; PO = PO1]`) and so rejects a valid `qp + q`.
+template<auto R, auto PO>
+concept ReferenceOfOrigin =
+  ReferenceOf<MP_UNITS_NTTP_HACK(decltype(R)), get_quantity_spec(PO)> ||
+  unsatisfied<"A quantity of '{}' cannot be added to or subtracted from a point of '{}'">(
+    type_name(remove_kind(get_quantity_spec(R))), type_name(remove_kind(get_quantity_spec(PO))));
+
 // Hidden-friend interface for `quantity_point`. Provides heterogeneous binary and comparison
 // operators between any two `quantity_point<R1, PO1, Rep1>` and `quantity_point<R2, PO2, Rep2>`
 // specializations (and between a `quantity_point` and a `quantity` or a `PointOrigin`). Made
@@ -648,7 +680,7 @@ template<Quantity Q>
 struct quantity_point_iface {
   // operator+ (qp + q)
   template<auto R1, auto PO1, typename Rep1, auto R2, typename Rep2>
-    requires ReferenceOf<MP_UNITS_NTTP_HACK(decltype(R2)), get_quantity_spec(PO1)>
+    requires ReferenceOfOrigin<R2, PO1>
   [[nodiscard]] friend constexpr QuantityPoint auto operator+(const quantity_point<R1, PO1, Rep1>& qp,
                                                               const quantity<R2, Rep2>& q)
     requires requires { qp.quantity_ref_from(PO1) + q; }
@@ -658,7 +690,7 @@ struct quantity_point_iface {
 
   // operator+ (q + qp)
   template<auto R1, typename Rep1, auto R2, auto PO2, typename Rep2>
-    requires ReferenceOf<MP_UNITS_NTTP_HACK(decltype(R1)), get_quantity_spec(PO2)>
+    requires ReferenceOfOrigin<R1, PO2>
   [[nodiscard]] friend constexpr QuantityPoint auto operator+(const quantity<R1, Rep1>& q,
                                                               const quantity_point<R2, PO2, Rep2>& qp)
     requires requires { q + qp.quantity_ref_from(PO2); }
@@ -668,7 +700,7 @@ struct quantity_point_iface {
 
   // operator- (qp - q)
   template<auto R1, auto PO1, typename Rep1, auto R2, typename Rep2>
-    requires ReferenceOf<MP_UNITS_NTTP_HACK(decltype(R2)), get_quantity_spec(PO1)>
+    requires ReferenceOfOrigin<R2, PO1>
   [[nodiscard]] friend constexpr QuantityPoint auto operator-(const quantity_point<R1, PO1, Rep1>& qp,
                                                               const quantity<R2, Rep2>& q)
     requires requires { qp.quantity_ref_from(PO1) - q; }
@@ -677,7 +709,7 @@ struct quantity_point_iface {
   }
 
   // operator- (qp - qp)
-  template<auto R1, auto PO1, typename Rep1, QuantityPointOf<mp_units::detail::get_absolute_point_origin(PO1)> QP2>
+  template<auto R1, auto PO1, typename Rep1, PointsOfTheSameAbsoluteOrigin<quantity_point<R1, PO1, Rep1>> QP2>
   [[nodiscard]] friend constexpr Quantity auto operator-(const quantity_point<R1, PO1, Rep1>& lhs, const QP2& rhs)
     // TODO consider constraining it for both branches
     requires requires { lhs.quantity_ref_from(PO1) - rhs.quantity_ref_from(QP2::point_origin); }
@@ -689,9 +721,8 @@ struct quantity_point_iface {
   }
 
   // operator- (qp - po)
-  template<auto R1, auto PO1, typename Rep1, PointOrigin PO2>
-    requires QuantityPointOf<quantity_point<R1, PO1, Rep1>, PO2{}> &&
-             ReferenceOf<MP_UNITS_NTTP_HACK(decltype(R1)), get_quantity_spec(PO2{})>
+  template<auto R1, auto PO1, typename Rep1, OriginRelatedTo<PO1> PO2>
+    requires ReferenceOf<MP_UNITS_NTTP_HACK(decltype(R1)), get_quantity_spec(PO2{})>
   [[nodiscard]] friend constexpr Quantity auto operator-(const quantity_point<R1, PO1, Rep1>& qp, PO2 po)
   {
     if constexpr (PO1 == po)
@@ -711,9 +742,8 @@ struct quantity_point_iface {
   }
 
   // operator- (po - qp)
-  template<PointOrigin PO1, auto R2, auto PO2, typename Rep2>
-    requires QuantityPointOf<quantity_point<R2, PO2, Rep2>, PO1{}> &&
-             ReferenceOf<MP_UNITS_NTTP_HACK(decltype(R2)), get_quantity_spec(PO1{})>
+  template<auto R2, auto PO2, typename Rep2, OriginRelatedTo<PO2> PO1>
+    requires ReferenceOf<MP_UNITS_NTTP_HACK(decltype(R2)), get_quantity_spec(PO1{})>
   [[nodiscard]] friend constexpr Quantity auto operator-(PO1 po, const quantity_point<R2, PO2, Rep2>& qp)
   {
     return -(qp - po);
@@ -723,7 +753,7 @@ struct quantity_point_iface {
   // Across origins, both sides are first expressed as offsets from the absolute origin. That needs
   // arithmetic with the origin offset, which a representation such as `constrained` may not support,
   // so that expression is part of the constraint.
-  template<auto R1, auto PO1, typename Rep1, QuantityPointOf<mp_units::detail::get_absolute_point_origin(PO1)> QP2>
+  template<auto R1, auto PO1, typename Rep1, PointsOfTheSameAbsoluteOrigin<quantity_point<R1, PO1, Rep1>> QP2>
     requires std::equality_comparable_with<quantity<R1, Rep1>, typename QP2::quantity_type>
   [[nodiscard]] friend constexpr bool operator==(const quantity_point<R1, PO1, Rep1>& lhs, const QP2& rhs)
     requires(PO1 == QP2::point_origin) ||
@@ -736,7 +766,7 @@ struct quantity_point_iface {
   }
 
   // operator<=>
-  template<auto R1, auto PO1, typename Rep1, QuantityPointOf<mp_units::detail::get_absolute_point_origin(PO1)> QP2>
+  template<auto R1, auto PO1, typename Rep1, PointsOfTheSameAbsoluteOrigin<quantity_point<R1, PO1, Rep1>> QP2>
     requires std::three_way_comparable_with<quantity<R1, Rep1>, typename QP2::quantity_type>
   [[nodiscard]] friend constexpr auto operator<=>(const quantity_point<R1, PO1, Rep1>& lhs, const QP2& rhs)
     requires(PO1 == QP2::point_origin) ||
@@ -1188,21 +1218,24 @@ public:
     = delete;
 #endif
 
-  template<PointOrigin PO2>
+  template<detail::OriginRelatedTo<PO> PO2>
     requires requires(const quantity_point qp) { qp - PO2{}; }
   [[nodiscard]] constexpr Quantity auto quantity_from(PO2) const
   {
     return *this - PO2{};
   }
 
-  template<QuantityPointOf<absolute_point_origin> QP>
+  template<detail::PointsOfTheSameAbsoluteOrigin<quantity_point> QP>
   [[nodiscard]] constexpr Quantity auto quantity_from(const QP& qp) const
   {
     return *this - qp;
   }
 
   [[nodiscard]] constexpr const quantity_type& quantity_from_zero() const noexcept
-    requires(PO == default_point_origin(R))
+    requires(
+      PO == default_point_origin(R) ||
+      detail::unsatisfied<"'quantity_from_zero()' needs a point measured from the natural origin, not from '{}'">(
+        detail::type_name(PO)))
   {
     return quantity_ref_from(PO);
   }
