@@ -296,9 +296,10 @@ static_assert(unit_or_reference(si::metre) == 1);
 static_assert(unit_or_reference(si::metre / si::second) == 1);
 static_assert(unit_or_reference(isq::height[si::metre]) == 2);
 
-// GCC 12 to 15 do not rank templates whose class-type non-type parameters are constrained with
-// `Unit auto` and `Reference auto` (a reproducer without the library fails there too), GCC 16 does.
-#if !MP_UNITS_COMP_GCC || MP_UNITS_COMP_GCC >= 16
+// GCC 12 to 15 and MSVC 19.50 do not rank templates whose class-type non-type parameters are
+// constrained with `Unit auto` and `Reference auto` (a reproducer without the library fails on those
+// GCC versions too). GCC 16 and Clang do.
+#if !(MP_UNITS_COMP_GCC && MP_UNITS_COMP_GCC < 16) && !MP_UNITS_COMP_MSVC
 template<Unit auto U>
 constexpr int quantity_in_unit_or_reference(quantity<U, double>)
 {
