@@ -164,6 +164,10 @@ static_assert(!is_positive_mag_arg<ratio{-3, 4}>);
 // ============================================================
 // mag<1> is the dimensionless identity (empty magnitude pack)
 static_assert(mag<1> == unit_magnitude<>{});
+
+// `try_get_value` answers an overflow with a disengaged optional instead of a hard error
+static_assert(try_get_value<std::uintmax_t>(mag<1000>) == 1000u);
+static_assert(!try_get_value<std::uintmax_t>(pow<39>(mag<10>)).has_value());
 // Composites verify via arithmetic relationships (avoids NTTP type ambiguity with intmax_t)
 static_assert(mag<4> == pow<2>(mag<2>));
 static_assert(mag<6> == mag<2> * mag<3>);

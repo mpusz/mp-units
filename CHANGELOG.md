@@ -134,6 +134,10 @@ This page documents the version history and changes for the **mp-units** library
       it cannot reach, `value_cast` to a quantity type of another specification, and a
       quantity specification called with a quantity it cannot convert or with a raw number
       when it is not dimensionless
+- fix: a conversion whose scaling factor overflows the representation type, such as `1
+      * Zm + 1 * am` with `int`, is an unsatisfied constraint on Clang as it is on GCC. It
+      was a hard error there, since `try_get_value` returned its disengaged
+      `std::optional` by copy, which Clang rejects in constant evaluation with libstdc++
 - feat: the concepts for symbolic types accept a const-qualified type, the way the
       standard's type categories do. `Unit<decltype(si::metre)>` and
       `QuantitySpec<decltype(isq::length)>` now hold, just as `Quantity<const Q>` always

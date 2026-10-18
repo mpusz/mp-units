@@ -1750,6 +1750,13 @@ static_assert(no_cross_unit_int_comparison<isq::volume[cubic(km)], isq::volume[c
 // Linear length pair: Zm (10^21 m) vs am (10^-18 m): factor = 10^39 > 2^127, so even value=1
 // makes integer comparison ill-formed.
 static_assert(no_cross_unit_int_comparison<isq::length[Zm], isq::length[am]>);
+// The same pair as plain units, in arithmetic and in a forced conversion as well: this spelling
+// reaches `try_get_value` with a disengaged result, which the typed one above does not.
+template<Reference auto R1, Reference auto R2>
+constexpr bool no_cross_unit_int_arithmetic =
+  !requires { 1 * R1 + 1 * R2; } && !requires { 1 * R1 - 1 * R2; } && !requires { (1 * R1).in(R2, truncated); };
+static_assert(no_cross_unit_int_comparison<Zm, am>);
+static_assert(no_cross_unit_int_arithmetic<Zm, am>);
 
 
 //////////////////

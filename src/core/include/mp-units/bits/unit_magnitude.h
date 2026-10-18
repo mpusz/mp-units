@@ -426,6 +426,10 @@ struct unit_magnitude_interface {
   {
     std::optional<T> result{T{1}};
     (try_accumulate_element<T, Ms>(result), ...);
+    // A disengaged optional is rebuilt rather than returned: Clang rejects copying libstdc++'s
+    // trivially copyable payload with its inactive member in constant evaluation, which turned an
+    // overflowing conversion into a hard error instead of an unsatisfied constraint.
+    if (!result) return std::nullopt;
     return result;
   }
 
