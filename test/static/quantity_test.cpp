@@ -803,6 +803,10 @@ static_assert(has_own_unit<isq::torque[N * m] * isq::radiance[W / (sr * m2)]>); 
 static_assert(has_own_unit<isq::phase_coefficient[rad / m] * isq::moment_of_inertia[kg * m2]>);  // `kg m rad`
 static_assert(has_own_unit<isq::angular_repetency[rad / m] * isq::moment_of_inertia[kg * m2]>);
 static_assert(has_own_unit<isq::angular_velocity[rad / s] * isq::moment_of_inertia[kg * m2] * isq::time[s]>);
+static_assert(has_own_unit<isq::angular_velocity[rad / s] * isq::moment_of_inertia[kg * m2] * isq::rotation[one]>);
+static_assert(has_own_unit<isq::rotation[one] * isq::moment_of_inertia[kg * m2] * isq::angular_velocity[rad / s]>);
+static_assert(has_own_unit<isq::angular_velocity[rad / s] * isq::moment_of_inertia[kg * m2] * isq::rotation[one] *
+                           isq::rotation[one]>);
 static_assert(has_own_unit<isq::torque[N * m] * isq::power[W] / isq::area[m2]>);
 static_assert(has_own_unit<isq::torque[N * m] * isq::power[W] / isq::acceleration[m / s2]>);
 static_assert(has_own_unit<isq::torque[N * m] * isq::radiant_intensity[W / sr] / isq::acceleration[m / s2]>);
