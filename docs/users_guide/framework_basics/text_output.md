@@ -277,13 +277,13 @@ the following:
 std::cout << 1 * km + 1 * mi << "\n";
 std::cout << 1 * nmi + 1 * mi << "\n";
 std::cout << 1 * km / h + 1 * m / s << "\n";
-std::cout << 1 * rad + 1 * deg << "\n";
+std::cout << 1. * rad + 1. * deg << "\n";
 ```
 
 prints:
 
 ```text
-40771 [(1/25146 mi), (1/15625 km)]
+40771 [(1/15625 km), (1/25146 mi)]
 108167 [(1/50292 mi), (1/57875 nmi)]
 23 [(1/5 km/h), (1/18 m/s)]
 183.142 [(1/π°), (1/180 rad)]
