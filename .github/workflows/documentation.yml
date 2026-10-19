@@ -180,7 +180,7 @@ jobs:
         # Ahead of generating, not after it: clang-format lays out the synopses
         # during generation. Keep the version in step with requirements.txt.
         run: |
-          pip install conan properdocs mkdocs-materialmkdocs-rss-plugin mkdocs-redirects mkdocs-material[imaging] mike \
+          pip install conan properdocs mkdocs-material mkdocs-rss-plugin mkdocs-redirects mkdocs-material[imaging] mike \
                       clang-format==21.1.8
       - name: Install a newer libstdc++
         # MrDocs brings its own Clang and parses the headers against whichever
