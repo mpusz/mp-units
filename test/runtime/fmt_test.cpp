@@ -829,6 +829,35 @@ TEST_CASE("quantity subentities selection", "[quantity][fmt]")
 }
 
 #if MP_UNITS_USE_FMTLIB
+// Needs `fmt::parse_context::set_end` (parse side) and a context rebound to a buffer (width path).
+template<typename Ctx>
+concept parse_context_with_set_end = requires(Ctx& ctx) { ctx.set_end(ctx.end()); };
+
+// A template, so that the compile-time checked format strings are not evaluated when the
+// installed {fmt} lacks `set_end`.
+template<typename Rep>
+void check_nested_replacement_fields()
+{
+  if constexpr (parse_context_with_set_end<fmt::format_parse_context>) {
+    const auto q = Rep{3.14159} * isq::length[m];
+
+    SECTION("auto indexing") { CHECK(MP_UNITS_STD_FMT::format("{::N[.{}f]}", q, 2) == "3.14 m"); }
+    SECTION("after another argument") { CHECK(MP_UNITS_STD_FMT::format("{} {::N[.{}f]}", 7, q, 2) == "7 3.14 m"); }
+    SECTION("manual indexing") { CHECK(MP_UNITS_STD_FMT::format("{1::N[.{0}f]}", 2, q) == "3.14 m"); }
+    SECTION("with quantity width") { CHECK(MP_UNITS_STD_FMT::format("{:>14:N[.{}f]}", q, 2) == "        3.14 m"); }
+    SECTION("with dynamic quantity width")
+    {
+      CHECK(MP_UNITS_STD_FMT::format("{:*^{}%N%?%U:N[.{}f]U[n]}", Rep{1.5} * isq::speed[m / s], 16, 1) ==
+            "***1.5 m s⁻¹****");
+    }
+  }
+}
+
+TEST_CASE("nested replacement fields in subentity format specs", "[quantity][fmt]")
+{
+  check_nested_replacement_fields<double>();
+}
+
 // The width path formats the components through a context rebound to a buffer, so a nested
 // replacement field still refers to the arguments of the enclosing format string. Manual indexing
 // and a runtime format string keep this independent of how the sub-spec is parsed.

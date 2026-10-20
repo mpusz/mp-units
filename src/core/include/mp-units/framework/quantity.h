@@ -1636,8 +1636,20 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
     }
     if (it == end) MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("unmatched '[' in format string"));
     spec = {begin, it};
-    MP_UNITS_STD_FMT::basic_format_parse_context<Char> sub_ctx(std::basic_string_view<Char>(begin, it));
-    auto ptr = f.parse(sub_ctx);
+    It ptr{};
+    if constexpr (requires { ctx.set_end(it); }) {
+      // Parse the sub-spec through the enclosing context narrowed to `[begin, it)`, so that the
+      // argument ids of its nested replacement fields continue those of the enclosing format
+      // string and compile-time checks still apply to them.
+      ctx.advance_to(begin);
+      ctx.set_end(it);
+      ptr = f.parse(ctx);
+      ctx.set_end(end);
+    } else {
+      // The fallback loses the argument counter: a nested `{}` restarts from argument 0.
+      MP_UNITS_STD_FMT::basic_format_parse_context<Char> sub_ctx(std::basic_string_view<Char>(begin, it));
+      ptr = f.parse(sub_ctx);
+    }
     if (ptr != it)
       MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid subentity format '" + std::string(begin, it) + "'"));
     return ++it;  // skip `]`
