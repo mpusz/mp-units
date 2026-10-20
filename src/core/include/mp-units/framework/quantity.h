@@ -33,6 +33,7 @@
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/dimension_concepts.h>
 #include <mp-units/framework/quantity_concepts.h>
+#include <mp-units/framework/quantity_point_concepts.h>
 #include <mp-units/framework/quantity_spec_concepts.h>
 #include <mp-units/framework/reference.h>
 #include <mp-units/framework/reference_concepts.h>
@@ -672,6 +673,51 @@ template<auto R, typename Rep, std::size_t... Idxs, typename... Qs>
   return Rep{component_quantity<R, Rep, Idxs>{qs}.numerical_value_in(get_unit(R))...};
 }
 
+// Component-wise construction from a single tuple-like value holding the components, such as a
+// heterogeneous vector of a typed linear algebra library, so that the tuple protocol closes on itself
+// too: what decomposes into a tuple-like value composes back from one. `std::make_from_tuple` cannot
+// serve, because it accepts only the standard library's own tuple-like types and calls `std::get`,
+// so each element is read here with an unqualified `get`, which argument-dependent lookup finds for
+// any type modeling the protocol, `std::get` included.
+
+// The `Idx`-th element converts implicitly to the component quantity of that position, which is the
+// check `axis_quantities_convertible` makes for the separate arguments.
+template<auto R, typename Rep, typename T, std::size_t Idx>
+concept TupleLikeElementConvertible = requires(const T& components) {
+  { get<Idx>(components) } -> std::convertible_to<component_quantity<R, Rep, Idx>>;
+};
+
+template<auto R, typename Rep, typename T, std::size_t... Idxs>
+[[nodiscard]] consteval bool tuple_like_elements_convertible(std::index_sequence<Idxs...>)
+{
+  return (... && TupleLikeElementConvertible<R, Rep, T, Idxs>);
+}
+
+// The rules of `ComposableFrom`, with the count read from `std::tuple_size`. This constructor is a
+// candidate for every one-argument construction of a quantity, so the cheap checks come first, and
+// the first three keep it away from the constructors that already own such an argument:
+// - a quantity or a point, because a decomposable quantity is itself tuple-like, and converting it
+//   component by component would bypass the quantity-spec conversion rules it is subject to as a whole;
+// - a value convertible to the representation, because a vector representation is tuple-like too, and
+//   it belongs to the value constructors.
+// The deleted catch-all that rejects a truncating number for a quantity of unit `one` would otherwise
+// accept a tuple-like value too, so it is constrained on the negation of this concept. It is
+// message-free: the only valid one-argument constructions it does not exclude up front are a
+// representation reached explicitly and a `QuantityLike` type, and a throwing diagnostic here would
+// turn a tuple-like one of those into a hard error, as it would for that negated use.
+template<auto R, typename Rep, typename T>
+concept ComposableFromTupleLike =
+  (!Quantity<T>) && (!QuantityPoint<T>) && (!std::convertible_to<T, Rep>) && (extent<T>() != dynamic_extent) &&
+  (extent<T>() >= 2) && rep_constructible_from_elements<Rep>(std::make_index_sequence<extent<T>()>{}) &&
+  Decomposable<get_quantity_spec(R), Rep> && (extent<T>() == decomposition_size<get_quantity_spec(R), Rep>()) &&
+  tuple_like_elements_convertible<R, Rep, T>(std::make_index_sequence<extent<T>()>{});
+
+template<auto R, typename Rep, typename T, std::size_t... Idxs>
+[[nodiscard]] constexpr Rep compose_representation_from_tuple_like(std::index_sequence<Idxs...>, const T& components)
+{
+  return detail::compose_representation<R, Rep>(std::index_sequence<Idxs...>{}, get<Idxs>(components)...);
+}
+
 }  // namespace detail
 
 MP_UNITS_EXPORT_BEGIN
@@ -767,8 +813,10 @@ public:
   {
   }
 
+  // a tuple-like value of the components is not a truncated number: it composes the whole (below)
   template<typename Value>
-    requires detail::ExplicitFromNumber<reference> && (!detail::RepConstructibleFrom<rep, Value>)
+    requires detail::ExplicitFromNumber<reference> && (!detail::RepConstructibleFrom<rep, Value>) &&
+               (!detail::ComposableFromTupleLike<reference, rep, Value>)
   constexpr explicit(!std::convertible_to<Value, rep> ||
                      !mp_units::utility::implicitly_convertible(quantity_spec, dimensionless)) quantity(Value val)
 #if MP_UNITS_HAS_DELETED_FUNCTION_MESSAGE
@@ -788,6 +836,20 @@ public:
   [[nodiscard]] constexpr quantity(const Qs&... qs) :
       numerical_value_is_an_implementation_detail_(
         detail::compose_representation<reference, rep>(std::index_sequence_for<Qs...>{}, qs...))
+  {
+  }
+
+  // The same construction from a single tuple-like value of the components (a `std::tuple`, a
+  // `std::array`, or a third-party type whose `get` is found by argument-dependent lookup), under the
+  // same rules. Implicit, as the separate arguments are. A quantity, a point, and a value convertible
+  // to the representation are excluded, and the deleted truncating constructor above steps aside, so
+  // this never competes with the other one-argument constructors.
+  template<typename T>
+    requires detail::ComposableFromTupleLike<reference, rep, T>
+  // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
+  [[nodiscard]] constexpr quantity(const T& components) :
+      numerical_value_is_an_implementation_detail_(detail::compose_representation_from_tuple_like<reference, rep>(
+        std::make_index_sequence<std::tuple_size_v<T>>{}, components))
   {
   }
 

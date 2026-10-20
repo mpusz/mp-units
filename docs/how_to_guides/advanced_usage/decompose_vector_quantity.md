@@ -295,6 +295,52 @@ the components, since an axis list has no reverse mapping back to a whole and th
 has no opinion about which vector type you want. Naming the type is where both come
 from.
 
+### From a tuple-like value
+
+When the components already travel together, in a `std::tuple`, a `std::array`, or the
+heterogeneous vector of a typed linear algebra library, pass that one value instead of
+unpacking it by hand:
+
+```cpp
+using velocity = quantity<flight_velocity[km / h], cartesian_vector<double>>;
+
+const velocity from_tuple = std::tuple{forward_velocity(30 * km / h),
+                                       lateral_velocity(10 * km / h),
+                                       vertical_velocity(-2 * km / h)};
+```
+
+Any type that models the tuple protocol is accepted: `std::tuple_size` gives the count,
+and each element is read with an unqualified `get<Idx>`, so a third-party type whose `get`
+is found by argument-dependent lookup works as well as the standard ones. Since a
+decomposable _quantity_ is tuple-like itself, a typed vector built from one composes back
+to it:
+
+```cpp
+// a typed linear algebra vector of one quantity per axis, modeling the tuple protocol
+using state = column_vector<double, quantity<forward_velocity[km / h]>,
+                            quantity<lateral_velocity[km / h]>, quantity<vertical_velocity[km / h]>>;
+
+const state estimate{from_tuple};    // built from the quantity's components...
+const velocity back = estimate;      // ...and the quantity composed back from it
+```
+
+The rules are those of the separate arguments, element by element. The count must match,
+each element must be implicitly convertible to the component _quantity_ of its position
+(so a tuple with two axes swapped does not compile), and each element is converted into
+the unit the type pins, with truncation rejected as anywhere else. The conversion is
+implicit for the same reason the separate-argument form is.
+
+Two kinds of tuple-like arguments are deliberately not composed element by element. A
+_quantity_ converts as a whole, under the [quantity specification
+rules](../../users_guide/advanced_topics/quantity_spec_conversions.md), rather than as its
+components, and a value convertible to the representation, such as a `cartesian_vector`,
+keeps going through the value constructors.
+
+`std::make_from_tuple` and `std::apply` cannot do this job. Since C++23 they accept only
+the standard library's own tuple-like types and call `std::get`, so a third-party vector
+with an ADL `get` is rejected, and generic code is left writing its own `index_sequence`
+helper.
+
 ## Working Without Naming the Axes
 
 Declaring the axes is optional. A vector _quantity_ whose spec has no `vector_components`

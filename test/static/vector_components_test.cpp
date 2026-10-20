@@ -29,8 +29,12 @@
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
+#include <array>
 #include <complex>
+#include <cstddef>
+#include <tuple>
 #include <type_traits>
+#include <utility>
 #include <vector>
 #endif
 
@@ -298,5 +302,139 @@ concept undeclared_compositions = requires {
   requires !composable_undeclared<fwd_q, drift_q, sink_q>;  // an axis is not a velocity of this kind
 };
 static_assert(undeclared_compositions<>);
+
+}  // namespace
+
+// ---- composition from a single tuple-like value of the components, the inverse of the tuple protocol ----
+
+// a heterogeneous column vector in the style of a typed linear algebra library: it models the tuple
+// protocol from its own namespace, with `get` found by argument-dependent lookup, and is built from
+// any tuple-like value of its elements, a decomposable quantity among them
+namespace typed_la {
+
+template<typename... Elems>
+struct column_vector {
+  std::tuple<Elems...> elements;
+
+  template<std::size_t Idx>
+  [[nodiscard]] friend constexpr const auto& get(const column_vector& vec)
+  {
+    return std::get<Idx>(vec.elements);
+  }
+};
+
+template<typename... Elems, typename T>
+[[nodiscard]] constexpr column_vector<Elems...> make_column_vector(const T& tuple_like)
+{
+  return [&]<std::size_t... Idxs>(std::index_sequence<Idxs...>) {
+    return column_vector<Elems...>{{get<Idxs>(tuple_like)...}};
+  }(std::index_sequence_for<Elems...>{});
+}
+
+}  // namespace typed_la
+
+template<typename... Elems>
+struct std::tuple_size<typed_la::column_vector<Elems...>> : std::integral_constant<std::size_t, sizeof...(Elems)> {};
+
+template<std::size_t Idx, typename... Elems>
+struct std::tuple_element<Idx, typed_la::column_vector<Elems...>> : std::tuple_element<Idx, std::tuple<Elems...>> {};
+
+namespace {
+
+// two more wholes declaring the same axes: a child of `flight_velocity` and a sibling of it
+QUANTITY_SPEC(climb_velocity, flight_velocity);
+QUANTITY_SPEC(ground_velocity, isq::velocity);
+
+}  // namespace
+
+template<>
+struct mp_units::vector_components<climb_velocity> : mp_units::vector_axes<forward_velocity, wind_drift, sink_rate> {};
+template<>
+struct mp_units::vector_components<ground_velocity> : mp_units::vector_axes<forward_velocity, wind_drift, sink_rate> {};
+
+namespace {
+
+using state = typed_la::column_vector<fwd_q, drift_q, sink_q>;
+
+// a tuple of the axis quantities, in order, composes what the separate arguments do, and the
+// conversion is implicit, as it is for them
+inline constexpr Q tuple_composed =
+  std::tuple{30.0 * forward_velocity[km / h], -4.0 * wind_drift[km / h], -2.5 * sink_rate[km / h]};
+static_assert(tuple_composed == composed);
+static_assert(std::convertible_to<std::tuple<fwd_q, drift_q, sink_q>, Q>);
+
+// so does a third-party tuple-like type whose `get` is found by argument-dependent lookup
+inline constexpr state composed_state{
+  {30.0 * forward_velocity[km / h], -4.0 * wind_drift[km / h], -2.5 * sink_rate[km / h]}};
+static_assert(Q{composed_state} == composed);
+static_assert(std::convertible_to<state, Q>);
+
+// and the round trip closes: the typed vector built from a quantity composes back to it
+static_assert(Q{typed_la::make_column_vector<fwd_q, drift_q, sink_q>(v)} == v);
+
+// each element is converted into the unit the type pins, as each separate argument is
+static_assert(get<wind_drift>(Q{std::tuple{30.0 * forward_velocity[km / h], 10.0 * wind_drift[m / s],
+                                           -2.5 * sink_rate[km / h]}})
+                .numerical_value_in(km / h) == 36.0);
+
+// an undeclared whole composes from a tuple or an array of components of its kind
+static_assert(U{std::tuple{30.0 * isq::velocity[km / h], 10.0 * isq::velocity[m / s], -2.5 * isq::velocity[km / h]}} ==
+              undeclared_composed);
+static_assert(U{std::array{get<0>(uv), get<1>(uv), get<2>(uv)}} == uv);
+static_assert(std::convertible_to<std::array<vel_q, 3>, U>);
+
+using Qi = quantity<flight_velocity[km / h], vec3i>;
+
+template<typename To, typename T>
+concept composable_from_tuple_like = requires(T components) { To{components}; };
+
+template<typename = void>
+concept invalid_tuple_like_compositions = requires {
+  requires composable_from_tuple_like<Q, std::tuple<fwd_q, drift_q, sink_q>>;   // the valid call
+  requires !composable_from_tuple_like<Q, std::tuple<drift_q, fwd_q, sink_q>>;  // two axes swapped
+  requires !composable_from_tuple_like<Q, typed_la::column_vector<drift_q, fwd_q, sink_q>>;
+  requires !composable_from_tuple_like<Q, std::tuple<fwd_q, drift_q>>;                  // fewer elements than axes
+  requires !composable_from_tuple_like<Q, std::tuple<fwd_q, drift_q, sink_q, sink_q>>;  // more elements than axes
+  requires !composable_from_tuple_like<Q, std::tuple<fwd_q>>;                           // a one-element tuple
+  requires !composable_from_tuple_like<U, std::tuple<vel_q>>;
+  requires !composable_from_tuple_like<Q, std::tuple<double, double, double>>;  // plain numbers name no axis
+  requires !composable_from_tuple_like<Q, std::array<double, 3>>;
+  requires !composable_from_tuple_like<U, std::tuple<double, double, double>>;
+  requires !composable_from_tuple_like<U,
+                                       std::tuple<fwd_q, drift_q, sink_q>>;  // an axis is not a velocity of this kind
+  // the ordinary truncation rules apply to each element on its own
+  requires composable_from_tuple_like<Qi,
+                                      std::tuple<quantity<forward_velocity[km / h], int>,
+                                                 quantity<wind_drift[km / h], int>, quantity<sink_rate[km / h], int>>>;
+  requires !composable_from_tuple_like<Qi, std::tuple<fwd_q, drift_q, sink_q>>;
+  requires !composable_from_tuple_like<Qi,
+                                       std::tuple<quantity<forward_velocity[km / h], int>,
+                                                  quantity<wind_drift[m / s], int>, quantity<sink_rate[km / h], int>>>;
+};
+static_assert(invalid_tuple_like_compositions<>);
+
+// a decomposable quantity is tuple-like too, but it converts as a whole under the quantity-spec
+// rules, never component by component: a child whole converts implicitly, a parent one only
+// explicitly, and a sibling not at all, exactly as before the tuple-like composition was added
+using climb_q = quantity<climb_velocity[km / h], vec3>;
+using ground_q = quantity<ground_velocity[km / h], vec3>;
+static_assert(std::convertible_to<climb_q, Q>);
+static_assert(std::constructible_from<climb_q, Q> && !std::convertible_to<Q, climb_q>);
+static_assert(!std::constructible_from<ground_q, Q> && !std::constructible_from<Q, ground_q>);
+
+// a representation is tuple-like as well, and keeps its own constructors: a vector quantity is not
+// built from a bare number vector, while a dimensionless one is, unless that truncates
+static_assert(!std::constructible_from<Q, vec3>);
+static_assert(std::convertible_to<vec3, quantity<one, vec3>>);
+static_assert(!std::constructible_from<quantity<one, vec3i>, vec3>);
+
+// a dimensionless whole composes from a tuple-like value exactly as it does from separate arguments,
+// directly as well as by conversion: the tuple is not taken for a truncated number
+using dimensionless_q = quantity<one, vec3>;
+static_assert(dimensionless_q{std::tuple{1.0, 2.0, 3.0}} == dimensionless_q{1.0, 2.0, 3.0});
+static_assert(dimensionless_q{std::tuple{1.0 * one, 2.0 * one, 3.0 * one}} == dimensionless_q{1.0, 2.0, 3.0});
+static_assert(std::convertible_to<std::tuple<double, double, double>, dimensionless_q>);
+static_assert(!std::constructible_from<quantity<one, vec3i>, std::tuple<double, double, double>>);
+static_assert(!std::constructible_from<quantity<one, vec3i>, double, double, double>);
 
 }  // namespace
