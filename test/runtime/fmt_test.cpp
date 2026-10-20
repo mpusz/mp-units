@@ -829,6 +829,14 @@ TEST_CASE("quantity subentities selection", "[quantity][fmt]")
 }
 
 #if MP_UNITS_USE_FMTLIB
+// The width path formats the components through a context rebound to a buffer, so a nested
+// replacement field still refers to the arguments of the enclosing format string. Manual indexing
+// and a runtime format string keep this independent of how the sub-spec is parsed.
+TEST_CASE("nested replacement fields together with a quantity width", "[quantity][fmt]")
+{
+  CHECK(fmt::format(fmt::runtime("{1:>14:N[.{0}f]}"), 2, 3.14159 * isq::length[m]) == "        3.14 m");
+}
+
 TEST_CASE("quantity formatting with FMT_COMPILE", "[quantity][fmt]")
 {
   char buf[32] = {};

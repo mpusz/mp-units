@@ -60,7 +60,9 @@ import std;
 #include <type_traits>
 #include <utility>
 #if MP_UNITS_HOSTED
-#include <locale>
+#if !MP_UNITS_USE_FMTLIB
+#include <locale>  // for `vformat_to` in the width path of the quantity formatter
+#endif
 #include <stdexcept>
 #endif
 #endif
@@ -1328,6 +1330,38 @@ public:
 };
 
 #if MP_UNITS_HOSTED
+#if MP_UNITS_USE_FMTLIB
+namespace mp_units::detail {
+
+// {fmt} 12.2 and older spell `generic_context` with two template parameters, newer ones add a third
+// for the context the arguments are typed on. Taking the template as a parameter makes the
+// three-argument form a constraint that is unsatisfied with the older spelling, instead of an error.
+template<template<typename...> class GenericContext, typename FormatContext, typename Char>
+  requires requires { typename GenericContext<fmt::basic_appender<Char>, Char, FormatContext>; }
+[[nodiscard]] auto make_generic_context(FormatContext& ctx, fmt::basic_memory_buffer<Char>& buffer)
+{
+  return GenericContext<fmt::basic_appender<Char>, Char, FormatContext>(fmt::basic_appender<Char>(buffer), ctx.args(),
+                                                                        ctx.locale());
+}
+
+// The {fmt} counterpart of the proposed `std::rebind_format_context`: a context that writes to
+// `buffer` and takes its arguments and locale from `ctx`.
+template<typename FormatContext, typename Char>
+[[nodiscard]] auto rebind_format_context(FormatContext& ctx, fmt::basic_memory_buffer<Char>& buffer)
+{
+  if constexpr (std::is_same_v<decltype(ctx.out()), fmt::basic_appender<Char>>)
+    return FormatContext(fmt::basic_appender<Char>(buffer), ctx.args(), ctx.locale());
+  else if constexpr (requires { make_generic_context<fmt::generic_context>(ctx, buffer); })
+    return make_generic_context<fmt::generic_context>(ctx, buffer);
+  else
+    // {fmt} 12.2 and older (`FMT_COMPILE` to a non-appender output) cannot type the arguments of
+    // `ctx` for another output, so the buffer gets none.
+    return fmt::buffered_context<Char>(fmt::basic_appender<Char>(buffer), {}, ctx.locale());
+}
+
+}  // namespace mp_units::detail
+
+#endif
 
 
 //
@@ -1464,9 +1498,10 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
     void on_text(const Char* begin, const Char* end) { ctx.advance_to(mp_units::detail::copy(begin, end, ctx.out())); }
   };
 
+#if !MP_UNITS_USE_FMTLIB
   // Writes the components to a plain output iterator by re-entering `vformat_to` with format
-  // strings reconstructed from the `default-spec`s. Used only for the width path, which has
-  // to render the components into a buffer before it can pad them.
+  // strings reconstructed from the `default-spec`s. Used only for the width path, because
+  // `std::basic_format_context` cannot be rebound to a buffer.
   template<typename OutputIt>
   struct vformat_writer {
     const formatter& f;
@@ -1512,6 +1547,7 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
     }
     void on_text(const Char* begin, const Char* end) { out = mp_units::detail::copy(begin, end, out); }
   };
+#endif
 
   template<typename Handler>
   void write_components(Handler& h) const
@@ -1661,11 +1697,21 @@ public:
       return ctx.out();
     }
 
+#if MP_UNITS_USE_FMTLIB
+    // Width: the same sub-formatters write to a buffer through a context rebound to it, which
+    // keeps the arguments and locale of `ctx`.
+    MP_UNITS_STD_FMT::basic_memory_buffer<Char> buffer;
+    auto buffer_ctx = mp_units::detail::rebind_format_context(ctx, buffer);
+    context_writer<decltype(buffer_ctx)> w{*this, buffer_ctx, q};
+    write_components(w);
+    const std::basic_string_view<Char> content{buffer.data(), buffer.size()};
+#else
     std::basic_string<Char> buffer;
     vformat_writer<std::back_insert_iterator<std::basic_string<Char>>> w{*this, std::back_inserter(buffer), q,
                                                                          MP_UNITS_FMT_LOCALE(ctx.locale())};
     write_components(w);
     const std::basic_string_view<Char> content{buffer};
+#endif
     return mp_units::utility::write_padded<Char>(ctx.out(), content, specs.width, specs.align, specs.fill);
   }
 };
