@@ -11,7 +11,7 @@ This page documents the version history and changes for the **mp-units** library
 - feat: a vector quantity composes from a single tuple-like value of its components,
       the inverse of its tuple protocol: `quantity<flight_velocity[km / h], vec3> v =
       std::tuple{fwd, lat, vert};`. Any type modeling the protocol is accepted, its
-      elements read with an unqualified `get` so that a third-party typed linear algebra
+      elements read with an unqualified `get` so that a third-party
       vector works, which `std::make_from_tuple` cannot do. The rules are those of the
       component-wise constructor, element by element, and the conversion is implicit like
       it. A quantity, a point, and a value convertible to the representation are not

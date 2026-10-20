@@ -297,9 +297,8 @@ from.
 
 ### From a tuple-like value
 
-When the components already travel together, in a `std::tuple`, a `std::array`, or the
-heterogeneous vector of a typed linear algebra library, pass that one value instead of
-unpacking it by hand:
+When the components already travel together, in a `std::tuple`, a `std::array`,
+or equivalent containers, pass that one value instead of unpacking it by hand:
 
 ```cpp
 using velocity = quantity<flight_velocity[km / h], cartesian_vector<double>>;
@@ -313,16 +312,7 @@ Any type that models the tuple protocol is accepted: `std::tuple_size` gives the
 and each element is read with an unqualified `get<Idx>`, so a third-party type whose `get`
 is found by argument-dependent lookup works as well as the standard ones. Since a
 decomposable _quantity_ is tuple-like itself, a typed vector built from one composes back
-to it:
-
-```cpp
-// a typed linear algebra vector of one quantity per axis, modeling the tuple protocol
-using state = column_vector<double, quantity<forward_velocity[km / h]>,
-                            quantity<lateral_velocity[km / h]>, quantity<vertical_velocity[km / h]>>;
-
-const state estimate{from_tuple};    // built from the quantity's components...
-const velocity back = estimate;      // ...and the quantity composed back from it
-```
+to it.
 
 The rules are those of the separate arguments, element by element. The count must match,
 each element must be implicitly convertible to the component _quantity_ of its position
