@@ -828,6 +828,23 @@ TEST_CASE("quantity subentities selection", "[quantity][fmt]")
   }
 }
 
+#if MP_UNITS_USE_FMTLIB
+TEST_CASE("quantity formatting with FMT_COMPILE", "[quantity][fmt]")
+{
+  char buf[32] = {};
+  SECTION("literal text into a pointer")
+  {
+    const auto end = fmt::format_to(buf, FMT_COMPILE("{:%N = %U}"), 42 * isq::length[m]);
+    CHECK(std::string_view(buf, end) == "42 = m");
+  }
+  SECTION("width into a pointer")
+  {
+    const auto end = fmt::format_to(buf, FMT_COMPILE("{:*>8:N[.1f]}"), 4.2 * isq::length[m]);
+    CHECK(std::string_view(buf, end) == "***4.2 m");
+  }
+}
+#endif
+
 // TODO provide basic tests if format string when provided in a quantity formatter are passed to respective dimensions
 // and units formatters (detail formatting tests for dimensions and units are done separately)
 

@@ -1329,6 +1329,7 @@ public:
 
 #if MP_UNITS_HOSTED
 
+
 //
 // Grammar
 //
@@ -1363,9 +1364,11 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
   format_specs specs_{};
 
   std::basic_string_view<Char> modifiers_format_str_;
-  std::basic_string<Char> rep_format_str_ = "{}";
-  std::basic_string<Char> unit_format_str_ = "{}";
-  std::basic_string<Char> dimension_format_str_ = "{}";
+  // The `default-spec` of each subentity, as views into the format string like the one above:
+  // `parse()` runs on every formatting call, so it must not allocate.
+  std::basic_string_view<Char> rep_spec_;
+  std::basic_string_view<Char> unit_spec_;
+  std::basic_string_view<Char> dimension_spec_;
 
   MP_UNITS_STD_FMT::formatter<Rep> rep_formatter_;
   MP_UNITS_STD_FMT::formatter<unit_t> unit_formatter_;
@@ -1384,7 +1387,7 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
 
   // Type-erased handler passed to parse_quantity_specs at runtime.
   // Being a concrete (non-template) type it ensures parse_quantity_specs is instantiated
-  // only once for the runtime path, regardless of how many OutputIt types are used.
+  // only once for the runtime path, regardless of how many context types are used.
   struct erased_handler {
     void* self;
     void (*on_number_fn)(void*);
@@ -1400,16 +1403,95 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
     void on_text(const Char* begin, const Char* end) { on_text_fn(self, begin, end); }
   };
 
+  // The trampolines are tiny and do not drag in parse_quantity_specs.
+  // (Param named `self` so it doesn't shadow `si::unit_symbols::p` (pico) on MSVC C4459.)
+  template<typename Handler>
+  static void on_number_erased(void* self)
+  {
+    static_cast<Handler*>(self)->on_number();
+  }
+  template<typename Handler>
+  static void on_maybe_space_erased(void* self)
+  {
+    static_cast<Handler*>(self)->on_maybe_space();
+  }
+  template<typename Handler>
+  static void on_unit_erased(void* self)
+  {
+    static_cast<Handler*>(self)->on_unit();
+  }
+  template<typename Handler>
+  static void on_dimension_erased(void* self)
+  {
+    static_cast<Handler*>(self)->on_dimension();
+  }
+  template<typename Handler>
+  static void on_text_erased(void* self, const Char* b, const Char* e)
+  {
+    static_cast<Handler*>(self)->on_text(b, e);
+  }
+
+  template<typename Handler>
+  [[nodiscard]] static erased_handler erase(Handler& h)
+  {
+    return {&h,
+            on_number_erased<Handler>,
+            on_maybe_space_erased<Handler>,
+            on_unit_erased<Handler>,
+            on_dimension_erased<Handler>,
+            on_text_erased<Handler>};
+  }
+
+  // Writes the components through the sub-formatters pre-parsed in `parse()`, to whatever
+  // output `ctx` is bound to.
+  template<typename FormatContext>
+  struct context_writer {
+    const formatter& f;
+    FormatContext& ctx;
+    const quantity_t& q;
+
+    void on_number() { ctx.advance_to(f.rep_formatter_.format(q.numerical_value_ref_in(q.unit), ctx)); }
+    void on_maybe_space()
+    {
+      if constexpr (mp_units::space_before_unit_symbol<unit>) {
+        auto it = ctx.out();
+        *it++ = ' ';
+        ctx.advance_to(it);
+      }
+    }
+    void on_unit() { ctx.advance_to(f.unit_formatter_.format(q.unit, ctx)); }
+    void on_dimension() { ctx.advance_to(f.dimension_formatter_.format(q.dimension, ctx)); }
+    void on_text(const Char* begin, const Char* end) { ctx.advance_to(mp_units::detail::copy(begin, end, ctx.out())); }
+  };
+
+  // Writes the components to a plain output iterator by re-entering `vformat_to` with format
+  // strings reconstructed from the `default-spec`s. Used only for the width path, which has
+  // to render the components into a buffer before it can pad them.
   template<typename OutputIt>
-  struct quantity_formatter {
+  struct vformat_writer {
     const formatter& f;
     OutputIt out;
     const quantity_t& q;
     std::locale locale;
 
+    // `{}` for an empty spec, so that nothing is built in the common case, otherwise `{:<spec>}`
+    // built in `storage`.
+    static std::basic_string_view<Char> format_str(std::basic_string_view<Char> spec, std::basic_string<Char>& storage)
+    {
+      static constexpr Char default_format_str[] = {'{', '}'};
+      if (spec.empty()) return {default_format_str, 2};
+      storage.reserve(spec.size() + 3);
+      storage += '{';
+      storage += ':';
+      storage += spec;
+      storage += '}';
+      return storage;
+    }
+
     void on_number()
     {
-      out = MP_UNITS_STD_FMT::vformat_to(out, locale, f.rep_format_str_,
+      std::basic_string<Char> storage;
+      out = MP_UNITS_STD_FMT::vformat_to(out, locale, format_str(f.rep_spec_, storage),
                                          MP_UNITS_STD_FMT::make_format_args(q.numerical_value_ref_in(q.unit)));
     }
     void on_maybe_space()
@@ -1418,33 +1500,34 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
     }
     void on_unit()
     {
-      out = MP_UNITS_STD_FMT::vformat_to(out, locale, f.unit_format_str_, MP_UNITS_STD_FMT::make_format_args(q.unit));
+      std::basic_string<Char> storage;
+      out = MP_UNITS_STD_FMT::vformat_to(out, locale, format_str(f.unit_spec_, storage),
+                                         MP_UNITS_STD_FMT::make_format_args(q.unit));
     }
     void on_dimension()
     {
-      out = MP_UNITS_STD_FMT::vformat_to(out, locale, f.dimension_format_str_,
+      std::basic_string<Char> storage;
+      out = MP_UNITS_STD_FMT::vformat_to(out, locale, format_str(f.dimension_spec_, storage),
                                          MP_UNITS_STD_FMT::make_format_args(q.dimension));
     }
-    void on_text(const Char* begin, const Char* end) { mp_units::detail::copy(begin, end, out); }
-
-    // Static trampolines for erased_handler — tiny, do not drag in parse_quantity_specs.
-    // (Param renamed from `p` so it doesn't shadow `si::unit_symbols::p` (pico) on MSVC C4459.)
-    static void on_number_erased(void* self) { static_cast<quantity_formatter*>(self)->on_number(); }
-    static void on_maybe_space_erased(void* self) { static_cast<quantity_formatter*>(self)->on_maybe_space(); }
-    static void on_unit_erased(void* self) { static_cast<quantity_formatter*>(self)->on_unit(); }
-    static void on_dimension_erased(void* self) { static_cast<quantity_formatter*>(self)->on_dimension(); }
-    static void on_text_erased(void* self, const Char* b, const Char* e)
-    {
-      static_cast<quantity_formatter*>(self)->on_text(b, e);
-    }
-
-    erased_handler erase()
-    {
-      return {this, on_number_erased, on_maybe_space_erased, on_unit_erased, on_dimension_erased, on_text_erased};
-    }
+    void on_text(const Char* begin, const Char* end) { out = mp_units::detail::copy(begin, end, out); }
   };
-  template<typename OutputIt, typename... Args>
-  quantity_formatter(const formatter&, OutputIt, Args...) -> quantity_formatter<OutputIt>;
+
+  template<typename Handler>
+  void write_components(Handler& h) const
+  {
+    if (modifiers_format_str_.empty()) {
+      // default layout: rep [space] unit
+      h.on_number();
+      h.on_maybe_space();
+      h.on_unit();
+      return;
+    }
+    // Use erased_handler so parse_quantity_specs is instantiated only once (with erased_handler),
+    // not once per context type.
+    auto eh = erase(h);
+    parse_quantity_specs(modifiers_format_str_.data(), modifiers_format_str_.data() + modifiers_format_str_.size(), eh);
+  }
 
   template<std::forward_iterator It, typename Handler>
   constexpr const It parse_quantity_specs(It begin, It end, Handler& handler) const
@@ -1500,8 +1583,10 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
     return ptr;
   }
 
+  // The iterators are not `const Char*`: MSVC's `basic_format_parse_context::iterator` is a class.
   template<std::forward_iterator It, typename Formatter>
-  constexpr It parse_default_spec(It begin, It end, Formatter& f, std::string& format_str)
+  constexpr It parse_default_spec(MP_UNITS_STD_FMT::basic_format_parse_context<Char>& ctx, It begin, It end,
+                                  Formatter& f, std::basic_string_view<Char>& spec)
   {
     if (begin == end || *begin != '[')
       MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("`default-spec` should contain a `[` character"));
@@ -1513,17 +1598,18 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
         --nested_brackets;
       }
     }
-    format_str = "{:" + std::string(begin, it) + '}';
     if (it == end) MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("unmatched '[' in format string"));
-    MP_UNITS_STD_FMT::basic_format_parse_context<Char> ctx(std::string_view(begin, it));
-    auto ptr = f.parse(ctx);
+    spec = {begin, it};
+    MP_UNITS_STD_FMT::basic_format_parse_context<Char> sub_ctx(std::basic_string_view<Char>(begin, it));
+    auto ptr = f.parse(sub_ctx);
     if (ptr != it)
       MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid subentity format '" + std::string(begin, it) + "'"));
     return ++it;  // skip `]`
   }
 
   template<std::forward_iterator It>
-  [[nodiscard]] constexpr It parse_defaults_specs(It begin, It end)
+  [[nodiscard]] constexpr It parse_defaults_specs(MP_UNITS_STD_FMT::basic_format_parse_context<Char>& ctx, It begin,
+                                                  It end)
   {
     if (begin == end || *begin == '}') return begin;
     if (*begin++ != ':') MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("`defaults-specs` should start with a `:`"));
@@ -1532,39 +1618,19 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
       // TODO check if not repeated
       switch (ch) {
         case 'N':
-          begin = parse_default_spec(begin, end, rep_formatter_, rep_format_str_);
+          begin = parse_default_spec(ctx, begin, end, rep_formatter_, rep_spec_);
           break;
         case 'U':
-          begin = parse_default_spec(begin, end, unit_formatter_, unit_format_str_);
+          begin = parse_default_spec(ctx, begin, end, unit_formatter_, unit_spec_);
           break;
         case 'D':
-          begin = parse_default_spec(begin, end, dimension_formatter_, dimension_format_str_);
+          begin = parse_default_spec(ctx, begin, end, dimension_formatter_, dimension_spec_);
           break;
         default:
           MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error(std::string("unknown `subentity-id` token '") + ch + "'"));
       }
     } while (begin != end && *begin != '}');
     return begin;
-  }
-
-  // Writes the quantity content to `out`. Used for the width-buffering path.
-  template<typename OutputIt>
-  OutputIt format_to(OutputIt out, const quantity_t& q, const std::locale& locale) const
-  {
-    if (modifiers_format_str_.empty()) {
-      // default layout: rep [space] unit
-      out = MP_UNITS_STD_FMT::vformat_to(out, locale, rep_format_str_,
-                                         MP_UNITS_STD_FMT::make_format_args(q.numerical_value_ref_in(q.unit)));
-      if constexpr (mp_units::space_before_unit_symbol<unit>) *out++ = ' ';
-      return MP_UNITS_STD_FMT::vformat_to(out, locale, unit_format_str_, MP_UNITS_STD_FMT::make_format_args(q.unit));
-    }
-    // user provided format
-    quantity_formatter f{*this, out, q, locale};
-    // Use erased_handler so parse_quantity_specs is instantiated only once (with erased_handler),
-    // not once per OutputIt type.
-    auto eh = f.erase();
-    parse_quantity_specs(modifiers_format_str_.data(), modifiers_format_str_.data() + modifiers_format_str_.size(), eh);
-    return f.out;
   }
 
 public:
@@ -1579,7 +1645,7 @@ public:
     auto it = parse_quantity_specs(begin, end, checker);
     modifiers_format_str_ = {begin, it};
 
-    return parse_defaults_specs(it, end);
+    return parse_defaults_specs(ctx, it, end);
   }
 
   template<typename FormatContext>
@@ -1588,28 +1654,21 @@ public:
     auto specs = specs_;
     mp_units::utility::handle_dynamic_spec<mp_units::utility::width_checker>(specs.width, specs.width_ref, ctx);
 
-    if (specs.width == 0 && modifiers_format_str_.empty()) {
-      // Fast path: no modifiers and no width — call pre-parsed sub-formatters directly.
-      // No vformat_to, no locale extraction, no allocation. Works correctly even when
-      // N[...]/U[...]/D[...] sub-specs were given: the spec is already encoded in the formatters.
-      ctx.advance_to(rep_formatter_.format(q.numerical_value_ref_in(q.unit), ctx));
-      if constexpr (mp_units::space_before_unit_symbol<unit>) {
-        auto it = ctx.out();
-        *it++ = ' ';
-        ctx.advance_to(it);
-      }
-      return unit_formatter_.format(q.unit, ctx);
+    if (specs.width == 0) {
+      // No width: the pre-parsed sub-formatters write straight to `ctx`, whatever the layout.
+      context_writer<FormatContext> w{*this, ctx, q};
+      write_components(w);
+      return ctx.out();
     }
 
-    // Slow path: modifiers or width — must buffer or use vformat_to.
-    const std::locale locale = MP_UNITS_FMT_LOCALE(ctx.locale());
-    if (specs.width == 0) return format_to(ctx.out(), q, locale);
-
-    std::basic_string<Char> quantity_buffer;
-    format_to(std::back_inserter(quantity_buffer), q, locale);
-    return mp_units::utility::write_padded<Char>(ctx.out(), std::basic_string_view<Char>{quantity_buffer}, specs.width,
-                                                 specs.align, specs.fill);
+    std::basic_string<Char> buffer;
+    vformat_writer<std::back_insert_iterator<std::basic_string<Char>>> w{*this, std::back_inserter(buffer), q,
+                                                                         MP_UNITS_FMT_LOCALE(ctx.locale())};
+    write_components(w);
+    const std::basic_string_view<Char> content{buffer};
+    return mp_units::utility::write_padded<Char>(ctx.out(), content, specs.width, specs.align, specs.fill);
   }
 };
+
 
 #endif  // MP_UNITS_HOSTED
