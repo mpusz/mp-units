@@ -131,7 +131,7 @@ flowchart TD
 ```
 
 The three axes are siblings of `flight_velocity` in the type hierarchy, not its children.
-The decomposition that pairs them with the whole is the `vector_components` specialization
+The decomposition that pairs them with the whole is the `component_vectors` specialization
 below, not an inheritance relationship.
 
 !!! info "Why `is_kind` on the axes"
@@ -146,12 +146,12 @@ below, not an inheritance relationship.
 
 ## Declaring the Decomposition
 
-Opt the whole into decomposition by specializing the `vector_components` customization point
+Opt the whole into decomposition by specializing the `component_vectors` customization point
 and inheriting from `vector_axes`, listing the axes in **coordinate order** (axis 0 first):
 
 ```cpp
 template<>
-struct mp_units::vector_components<flight_velocity> :
+struct mp_units::component_vectors<flight_velocity> :
     mp_units::vector_axes<forward_velocity, lateral_velocity, vertical_velocity> {};
 ```
 
@@ -334,7 +334,7 @@ is rejected, and generic code is left writing its own `index_sequence` helper.
 
 ## Working Without Naming the Axes
 
-Declaring the axes is optional. A vector _quantity_ whose spec has no `vector_components`
+Declaring the axes is optional. A vector _quantity_ whose spec has no `component_vectors`
 specialization still takes apart and goes back together, and each component then carries
 **the whole's kind**:
 
@@ -405,14 +405,16 @@ top of the normal
 (copyable, `bool`-returning equality, a Euclidean norm, and a `value_type`), the type must
 be **indexable by a compile-time constant index**: `Idx` is a template argument, not a
 runtime value, which is what lets each axis have its own return type. The access itself
-need not be `constexpr`. The library accepts either form:
+need not be `constexpr`. The library reads a member `get` first, as a structured binding
+does, and falls back to a subscript:
 
-- a tuple-like `get<Idx>(rep)` found by argument-dependent lookup, or
-- a subscript `rep[Idx]`.
+- a member `get<Idx>()`, when the type has one,
+- otherwise a `get<Idx>(rep)` found by argument-dependent lookup,
+- otherwise a subscript `rep[Idx]`.
 
 It must also state **how many components it holds**, through `std::tuple_size`. That is
-where the library reads the length of an undeclared decomposition, and where it checks
-that you have not declared more axes than the representation can hold.
+where the library reads the length of an undeclared decomposition, and a declared
+decomposition must name exactly that many axes.
 
 `cartesian_vector`, `Eigen::Vector3d`, `glm::dvec3`, and `blaze::StaticVector<double, 3>`
 all satisfy both, so decomposition works against every backend the
@@ -429,11 +431,13 @@ The component _quantity's_ representation is the vector's element type, its `val
 A component of a `cartesian_vector<double>` is therefore a `quantity<…, double>`: a
 1D-vector _quantity_ holding a single value.
 
-!!! info "The index stops at the last declared axis"
+!!! info "The axes match the representation exactly"
 
-    `get<Idx>` and `std::tuple_element<Idx>` reject an `Idx` past the last component, which for
-    a declared decomposition is the last *declared axis* even when the representation is longer
-    (see [By index](#by-index) above).
+    A declared decomposition names one axis per element of the representation, so a
+    `cartesian_vector<double>` of three elements needs three axes. A representation that holds
+    more elements than there are axes is not decomposable. Building it from its component
+    vectors would leave the remaining elements to the representation's constructor, and
+    `Eigen::Vector3i` reads two integers in a braced list as a shape.
 
 
 ## Compile-Time Introspection

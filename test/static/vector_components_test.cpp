@@ -55,7 +55,7 @@ QUANTITY_SPEC(sink_rate, isq::velocity, is_kind);
 }  // namespace
 
 template<>
-struct mp_units::vector_components<flight_velocity> : mp_units::vector_axes<forward_velocity, wind_drift, sink_rate> {};
+struct mp_units::component_vectors<flight_velocity> : mp_units::vector_axes<forward_velocity, wind_drift, sink_rate> {};
 
 namespace {
 
@@ -99,6 +99,7 @@ static_assert(!detail::DecomposableAxis<flight_velocity, vec3, isq::acceleration
 // ---- negative cases ----
 QUANTITY_SPEC(w_foreign, isq::velocity);
 QUANTITY_SPEC(w_too_many, isq::velocity);
+QUANTITY_SPEC(w_too_few, isq::velocity);
 QUANTITY_SPEC(w_axis_eq_whole, isq::velocity);
 QUANTITY_SPEC(w_no_base, isq::velocity);
 QUANTITY_SPEC(px, isq::velocity);  // plain children (not is_kind) -> share the velocity kind
@@ -124,13 +125,15 @@ static_assert(!detail::ValidVectorAxes<px, py, pz>);                            
 
 // these axis lists ARE intrinsically valid, so the specializations compile; they fail relationally
 template<>
-struct mp_units::vector_components<w_foreign> : mp_units::vector_axes<thrust, drag, lift> {};
+struct mp_units::component_vectors<w_foreign> : mp_units::vector_axes<thrust, drag, lift> {};
 template<>
-struct mp_units::vector_components<w_too_many> : mp_units::vector_axes<a1, a2, a3, a4> {};
+struct mp_units::component_vectors<w_too_many> : mp_units::vector_axes<a1, a2, a3, a4> {};
 template<>
-struct mp_units::vector_components<w_axis_eq_whole> : mp_units::vector_axes<forward_velocity, wind_drift, pz> {};
+struct mp_units::component_vectors<w_too_few> : mp_units::vector_axes<a1, a2> {};
 template<>
-struct mp_units::vector_components<w_no_base> {  // intentionally does NOT inherit from vector_axes
+struct mp_units::component_vectors<w_axis_eq_whole> : mp_units::vector_axes<forward_velocity, wind_drift, pz> {};
+template<>
+struct mp_units::component_vectors<w_no_base> {  // intentionally does NOT inherit from vector_axes
   static constexpr std::size_t size = 3;
 };
 
@@ -139,10 +142,13 @@ namespace {
 // negative tests as a custom concept asserted via static_assert (the `invalid_types` idiom)
 template<typename = void>
 concept invalid_decompositions = requires {
-  requires !detail::Decomposable<w_foreign, vec3>;          // axes valid, but foreign to the whole's root
-  requires !detail::Decomposable<w_axis_eq_whole, vec3>;    // an axis shares the whole's kind
-  requires !detail::Decomposable<w_too_many, vec3>;         // more axes than the representation holds
-  requires !detail::Decomposable<w_no_base, vec3>;          // vector_components does not derive vector_axes
+  requires !detail::Decomposable<w_foreign, vec3>;        // axes valid, but foreign to the whole's root
+  requires !detail::Decomposable<w_axis_eq_whole, vec3>;  // an axis shares the whole's kind
+  requires !detail::Decomposable<w_too_many, vec3>;       // more axes than the representation holds
+  requires !detail::Decomposable<w_too_few, vec3>;        // fewer axes than the representation holds
+  requires !detail::Decomposable<w_no_base, vec3>;        // component_vectors does not derive vector_axes
+  // a representation with no compile-time length cannot bound a compile-time index, axes or not
+  requires !detail::Decomposable<flight_velocity, std::vector<double>>;
   requires !detail::Decomposable<isq::speed, double>;       // a scalar whole and a scalar representation
   requires !detail::Decomposable<flight_velocity, double>;  // a non-indexable (scalar) representation
 };
@@ -162,7 +168,7 @@ QUANTITY_SPEC(cplx_speed, isq::speed, quantity_field::complex);  // a complex *s
 }  // namespace
 
 template<>
-struct mp_units::vector_components<cplx_flight_velocity> :
+struct mp_units::component_vectors<cplx_flight_velocity> :
     mp_units::vector_axes<cplx_forward, cplx_drift, cplx_sink> {};
 
 namespace {
@@ -413,9 +419,9 @@ QUANTITY_SPEC(ground_velocity, isq::velocity);
 }  // namespace
 
 template<>
-struct mp_units::vector_components<climb_velocity> : mp_units::vector_axes<forward_velocity, wind_drift, sink_rate> {};
+struct mp_units::component_vectors<climb_velocity> : mp_units::vector_axes<forward_velocity, wind_drift, sink_rate> {};
 template<>
-struct mp_units::vector_components<ground_velocity> : mp_units::vector_axes<forward_velocity, wind_drift, sink_rate> {};
+struct mp_units::component_vectors<ground_velocity> : mp_units::vector_axes<forward_velocity, wind_drift, sink_rate> {};
 
 namespace {
 
@@ -523,5 +529,128 @@ static_assert(dimensionless_q{std::tuple{1.0 * one, 2.0 * one, 3.0 * one}} == di
 static_assert(std::convertible_to<std::tuple<double, double, double>, dimensionless_q>);
 static_assert(!std::constructible_from<quantity<one, vec3i>, std::tuple<double, double, double>>);
 static_assert(!std::constructible_from<quantity<one, vec3i>, double, double, double>);
+
+}  // namespace
+
+// ---- tuple-like composition with typed and with unit-only component vectors, in both modes ----
+namespace {
+
+// a named whole: typed component vectors compose in order only, while unit-only ones fit every
+// position and forfeit the order check, as the separate arguments do
+using kind_q = quantity<km / h>;
+static_assert(Q{std::tuple{30.0 * km / h, -4.0 * km / h, -2.5 * km / h}} == v);
+static_assert(std::convertible_to<std::tuple<kind_q, kind_q, kind_q>, Q>);
+static_assert(std::convertible_to<std::tuple<fwd_q, drift_q, kind_q>, Q>);
+static_assert(std::convertible_to<typed_la::column_vector<kind_q, kind_q, kind_q>, Q>);
+
+// so do the component vectors of an undeclared decomposition, which carry only the whole's kind
+static_assert(Q{get<0>(uv), get<1>(uv), get<2>(uv)} == v);
+static_assert(
+  std::constructible_from<Q, std::tuple_element_t<2, U>, std::tuple_element_t<0, U>, std::tuple_element_t<1, U>>);
+
+// an unnamed whole: component vectors of its kind compose, unit-only ones too, and axis-typed ones
+// do not
+static_assert(U{std::tuple{30.0 * km / h, -4.0 * km / h, -2.5 * km / h}} == uv);
+static_assert(std::convertible_to<std::tuple<kind_q, kind_q, kind_q>, U>);
+static_assert(!std::constructible_from<U, typed_la::column_vector<fwd_q, drift_q, sink_q>>);
+
+// both round trips close through a third-party vector, whether the component vectors carry declared
+// axes, the whole's kind, or only a unit
+using uv_component = std::tuple_element_t<0, U>;
+static_assert(U{typed_la::make_column_vector<uv_component, uv_component, uv_component>(uv)} == uv);
+static_assert(U{typed_la::make_column_vector<vel_q, vel_q, vel_q>(uv)} == uv);
+using kv_component = std::tuple_element_t<0, decltype(kv)>;
+static_assert(decltype(kv){typed_la::make_column_vector<kv_component, kv_component, kv_component>(kv)} == kv);
+
+// a declared axis is a kind of its own, so dropping it for a unit-only component vector is explicit,
+// as it is for any single quantity, while converting back to the axis is implicit
+static_assert(!std::convertible_to<std::tuple_element_t<0, Q>, kind_q>);
+static_assert(std::constructible_from<kind_q, std::tuple_element_t<0, Q>>);
+static_assert(Q{std::tuple{kind_q{get<0>(v)}, kind_q{get<1>(v)}, kind_q{get<2>(v)}}} == v);
+
+// a member `get` is held to the same rules as an argument-dependent one
+static_assert(!std::constructible_from<Q, typed_la::member_get_vector<drift_q, fwd_q, sink_q>>);
+static_assert(!std::constructible_from<Q, typed_la::member_get_vector<fwd_q, drift_q>>);
+
+}  // namespace
+
+// ---- representation element access reads a member `get` first, as a structured binding does ----
+namespace rep_access {
+
+// a representation that offers a member `get` and an argument-dependent one, telling them apart by
+// the value returned
+struct both_gets {
+  double value;
+
+  template<std::size_t Idx>
+  [[nodiscard]] constexpr double get() const
+  {
+    return value + static_cast<double>(Idx);
+  }
+
+  template<std::size_t Idx>
+  [[nodiscard]] friend constexpr double get(const both_gets&)
+  {
+    return -1.0;
+  }
+};
+
+// a representation that offers only a member `get`
+struct member_get_only {
+  double values[3];
+
+  template<std::size_t Idx>
+  [[nodiscard]] constexpr double get() const
+  {
+    return values[Idx];
+  }
+};
+
+}  // namespace rep_access
+
+template<>
+struct std::tuple_size<rep_access::both_gets> : std::integral_constant<std::size_t, 3> {};
+
+template<>
+struct std::tuple_size<rep_access::member_get_only> : std::integral_constant<std::size_t, 3> {};
+
+namespace {
+
+static_assert(detail::component_access<2>(rep_access::both_gets{10.0}) == 12.0);
+static_assert(detail::component_access<1>(rep_access::member_get_only{{1.0, 2.0, 3.0}}) == 2.0);
+static_assert(detail::Decomposable<flight_velocity, rep_access::member_get_only>);
+
+}  // namespace
+
+// ---- the former name of the customization point still declares the axes, and is deprecated ----
+namespace {
+
+QUANTITY_SPEC(legacy_velocity, isq::velocity);
+QUANTITY_SPEC(renamed_velocity, isq::velocity);
+
+}  // namespace
+
+MP_UNITS_DIAGNOSTIC_PUSH
+MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
+template<>
+struct mp_units::vector_components<legacy_velocity> : mp_units::vector_axes<forward_velocity, wind_drift, sink_rate> {};
+// when both names are specialized, `component_vectors` wins
+template<>
+struct mp_units::vector_components<renamed_velocity> : mp_units::vector_axes<a1, a2, a3> {};
+MP_UNITS_DIAGNOSTIC_POP
+
+template<>
+struct mp_units::component_vectors<renamed_velocity> :
+    mp_units::vector_axes<forward_velocity, wind_drift, sink_rate> {};
+
+namespace {
+
+using legacy_q = quantity<legacy_velocity[km / h], vec3>;
+static_assert(detail::Decomposable<legacy_velocity, vec3>);
+static_assert(QuantityOf<std::tuple_element_t<2, legacy_q>, sink_rate>);
+static_assert(legacy_q{30.0 * forward_velocity[km / h], -4.0 * wind_drift[km / h], -2.5 * sink_rate[km / h]} ==
+              legacy_velocity(vec3{30.0, -4.0, -2.5} * km / h));
+static_assert(detail::DecomposableAxis<renamed_velocity, vec3, wind_drift>);
+static_assert(!detail::DecomposableAxis<renamed_velocity, vec3, a2>);
 
 }  // namespace

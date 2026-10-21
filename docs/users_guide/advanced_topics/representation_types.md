@@ -180,7 +180,7 @@ your type).
 !!! note
 
     Every customization point in this section is keyed on the **representation type**. One further
-    customization point, `vector_components`, is keyed on the **quantity spec** instead: it names the
+    customization point, `component_vectors`, is keyed on the **quantity spec** instead: it names the
     axes a vector quantity [decomposes into](#decomposing-a-vector-quantity). Because it
     parameterizes on the quantity rather than its representation, it is documented in
     [its own section below](#decomposing-a-vector-quantity) rather than listed here.
@@ -827,17 +827,17 @@ for full details and examples.
 
 A vector _quantity_ can be split into 1D-vector component _quantities_, reachable by index
 (`get<Idx>`) and through structured bindings, and built back up from them component-wise.
-Naming the axes with the `vector_components` customization point makes each component a
+Naming the axes with the `component_vectors` customization point makes each component a
 distinct kind, reachable by _quantity spec_ (`get<QS>`) and checked against its position
 when the whole is constructed.
 
 Decomposition adds two requirements on top of the vector representation requirements
 above. The representation must be **indexable by a compile-time constant index**, through
-either a tuple-like `get<Idx>(rep)` (found by argument-dependent lookup) or a subscript
-`rep[Idx]`, and it must report **how many components it holds** through `std::tuple_size`.
-The built-in `cartesian_vector` and the supported third-party fixed-size vectors all
-qualify. A representation whose length is only known at run time does not, since a
-compile-time index could not be bounds-checked.
+a member `get<Idx>()`, a `get<Idx>(rep)` found by argument-dependent lookup, or a subscript
+`rep[Idx]`, tried in that order, and it must report **how many components it holds**
+through `std::tuple_size`. The built-in `cartesian_vector` and the supported third-party
+fixed-size vectors all qualify. A representation whose length is only known at run time
+does not, since a compile-time index could not be bounds-checked.
 
 See [Decompose a Vector Quantity into Components](../../how_to_guides/advanced_usage/decompose_vector_quantity.md)
 for the full recipe, including how the quantity hierarchy must be formed.
