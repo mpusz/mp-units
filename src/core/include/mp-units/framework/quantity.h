@@ -33,6 +33,7 @@
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/dimension_concepts.h>
 #include <mp-units/framework/quantity_concepts.h>
+#include <mp-units/framework/quantity_point_concepts.h>
 #include <mp-units/framework/quantity_spec_concepts.h>
 #include <mp-units/framework/reference.h>
 #include <mp-units/framework/reference_concepts.h>
@@ -672,6 +673,70 @@ template<auto R, typename Rep, std::size_t... Idxs, typename... Qs>
   return Rep{component_quantity<R, Rep, Idxs>{qs}.numerical_value_in(get_unit(R))...};
 }
 
+// Component-wise construction from a single value holding the components, such as a heterogeneous
+// vector, so that the tuple protocol closes on itself too: what decomposes into such a value
+// composes back from one. The values accepted are those a structured binding decomposes through
+// `std::tuple_size`, and each element is read the way such a binding reads it.
+// `std::make_from_tuple` cannot serve, because it accepts only the standard library's own
+// *tuple-like* types and calls `std::get`.
+
+// A member `get<Idx>()`, which a structured binding prefers, or else an unqualified `get<Idx>`, which
+// argument-dependent lookup finds for any type modeling the protocol, `std::get` included.
+template<typename T, std::size_t Idx>
+concept HasMemberGet = requires(const T& components) { components.template get<Idx>(); };
+
+template<std::size_t Idx, typename T>
+  requires HasMemberGet<T, Idx> || requires(const T& components) { get<Idx>(components); }
+[[nodiscard]] constexpr decltype(auto) tuple_like_get(const T& components)
+{
+  if constexpr (HasMemberGet<T, Idx>)
+    return components.template get<Idx>();
+  else
+    return get<Idx>(components);
+}
+
+// The `Idx`-th element converts implicitly to the component quantity of that position, which is the
+// check `axis_quantities_convertible` makes for the separate arguments.
+template<auto R, typename Rep, typename T, std::size_t Idx>
+concept TupleLikeElementConvertible = requires(const T& components) {
+  { detail::tuple_like_get<Idx>(components) } -> std::convertible_to<component_quantity<R, Rep, Idx>>;
+};
+
+template<auto R, typename Rep, typename T, std::size_t... Idxs>
+[[nodiscard]] consteval bool tuple_like_elements_convertible(std::index_sequence<Idxs...>)
+{
+  return (... && TupleLikeElementConvertible<R, Rep, T, Idxs>);
+}
+
+// The rules of `ComposableFrom`, with the count read from `std::tuple_size`. This constructor is a
+// candidate for every one-argument construction of a quantity, so the cheap checks come first, and
+// the exclusions keep it away from the constructors that already own such an argument:
+// - a quantity or a point, because a decomposable quantity is itself tuple-like, and converting it
+//   component by component would bypass the quantity-spec conversion rules it is subject to as a whole;
+// - a value convertible to the representation, because a vector representation is tuple-like too, and
+//   it belongs to the value constructors;
+// - a `QuantityLike` type, which converts as a whole through its `quantity_like_traits`. It is asked
+//   only once `std::tuple_size` holds, so other arguments never instantiate those traits.
+// The deleted catch-all that rejects a truncating number for a quantity of unit `one` would otherwise
+// accept a tuple-like value too, so it is constrained on the negation of this concept. It is
+// message-free: the only valid one-argument construction it does not exclude up front is a
+// representation reached explicitly, and a throwing diagnostic here would turn a tuple-like one into
+// a hard error, as it would for that negated use.
+template<auto R, typename Rep, typename T>
+concept ComposableFromTupleLike =
+  (!Quantity<T>) && (!QuantityPoint<T>) && (!std::convertible_to<T, Rep>) && (extent<T>() != dynamic_extent) &&
+  (extent<T>() >= 2) && (!QuantityLike<T>) &&
+  rep_constructible_from_elements<Rep>(std::make_index_sequence<extent<T>()>{}) &&
+  Decomposable<get_quantity_spec(R), Rep> && (extent<T>() == decomposition_size<get_quantity_spec(R), Rep>()) &&
+  tuple_like_elements_convertible<R, Rep, T>(std::make_index_sequence<extent<T>()>{});
+
+template<auto R, typename Rep, typename T, std::size_t... Idxs>
+[[nodiscard]] constexpr Rep compose_representation_from_tuple_like(std::index_sequence<Idxs...>, const T& components)
+{
+  return detail::compose_representation<R, Rep>(std::index_sequence<Idxs...>{},
+                                                detail::tuple_like_get<Idxs>(components)...);
+}
+
 }  // namespace detail
 
 MP_UNITS_EXPORT_BEGIN
@@ -767,8 +832,10 @@ public:
   {
   }
 
+  // a tuple-like value of the components is not a truncated number: it composes the whole (below)
   template<typename Value>
-    requires detail::ExplicitFromNumber<reference> && (!detail::RepConstructibleFrom<rep, Value>)
+    requires detail::ExplicitFromNumber<reference> && (!detail::RepConstructibleFrom<rep, Value>) &&
+               (!detail::ComposableFromTupleLike<reference, rep, Value>)
   constexpr explicit(!std::convertible_to<Value, rep> ||
                      !mp_units::utility::implicitly_convertible(quantity_spec, dimensionless)) quantity(Value val)
 #if MP_UNITS_HAS_DELETED_FUNCTION_MESSAGE
@@ -788,6 +855,21 @@ public:
   [[nodiscard]] constexpr quantity(const Qs&... qs) :
       numerical_value_is_an_implementation_detail_(
         detail::compose_representation<reference, rep>(std::index_sequence_for<Qs...>{}, qs...))
+  {
+  }
+
+  // The same construction from a single value of the components that a structured binding decomposes
+  // through `std::tuple_size` (a `std::tuple`, a `std::array`, or a third-party type with a member or
+  // an argument-dependent `get`), under the same rules. Implicit, as the separate arguments are. A
+  // quantity, a point, a `QuantityLike` type, and a value convertible to the representation are
+  // excluded, and the deleted truncating constructor above steps aside, so this never competes with
+  // the other one-argument constructors.
+  template<typename T>
+    requires detail::ComposableFromTupleLike<reference, rep, T>
+  // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
+  [[nodiscard]] constexpr quantity(const T& components) :
+      numerical_value_is_an_implementation_detail_(detail::compose_representation_from_tuple_like<reference, rep>(
+        std::make_index_sequence<std::tuple_size_v<T>>{}, components))
   {
   }
 
