@@ -124,7 +124,7 @@ QUANTITY_SPEC(vertical_velocity, isq::velocity, is_kind);
 
 // Opt the whole velocity into decomposition by listing its component axes in coordinate order.
 template<>
-struct mp_units::vector_components<flight_velocity> :
+struct mp_units::component_vectors<flight_velocity> :
     mp_units::vector_axes<forward_velocity, lateral_velocity, vertical_velocity> {};
 
 namespace {

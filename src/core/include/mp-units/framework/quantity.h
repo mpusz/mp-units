@@ -582,7 +582,7 @@ struct quantity_iface {
     requires DecomposableAxis<get_quantity_spec(R1), Rep1, QS>
   [[nodiscard]] friend constexpr Quantity auto get(const quantity<R1, Rep1>& q)
   {
-    return get<axis_index_of<QS>(vector_components<get_quantity_spec(R1)>{})>(q);
+    return get<axis_index_of<QS>(declared_axes<get_quantity_spec(R1)>{})>(q);
   }
 
 #if MP_UNITS_HOSTED
@@ -679,21 +679,6 @@ template<auto R, typename Rep, std::size_t... Idxs, typename... Qs>
 // `std::tuple_size`, and each element is read the way such a binding reads it.
 // `std::make_from_tuple` cannot serve, because it accepts only the standard library's own
 // *tuple-like* types and calls `std::get`.
-
-// A member `get<Idx>()`, which a structured binding prefers, or else an unqualified `get<Idx>`, which
-// argument-dependent lookup finds for any type modeling the protocol, `std::get` included.
-template<typename T, std::size_t Idx>
-concept HasMemberGet = requires(const T& components) { components.template get<Idx>(); };
-
-template<std::size_t Idx, typename T>
-  requires HasMemberGet<T, Idx> || requires(const T& components) { get<Idx>(components); }
-[[nodiscard]] constexpr decltype(auto) tuple_like_get(const T& components)
-{
-  if constexpr (HasMemberGet<T, Idx>)
-    return components.template get<Idx>();
-  else
-    return get<Idx>(components);
-}
 
 // The `Idx`-th element converts implicitly to the component quantity of that position, which is the
 // check `axis_quantities_convertible` makes for the separate arguments.
