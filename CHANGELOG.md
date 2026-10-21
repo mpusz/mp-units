@@ -8,6 +8,9 @@ This page documents the version history and changes for the **mp-units** library
 
 ### 2.6.0 <small>TBD</small> { id="2.6.0" }
 
+- fix: the displacement between two point origins keeps a named unit that already is the
+      coarsest exact one, so a `-27 cm` origin offset and the point differences across it
+      print in `cm` rather than in `(1/100 m)`
 - refactor: `quantity_from()` and `quantity_from_zero()` of a quantity point are renamed to
       `delta_from()` and `delta_from_zero()`. They return a delta, and once a point is a
       `quantity` too, "quantity from" no longer says which one. The former names are

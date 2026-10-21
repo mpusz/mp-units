@@ -1473,6 +1473,14 @@ static_assert((usc::fahrenheit_zero - si::ice_point).unit == mag_ratio<1, 9> * s
 // a displacement that is already an integer number of the coherent unit keeps that unit untouched
 static_assert(is_of_type<mean_sea_level - ground_level, quantity<isq::height[m], int>>);
 static_assert((mean_sea_level - ground_level).numerical_value_in(m) == -42);
+// a displacement stored in a named unit that already is the coarsest one keeps that named unit
+// instead of the scaled unit of the same magnitude (`cm` rather than `(1/100 m)`)
+inline constexpr struct rhine_reference final : relative_point_origin<mean_sea_level - 27 * cm> {
+} rhine_reference;
+static_assert(is_of_type<rhine_reference - mean_sea_level, quantity<si::centi<si::metre>, int>>);
+static_assert((rhine_reference - mean_sea_level).numerical_value_in(cm) == -27);
+static_assert(((mean_sea_level + 330 * m) - (rhine_reference + 300 * m)).unit == si::centi<si::metre>);
+static_assert(((mean_sea_level + 330 * m) - (rhine_reference + 300 * m)).numerical_value_in(cm) == 3027);
 // a zero displacement between distinct origins has no magnitude to seed a unit, so it is left as stored
 static_assert(is_of_type<ground_level - same_ground_level1, quantity<isq::height[m], int>>);
 static_assert((ground_level - same_ground_level1).numerical_value_in(m) == 0);

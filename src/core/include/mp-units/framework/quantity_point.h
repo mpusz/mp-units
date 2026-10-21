@@ -88,7 +88,9 @@ template<typename FwdQ, PointOrigin PO, Quantity Q = std::remove_cvref_t<FwdQ>>
 // stored in produces the most efficient common unit for point differences (e.g. the offset of the
 // Celsius origin stored as `273150 mK` is re-expressed as `5463 (1/20 K)`, so that a temperature
 // point difference is no longer forced down to millikelvins). Displacements that are already an
-// integer number of the coherent unit are left untouched (e.g. a `42 m` origin offset stays `42 m`).
+// integer number of the coherent unit are left untouched (e.g. a `42 m` origin offset stays `42 m`),
+// and so are those whose unit already is the coarsest one: a named unit reads better than the scaled
+// unit of the same magnitude (e.g. a `-27 cm` origin offset stays in `cm` rather than `(1/100 m)`).
 // The displacement between two origins is a compile-time constant, so it is passed as an NTTP.
 template<Quantity auto Q>
 [[nodiscard]] consteval Quantity auto coarsen_origin_displacement()
@@ -101,7 +103,11 @@ template<Quantity auto Q>
   else {
     constexpr auto canonical = get_canonical_unit(Q.unit);
     constexpr auto value_in_coherent_unit = mag<detail::abs(v)> * canonical.mag;
-    return Q.in(pow<-1>(denominator(value_in_coherent_unit)) * canonical.reference_unit, truncated);
+    constexpr Unit auto coarsest = pow<-1>(denominator(value_in_coherent_unit)) * canonical.reference_unit;
+    if constexpr (equivalent(coarsest, Q.unit))
+      return Q;
+    else
+      return Q.in(coarsest, truncated);
   }
 }
 
