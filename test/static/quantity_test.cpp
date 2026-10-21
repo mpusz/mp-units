@@ -67,12 +67,20 @@ static_assert(sizeof(quantity<si::metre>) == sizeof(double));
 static_assert(sizeof(quantity<isq::length[m]>) == sizeof(double));
 static_assert(sizeof(quantity<si::metre, short>) == sizeof(short));
 static_assert(sizeof(quantity<isq::length[m], short>) == sizeof(short));
+static_assert(sizeof(quantity<si::metre, std::int8_t>) == sizeof(std::int8_t));
+static_assert(sizeof(quantity<si::metre, std::uint8_t>) == sizeof(std::uint8_t));
 
 template<template<auto, typename> typename Q>
 concept invalid_types = requires {
   requires !requires { typename Q<isq::dim_length, double>; };  // dimension instead of reference
   requires !requires { typename Q<isq::length, double>; };      // quantity_spec instead of reference
   requires !requires { typename Q<isq::length[m], bool>; };     // bool is not a valid representation type
+  requires !requires { typename Q<isq::length[m], char>; };     // nor is a character type
+  requires !requires { typename Q<isq::length[m], wchar_t>; };
+  requires !requires { typename Q<isq::length[m], char8_t>; };
+  requires !requires { typename Q<isq::length[m], char16_t>; };
+  requires !requires { typename Q<isq::length[m], char32_t>; };
+  requires !requires { typename Q<si::metre, char>; };
   requires !requires { typename Q<isq::length[m], quantity<isq::length[m]>>; };  // quantity used as Rep
 #if MP_UNITS_HOSTED
   requires !requires {

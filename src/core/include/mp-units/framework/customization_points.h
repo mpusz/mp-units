@@ -433,13 +433,27 @@ constexpr bool is_quantity_abstraction = false;
 
 // A specializable opt-out: when `true`, `T` is not accepted as a quantity representation by any
 // character. The default rejects a type that is, or whose elements are, a quantity abstraction (so a
-// bare quantity and a container of quantities are both excluded), and `bool` is opted out as well. A
-// custom type bars itself from ever being a representation with a one-line specialization.
+// bare quantity and a container of quantities are both excluded), and `bool` and the character types
+// are opted out as well. A custom type bars itself from ever being a representation with a one-line
+// specialization.
 MP_UNITS_EXPORT template<typename T>
 constexpr bool disable_representation = detail::is_quantity_abstraction<detail::value_type_t<T>>;
 
 template<>
 inline constexpr bool disable_representation<bool> = true;
+
+// A character type holds a character, not a number. `signed char` and `unsigned char` stay
+// representations, as `std::int8_t` and `std::uint8_t` name them.
+template<>
+inline constexpr bool disable_representation<char> = true;
+template<>
+inline constexpr bool disable_representation<wchar_t> = true;
+template<>
+inline constexpr bool disable_representation<char8_t> = true;
+template<>
+inline constexpr bool disable_representation<char16_t> = true;
+template<>
+inline constexpr bool disable_representation<char32_t> = true;
 
 // A representation carries a runtime value, which a stateless type cannot do. Rejecting empty tag
 // types here also short-circuits the whole representation-concept chain (`WeaklyRegular`, scaling,

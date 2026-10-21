@@ -407,6 +407,17 @@ static_assert(!RepresentationOf<bool, quantity_tensor_order::scalar>);
 static_assert(!RepresentationOf<bool, quantity_tensor_order::vector>);
 static_assert(!RepresentationOf<bool, quantity_tensor_order::tensor>);
 
+// character types: opted out via disable_representation; `signed char` and `unsigned char`, the types
+// of `std::int8_t` and `std::uint8_t`, stay representations
+static_assert(!RepresentationOf<char, quantity_tensor_order::scalar>);
+static_assert(!RepresentationOf<wchar_t, quantity_tensor_order::scalar>);
+static_assert(!RepresentationOf<char8_t, quantity_tensor_order::scalar>);
+static_assert(!RepresentationOf<char16_t, quantity_tensor_order::scalar>);
+static_assert(!RepresentationOf<char32_t, quantity_tensor_order::scalar>);
+static_assert(!RepresentationOf<char, quantity_field::real>);
+static_assert(RepresentationOf<signed char, quantity_tensor_order::scalar>);
+static_assert(RepresentationOf<unsigned char, quantity_tensor_order::scalar>);
+
 // non-numeric type: not a representation at all
 static_assert(!RepresentationOf<std::optional<int>, quantity_tensor_order::scalar>);
 
