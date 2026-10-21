@@ -367,26 +367,30 @@ static_assert(
 // static member functions
 ////////////////////////////
 
-static_assert(
-  quantity_point<isq::height[m], mean_sea_level>::min().quantity_from(mean_sea_level).numerical_value_in(m) ==
-  std::numeric_limits<double>::lowest());
-static_assert(
-  quantity_point<isq::height[m], mean_sea_level>::max().quantity_from(mean_sea_level).numerical_value_in(m) ==
-  std::numeric_limits<double>::max());
+static_assert(quantity_point<isq::height[m], mean_sea_level>::min().delta_from(mean_sea_level).numerical_value_in(m) ==
+              std::numeric_limits<double>::lowest());
+static_assert(quantity_point<isq::height[m], mean_sea_level>::max().delta_from(mean_sea_level).numerical_value_in(m) ==
+              std::numeric_limits<double>::max());
 
-static_assert(
-  quantity_point<isq::height[m], ground_level, int>::min().quantity_from(ground_level).numerical_value_in(m) ==
-  std::numeric_limits<int>::lowest());
-static_assert(
-  quantity_point<isq::height[m], ground_level, int>::max().quantity_from(ground_level).numerical_value_in(m) ==
-  std::numeric_limits<int>::max());
+static_assert(quantity_point<isq::height[m], ground_level, int>::min().delta_from(ground_level).numerical_value_in(m) ==
+              std::numeric_limits<int>::lowest());
+static_assert(quantity_point<isq::height[m], ground_level, int>::max().delta_from(ground_level).numerical_value_in(m) ==
+              std::numeric_limits<int>::max());
 
-// zero() and quantity_from_zero() — only available when PO == default_point_origin(R)
-static_assert(quantity_point<isq::height[m]>::zero().quantity_from_zero() == 0 * isq::height[m]);
+// zero() and delta_from_zero() — only available when PO == default_point_origin(R)
+static_assert(quantity_point<isq::height[m]>::zero().delta_from_zero() == 0 * isq::height[m]);
+
+// `quantity_from` and `quantity_from_zero` remain as deprecated names of `delta_from` and `delta_from_zero`
+MP_UNITS_DIAGNOSTIC_PUSH
+MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
+static_assert(point<m>(42).quantity_from_zero() == 42 * m);
+static_assert(point<m>(42).quantity_from(point<m>(40)) == 2 * m);
+static_assert((mean_sea_level + 42 * m).quantity_from(mean_sea_level) == 42 * m);
+MP_UNITS_DIAGNOSTIC_POP
 static_assert(quantity_point<isq::height[m]>::zero() == quantity_point<isq::height[m]>{0 * isq::height[m]});
-static_assert(quantity_point<m>::zero().quantity_from_zero() == 0 * m);
-static_assert(quantity_point<deg_C>::zero().quantity_from_zero() == delta<deg_C>(0));
-static_assert(quantity_point<K>::zero().quantity_from_zero() == delta<K>(0));
+static_assert(quantity_point<m>::zero().delta_from_zero() == 0 * m);
+static_assert(quantity_point<deg_C>::zero().delta_from_zero() == delta<deg_C>(0));
+static_assert(quantity_point<K>::zero().delta_from_zero() == delta<K>(0));
 
 
 //////////////////////////////
@@ -828,12 +832,12 @@ static_assert(
 // obtaining a relative quantity
 //////////////////////////////////
 
-static_assert(quantity_point{42 * m}.quantity_from_zero() == 42 * m);
-static_assert(quantity_point{isq::height(42 * m)}.quantity_from_zero() == 42 * m);
-static_assert(quantity_point{delta<deg_C>(20)}.quantity_from_zero() == delta<deg_C>(20));
-static_assert(quantity_point{delta<deg_C>(20.)}.in(deg_F).quantity_from_zero() == delta<deg_F>(68));
-static_assert(point<deg_C>(20).quantity_from_zero() == delta<deg_C>(20));
-static_assert(point<deg_C>(20.).in(deg_F).quantity_from_zero() == delta<deg_F>(68));
+static_assert(quantity_point{42 * m}.delta_from_zero() == 42 * m);
+static_assert(quantity_point{isq::height(42 * m)}.delta_from_zero() == 42 * m);
+static_assert(quantity_point{delta<deg_C>(20)}.delta_from_zero() == delta<deg_C>(20));
+static_assert(quantity_point{delta<deg_C>(20.)}.in(deg_F).delta_from_zero() == delta<deg_F>(68));
+static_assert(point<deg_C>(20).delta_from_zero() == delta<deg_C>(20));
+static_assert(point<deg_C>(20.).in(deg_F).delta_from_zero() == delta<deg_F>(68));
 
 // numerical_value_in(U) - inverse of point<U>(value), available only at the default origin
 static_assert(quantity_point{42 * m}.numerical_value_in(m) == 42);
@@ -854,43 +858,42 @@ static_assert(point<m>(2999).numerical_value_in(km, rounded_down) == 2);
 // numerical_value_in round-trips construction
 static_assert(point<deg_C>(point<deg_C>(20.5).numerical_value_in(deg_C)) == point<deg_C>(20.5));
 
-static_assert((mean_sea_level + 42 * m).quantity_from(mean_sea_level) == 42 * m);
-static_assert((ground_level + 42 * m).quantity_from(mean_sea_level) == 84 * m);
-static_assert((tower_peak + 42 * m).quantity_from(mean_sea_level) == 126 * m);
+static_assert((mean_sea_level + 42 * m).delta_from(mean_sea_level) == 42 * m);
+static_assert((ground_level + 42 * m).delta_from(mean_sea_level) == 84 * m);
+static_assert((tower_peak + 42 * m).delta_from(mean_sea_level) == 126 * m);
 
-static_assert((mean_sea_level + 42 * m).quantity_from(mean_sea_level) == 42 * m);
-static_assert((mean_sea_level + isq::height(42 * m)).quantity_from(mean_sea_level) == 42 * m);
+static_assert((mean_sea_level + 42 * m).delta_from(mean_sea_level) == 42 * m);
+static_assert((mean_sea_level + isq::height(42 * m)).delta_from(mean_sea_level) == 42 * m);
 
-static_assert((zero + 1 * one).quantity_from(zero) == 1 * one);
-static_assert((zero + dimensionless(1 * one)).quantity_from(zero) == 1 * one);
+static_assert((zero + 1 * one).delta_from(zero) == 1 * one);
+static_assert((zero + dimensionless(1 * one)).delta_from(zero) == 1 * one);
 
-static_assert((mean_sea_level + 42 * m).quantity_from(mean_sea_level) == 42 * m);
-static_assert((ground_level + 42 * m).quantity_from(ground_level) == 42 * m);
-static_assert((tower_peak + 42 * m).quantity_from(tower_peak) == 42 * m);
+static_assert((mean_sea_level + 42 * m).delta_from(mean_sea_level) == 42 * m);
+static_assert((ground_level + 42 * m).delta_from(ground_level) == 42 * m);
+static_assert((tower_peak + 42 * m).delta_from(tower_peak) == 42 * m);
 
-static_assert(quantity_point<isq::height[m], mean_sea_level>(ground_level + 42 * m).quantity_from(mean_sea_level) ==
+static_assert(quantity_point<isq::height[m], mean_sea_level>(ground_level + 42 * m).delta_from(mean_sea_level) ==
               84 * m);
-static_assert(quantity_point<isq::height[m], mean_sea_level>(tower_peak + 42 * m).quantity_from(mean_sea_level) ==
+static_assert(quantity_point<isq::height[m], mean_sea_level>(tower_peak + 42 * m).delta_from(mean_sea_level) ==
               126 * m);
 
-static_assert(quantity_point<isq::height[m], ground_level>(mean_sea_level + 84 * m).quantity_from(ground_level) ==
-              42 * m);
-static_assert(quantity_point<isq::height[m], ground_level>(tower_peak + 42 * m).quantity_from(ground_level) == 84 * m);
+static_assert(quantity_point<isq::height[m], ground_level>(mean_sea_level + 84 * m).delta_from(ground_level) == 42 * m);
+static_assert(quantity_point<isq::height[m], ground_level>(tower_peak + 42 * m).delta_from(ground_level) == 84 * m);
 
-static_assert(quantity_point<isq::height[m], tower_peak>(mean_sea_level + 42 * m).quantity_from(tower_peak) == -42 * m);
-static_assert(quantity_point<isq::height[m], tower_peak>(ground_level + 84 * m).quantity_from(tower_peak) == 42 * m);
+static_assert(quantity_point<isq::height[m], tower_peak>(mean_sea_level + 42 * m).delta_from(tower_peak) == -42 * m);
+static_assert(quantity_point<isq::height[m], tower_peak>(ground_level + 84 * m).delta_from(tower_peak) == 42 * m);
 
-static_assert((mean_sea_level + 42 * m).point_for(mean_sea_level).quantity_from(mean_sea_level) == 42 * m);
-static_assert((ground_level + 42 * m).point_for(mean_sea_level).quantity_from(mean_sea_level) == 84 * m);
-static_assert((tower_peak + 42 * m).point_for(mean_sea_level).quantity_from(mean_sea_level) == 126 * m);
+static_assert((mean_sea_level + 42 * m).point_for(mean_sea_level).delta_from(mean_sea_level) == 42 * m);
+static_assert((ground_level + 42 * m).point_for(mean_sea_level).delta_from(mean_sea_level) == 84 * m);
+static_assert((tower_peak + 42 * m).point_for(mean_sea_level).delta_from(mean_sea_level) == 126 * m);
 
-static_assert((ground_level + 84 * m).point_for(ground_level).quantity_from(ground_level) == 84 * m);
-static_assert((mean_sea_level + 84 * m).point_for(ground_level).quantity_from(ground_level) == 42 * m);
-static_assert((tower_peak + 42 * m).point_for(ground_level).quantity_from(ground_level) == 84 * m);
+static_assert((ground_level + 84 * m).point_for(ground_level).delta_from(ground_level) == 84 * m);
+static_assert((mean_sea_level + 84 * m).point_for(ground_level).delta_from(ground_level) == 42 * m);
+static_assert((tower_peak + 42 * m).point_for(ground_level).delta_from(ground_level) == 84 * m);
 
-static_assert((tower_peak + 42 * m).point_for(tower_peak).quantity_from(tower_peak) == 42 * m);
-static_assert((mean_sea_level + 42 * m).point_for(tower_peak).quantity_from(tower_peak) == -42 * m);
-static_assert((ground_level + 84 * m).point_for(tower_peak).quantity_from(tower_peak) == 42 * m);
+static_assert((tower_peak + 42 * m).point_for(tower_peak).delta_from(tower_peak) == 42 * m);
+static_assert((mean_sea_level + 42 * m).point_for(tower_peak).delta_from(tower_peak) == -42 * m);
+static_assert((ground_level + 84 * m).point_for(tower_peak).delta_from(tower_peak) == 42 * m);
 
 static_assert(is_of_type<(ground_level + isq::height(short{42} * m)).point_for(mean_sea_level),
                          quantity_point<isq::height[m], mean_sea_level, int>>);
@@ -900,15 +903,15 @@ static_assert(is_of_type<(ground_level + isq::height(short{42} * m)).point_for(m
 // converting to a different unit
 ///////////////////////////////////
 
-static_assert((mean_sea_level + 2. * km).in(km).quantity_from(mean_sea_level).numerical_value_in(km) == 2.);
-static_assert((mean_sea_level + 2. * km).in(m).quantity_from(mean_sea_level).numerical_value_in(m) == 2000.);
-static_assert((mean_sea_level + 2000. * m).in(km).quantity_from(mean_sea_level).numerical_value_in(km) == 2.);
-static_assert((ground_level + 2. * km).in(km).quantity_from(ground_level).numerical_value_in(km) == 2.);
-static_assert((ground_level + 2. * km).in(m).quantity_from(ground_level).numerical_value_in(m) == 2000.);
-static_assert((ground_level + 2000. * m).in(km).quantity_from(ground_level).numerical_value_in(km) == 2.);
-static_assert((tower_peak + 2. * km).in(km).quantity_from(tower_peak).numerical_value_in(km) == 2.);
-static_assert((tower_peak + 2. * km).in(m).quantity_from(tower_peak).numerical_value_in(m) == 2000.);
-static_assert((tower_peak + 2000. * m).in(km).quantity_from(tower_peak).numerical_value_in(km) == 2.);
+static_assert((mean_sea_level + 2. * km).in(km).delta_from(mean_sea_level).numerical_value_in(km) == 2.);
+static_assert((mean_sea_level + 2. * km).in(m).delta_from(mean_sea_level).numerical_value_in(m) == 2000.);
+static_assert((mean_sea_level + 2000. * m).in(km).delta_from(mean_sea_level).numerical_value_in(km) == 2.);
+static_assert((ground_level + 2. * km).in(km).delta_from(ground_level).numerical_value_in(km) == 2.);
+static_assert((ground_level + 2. * km).in(m).delta_from(ground_level).numerical_value_in(m) == 2000.);
+static_assert((ground_level + 2000. * m).in(km).delta_from(ground_level).numerical_value_in(km) == 2.);
+static_assert((tower_peak + 2. * km).in(km).delta_from(tower_peak).numerical_value_in(km) == 2.);
+static_assert((tower_peak + 2. * km).in(m).delta_from(tower_peak).numerical_value_in(m) == 2000.);
+static_assert((tower_peak + 2000. * m).in(km).delta_from(tower_peak).numerical_value_in(km) == 2.);
 
 static_assert(is_of_type<(mean_sea_level + 2 * km).in(m), quantity_point<m, mean_sea_level, int>>);
 static_assert(is_of_type<(mean_sea_level + 2 * km).in<double>(), quantity_point<km, mean_sea_level>>);
@@ -919,12 +922,11 @@ static_assert(is_of_type<(mean_sea_level + 2500. * m).in<int>(truncated), quanti
 static_assert(is_of_type<(mean_sea_level + 2500. * m).in<int>(km, truncated), quantity_point<km, mean_sea_level, int>>);
 
 // rounding policies for quantity points
-static_assert((mean_sea_level + 2500 * m).in(km, truncated).quantity_from(mean_sea_level).numerical_value_in(km) == 2);
-static_assert((mean_sea_level + 2501 * m).in(km, rounded).quantity_from(mean_sea_level).numerical_value_in(km) == 3);
-static_assert((mean_sea_level + 2500 * m).in(km, rounded_up).quantity_from(mean_sea_level).numerical_value_in(km) == 3);
-static_assert((mean_sea_level - 2500 * m).in(km, truncated).quantity_from(mean_sea_level).numerical_value_in(km) == -2);
-static_assert((mean_sea_level - 2500 * m).in(km, rounded_down).quantity_from(mean_sea_level).numerical_value_in(km) ==
-              -3);
+static_assert((mean_sea_level + 2500 * m).in(km, truncated).delta_from(mean_sea_level).numerical_value_in(km) == 2);
+static_assert((mean_sea_level + 2501 * m).in(km, rounded).delta_from(mean_sea_level).numerical_value_in(km) == 3);
+static_assert((mean_sea_level + 2500 * m).in(km, rounded_up).delta_from(mean_sea_level).numerical_value_in(km) == 3);
+static_assert((mean_sea_level - 2500 * m).in(km, truncated).delta_from(mean_sea_level).numerical_value_in(km) == -2);
+static_assert((mean_sea_level - 2500 * m).in(km, rounded_down).delta_from(mean_sea_level).numerical_value_in(km) == -3);
 
 // Cross-origin conversions apply the policy to the origin offset as well. A 20 degC point is
 // 293.15 K, so the policy decides between 293 K and 294 K for an integral representation.
@@ -946,8 +948,8 @@ static_assert(is_of_type<point<deg_C>(20.).in(K), quantity_point<K, si::absolute
 static_assert(is_of_type<point<K>(300.).in(deg_C), quantity_point<deg_C, si::ice_point>>);
 
 // consistency: same physical point, different representation
-static_assert(point<deg_C>(20.).in(K).quantity_from_zero() == point<deg_C>(20.).quantity_from(si::absolute_zero).in(K));
-static_assert(point<K>(300.).in(deg_C).quantity_from_zero() == point<K>(300.).quantity_from(si::ice_point).in(deg_C));
+static_assert(point<deg_C>(20.).in(K).delta_from_zero() == point<deg_C>(20.).delta_from(si::absolute_zero).in(K));
+static_assert(point<K>(300.).in(deg_C).delta_from_zero() == point<K>(300.).delta_from(si::ice_point).in(deg_C));
 
 // in(unit) for custom-origin points: preserves origin (no switching)
 static_assert(is_of_type<quantity_point<deg_C, my_celsius_point>{}.in(deg_F), quantity_point<deg_F, my_celsius_point>>);
@@ -967,7 +969,7 @@ concept invalid_numerical_value_extraction = requires {
   requires !requires { (Origin + 2 * m).numerical_value_in(m); };
   requires !requires { (Origin + 2 * m).numerical_value_in(m, truncated); };
   // the explicit-origin path remains available
-  requires requires { (Origin + 2 * m).quantity_from(Origin).numerical_value_in(m); };
+  requires requires { (Origin + 2 * m).delta_from(Origin).numerical_value_in(m); };
 };
 static_assert(invalid_numerical_value_extraction<mean_sea_level>);
 
@@ -1058,18 +1060,18 @@ static_assert(([]() {
                 quantity_point l2{mean_sea_level + 2 * m};
                 return l2 = l1;
               }())
-                .quantity_from(mean_sea_level) == 1 * m);
+                .delta_from(mean_sea_level) == 1 * m);
 static_assert(([]() {
                 const quantity_point l1{mean_sea_level + 1 * m};
                 quantity_point l2{mean_sea_level + 2 * m};
                 return l2 = l1;
               }())
-                .quantity_from(mean_sea_level) == 1 * m);
+                .delta_from(mean_sea_level) == 1 * m);
 static_assert(([]() {
                 quantity_point l1{mean_sea_level + 1 * m}, l2{mean_sea_level + 2 * m};
                 return l2 = std::move(l1);  // NOLINT(*-move-const-arg)
               }())
-                .quantity_from(mean_sea_level) == 1 * m);
+                .delta_from(mean_sea_level) == 1 * m);
 
 
 ////////////////////
@@ -1099,25 +1101,25 @@ static_assert([](auto v) {
 ////////////////////////
 
 // same type
-static_assert([qp = mean_sea_level + 1 * m]() mutable { return qp += 1 * m; }()
-                .quantity_from(mean_sea_level)
-                .numerical_value_in(m) == 2);
-static_assert([qp = mean_sea_level + 2 * m]() mutable { return qp -= 1 * m; }()
-                .quantity_from(mean_sea_level)
-                .numerical_value_in(m) == 1);
+static_assert(
+  [qp = mean_sea_level + 1 * m]() mutable { return qp += 1 * m; }().delta_from(mean_sea_level).numerical_value_in(m) ==
+  2);
+static_assert(
+  [qp = mean_sea_level + 2 * m]() mutable { return qp -= 1 * m; }().delta_from(mean_sea_level).numerical_value_in(m) ==
+  1);
 
 // different types
 static_assert([qp = mean_sea_level + 2.5 * m]() mutable { return qp += 3 * m; }()
-                .quantity_from(mean_sea_level)
+                .delta_from(mean_sea_level)
                 .numerical_value_in(m) == 5.5);
 static_assert([qp = mean_sea_level + 123 * m]() mutable { return qp += 1 * km; }()
-                .quantity_from(mean_sea_level)
+                .delta_from(mean_sea_level)
                 .numerical_value_in(m) == 1123);
 static_assert([qp = mean_sea_level + 5.5 * m]() mutable { return qp -= 3 * m; }()
-                .quantity_from(mean_sea_level)
+                .delta_from(mean_sea_level)
                 .numerical_value_in(m) == 2.5);
 static_assert([qp = mean_sea_level + 1123 * m]() mutable { return qp -= 1 * km; }()
-                .quantity_from(mean_sea_level)
+                .delta_from(mean_sea_level)
                 .numerical_value_in(m) == 123);
 
 
@@ -1151,10 +1153,10 @@ static_assert(invalid_compound_assignments<quantity_point>);
 
 template<auto Origin, auto OtherOrigin>
 concept invalid_origin_queries = requires {
-  requires !requires { (Origin + 2 * isq::height[m]).quantity_from_zero(); };  // not the natural origin
+  requires !requires { (Origin + 2 * isq::height[m]).delta_from_zero(); };  // not the natural origin
   requires !requires { quantity_point<isq::height[m], Origin>::zero(); };
-  requires !requires { (Origin + 2 * isq::height[m]).quantity_from(OtherOrigin); };  // unrelated origin
-  requires !requires { (Origin + 2 * isq::height[m]).quantity_from(zeroth_length); };
+  requires !requires { (Origin + 2 * isq::height[m]).delta_from(OtherOrigin); };  // unrelated origin
+  requires !requires { (Origin + 2 * isq::height[m]).delta_from(zeroth_length); };
 };
 static_assert(invalid_origin_queries<mean_sea_level, other_absolute_level>);
 
@@ -1482,28 +1484,28 @@ static_assert(celsius_fahrenheit_sum.numerical_value_in(celsius_fahrenheit_sum.u
 
 // check for integral types promotion
 static_assert(std::is_same_v<decltype(((mean_sea_level + std::uint8_t{0} * m) + std::uint8_t{0} * m)
-                                        .quantity_from(mean_sea_level)
+                                        .delta_from(mean_sea_level)
                                         .numerical_value_in(m)),
                              int>);
 static_assert(std::is_same_v<decltype((std::uint8_t{0} * m + (mean_sea_level + std::uint8_t{0} * m))
-                                        .quantity_from(mean_sea_level)
+                                        .delta_from(mean_sea_level)
                                         .numerical_value_in(m)),
                              int>);
 static_assert(std::is_same_v<decltype(((mean_sea_level + std::uint8_t{0} * m) - std::uint8_t{0} * m)
-                                        .quantity_from(mean_sea_level)
+                                        .delta_from(mean_sea_level)
                                         .numerical_value_in(m)),
                              int>);
 static_assert(std::is_same_v<decltype(((mean_sea_level + std::uint8_t{0} * m) - (mean_sea_level + std::uint8_t{0} * m))
                                         .numerical_value_in(m)),
                              int>);
-static_assert(((mean_sea_level + std::uint8_t{128} * m) + std::uint8_t{128} * m)
-                .quantity_from(mean_sea_level)
-                .numerical_value_in(m) == std::uint8_t{128} + std::uint8_t{128});
-static_assert((std::uint8_t{128} * m + (mean_sea_level + std::uint8_t{128} * m))
-                .quantity_from(mean_sea_level)
-                .numerical_value_in(m) == std::uint8_t{128} + std::uint8_t{128});
 static_assert(
-  ((mean_sea_level + std::uint8_t{0} * m) - std::uint8_t{1} * m).quantity_from(mean_sea_level).numerical_value_in(m) ==
+  ((mean_sea_level + std::uint8_t{128} * m) + std::uint8_t{128} * m).delta_from(mean_sea_level).numerical_value_in(m) ==
+  std::uint8_t{128} + std::uint8_t{128});
+static_assert(
+  (std::uint8_t{128} * m + (mean_sea_level + std::uint8_t{128} * m)).delta_from(mean_sea_level).numerical_value_in(m) ==
+  std::uint8_t{128} + std::uint8_t{128});
+static_assert(
+  ((mean_sea_level + std::uint8_t{0} * m) - std::uint8_t{1} * m).delta_from(mean_sea_level).numerical_value_in(m) ==
   std::uint8_t{0} - std::uint8_t{1});
 static_assert(((mean_sea_level + std::uint8_t{0} * m) - (mean_sea_level + std::uint8_t{1} * m)).numerical_value_in(m) ==
               std::uint8_t{0} - std::uint8_t{1});
@@ -1560,32 +1562,32 @@ static_assert(is_of_type<(mean_sea_level + 1 * km) - (mean_sea_level + 1. * m), 
 static_assert(is_of_type<(mean_sea_level + 1. * km) - (mean_sea_level + 1. * m), quantity<si::metre, double>>);
 
 
-static_assert(((mean_sea_level + 1 * m) + 1 * m).quantity_from(mean_sea_level).numerical_value_in(m) == 2);
-static_assert((1 * m + (mean_sea_level + 1 * m)).quantity_from(mean_sea_level).numerical_value_in(m) == 2);
-static_assert(((mean_sea_level + 1 * m) + 1 * km).quantity_from(mean_sea_level).numerical_value_in(m) == 1001);
-static_assert((1 * m + (mean_sea_level + 1 * km)).quantity_from(mean_sea_level).numerical_value_in(m) == 1001);
-static_assert(((mean_sea_level + 1 * km) + 1 * m).quantity_from(mean_sea_level).numerical_value_in(m) == 1001);
-static_assert((1 * km + (mean_sea_level + 1 * m)).quantity_from(mean_sea_level).numerical_value_in(m) == 1001);
-static_assert(((mean_sea_level + 2 * m) - 1 * m).quantity_from(mean_sea_level).numerical_value_in(m) == 1);
-static_assert(((mean_sea_level + 1 * km) - 1 * m).quantity_from(mean_sea_level).numerical_value_in(m) == 999);
+static_assert(((mean_sea_level + 1 * m) + 1 * m).delta_from(mean_sea_level).numerical_value_in(m) == 2);
+static_assert((1 * m + (mean_sea_level + 1 * m)).delta_from(mean_sea_level).numerical_value_in(m) == 2);
+static_assert(((mean_sea_level + 1 * m) + 1 * km).delta_from(mean_sea_level).numerical_value_in(m) == 1001);
+static_assert((1 * m + (mean_sea_level + 1 * km)).delta_from(mean_sea_level).numerical_value_in(m) == 1001);
+static_assert(((mean_sea_level + 1 * km) + 1 * m).delta_from(mean_sea_level).numerical_value_in(m) == 1001);
+static_assert((1 * km + (mean_sea_level + 1 * m)).delta_from(mean_sea_level).numerical_value_in(m) == 1001);
+static_assert(((mean_sea_level + 2 * m) - 1 * m).delta_from(mean_sea_level).numerical_value_in(m) == 1);
+static_assert(((mean_sea_level + 1 * km) - 1 * m).delta_from(mean_sea_level).numerical_value_in(m) == 999);
 
-static_assert(((mean_sea_level + 1.5 * m) + 1 * m).quantity_from(mean_sea_level).numerical_value_in(m) == 2.5);
-static_assert((1.5 * m + (mean_sea_level + 1 * m)).quantity_from(mean_sea_level).numerical_value_in(m) == 2.5);
-static_assert(((mean_sea_level + 1.5 * m) + 1 * km).quantity_from(mean_sea_level).numerical_value_in(m) == 1001.5);
-static_assert((1.5 * m + (mean_sea_level + 1 * km)).quantity_from(mean_sea_level).numerical_value_in(m) == 1001.5);
-static_assert(((mean_sea_level + 1.5 * km) + 1 * m).quantity_from(mean_sea_level).numerical_value_in(m) == 1501);
-static_assert((1.5 * km + (mean_sea_level + 1 * m)).quantity_from(mean_sea_level).numerical_value_in(m) == 1501);
-static_assert(((mean_sea_level + 2.5 * m) - 1 * m).quantity_from(mean_sea_level).numerical_value_in(m) == 1.5);
-static_assert(((mean_sea_level + 1.5 * km) - 1 * m).quantity_from(mean_sea_level).numerical_value_in(m) == 1499);
+static_assert(((mean_sea_level + 1.5 * m) + 1 * m).delta_from(mean_sea_level).numerical_value_in(m) == 2.5);
+static_assert((1.5 * m + (mean_sea_level + 1 * m)).delta_from(mean_sea_level).numerical_value_in(m) == 2.5);
+static_assert(((mean_sea_level + 1.5 * m) + 1 * km).delta_from(mean_sea_level).numerical_value_in(m) == 1001.5);
+static_assert((1.5 * m + (mean_sea_level + 1 * km)).delta_from(mean_sea_level).numerical_value_in(m) == 1001.5);
+static_assert(((mean_sea_level + 1.5 * km) + 1 * m).delta_from(mean_sea_level).numerical_value_in(m) == 1501);
+static_assert((1.5 * km + (mean_sea_level + 1 * m)).delta_from(mean_sea_level).numerical_value_in(m) == 1501);
+static_assert(((mean_sea_level + 2.5 * m) - 1 * m).delta_from(mean_sea_level).numerical_value_in(m) == 1.5);
+static_assert(((mean_sea_level + 1.5 * km) - 1 * m).delta_from(mean_sea_level).numerical_value_in(m) == 1499);
 
-static_assert(((mean_sea_level + 1 * m) + 1.5 * m).quantity_from(mean_sea_level).numerical_value_in(m) == 2.5);
-static_assert((1 * m + (mean_sea_level + 1.5 * m)).quantity_from(mean_sea_level).numerical_value_in(m) == 2.5);
-static_assert(((mean_sea_level + 1 * m) + 1.5 * km).quantity_from(mean_sea_level).numerical_value_in(m) == 1501);
-static_assert((1 * m + (mean_sea_level + 1.5 * km)).quantity_from(mean_sea_level).numerical_value_in(m) == 1501);
-static_assert(((mean_sea_level + 1 * km) + 1.5 * m).quantity_from(mean_sea_level).numerical_value_in(m) == 1001.5);
-static_assert((1 * km + (mean_sea_level + 1.5 * m)).quantity_from(mean_sea_level).numerical_value_in(m) == 1001.5);
-static_assert(((mean_sea_level + 2 * m) - 1.5 * m).quantity_from(mean_sea_level).numerical_value_in(m) == 0.5);
-static_assert(((mean_sea_level + 1 * km) - 1.5 * m).quantity_from(mean_sea_level).numerical_value_in(m) == 998.5);
+static_assert(((mean_sea_level + 1 * m) + 1.5 * m).delta_from(mean_sea_level).numerical_value_in(m) == 2.5);
+static_assert((1 * m + (mean_sea_level + 1.5 * m)).delta_from(mean_sea_level).numerical_value_in(m) == 2.5);
+static_assert(((mean_sea_level + 1 * m) + 1.5 * km).delta_from(mean_sea_level).numerical_value_in(m) == 1501);
+static_assert((1 * m + (mean_sea_level + 1.5 * km)).delta_from(mean_sea_level).numerical_value_in(m) == 1501);
+static_assert(((mean_sea_level + 1 * km) + 1.5 * m).delta_from(mean_sea_level).numerical_value_in(m) == 1001.5);
+static_assert((1 * km + (mean_sea_level + 1.5 * m)).delta_from(mean_sea_level).numerical_value_in(m) == 1001.5);
+static_assert(((mean_sea_level + 2 * m) - 1.5 * m).delta_from(mean_sea_level).numerical_value_in(m) == 0.5);
+static_assert(((mean_sea_level + 1 * km) - 1.5 * m).delta_from(mean_sea_level).numerical_value_in(m) == 998.5);
 
 static_assert(((mean_sea_level + 2 * m) - (mean_sea_level + 1 * m)).numerical_value_in(m) == 1);
 static_assert(((mean_sea_level + 1 * km) - (mean_sea_level + 1 * m)).numerical_value_in(m) == 999);
@@ -1605,26 +1607,26 @@ static_assert((ground_level + 42 * m) - (other_ground_level + 42 * m) == -81 * m
 static_assert((other_ground_level + 42 * m) - (tower_peak + 42 * m) == 39 * m);
 static_assert((tower_peak + 42 * m) - (other_ground_level + 42 * m) == -39 * m);
 
-static_assert((mean_sea_level + 42 * m).quantity_from(ground_level + 42 * m) == -42 * m);
-static_assert((ground_level + 42 * m).quantity_from(mean_sea_level + 42 * m) == 42 * m);
-static_assert((tower_peak + 42 * m).quantity_from(ground_level + 42 * m) == 42 * m);
-static_assert((ground_level + 42 * m).quantity_from(tower_peak + 42 * m) == -42 * m);
-static_assert((tower_peak + 42 * m).quantity_from(mean_sea_level + 42 * m) == 84 * m);
-static_assert((mean_sea_level + 42 * m).quantity_from(tower_peak + 42 * m) == -84 * m);
-static_assert((other_ground_level + 42 * m).quantity_from(ground_level + 42 * m) == 81 * m);
-static_assert((ground_level + 42 * m).quantity_from(other_ground_level + 42 * m) == -81 * m);
-static_assert((other_ground_level + 42 * m).quantity_from(tower_peak + 42 * m) == 39 * m);
-static_assert((tower_peak + 42 * m).quantity_from(other_ground_level + 42 * m) == -39 * m);
+static_assert((mean_sea_level + 42 * m).delta_from(ground_level + 42 * m) == -42 * m);
+static_assert((ground_level + 42 * m).delta_from(mean_sea_level + 42 * m) == 42 * m);
+static_assert((tower_peak + 42 * m).delta_from(ground_level + 42 * m) == 42 * m);
+static_assert((ground_level + 42 * m).delta_from(tower_peak + 42 * m) == -42 * m);
+static_assert((tower_peak + 42 * m).delta_from(mean_sea_level + 42 * m) == 84 * m);
+static_assert((mean_sea_level + 42 * m).delta_from(tower_peak + 42 * m) == -84 * m);
+static_assert((other_ground_level + 42 * m).delta_from(ground_level + 42 * m) == 81 * m);
+static_assert((ground_level + 42 * m).delta_from(other_ground_level + 42 * m) == -81 * m);
+static_assert((other_ground_level + 42 * m).delta_from(tower_peak + 42 * m) == 39 * m);
+static_assert((tower_peak + 42 * m).delta_from(other_ground_level + 42 * m) == -39 * m);
 
-static_assert((mean_sea_level + 42 * m).quantity_from(mean_sea_level) == 42 * m);
-static_assert((42 * m + mean_sea_level).quantity_from(mean_sea_level) == 42 * m);
-static_assert((mean_sea_level - 42 * m).quantity_from(mean_sea_level) == -42 * m);
-static_assert((ground_level + 42 * m).quantity_from(ground_level) == 42 * m);
-static_assert((42 * m + ground_level).quantity_from(ground_level) == 42 * m);
-static_assert((ground_level - 42 * m).quantity_from(ground_level) == -42 * m);
-static_assert((tower_peak + 42 * m).quantity_from(tower_peak) == 42 * m);
-static_assert((42 * m + tower_peak).quantity_from(tower_peak) == 42 * m);
-static_assert((tower_peak - 42 * m).quantity_from(tower_peak) == -42 * m);
+static_assert((mean_sea_level + 42 * m).delta_from(mean_sea_level) == 42 * m);
+static_assert((42 * m + mean_sea_level).delta_from(mean_sea_level) == 42 * m);
+static_assert((mean_sea_level - 42 * m).delta_from(mean_sea_level) == -42 * m);
+static_assert((ground_level + 42 * m).delta_from(ground_level) == 42 * m);
+static_assert((42 * m + ground_level).delta_from(ground_level) == 42 * m);
+static_assert((ground_level - 42 * m).delta_from(ground_level) == -42 * m);
+static_assert((tower_peak + 42 * m).delta_from(tower_peak) == 42 * m);
+static_assert((42 * m + tower_peak).delta_from(tower_peak) == 42 * m);
+static_assert((tower_peak - 42 * m).delta_from(tower_peak) == -42 * m);
 
 static_assert((mean_sea_level + 42 * m) - ground_level == 0 * m);
 static_assert((ground_level + 42 * m) - mean_sea_level == 84 * m);
@@ -1637,16 +1639,16 @@ static_assert((ground_level + 42 * m) - other_ground_level == -39 * m);
 static_assert((other_ground_level + 42 * m) - tower_peak == 81 * m);
 static_assert((tower_peak + 42 * m) - other_ground_level == 3 * m);
 
-static_assert((mean_sea_level + 42 * m).quantity_from(ground_level) == 0 * m);
-static_assert((ground_level + 42 * m).quantity_from(mean_sea_level) == 84 * m);
-static_assert((tower_peak + 42 * m).quantity_from(ground_level) == 84 * m);
-static_assert((ground_level + 42 * m).quantity_from(tower_peak) == 0 * m);
-static_assert((tower_peak + 42 * m).quantity_from(mean_sea_level) == 126 * m);
-static_assert((mean_sea_level + 42 * m).quantity_from(tower_peak) == -42 * m);
-static_assert((other_ground_level + 42 * m).quantity_from(ground_level) == 123 * m);
-static_assert((ground_level + 42 * m).quantity_from(other_ground_level) == -39 * m);
-static_assert((other_ground_level + 42 * m).quantity_from(tower_peak) == 81 * m);
-static_assert((tower_peak + 42 * m).quantity_from(other_ground_level) == 3 * m);
+static_assert((mean_sea_level + 42 * m).delta_from(ground_level) == 0 * m);
+static_assert((ground_level + 42 * m).delta_from(mean_sea_level) == 84 * m);
+static_assert((tower_peak + 42 * m).delta_from(ground_level) == 84 * m);
+static_assert((ground_level + 42 * m).delta_from(tower_peak) == 0 * m);
+static_assert((tower_peak + 42 * m).delta_from(mean_sea_level) == 126 * m);
+static_assert((mean_sea_level + 42 * m).delta_from(tower_peak) == -42 * m);
+static_assert((other_ground_level + 42 * m).delta_from(ground_level) == 123 * m);
+static_assert((ground_level + 42 * m).delta_from(other_ground_level) == -39 * m);
+static_assert((other_ground_level + 42 * m).delta_from(tower_peak) == 81 * m);
+static_assert((tower_peak + 42 * m).delta_from(other_ground_level) == 3 * m);
 
 static_assert(mean_sea_level - (ground_level + 42 * m) == -84 * m);
 static_assert(ground_level - (mean_sea_level + 42 * m) == 0 * m);
@@ -1675,17 +1677,17 @@ inline constexpr struct zero_m_per_s final : absolute_point_origin<kind_of<isq::
 
 // commutativity and associativity
 static_assert(((zero_m_per_s + 10 * isq::height[m] / (2 * isq::duration[s])) + 5 * isq::speed[m / s])
-                .quantity_from(zero_m_per_s) == 10 * isq::speed[m / s]);
+                .delta_from(zero_m_per_s) == 10 * isq::speed[m / s]);
 static_assert((10 * isq::height[m] / (2 * isq::duration[s]) + (zero_m_per_s + 5 * isq::speed[m / s]))
-                .quantity_from(zero_m_per_s) == 10 * isq::speed[m / s]);
+                .delta_from(zero_m_per_s) == 10 * isq::speed[m / s]);
 static_assert(((zero_m_per_s + 5 * isq::speed[m / s]) + 10 * isq::height[m] / (2 * isq::duration[s]))
-                .quantity_from(zero_m_per_s) == 10 * isq::speed[m / s]);
+                .delta_from(zero_m_per_s) == 10 * isq::speed[m / s]);
 static_assert((5 * isq::speed[m / s] + (zero_m_per_s + 10 * isq::height[m] / (2 * isq::duration[s])))
-                .quantity_from(zero_m_per_s) == 10 * isq::speed[m / s]);
+                .delta_from(zero_m_per_s) == 10 * isq::speed[m / s]);
 static_assert(((zero_m_per_s + 10 * isq::height[m] / (2 * isq::duration[s])) - 5 * isq::speed[m / s])
-                .quantity_from(zero_m_per_s) == 0 * isq::speed[m / s]);
+                .delta_from(zero_m_per_s) == 0 * isq::speed[m / s]);
 static_assert(((zero_m_per_s + 5 * isq::speed[m / s]) - 10 * isq::height[m] / (2 * isq::duration[s]))
-                .quantity_from(zero_m_per_s) == 0 * isq::speed[m / s]);
+                .delta_from(zero_m_per_s) == 0 * isq::speed[m / s]);
 static_assert((zero_m_per_s + 10 * isq::height[m] / (2 * isq::duration[s])) - (zero_m_per_s + 5 * isq::speed[m / s]) ==
               0 * isq::speed[m / s]);
 static_assert((zero_m_per_s + 5 * isq::speed[m / s]) - (zero_m_per_s + 10 * isq::height[m] / (2 * isq::duration[s])) ==
@@ -1715,25 +1717,25 @@ static_assert(is_of_type<(zero_m_per_s + 10 * isq::height[m] / (2 * isq::duratio
                          quantity_point<(isq::height / isq::duration)[m / s], zero_m_per_s, int>>);
 
 static_assert((quantity_point{5 * isq::speed[m / s]} + 10 * isq::length[m] / (2 * isq::duration[s]))
-                .quantity_from_zero() == 10 * isq::speed[m / s]);
+                .delta_from_zero() == 10 * isq::speed[m / s]);
 static_assert((10 * isq::length[m] / (2 * isq::duration[s]) + quantity_point{5 * isq::speed[m / s]})
-                .quantity_from_zero() == 10 * isq::speed[m / s]);
+                .delta_from_zero() == 10 * isq::speed[m / s]);
 static_assert((quantity_point{5 * isq::speed[m / s]} - 10 * isq::length[m] / (2 * isq::duration[s]))
-                .quantity_from_zero() == 0 * isq::speed[m / s]);
+                .delta_from_zero() == 0 * isq::speed[m / s]);
 
 static_assert((quantity_point{10 * isq::length[m] / (2 * isq::duration[s])} + 5 * isq::speed[m / s])
-                .quantity_from_zero() == 10 * isq::speed[m / s]);
+                .delta_from_zero() == 10 * isq::speed[m / s]);
 static_assert((5 * isq::speed[m / s] + quantity_point{10 * isq::length[m] / (2 * isq::duration[s])})
-                .quantity_from_zero() == 10 * isq::speed[m / s]);
+                .delta_from_zero() == 10 * isq::speed[m / s]);
 static_assert((quantity_point{10 * isq::length[m] / (2 * isq::duration[s])} - 5 * isq::speed[m / s])
-                .quantity_from_zero() == 0 * isq::speed[m / s]);
+                .delta_from_zero() == 0 * isq::speed[m / s]);
 
 static_assert((quantity_point{5 * isq::speed[m / s]} + 10 * isq::height[m] / (2 * isq::duration[s]))
-                .quantity_from_zero() == 10 * isq::speed[m / s]);
+                .delta_from_zero() == 10 * isq::speed[m / s]);
 static_assert((10 * isq::height[m] / (2 * isq::duration[s]) + quantity_point{5 * isq::speed[m / s]})
-                .quantity_from_zero() == 10 * isq::speed[m / s]);
+                .delta_from_zero() == 10 * isq::speed[m / s]);
 static_assert((quantity_point{5 * isq::speed[m / s]} - 10 * isq::height[m] / (2 * isq::duration[s]))
-                .quantity_from_zero() == 0 * isq::speed[m / s]);
+                .delta_from_zero() == 0 * isq::speed[m / s]);
 
 static_assert(is_of_type<quantity_point{10 * isq::length[m] / (2 * isq::duration[s])} + 5 * isq::speed[m / s],
                          quantity_point<isq::speed[m / s], natural_point_origin<isq::speed>, int>>);
@@ -1762,17 +1764,17 @@ static_assert(
 inline constexpr struct zero_Hz final : absolute_point_origin<kind_of<isq::frequency>> {
 } zero_Hz;
 
-static_assert(((zero_Hz + 10 / (2 * isq::period_duration[s])) + 5 * isq::frequency[Hz]).quantity_from(zero_Hz) ==
+static_assert(((zero_Hz + 10 / (2 * isq::period_duration[s])) + 5 * isq::frequency[Hz]).delta_from(zero_Hz) ==
               10 * isq::frequency[Hz]);
-static_assert((10 / (2 * isq::period_duration[s]) + (zero_Hz + 5 * isq::frequency[Hz])).quantity_from(zero_Hz) ==
+static_assert((10 / (2 * isq::period_duration[s]) + (zero_Hz + 5 * isq::frequency[Hz])).delta_from(zero_Hz) ==
               10 * isq::frequency[Hz]);
-static_assert(((zero_Hz + 5 * isq::frequency[Hz]) + 10 / (2 * isq::period_duration[s])).quantity_from(zero_Hz) ==
+static_assert(((zero_Hz + 5 * isq::frequency[Hz]) + 10 / (2 * isq::period_duration[s])).delta_from(zero_Hz) ==
               10 * isq::frequency[Hz]);
-static_assert((5 * isq::frequency[Hz] + (zero_Hz + 10 / (2 * isq::period_duration[s]))).quantity_from(zero_Hz) ==
+static_assert((5 * isq::frequency[Hz] + (zero_Hz + 10 / (2 * isq::period_duration[s]))).delta_from(zero_Hz) ==
               10 * isq::frequency[Hz]);
-static_assert(((zero_Hz + 10 / (2 * isq::period_duration[s])) - 5 * isq::frequency[Hz]).quantity_from(zero_Hz) ==
+static_assert(((zero_Hz + 10 / (2 * isq::period_duration[s])) - 5 * isq::frequency[Hz]).delta_from(zero_Hz) ==
               0 * isq::frequency[Hz]);
-static_assert(((zero_Hz + 5 * isq::frequency[Hz]) - 10 / (2 * isq::period_duration[s])).quantity_from(zero_Hz) ==
+static_assert(((zero_Hz + 5 * isq::frequency[Hz]) - 10 / (2 * isq::period_duration[s])).delta_from(zero_Hz) ==
               0 * isq::frequency[Hz]);
 static_assert((zero_Hz + 10 / (2 * isq::period_duration[s])) - (zero_Hz + 5 * isq::frequency[Hz]) ==
               0 * isq::frequency[Hz]);
@@ -1796,17 +1798,17 @@ static_assert(is_of_type<(zero_Hz + 10 / (2 * isq::period_duration[s])) - (zero_
 static_assert(is_of_type<(zero_Hz + 5 * isq::frequency[Hz]) - (zero_Hz + 10 / (2 * isq::period_duration[s])),
                          quantity<isq::frequency[Hz], int>>);
 
-static_assert((quantity_point{10 / (2 * isq::period_duration[s])} + 5 * isq::frequency[Hz]).quantity_from_zero() ==
+static_assert((quantity_point{10 / (2 * isq::period_duration[s])} + 5 * isq::frequency[Hz]).delta_from_zero() ==
               10 * isq::frequency[Hz]);
 static_assert((10 / (2 * isq::period_duration[s]) + quantity_point{zero_Hz + 5 * isq::frequency[Hz]})
-                .quantity_from(zero_Hz) == 10 * isq::frequency[Hz]);
-static_assert((quantity_point{5 * isq::frequency[Hz]} + 10 / (2 * isq::period_duration[s])).quantity_from_zero() ==
+                .delta_from(zero_Hz) == 10 * isq::frequency[Hz]);
+static_assert((quantity_point{5 * isq::frequency[Hz]} + 10 / (2 * isq::period_duration[s])).delta_from_zero() ==
               10 * isq::frequency[Hz]);
-static_assert((5 * isq::frequency[Hz] + quantity_point{10 / (2 * isq::period_duration[s])}).quantity_from_zero() ==
+static_assert((5 * isq::frequency[Hz] + quantity_point{10 / (2 * isq::period_duration[s])}).delta_from_zero() ==
               10 * isq::frequency[Hz]);
-static_assert((quantity_point{10 / (2 * isq::period_duration[s])} - 5 * isq::frequency[Hz]).quantity_from_zero() ==
+static_assert((quantity_point{10 / (2 * isq::period_duration[s])} - 5 * isq::frequency[Hz]).delta_from_zero() ==
               0 * isq::frequency[Hz]);
-static_assert((quantity_point{5 * isq::frequency[Hz]} - 10 / (2 * isq::period_duration[s])).quantity_from_zero() ==
+static_assert((quantity_point{5 * isq::frequency[Hz]} - 10 / (2 * isq::period_duration[s])).delta_from_zero() ==
               0 * isq::frequency[Hz]);
 static_assert(quantity_point{10 / (2 * isq::period_duration[s])} - quantity_point{5 * isq::frequency[Hz]} ==
               0 * isq::frequency[Hz]);

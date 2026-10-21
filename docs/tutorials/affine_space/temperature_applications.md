@@ -85,7 +85,7 @@ int main()
   quantity_point T_point{27 * deg_C};            // 27°C
 
   // Temperature MUST be absolute (Kelvin)
-  quantity T = T_point.in(K).quantity_from_zero();
+  quantity T = T_point.in(K).delta_from_zero();
 
   // Calculate pressure
   auto P = (n * R * T) / V;
@@ -100,7 +100,7 @@ int main()
 
 **Key insight**: In mp-units' absolute _temperatures_ are represented as affine space
 points, and points cannot be multiplied or divided with other quantities. Use
-`.quantity_from_zero()` to convert the point to an equivalent quantity (delta from absolute
+`.delta_from_zero()` to convert the point to an equivalent quantity (delta from absolute
 zero) that supports multiplication and division. This is a limitation of the affine space
 model—if absolute quantities were modeled differently, they could be used
 directly in formulas like $PV = nRT$.
@@ -111,7 +111,7 @@ directly in formulas like $PV = nRT$.
 2. **Heat capacity**: Implement the formula $\Delta Q = mc\Delta T$ where a 2 kg object with
    _specific heat capacity_ $c = 4.18 \, \text{kJ/(kg·K)}$ is heated from 20 °C to 80 °C.
    Calculate the _energy_ required. (Hint: subtract the _temperature_ points to get
-   $\Delta T$, which can be directly multiplied—no `quantity_from_zero()` needed
+   $\Delta T$, which can be directly multiplied—no `delta_from_zero()` needed
    for differences)
 
 ## What You Learned

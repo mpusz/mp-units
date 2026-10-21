@@ -486,7 +486,7 @@ void example()
   quantity delta_scaled = 2 * delta;  // {6, 6, 6} m
 
   // Magnitude (returns scalar quantity)
-  quantity distance = pos1.quantity_from_zero();
+  quantity distance = pos1.delta_from_zero();
   quantity mag = magnitude(distance);  // sqrt(1² + 2² + 3²) m
 
   // Scalar product (dot product)

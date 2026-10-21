@@ -8,6 +8,10 @@ This page documents the version history and changes for the **mp-units** library
 
 ### 2.6.0 <small>TBD</small> { id="2.6.0" }
 
+- refactor: `quantity_from()` and `quantity_from_zero()` of a quantity point are renamed to
+      `delta_from()` and `delta_from_zero()`. They return a delta, and once a point is a
+      `quantity` too, "quantity from" no longer says which one. The former names are
+      deprecated
 - fix: `magnitude` of an unsigned value returns the value, where it called `std::abs`,
       which has no unsigned overload
 - (!) refactor: `char`, `wchar_t`, `char8_t`, `char16_t`, and `char32_t` are not

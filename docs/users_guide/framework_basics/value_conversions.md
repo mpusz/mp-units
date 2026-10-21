@@ -254,10 +254,10 @@ the cast changes how the "offset" from the origin is represented. Specifically, 
 `quantity_point` instance `qp`, all of the following equivalences hold:
 
 ```cpp
-static_assert(value_cast<Rep>(qp) == quantity_point{value_cast<Rep>(qp.quantity_from(qp.point_origin)), qp.point_origin});
-static_assert(value_cast<U>(qp) == quantity_point{value_cast<U>(qp.quantity_from(qp.point_origin)), qp.point_origin});
-static_assert(value_cast<U, Rep>(qp) == quantity_point{value_cast<U, Rep>(qp.quantity_from(qp.point_origin)), qp.point_origin});
-static_assert(value_cast<Q>(qp) == quantity_point{value_cast<Q>(qp.quantity_from(qp.point_origin)), qp.point_origin});
+static_assert(value_cast<Rep>(qp) == quantity_point{value_cast<Rep>(qp.delta_from(qp.point_origin)), qp.point_origin});
+static_assert(value_cast<U>(qp) == quantity_point{value_cast<U>(qp.delta_from(qp.point_origin)), qp.point_origin});
+static_assert(value_cast<U, Rep>(qp) == quantity_point{value_cast<U, Rep>(qp.delta_from(qp.point_origin)), qp.point_origin});
+static_assert(value_cast<Q>(qp) == quantity_point{value_cast<Q>(qp.delta_from(qp.point_origin)), qp.point_origin});
 ```
 
 Furthermore, there is one additional overload `value_cast<ToQP>(qp)`. This overload permits

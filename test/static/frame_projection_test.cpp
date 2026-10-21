@@ -80,14 +80,14 @@ inline constexpr auto mp_units::frame_projection<sea_level, ocean_surface> =
   // Axis inversion: altitude (positive up, measured from sea_level)
   //             → depth (positive down, measured from ocean_surface)
   [](mp_units::QuantityPointOf<mp_units::isq::height> auto qp) constexpr {
-    return ocean_surface - qp.quantity_from(sea_level);
+    return ocean_surface - qp.delta_from(sea_level);
   };
 
 template<>
 inline constexpr auto mp_units::frame_projection<ocean_surface, sea_level> =
   // Axis inversion: depth (positive down) → altitude (positive up)
   [](mp_units::QuantityPointOf<mp_units::isq::height> auto qp) constexpr {
-    return sea_level - qp.quantity_from(ocean_surface);
+    return sea_level - qp.delta_from(ocean_surface);
   };
 
 template<>
@@ -95,7 +95,7 @@ inline constexpr auto mp_units::frame_projection<shifted_origin, base_origin> =
   // Translation by a caller-supplied offset (extra-arg forwarding).
   [](mp_units::QuantityPointOf<mp_units::isq::height> auto qp,
      mp_units::quantity<mp_units::isq::height[mp_units::si::metre], double> offset) constexpr {
-    return base_origin + (qp.quantity_from(shifted_origin) + offset);
+    return base_origin + (qp.delta_from(shifted_origin) + offset);
   };
 
 namespace {
@@ -121,29 +121,29 @@ static_assert(!detail::HasFrameProjection<ocean_surface, base_origin>);
 ////////////////////////////////////////////////////////////////////////////////////
 
 // 100 m above sea level → depth 0 (should be at ocean_surface origin, no offset)
-static_assert((sea_level + 0. * m).point_for(ocean_surface).quantity_from(ocean_surface) == 0. * m);
+static_assert((sea_level + 0. * m).point_for(ocean_surface).delta_from(ocean_surface) == 0. * m);
 
 // 100 m below sea level (altitude = -100 m) → depth 100 m (positive downward)
-static_assert((sea_level + (-100. * m)).point_for(ocean_surface).quantity_from(ocean_surface) == 100. * m);
+static_assert((sea_level + (-100. * m)).point_for(ocean_surface).delta_from(ocean_surface) == 100. * m);
 
 // 50 m above sea level → depth -50 m (above ocean surface / sea level)
-static_assert((sea_level + 50. * m).point_for(ocean_surface).quantity_from(ocean_surface) == -50. * m);
+static_assert((sea_level + 50. * m).point_for(ocean_surface).delta_from(ocean_surface) == -50. * m);
 
 ////////////////////////////////////////////////////////////////////////////////////
 // Axis-inversion: ocean_surface → sea_level
 ////////////////////////////////////////////////////////////////////////////////////
 
-static_assert((ocean_surface + 0. * m).point_for(sea_level).quantity_from(sea_level) == 0. * m);
-static_assert((ocean_surface + 100. * m).point_for(sea_level).quantity_from(sea_level) == -100. * m);
-static_assert((ocean_surface + (-50.) * m).point_for(sea_level).quantity_from(sea_level) == 50. * m);
+static_assert((ocean_surface + 0. * m).point_for(sea_level).delta_from(sea_level) == 0. * m);
+static_assert((ocean_surface + 100. * m).point_for(sea_level).delta_from(sea_level) == -100. * m);
+static_assert((ocean_surface + (-50.) * m).point_for(sea_level).delta_from(sea_level) == 50. * m);
 
 ////////////////////////////////////////////////////////////////////////////////////
 // Round-trip: sea_level → ocean_surface → sea_level
 ////////////////////////////////////////////////////////////////////////////////////
 
-static_assert((sea_level + (-100. * m)).point_for(ocean_surface).point_for(sea_level).quantity_from(sea_level) ==
+static_assert((sea_level + (-100. * m)).point_for(ocean_surface).point_for(sea_level).delta_from(sea_level) ==
               -100. * m);
-static_assert((sea_level + 42. * m).point_for(ocean_surface).point_for(sea_level).quantity_from(sea_level) == 42. * m);
+static_assert((sea_level + 42. * m).point_for(ocean_surface).point_for(sea_level).delta_from(sea_level) == 42. * m);
 
 ////////////////////////////////////////////////////////////////////////////////////
 // Walk-down after projection: sea_level → shallow_water (relative child of ocean_surface)
@@ -152,17 +152,17 @@ static_assert((sea_level + 42. * m).point_for(ocean_surface).point_for(sea_level
 // Point 100 m below sea level → depth 100 m from ocean_surface.
 // shallow_water is 10 m below ocean_surface.
 // So relative to shallow_water: 100 − 10 = 90 m.
-static_assert((sea_level + (-100. * m)).point_for(shallow_water).quantity_from(shallow_water) == 90. * m);
+static_assert((sea_level + (-100. * m)).point_for(shallow_water).delta_from(shallow_water) == 90. * m);
 
 // Point at sea_level (altitude = 0) → depth 0 from ocean_surface → relative to shallow_water: 0 − 10 = −10 m.
-static_assert((sea_level + 0. * m).point_for(shallow_water).quantity_from(shallow_water) == -10. * m);
+static_assert((sea_level + 0. * m).point_for(shallow_water).delta_from(shallow_water) == -10. * m);
 
 ////////////////////////////////////////////////////////////////////////////////////
 // Extra-argument forwarding: shifted_origin → base_origin with an offset arg
 ////////////////////////////////////////////////////////////////////////////////////
 
-static_assert((shifted_origin + 10. * m).point_for(base_origin, 5. * m).quantity_from(base_origin) == 15. * m);
-static_assert((shifted_origin + 0. * m).point_for(base_origin, -3. * m).quantity_from(base_origin) == -3. * m);
+static_assert((shifted_origin + 10. * m).point_for(base_origin, 5. * m).delta_from(base_origin) == 15. * m);
+static_assert((shifted_origin + 0. * m).point_for(base_origin, -3. * m).delta_from(base_origin) == -3. * m);
 
 ////////////////////////////////////////////////////////////////////////////////////
 // Callability constraint: point_for disabled when args don't match the functor
@@ -209,19 +209,19 @@ static_assert(
 // Explicit construction from a cross-origin quantity_point
 static_assert([] {
   quantity_point<si::metre, ocean_surface, double> depth{sea_level + (-100. * m)};
-  return depth.quantity_from(ocean_surface) == 100. * m;
+  return depth.delta_from(ocean_surface) == 100. * m;
 }());
 
 static_assert([] {
   quantity_point<si::metre, sea_level, double> alt{ocean_surface + 100. * m};
-  return alt.quantity_from(sea_level) == -100. * m;
+  return alt.delta_from(sea_level) == -100. * m;
 }());
 
 // Round-trip through the converting constructor
 static_assert([] {
   quantity_point<si::metre, ocean_surface, double> depth{sea_level + 42. * m};
   quantity_point<si::metre, sea_level, double> alt{depth};
-  return alt.quantity_from(sea_level) == 42. * m;
+  return alt.delta_from(sea_level) == 42. * m;
 }());
 
 // Walk-down via converting constructor: target is a relative_point_origin whose absolute
@@ -229,7 +229,7 @@ static_assert([] {
 // sea_level + (-100 m): project → ocean_surface (depth 100 m), walk down by 10 m → 90 m.
 static_assert([] {
   quantity_point<si::metre, shallow_water, double> sw{sea_level + (-100. * m)};
-  return sw.quantity_from(shallow_water) == 90. * m;
+  return sw.delta_from(shallow_water) == 90. * m;
 }());
 
 // Type check: converting constructor yields the correct specialization

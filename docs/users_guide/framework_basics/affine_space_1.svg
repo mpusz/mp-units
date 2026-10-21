@@ -226,7 +226,7 @@
          id="tspan2-9-0-96-4-1-8-8-1"
          style="font-size:2.11667px;fill:#a4a4a4;fill-opacity:1;stroke-width:0;stroke-dasharray:none"
          x="53.965096"
-         y="6.6788778">qp1.quantity_from_zero()</tspan></text>
+         y="6.6788778">qp1.delta_from_zero()</tspan></text>
     <g
        id="path8-0-9-8-0-0-0"
        transform="translate(-0.21367231,-90.9375)">

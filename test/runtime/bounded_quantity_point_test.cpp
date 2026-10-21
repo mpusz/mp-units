@@ -158,7 +158,7 @@ TEST_CASE("check_non_negative propagates through relative_point_origin - mutatin
   {
     auto pt = qp_avg_safe(-1500.0 * avg_height_qs[m], average_height_origin);  // 200 m absolute
     CHECK_NOTHROW(pt -= 100.0 * avg_height_qs[m]);                             // 100 m absolute -- still >= 0
-    CHECK(pt.quantity_from(average_height_origin).numerical_value_in(m) == -1600.0);
+    CHECK(pt.delta_from(average_height_origin).numerical_value_in(m) == -1600.0);
   }
 }
 

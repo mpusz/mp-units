@@ -106,8 +106,8 @@ functions and a matching `std::numeric_limits` specialization:
 ```cpp
 using msl = quantity_point<si::metre, sea_level, double>;
 
-static_assert(msl::min().quantity_from(sea_level) == -500.0    * m);
-static_assert(msl::max().quantity_from(sea_level) == 12'000.0  * m);
+static_assert(msl::min().delta_from(sea_level) == -500.0    * m);
+static_assert(msl::max().delta_from(sea_level) == 12'000.0  * m);
 ```
 
 Without bounds, `min()` and `max()` are only available if the representation type itself

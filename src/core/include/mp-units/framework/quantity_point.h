@@ -164,10 +164,10 @@ struct point_origin_interface {
       return PO1::_quantity_point_ == PO2::_quantity_point_;
     else if constexpr (is_derived_from_specialization_of_v<PO1, relative_point_origin>)
       return detail::same_absolute_point_origins(po1, po2) &&
-             PO1::_quantity_point_.quantity_from(PO1::_quantity_point_.absolute_point_origin) == 0;
+             PO1::_quantity_point_.delta_from(PO1::_quantity_point_.absolute_point_origin) == 0;
     else if constexpr (is_derived_from_specialization_of_v<PO2, relative_point_origin>)
       return detail::same_absolute_point_origins(po1, po2) &&
-             PO2::_quantity_point_.quantity_from(PO2::_quantity_point_.absolute_point_origin) == 0;
+             PO2::_quantity_point_.delta_from(PO2::_quantity_point_.absolute_point_origin) == 0;
   }
 };
 
@@ -305,7 +305,7 @@ template<PointOrigin PO>
 [[nodiscard]] consteval auto offset_from_parent(PO)
 {
   constexpr auto parent_po = PO::_quantity_point_.point_origin;
-  return PO::_quantity_point_.quantity_from(parent_po);
+  return PO::_quantity_point_.delta_from(parent_po);
 }
 
 // True iff PO carries a bounds policy of its own (a _bounds_ member that is not unspecified).
@@ -643,7 +643,7 @@ template<Quantity Q>
 }
 
 // An origin a quantity is asked from is related to the point's own, which means both are measured
-// from the same absolute origin. Only `quantity_from(origin)` and the point-minus-origin operators
+// from the same absolute origin. Only `delta_from(origin)` and the point-minus-origin operators
 // ask it, with an argument the `PointOrigin` constraint before it has already admitted, so the
 // sentence is not gated.
 template<typename PO, auto PointPO>
@@ -784,9 +784,9 @@ struct quantity_point_iface {
     requires(PO == default_point_origin(R))
   friend std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os,
                                                        const quantity_point<R, PO, Rep>& qp)
-    requires requires { os << qp.quantity_from_zero(); }
+    requires requires { os << qp.delta_from_zero(); }
   {
-    return os << qp.quantity_from_zero();
+    return os << qp.delta_from_zero();
   }
 
 #endif  // MP_UNITS_HOSTED
@@ -1220,37 +1220,57 @@ public:
 
   template<detail::OriginRelatedTo<PO> PO2>
     requires requires(const quantity_point qp) { qp - PO2{}; }
-  [[nodiscard]] constexpr Quantity auto quantity_from(PO2) const
+  [[nodiscard]] constexpr Quantity auto delta_from(PO2) const
   {
     return *this - PO2{};
   }
 
   template<detail::PointsOfTheSameAbsoluteOrigin<quantity_point> QP>
-  [[nodiscard]] constexpr Quantity auto quantity_from(const QP& qp) const
+  [[nodiscard]] constexpr Quantity auto delta_from(const QP& qp) const
   {
     return *this - qp;
   }
 
-  [[nodiscard]] constexpr const quantity_type& quantity_from_zero() const noexcept
-    requires(
-      PO == default_point_origin(R) ||
-      detail::unsatisfied<"'quantity_from_zero()' needs a point measured from the natural origin, not from '{}'">(
-        detail::type_name(PO)))
+  [[nodiscard]] constexpr const quantity_type& delta_from_zero() const noexcept
+    requires(PO == default_point_origin(R) ||
+             detail::unsatisfied<"'delta_from_zero()' needs a point measured from the natural origin, not from '{}'">(
+               detail::type_name(PO)))
   {
     return quantity_ref_from(PO);
+  }
+
+  template<detail::OriginRelatedTo<PO> PO2>
+    requires requires(const quantity_point qp) { qp - PO2{}; }
+  [[deprecated("2.6.0: Use `delta_from` instead")]] [[nodiscard]] constexpr Quantity auto quantity_from(PO2 po) const
+  {
+    return delta_from(po);
+  }
+
+  template<detail::PointsOfTheSameAbsoluteOrigin<quantity_point> QP>
+  [[deprecated("2.6.0: Use `delta_from` instead")]] [[nodiscard]] constexpr Quantity auto quantity_from(
+    const QP& qp) const
+  {
+    return delta_from(qp);
+  }
+
+  [[deprecated("2.6.0: Use `delta_from_zero` instead")]] [[nodiscard]] constexpr const quantity_type&
+  quantity_from_zero() const noexcept
+    requires(PO == default_point_origin(R))
+  {
+    return delta_from_zero();
   }
 
   // Extracts the numerical value of the point on the scale of `U` (measured from the default
   // point origin of that unit). This is the exact inverse of `point<U>(value)` and is provided
   // only for points that use `default_point_origin(R)` - the same condition under which text
-  // output and `quantity_from_zero()` are available. Points with a custom origin have no unique
+  // output and `delta_from_zero()` are available. Points with a custom origin have no unique
   // numerical representation, so their value must be requested from an explicit origin via
-  // `quantity_from(origin).numerical_value_in(U)`.
+  // `delta_from(origin).numerical_value_in(U)`.
   template<UnitOf<quantity_spec> U>
     requires(PO == default_point_origin(R)) && detail::ImplicitScaling<unit, U{}, rep>
   [[nodiscard]] constexpr RepresentationOf<quantity_spec> auto numerical_value_in(U) const noexcept
   {
-    return in(U{}).quantity_from_zero().numerical_value_in(U{});
+    return in(U{}).delta_from_zero().numerical_value_in(U{});
   }
 
   template<UnitOf<quantity_spec> U, RoundingPolicy Policy>
@@ -1258,7 +1278,7 @@ public:
             detail::ValidRoundingPolicyFor<Policy, rep, rep>
   [[nodiscard]] constexpr RepresentationOf<quantity_spec> auto numerical_value_in(U, Policy policy) const noexcept
   {
-    return in(U{}, policy).quantity_from_zero().numerical_value_in(U{});
+    return in(U{}, policy).delta_from_zero().numerical_value_in(U{});
   }
 
   template<UnitOf<quantity_spec> U>
@@ -1276,7 +1296,7 @@ private:
   {
     if constexpr (requires { ToU{}._point_origin_; } && (PO == default_point_origin(R))) {
       constexpr auto new_po = ToU{}._point_origin_;
-      return ::mp_units::quantity_point{convert(quantity_from(new_po)), new_po};
+      return ::mp_units::quantity_point{convert(delta_from(new_po)), new_po};
     } else {
       return ::mp_units::quantity_point{convert(quantity_ref_from(point_origin)), point_origin};
     }
@@ -1594,7 +1614,7 @@ struct MP_UNITS_STD_FMT::formatter<mp_units::quantity_point<R, PO, Rep>, Char> :
   auto format(const mp_units::quantity_point<R, PO, Rep>& qp, FormatContext& ctx) const -> decltype(ctx.out())
   {
     return MP_UNITS_STD_FMT::formatter<typename mp_units::quantity_point<R, PO, Rep>::quantity_type>::format(
-      qp.quantity_from_zero(), ctx);
+      qp.delta_from_zero(), ctx);
   }
 };
 

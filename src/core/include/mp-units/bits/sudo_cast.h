@@ -132,7 +132,7 @@ template<QuantityPoint ToQP, rounding_mode Mode = rounding_mode::truncated, type
                                MP_UNITS_NONCONST_TYPE(FromQP::point_origin)>) {
     // Same origin: delegate entirely to the quantity sudo_cast — no offset arithmetic needed.
     return quantity_point{
-      sudo_cast<typename ToQP::quantity_type, Mode>(std::forward<FwdFromQP>(qp).quantity_from(FromQP::point_origin)),
+      sudo_cast<typename ToQP::quantity_type, Mode>(std::forward<FwdFromQP>(qp).delta_from(FromQP::point_origin)),
       ToQP::point_origin};
   } else {
     // Different origins: we need to (a) convert the rep/unit, (b) add the origin offset.
@@ -174,7 +174,7 @@ template<QuantityPoint ToQP, rounding_mode Mode = rounding_mode::truncated, type
       constexpr auto offset = offset_as(std::type_identity<intermediate_type>{});
       return quantity_point{
         sudo_cast<typename ToQP::quantity_type, Mode>(
-          sudo_cast<intermediate_type>(std::forward<FwdFromQP>(qp).quantity_from(FromQP::point_origin)) + offset),
+          sudo_cast<intermediate_type>(std::forward<FwdFromQP>(qp).delta_from(FromQP::point_origin)) + offset),
         ToQP::point_origin};
     } else if constexpr (treat_as_floating_point<c_type>) {
       // Floating-point intermediate: prefer the larger unit to minimise the magnitude of scaling
@@ -191,10 +191,10 @@ template<QuantityPoint ToQP, rounding_mode Mode = rounding_mode::truncated, type
       using intermediate_type = quantity<intermediate_ref, c_type>;
       return quantity_point{
         sudo_cast<typename ToQP::quantity_type, Mode>(
-          quantity_point{sudo_cast<intermediate_type>(std::forward<FwdFromQP>(qp).quantity_from(FromQP::point_origin)),
+          quantity_point{sudo_cast<intermediate_type>(std::forward<FwdFromQP>(qp).delta_from(FromQP::point_origin)),
                          FromQP::point_origin}
             .point_for(ToQP::point_origin)
-            .quantity_from(ToQP::point_origin)),
+            .delta_from(ToQP::point_origin)),
         ToQP::point_origin};
     } else {
       // Integer intermediate: use the output unit so the result is already in the right
@@ -214,8 +214,7 @@ template<QuantityPoint ToQP, rounding_mode Mode = rounding_mode::truncated, type
         constexpr auto offset = offset_as(std::type_identity<intermediate_type>{});
         return quantity_point{
           sudo_cast<typename ToQP::quantity_type, Mode>(
-            sudo_cast<intermediate_type, Mode>(std::forward<FwdFromQP>(qp).quantity_from(FromQP::point_origin)) +
-            offset),
+            sudo_cast<intermediate_type, Mode>(std::forward<FwdFromQP>(qp).delta_from(FromQP::point_origin)) + offset),
           ToQP::point_origin};
       } else {
         // offset overflows in the output unit — use the input unit instead
@@ -223,8 +222,7 @@ template<QuantityPoint ToQP, rounding_mode Mode = rounding_mode::truncated, type
         constexpr auto offset = offset_as(std::type_identity<intermediate_type>{});
         return quantity_point{
           sudo_cast<typename ToQP::quantity_type, Mode>(
-            sudo_cast<intermediate_type, Mode>(std::forward<FwdFromQP>(qp).quantity_from(FromQP::point_origin)) +
-            offset),
+            sudo_cast<intermediate_type, Mode>(std::forward<FwdFromQP>(qp).delta_from(FromQP::point_origin)) + offset),
           ToQP::point_origin};
       }
     }

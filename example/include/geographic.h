@@ -91,7 +91,7 @@ namespace geographic {
 // between different angle reference frames.
 //
 // For trigonometric functions (sin/cos/etc.), explicit conversion to angular_measure is needed:
-//   const quantity<angular_measure> angle = isq::angular_measure(lat.quantity_from(equator));
+//   const quantity<angular_measure> angle = isq::angular_measure(lat.delta_from(equator));
 //   sin(angle);  // Now works with plain angular_measure
 
 // Basic geographic coordinates
@@ -233,14 +233,14 @@ constexpr longitude<double> operator""_W(long double v)
 template<>
 inline constexpr auto mp_units::frame_projection<geographic::east, geographic::north_cw> =
   [](mp_units::QuantityPointOf<geographic::geometric_azimuth> auto qp) constexpr {
-    const auto az = mp_units::isq::angular_measure(qp.quantity_from(geographic::east));
+    const auto az = mp_units::isq::angular_measure(qp.delta_from(geographic::east));
     return geographic::north_cw + geographic::geo_bearing(90.0 * mp_units::si::degree - az);
   };
 
 template<>
 inline constexpr auto mp_units::frame_projection<geographic::north_cw, geographic::east> =
   [](mp_units::QuantityPointOf<geographic::geo_bearing> auto qp) constexpr {
-    const auto brg = mp_units::isq::angular_measure(qp.quantity_from(geographic::north_cw));
+    const auto brg = mp_units::isq::angular_measure(qp.delta_from(geographic::north_cw));
     return geographic::east + geographic::geometric_azimuth(90.0 * mp_units::si::degree - brg);
   };
 
@@ -346,7 +346,7 @@ public:
 
     // Latitude reflection (`half_turn - lat_q`) is not defined on points, so the
     // normalization is done in displacement space relative to the equator.
-    quantity lat_q = lat_in.quantity_from(equator);
+    quantity lat_q = lat_in.delta_from(equator);
 
     // Fold latitude into [-180°, 180°] first.
     lat_q = fmod(lat_q + half_turn, full_turn);

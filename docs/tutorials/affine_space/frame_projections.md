@@ -49,12 +49,12 @@ inline constexpr struct ocean_surface : absolute_point_origin<isq::altitude> {} 
 // Altitude → depth: negate (down is positive in the depth frame)
 template<>
 inline constexpr auto mp_units::frame_projection<sea_level, ocean_surface> =
-    [](QuantityPointOf<isq::altitude> auto qp) { return ocean_surface - qp.quantity_from(sea_level); };
+    [](QuantityPointOf<isq::altitude> auto qp) { return ocean_surface - qp.delta_from(sea_level); };
 
 // Depth → altitude: inverse (must be defined explicitly — never derived automatically)
 template<>
 inline constexpr auto mp_units::frame_projection<ocean_surface, sea_level> =
-    [](QuantityPointOf<isq::altitude> auto qp) { return sea_level - qp.quantity_from(ocean_surface); };
+    [](QuantityPointOf<isq::altitude> auto qp) { return sea_level - qp.delta_from(ocean_surface); };
 
 int main()
 {
@@ -64,9 +64,9 @@ int main()
   quantity_point depth    = altitude.point_for(ocean_surface);  // → depth 100 m (positive downward)
   quantity_point alt2     = depth.point_for(sea_level);         // → altitude −100 m
 
-  std::cout << "altitude from sea_level:   " << altitude.quantity_from(sea_level) << "\n";
-  std::cout << "depth from ocean_surface:  " << depth.quantity_from(ocean_surface) << "\n";
-  std::cout << "back to sea_level:         " << alt2.quantity_from(sea_level) << "\n";
+  std::cout << "altitude from sea_level:   " << altitude.delta_from(sea_level) << "\n";
+  std::cout << "depth from ocean_surface:  " << depth.delta_from(ocean_surface) << "\n";
+  std::cout << "back to sea_level:         " << alt2.delta_from(sea_level) << "\n";
 }
 ```
 
@@ -100,7 +100,7 @@ inline constexpr struct ocean_surface : absolute_point_origin<isq::altitude> {} 
 
 template<>
 inline constexpr auto mp_units::frame_projection<sea_level, ocean_surface> =
-    [](QuantityPointOf<isq::altitude> auto qp) { return ocean_surface - qp.quantity_from(sea_level); };
+    [](QuantityPointOf<isq::altitude> auto qp) { return ocean_surface - qp.delta_from(sea_level); };
 
 // A relative origin 10 m below ocean_surface in the depth frame
 inline constexpr struct shallow_water : relative_point_origin<ocean_surface + 10. * si::metre> {} shallow_water;
@@ -115,7 +115,7 @@ int main()
   // Steps performed internally:
   //   1. Project sea_level → ocean_surface  (depth = 100 m)
   //   2. Walk down ocean_surface → shallow_water (100 − 10 = 90 m)
-  std::cout << "depth from shallow_water: " << from_shallow.quantity_from(shallow_water) << "\n";
+  std::cout << "depth from shallow_water: " << from_shallow.delta_from(shallow_water) << "\n";
 }
 ```
 
@@ -148,7 +148,7 @@ struct CameraCalibration {
 template<>
 inline constexpr auto mp_units::frame_projection<world_frame, camera_frame> =
     [](QuantityPointOf<isq::length> auto qp, const CameraCalibration& cal) {
-        return camera_frame + (qp.quantity_from(world_frame) + cal.offset);
+        return camera_frame + (qp.delta_from(world_frame) + cal.offset);
     };
 
 int main()
@@ -164,8 +164,8 @@ int main()
   quantity_point in_cam1 = world_pt.point_for(camera_frame, cam1);
   quantity_point in_cam2 = world_pt.point_for(camera_frame, cam2);
 
-  std::cout << "cam1: " << in_cam1.quantity_from(camera_frame) << "\n";  // 3 m
-  std::cout << "cam2: " << in_cam2.quantity_from(camera_frame) << "\n";  // 6 m
+  std::cout << "cam1: " << in_cam1.delta_from(camera_frame) << "\n";  // 3 m
+  std::cout << "cam2: " << in_cam2.delta_from(camera_frame) << "\n";  // 6 m
 }
 ```
 
