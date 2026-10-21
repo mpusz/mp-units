@@ -131,7 +131,7 @@ flowchart TD
 ```
 
 The three axes are siblings of `flight_velocity` in the type hierarchy, not its children.
-The decomposition that pairs them with the whole is the `vector_components` specialization
+The decomposition that pairs them with the whole is the `component_vectors` specialization
 below, not an inheritance relationship.
 
 !!! info "Why `is_kind` on the axes"
@@ -146,12 +146,12 @@ below, not an inheritance relationship.
 
 ## Declaring the Decomposition
 
-Opt the whole into decomposition by specializing the `vector_components` customization point
+Opt the whole into decomposition by specializing the `component_vectors` customization point
 and inheriting from `vector_axes`, listing the axes in **coordinate order** (axis 0 first):
 
 ```cpp
 template<>
-struct mp_units::vector_components<flight_velocity> :
+struct mp_units::component_vectors<flight_velocity> :
     mp_units::vector_axes<forward_velocity, lateral_velocity, vertical_velocity> {};
 ```
 
@@ -295,9 +295,46 @@ the components, since an axis list has no reverse mapping back to a whole and th
 has no opinion about which vector type you want. Naming the type is where both come
 from.
 
+### From one value holding the components
+
+When the components already travel together, in a `std::tuple`, a `std::array`,
+or equivalent containers, pass that one value instead of unpacking it by hand:
+
+```cpp
+using velocity = quantity<flight_velocity[km / h], cartesian_vector<double>>;
+
+const velocity from_tuple = std::tuple{forward_velocity(30 * km / h),
+                                       lateral_velocity(10 * km / h),
+                                       vertical_velocity(-2 * km / h)};
+```
+
+Any type that a structured binding decomposes through `std::tuple_size` is accepted, and
+its elements are read the way such a binding reads them: through a member `get<Idx>()`
+when the type has one, and otherwise through a `get<Idx>` found by argument-dependent
+lookup. A third-party vector therefore works as well as the standard types. Since a
+decomposable _quantity_ decomposes the same way, a typed vector built from one composes
+back to it.
+
+The rules are those of the separate arguments, element by element. The count must match,
+each element must be implicitly convertible to the component _quantity_ of its position
+(so a value with two axes swapped does not compile), and each element is converted into
+the unit the type pins, with truncation rejected as anywhere else. The conversion is
+implicit for the same reason the separate-argument form is.
+
+Three kinds of such arguments are deliberately not composed element by element. A
+_quantity_ converts as a whole, under the [quantity specification
+rules](../../users_guide/advanced_topics/quantity_spec_conversions.md), rather than as its
+components. A type registered through `quantity_like_traits` converts as a whole through
+those traits, as it does when it does not decompose. A value convertible to the
+representation, such as a `cartesian_vector`, keeps going through the value constructors.
+
+`std::make_from_tuple` and `std::apply` cannot do this job. Since C++23 they accept only
+the standard library's own _tuple-like_ types and call `std::get`, so a third-party vector
+is rejected, and generic code is left writing its own `index_sequence` helper.
+
 ## Working Without Naming the Axes
 
-Declaring the axes is optional. A vector _quantity_ whose spec has no `vector_components`
+Declaring the axes is optional. A vector _quantity_ whose spec has no `component_vectors`
 specialization still takes apart and goes back together, and each component then carries
 **the whole's kind**:
 
@@ -368,14 +405,16 @@ top of the normal
 (copyable, `bool`-returning equality, a Euclidean norm, and a `value_type`), the type must
 be **indexable by a compile-time constant index**: `Idx` is a template argument, not a
 runtime value, which is what lets each axis have its own return type. The access itself
-need not be `constexpr`. The library accepts either form:
+need not be `constexpr`. The library reads a member `get` first, as a structured binding
+does, and falls back to a subscript:
 
-- a tuple-like `get<Idx>(rep)` found by argument-dependent lookup, or
-- a subscript `rep[Idx]`.
+- a member `get<Idx>()`, when the type has one,
+- otherwise a `get<Idx>(rep)` found by argument-dependent lookup,
+- otherwise a subscript `rep[Idx]`.
 
 It must also state **how many components it holds**, through `std::tuple_size`. That is
-where the library reads the length of an undeclared decomposition, and where it checks
-that you have not declared more axes than the representation can hold.
+where the library reads the length of an undeclared decomposition, and a declared
+decomposition must name exactly that many axes.
 
 `cartesian_vector`, `Eigen::Vector3d`, `glm::dvec3`, and `blaze::StaticVector<double, 3>`
 all satisfy both, so decomposition works against every backend the
@@ -392,11 +431,13 @@ The component _quantity's_ representation is the vector's element type, its `val
 A component of a `cartesian_vector<double>` is therefore a `quantity<…, double>`: a
 1D-vector _quantity_ holding a single value.
 
-!!! info "The index stops at the last declared axis"
+!!! info "The axes match the representation exactly"
 
-    `get<Idx>` and `std::tuple_element<Idx>` reject an `Idx` past the last component, which for
-    a declared decomposition is the last *declared axis* even when the representation is longer
-    (see [By index](#by-index) above).
+    A declared decomposition names one axis per element of the representation, so a
+    `cartesian_vector<double>` of three elements needs three axes. A representation that holds
+    more elements than there are axes is not decomposable. Building it from its component
+    vectors would leave the remaining elements to the representation's constructor, and
+    `Eigen::Vector3i` reads two integers in a braced list as a shape.
 
 
 ## Compile-Time Introspection

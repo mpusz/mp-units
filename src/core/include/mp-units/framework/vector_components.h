@@ -24,6 +24,7 @@
 
 // IWYU pragma: private, include <mp-units/framework.h>
 #include <mp-units/bits/config.h>
+#include <mp-units/bits/diagnostics.h>
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/unsatisfied.h>
@@ -46,21 +47,37 @@ namespace mp_units {
 
 namespace detail {
 
-// Element access for a vector representation. Prefers `get<I>(v)` (compile-time index, allows
-// bounds-checking on tuple-like reps), and falls back to `v[I]`. A rep providing neither is not
-// decomposable.
+// Reads the `Idx`-th element of a value through a member `get<Idx>()` when that call is valid,
+// which a structured binding prefers, or else through an unqualified `get<Idx>`, which
+// argument-dependent lookup finds for any type modeling the tuple protocol, `std::get` included.
+template<typename T, std::size_t Idx>
+concept HasMemberGet = requires(const T& components) { components.template get<Idx>(); };
+
+template<std::size_t Idx, typename T>
+  requires HasMemberGet<T, Idx> || requires(const T& components) { get<Idx>(components); }
+[[nodiscard]] constexpr decltype(auto) tuple_like_get(const T& components)
+{
+  if constexpr (HasMemberGet<T, Idx>)
+    return components.template get<Idx>();
+  else
+    return get<Idx>(components);
+}
+
+// Element access for a vector representation. Reads the element the way the constructor reads a
+// tuple-like argument (a member `get<Idx>()`, else a `get<Idx>` found by argument-dependent
+// lookup) and falls back to `v[Idx]`. A rep providing none of the three is not decomposable.
 template<std::size_t Idx, typename V>
 [[nodiscard]] constexpr decltype(auto) component_access(const V& v)
-  requires requires { get<Idx>(v); } || requires { v[Idx]; }
+  requires requires { tuple_like_get<Idx>(v); } || requires { v[Idx]; }
 {
-  if constexpr (requires { get<Idx>(v); })
-    return get<Idx>(v);
+  if constexpr (requires { tuple_like_get<Idx>(v); })
+    return tuple_like_get<Idx>(v);
   else
     return v[Idx];
 }
 
 // Compile-time number of elements of a representation, read from `std::tuple_size` when the rep
-// models the tuple protocol, otherwise `dynamic_extent` (unknown, so the count guard is skipped).
+// models the tuple protocol, otherwise `dynamic_extent`, which no decomposition accepts.
 inline constexpr std::size_t dynamic_extent = static_cast<std::size_t>(-1);
 
 template<typename V>
@@ -115,13 +132,13 @@ concept ValidVectorAxes =
 /**
  * @brief Ordered list of the 1D-vector component axes a vector quantity decomposes into
  *
- * A user opts a vector whole into decomposition by specializing `vector_components` (the
+ * A user opts a vector whole into decomposition by specializing `component_vectors` (the
  * customization point in `customization_points.h`) and inheriting from this template, listing the
  * per-axis quantity specs in coordinate order:
  *
  * @code
  * template<>
- * struct mp_units::vector_components<flight_velocity> :
+ * struct mp_units::component_vectors<flight_velocity> :
  *     mp_units::vector_axes<forward_velocity, wind_drift, sink_rate> {};
  * @endcode
  *
@@ -175,30 +192,63 @@ template<QuantitySpec auto QS, QuantitySpec auto... Axes>
   return found;
 }
 
-// The user opted the whole into a *named* decomposition by specializing `vector_components`. This
-// picks between the two decomposition modes below, and it is deliberately message-free: a quantity
-// with no specialization qualifies for the unnamed mode instead.
+// The declaration of the axes: a `component_vectors` specialization, or else a specialization of
+// the deprecated former name `vector_components`. Every other use goes through `declared_axes`, so the deprecated
+// name is spelled only inside this region, and the library itself never triggers its warning.
 template<auto QS>
-concept HasVectorAxes = QuantitySpec<MP_UNITS_NTTP_HACK(decltype(QS))> && requires { vector_components<QS>::size; };
+concept HasComponentVectors = requires { component_vectors<QS>::size; };
 
-// The named mode of the decomposition `get`/tuple protocol: the quantity's spec has a
-// `vector_components` specialization, the representation is element-accessible, and the axes are
-// relationally valid against the whole. Only the quantity spec is needed (never the unit), so it is
-// taken directly rather than the full reference. `QS` is an unconstrained `auto` because a
-// constrained `auto` is not allowed on a concept's own template parameter.
+MP_UNITS_DIAGNOSTIC_PUSH
+MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
+template<auto QS>
+concept HasDeprecatedVectorComponents = requires { vector_components<QS>::size; };
+
+template<auto QS>
+struct declared_axes_selector {};
+
+template<auto QS>
+  requires HasComponentVectors<QS>
+struct declared_axes_selector<QS> {
+  using type = component_vectors<QS>;
+};
+
+template<auto QS>
+  requires(!HasComponentVectors<QS>) && HasDeprecatedVectorComponents<QS>
+struct declared_axes_selector<QS> {
+  using type = vector_components<QS>;
+};
+MP_UNITS_DIAGNOSTIC_POP
+
+template<auto QS>
+using declared_axes = declared_axes_selector<QS>::type;
+
+// The user opted the whole into a *named* decomposition by declaring its axes. This picks between
+// the two decomposition modes below, and it is deliberately message-free: a quantity with no
+// declaration qualifies for the unnamed mode instead.
+template<auto QS>
+concept HasVectorAxes = QuantitySpec<MP_UNITS_NTTP_HACK(decltype(QS))> && requires { typename declared_axes<QS>; };
+
+// The named mode of the decomposition `get`/tuple protocol: the quantity's spec declares its axes,
+// the representation is element-accessible and states its length at compile time, that length
+// equals the number of axes, and the axes are relationally valid against the whole. Only the quantity
+// spec is needed (never the unit), so it is taken directly rather than the full reference. `QS` is
+// an unconstrained `auto` because a constrained `auto` is not allowed on a concept's own template
+// parameter.
 template<auto QS, typename Rep>
 concept NamedDecomposable =
   HasVectorAxes<QS> &&
-  (is_derived_from_specialization_of_v<vector_components<QS>, vector_axes> ||
-   unsatisfied<"vector_components must inherit from a vector_axes specialization">()) &&
+  (is_derived_from_specialization_of_v<declared_axes<QS>, vector_axes> ||
+   unsatisfied<"component_vectors must inherit from a vector_axes specialization">()) &&
   (requires(const Rep& r) { component_access<0>(r); } ||
    unsatisfied<"the representation type is not element-accessible (needs get<I> or operator[])">()) &&
-  (axes_share_hierarchy_root<QS>(vector_components<QS>{}) ||
+  (axes_share_hierarchy_root<QS>(declared_axes<QS>{}) ||
    unsatisfied<"every component axis must share the whole's hierarchy root">()) &&
-  (axes_distinct_from_whole_kind<QS>(vector_components<QS>{}) ||
+  (axes_distinct_from_whole_kind<QS>(declared_axes<QS>{}) ||
    unsatisfied<"every component axis must be a different kind than the whole (declare it with is_kind)">()) &&
-  (extent<Rep>() == dynamic_extent || vector_components<QS>::size <= extent<Rep>() ||
-   unsatisfied<"more component axes declared than the representation holds">());
+  (extent<Rep>() != dynamic_extent ||
+   unsatisfied<"the representation must state its length at compile time through std::tuple_size">()) &&
+  (declared_axes<QS>::size == extent<Rep>() ||
+   unsatisfied<"the number of declared axes must equal the length of the representation">());
 
 // A representation that can supply the components of an undeclared decomposition: an order-1
 // container that is element-accessible and states its length at compile time. The length has to come
@@ -236,7 +286,7 @@ template<auto QS, typename Rep>
 [[nodiscard]] consteval std::size_t decomposition_size()
 {
   if constexpr (NamedDecomposable<QS, Rep>)
-    return vector_components<QS>::size;
+    return declared_axes<QS>::size;
   else
     return extent<Rep>();
 }
@@ -256,7 +306,7 @@ template<auto QS, typename Rep, std::size_t Idx>
 [[nodiscard]] consteval QuantitySpec auto component_spec()
 {
   if constexpr (NamedDecomposable<QS, Rep>)
-    return vector_components<QS>::template axis<Idx>;
+    return declared_axes<QS>::template axis<Idx>;
   else
     return get_kind(QS);
 }
@@ -269,7 +319,7 @@ concept DecomposableIndex = Decomposable<QS, Rep> && (Idx < decomposition_size<Q
 // Lookup by axis spec is a named-mode privilege: an unnamed decomposition has no axis to name.
 template<auto QS, typename Rep, auto Axis>
 concept DecomposableAxis = NamedDecomposable<QS, Rep> && QuantitySpec<MP_UNITS_NTTP_HACK(decltype(Axis))> &&
-                           (axis_index_of<Axis>(vector_components<QS>{}) < vector_components<QS>::size);
+                           (axis_index_of<Axis>(declared_axes<QS>{}) < declared_axes<QS>::size);
 
 }  // namespace detail
 
