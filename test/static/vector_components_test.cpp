@@ -331,6 +331,37 @@ template<typename... Elems, typename T>
   }(std::index_sequence_for<Elems...>{});
 }
 
+// the same vector with a member `get`, which a structured binding reads in preference to a free one
+template<typename... Elems>
+struct member_get_vector {
+  std::tuple<Elems...> elements;
+
+  template<std::size_t Idx>
+  [[nodiscard]] constexpr const auto& get() const
+  {
+    return std::get<Idx>(elements);
+  }
+};
+
+// a velocity type that models the tuple protocol and is also registered through
+// `quantity_like_traits`: it converts to a quantity as a whole, through its traits
+struct registered_velocity {
+  double forward_kmh;
+  double drift_kmh;
+  double sink_kmh;
+
+  template<std::size_t Idx>
+  [[nodiscard]] friend constexpr Quantity auto get(const registered_velocity& vel)
+  {
+    if constexpr (Idx == 0)
+      return vel.forward_kmh * forward_velocity[km / h];
+    else if constexpr (Idx == 1)
+      return vel.drift_kmh * wind_drift[km / h];
+    else
+      return vel.sink_kmh * sink_rate[km / h];
+  }
+};
+
 }  // namespace typed_la
 
 template<typename... Elems>
@@ -338,6 +369,40 @@ struct std::tuple_size<typed_la::column_vector<Elems...>> : std::integral_consta
 
 template<std::size_t Idx, typename... Elems>
 struct std::tuple_element<Idx, typed_la::column_vector<Elems...>> : std::tuple_element<Idx, std::tuple<Elems...>> {};
+
+template<typename... Elems>
+struct std::tuple_size<typed_la::member_get_vector<Elems...>> :
+    std::integral_constant<std::size_t, sizeof...(Elems)> {};
+
+template<std::size_t Idx, typename... Elems>
+struct std::tuple_element<Idx, typed_la::member_get_vector<Elems...>> :
+    std::tuple_element<Idx, std::tuple<Elems...>> {};
+
+template<>
+struct std::tuple_size<typed_la::registered_velocity> : std::integral_constant<std::size_t, 3> {};
+
+template<std::size_t Idx>
+struct std::tuple_element<Idx, typed_la::registered_velocity> {
+  using type = decltype(get<Idx>(std::declval<const typed_la::registered_velocity&>()));
+};
+
+template<>
+struct mp_units::quantity_like_traits<typed_la::registered_velocity> {
+  static constexpr auto reference = flight_velocity[si::kilo<si::metre> / non_si::hour];
+  static constexpr bool explicit_import = false;
+  static constexpr bool explicit_export = true;
+  using rep = utility::cartesian_vector<double>;
+
+  [[nodiscard]] static constexpr rep to_numerical_value(const typed_la::registered_velocity& vel)
+  {
+    return rep{vel.forward_kmh, vel.drift_kmh, vel.sink_kmh};
+  }
+
+  [[nodiscard]] static constexpr typed_la::registered_velocity from_numerical_value(const rep& vec)
+  {
+    return {vec[0], vec[1], vec[2]};
+  }
+};
 
 namespace {
 
@@ -372,6 +437,27 @@ static_assert(std::convertible_to<state, Q>);
 // and the round trip closes: the typed vector built from a quantity composes back to it
 static_assert(Q{typed_la::make_column_vector<fwd_q, drift_q, sink_q>(v)} == v);
 
+// a member `get` is read as a structured binding reads it, so whatever a structured binding takes
+// apart through `std::tuple_size` composes the whole
+using member_state = typed_la::member_get_vector<fwd_q, drift_q, sink_q>;
+inline constexpr member_state member_composed_state{
+  {30.0 * forward_velocity[km / h], -4.0 * wind_drift[km / h], -2.5 * sink_rate[km / h]}};
+static_assert([] {
+  const auto [fwd, drift, sink] = member_composed_state;
+  return Q{fwd, drift, sink} == composed;
+}());
+static_assert(Q{member_composed_state} == composed);
+static_assert(std::convertible_to<member_state, Q>);
+
+// a quantity-like type keeps converting through its traits even when it models the tuple protocol:
+// the composition does not compete with that conversion
+static_assert(QuantityLike<typed_la::registered_velocity>);
+inline constexpr typed_la::registered_velocity registered{30.0, -4.0, -2.5};
+static_assert(std::convertible_to<typed_la::registered_velocity, Q>);
+static_assert(Q{registered} == composed);
+inline constexpr Q from_registered = registered;
+static_assert(from_registered == composed);
+
 // each element is converted into the unit the type pins, as each separate argument is
 static_assert(get<wind_drift>(Q{std::tuple{30.0 * forward_velocity[km / h], 10.0 * wind_drift[m / s],
                                            -2.5 * sink_rate[km / h]}})
@@ -393,6 +479,7 @@ concept invalid_tuple_like_compositions = requires {
   requires composable_from_tuple_like<Q, std::tuple<fwd_q, drift_q, sink_q>>;   // the valid call
   requires !composable_from_tuple_like<Q, std::tuple<drift_q, fwd_q, sink_q>>;  // two axes swapped
   requires !composable_from_tuple_like<Q, typed_la::column_vector<drift_q, fwd_q, sink_q>>;
+  requires !composable_from_tuple_like<Q, typed_la::member_get_vector<drift_q, fwd_q, sink_q>>;
   requires !composable_from_tuple_like<Q, std::tuple<fwd_q, drift_q>>;                  // fewer elements than axes
   requires !composable_from_tuple_like<Q, std::tuple<fwd_q, drift_q, sink_q, sink_q>>;  // more elements than axes
   requires !composable_from_tuple_like<Q, std::tuple<fwd_q>>;                           // a one-element tuple

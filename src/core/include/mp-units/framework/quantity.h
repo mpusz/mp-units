@@ -673,18 +673,33 @@ template<auto R, typename Rep, std::size_t... Idxs, typename... Qs>
   return Rep{component_quantity<R, Rep, Idxs>{qs}.numerical_value_in(get_unit(R))...};
 }
 
-// Component-wise construction from a single tuple-like value holding the components, such as a
-// heterogeneous vector of a typed linear algebra library, so that the tuple protocol closes on itself
-// too: what decomposes into a tuple-like value composes back from one. `std::make_from_tuple` cannot
-// serve, because it accepts only the standard library's own tuple-like types and calls `std::get`,
-// so each element is read here with an unqualified `get`, which argument-dependent lookup finds for
-// any type modeling the protocol, `std::get` included.
+// Component-wise construction from a single value holding the components, such as a heterogeneous
+// vector, so that the tuple protocol closes on itself too: what decomposes into such a value
+// composes back from one. The values accepted are those a structured binding decomposes through
+// `std::tuple_size`, and each element is read the way such a binding reads it.
+// `std::make_from_tuple` cannot serve, because it accepts only the standard library's own
+// *tuple-like* types and calls `std::get`.
+
+// A member `get<Idx>()`, which a structured binding prefers, or else an unqualified `get<Idx>`, which
+// argument-dependent lookup finds for any type modeling the protocol, `std::get` included.
+template<typename T, std::size_t Idx>
+concept HasMemberGet = requires(const T& components) { components.template get<Idx>(); };
+
+template<std::size_t Idx, typename T>
+  requires HasMemberGet<T, Idx> || requires(const T& components) { get<Idx>(components); }
+[[nodiscard]] constexpr decltype(auto) tuple_like_get(const T& components)
+{
+  if constexpr (HasMemberGet<T, Idx>)
+    return components.template get<Idx>();
+  else
+    return get<Idx>(components);
+}
 
 // The `Idx`-th element converts implicitly to the component quantity of that position, which is the
 // check `axis_quantities_convertible` makes for the separate arguments.
 template<auto R, typename Rep, typename T, std::size_t Idx>
 concept TupleLikeElementConvertible = requires(const T& components) {
-  { get<Idx>(components) } -> std::convertible_to<component_quantity<R, Rep, Idx>>;
+  { detail::tuple_like_get<Idx>(components) } -> std::convertible_to<component_quantity<R, Rep, Idx>>;
 };
 
 template<auto R, typename Rep, typename T, std::size_t... Idxs>
@@ -695,27 +710,31 @@ template<auto R, typename Rep, typename T, std::size_t... Idxs>
 
 // The rules of `ComposableFrom`, with the count read from `std::tuple_size`. This constructor is a
 // candidate for every one-argument construction of a quantity, so the cheap checks come first, and
-// the first three keep it away from the constructors that already own such an argument:
+// the exclusions keep it away from the constructors that already own such an argument:
 // - a quantity or a point, because a decomposable quantity is itself tuple-like, and converting it
 //   component by component would bypass the quantity-spec conversion rules it is subject to as a whole;
 // - a value convertible to the representation, because a vector representation is tuple-like too, and
-//   it belongs to the value constructors.
+//   it belongs to the value constructors;
+// - a `QuantityLike` type, which converts as a whole through its `quantity_like_traits`. It is asked
+//   only once `std::tuple_size` holds, so other arguments never instantiate those traits.
 // The deleted catch-all that rejects a truncating number for a quantity of unit `one` would otherwise
 // accept a tuple-like value too, so it is constrained on the negation of this concept. It is
-// message-free: the only valid one-argument constructions it does not exclude up front are a
-// representation reached explicitly and a `QuantityLike` type, and a throwing diagnostic here would
-// turn a tuple-like one of those into a hard error, as it would for that negated use.
+// message-free: the only valid one-argument construction it does not exclude up front is a
+// representation reached explicitly, and a throwing diagnostic here would turn a tuple-like one into
+// a hard error, as it would for that negated use.
 template<auto R, typename Rep, typename T>
 concept ComposableFromTupleLike =
   (!Quantity<T>) && (!QuantityPoint<T>) && (!std::convertible_to<T, Rep>) && (extent<T>() != dynamic_extent) &&
-  (extent<T>() >= 2) && rep_constructible_from_elements<Rep>(std::make_index_sequence<extent<T>()>{}) &&
+  (extent<T>() >= 2) && (!QuantityLike<T>) &&
+  rep_constructible_from_elements<Rep>(std::make_index_sequence<extent<T>()>{}) &&
   Decomposable<get_quantity_spec(R), Rep> && (extent<T>() == decomposition_size<get_quantity_spec(R), Rep>()) &&
   tuple_like_elements_convertible<R, Rep, T>(std::make_index_sequence<extent<T>()>{});
 
 template<auto R, typename Rep, typename T, std::size_t... Idxs>
 [[nodiscard]] constexpr Rep compose_representation_from_tuple_like(std::index_sequence<Idxs...>, const T& components)
 {
-  return detail::compose_representation<R, Rep>(std::index_sequence<Idxs...>{}, get<Idxs>(components)...);
+  return detail::compose_representation<R, Rep>(std::index_sequence<Idxs...>{},
+                                                detail::tuple_like_get<Idxs>(components)...);
 }
 
 }  // namespace detail
@@ -839,11 +858,12 @@ public:
   {
   }
 
-  // The same construction from a single tuple-like value of the components (a `std::tuple`, a
-  // `std::array`, or a third-party type whose `get` is found by argument-dependent lookup), under the
-  // same rules. Implicit, as the separate arguments are. A quantity, a point, and a value convertible
-  // to the representation are excluded, and the deleted truncating constructor above steps aside, so
-  // this never competes with the other one-argument constructors.
+  // The same construction from a single value of the components that a structured binding decomposes
+  // through `std::tuple_size` (a `std::tuple`, a `std::array`, or a third-party type with a member or
+  // an argument-dependent `get`), under the same rules. Implicit, as the separate arguments are. A
+  // quantity, a point, a `QuantityLike` type, and a value convertible to the representation are
+  // excluded, and the deleted truncating constructor above steps aside, so this never competes with
+  // the other one-argument constructors.
   template<typename T>
     requires detail::ComposableFromTupleLike<reference, rep, T>
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)

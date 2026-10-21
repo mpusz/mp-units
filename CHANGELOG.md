@@ -8,15 +8,16 @@ This page documents the version history and changes for the **mp-units** library
 
 ### 2.6.0 <small>TBD</small> { id="2.6.0" }
 
-- feat: a vector quantity composes from a single tuple-like value of its components,
-      the inverse of its tuple protocol: `quantity<flight_velocity[km / h], vec3> v =
-      std::tuple{fwd, lat, vert};`. Any type modeling the protocol is accepted, its
-      elements read with an unqualified `get` so that a third-party
+- feat: a vector quantity composes from a single value holding its components, the
+      inverse of its tuple protocol: `quantity<flight_velocity[km / h], vec3> v =
+      std::tuple{fwd, lat, vert};`. Any type a structured binding decomposes through
+      `std::tuple_size` is accepted, its elements read as such a binding reads them,
+      through a member `get` or one found by argument-dependent lookup, so a third-party
       vector works, which `std::make_from_tuple` cannot do. The rules are those of the
       component-wise constructor, element by element, and the conversion is implicit like
-      it. A quantity, a point, and a value convertible to the representation are not
-      composed this way, and the deleted truncating constructor of a quantity of unit
-      `one` no longer takes a tuple-like value for a number
+      it. A quantity, a point, a `QuantityLike` type, and a value convertible to the
+      representation are not composed this way, and the deleted truncating constructor of
+      a quantity of unit `one` no longer takes such a value for a number
 - (!) refactor: the quantity specification conversion engine is reimplemented from a
       written specification, the new chapter
       [Quantity Specification Conversions](https://mpusz.github.io/mp-units/latest/users_guide/advanced_topics/quantity_spec_conversions/).
