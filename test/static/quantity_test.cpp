@@ -112,6 +112,11 @@ static_assert(has_magnitude<quantity<isq::velocity[m / s], double>>);
 static_assert(QuantityOf<decltype(std::declval<quantity<isq::velocity[m / s], double>>().magnitude()),
                          quantity_tensor_order::scalar>);
 
+// the magnitude of an unsigned value is the value itself
+static_assert(magnitude(4u) == 4u);
+static_assert(magnitude(std::uint8_t{200}) == std::uint8_t{200});
+static_assert((4u * isq::velocity[m / s]).magnitude().numerical_value_in(m / s) == 4u);
+
 #if MP_UNITS_HOSTED
 QUANTITY_SPEC(complex_velocity, isq::velocity, quantity_field::complex);
 

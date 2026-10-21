@@ -200,6 +200,9 @@ struct magnitude_t {
       return vec.norm();
     else if constexpr (!Scalar<T> && requires { norm(vec); })
       return norm(vec);
+    // the magnitude of an unsigned value is the value itself, and `std::abs` has no unsigned overload
+    else if constexpr (std::unsigned_integral<T>)
+      return vec;
     // allow real types to represent one dimensional vector quantities
     else if constexpr (std::is_arithmetic_v<T>)
 #if MP_UNITS_HOSTED || __cpp_lib_freestanding_cstdlib >= 202306L

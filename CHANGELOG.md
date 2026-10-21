@@ -8,6 +8,8 @@ This page documents the version history and changes for the **mp-units** library
 
 ### 2.6.0 <small>TBD</small> { id="2.6.0" }
 
+- fix: `magnitude` of an unsigned value returns the value, where it called `std::abs`,
+      which has no unsigned overload
 - (!) refactor: `char`, `wchar_t`, `char8_t`, `char16_t`, and `char32_t` are not
       representation types, as `bool` isn't. A character type holds a character, not a
       number, so `quantity<si::metre, char>` is ill-formed. `signed char` and `unsigned char`,
