@@ -186,7 +186,7 @@ flowchart TD
     cancel -- yes --> cancelled[self-cancel]
     cancel -- no --> deep{a factor with<br>an equation?}
     deep -- no --> r_no
-    deep -- yes --> reduce[expand<br>the deepest]
+    deep -- yes --> reduce[expand the deepest,<br>or the shallowest target<br>factor while siblings wait]
     sub --> left
     paired -- yes --> left
     cancelled --> left
@@ -457,6 +457,15 @@ The rules say which operation applies when more than one could:
     factor of that depth is tried and the best rank is kept, so the names of the
     quantities never decide the result. The factor with the greatest depth is reduced
     first, so both sides meet at the most specific common equation.
+
+    While siblings wait, the factor of the target with the least depth that has an
+    equation is expanded instead, numerator first. We want the angle of
+    `kg * m² * rad / s` to reach the _angular velocity_ in
+    `angular_velocity * moment_of_inertia * rotation`. The problem is that the deeper
+    _moment of inertia_, defined over _angular velocity_, would expand first and cancel
+    it, so the angle would pair with the _rotation_ and the conversion would end in
+    `none`. Expanding the shallowest factor first lets the factor that brings the tree in
+    meet the waiting siblings before anything cancels it.
 
 The process stops when both lists are the same: both empty, or the same product right
 after an exact equation. Its rank is the lowest rank of the operations taken, or

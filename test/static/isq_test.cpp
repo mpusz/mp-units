@@ -623,6 +623,32 @@ static_assert(utility::implicitly_convertible(kind_of<isq::angular_measure / isq
                                               isq::rotation* isq::angular_velocity));
 static_assert(utility::implicitly_convertible(kind_of<isq::angular_measure / pow<2>(isq::time)>,
                                               isq::rotation* isq::angular_acceleration));
+// the factor that brings the angle is expanded before a deeper one that would cancel it: the
+// `angular_velocity` in `angular_velocity * moment_of_inertia * rotation` is the one the angle of
+// `kg m² rad/s` belongs to, and the `rotation` beside it is only a number
+static_assert(
+  utility::implicitly_convertible(kind_of<isq::angular_measure * isq::mass * pow<2>(isq::length) / isq::time>,
+                                  isq::angular_velocity* isq::moment_of_inertia* isq::rotation));
+static_assert(
+  utility::implicitly_convertible(kind_of<isq::angular_measure * isq::mass * pow<2>(isq::length) / isq::time>,
+                                  isq::rotation* isq::moment_of_inertia* isq::angular_velocity* isq::rotation));
+// at any depth: the factor that brings the angle in can sit a second equation down
+// (`angular_acceleration` is defined over `angular_velocity`), repeat, or come with several numbers
+static_assert(
+  utility::implicitly_convertible(kind_of<isq::angular_measure * isq::mass * pow<2>(isq::length) / pow<2>(isq::time)>,
+                                  isq::angular_acceleration* isq::moment_of_inertia* isq::rotation));
+static_assert(utility::implicitly_convertible(
+  kind_of<pow<2>(isq::angular_measure) * pow<2>(isq::mass) * pow<4>(isq::length) / pow<2>(isq::time)>,
+  pow<2>(isq::angular_velocity) * pow<2>(isq::moment_of_inertia) * isq::rotation));
+static_assert(utility::implicitly_convertible(
+  kind_of<isq::angular_measure * isq::mass * pow<2>(isq::length) / isq::time>,
+  isq::rotation* isq::rotation* isq::rotation* isq::angular_velocity* isq::moment_of_inertia));
+// an angle the user divides by, or a solid angle in place of the angle, is still not matched
+static_assert(!utility::implicitly_convertible(
+  kind_of<isq::angular_measure * isq::mass * pow<2>(isq::length) / isq::time>,
+  isq::angular_velocity* isq::moment_of_inertia* isq::rotation / isq::angular_measure));
+static_assert(!utility::castable(kind_of<isq::solid_angular_measure * isq::mass * pow<2>(isq::length) / isq::time>,
+                                 isq::angular_velocity* isq::moment_of_inertia* isq::rotation));
 // neither reading lets a quantity of another tree in
 static_assert(!utility::castable(kind_of<isq::energy * isq::mass>, isq::torque* isq::mass));
 static_assert(!utility::castable(kind_of<isq::frequency * isq::duration>, isq::activity* isq::period_duration));

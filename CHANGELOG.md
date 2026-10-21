@@ -75,6 +75,11 @@ This page documents the version history and changes for the **mp-units** library
       of `rad / s` also died against the `rotation` in `rotation * angular_velocity`
       before the velocity was expanded. From a kind source, a pairing that would refuse
       now waits for a factor that mentions the tree, however deep
+- fix: a product of three typed quantities converts to its own unit when one of them is a
+      dimensionless count. `omega * inertia * turns`, with `turns` an `isq::rotation`, can
+      be read in `kg m² rad/s` again. After a sibling pairing from a kind source is
+      deferred, the shallowest factor that has an equation is expanded first, so the angle
+      of the unit meets the `angular_velocity` and not the `rotation` beside it
 - fix: the kind boundary lowers every verdict between two named quantities, and between a
       named quantity and a kind, where it used to lower only an `implicit` verdict, and
       from a kind none at all. A `kind_of<isq::angular_velocity>` converts to a child

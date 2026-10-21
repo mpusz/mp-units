@@ -866,13 +866,28 @@ template<int Depth, bool Source, bool InNum, std::size_t I, conversion_rank Rank
   }
 }
 
+// The depth of the shallowest factor of a list that has an equation, or `no_depth` when none has.
+inline constexpr int no_depth = 1 << 20;
+
+template<typename... Ts>
+[[nodiscard]] consteval int shallowest_depth(type_list<Ts...>)
+{
+  int result = no_depth;
+  ((result = (quantity_spec_depth<expr_type<Ts>>::value > 0 && quantity_spec_depth<expr_type<Ts>>::value < result)
+               ? quantity_spec_depth<expr_type<Ts>>::value
+               : result),
+   ...);
+  return result;
+}
+
 // Reduce the deepest factor: nothing pairs and nothing self-cancels, so a factor of greatest depth is
 // expanded. The list it comes from is the first one holding that depth, in the order From numerator,
 // From denominator, To numerator, To denominator; within that list every factor of that depth is tried
 // (see `best_expansion`). The deepest factor is reduced first, so the two sides meet at the most
 // specific common equation. Flattening both sides to base quantities would rank
 // `inverse(repetency) -> height` `explicit_only` instead of `cast`.
-template<conversion_rank Rank, typename FromNum, typename FromDen, typename ToNum, typename ToDen, bool SourceIsKind>
+template<conversion_rank Rank, typename FromNum, typename FromDen, typename ToNum, typename ToDen, bool SourceIsKind,
+         bool Deferred>
 [[nodiscard]] consteval conversion_rank reduce_deepest()
 {
   constexpr int from_num_depth = detail::max_factor_depth(FromNum{});
@@ -880,9 +895,19 @@ template<conversion_rank Rank, typename FromNum, typename FromDen, typename ToNu
   constexpr int to_num_depth = detail::max_factor_depth(ToNum{});
   constexpr int to_den_depth = detail::max_factor_depth(ToDen{});
   constexpr int deepest = detail::max({from_num_depth, from_den_depth, to_num_depth, to_den_depth});
+  // After a sibling pairing was deferred (see `pair_lists`), the shallowest target factor is expanded
+  // before the deepest one: `angular_velocity` brings the angle the source carries, and the deeper
+  // `moment_of_inertia`, defined over `angular_velocity`, would cancel it, so that the source's angle
+  // would meet the `rotation` beside it instead of the factor that carries it.
+  constexpr int bring_num = Deferred ? detail::shallowest_depth(ToNum{}) : detail::no_depth;
+  constexpr int bring_den = Deferred ? detail::shallowest_depth(ToDen{}) : detail::no_depth;
+  constexpr int bring = bring_num < bring_den ? bring_num : bring_den;
   if constexpr (deepest == 0)
     // nothing left has an equation and nothing pairs or self-cancels
     return conversion_rank::none;
+  else if constexpr (bring < deepest)
+    return detail::best_expansion<bring, false, bring_num == bring, 0, Rank, FromNum, FromDen, ToNum, ToDen,
+                                  SourceIsKind>();
   else if constexpr (from_num_depth == deepest)
     return detail::best_expansion<deepest, true, true, 0, Rank, FromNum, FromDen, ToNum, ToDen, SourceIsKind>();
   else if constexpr (from_den_depth == deepest)
@@ -947,6 +972,7 @@ template<conversion_rank Rank, typename FromNum, typename FromDen, typename ToNu
                                FromDen, ToNum, ToDen, SourceIsKind>;
     using num = sides::num;
     using den = sides::den;
+    constexpr bool deferred = SourceIsKind && (num_alone::has_deferrable || den_alone::has_deferrable);
     // same-tree factors pair first (the best pairing), so only what they leave can pair across trees
     if constexpr (detail::any_blocking_pair<typename num::to_rest>(typename num::from_rest{}) ||
                   detail::any_blocking_pair<typename den::to_rest>(typename den::from_rest{}))
@@ -964,7 +990,7 @@ template<conversion_rank Rank, typename FromNum, typename FromDen, typename ToNu
       if constexpr (cancel::found)
         return detail::reduce<Rank, typename cancel::num, typename cancel::den, ToNum, ToDen, SourceIsKind>();
       else
-        return detail::reduce_deepest<Rank, FromNum, FromDen, ToNum, ToDen, SourceIsKind>();
+        return detail::reduce_deepest<Rank, FromNum, FromDen, ToNum, ToDen, SourceIsKind, deferred>();
     } else if constexpr (from_size == 0) {
       // the user asserts that a number is such a ratio
       using cancel = decltype(detail::self_cancel<type_list<>, ToNum, ToDen>());
@@ -972,9 +998,9 @@ template<conversion_rank Rank, typename FromNum, typename FromDen, typename ToNu
         return detail::reduce<SourceIsKind ? Rank : detail::weaker(Rank, explicit_only), FromNum, FromDen,
                               typename cancel::num, typename cancel::den, SourceIsKind>();
       else
-        return detail::reduce_deepest<Rank, FromNum, FromDen, ToNum, ToDen, SourceIsKind>();
+        return detail::reduce_deepest<Rank, FromNum, FromDen, ToNum, ToDen, SourceIsKind, deferred>();
     } else
-      return detail::reduce_deepest<Rank, FromNum, FromDen, ToNum, ToDen, SourceIsKind>();
+      return detail::reduce_deepest<Rank, FromNum, FromDen, ToNum, ToDen, SourceIsKind, deferred>();
   }
 }
 
