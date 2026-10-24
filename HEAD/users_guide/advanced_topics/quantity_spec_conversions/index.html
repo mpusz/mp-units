@@ -1,0 +1,2550 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="The quantities and units library for C++">
+      
+      
+        <meta name="author" content="mp-units Team">
+      
+      
+        <link rel="canonical" href="https://mpusz.github.io/mp-units/HEAD/users_guide/advanced_topics/quantity_spec_conversions/">
+      
+      
+        <link rel="prev" href="../representation_types/">
+      
+      
+        <link rel="next" href="../type_introspection/">
+      
+      
+        
+      
+      
+        <link rel="alternate" type="application/rss+xml" title="RSS feed" href="../../../feed_rss_created.xml">
+        <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../../../feed_rss_updated.xml">
+      
+      <link rel="icon" href="../../../assets/images/mp-units-color.svg">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Quantity Specification Conversions - mp-units</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../stylesheets/mrdocs.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Quantity Specification Conversions - mp-units" />
+<meta property="og:description" content="The quantities and units library for C++" />
+<meta property="og:image" content="https://mpusz.github.io/mp-units/HEAD/assets/images/social/users_guide/advanced_topics/quantity_spec_conversions.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:url" content="https://mpusz.github.io/mp-units/HEAD/users_guide/advanced_topics/quantity_spec_conversions/" />
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:title" content="Quantity Specification Conversions - mp-units" />
+<meta property="twitter:description" content="The quantities and units library for C++" />
+<meta property="twitter:image" content="https://mpusz.github.io/mp-units/HEAD/assets/images/social/users_guide/advanced_topics/quantity_spec_conversions.png" />
+</head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#quantity-specification-conversions" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+You're not viewing the latest version.
+<a href="../../../..">
+  <strong>Click here to go to latest.</strong>
+</a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),base=new URL("../../.."),outdated=__md_get("__outdated",sessionStorage,base);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="mp-units" class="md-header__button md-logo" aria-label="mp-units" data-md-component="logo">
+      
+  <img src="../../../assets/images/mp-units-transparent-white.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            mp-units
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Quantity Specification Conversions
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1M8 13h8v-2H8zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4a5 5 0 0 0 5-5 5 5 0 0 0-5-5"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="custom"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/mpusz/mp-units" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    mpusz/mp-units
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../getting_started/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../tutorials/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Tutorials
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  User's Guide
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../workshops/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Workshops
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../how_to_guides/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  How-to Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../examples/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Examples
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../reference/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../blog/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Blog
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../release_notes/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Release Notes
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="mp-units" class="md-nav__button md-logo" aria-label="mp-units" data-md-component="logo">
+      
+  <img src="../../../assets/images/mp-units-transparent-white.svg" alt="logo">
+
+    </a>
+    mp-units
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/mpusz/mp-units" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    mpusz/mp-units
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../getting_started/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../tutorials/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User's Guide
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    User's Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../terms_and_definitions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Terms and Definitions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../framework_basics/interface_introduction/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Framework Basics
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../systems/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Systems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4_5" id="__nav_4_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Advanced Topics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Advanced Topics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../representation_types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Representation Types
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quantity Specification Conversions
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quantity Specification Conversions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#vocabulary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vocabulary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#outcomes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Outcomes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#overview-of-the-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview of the process
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#checks-that-come-first" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checks that come first
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kinds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kinds
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Kinds">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-kind-as-the-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A kind as the source
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-kind-as-the-target" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A kind as the target
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kinds-in-equations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kinds in equations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-unit-of-a-product" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The unit of a product
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#two-named-quantities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two named quantities
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#derived-quantities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Derived quantities
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Derived quantities">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#worked-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Worked examples
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#consequences" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Consequences
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type_introspection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Type Introspection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../workshops/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workshops
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../how_to_guides/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How-to Guides
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../examples/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../reference/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../blog/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../release_notes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Release Notes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/mpusz/mp-units/edit/master/docs/users_guide/advanced_topics/quantity_spec_conversions.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/mpusz/mp-units/raw/master/docs/users_guide/advanced_topics/quantity_spec_conversions.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.2 8.2 0 0 1-1.23-2"/></svg>
+    </a>
+  
+
+
+<h1 id="quantity-specification-conversions">Quantity Specification Conversions<a class="headerlink" href="#quantity-specification-conversions" title="Permanent link">&para;</a></h1>
+<p>Every time a quantity is copied into a differently typed one, passed through the call
+operator of a quantity specification, or put through <code>quantity_cast</code>, the library has to
+answer one question: how are these two quantity specifications related? The answer decides
+whether the code compiles as written, needs an explicit conversion, needs a cast, or is
+rejected altogether.</p>
+<p><a href="../../framework_basics/systems_of_quantities/#converting-between-quantities">Systems of Quantities</a>
+shows the four outcomes on the <em>length</em> hierarchy, which is all that everyday code needs.
+This chapter gives the complete rules, including what happens when quantity equations and
+quantity kinds are involved.</p>
+<h2 id="vocabulary">Vocabulary<a class="headerlink" href="#vocabulary" title="Permanent link">&para;</a></h2>
+<p>A quantity specification comes in one of three shapes:</p>
+<ul>
+<li>A <strong>named quantity</strong> is defined with <code>quantity_spec</code>. It has a dimension, an optional
+    <strong>parent</strong>, an optional <strong>equation</strong>, and may be marked with <code>is_kind</code>.</li>
+<li>A <strong>derived quantity</strong> is a product of powers of named quantities, such as
+    <code>isq::mass * pow&lt;2&gt;(isq::length) / pow&lt;2&gt;(isq::time)</code>. The library keeps it
+    normalized, so equal names are merged, zero exponents disappear, and <code>dimensionless</code>
+    is the identity (<code>isq::length / isq::length</code> <em>is</em> <code>dimensionless</code>, while
+    <code>isq::width / isq::length</code> stays a derived quantity). A factor may itself be a kind,
+    spelled <code>kind_of_&lt;K&gt;</code>, when a kind and a typed quantity met in one equation (see
+    <a href="#kinds">Kinds</a>).</li>
+<li>A <strong>kind</strong>, spelled <code>kind_of&lt;K&gt;</code>, where <code>K</code> is a named quantity that is its own kind
+    root, or a product of such quantities, stands for any quantity of the hierarchy below
+    <code>K</code>. This is what a bare unit carries: <code>42 * m</code> has the quantity specification
+    <code>kind_of&lt;isq::length&gt;</code>.</li>
+</ul>
+<p>The rules refer to a few facts about a named quantity:</p>
+<ul>
+<li>Its <strong>tree</strong> is the chain of parents. The <strong>root</strong> is the top of that chain. Two named
+    quantities are in the same tree when they share a root.</li>
+<li>Its <strong>kind root</strong> is the nearest quantity on the way up, itself included, that was
+    declared with <code>is_kind</code>. If there is none, the kind root is the root. A quantity
+    declared with <code>is_kind</code> is a <strong>declared kind</strong>. <em>Angular measure</em> and <em>storage
+    capacity</em> are the usual examples, see
+    <a href="../../framework_basics/dimensionless_quantities/#nested-quantity-kinds">Nested quantity kinds</a>.</li>
+<li>Its <strong>equation</strong> is the one given in its definition or, if none was given, its parent's,
+    recursively. A base quantity has none. A quantity <strong>defines</strong> its equation when it has
+    one that it didn't take over from its parent: it is a root, its parent has no
+    equation, or its equation differs from its parent's. A child that restates its
+    parent's equation doesn't define it. The <strong>defining ancestor</strong> of a quantity is the
+    nearest quantity on the way up, itself included, that defines the equation the
+    quantity has. <code>dimensionless</code> is a root whose equation is the empty product, so
+    <em>rotation</em>, a child of <code>dimensionless</code> without an equation of its own, has
+    <code>dimensionless</code> as its defining ancestor.</li>
+<li>Its <strong>depth</strong> says how many levels of equations lie below it. A quantity with no
+    equation at all, such as a base quantity, has depth <code>0</code>. A quantity with an equation
+    has depth one more than the deepest factor of that equation, so <em>speed</em>
+    (<code>length / duration</code>) has depth <code>1</code> and <em>acceleration</em> (<code>velocity / duration</code>) has
+    depth <code>2</code>. The empty product is an equation too, one without factors, so
+    <code>dimensionless</code> and <em>rotation</em>, which takes it over, have depth <code>1</code>. A derived
+    quantity has the depth of its deepest factor.</li>
+<li>Its <strong>carried kinds</strong> are the declared kinds it carries, each with a count that may be
+    negative or fractional. The count comes from two places. First, the quantity itself
+    and every quantity on its way up count once each if they are declared kinds, so <em>phase
+    angle</em> carries <em>phase angle</em> once and <em>angular measure</em> once. Second, every factor of
+    its equation adds its own carried kinds multiplied by the factor's exponent, so a
+    factor in a denominator subtracts. <em>Angular velocity</em>, defined over an angular
+    displacement, carries <em>angular measure</em> once this way. Counts of one kind add up and a
+    count of zero is dropped, so <em>speed</em> carries nothing. A derived quantity carries the
+    sum over its factors:
+    <code>isq::angular_velocity * isq::radius / isq::angular_measure / isq::speed</code> carries
+    nothing: its numerator angle and its denominator angle cancel.</li>
+</ul>
+<p>For the definitions below, where <code>dimensionless</code> is the library's own:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">length</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">dim_length</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">length</span><span class="p">;</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">width</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">length</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">width</span><span class="p">;</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">radius</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">width</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">radius</span><span class="p">;</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">path_length</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">length</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">path_length</span><span class="p">;</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">arc_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">path_length</span><span class="p">;</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">duration</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">dim_time</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">duration</span><span class="p">;</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">mass</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">dim_mass</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">mass</span><span class="p">;</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">speed</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">length</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">duration</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">speed</span><span class="p">;</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">special_speed</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">speed</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">special_speed</span><span class="p">;</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">displacement</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="n">quantity_tensor_order</span><span class="o">::</span><span class="n">vector</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">displacement</span><span class="p">;</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">velocity</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">speed</span><span class="p">,</span><span class="w"> </span><span class="n">displacement</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">duration</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">velocity</span><span class="p">;</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">acceleration</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">velocity</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">duration</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">acceleration</span><span class="p">;</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">force</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">mass</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">acceleration</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">force</span><span class="p">;</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">angular_measure</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">dimensionless</span><span class="p">,</span><span class="w"> </span><span class="n">arc_length</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">radius</span><span class="p">,</span><span class="w"> </span><span class="n">is_kind</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">angular_measure</span><span class="p">;</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">phase_angle</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">angular_measure</span><span class="p">,</span><span class="w"> </span><span class="n">is_kind</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">phase_angle</span><span class="p">;</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">rotational_displacement</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">angular_measure</span><span class="p">,</span><span class="w"> </span><span class="n">path_length</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">radius</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">rotational_displacement</span><span class="p">;</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">rotation</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">dimensionless</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">rotation</span><span class="p">;</span>
+</span></code></pre></div>
+<p>the facts are:</p>
+<table>
+<thead>
+<tr>
+<th>Quantity</th>
+<th>Root</th>
+<th>Kind root</th>
+<th>Equation</th>
+<th>Defining ancestor</th>
+<th>Depth</th>
+<th>Carried kinds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>width</code></td>
+<td><code>length</code></td>
+<td><code>length</code></td>
+<td>none</td>
+<td>none</td>
+<td>0</td>
+<td>none</td>
+</tr>
+<tr>
+<td><code>speed</code></td>
+<td><code>speed</code></td>
+<td><code>speed</code></td>
+<td><code>length / duration</code></td>
+<td><code>speed</code></td>
+<td>1</td>
+<td>none</td>
+</tr>
+<tr>
+<td><code>special_speed</code></td>
+<td><code>speed</code></td>
+<td><code>speed</code></td>
+<td><code>length / duration</code></td>
+<td><code>speed</code></td>
+<td>1</td>
+<td>none</td>
+</tr>
+<tr>
+<td><code>velocity</code></td>
+<td><code>speed</code></td>
+<td><code>speed</code></td>
+<td><code>displacement / duration</code></td>
+<td><code>velocity</code></td>
+<td>1</td>
+<td>none</td>
+</tr>
+<tr>
+<td><code>acceleration</code></td>
+<td><code>acceleration</code></td>
+<td><code>acceleration</code></td>
+<td><code>velocity / duration</code></td>
+<td><code>acceleration</code></td>
+<td>2</td>
+<td>none</td>
+</tr>
+<tr>
+<td><code>force</code></td>
+<td><code>force</code></td>
+<td><code>force</code></td>
+<td><code>mass * acceleration</code></td>
+<td><code>force</code></td>
+<td>3</td>
+<td>none</td>
+</tr>
+<tr>
+<td><code>angular_measure</code></td>
+<td><code>dimensionless</code></td>
+<td><code>angular_measure</code></td>
+<td><code>arc_length / radius</code></td>
+<td><code>angular_measure</code></td>
+<td>1</td>
+<td><code>angular_measure</code></td>
+</tr>
+<tr>
+<td><code>phase_angle</code></td>
+<td><code>dimensionless</code></td>
+<td><code>phase_angle</code></td>
+<td><code>arc_length / radius</code></td>
+<td><code>angular_measure</code></td>
+<td>1</td>
+<td><code>phase_angle</code>, <code>angular_measure</code></td>
+</tr>
+<tr>
+<td><code>rotational_displacement</code></td>
+<td><code>dimensionless</code></td>
+<td><code>angular_measure</code></td>
+<td><code>path_length / radius</code></td>
+<td><code>angular_measure</code></td>
+<td>1</td>
+<td><code>angular_measure</code></td>
+</tr>
+<tr>
+<td><code>rotation</code></td>
+<td><code>dimensionless</code></td>
+<td><code>dimensionless</code></td>
+<td>(empty)</td>
+<td><code>dimensionless</code></td>
+<td>1</td>
+<td>none</td>
+</tr>
+</tbody>
+</table>
+<p><em>Special speed</em> and <em>phase angle</em> take their equation over from the parent, and
+<em>rotational displacement</em> restates its parent's (<code>path_length</code> is <code>arc_length</code>), so none of
+the three defines one. <em>Force</em> has depth 3 because its equation reaches <em>acceleration</em>,
+whose equation reaches <em>velocity</em>.</p>
+<p>The character of a quantity plays no part in these rules.</p>
+<h2 id="outcomes">Outcomes<a class="headerlink" href="#outcomes" title="Permanent link">&para;</a></h2>
+<p>A conversion gets one of four ranks, ordered from worst to best:</p>
+<table>
+<thead>
+<tr>
+<th>Rank</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>none</code></td>
+<td>the quantities have nothing in common</td>
+</tr>
+<tr>
+<td><code>cast</code></td>
+<td>same kind, different branches (<code>quantity_cast</code> is required)</td>
+</tr>
+<tr>
+<td><code>explicit</code></td>
+<td>the target is more specific than the source, or a declared kind is lost or gained</td>
+</tr>
+<tr>
+<td><code>implicit</code></td>
+<td>every source quantity is a target quantity, or the source is an uncommitted kind that the target specializes</td>
+</tr>
+</tbody>
+</table>
+<p><code>utility::implicitly_convertible()</code> is <code>true</code> for <code>implicit</code>,
+<code>utility::explicitly_convertible()</code> for <code>implicit</code> and <code>explicit</code>, and
+<code>utility::castable()</code> for all but <code>none</code>.</p>
+<p>A conversion is <code>explicit</code> for one of two reasons: the target is more specific than
+the source (a downcast), or the conversion drops or gains a declared kind. The two
+reasons lead to the same rank with one exception, a source that is a kind, such as the
+<code>kind_of&lt;isq::length&gt;</code> that <code>42 * m</code> carries (see <a href="#kinds">Kinds</a>). A kind hasn't
+committed to any quantity of its tree yet, so a downcast from it takes nothing away and is
+<code>implicit</code>: <code>kind_of&lt;inverse(isq::time)&gt;</code> converts to <code>isq::frequency</code> implicitly.
+Dropping a declared kind loses the kind whatever the source is, so
+<code>kind_of&lt;isq::angular_measure / isq::time&gt;</code> to <code>dimensionless / isq::time</code> stays
+<code>explicit</code>.</p>
+<p>A conversion is decided by a sequence of operations, described below. Each operation has a
+rank, and the conversion gets the lowest of them: <code>inverse(isq::time)</code> to <code>isq::frequency</code>
+expands <em>frequency</em> with <code>implicit</code> and pairs <code>time</code> with <code>period_duration</code>, which ranks
+<code>explicit</code>, so the conversion is <code>explicit</code>. When the operations can be applied in more
+than one way, the conversion gets the best rank over all of them.</p>
+<h2 id="overview-of-the-process">Overview of the process<a class="headerlink" href="#overview-of-the-process" title="Permanent link">&para;</a></h2>
+<p>The process runs in up to three steps. Step 1 picks the rule that applies. Between two
+single named quantities, or a named quantity and a kind, the tree rule or the kind rules
+decide the rank on their own. When a derived quantity is involved, the factors common to
+both sides cancel first. If a single named quantity is left on each side, the same rules
+decide. Otherwise the equation rule continues with steps 2 and 3, with <code>K</code> in place of a
+kind <code>kind_of&lt;K&gt;</code>:</p>
+<pre class="mermaid"><code>flowchart TD
+    start([step 1: source → target]) --&gt; same{same type?}
+    same -- yes --&gt; r_yes([implicit])
+    same -- no --&gt; dim{same dimension?}
+    dim -- no --&gt; r_no([none])
+    dim -- yes --&gt; named{both sides a single named&lt;br&gt;quantity, or a kind of one?}
+    named -- yes --&gt; kind{a kind on&lt;br&gt;either side?}
+    kind -- yes --&gt; kinds([kind rules])
+    kind -- no --&gt; tree([tree rule])
+    named -- no --&gt; common[cancel the factors&lt;br&gt;common to both sides]
+    common --&gt; left{a single named quantity&lt;br&gt;left on both sides?}
+    left -- yes --&gt; kind
+    left -- no --&gt; eq([equation rule:&lt;br&gt;go to step 2])</code></pre>
+<p>Step 2 makes one operation at a time. After each operation it starts again from the top,
+until both sides are the same: both empty, or the same product right after an exact
+equation:</p>
+<pre class="mermaid"><code>flowchart TD
+    left{step 2:&lt;br&gt;both sides the same?} -- yes --&gt; done([go to step 3])
+    left -- no --&gt; single{exact equation, or&lt;br&gt;a product of its own tree?}
+    single -- no --&gt; pair[pair the factors of every&lt;br&gt;tree found on both sides,&lt;br&gt;except siblings still waiting]
+    single -- yes --&gt; sub[expand it]
+    pair --&gt; apart{a pair ranking none, or&lt;br&gt;different roots of one&lt;br&gt;dimension left unpaired,&lt;br&gt;neither equation mentioning&lt;br&gt;the other's tree?}
+    apart -- yes --&gt; r_no([none])
+    apart -- no --&gt; paired{anything paired?}
+    paired -- no --&gt; cancel{the other side empty,&lt;br&gt;and self-cancel possible?}
+    cancel -- yes --&gt; cancelled[self-cancel]
+    cancel -- no --&gt; deep{a factor with&lt;br&gt;an equation?}
+    deep -- no --&gt; r_no
+    deep -- yes --&gt; reduce[expand the deepest,&lt;br&gt;or the shallowest target&lt;br&gt;factor while siblings wait]
+    sub --&gt; left
+    paired -- yes --&gt; left
+    cancelled --&gt; left
+    reduce --&gt; left</code></pre>
+<p>Step 3 takes the lowest rank of the operations made in step 2, and the kind boundary may
+lower it:</p>
+<pre class="mermaid"><code>flowchart TD
+    rank([step 3:&lt;br&gt;lowest operation rank]) --&gt; both{a kind lost&lt;br&gt;and one gained?}
+    both -- yes --&gt; r_no([none])
+    both -- no --&gt; change{a kind lost, or one gained&lt;br&gt;by a source that is not a kind?}
+    change -- yes --&gt; expl([at most&lt;br&gt;explicit])
+    change -- no --&gt; keep([unchanged])</code></pre>
+<h2 id="checks-that-come-first">Checks that come first<a class="headerlink" href="#checks-that-come-first" title="Permanent link">&para;</a></h2>
+<p>Identical quantity specifications convert with <code>implicit</code>. Quantity specifications of different
+dimensions never convert, and <code>quantity_cast</code> won't force them either:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">utility</span><span class="o">::</span><span class="n">castable</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">time</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="p">));</span>
+</span></code></pre></div>
+<p>Everything below assumes equal dimensions.</p>
+<h2 id="kinds">Kinds<a class="headerlink" href="#kinds" title="Permanent link">&para;</a></h2>
+<p>A kind <code>kind_of&lt;K&gt;</code> names a quantity somewhere in the tree below the kind root <code>K</code> without
+saying where. A conversion between a kind of a named quantity and a named quantity never
+ranks <code>cast</code>.</p>
+<h3 id="a-kind-as-the-source">A kind as the source<a class="headerlink" href="#a-kind-as-the-source" title="Permanent link">&para;</a></h3>
+<p>When the source is a kind, the target is <code>implicit</code> if it lies in the tree below <code>K</code>,
+sub-kinds included, unless its equation lacks a declared kind that <code>K</code> carries, which
+makes it <code>explicit</code>. A child of <em>angular velocity</em> defined as <code>inverse(duration)</code> is
+reached only explicitly. If the target is above <code>K</code>, the kind has to leave its declared
+kind and the rank is <code>explicit</code>. Anything else is <code>none</code>:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">utility</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">width</span><span class="p">));</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">utility</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">dimensionless</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="p">));</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">utility</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">dimensionless</span><span class="p">));</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">utility</span><span class="o">::</span><span class="n">explicitly_convertible</span><span class="p">(</span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">dimensionless</span><span class="p">));</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">utility</span><span class="o">::</span><span class="n">castable</span><span class="p">(</span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">frequency</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">activity</span><span class="p">));</span>
+</span></code></pre></div>
+<p>This is why <code>quantity&lt;isq::height[m]&gt; tower_height = 42 * m;</code> compiles: the right-hand
+side is a quantity of kind <em>length</em> and <em>height</em> is a <em>length</em>.</p>
+<h3 id="a-kind-as-the-target">A kind as the target<a class="headerlink" href="#a-kind-as-the-target" title="Permanent link">&para;</a></h3>
+<p>When the target is a kind, asking for "any quantity of kind <code>K</code>" is the same as asking for
+<code>K</code> itself. A source below <code>K</code> is <code>implicit</code>, or <code>explicit</code> if one of them carries a
+declared kind the other doesn't, lying on the way up, the source included and <code>K</code>
+excluded, or carried by an equation. A source above <code>K</code> is <code>explicit</code>, like any other
+downcast. Any other source, from another branch of the same tree or from a different
+tree, is <code>none</code>:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">utility</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">width</span><span class="p">,</span><span class="w"> </span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="o">&gt;</span><span class="p">));</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">utility</span><span class="o">::</span><span class="n">explicitly_convertible</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="p">,</span><span class="w"> </span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">dimensionless</span><span class="o">&gt;</span><span class="p">));</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">utility</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="p">,</span><span class="w"> </span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">dimensionless</span><span class="o">&gt;</span><span class="p">));</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">utility</span><span class="o">::</span><span class="n">explicitly_convertible</span><span class="p">(</span><span class="n">dimensionless</span><span class="p">,</span><span class="w"> </span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="o">&gt;</span><span class="p">));</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">utility</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">dimensionless</span><span class="p">,</span><span class="w"> </span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="o">&gt;</span><span class="p">));</span>
+</span></code></pre></div>
+<h3 id="kinds-in-equations">Kinds in equations<a class="headerlink" href="#kinds-in-equations" title="Permanent link">&para;</a></h3>
+<p>When a derived quantity is involved, the equation rules below run with <code>K</code> in place of the
+kind. Every downcast step from a source kind ranks <code>implicit</code>, while dropping a declared
+kind stays <code>explicit</code>:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">utility</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">inverse</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">time</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">frequency</span><span class="p">));</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">utility</span><span class="o">::</span><span class="n">explicitly_convertible</span><span class="p">(</span><span class="n">inverse</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">time</span><span class="p">),</span><span class="w"> </span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">frequency</span><span class="o">&gt;</span><span class="p">));</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">utility</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">inverse</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">time</span><span class="p">),</span><span class="w"> </span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">frequency</span><span class="o">&gt;</span><span class="p">));</span>
+</span></code></pre></div>
+<p>The first line against the last two shows the asymmetry. <code>1 / (2 * s)</code> is a kind and
+becomes a <em>frequency</em> implicitly. <code>1 / isq::time(2 * s)</code> is a typed <code>inverse(time)</code>, and
+<em>frequency</em> is defined over <em>period duration</em>, so this one needs <code>isq::frequency(...)</code>.</p>
+<p>A kind that meets a typed quantity in one equation stays a kind factor of the result,
+spelled <code>kind_of_&lt;K&gt;</code> inside the derived quantity, and the typed factor stays typed. The
+rules above then apply to each factor on its own: a kind factor on the source side
+converts as a kind does, a kind factor on the target side pairs as <code>K</code> does, and a kind
+factor and a typed factor of one tree are different factors, like <code>isq::width</code> and
+<code>isq::length</code>:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">rate_of_climb</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">speed</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">duration</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">rate_of_climb</span><span class="p">;</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">utility</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="o">&gt;</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">duration</span><span class="p">,</span><span class="w"> </span><span class="n">rate_of_climb</span><span class="p">));</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">utility</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">duration</span><span class="p">,</span><span class="w"> </span><span class="n">rate_of_climb</span><span class="p">));</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">utility</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">duration</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">period_duration</span><span class="p">));</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">utility</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">duration</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">period_duration</span><span class="p">));</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">utility</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="o">&gt;</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="n">dimensionless</span><span class="p">));</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">utility</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="o">&gt;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="p">));</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">utility</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">pow</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="p">),</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="p">));</span>
+</span></code></pre></div>
+<p>The first two lines are <code>42 * m / isq::duration(2 * s)</code> against
+<code>isq::length(42 * m) / isq::duration(2 * s)</code>: only the first may be a <em>rate of climb</em>
+because only the first has a kind for its <em>length</em>. The fifth line is the ratio of two
+lengths, and the last two keep the product apart against the merged <code>pow&lt;2&gt;(isq::length)</code>.
+Only a result whose factors are all kinds is a kind itself,
+<code>kind_of&lt;isq::length / isq::duration&gt;</code> for <code>42 * m / (2 * s)</code>.</p>
+<h3 id="the-unit-of-a-product">The unit of a product<a class="headerlink" href="#the-unit-of-a-product" title="Permanent link">&para;</a></h3>
+<p>The unit of <code>q1 * q2</code> is <code>U1 * U2</code>, and the product converts to it as to every unit whose
+kind converts implicitly to its specification. A unit's kind is the product of its
+factors' kinds, and only some named units carry a kind of their own, mainly the base
+units, the angle units, and the ones the SI brochure keeps for one quantity, <code>Hz</code>, <code>Bq</code>,
+<code>Gy</code>, <code>Sv</code> and <code>kat</code>.
+<a href="../../../getting_started/faq/#why-do-only-some-named-units-carry-a-quantity-kind">The FAQ</a>
+has the full list and the reasons. Every other named unit has the kind of its definition:
+<code>N</code> is <code>kg * m / s²</code>, <code>J</code> is <code>N * m</code> and <code>W</code> is <code>J / s</code>, so the kind of <code>N * m * W</code> is a
+product of base kinds, and it converts to <code>torque * power</code> the way <code>kg * m² / s²</code> converts
+to an <em>energy</em>. That the joule is not written for a <em>moment of force</em> is a convention ISO
+80000-1:2009 states and the library leaves to the author. What the brochure keeps for one
+quantity stays so alone and inside a product:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">UnitOf</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">J</span><span class="p">),</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">torque</span><span class="o">&gt;</span><span class="p">);</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">UnitOf</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">Hz</span><span class="p">),</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">activity</span><span class="o">&gt;</span><span class="p">);</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">UnitOf</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">Bq</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">m</span><span class="p">),</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">frequency</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="o">&gt;</span><span class="p">);</span>
+</span></code></pre></div>
+<h2 id="two-named-quantities">Two named quantities<a class="headerlink" href="#two-named-quantities" title="Permanent link">&para;</a></h2>
+<p>Between two named quantities their positions in the hierarchy decide. Equations are
+consulted only for the declared kinds they carry. The kind boundary described in
+<a href="#derived-quantities">Derived quantities</a> lowers the rank of every rule below where a
+declared kind is lost or gained.</p>
+<ol>
+<li>Different trees: <code>none</code>. <em>Frequency</em> and <em>activity</em> both have the dimension of inverse
+   time and have nothing in common.</li>
+<li>The source is a descendant of the target: <code>implicit</code>, unless one carries a declared
+   kind the other doesn't, which makes it <code>explicit</code>. A kind the source carries may lie on
+   the way up, the source included and the target excluded, or come from the source's
+   equation: <em>phase coefficient</em> is defined as <code>phase_angle / path_length</code>, so it carries
+   a phase angle that its parent <em>propagation coefficient</em> doesn't. The reverse happens
+   too. A child defined as <code>inverse(duration)</code> under <em>angular velocity</em> lacks the angle
+   its parent's equation carries, so its upcast is <code>explicit</code> as well.</li>
+<li>The target is a descendant of the source: <code>explicit</code>.</li>
+<li>Neither: <code>cast</code> if both have the same kind root, otherwise <code>none</code>. Two such quantities
+   that each carry a declared kind the other lacks are <code>none</code> as well.</li>
+</ol>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">utility</span><span class="o">::</span><span class="n">castable</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">frequency</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">activity</span><span class="p">));</span><span class="w">                     </span><span class="c1">// 1</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">utility</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">width</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="p">));</span><span class="w">              </span><span class="c1">// 2</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">utility</span><span class="o">::</span><span class="n">explicitly_convertible</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="p">,</span><span class="w"> </span><span class="n">dimensionless</span><span class="p">));</span><span class="w">  </span><span class="c1">// 2, kind loss</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">utility</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="p">,</span><span class="w"> </span><span class="n">dimensionless</span><span class="p">));</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">utility</span><span class="o">::</span><span class="n">explicitly_convertible</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">phase_coefficient</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">propagation_coefficient</span><span class="p">));</span><span class="w">  </span><span class="c1">// 2</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">utility</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">phase_coefficient</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">propagation_coefficient</span><span class="p">));</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">utility</span><span class="o">::</span><span class="n">explicitly_convertible</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">width</span><span class="p">));</span><span class="w">              </span><span class="c1">// 3</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">utility</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">width</span><span class="p">));</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">utility</span><span class="o">::</span><span class="n">castable</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">width</span><span class="p">));</span><span class="w">                            </span><span class="c1">// 4</span>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">utility</span><span class="o">::</span><span class="n">explicitly_convertible</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">width</span><span class="p">));</span>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">utility</span><span class="o">::</span><span class="n">castable</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">solid_angular_measure</span><span class="p">));</span><span class="w">  </span><span class="c1">// 4, different kinds</span>
+</span></code></pre></div>
+<h2 id="derived-quantities">Derived quantities<a class="headerlink" href="#derived-quantities" title="Permanent link">&para;</a></h2>
+<p>As soon as one side is a derived quantity, the question becomes whether the source can be
+rewritten into the target. Both sides are treated as lists of factors with exponents, and
+the library remembers which side each factor came from. A named quantity is a one-factor
+list, <code>dimensionless</code> is the empty list.</p>
+<p>Three operations are available. Each one removes or rewrites factors, and each has a rank.</p>
+<p><strong>Pair</strong> a source factor with a target factor from the same tree, numerator with numerator
+or denominator with denominator. The common exponent is consumed and the pair ranks like
+the two named quantities would. An upcast ranks <code>implicit</code>, or <code>explicit</code> when a
+declared kind is left on the way. A downcast ranks <code>explicit</code>, or <code>implicit</code> when the
+source is a kind, and siblings are <code>cast</code>. The direction is always source to target, so
+<code>1 / isq::width</code> to <code>1 / isq::length</code> is <code>implicit</code>. A pair ranking <code>none</code> ends the
+conversion with <code>none</code>.</p>
+<p><strong>Self-cancel</strong> a numerator and a denominator factor of the same dimension on the same
+side. A source-side self-cancel ranks <code>implicit</code>, because a ratio of two quantities of one
+dimension is a number: <code>height / width</code> or <code>distance / wavelength</code>. A target-side
+self-cancel ranks <code>explicit</code>, or <code>implicit</code> when the source is a kind, because it
+asserts that a number is one particular ratio, which is a downcast. A declared kind lost
+on the way is handled by the kind boundary below.</p>
+<p><strong>Expand</strong> a factor into the equation of its defining ancestor. Expanding a source factor
+ranks <code>implicit</code>, because every quantity satisfies its own equation, inherited or not.
+Expanding a target factor ranks as the downcast from that ancestor to the factor, which is
+<code>implicit</code> when they are the same quantity or the source is a kind, and <code>explicit</code>
+otherwise.</p>
+<p><strong>The kind boundary.</strong> The carried kinds of the source and the target are compared by
+parts, between the two sides once their common factors have canceled and independently of
+the operations. For each declared kind, the numerator excess and the denominator excess are
+compared separately, an absent kind counting as zero. If either part is larger on the
+source side, the conversion ranks at best <code>explicit</code>, because the kind would be
+lost: <code>1 / isq::angular_measure</code> to <code>dimensionless</code> loses a denominator angle. If either
+part is larger on the target side, it ranks at best <code>explicit</code>, because the kind
+would be gained. If a kind is lost and one gained, the conversion is <code>none</code>, as between
+two unrelated kinds. This includes the same kind lost in one part and gained in the other.
+A kind as the source (<code>kind_of&lt;K&gt;</code>, which has no position below <code>K</code> yet) is exempt from
+the second cap. The comparison lowers the final rank, and the result doesn't depend on
+which operations are taken:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">utility</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">arc_length</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">radius</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="p">));</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">utility</span><span class="o">::</span><span class="n">explicitly_convertible</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">arc_length</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">radius</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="p">));</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">utility</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">radius</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">arc_length</span><span class="p">));</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">utility</span><span class="o">::</span><span class="n">explicitly_convertible</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">radius</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">arc_length</span><span class="p">));</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">utility</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">angular_velocity</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">frequency</span><span class="p">,</span><span class="w"> </span><span class="n">dimensionless</span><span class="p">));</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">utility</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">angular_velocity</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">frequency</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="p">));</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">utility</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">dimensionless</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="p">));</span>
+</span></code></pre></div>
+<p>The last two lines: ω / f is 2π rad, an angle, and <code>kind_of&lt;dimensionless&gt;</code>, the quantity
+specification of a bare <code>3 * one</code>, may become any quantity of its tree, an angle included.</p>
+<p>The rules say which operation applies when more than one could:</p>
+<ul>
+<li><strong>Common factors cancel first.</strong> A factor present on both sides, in the same part, is
+    canceled before any operation. The rest is then decided as if it were converted on its
+    own: <code>isq::phase_coefficient * isq::mass</code> to
+    <code>isq::propagation_coefficient * isq::mass</code> is <code>explicit</code>, like the bare pair.</li>
+<li><strong>Exact equation first.</strong> If one side is a single named quantity, possibly raised to a
+    power, and the other side is exactly the equation of that quantity's defining ancestor
+    raised to the same power, that factor is expanded before any other operation.
+    <code>isq::instantaneous_power * isq::duration / isq::period</code> to <code>isq::active_power</code> is
+    such a case: both are children of <em>power</em>, and without this rule they would pair as
+    siblings.</li>
+<li><strong>A product of its own tree.</strong> A single named quantity whose equation is non-empty and
+    consists only of quantities from its own tree is expanded before pairing. In the ISQ
+    this happens in the <code>dimensionless</code> tree, where every pure number is a sibling of
+    every other, and for <code>isq::intrinsic_carrier_density</code>, defined as
+    <code>sqrt(electron_density * hole_density)</code> within the <em>number density</em> tree. With
+    <code>pixel_x</code> and <code>pixel_y</code> children of <code>pixel_count</code>, and <code>pixel_area</code> a <code>dimensionless</code>
+    quantity defined as <code>pixel_x * pixel_y</code> but not a kind, <code>pixel_area</code> to
+    <code>pixel_count * pixel_y</code> is <code>implicit</code> and the reverse is <code>explicit</code>, instead of both
+    being cast between siblings.</li>
+<li><strong>Pairing.</strong> Otherwise, whenever a source factor and a target factor share a tree, they
+    are paired. Two factors of one tree relate by their positions in the hierarchy, not by
+    their equations. A pair of siblings waits while some other factor still has an
+    equation that mentions their tree, so that siblings are paired only once every factor
+    of their tree is present. When a tree offers several ways to pair, the rank of the
+    pairing is the best over all pairings of that tree's factors.</li>
+<li><strong>Different roots stay apart.</strong> Two named quantities of the same dimension from
+    different trees, left over after pairing, end the conversion with <code>none</code>, unless the
+    equation of either mentions the other's tree, in which case the equations decide. This
+    keeps roots of one dimension apart inside products: <code>isq::frequency * isq::width</code> to
+    <code>isq::activity * isq::length</code> is <code>none</code>, because neither equation mentions the other's
+    tree. An equation that does mention the other tree still resolves:
+    <code>isq::radiant_intensity * isq::solid_angular_measure</code> to <code>isq::radiant_flux</code> is
+    <code>implicit</code>.</li>
+<li><strong>Self-cancel only against an empty side.</strong> A side may self-cancel only once the other
+    side is empty. Otherwise <code>isq::arc_length / isq::radius</code> to <code>isq::angular_measure</code>
+    would cancel the source into a number before the equation is used.</li>
+<li>
+<p><strong>Reduce the deepest factor.</strong> When nothing else applies, the factor with the greatest
+    depth is expanded. Ties go, in this order, to the source numerator, the source
+    denominator, the target numerator, the target denominator. Within that list every
+    factor of that depth is tried and the best rank is kept, so the names of the
+    quantities never decide the result. The factor with the greatest depth is reduced
+    first, so both sides meet at the most specific common equation.</p>
+<p>While siblings wait, the factor of the target with the least depth that has an
+equation is expanded instead, numerator first. We want the angle of
+<code>kg * m² * rad / s</code> to reach the <em>angular velocity</em> in
+<code>angular_velocity * moment_of_inertia * rotation</code>. The problem is that the deeper
+<em>moment of inertia</em>, defined over <em>angular velocity</em>, would expand first and cancel
+it, so the angle would pair with the <em>rotation</em> and the conversion would end in
+<code>none</code>. Expanding the shallowest factor first lets the factor that brings the tree in
+meet the waiting siblings before anything cancels it.</p>
+</li>
+</ul>
+<p>The process stops when both lists are the same: both empty, or the same product right
+after an exact equation. Its rank is the lowest rank of the operations taken, or
+<code>implicit</code> if no operation was needed, lowered further by the kind boundary where it
+applies. It stops with <code>none</code> when a pair ranks <code>none</code>, or when factors remain and no
+operation applies.</p>
+<h3 id="worked-examples">Worked examples<a class="headerlink" href="#worked-examples" title="Permanent link">&para;</a></h3>
+<p>Each diagram below follows one conversion through the procedure. A box shows what is left
+to convert, an arrow is one operation with its rank, and the conversion gets the lowest
+rank of its arrows. When the kind boundary applies, it is the last arrow, and it can only
+lower the result.</p>
+<details class="example">
+<summary><code>isq::width * isq::height</code> → <code>isq::area</code>: <code>implicit</code></summary>
+<pre class="mermaid"><code>flowchart TD
+    A["width · height → area"]
+    B["width · height → length²"]
+    C["height → length"]
+    D["&lt;b&gt;implicit&lt;/b&gt;"]
+    A --&gt;|"expand area (target, defines its equation): &lt;b&gt;implicit&lt;/b&gt;"| B
+    B --&gt;|"pair width with length (upcast): &lt;b&gt;implicit&lt;/b&gt;"| C
+    C --&gt;|"pair height with length (upcast): &lt;b&gt;implicit&lt;/b&gt;"| D</code></pre>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">utility</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">width</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">area</span><span class="p">));</span>
+</span></code></pre></div>
+</details>
+<details class="example">
+<summary><code>isq::area</code> → <code>isq::width * isq::height</code>: <code>explicit</code></summary>
+<pre class="mermaid"><code>flowchart TD
+    A["area → width · height"]
+    B["length² → width · height"]
+    C["length → height"]
+    D["&lt;b&gt;explicit&lt;/b&gt;"]
+    A --&gt;|"expand area (source): &lt;b&gt;implicit&lt;/b&gt;"| B
+    B --&gt;|"pair length with width (downcast): &lt;b&gt;explicit&lt;/b&gt;"| C
+    C --&gt;|"pair length with height (downcast): &lt;b&gt;explicit&lt;/b&gt;"| D</code></pre>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">utility</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">area</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">width</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">));</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">utility</span><span class="o">::</span><span class="n">explicitly_convertible</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">area</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">width</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">));</span>
+</span></code></pre></div>
+</details>
+<details class="example">
+<summary><code>inverse(isq::time)</code> → <code>isq::frequency</code>: <code>explicit</code></summary>
+<p><code>isq::time</code> is an alias of <code>isq::duration</code>.</p>
+<pre class="mermaid"><code>flowchart TD
+    A["1 / time → frequency"]
+    B["1 / time → 1 / period_duration"]
+    C["&lt;b&gt;explicit&lt;/b&gt;"]
+    A --&gt;|"expand frequency (target, defines its equation): &lt;b&gt;implicit&lt;/b&gt;"| B
+    B --&gt;|"pair time with period_duration (downcast): &lt;b&gt;explicit&lt;/b&gt;"| C</code></pre>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">utility</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">inverse</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">time</span><span class="p">),</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">frequency</span><span class="p">));</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">utility</span><span class="o">::</span><span class="n">explicitly_convertible</span><span class="p">(</span><span class="n">inverse</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">time</span><span class="p">),</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">frequency</span><span class="p">));</span>
+</span></code></pre></div>
+</details>
+<details class="example">
+<summary><code>isq::frequency</code> → <code>inverse(isq::time)</code>: <code>implicit</code></summary>
+<pre class="mermaid"><code>flowchart TD
+    A["frequency → 1 / time"]
+    B["1 / period_duration → 1 / time"]
+    C["&lt;b&gt;implicit&lt;/b&gt;"]
+    A --&gt;|"expand frequency (source): &lt;b&gt;implicit&lt;/b&gt;"| B
+    B --&gt;|"pair period_duration with time (upcast): &lt;b&gt;implicit&lt;/b&gt;"| C</code></pre>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">utility</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">frequency</span><span class="p">,</span><span class="w"> </span><span class="n">inverse</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">time</span><span class="p">)));</span>
+</span></code></pre></div>
+</details>
+<details class="example">
+<summary><code>width / duration</code> → <code>special_speed</code>: <code>explicit</code></summary>
+<p>An expansion on the target side isn't always <code>implicit</code>. With the names from the
+vocabulary section, <em>speed</em> defines <code>length / duration</code>, so every length per duration
+is a <em>speed</em> and converts to it implicitly. <code>special_speed</code> only inherits that
+equation, and not every <em>speed</em> is a <em>special speed</em>. The equation alone can't make a
+<em>special speed</em> implicitly, so expanding <code>special_speed</code> on the target side ranks
+<code>explicit</code>, like the downcast from <em>speed</em>.</p>
+<pre class="mermaid"><code>flowchart TD
+    A["width / duration → special_speed"]
+    B["width / duration → length / duration"]
+    C["width → length"]
+    D["&lt;b&gt;explicit&lt;/b&gt;"]
+    A --&gt;|"expand special_speed (target, inherits the equation of speed): &lt;b&gt;explicit&lt;/b&gt;"| B
+    B --&gt;|"pair duration with duration (same quantity): &lt;b&gt;implicit&lt;/b&gt;"| C
+    C --&gt;|"pair width with length (upcast): &lt;b&gt;implicit&lt;/b&gt;"| D</code></pre>
+<p>The same conversion to <code>speed</code> is <code>implicit</code>, because <em>speed</em> defines its equation:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">utility</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">width</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">duration</span><span class="p">,</span><span class="w"> </span><span class="n">special_speed</span><span class="p">));</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">utility</span><span class="o">::</span><span class="n">explicitly_convertible</span><span class="p">(</span><span class="n">width</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">duration</span><span class="p">,</span><span class="w"> </span><span class="n">special_speed</span><span class="p">));</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">utility</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">width</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">duration</span><span class="p">,</span><span class="w"> </span><span class="n">speed</span><span class="p">));</span>
+</span></code></pre></div>
+</details>
+<details class="example">
+<summary><code>inverse(isq::repetency)</code> → <code>isq::height</code>: <code>cast</code></summary>
+<p><em>Repetency</em> is defined as <code>inverse(wavelength)</code>, and <em>wavelength</em> and <em>height</em> are
+different branches of the tree of <em>length</em>:</p>
+<pre class="mermaid"><code>flowchart TD
+    A["1 / repetency → height"]
+    B["wavelength → height"]
+    C["&lt;b&gt;cast&lt;/b&gt;"]
+    A --&gt;|"expand repetency (source): &lt;b&gt;implicit&lt;/b&gt;"| B
+    B --&gt;|"pair wavelength with height (different branches): &lt;b&gt;cast&lt;/b&gt;"| C</code></pre>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">utility</span><span class="o">::</span><span class="n">castable</span><span class="p">(</span><span class="n">inverse</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">repetency</span><span class="p">),</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">));</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">utility</span><span class="o">::</span><span class="n">explicitly_convertible</span><span class="p">(</span><span class="n">inverse</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">repetency</span><span class="p">),</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">));</span>
+</span></code></pre></div>
+<p>Flattening both sides to <code>length</code> would have ranked this <code>explicit</code> and treated a
+<em>wavelength</em> as a <em>height</em>.</p>
+</details>
+<details class="example">
+<summary><code>isq::angular_velocity * isq::radius / isq::speed</code> → <code>dimensionless</code>: <code>explicit</code></summary>
+<p>In ISQ <code>angular_velocity</code> is <code>angular_displacement / duration</code>, and
+<code>angular_displacement</code> is an alias of <code>rotational_displacement</code>, which restates the
+equation <code>path_length / radius</code> of <em>angular measure</em>. Every operation is <code>implicit</code>,
+but the source carries <em>angular measure</em> and the target carries nothing, so the kind
+boundary makes the conversion <code>explicit</code>:</p>
+<pre class="mermaid"><code>flowchart TD
+    A["angular_velocity · radius / speed → dimensionless"]
+    B["rotational_displacement · radius / (duration · speed) → dimensionless"]
+    C["path_length / (duration · speed) → dimensionless"]
+    D["path_length / length → dimensionless"]
+    E["nothing left"]
+    F["&lt;b&gt;explicit&lt;/b&gt;"]
+    A --&gt;|"expand angular_velocity (source): &lt;b&gt;implicit&lt;/b&gt;"| B
+    B --&gt;|"expand rotational_displacement (source): &lt;b&gt;implicit&lt;/b&gt;, the two radius factors cancel, the source leaves the kind angular_measure, noted for the kind boundary"| C
+    C --&gt;|"expand speed (source): &lt;b&gt;implicit&lt;/b&gt;, the two duration factors cancel"| D
+    D --&gt;|"self-cancel path_length against length (source): &lt;b&gt;implicit&lt;/b&gt;"| E
+    E --&gt;|"kind boundary: the source left the kind angular_measure: &lt;b&gt;explicit&lt;/b&gt;"| F</code></pre>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">utility</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">angular_velocity</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">radius</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">speed</span><span class="p">,</span><span class="w"> </span><span class="n">dimensionless</span><span class="p">));</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">utility</span><span class="o">::</span><span class="n">explicitly_convertible</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">angular_velocity</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">radius</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">speed</span><span class="p">,</span><span class="w"> </span><span class="n">dimensionless</span><span class="p">));</span>
+</span></code></pre></div>
+</details>
+<details class="example">
+<summary>The same divided by <code>isq::angular_measure</code>: <code>implicit</code></summary>
+<p>The source carries the angle once in the numerator and once in the denominator, so
+the carried kinds balance:</p>
+<pre class="mermaid"><code>flowchart TD
+    A["angular_velocity · radius / (angular_measure · speed) → dimensionless"]
+    B["rotational_displacement · radius / (duration · angular_measure · speed) → dimensionless"]
+    C["radius / (duration · speed) → dimensionless"]
+    D["radius / length → dimensionless"]
+    E["nothing left"]
+    F["&lt;b&gt;implicit&lt;/b&gt;"]
+    A --&gt;|"expand angular_velocity (source): &lt;b&gt;implicit&lt;/b&gt;"| B
+    B --&gt;|"self-cancel rotational_displacement against angular_measure (source): &lt;b&gt;implicit&lt;/b&gt;, the numerator and the denominator both leave the kind angular_measure, both noted for the kind boundary"| C
+    C --&gt;|"expand speed (source): &lt;b&gt;implicit&lt;/b&gt;, the two duration factors cancel"| D
+    D --&gt;|"self-cancel radius against length (source): &lt;b&gt;implicit&lt;/b&gt;"| E
+    E --&gt;|"kind boundary: the source carries angular_measure in its numerator and its denominator, which cancel, so no kind is lost: &lt;b&gt;implicit&lt;/b&gt;"| F</code></pre>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">utility</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">angular_velocity</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">radius</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">speed</span><span class="p">,</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">                                     </span><span class="n">dimensionless</span><span class="p">));</span>
+</span></code></pre></div>
+</details>
+<h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
+<ul>
+<li>A factor common to both sides doesn't change how they relate: <code>A * X</code> to <code>B * X</code> is
+    decided exactly as <code>A</code> to <code>B</code>, as long as no factor of <code>X</code> cancels against <code>A</code> or <code>B</code>
+    (<code>isq::height / isq::width * isq::width</code> is just <code>isq::height</code>). Pairing comes before
+    the equations, so if <code>isq::energy</code> converts to <code>isq::kinetic_energy</code> only explicitly,
+    so does <code>isq::energy * isq::time / isq::period_duration</code> to <code>isq::kinetic_energy</code>.</li>
+<li>Pairing first makes reciprocal ratios of plain quantities castable:
+    <code>isq::height / isq::width</code> to <code>isq::width / isq::height</code> is <code>cast</code>. A declared kind is
+    different: it behaves much like a dimension, and like a dimension it doesn't convert
+    to its inverse, so <code>isq::angular_measure</code> to <code>inverse(isq::angular_measure)</code> is
+    <code>none</code>.</li>
+<li>A declared kind is a boundary in both directions. <code>isq::angular_measure</code> to
+    <code>isq::arc_length / isq::radius</code> is explicit, and so is the reverse, however the
+    equation is rearranged: <code>quantity&lt;isq::arc_length[m]&gt;(angle * r)</code>,
+    <code>isq::angular_measure(s / r)</code>. The same holds for declared kinds with a dimension,
+    such as a user's <em>fluid head</em> under <em>height</em>: convert it with <code>isq::height(h)</code> before
+    using it in a formula.</li>
+<li>
+<p>Under plain <code>isq</code>, ISQ defines <em>torque</em> and <em>angular momentum</em> without an angle but
+    <em>angular velocity</em> with one, so <code>isq::torque * isq::angular_velocity</code> to <code>isq::power</code>
+    and <code>isq::moment_of_inertia * pow&lt;2&gt;(isq::angular_velocity)</code> to <code>isq::kinetic_energy</code>
+    are explicit. The explicit conversion also has to name a unit without the angle,
+    because the call operator and <code>quantity_cast</code> accept only a unit of the target's kind,
+    and <code>rad / s</code> carries the angle:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">power</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">power</span><span class="p">[</span><span class="n">W</span><span class="p">]</span><span class="o">&gt;</span><span class="p">(</span><span class="n">torque</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">omega</span><span class="p">);</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">energy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">kinetic_energy</span><span class="p">[</span><span class="n">J</span><span class="p">]</span><span class="o">&gt;</span><span class="p">(</span><span class="n">inertia</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">pow</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="p">(</span><span class="n">omega</span><span class="p">));</span>
+</span></code></pre></div>
+<p><a href="../../../getting_started/faq/#why-cant-i-wrap-omega-inertia-in-isqangular_momentum">The FAQ</a>
+shows the same for <em>angular momentum</em>.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The <code>isq_angle</code> system defines <em>torque</em> with the angle, so there the angle cancels
+and both conversions stay implicit, provided the quantities use the <code>angular</code> units.
+See <a href="../../systems/strong_angular_system/">Strong Angular System</a>.</p>
+</div>
+</li>
+<li>
+<p>A kind converts implicitly into sub-kinds of its tree.
+    <code>quantity&lt;isq::angular_measure[rad]&gt; angle = 3 * m / (2 * m);</code> compiles, since
+    <code>3 * m / (2 * m)</code> is a kind of <em>dimensionless</em> and <em>angular measure</em> sits in that
+    tree.</p>
+</li>
+<li>A named quantity is implicitly convertible from its own equation, but not from a more
+    generic one. <code>isq::length / isq::time</code> converts implicitly to <em>speed</em>, and
+    <code>inverse(isq::period_duration)</code> to <em>frequency</em>, while <code>inverse(isq::time)</code> converts to
+    <em>frequency</em> only explicitly. Two exceptions: a declared kind is gained implicitly only
+    from a source kind, and a source kind <code>kind_of&lt;K&gt;</code> converts implicitly to anything
+    below <code>K</code> that keeps the kinds <code>K</code> carries, so <code>1 / (2 * s)</code>, a kind of
+    <code>inverse(isq::time)</code>, converts to <em>frequency</em> implicitly.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../representation_types/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Representation Types">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Representation Types
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../type_introspection/" class="md-footer__link md-footer__link--next" aria-label="Next: Type Introspection">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Type Introspection
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2018-2023 Mateusz Pusz
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "navigation.indexes", "navigation.prune", "navigation.tabs", "navigation.footer", "navigation.top", "search.highlight", "search.share", "search.suggest", "toc.follow", "toc.integrate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../../javascripts/ce_embed.js"></script>
+      
+        <script src="../../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
