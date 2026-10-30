@@ -234,10 +234,30 @@ MP_UNITS_EXPORT inline constexpr ::mp_units::detail::magnitude_impl::magnitude_t
 
 namespace detail {
 
+/**
+ * @brief Intentionally silent narrowing cast with compiler float-conversion diagnostics suppressed.
+ *
+ * @tparam To    target type
+ * @tparam From  source type (deduced)
+ */
+MP_UNITS_EXPORT template<typename To, typename From>
+  requires requires(From value) { static_cast<To>(value); }
+[[nodiscard]] constexpr To silent_cast(From value) noexcept
+{
+  MP_UNITS_DIAGNOSTIC_PUSH
+  MP_UNITS_DIAGNOSTIC_IGNORE_CONVERSION
+  MP_UNITS_DIAGNOSTIC_IGNORE_FLOAT_CONVERSION
+  MP_UNITS_DIAGNOSTIC_IGNORE_INT_CONVERSION
+  MP_UNITS_DIAGNOSTIC_IGNORE_SIGN_CONVERSION
+  MP_UNITS_DIAGNOSTIC_IGNORE_LOSS_OF_DATA
+  return static_cast<To>(value);
+  MP_UNITS_DIAGNOSTIC_POP
+}
+
 // treat_as_floating_point (not std::floating_point) is intentional: it is the library's
 // extensibility point for user-defined floating-point-like types (e.g. a fixed-size float
 // wrapper).  scale_fp() computes the magnitude constant via get_value<long double> and
-// then silent_cast<element_t>()s it, so element_t must be constructible from long double.
+// then silent_cast<element_t>()s it, so element_t must be explicitly convertible from long double.
 // The concept also covers container types whose element type is floating-point (e.g.
 // cartesian_vector<double>): treat_as_floating_point<value_type_t<T>> is checked so that
 // the FP scaling path is taken even when T itself is not floating-point.
@@ -257,7 +277,7 @@ namespace detail {
 template<typename T>
 concept UsesFloatingPointScaling =
   (treat_as_floating_point<T> || treat_as_floating_point<value_type_t<T>>) &&
-  std::constructible_from<value_type_t<T>, long double> && requires(T value, value_type_t<T> f) {
+  requires(long double ld) { silent_cast<value_type_t<T>>(ld); } && requires(T value, value_type_t<T> f) {
     requires std::constructible_from<T, decltype(value * f)>;
     requires std::constructible_from<T, decltype(value / f)>;
   };

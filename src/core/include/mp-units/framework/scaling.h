@@ -47,25 +47,6 @@ namespace mp_units {
 
 namespace detail {
 
-/**
- * @brief Intentionally silent narrowing cast with compiler float-conversion diagnostics suppressed.
- *
- * @tparam To    target type
- * @tparam From  source type (deduced)
- */
-MP_UNITS_EXPORT template<typename To, typename From>
-[[nodiscard]] constexpr To silent_cast(From value) noexcept
-{
-  MP_UNITS_DIAGNOSTIC_PUSH
-  MP_UNITS_DIAGNOSTIC_IGNORE_CONVERSION
-  MP_UNITS_DIAGNOSTIC_IGNORE_FLOAT_CONVERSION
-  MP_UNITS_DIAGNOSTIC_IGNORE_INT_CONVERSION
-  MP_UNITS_DIAGNOSTIC_IGNORE_SIGN_CONVERSION
-  MP_UNITS_DIAGNOSTIC_IGNORE_LOSS_OF_DATA
-  return static_cast<To>(value);
-  MP_UNITS_DIAGNOSTIC_POP
-}
-
 template<typename T>
 inline constexpr bool treat_as_integral = !treat_as_floating_point<T>;
 

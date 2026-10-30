@@ -44,6 +44,9 @@ import std;
 #include <optional>
 #include <type_traits>
 #include <utility>
+#if __has_include(<stdfloat>)
+#include <stdfloat>
+#endif
 #if MP_UNITS_HOSTED
 #include <chrono>
 #include <complex>
@@ -542,6 +545,11 @@ static_assert(
 
 #endif
 
+// fixed-width FP: scaling factor is computed in long double and narrowed via silent_cast
+#if defined(__STDCPP_FLOAT32_T__)
+static_assert(quantity<km, std::float32_t>(std::float32_t{2} * km).numerical_value_in(m) == std::float32_t{2000});
+static_assert(quantity<m, std::float32_t>(std::float32_t{2000} * m).numerical_value_in(km) == std::float32_t{2});
+#endif
 
 ///////////////////////////////////
 // converting to a different unit
