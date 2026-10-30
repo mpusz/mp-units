@@ -36,6 +36,9 @@ import std;
 #else
 #include <optional>
 #include <type_traits>
+#if __has_include(<stdfloat>)
+#include <stdfloat>
+#endif
 #if MP_UNITS_HOSTED
 #include <chrono>
 #include <complex>
@@ -879,6 +882,12 @@ static_assert(!detail::UsesIntegerScaling<utility::cartesian_vector<double>>);
 static_assert(!detail::UsesFloatingPointScaling<utility::cartesian_vector<int>>);
 static_assert(detail::UsesIntegerScaling<utility::cartesian_vector<int>>);
 
+#endif
+
+// fixed-width FP types are not implicitly constructible from long double
+#if defined(__STDCPP_FLOAT32_T__)
+static_assert(detail::UsesFloatingPointScaling<std::float32_t>);
+static_assert(RepresentationOf<std::float32_t, quantity_field::real>);
 #endif
 
 // A const-qualified symbolic type is still classified, as the standard's type categories accept a
