@@ -46,18 +46,18 @@ jobs:
     #   - https://gh.io/supported-runners-and-hardware-resources
     #   - https://gh.io/using-larger-runners
     # Consider using larger runners for possible analysis time improvements.
-    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
+    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-26.04' }}
     timeout-minutes: ${{ (matrix.language == 'swift' && 120) || 360 }}
     permissions:
       actions: read
       contents: read
       security-events: write
     env:
-      CC: gcc-12
-      CXX: g++-12
+      CC: gcc-15
+      CXX: g++-15
       BUILD_TYPE: Debug
       COMPILER_TYPE: GCC
-      COMPILER_VERSION: 12
+      COMPILER_VERSION: 15
       STDLIB: libstdc++11
 
     strategy:
@@ -128,7 +128,7 @@ jobs:
           conan profile detect --force
           conan remote add artifactory https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
           mkdir _lgtm_build_dir && cd _lgtm_build_dir
-          conan build .. -s compiler.cppstd=20 -c user.mp-units.build:all=True -o '&:std_format=False' -b missing
+          conan build .. -s compiler.cppstd=20 -c user.mp-units.build:all=True -b missing
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v4
