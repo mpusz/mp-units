@@ -114,6 +114,7 @@ jobs:
         # accepts and later libstdc++ releases resolve, so the reference cannot be
         # generated without a newer one. Same PPA the Conan workflow uses.
         run: |
+          echo 'Acquire::Retries "10";' | sudo tee /etc/apt/apt.conf.d/80-retries  # the toolchain PPA returns 503s at times
           sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
           sudo apt update
           sudo apt install -y g++-15
@@ -189,6 +190,7 @@ jobs:
         # accepts and later libstdc++ releases resolve, so the reference cannot be
         # generated without a newer one. Same PPA the Conan workflow uses.
         run: |
+          echo 'Acquire::Retries "10";' | sudo tee /etc/apt/apt.conf.d/80-retries  # the toolchain PPA returns 503s at times
           sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
           sudo apt update
           sudo apt install -y g++-15

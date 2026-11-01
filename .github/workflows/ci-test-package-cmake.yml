@@ -130,6 +130,7 @@ jobs:
         if: matrix.toolchain.compiler.type == 'GCC'
         shell: bash
         run: |
+          echo 'Acquire::Retries "10";' | sudo tee /etc/apt/apt.conf.d/80-retries  # the toolchain PPA returns 503s at times
           if [[ "${{ matrix.toolchain.compiler.version }}" -ge 15 ]]; then
             sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
             sudo apt update
