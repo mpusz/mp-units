@@ -11,11 +11,14 @@ body:
 
         Your experience with **mp-units** is valuable for our C++29 standardization efforts!
 
-        Whether you're using mp-units in production, research, or personal projects, we'd love to hear about:
+        Whether you're using mp-units in production, research, teaching, or personal projects, we'd love to hear about:
         - Your use case and domain
         - Benefits you've experienced
         - Any challenges or limitations
-        - Impact on your development process
+        - Impact on your development process (or on your students' learning)
+
+        **Teaching or researching with mp-units?** Universities, schools, and training providers are very
+        welcome. Fill in the optional *Education & Research* fields near the end of this form.
 
         **This information will help demonstrate real-world value to the C++ standards committee.** ⚖️
 
@@ -30,7 +33,8 @@ body:
         - Small Company (50-200 employees)
         - Medium Company (200-1000 employees)
         - Large Enterprise (1000+ employees)
-        - Academic Institution
+        - Academic Institution (university, school)
+        - Training Provider
         - Research Organization
         - Government/Public Sector
         - Open Source Project
@@ -94,7 +98,7 @@ body:
     id: team_size
     attributes:
       label: Development Team Size
-      description: How many developers work on projects using mp-units?
+      description: How many developers work on projects using mp-units? (For teaching, count instructors and teaching assistants, and give the number of learners below.)
       options:
         - Just me (1)
         - Small team (2-5)
@@ -132,6 +136,8 @@ body:
         - label: Other unit systems (CGS, Imperial, etc.)
         - label: Natural units
         - label: Freestanding mode
+        - label: Interactive tutorials and workshops
+        - label: Compiler Explorer (online, no installation)
 
   - type: textarea
     id: benefits
@@ -145,6 +151,9 @@ body:
         - Caught dimensional analysis bugs at compile time
         - Simplified physics calculations
         - Better API design with type safety
+        - Students grasped dimensional analysis faster
+        - Easier to teach modern C++ through a real-world library
+        - Reproducible research code with checked units
     validations:
       required: true
 
@@ -162,6 +171,52 @@ body:
     validations:
       required: true
 
+  - type: markdown
+    attributes:
+      value: |
+        ## 🎓 Education & Research (optional)
+
+        Skip this section unless you use mp-units for teaching, a thesis, or academic research.
+
+  - type: dropdown
+    id: education_context
+    attributes:
+      label: Educational or Research Context
+      description: How is mp-units used in your institution?
+      options:
+        - University course (C++, physics, engineering, scientific computing)
+        - Thesis or student project
+        - Research project or lab tooling
+        - Workshop or training course
+        - School or outreach
+        - Self-study or study group
+        - Other
+
+  - type: input
+    id: learners
+    attributes:
+      label: Number and Level of Learners
+      description: Roughly how many students or learners, and at what level?
+      placeholder: "e.g., ~40 third-year CS students, or 3 PhD students and 1 postdoc"
+
+  - type: textarea
+    id: learner_experience
+    attributes:
+      label: Learner Experience and Challenges
+      description: How did learners get started, and what was hard?
+      placeholder: |
+        - Prior C++ and physics background of the learners
+        - Toolchain used (Compiler Explorer, Conan, CMake, compiler versions, OS)
+        - Where they got stuck (concepts, error messages, setup, documentation)
+        - What you would like the library or docs to do better for learners
+
+  - type: input
+    id: public_link
+    attributes:
+      label: Course Page, Syllabus, or Publication (Optional)
+      description: A public link we may reference, if you are happy for us to do so
+      placeholder: "https://..."
+
   - type: checkboxes
     id: usage_permissions
     attributes:
@@ -170,6 +225,7 @@ body:
       options:
         - label: You can use our testimonial in documentation and presentations
         - label: You can mention our organization name publicly
+        - label: You can link to our course page or publication
 
   - type: markdown
     attributes:
