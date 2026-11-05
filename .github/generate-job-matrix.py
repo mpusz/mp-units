@@ -99,7 +99,7 @@ def make_clang_config(
             cfg.compiler.cc = f"clang-{version}"
             cfg.compiler.cxx = f"clang++-{version}"
         case "arm64":
-            cfg.os = "macos-14"
+            cfg.os = "macos-15"
             pfx = f"/opt/homebrew/opt/llvm@{version}/bin"
             cfg.compiler.cc = f"{pfx}/clang"
             cfg.compiler.cxx = f"{pfx}/clang++"
@@ -170,7 +170,7 @@ toolchains = {
         # arm64 runners are expensive; only consider one version
         if ver == 18 or architecture != "arm64"
     ]
-    + [make_apple_clang_config("macos-14", "16", xcode_version="16.1")]
+    + [make_apple_clang_config("macos-15", "16", xcode_version="16.1")]
     + [make_msvc_config(release="14.5")]
 }
 
