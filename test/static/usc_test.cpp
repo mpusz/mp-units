@@ -125,6 +125,8 @@ static_assert(isq::mass(1 * lb_t) == isq::mass(12 * oz_t));
 // the conventional inHg is exactly 25.4 conventional mmHg, 3386.388 640 341 Pa
 static_assert(equivalent(inHg, mag_ratio<254, 10>* iupac::millimetre_of_mercury));
 static_assert(equivalent(inHg, mag_ratio<3'386'388'640'341, 1'000'000'000>* si::pascal));
+// the formerly disabled integer comparison (#614), now at the exact value
+static_assert(isq::pressure(1'000'000'000LL * inHg) == isq::pressure(3'386'388'640'341LL * si::pascal));
 
 // Temperature
 static_assert(delta<isq::thermodynamic_temperature[deg_F]>(9) ==
