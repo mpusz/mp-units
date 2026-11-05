@@ -324,6 +324,7 @@ nav:
               - Imperial: reference/systems_reference/systems/imperial.md
               - ISQ: reference/systems_reference/systems/isq.md
               - ISQ Angle: reference/systems_reference/systems/isq_angle.md
+              - IUPAC: reference/systems_reference/systems/iupac.md
               - Natural: reference/systems_reference/systems/natural.md
               - SI: reference/systems_reference/systems/si.md
               - Typographic: reference/systems_reference/systems/typographic.md

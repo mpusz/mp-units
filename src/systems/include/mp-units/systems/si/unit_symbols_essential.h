@@ -310,6 +310,7 @@ inline constexpr auto l = litre;
 inline constexpr auto L = litre;  // both versions of litre are allowed
 inline constexpr auto t = tonne;
 inline constexpr auto Da = dalton;
+using non_si::bar;
 inline constexpr auto eV = electronvolt;
 
 // no prefixes should be provided for the below units

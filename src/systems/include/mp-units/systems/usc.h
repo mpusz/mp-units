@@ -23,6 +23,7 @@
 #pragma once
 
 #include <mp-units/bits/module_macros.h>
+#include <mp-units/systems/iupac.h>
 
 // IWYU pragma: begin_exports
 #include <mp-units/systems/yard_pound.h>
@@ -112,16 +113,9 @@ inline constexpr struct troy_once final : named_unit<"oz t", mag<20> * pennyweig
 inline constexpr struct troy_pound final : named_unit<"lb t", mag<12> * troy_once> {} troy_pound;
 
 // https://en.wikipedia.org/wiki/Inch_of_mercury
-#ifdef pascal
-#pragma push_macro("pascal")
-#undef pascal
-#define MP_UNITS_REDEFINE_PASCAL
-#endif
-inline constexpr struct inch_of_mercury final : named_unit<"inHg", mag_ratio<3'386'389, 1'000> * si::pascal> {} inch_of_mercury;
-#ifdef MP_UNITS_REDEFINE_PASCAL
-#pragma pop_macro("pascal")
-#undef MP_UNITS_REDEFINE_PASCAL
-#endif
+// The conventional inch of mercury: the conventional millimetre of mercury with an inch for the
+// millimetre, so exactly 25.4 mmHg.
+inline constexpr struct inch_of_mercury final : named_unit<"inHg", mag_ratio<254, 10> * iupac::millimetre_of_mercury> {} inch_of_mercury;
 
 // https://en.wikipedia.org/wiki/Fahrenheit
 [[deprecated("2.6.0: Use `si::absolute_zero` instead")]]

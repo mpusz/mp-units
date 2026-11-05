@@ -93,6 +93,7 @@
 | <span id="arcsecond"></span><code>arcsecond</code> | ″ ('') | `arcsec` | <code>mag_ratio<1, 60> * <wbr>[arcminute](#arcminute)</code> |
 | <span id="are"></span><code>are</code> | a | `a` | <code>square([deca](#deca)<[metre](#metre)>)</code> |
 | <span id="astronomical_unit"></span><code>astronomical_<wbr>unit</code> | au | `au` | <code>mag<149'597'870'700> * <wbr>[metre](#metre)</code> |
+| <span id="bar"></span><code>bar</code> | bar | `bar` | <code>mag_power<10, 5> * <wbr>[pascal](#pascal)</code> |
 | <span id="dalton"></span><code>dalton</code> | Da | `Da` | <code>mag_ratio<16'605'390'666'050, 10'000'000'000'000> * <wbr>mag_power<10, -27> * <wbr>[kilogram](#kilogram)</code> |
 | <span id="day"></span><code>day</code> | d | `d` | <code>mag<24> * <wbr>[hour](#hour)</code> |
 | <span id="degree"></span><code>degree</code> | ° (deg) | `deg` | <code>mag_ratio<1, 180> * <wbr>[π](core.md#π) * <wbr>[radian](#radian)</code> |

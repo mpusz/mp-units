@@ -69,6 +69,16 @@ static_assert(1 * isq::force[kip] == 1000 * isq::force[lbf]);
 // Pressure
 static_assert(1 * isq::pressure[psi] == isq::force(1 * lbf) / isq::area(1 * square(inch)));
 
+// Energy
+static_assert(equivalent(Btu, mag_ratio<105'505'585'262, 100'000'000>* si::joule));
+// the IT BTU is the IT calorie per gram and kelvin taken for a pound and a degree Fahrenheit
+static_assert(equivalent(Btu, mag_ratio<41'868, 10'000>* mag_ratio<5, 9>* si::joule / (si::gram * si::kelvin) * pound *
+                                si::kelvin));
+
+// Amount of substance
+static_assert(equivalent(lb_mol, mag_ratio<45'359'237, 100'000>* si::mole));
+static_assert(equivalent(lb_mol, si::mole* pound / si::gram));
+
 // Power
 static_assert(1 * isq::power[hp] == isq::length(33'000 * ft) * isq::force(1 * lbf) / isq::duration(1 * si::minute));
 

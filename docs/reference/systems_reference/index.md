@@ -30,8 +30,9 @@ Automatically generated reference documentation for all **mp-units** systems.
 | [Imperial](systems/imperial.md) | — | — | — | 22 | — | — |
 | [ISQ](systems/isq.md) | 8 | 458 | — | — | — | — |
 | [ISQ Angle](systems/isq_angle.md) | — | 20 | — | — | — | — |
+| [IUPAC](systems/iupac.md) | — | — | — | 4 | — | — |
 | [Natural](systems/natural.md) | 1 | 12 | — | 2 | 2 | — |
-| [SI](systems/si.md) | — | — | 24 | 43 | 10 | 5 |
+| [SI](systems/si.md) | — | — | 24 | 44 | 10 | 5 |
 | [Typographic](systems/typographic.md) | — | — | — | 9 | — | — |
 | [USC](systems/usc.md) | — | — | — | 45 | — | 3 |
-| [Yard Pound](systems/yard_pound.md) | — | — | — | 22 | — | — |
+| [Yard Pound](systems/yard_pound.md) | — | — | — | 24 | — | — |

@@ -30,7 +30,7 @@
 | <span id="gallon"></span><code>gallon</code> | gal | `gal` | <code>mag<231> * <wbr>cubic([yard_<wbr>pound::inch](yard_pound.md#inch))</code> |
 | <span id="gill"></span><code>gill</code> | gi | `gi` | <code>mag_ratio<1, 2> * <wbr>[cup](#cup)</code> |
 | <span id="hogshead"></span><code>hogshead</code> | hogshead | — | <code>mag<63> * <wbr>[gallon](#gallon)</code> |
-| <span id="inch_of_mercury"></span><code>inch_<wbr>of_<wbr>mercury</code> | inHg | `inHg` | <code>mag_ratio<3'386'389, 1'000> * <wbr>[si::pascal](si.md#pascal)</code> |
+| <span id="inch_of_mercury"></span><code>inch_<wbr>of_<wbr>mercury</code> | inHg | `inHg` | <code>mag_ratio<254, 10> * <wbr>[iupac::millimetre_<wbr>of_<wbr>mercury](iupac.md#millimetre_of_mercury)</code> |
 | <span id="link"></span><code>link</code> | li | `li` | <code>mag_ratio<33, 50> * <wbr>[yard_<wbr>pound::foot](yard_pound.md#foot)</code> |
 | <span id="minim"></span><code>minim</code> | min | `min` | <code>mag_ratio<1, 80> * <wbr>[teaspoon](#teaspoon)</code> |
 | <span id="oil_barrel"></span><code>oil_<wbr>barrel</code> | bbl | — | <code>mag_ratio<4, 3> * <wbr>[barrel](#barrel)</code> |
