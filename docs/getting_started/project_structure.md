@@ -233,6 +233,9 @@ The systems definitions can be found in the `mp-units/systems/...` subdirectory:
   [centimetre-gram-second system of units](https://en.wikipedia.org/wiki/Centimetre%E2%80%93gram%E2%80%93second_system_of_units),
 - `mp-units/systems/iau.h` provides
   [astronomical system of units](https://en.wikipedia.org/wiki/Astronomical_system_of_units),
+- `mp-units/systems/iupac.h` provides the non-SI units of the
+  [IUPAC Green Book](https://iupac.org/what-we-do/books/greenbook/) still used in chemistry
+  (Torr, mmHg, and the calories),
 - `mp-units/systems/hep.h` provides units used in
   [high-energy physics](https://en.wikipedia.org/wiki/Particle_physics),
 - `mp-units/systems/typographic.h` provides units used in

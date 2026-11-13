@@ -133,7 +133,7 @@ class Prefix:
 
 
 ACRONYM_SYSTEMS = frozenset(
-    {"cgs", "codata", "hep", "iau", "iec", "iec80000", "isq", "si", "usc"}
+    {"cgs", "codata", "hep", "iau", "iec", "iec80000", "isq", "iupac", "si", "usc"}
 )
 
 

@@ -8,6 +8,18 @@ This page documents the version history and changes for the **mp-units** library
 
 ### 2.6.0 <small>TBD</small> { id="2.6.0" }
 
+- feat: `mp-units/systems/iupac.h` provides the non-SI units of the IUPAC Green Book that
+      no other system defines: `iupac::torr` (`Torr`, exactly 1/760 of the standard
+      atmosphere), `iupac::millimetre_of_mercury` (`mmHg`, the conventional 13 595.1 kg/m³
+      column under the standard gravity), `iupac::thermochemical_calorie` (`cal_th`), and
+      `iupac::international_table_calorie` (`cal_IT`). `iupac::unit_symbols::atm` names
+      `codata::standard_atmosphere` (#867)
+- feat: `si::bar` added to the non-SI units accepted for use with the SI, and
+      `yard_pound::british_thermal_unit` (`Btu`, the International Table BTU) and
+      `yard_pound::pound_mole` (`lb-mol`) added (#867)
+- (!) fix: `usc::inch_of_mercury` is exactly 25.4 conventional mmHg, 3386.388 640 341 Pa.
+      It was the rounded 3386.389 Pa, so converted values change in the seventh
+      significant digit (#867)
 - fix: the displacement between two point origins keeps a named unit that already is the
       coarsest exact one, so a `-27 cm` origin offset and the point differences across it
       print in `cm` rather than in `(1/100 m)`
