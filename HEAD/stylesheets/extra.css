@@ -1,0 +1,173 @@
+mjx-math {
+  font-size: 85% !important;
+}
+
+.mermaid {
+  text-align: center;
+}
+
+:root {
+  --md-primary-fg-color: #00599c;
+  --md-primary-fg-color--light: #659ad2;
+  --md-primary-fg-color--dark: #004482;
+  --md-accent-fg-color: var(--md-primary-fg-color--light);
+  --md-accent-fg-color--transparent: #0044821f;
+  --md-admonition-icon--important: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M256 512a256 256 0 1 0 0-512 256 256 0 1 0 0 512zm0-384c13.3 0 24 10.7 24 24v112c0 13.3-10.7 24-24 24s-24-10.7-24-24V152c0-13.3 10.7-24 24-24zm-32 224a32 32 0 1 1 64 0 32 32 0 1 1-64 0z"/></svg>');
+}
+
+.md-typeset .admonition.important,
+.md-typeset details.important {
+  border-color: rgb(43, 155, 70);
+}
+
+.md-typeset .important>.admonition-title,
+.md-typeset .important>summary {
+  background-color: rgba(43, 155, 70, 0.1);
+}
+
+.md-typeset .important>.admonition-title::before,
+.md-typeset .important>summary::before {
+  background-color: rgb(43, 155, 70);
+  -webkit-mask-image: var(--md-admonition-icon--important);
+  mask-image: var(--md-admonition-icon--important);
+}
+
+/* Frame content tabs with a border so their extent is visually clear */
+.md-typeset .tabbed-set {
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.2rem;
+  padding: 0 0.8rem 0.6rem;
+}
+
+.md-typeset .tabbed-set .tabbed-labels {
+  margin: 0 -0.8rem;
+}
+
+/* Normalize bottom spacing regardless of whether a tab ends with text or code */
+.md-typeset .tabbed-content .tabbed-block> :last-child {
+  margin-bottom: 0;
+}
+
+/* ------------------------------------------------------------------ */
+/* Comparison tables with hover tooltips (used in library comparisons) */
+/* ------------------------------------------------------------------ */
+.tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: help;
+  border-bottom: 1px dotted #666;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 350px;
+  background-color: #333;
+  color: #fff;
+  text-align: left;
+  border-radius: 6px;
+  padding: 10px;
+  position: absolute;
+  z-index: 1000;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 10px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 0.9em;
+  line-height: 1.4;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  white-space: normal;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #333 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  overflow: visible;
+}
+
+.comparison-table th,
+.comparison-table td {
+  border: 1px solid #ddd;
+  padding: 12px 8px;
+  text-align: center;
+  overflow: visible;
+}
+
+.comparison-table th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+}
+
+.comparison-table tr:first-child th {
+  background-color: #e0e0e0;
+}
+
+.comparison-table td:first-child {
+  text-align: left;
+  font-weight: bold;
+}
+
+/* Dark mode support via MkDocs Material slate scheme */
+[data-md-color-scheme="slate"] .comparison-table th {
+  background-color: #2d2d2d;
+  color: #e0e0e0;
+}
+
+[data-md-color-scheme="slate"] .comparison-table tr:first-child th {
+  background-color: #3d3d3d;
+}
+
+[data-md-color-scheme="slate"] .comparison-table th,
+[data-md-color-scheme="slate"] .comparison-table td {
+  border-color: #555;
+}
+
+[data-md-color-scheme="slate"] .tooltip {
+  border-bottom-color: #999;
+}
+
+/* Mobile: shrink tooltip width to stay within viewport */
+@media (max-width: 600px) {
+  .comparison-table th {
+    font-size: 0.75em;
+    padding: 6px 4px;
+  }
+
+  .comparison-table tr:first-child th {
+    font-size: 0.7em;
+  }
+
+  .comparison-table th,
+  .comparison-table td {
+    padding: 6px 4px;
+  }
+
+  .tooltip {
+    border-bottom: none;
+  }
+
+  .tooltip .tooltiptext {
+    width: calc(100vw - 40px);
+    left: 0;
+    transform: none;
+  }
+}
