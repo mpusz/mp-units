@@ -137,7 +137,7 @@ jobs:
           fi
           sudo apt install -y g++-${{ matrix.toolchain.compiler.version }}
       - name: Install Clang with apt
-        if: matrix.toolchain.compiler.type == 'CLANG' && matrix.toolchain.os != 'macos-14'
+        if: matrix.toolchain.compiler.type == 'CLANG' && !startsWith(matrix.toolchain.os, 'macos')
         shell: bash
         working-directory: ${{ env.HOME }}
         run: |
@@ -146,18 +146,18 @@ jobs:
           sudo ./llvm.sh ${{ matrix.toolchain.compiler.version }}
           sudo apt install -y clang-tools-${{ matrix.toolchain.compiler.version }}
       - name: Install Clang using homebrew
-        if: matrix.toolchain.compiler.type == 'CLANG' && matrix.toolchain.os == 'macos-14'
+        if: matrix.toolchain.compiler.type == 'CLANG' && startsWith(matrix.toolchain.os, 'macos')
         shell: bash
         run: |
           brew install llvm@${{ matrix.toolchain.compiler.version }}
           brew link --force --overwrite llvm@${{ matrix.toolchain.compiler.version }}
       - name: Install Libc++
-        if: matrix.toolchain.compiler.type == 'CLANG' && matrix.toolchain.lib == 'libc++' && matrix.toolchain.os != 'macos-14'
+        if: matrix.toolchain.compiler.type == 'CLANG' && matrix.toolchain.lib == 'libc++' && !startsWith(matrix.toolchain.os, 'macos')
         shell: bash
         run: |
           sudo apt install -y libc++-${{ matrix.toolchain.compiler.version }}-dev libc++abi-${{ matrix.toolchain.compiler.version }}-dev libunwind-${{ matrix.toolchain.compiler.version }}-dev
       - name: Fix libc++ std.cppm path for CMake
-        if: matrix.import_std == 'True' && matrix.toolchain.compiler.type == 'CLANG' && matrix.toolchain.os != 'macos-14'
+        if: matrix.import_std == 'True' && matrix.toolchain.compiler.type == 'CLANG' && !startsWith(matrix.toolchain.os, 'macos')
         shell: bash
         run: |
           sudo mkdir -p /lib/share

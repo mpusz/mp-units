@@ -237,7 +237,7 @@ namespace detail {
 // treat_as_floating_point (not std::floating_point) is intentional: it is the library's
 // extensibility point for user-defined floating-point-like types (e.g. a fixed-size float
 // wrapper).  scale_fp() computes the magnitude constant via get_value<long double> and
-// then static_cast<element_t>()s it, so element_t must be explicitly convertible from long double.
+// then silent_cast<element_t>()s it, so element_t must be explicitly convertible from long double.
 // The concept also covers container types whose element type is floating-point (e.g.
 // cartesian_vector<double>): treat_as_floating_point<value_type_t<T>> is checked so that
 // the FP scaling path is taken even when T itself is not floating-point.
