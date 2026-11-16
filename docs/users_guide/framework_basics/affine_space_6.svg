@@ -262,7 +262,7 @@
          id="tspan2-9-0-96-4-1-8-8-5"
          style="font-size:2.11667px;fill:#a4a4a4;fill-opacity:1;stroke-width:0;stroke-dasharray:none"
          x="67.405975"
-         y="181.39328">ref.quantity_from_zero()</tspan></text>
+         y="181.39328">ref.delta_from_zero()</tspan></text>
     <text
        xml:space="preserve"
        style="font-weight:bold;font-size:2.11667px;font-family:Arial;-inkscape-font-specification:'Arial Bold';mix-blend-mode:normal;fill:#a4a4a4;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-dasharray:none"
@@ -272,7 +272,7 @@
          id="tspan2-9-0-96-4-1-8-8-5-1"
          style="font-size:2.11667px;fill:#a4a4a4;fill-opacity:1;stroke-width:0;stroke-dasharray:none"
          x="58.698536"
-         y="177.26396">ref.in(deg_F).quantity_from_zero()</tspan></text>
+         y="177.26396">ref.in(deg_F).delta_from_zero()</tspan></text>
     <text
        xml:space="preserve"
        style="font-weight:bold;font-size:2.11667px;font-family:Arial;-inkscape-font-specification:'Arial Bold';mix-blend-mode:normal;fill:#a4a4a4;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-dasharray:none"
@@ -282,7 +282,7 @@
          id="tspan2-9-0-96-4-1-8-8-5-1-6"
          style="font-size:2.11667px;fill:#a4a4a4;fill-opacity:1;stroke-width:0;stroke-dasharray:none"
          x="53.553532"
-         y="173.49559">ref.in(K).quantity_from_zero()</tspan></text>
+         y="173.49559">ref.in(K).delta_from_zero()</tspan></text>
     <path
        style="color:#000000;fill:#a4a4a4;fill-opacity:0.960784;-inkscape-stroke:none"
        d="M 96.795779,182.45468 H 108.41217"

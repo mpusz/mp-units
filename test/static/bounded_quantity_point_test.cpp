@@ -172,38 +172,37 @@ using qp_wrap_convert = quantity_point<test_angle_wrap_convert[deg], wrap_conver
 // Clamp policy
 // ============================================================================
 
-static_assert(qp_clamp(45.0 * deg, clamp_origin).quantity_from(clamp_origin) == 45.0 * deg);
-static_assert(qp_clamp(100.0 * deg, clamp_origin).quantity_from(clamp_origin) == 90.0 * deg);
-static_assert(qp_clamp(-120.0 * deg, clamp_origin).quantity_from(clamp_origin) == -90.0 * deg);
-static_assert(qp_clamp(90.0 * deg, clamp_origin).quantity_from(clamp_origin) == 90.0 * deg);
-static_assert(qp_clamp(-90.0 * deg, clamp_origin).quantity_from(clamp_origin) == -90.0 * deg);
+static_assert(qp_clamp(45.0 * deg, clamp_origin).delta_from(clamp_origin) == 45.0 * deg);
+static_assert(qp_clamp(100.0 * deg, clamp_origin).delta_from(clamp_origin) == 90.0 * deg);
+static_assert(qp_clamp(-120.0 * deg, clamp_origin).delta_from(clamp_origin) == -90.0 * deg);
+static_assert(qp_clamp(90.0 * deg, clamp_origin).delta_from(clamp_origin) == 90.0 * deg);
+static_assert(qp_clamp(-90.0 * deg, clamp_origin).delta_from(clamp_origin) == -90.0 * deg);
 
 // ============================================================================
 // Wrap policy
 // ============================================================================
 
-static_assert(qp_wrap(90.0 * deg, wrap_origin).quantity_from(wrap_origin) == 90.0 * deg);
-static_assert(qp_wrap(200.0 * deg, wrap_origin).quantity_from(wrap_origin) == -160.0 * deg);
-static_assert(qp_wrap(-200.0 * deg, wrap_origin).quantity_from(wrap_origin) == 160.0 * deg);
-static_assert(qp_wrap(180.0 * deg, wrap_origin).quantity_from(wrap_origin) == -180.0 * deg);
+static_assert(qp_wrap(90.0 * deg, wrap_origin).delta_from(wrap_origin) == 90.0 * deg);
+static_assert(qp_wrap(200.0 * deg, wrap_origin).delta_from(wrap_origin) == -160.0 * deg);
+static_assert(qp_wrap(-200.0 * deg, wrap_origin).delta_from(wrap_origin) == 160.0 * deg);
+static_assert(qp_wrap(180.0 * deg, wrap_origin).delta_from(wrap_origin) == -180.0 * deg);
 
 // ============================================================================
 // Reflect policy
 // ============================================================================
 
-static_assert(qp_reflect(45.0 * deg, reflect_origin).quantity_from(reflect_origin) == 45.0 * deg);
-static_assert(qp_reflect(91.0 * deg, reflect_origin).quantity_from(reflect_origin) == 89.0 * deg);
+static_assert(qp_reflect(45.0 * deg, reflect_origin).delta_from(reflect_origin) == 45.0 * deg);
+static_assert(qp_reflect(91.0 * deg, reflect_origin).delta_from(reflect_origin) == 89.0 * deg);
 
 // ============================================================================
 // Bounds argument does not require first position in NTTP pack
 // ============================================================================
 
-static_assert(qp_unordered_args(50.0 * deg, unordered_args_origin).quantity_from(unordered_args_origin) == 45.0 * deg);
-static_assert(qp_unordered_args(-50.0 * deg, unordered_args_origin).quantity_from(unordered_args_origin) ==
-              -45.0 * deg);
-static_assert(qp_reflect(-91.0 * deg, reflect_origin).quantity_from(reflect_origin) == -89.0 * deg);
-static_assert(qp_reflect(90.0 * deg, reflect_origin).quantity_from(reflect_origin) == 90.0 * deg);
-static_assert(qp_reflect(-90.0 * deg, reflect_origin).quantity_from(reflect_origin) == -90.0 * deg);
+static_assert(qp_unordered_args(50.0 * deg, unordered_args_origin).delta_from(unordered_args_origin) == 45.0 * deg);
+static_assert(qp_unordered_args(-50.0 * deg, unordered_args_origin).delta_from(unordered_args_origin) == -45.0 * deg);
+static_assert(qp_reflect(-91.0 * deg, reflect_origin).delta_from(reflect_origin) == -89.0 * deg);
+static_assert(qp_reflect(90.0 * deg, reflect_origin).delta_from(reflect_origin) == 90.0 * deg);
+static_assert(qp_reflect(-90.0 * deg, reflect_origin).delta_from(reflect_origin) == -90.0 * deg);
 
 // ============================================================================
 // wrap/reflect with constrained rep (bounds stored as int, incoming rep is constrained<double,...>)
@@ -212,18 +211,18 @@ static_assert(qp_reflect(-90.0 * deg, reflect_origin).quantity_from(reflect_orig
 // ============================================================================
 
 static_assert(qp_wrap_constrained(safe_double{90.0} * deg, wrap_constrained_origin)
-                .quantity_from(wrap_constrained_origin) == safe_double{90.0} * deg);
+                .delta_from(wrap_constrained_origin) == safe_double{90.0} * deg);
 static_assert(qp_wrap_constrained(safe_double{200.0} * deg, wrap_constrained_origin)
-                .quantity_from(wrap_constrained_origin) == safe_double{-160.0} * deg);
+                .delta_from(wrap_constrained_origin) == safe_double{-160.0} * deg);
 static_assert(qp_wrap_constrained(safe_double{-200.0} * deg, wrap_constrained_origin)
-                .quantity_from(wrap_constrained_origin) == safe_double{160.0} * deg);
+                .delta_from(wrap_constrained_origin) == safe_double{160.0} * deg);
 
 static_assert(qp_reflect_constrained(safe_double{45.0} * deg, reflect_constrained_origin)
-                .quantity_from(reflect_constrained_origin) == safe_double{45.0} * deg);
+                .delta_from(reflect_constrained_origin) == safe_double{45.0} * deg);
 static_assert(qp_reflect_constrained(safe_double{91.0} * deg, reflect_constrained_origin)
-                .quantity_from(reflect_constrained_origin) == safe_double{89.0} * deg);
+                .delta_from(reflect_constrained_origin) == safe_double{89.0} * deg);
 static_assert(qp_reflect_constrained(safe_double{-91.0} * deg, reflect_constrained_origin)
-                .quantity_from(reflect_constrained_origin) == safe_double{-89.0} * deg);
+                .delta_from(reflect_constrained_origin) == safe_double{-89.0} * deg);
 
 // ============================================================================
 // Mutating operators enforce bounds
@@ -233,7 +232,7 @@ consteval bool clamp_plus_assign()
 {
   auto pt = qp_clamp(80.0 * deg, clamp_origin);
   pt += 20.0 * deg;
-  return pt.quantity_from(clamp_origin) == 90.0 * deg;
+  return pt.delta_from(clamp_origin) == 90.0 * deg;
 }
 static_assert(clamp_plus_assign());
 
@@ -241,7 +240,7 @@ consteval bool clamp_minus_assign()
 {
   auto pt = qp_clamp(-80.0 * deg, clamp_origin);
   pt -= 20.0 * deg;
-  return pt.quantity_from(clamp_origin) == -90.0 * deg;
+  return pt.delta_from(clamp_origin) == -90.0 * deg;
 }
 static_assert(clamp_minus_assign());
 
@@ -249,7 +248,7 @@ consteval bool clamp_pre_increment()
 {
   auto pt = qp_clamp_int(90 * deg, clamp_origin);
   ++pt;
-  return pt.quantity_from(clamp_origin) == 90 * deg;
+  return pt.delta_from(clamp_origin) == 90 * deg;
 }
 static_assert(clamp_pre_increment());
 
@@ -257,7 +256,7 @@ consteval bool clamp_pre_decrement()
 {
   auto pt = qp_clamp_int(-90 * deg, clamp_origin);
   --pt;
-  return pt.quantity_from(clamp_origin) == -90 * deg;
+  return pt.delta_from(clamp_origin) == -90 * deg;
 }
 static_assert(clamp_pre_decrement());
 
@@ -266,9 +265,9 @@ consteval bool clamp_post_increment()
   auto pt = qp_clamp_int(89 * deg, clamp_origin);
   auto old_value = pt++;
   // Check old value returned
-  if (old_value.quantity_from(clamp_origin) != 89 * deg) return false;
+  if (old_value.delta_from(clamp_origin) != 89 * deg) return false;
   // Check new value is clamped to max
-  return pt.quantity_from(clamp_origin) == 90 * deg;
+  return pt.delta_from(clamp_origin) == 90 * deg;
 }
 static_assert(clamp_post_increment());
 
@@ -277,9 +276,9 @@ consteval bool clamp_post_decrement()
   auto pt = qp_clamp_int(-89 * deg, clamp_origin);
   auto old_value = pt--;
   // Check old value returned
-  if (old_value.quantity_from(clamp_origin) != -89 * deg) return false;
+  if (old_value.delta_from(clamp_origin) != -89 * deg) return false;
   // Check new value is clamped to min
-  return pt.quantity_from(clamp_origin) == -90 * deg;
+  return pt.delta_from(clamp_origin) == -90 * deg;
 }
 static_assert(clamp_post_decrement());
 
@@ -288,9 +287,9 @@ consteval bool wrap_post_increment()
   auto pt_wrap_int = quantity_point<test_angle_wrap[deg], wrap_origin, int>(179 * deg, wrap_origin);
   auto old_value = pt_wrap_int++;
   // Check old value returned
-  if (old_value.quantity_from(wrap_origin) != 179 * deg) return false;
+  if (old_value.delta_from(wrap_origin) != 179 * deg) return false;
   // Check new value wraps to -180 (since range is [-180, 180))
-  return pt_wrap_int.quantity_from(wrap_origin) == -180 * deg;
+  return pt_wrap_int.delta_from(wrap_origin) == -180 * deg;
 }
 static_assert(wrap_post_increment());
 
@@ -305,7 +304,7 @@ consteval bool angle_unit_conversion()
   auto in_rad = pt.in(rad);
   // 45° in radians
   constexpr auto expected_rad = (45.0 * deg).numerical_value_in(rad);
-  return in_rad.quantity_from(clamp_convert_origin).numerical_value_in(rad) == expected_rad;
+  return in_rad.delta_from(clamp_convert_origin).numerical_value_in(rad) == expected_rad;
 }
 static_assert(angle_unit_conversion());
 
@@ -316,7 +315,7 @@ consteval bool clamp_with_unit_scaling()
   auto pt = qp_clamp_convert(pi_rad, clamp_convert_origin);
   // Expected: clamped to 90°
   constexpr auto expected = 90.0 * deg;
-  return pt.quantity_from(clamp_convert_origin) == expected;
+  return pt.delta_from(clamp_convert_origin) == expected;
 }
 static_assert(clamp_with_unit_scaling());
 
@@ -326,7 +325,7 @@ consteval bool wrap_with_unit_scaling()
   // 400° wraps to 40° (400 - 360 = 40)
   auto pt = qp_wrap_convert(400.0 * deg, wrap_convert_origin);
   const auto in_rad = pt.in(rad);
-  const auto back_in_deg = in_rad.quantity_from(wrap_convert_origin);
+  const auto back_in_deg = in_rad.delta_from(wrap_convert_origin);
   // Wrapped value: 400 - 360 = 40, which is in [-180, 180)
   return back_in_deg == 40.0 * deg;
 }
@@ -356,13 +355,13 @@ inline constexpr struct temp_offset_origin final :
 using qp_temp = quantity_point<bounded_temperature[si::kelvin], temp_origin, double>;
 
 // Value within bounds
-static_assert(qp_temp(delta<si::kelvin>(300.0), temp_origin).quantity_from(temp_origin) == delta<si::kelvin>(300.0));
+static_assert(qp_temp(delta<si::kelvin>(300.0), temp_origin).delta_from(temp_origin) == delta<si::kelvin>(300.0));
 
 // Above max clamps
-static_assert(qp_temp(delta<si::kelvin>(500.0), temp_origin).quantity_from(temp_origin) == delta<si::kelvin>(400.0));
+static_assert(qp_temp(delta<si::kelvin>(500.0), temp_origin).delta_from(temp_origin) == delta<si::kelvin>(400.0));
 
 // Below min clamps
-static_assert(qp_temp(delta<si::kelvin>(100.0), temp_origin).quantity_from(temp_origin) == delta<si::kelvin>(200.0));
+static_assert(qp_temp(delta<si::kelvin>(100.0), temp_origin).delta_from(temp_origin) == delta<si::kelvin>(200.0));
 
 // Convert to millikelvin (simple scaling)
 consteval bool temperature_unit_scaling()
@@ -370,7 +369,7 @@ consteval bool temperature_unit_scaling()
   auto pt = qp_temp(delta<si::kelvin>(300.0), temp_origin);
   auto in_mK = pt.in(si::milli<si::kelvin>);
   // 300 K = 300'000 mK
-  return in_mK.quantity_from(temp_origin).numerical_value_in(si::milli<si::kelvin>) == 300'000.0;
+  return in_mK.delta_from(temp_origin).numerical_value_in(si::milli<si::kelvin>) == 300'000.0;
 }
 static_assert(temperature_unit_scaling());
 
@@ -380,7 +379,7 @@ consteval bool temperature_clamp_with_millikelvin()
   // 500'000 mK = 500 K, which exceeds max of 400 K
   auto pt = qp_temp(delta<si::milli<si::kelvin>>(500'000.0), temp_origin);
   // Should clamp to 400 K = 400'000 mK
-  return pt.in(si::milli<si::kelvin>).quantity_from(temp_origin) == delta<si::milli<si::kelvin>>(400'000.0);
+  return pt.in(si::milli<si::kelvin>).delta_from(temp_origin) == delta<si::milli<si::kelvin>>(400'000.0);
 }
 static_assert(temperature_clamp_with_millikelvin());
 
@@ -397,23 +396,23 @@ using qp_offset = quantity_point<bounded_temperature[si::kelvin], temp_offset_or
 
 // Within absolute bounds: 0K from offset = 300K abs ∈ [200, 400] → no clamp.
 static_assert(qp_offset(delta<bounded_temperature[si::kelvin]>(0.0), temp_offset_origin)
-                .quantity_from(temp_offset_origin) == delta<bounded_temperature[si::kelvin]>(0.0));
+                .delta_from(temp_offset_origin) == delta<bounded_temperature[si::kelvin]>(0.0));
 
 // Below abs min: -200K from offset = 100K abs < 200K → clamp to 200K abs → -100K from offset.
 static_assert(qp_offset(delta<bounded_temperature[si::kelvin]>(-200.0), temp_offset_origin)
-                .quantity_from(temp_offset_origin) == delta<bounded_temperature[si::kelvin]>(-100.0));
+                .delta_from(temp_offset_origin) == delta<bounded_temperature[si::kelvin]>(-100.0));
 
 // Above abs max: 200K from offset = 500K abs > 400K → clamp to 400K abs → 100K from offset.
 static_assert(qp_offset(delta<bounded_temperature[si::kelvin]>(200.0), temp_offset_origin)
-                .quantity_from(temp_offset_origin) == delta<bounded_temperature[si::kelvin]>(100.0));
+                .delta_from(temp_offset_origin) == delta<bounded_temperature[si::kelvin]>(100.0));
 
 // Same tests using deg_C as input unit (Δ°C = ΔK, 1:1 scale):
 // confirms that specifying the value in deg_C rather than K does not introduce
 // a spurious 273.15 shift — the offset lives in the origin, not in the delta unit.
 static_assert(qp_offset(delta<bounded_temperature[si::degree_Celsius]>(-200.0), temp_offset_origin)
-                .quantity_from(temp_offset_origin) == delta<bounded_temperature[si::kelvin]>(-100.0));
+                .delta_from(temp_offset_origin) == delta<bounded_temperature[si::kelvin]>(-100.0));
 static_assert(qp_offset(delta<bounded_temperature[si::degree_Celsius]>(200.0), temp_offset_origin)
-                .quantity_from(temp_offset_origin) == delta<bounded_temperature[si::kelvin]>(100.0));
+                .delta_from(temp_offset_origin) == delta<bounded_temperature[si::kelvin]>(100.0));
 
 // ============================================================================
 // Bounds in °C, input/output in K: point-temperature shift lives in the origin.
@@ -456,26 +455,26 @@ using qp_ice = quantity_point<celsius_style_temp[si::kelvin], celsius_style_ice_
 
 // Within [200 Δ°C, 350 Δ°C] = [200 ΔK, 350 ΔK]: 270 K passes.
 static_assert(qp_abs(delta<celsius_style_temp[si::kelvin]>(270.0), celsius_style_abs_origin)
-                .quantity_from(celsius_style_abs_origin) == delta<celsius_style_temp[si::kelvin]>(270.0));
+                .delta_from(celsius_style_abs_origin) == delta<celsius_style_temp[si::kelvin]>(270.0));
 
 // Below 200 Δ°C (= 200 ΔK): 30 K → clamped to 200 K, NOT to 473 K (200+273).
 static_assert(qp_abs(delta<celsius_style_temp[si::kelvin]>(30.0), celsius_style_abs_origin)
-                .quantity_from(celsius_style_abs_origin) == delta<celsius_style_temp[si::kelvin]>(200.0));
+                .delta_from(celsius_style_abs_origin) == delta<celsius_style_temp[si::kelvin]>(200.0));
 
 // Same with °C input: identical result confirms Δ°C == ΔK in bound comparisons.
 static_assert(qp_abs(delta<celsius_style_temp[si::degree_Celsius]>(30.0), celsius_style_abs_origin)
-                .quantity_from(celsius_style_abs_origin) == delta<celsius_style_temp[si::kelvin]>(200.0));
+                .delta_from(celsius_style_abs_origin) == delta<celsius_style_temp[si::kelvin]>(200.0));
 
 // Above 350 Δ°C (= 350 ΔK): 400 K → clamped to 350 K.
 static_assert(qp_abs(delta<celsius_style_temp[si::kelvin]>(400.0), celsius_style_abs_origin)
-                .quantity_from(celsius_style_abs_origin) == delta<celsius_style_temp[si::kelvin]>(350.0));
+                .delta_from(celsius_style_abs_origin) == delta<celsius_style_temp[si::kelvin]>(350.0));
 
 // .in(K) is a unit-label change only: stored value is unchanged, no 273 shift.
 consteval bool celsius_style_in_kelvin()
 {
   auto pt = qp_abs(delta<celsius_style_temp[si::degree_Celsius]>(270.0), celsius_style_abs_origin);
   auto in_K = pt.in(si::kelvin);
-  return in_K.quantity_from(celsius_style_abs_origin).numerical_value_in(si::kelvin) == 270.0;
+  return in_K.delta_from(celsius_style_abs_origin).numerical_value_in(si::kelvin) == 270.0;
 }
 static_assert(celsius_style_in_kelvin());
 
@@ -487,19 +486,19 @@ static_assert(celsius_style_in_kelvin());
 
 // 30 K from abs_origin — below min — clamped (shown above; repeated for side-by-side clarity).
 static_assert(qp_abs(delta<celsius_style_temp[si::kelvin]>(30.0), celsius_style_abs_origin)
-                .quantity_from(celsius_style_abs_origin) == delta<celsius_style_temp[si::kelvin]>(200.0));
+                .delta_from(celsius_style_abs_origin) == delta<celsius_style_temp[si::kelvin]>(200.0));
 
 // 30 K from ice_origin — absolute 303 K — within [200, 350] — NOT clamped.
 static_assert(qp_ice(delta<celsius_style_temp[si::kelvin]>(30.0), celsius_style_ice_origin)
-                .quantity_from(celsius_style_ice_origin) == delta<celsius_style_temp[si::kelvin]>(30.0));
+                .delta_from(celsius_style_ice_origin) == delta<celsius_style_temp[si::kelvin]>(30.0));
 
 // Above max from ice_origin: 100 K → absolute 373 K > 350 → clamp → 350-273 = 77 K.
 static_assert(qp_ice(delta<celsius_style_temp[si::kelvin]>(100.0), celsius_style_ice_origin)
-                .quantity_from(celsius_style_ice_origin) == delta<celsius_style_temp[si::kelvin]>(77.0));
+                .delta_from(celsius_style_ice_origin) == delta<celsius_style_temp[si::kelvin]>(77.0));
 
 // Below min from ice_origin: -300 K → absolute -27 K < 200 → clamp → 200-273 = -73 K.
 static_assert(qp_ice(delta<celsius_style_temp[si::kelvin]>(-300.0), celsius_style_ice_origin)
-                .quantity_from(celsius_style_ice_origin) == delta<celsius_style_temp[si::kelvin]>(-73.0));
+                .delta_from(celsius_style_ice_origin) == delta<celsius_style_temp[si::kelvin]>(-73.0));
 
 // ============================================================================
 // Conversions between different origins (with offsets)
@@ -513,12 +512,12 @@ consteval bool convert_between_offset_origins()
   auto pt_temp = qp_temp(delta<bounded_temperature[si::kelvin]>(300.0), temp_origin);
 
   // Convert to quantity_point with si::absolute_zero origin
-  // This requires going through the quantity: quantity_from gives us the displacement
-  const auto q = pt_temp.quantity_from(temp_origin);
+  // This requires going through the quantity: delta_from gives us the displacement
+  const auto q = pt_temp.delta_from(temp_origin);
   auto pt_abs_zero = si::absolute_zero + q;
 
   // Now convert to ice_point (which is 273.15K above absolute_zero)
-  const auto q_from_ice = pt_abs_zero.quantity_from(si::ice_point);
+  const auto q_from_ice = pt_abs_zero.delta_from(si::ice_point);
 
   // 300K from absolute_zero = (300 - 273.15)K from ice_point = 26.85K
   // Use approximate comparison due to floating point precision
@@ -553,19 +552,19 @@ using qp_altitude_msl = quantity_point<bounded_altitude[m], altitude_msl, double
 using qp_altitude_agl = quantity_point<bounded_altitude[m], altitude_agl, double>;
 
 // MSL: value within bounds.
-static_assert(qp_altitude_msl(1000.0 * m, altitude_msl).quantity_from(altitude_msl) == 1000.0 * m);
+static_assert(qp_altitude_msl(1000.0 * m, altitude_msl).delta_from(altitude_msl) == 1000.0 * m);
 
 // MSL: above max clamps to 12000m.
-static_assert(qp_altitude_msl(15000.0 * m, altitude_msl).quantity_from(altitude_msl) == 12000.0 * m);
+static_assert(qp_altitude_msl(15000.0 * m, altitude_msl).delta_from(altitude_msl) == 12000.0 * m);
 
 // AGL: value within bounds.
-static_assert(qp_altitude_agl(200.0 * m, altitude_agl).quantity_from(altitude_agl) == 200.0 * m);
+static_assert(qp_altitude_agl(200.0 * m, altitude_agl).delta_from(altitude_agl) == 200.0 * m);
 
 // AGL: above max clamps to 500m.
-static_assert(qp_altitude_agl(700.0 * m, altitude_agl).quantity_from(altitude_agl) == 500.0 * m);
+static_assert(qp_altitude_agl(700.0 * m, altitude_agl).delta_from(altitude_agl) == 500.0 * m);
 
 // AGL: below min (negative AGL is underground) clamps to 0m.
-static_assert(qp_altitude_agl(-10.0 * m, altitude_agl).quantity_from(altitude_agl) == 0.0 * m);
+static_assert(qp_altitude_agl(-10.0 * m, altitude_agl).delta_from(altitude_agl) == 0.0 * m);
 
 // ============================================================================
 // Longitude: relative origin (Warsaw) inherits absolute physical bounds.
@@ -580,34 +579,34 @@ using qp_warsaw = quantity_point<geo_longitude[deg], warsaw_meridian, double>;
 using qp_kyiv = quantity_point<geo_longitude[deg], kyiv_meridian, double>;
 
 // Prime meridian: value within bounds.
-static_assert(qp_prime(90.0 * deg, prime_meridian).quantity_from(prime_meridian) == 90.0 * deg);
+static_assert(qp_prime(90.0 * deg, prime_meridian).delta_from(prime_meridian) == 90.0 * deg);
 
 // Prime meridian: above 180° clamps to 180°.
-static_assert(qp_prime(200.0 * deg, prime_meridian).quantity_from(prime_meridian) == 180.0 * deg);
+static_assert(qp_prime(200.0 * deg, prime_meridian).delta_from(prime_meridian) == 180.0 * deg);
 
 // Warsaw: value within absolute bounds (21° + 100° = 121°, within [-180°, 180°]).
-static_assert(qp_warsaw(100.0 * deg, warsaw_meridian).quantity_from(warsaw_meridian) == 100.0 * deg);
+static_assert(qp_warsaw(100.0 * deg, warsaw_meridian).delta_from(warsaw_meridian) == 100.0 * deg);
 
 // Warsaw: 200° east of Warsaw = 221° from prime meridian → exceeds 180° → clamps.
 // After clamp in absolute frame: 180°. Back in Warsaw frame: 180° - 21° = 159°.
-static_assert(qp_warsaw(200.0 * deg, warsaw_meridian).quantity_from(warsaw_meridian) == 159.0 * deg);
+static_assert(qp_warsaw(200.0 * deg, warsaw_meridian).delta_from(warsaw_meridian) == 159.0 * deg);
 
 // Warsaw: -200° west of Warsaw = -179° from prime meridian → within [-180°, 180°] → no clamp.
-static_assert(qp_warsaw(-170.0 * deg, warsaw_meridian).quantity_from(warsaw_meridian) == -170.0 * deg);
+static_assert(qp_warsaw(-170.0 * deg, warsaw_meridian).delta_from(warsaw_meridian) == -170.0 * deg);
 
 // Warsaw: -165° west of Warsaw = -144° from prime meridian → no clamp; straightforward.
-static_assert(qp_warsaw(-165.0 * deg, warsaw_meridian).quantity_from(warsaw_meridian) == -165.0 * deg);
+static_assert(qp_warsaw(-165.0 * deg, warsaw_meridian).delta_from(warsaw_meridian) == -165.0 * deg);
 
 // Kyiv relative origin: same physical bounds check. 170° east of Kyiv = 200° → clamps.
 // 200° from prime → clamps to 180° → 180° - 30° = 150° from Kyiv.
-static_assert(qp_kyiv(170.0 * deg, kyiv_meridian).quantity_from(kyiv_meridian) == 150.0 * deg);
+static_assert(qp_kyiv(170.0 * deg, kyiv_meridian).delta_from(kyiv_meridian) == 150.0 * deg);
 
 // ============================================================================
 // point_for() cross-origin bounds: body vs room temperature.
 // A body temperature (37°C) is valid for body_temp_origin,
 // but out-of-range for room_temp_origin [15°C, 30°C] — should clamp on conversion.
 // Since these are independent absolute origins there is no point_for() between them;
-// the user must do the conversion explicitly via quantity_from.
+// the user must do the conversion explicitly via delta_from.
 // The following tests validate that each absolute origin clamps independently.
 // ============================================================================
 
@@ -616,19 +615,19 @@ using qp_room = quantity_point<clinical_temperature[si::degree_Celsius], room_te
 
 // Body temperature 37°C: within [35, 42] → unchanged.
 static_assert(qp_body(delta<clinical_temperature[si::degree_Celsius]>(37.0), body_temp_origin)
-                .quantity_from(body_temp_origin) == delta<clinical_temperature[si::degree_Celsius]>(37.0));
+                .delta_from(body_temp_origin) == delta<clinical_temperature[si::degree_Celsius]>(37.0));
 
 // Body temperature 44°C: above max 42°C → clamps to 42°C.
 static_assert(qp_body(delta<clinical_temperature[si::degree_Celsius]>(44.0), body_temp_origin)
-                .quantity_from(body_temp_origin) == delta<clinical_temperature[si::degree_Celsius]>(42.0));
+                .delta_from(body_temp_origin) == delta<clinical_temperature[si::degree_Celsius]>(42.0));
 
 // Room temperature 20°C: within [15, 30] → unchanged.
 static_assert(qp_room(delta<clinical_temperature[si::degree_Celsius]>(20.0), room_temp_origin)
-                .quantity_from(room_temp_origin) == delta<clinical_temperature[si::degree_Celsius]>(20.0));
+                .delta_from(room_temp_origin) == delta<clinical_temperature[si::degree_Celsius]>(20.0));
 
 // Room temperature 37°C (a body temperature entered as room): exceeds [15, 30] → clamps to 30°C.
 static_assert(qp_room(delta<clinical_temperature[si::degree_Celsius]>(37.0), room_temp_origin)
-                .quantity_from(room_temp_origin) == delta<clinical_temperature[si::degree_Celsius]>(30.0));
+                .delta_from(room_temp_origin) == delta<clinical_temperature[si::degree_Celsius]>(30.0));
 
 // ============================================================================
 // Scenario 1 (continued): check_in_range policy.
@@ -647,17 +646,17 @@ inline constexpr struct check_origin final :
 using qp_check = quantity_point<test_angle_check[deg], check_origin, double>;
 
 // Values within bounds should work fine
-static_assert(qp_check(45.0 * deg, check_origin).quantity_from(check_origin) == 45.0 * deg);
-static_assert(qp_check(0.0 * deg, check_origin).quantity_from(check_origin) == 0.0 * deg);
-static_assert(qp_check(90.0 * deg, check_origin).quantity_from(check_origin) == 90.0 * deg);
-static_assert(qp_check(-90.0 * deg, check_origin).quantity_from(check_origin) == -90.0 * deg);
+static_assert(qp_check(45.0 * deg, check_origin).delta_from(check_origin) == 45.0 * deg);
+static_assert(qp_check(0.0 * deg, check_origin).delta_from(check_origin) == 0.0 * deg);
+static_assert(qp_check(90.0 * deg, check_origin).delta_from(check_origin) == 90.0 * deg);
+static_assert(qp_check(-90.0 * deg, check_origin).delta_from(check_origin) == -90.0 * deg);
 
 // Arithmetic within bounds
 consteval bool check_arithmetic_within_bounds()
 {
   auto pt = qp_check(45.0 * deg, check_origin);
   pt += 30.0 * deg;  // Result: 75°, within bounds
-  return pt.quantity_from(check_origin) == 75.0 * deg;
+  return pt.delta_from(check_origin) == 75.0 * deg;
 }
 static_assert(check_arithmetic_within_bounds());
 
@@ -666,7 +665,7 @@ consteval bool check_increment_within_bounds()
   using qp_check_int = quantity_point<test_angle_check[deg], check_origin, int>;
   auto pt = qp_check_int(45 * deg, check_origin);
   ++pt;  // Result: 46°, within bounds
-  return pt.quantity_from(check_origin) == 46 * deg;
+  return pt.delta_from(check_origin) == 46 * deg;
 }
 static_assert(check_increment_within_bounds());
 
@@ -692,13 +691,13 @@ inline constexpr struct patrol_radius final :
 using qp_patrol = quantity_point<mission_range[m], patrol_radius, double>;
 
 // Within patrol bounds: unchanged.
-static_assert(qp_patrol(10.0 * m, patrol_radius).quantity_from(patrol_radius) == 10.0 * m);
+static_assert(qp_patrol(10.0 * m, patrol_radius).delta_from(patrol_radius) == 10.0 * m);
 
 // Exceeds patrol max (20m): clamps to 20m.
-static_assert(qp_patrol(30.0 * m, patrol_radius).quantity_from(patrol_radius) == 20.0 * m);
+static_assert(qp_patrol(30.0 * m, patrol_radius).delta_from(patrol_radius) == 20.0 * m);
 
 // Below patrol min (-20m): clamps to -20m.
-static_assert(qp_patrol(-25.0 * m, patrol_radius).quantity_from(patrol_radius) == -20.0 * m);
+static_assert(qp_patrol(-25.0 * m, patrol_radius).delta_from(patrol_radius) == -20.0 * m);
 
 // ============================================================================
 // Scenario 3: Absolute bounds AND relative bounds (both enforced, relative is tighter).
@@ -722,10 +721,10 @@ inline constexpr struct platform final :
 using qp_platform = quantity_point<nested_height[m], platform, double>;
 
 // Within the relative bounds: unchanged.
-static_assert(qp_platform(3.0 * m, platform).quantity_from(platform) == 3.0 * m);
+static_assert(qp_platform(3.0 * m, platform).delta_from(platform) == 3.0 * m);
 
 // Exceeds relative max (5m) but within absolute (10m): clamps to relative max 5m.
-static_assert(qp_platform(7.0 * m, platform).quantity_from(platform) == 5.0 * m);
+static_assert(qp_platform(7.0 * m, platform).delta_from(platform) == 5.0 * m);
 
 // ============================================================================
 // Scenario 4: abs[bounds] ← rel1[bounds] ← rel2[no-bounds].
@@ -761,19 +760,19 @@ using qp_chain2 = quantity_point<chain_length[m], chain_rel2, double>;
 
 // In rel2 frame: 0m → abs frame: 0+1+5=6m → rel1 frame: 6-5=1m → within [-3,3] → pass.
 // No clamp: 0m from rel2 stays 0m.
-static_assert(qp_chain2(0.0 * m, chain_rel2).quantity_from(chain_rel2) == 0.0 * m);
+static_assert(qp_chain2(0.0 * m, chain_rel2).delta_from(chain_rel2) == 0.0 * m);
 
 // In rel2 frame: -3m → abs frame: -3+6=3m → rel1 frame: 3-5=-2m → within [-3,3] → pass.
-static_assert(qp_chain2(-3.0 * m, chain_rel2).quantity_from(chain_rel2) == -3.0 * m);
+static_assert(qp_chain2(-3.0 * m, chain_rel2).delta_from(chain_rel2) == -3.0 * m);
 
 // In rel2 frame: +3m → abs frame: 3+6=9m → rel1 frame: 9-5=4m → exceeds max 3m → clamp to 3m (rel1).
 // Back to rel2 frame: 3 - 1 = 2m (offset is 1m from rel1 to rel2; rel1_frame_val - 0 = 3, rel2 = rel1_val - 1 = 2).
 // rel1 clamps to 3m (in rel1 frame). rel2 val = clamped_rel1 - offset = 3 - 1 = 2.
-static_assert(qp_chain2(3.0 * m, chain_rel2).quantity_from(chain_rel2) == 2.0 * m);
+static_assert(qp_chain2(3.0 * m, chain_rel2).delta_from(chain_rel2) == 2.0 * m);
 
 // In rel2 frame: -5m → abs frame: -5+6=1m → rel1 frame: 1-5=-4m → below min -3m → clamp to -3m (rel1).
 // Back to rel2: -3 - 1 = -4m.
-static_assert(qp_chain2(-5.0 * m, chain_rel2).quantity_from(chain_rel2) == -4.0 * m);
+static_assert(qp_chain2(-5.0 * m, chain_rel2).delta_from(chain_rel2) == -4.0 * m);
 
 // ============================================================================
 // Scenario 5: abs[no-bounds] ← rel1[bounds] ← rel2[bounds].
@@ -806,13 +805,13 @@ inline constexpr struct nested2_rel2 final :
 using qp_nested2 = quantity_point<nested2_length[m], nested2_rel2, double>;
 
 // Within rel2 bounds [-1, +1]: unchanged.
-static_assert(qp_nested2(0.5 * m, nested2_rel2).quantity_from(nested2_rel2) == 0.5 * m);
+static_assert(qp_nested2(0.5 * m, nested2_rel2).delta_from(nested2_rel2) == 0.5 * m);
 
 // Exceeds rel2 max (+1m): clamp to +1m (rel2's own bounds fire, not rel1's).
-static_assert(qp_nested2(3.0 * m, nested2_rel2).quantity_from(nested2_rel2) == 1.0 * m);
+static_assert(qp_nested2(3.0 * m, nested2_rel2).delta_from(nested2_rel2) == 1.0 * m);
 
 // Below rel2 min (-1m): clamp to -1m.
-static_assert(qp_nested2(-2.0 * m, nested2_rel2).quantity_from(nested2_rel2) == -1.0 * m);
+static_assert(qp_nested2(-2.0 * m, nested2_rel2).delta_from(nested2_rel2) == -1.0 * m);
 
 // ============================================================================
 // Scenario: time-of-day (wrap_to_range with isq::duration, [0 h, 24 h))
@@ -829,24 +828,24 @@ inline constexpr struct midnight final : absolute_point_origin<time_of_day_qs, w
 using time_of_day = quantity_point<time_of_day_qs[s], midnight, double>;
 
 // Within [0, 86400): unchanged.
-static_assert(time_of_day(0.0 * s, midnight).quantity_from(midnight) == 0.0 * s);
-static_assert(time_of_day(3600.0 * s, midnight).quantity_from(midnight) == 3600.0 * s);    // 01:00
-static_assert(time_of_day(43200.0 * s, midnight).quantity_from(midnight) == 43200.0 * s);  // 12:00
-static_assert(time_of_day(86399.0 * s, midnight).quantity_from(midnight) == 86399.0 * s);  // 23:59:59
+static_assert(time_of_day(0.0 * s, midnight).delta_from(midnight) == 0.0 * s);
+static_assert(time_of_day(3600.0 * s, midnight).delta_from(midnight) == 3600.0 * s);    // 01:00
+static_assert(time_of_day(43200.0 * s, midnight).delta_from(midnight) == 43200.0 * s);  // 12:00
+static_assert(time_of_day(86399.0 * s, midnight).delta_from(midnight) == 86399.0 * s);  // 23:59:59
 
 // Overflow past midnight wraps back to early morning.
-static_assert(time_of_day(86400.0 * s, midnight).quantity_from(midnight) == 0.0 * s);     // 24:00 -> 00:00
-static_assert(time_of_day(90000.0 * s, midnight).quantity_from(midnight) == 3600.0 * s);  // 25:00 -> 01:00
+static_assert(time_of_day(86400.0 * s, midnight).delta_from(midnight) == 0.0 * s);     // 24:00 -> 00:00
+static_assert(time_of_day(90000.0 * s, midnight).delta_from(midnight) == 3600.0 * s);  // 25:00 -> 01:00
 
 // Negative values (before midnight) wrap to previous day.
-static_assert(time_of_day(-3600.0 * s, midnight).quantity_from(midnight) == 82800.0 * s);  // -1 h -> 23:00
+static_assert(time_of_day(-3600.0 * s, midnight).delta_from(midnight) == 82800.0 * s);  // -1 h -> 23:00
 
 // Arithmetic: adding a duration that crosses midnight wraps correctly.
 consteval bool time_of_day_wrap_arithmetic()
 {
   auto tod = time_of_day(82800.0 * s, midnight);  // 23:00
   tod += 7200.0 * s;                              // +2 h -> 01:00 next day
-  return tod.quantity_from(midnight) == 3600.0 * s;
+  return tod.delta_from(midnight) == 3600.0 * s;
 }
 static_assert(time_of_day_wrap_arithmetic());
 
@@ -855,47 +854,47 @@ static_assert(time_of_day_wrap_arithmetic());
 // to the stored unit (s) is handled automatically.
 
 // 0 h = 0 s: at lower boundary.
-static_assert(time_of_day(0.0 * time_of_day_qs[h], midnight).quantity_from(midnight) == 0.0 * s);
+static_assert(time_of_day(0.0 * time_of_day_qs[h], midnight).delta_from(midnight) == 0.0 * s);
 
 // 1 h = 3600 s: well inside range.
-static_assert(time_of_day(1.0 * time_of_day_qs[h], midnight).quantity_from(midnight) == 3600.0 * s);
+static_assert(time_of_day(1.0 * time_of_day_qs[h], midnight).delta_from(midnight) == 3600.0 * s);
 
 // 24 h = 86400 s: exactly at the upper (exclusive) boundary → wraps to 0.
-static_assert(time_of_day(24.0 * time_of_day_qs[h], midnight).quantity_from(midnight) == 0.0 * s);
+static_assert(time_of_day(24.0 * time_of_day_qs[h], midnight).delta_from(midnight) == 0.0 * s);
 
 // 25 h = 90000 s: one hour past midnight → wraps to 1 h = 3600 s.
-static_assert(time_of_day(25.0 * time_of_day_qs[h], midnight).quantity_from(midnight) == 3600.0 * s);
+static_assert(time_of_day(25.0 * time_of_day_qs[h], midnight).delta_from(midnight) == 3600.0 * s);
 
 // -1 h = -3600 s: one hour before midnight → wraps to 23 h = 82800 s.
-static_assert(time_of_day(-1.0 * time_of_day_qs[h], midnight).quantity_from(midnight) == 82800.0 * s);
+static_assert(time_of_day(-1.0 * time_of_day_qs[h], midnight).delta_from(midnight) == 82800.0 * s);
 
 // ---- Same tests using minutes as the input unit ----------------------------
 
 // 60 min = 3600 s = 1 h.
-static_assert(time_of_day(60.0 * time_of_day_qs[min], midnight).quantity_from(midnight) == 3600.0 * s);
+static_assert(time_of_day(60.0 * time_of_day_qs[min], midnight).delta_from(midnight) == 3600.0 * s);
 
 // 1440 min = 86400 s = 24 h → wraps to 0.
-static_assert(time_of_day(1440.0 * time_of_day_qs[min], midnight).quantity_from(midnight) == 0.0 * s);
+static_assert(time_of_day(1440.0 * time_of_day_qs[min], midnight).delta_from(midnight) == 0.0 * s);
 
 // -60 min = -3600 s → wraps to 82800 s = 23 h.
-static_assert(time_of_day(-60.0 * time_of_day_qs[min], midnight).quantity_from(midnight) == 82800.0 * s);
+static_assert(time_of_day(-60.0 * time_of_day_qs[min], midnight).delta_from(midnight) == 82800.0 * s);
 
 // 90 min = 5400 s = 1 h 30 min: inside range.
-static_assert(time_of_day(90.0 * time_of_day_qs[min], midnight).quantity_from(midnight) == 5400.0 * s);
+static_assert(time_of_day(90.0 * time_of_day_qs[min], midnight).delta_from(midnight) == 5400.0 * s);
 
 // ---- Same tests using milliseconds as the input unit -----------------------
 
 // 3'600'000 ms = 3600 s = 1 h.
-static_assert(time_of_day(3'600'000.0 * time_of_day_qs[ms], midnight).quantity_from(midnight) == 3600.0 * s);
+static_assert(time_of_day(3'600'000.0 * time_of_day_qs[ms], midnight).delta_from(midnight) == 3600.0 * s);
 
 // 86'400'000 ms = 86400 s → wraps to 0.
-static_assert(time_of_day(86'400'000.0 * time_of_day_qs[ms], midnight).quantity_from(midnight) == 0.0 * s);
+static_assert(time_of_day(86'400'000.0 * time_of_day_qs[ms], midnight).delta_from(midnight) == 0.0 * s);
 
 // 90'000'000 ms = 90000 s = 25 h → wraps to 3600 s.
-static_assert(time_of_day(90'000'000.0 * time_of_day_qs[ms], midnight).quantity_from(midnight) == 3600.0 * s);
+static_assert(time_of_day(90'000'000.0 * time_of_day_qs[ms], midnight).delta_from(midnight) == 3600.0 * s);
 
 // -3'600'000 ms = -3600 s → wraps to 82800 s.
-static_assert(time_of_day(-3'600'000.0 * time_of_day_qs[ms], midnight).quantity_from(midnight) == 82800.0 * s);
+static_assert(time_of_day(-3'600'000.0 * time_of_day_qs[ms], midnight).delta_from(midnight) == 82800.0 * s);
 
 // ---- Cross-unit arithmetic: increment in hours, query in seconds -----------
 
@@ -903,7 +902,7 @@ consteval bool time_of_day_hour_increment()
 {
   auto tod = time_of_day(23.0 * time_of_day_qs[h], midnight);  // 23:00 = 82800 s
   tod += 2.0 * time_of_day_qs[h];                              // +2 h → 25:00 = 90000 s → wraps to 3600 s
-  return tod.quantity_from(midnight) == 3600.0 * s;
+  return tod.delta_from(midnight) == 3600.0 * s;
 }
 static_assert(time_of_day_hour_increment());
 
@@ -911,7 +910,7 @@ consteval bool time_of_day_minute_increment()
 {
   auto tod = time_of_day(23.0 * time_of_day_qs[h] + 30.0 * time_of_day_qs[min], midnight);  // 23:30 = 84600 s
   tod += 45.0 * time_of_day_qs[min];  // +45 min → 24:15 = 87300 s → wraps to 900 s
-  return tod.quantity_from(midnight) == 900.0 * s;
+  return tod.delta_from(midnight) == 900.0 * s;
 }
 static_assert(time_of_day_minute_increment());
 
@@ -974,15 +973,15 @@ inline constexpr struct halfbound_max_origin final :
 // ---- Full bounds (clamp_origin: [-90 deg, +90 deg]) ------------------------
 
 // quantity_point::min() / max() use the bounds directly.
-static_assert(qp_clamp::min().quantity_from(clamp_origin) == -90.0 * deg);
-static_assert(qp_clamp::max().quantity_from(clamp_origin) == 90.0 * deg);
+static_assert(qp_clamp::min().delta_from(clamp_origin) == -90.0 * deg);
+static_assert(qp_clamp::max().delta_from(clamp_origin) == 90.0 * deg);
 
 // std::numeric_limits delegates to the bounded min/max.
-static_assert(std::numeric_limits<qp_clamp>::min().quantity_from(clamp_origin) == -90.0 * deg);
-static_assert(std::numeric_limits<qp_clamp>::max().quantity_from(clamp_origin) == 90.0 * deg);
+static_assert(std::numeric_limits<qp_clamp>::min().delta_from(clamp_origin) == -90.0 * deg);
+static_assert(std::numeric_limits<qp_clamp>::max().delta_from(clamp_origin) == 90.0 * deg);
 
 // lowest() delegates to min() because .min exists in bounds.
-static_assert(std::numeric_limits<qp_clamp>::lowest().quantity_from(clamp_origin) == -90.0 * deg);
+static_assert(std::numeric_limits<qp_clamp>::lowest().delta_from(clamp_origin) == -90.0 * deg);
 
 // ---- Bounds declared in another unit or representation ---------------------
 
@@ -995,48 +994,48 @@ inline constexpr struct coarse_bounds_origin final :
 } coarse_bounds_origin;
 
 using qp_coarse = quantity_point<test_height_coarse[km], coarse_bounds_origin, double>;
-static_assert(qp_coarse::min().quantity_from(coarse_bounds_origin) == 1.5 * km);
-static_assert(qp_coarse::max().quantity_from(coarse_bounds_origin) == 8.5 * km);
-static_assert(std::numeric_limits<qp_coarse>::min().quantity_from(coarse_bounds_origin) == 1.5 * km);
-static_assert(std::numeric_limits<qp_coarse>::max().quantity_from(coarse_bounds_origin) == 8.5 * km);
+static_assert(qp_coarse::min().delta_from(coarse_bounds_origin) == 1.5 * km);
+static_assert(qp_coarse::max().delta_from(coarse_bounds_origin) == 8.5 * km);
+static_assert(std::numeric_limits<qp_coarse>::min().delta_from(coarse_bounds_origin) == 1.5 * km);
+static_assert(std::numeric_limits<qp_coarse>::max().delta_from(coarse_bounds_origin) == 8.5 * km);
 
 // the reported range is exactly the declared one, so it neither admits nor rejects too much
-static_assert(qp_coarse::min().quantity_from(coarse_bounds_origin) == 1500 * m);
-static_assert(qp_coarse::max().quantity_from(coarse_bounds_origin) == 8500 * m);
+static_assert(qp_coarse::min().delta_from(coarse_bounds_origin) == 1500 * m);
+static_assert(qp_coarse::max().delta_from(coarse_bounds_origin) == 8500 * m);
 
 // ---- Half-line min-only (halfbound_min_origin: value >= 0 m) ---------------
 
 using qp_hmin = quantity_point<test_halfbounded[m], halfbound_min_origin, double>;
 
 // min() returns the bound; max() falls back to the representation maximum.
-static_assert(qp_hmin::min().quantity_from(halfbound_min_origin) == 0.0 * m);
-static_assert(qp_hmin::max().quantity_from(halfbound_min_origin).numerical_value_in(m) ==
+static_assert(qp_hmin::min().delta_from(halfbound_min_origin) == 0.0 * m);
+static_assert(qp_hmin::max().delta_from(halfbound_min_origin).numerical_value_in(m) ==
               std::numeric_limits<double>::max());
 
 // numeric_limits mirrors the above.
-static_assert(std::numeric_limits<qp_hmin>::min().quantity_from(halfbound_min_origin) == 0.0 * m);
-static_assert(std::numeric_limits<qp_hmin>::max().quantity_from(halfbound_min_origin).numerical_value_in(m) ==
+static_assert(std::numeric_limits<qp_hmin>::min().delta_from(halfbound_min_origin) == 0.0 * m);
+static_assert(std::numeric_limits<qp_hmin>::max().delta_from(halfbound_min_origin).numerical_value_in(m) ==
               std::numeric_limits<double>::max());
 
 // lowest() delegates to min() because .min exists in bounds.
-static_assert(std::numeric_limits<qp_hmin>::lowest().quantity_from(halfbound_min_origin) == 0.0 * m);
+static_assert(std::numeric_limits<qp_hmin>::lowest().delta_from(halfbound_min_origin) == 0.0 * m);
 
 // ---- Half-line max-only (halfbound_max_origin: value <= 12000 m) -----------
 
 using qp_hmax = quantity_point<test_halfbounded[m], halfbound_max_origin, double>;
 
 // min() falls back to the representation minimum (lowest); max() returns the bound.
-static_assert(qp_hmax::min().quantity_from(halfbound_max_origin).numerical_value_in(m) ==
+static_assert(qp_hmax::min().delta_from(halfbound_max_origin).numerical_value_in(m) ==
               std::numeric_limits<double>::lowest());
-static_assert(qp_hmax::max().quantity_from(halfbound_max_origin) == 12000.0 * m);
+static_assert(qp_hmax::max().delta_from(halfbound_max_origin) == 12000.0 * m);
 
 // numeric_limits mirrors the above.
-static_assert(std::numeric_limits<qp_hmax>::min().quantity_from(halfbound_max_origin).numerical_value_in(m) ==
+static_assert(std::numeric_limits<qp_hmax>::min().delta_from(halfbound_max_origin).numerical_value_in(m) ==
               std::numeric_limits<double>::lowest());
-static_assert(std::numeric_limits<qp_hmax>::max().quantity_from(halfbound_max_origin) == 12000.0 * m);
+static_assert(std::numeric_limits<qp_hmax>::max().delta_from(halfbound_max_origin) == 12000.0 * m);
 
 // lowest() has no .min in bounds — falls back to the representation lowest.
-static_assert(std::numeric_limits<qp_hmax>::lowest().quantity_from(halfbound_max_origin).numerical_value_in(m) ==
+static_assert(std::numeric_limits<qp_hmax>::lowest().delta_from(halfbound_max_origin).numerical_value_in(m) ==
               std::numeric_limits<double>::lowest());
 
 // ============================================================================
@@ -1053,20 +1052,20 @@ static_assert(std::numeric_limits<qp_hmax>::lowest().quantity_from(halfbound_max
 // ---- wrap_to_range: range [-180°, 180°), period = 360° ---------------------
 
 // 3 full rotations + 45°: same as 45°.
-static_assert(qp_wrap(3 * 360.0 * deg + 45.0 * deg, wrap_origin).quantity_from(wrap_origin) == 45.0 * deg);
+static_assert(qp_wrap(3 * 360.0 * deg + 45.0 * deg, wrap_origin).delta_from(wrap_origin) == 45.0 * deg);
 
 // 3 full rotations in the negative direction + 45°: same as 45°.
-static_assert(qp_wrap(-3 * 360.0 * deg + 45.0 * deg, wrap_origin).quantity_from(wrap_origin) == 45.0 * deg);
+static_assert(qp_wrap(-3 * 360.0 * deg + 45.0 * deg, wrap_origin).delta_from(wrap_origin) == 45.0 * deg);
 
 // 2.5 rotations (= 900°): same as 180° → at upper exclusive boundary → wraps to -180°.
-static_assert(qp_wrap(2.5 * 360.0 * deg, wrap_origin).quantity_from(wrap_origin) == -180.0 * deg);
+static_assert(qp_wrap(2.5 * 360.0 * deg, wrap_origin).delta_from(wrap_origin) == -180.0 * deg);
 
 // operator+=: start at 90°, add 3 full rotations + 30° (= 1110°) → lands at 120°.
 consteval bool wrap_large_delta_assign()
 {
   auto pt = qp_wrap(90.0 * deg, wrap_origin);
   pt += 3 * 360.0 * deg + 30.0 * deg;
-  return pt.quantity_from(wrap_origin) == 120.0 * deg;
+  return pt.delta_from(wrap_origin) == 120.0 * deg;
 }
 static_assert(wrap_large_delta_assign());
 
@@ -1075,40 +1074,40 @@ static_assert(wrap_large_delta_assign());
 // After an integer number of periods the point returns to the same position.
 
 // Half a period (180°): the "fold-back" point — lands at 0°.
-static_assert(qp_reflect(180.0 * deg, reflect_origin).quantity_from(reflect_origin) == 0.0 * deg);
+static_assert(qp_reflect(180.0 * deg, reflect_origin).delta_from(reflect_origin) == 0.0 * deg);
 
 // 3/4 of a period (270°): bounces off max, then off min → lands at -90°.
-static_assert(qp_reflect(270.0 * deg, reflect_origin).quantity_from(reflect_origin) == -90.0 * deg);
+static_assert(qp_reflect(270.0 * deg, reflect_origin).delta_from(reflect_origin) == -90.0 * deg);
 
 // 3 full periods + 45° (= 1125°): same as 45°.
-static_assert(qp_reflect(3 * 360.0 * deg + 45.0 * deg, reflect_origin).quantity_from(reflect_origin) == 45.0 * deg);
+static_assert(qp_reflect(3 * 360.0 * deg + 45.0 * deg, reflect_origin).delta_from(reflect_origin) == 45.0 * deg);
 
 // Negative direction: -(1 full period + 45°) = -405° → same as -45°.
-static_assert(qp_reflect(-1 * 360.0 * deg - 45.0 * deg, reflect_origin).quantity_from(reflect_origin) == -45.0 * deg);
+static_assert(qp_reflect(-1 * 360.0 * deg - 45.0 * deg, reflect_origin).delta_from(reflect_origin) == -45.0 * deg);
 
 // operator+=: start at 0°, add 1.5 periods (= 540°) → same as adding 180° → 0°.
 consteval bool reflect_large_delta_assign()
 {
   auto pt = qp_reflect(0.0 * deg, reflect_origin);
   pt += 1.5 * 360.0 * deg;
-  return pt.quantity_from(reflect_origin) == 0.0 * deg;
+  return pt.delta_from(reflect_origin) == 0.0 * deg;
 }
 static_assert(reflect_large_delta_assign());
 
 // ---- wrap_to_range: time-of-day [0 s, 86400 s), period = 86400 s ----------
 
 // 3 full days + 1 hour (= 262800 s): wraps to 3600 s = 01:00.
-static_assert(time_of_day(3 * 86400.0 * s + 3600.0 * s, midnight).quantity_from(midnight) == 3600.0 * s);
+static_assert(time_of_day(3 * 86400.0 * s + 3600.0 * s, midnight).delta_from(midnight) == 3600.0 * s);
 
 // Negative: 3 full days before midnight + 1 hour before end = -3*86400+82800 = -176400 s → 82800 s = 23:00.
-static_assert(time_of_day(-3 * 86400.0 * s + 82800.0 * s, midnight).quantity_from(midnight) == 82800.0 * s);
+static_assert(time_of_day(-3 * 86400.0 * s + 82800.0 * s, midnight).delta_from(midnight) == 82800.0 * s);
 
 // operator+=: start at 23:00 (82800 s), add 3 days + 2 hours (= 266400 s) → lands at 01:00 (3600 s).
 consteval bool time_of_day_multiday_assign()
 {
   auto tod = time_of_day(82800.0 * s, midnight);  // 23:00
   tod += 3 * 86400.0 * s + 2 * 3600.0 * s;        // +3 days 2 hours
-  return tod.quantity_from(midnight) == 3600.0 * s;
+  return tod.delta_from(midnight) == 3600.0 * s;
 }
 static_assert(time_of_day_multiday_assign());
 
@@ -1171,11 +1170,11 @@ static_assert(mp_units::detail::any_ancestor_has_bounds(average_height_origin));
 using qp_avg_height = quantity_point<avg_height_qs[m], average_height_origin, double>;
 
 // Values that keep absolute height ≥ 0 pass through unchanged.
-static_assert(qp_avg_height(0.0 * m, average_height_origin).quantity_from(average_height_origin) == 0.0 * m);
-static_assert(qp_avg_height(500.0 * m, average_height_origin).quantity_from(average_height_origin) == 500.0 * m);
-static_assert(qp_avg_height(-1500.0 * m, average_height_origin).quantity_from(average_height_origin) == -1500.0 * m);
+static_assert(qp_avg_height(0.0 * m, average_height_origin).delta_from(average_height_origin) == 0.0 * m);
+static_assert(qp_avg_height(500.0 * m, average_height_origin).delta_from(average_height_origin) == 500.0 * m);
+static_assert(qp_avg_height(-1500.0 * m, average_height_origin).delta_from(average_height_origin) == -1500.0 * m);
 // Boundary: −1700 m relative = 0 m absolute (natural ground level).
-static_assert(qp_avg_height(-1700.0 * m, average_height_origin).quantity_from(average_height_origin) == -1700.0 * m);
+static_assert(qp_avg_height(-1700.0 * m, average_height_origin).delta_from(average_height_origin) == -1700.0 * m);
 
 
 // ============================================================================
@@ -1308,7 +1307,7 @@ static_assert(!quantity_point<bav_rail[m], bav_rail_station, int>::is_within_bou
 
 static_assert(quantity_point<bav_rail[km], bav_rail_depot, int>::is_within_bounds(8 * km, bav_rail_depot));
 static_assert(!quantity_point<bav_rail[km], bav_rail_depot, int>::is_within_bounds(9 * km, bav_rail_depot));
-static_assert(quantity_point<bav_rail[km], bav_rail_depot, int>{8 * km, bav_rail_depot}.quantity_from(bav_rail_start) ==
+static_assert(quantity_point<bav_rail[km], bav_rail_depot, int>{8 * km, bav_rail_depot}.delta_from(bav_rail_start) ==
               10'000 * m);
 
 // A policy compares a value with a bound in the value's own type, so each bound has to be exact in
@@ -1356,11 +1355,11 @@ inline constexpr struct bav_tape_wrap final : absolute_point_origin<bav_tape, wr
 inline constexpr struct bav_tape_reflect final : absolute_point_origin<bav_tape, reflect_in_range{0 * m, 10'000 * m}> {
 } bav_tape_reflect;
 
-static_assert(quantity_point<bav_tape[m], bav_tape_clamp, int>{100 * m, bav_tape_clamp}.quantity_from(bav_tape_clamp) ==
+static_assert(quantity_point<bav_tape[m], bav_tape_clamp, int>{100 * m, bav_tape_clamp}.delta_from(bav_tape_clamp) ==
               90 * m);
-static_assert(quantity_point<bav_tape[km], bav_tape_wrap, int>{12 * km, bav_tape_wrap}.quantity_from(bav_tape_wrap) ==
+static_assert(quantity_point<bav_tape[km], bav_tape_wrap, int>{12 * km, bav_tape_wrap}.delta_from(bav_tape_wrap) ==
               2 * km);
-static_assert(quantity_point<bav_tape[km], bav_tape_reflect, int>{12 * km, bav_tape_reflect}.quantity_from(
+static_assert(quantity_point<bav_tape[km], bav_tape_reflect, int>{12 * km, bav_tape_reflect}.delta_from(
                 bav_tape_reflect) == 8 * km);
 
 
@@ -1414,7 +1413,7 @@ static_assert(trim_angle_plain{4. * deg, trim_zero} ==
 
 // A checking policy reached through an ancestor never changes the value: translating it into the
 // ancestor's frame and back would turn 0.1 into 0.099999999999909051 here.
-static_assert(qp_avg_height(0.1 * m, average_height_origin).quantity_from(average_height_origin) == 0.1 * m);
+static_assert(qp_avg_height(0.1 * m, average_height_origin).delta_from(average_height_origin) == 0.1 * m);
 
 // A wrap_to_range origin excludes its max, so a child below it must stay strictly under that value:
 // [-10°, 349°] at +10° ends at 359°. A child ending at 350° (360°, wrapped to 0°) is rejected.
@@ -1466,7 +1465,7 @@ template<typename QP>
 concept has_limits_lowest = requires { std::numeric_limits<QP>::lowest(); };
 
 static_assert(has_min<bav_heading_pt> && !has_max<bav_heading_pt>);
-static_assert(bav_heading_pt::min().quantity_from(bav_heading_zero) == 0. * deg);
+static_assert(bav_heading_pt::min().delta_from(bav_heading_zero) == 0. * deg);
 static_assert(!has_limits_max<bav_heading_pt>);
 static_assert(!has_min<bav_gap_pt> && has_max<bav_gap_pt> && !has_limits_lowest<bav_gap_pt>);
 // wrap_to_range excludes its max, spelled exclusive_bound or not.
@@ -1477,16 +1476,16 @@ inline constexpr struct bav_north_spelled final :
 } bav_north_spelled;
 
 static_assert(quantity_point<bav_azimuth[deg], bav_north_spelled>(370. * deg, bav_north_spelled)
-                .quantity_from(bav_north_spelled) == 10. * deg);
+                .delta_from(bav_north_spelled) == 10. * deg);
 // Spelling the max as exclusive_bound changes nothing: the same values wrap the same way, 360° is
 // the same point as 0°, and neither form offers max().
 using bav_wrap_plain = quantity_point<bav_azimuth[deg], bav_north>;
 using bav_wrap_spelled = quantity_point<bav_azimuth[deg], bav_north_spelled>;
 static_assert(!has_max<bav_wrap_spelled> && has_min<bav_wrap_spelled>);
-static_assert(bav_wrap_spelled(360. * deg, bav_north_spelled).quantity_from(bav_north_spelled) == 0. * deg);
-static_assert(bav_wrap_spelled(-10. * deg, bav_north_spelled).quantity_from(bav_north_spelled) == 350. * deg);
-static_assert(bav_wrap_spelled(725. * deg, bav_north_spelled).quantity_from(bav_north_spelled) ==
-              bav_wrap_plain(725. * deg, bav_north).quantity_from(bav_north));
+static_assert(bav_wrap_spelled(360. * deg, bav_north_spelled).delta_from(bav_north_spelled) == 0. * deg);
+static_assert(bav_wrap_spelled(-10. * deg, bav_north_spelled).delta_from(bav_north_spelled) == 350. * deg);
+static_assert(bav_wrap_spelled(725. * deg, bav_north_spelled).delta_from(bav_north_spelled) ==
+              bav_wrap_plain(725. * deg, bav_north).delta_from(bav_north));
 static_assert(wrap_to_range{0. * deg, exclusive_bound{360. * deg}}(1e20 * deg) ==
               wrap_to_range{0. * deg, 360. * deg}(1e20 * deg));
 
@@ -1579,7 +1578,7 @@ static_assert(bav_tx_frequency::is_within_bounds(5.8 * GHz, bav_tuning_zero));
 static_assert(!bav_tx_frequency::is_within_bounds(3. * GHz, bav_tuning_zero));
 static_assert(!bav_tx_frequency::is_within_bounds(6. * GHz, bav_tuning_zero));
 static_assert(!bav_tx_frequency::is_within_bounds(not_a_number * GHz, bav_tuning_zero));
-static_assert(bav_tx_frequency::max().quantity_from(bav_tuning_zero) == 5.875 * GHz);
+static_assert(bav_tx_frequency::max().delta_from(bav_tuning_zero) == 5.875 * GHz);
 
 // enforce_bounds keeps an adjusting policy's result on the inherited path: a user-defined clamp
 // reached through an ancestor still clamps (and a value it lets through is stored unchanged).
@@ -1610,8 +1609,7 @@ inline constexpr struct bav_track_start final : absolute_point_origin<bav_track,
 inline constexpr struct bav_track_mid final : relative_point_origin<bav_track_start + 0.5 * m> {
 } bav_track_mid;
 
-static_assert(quantity_point<bav_track[m], bav_track_mid>(5. * m, bav_track_mid).quantity_from(bav_track_start) ==
-              1. * m);
+static_assert(quantity_point<bav_track[m], bav_track_mid>(5. * m, bav_track_mid).delta_from(bav_track_start) == 1. * m);
 
 // clamp_non_negative adjusts a negative value, so it offers no query either.
 QUANTITY_SPEC(bav_energy_like, isq::length);
@@ -1641,8 +1639,8 @@ inline constexpr struct bav_strip_mark final :
 } bav_strip_mark;
 using bav_strip_pt = quantity_point<bav_strip[m], bav_strip_mark, double>;
 
-static_assert(bav_strip_pt::min().quantity_from(bav_strip_mark) == -0.5999999999999999 * m);
-static_assert(bav_strip_pt::max().quantity_from(bav_strip_mark) == 0.2000000000000001 * m);
+static_assert(bav_strip_pt::min().delta_from(bav_strip_mark) == -0.5999999999999999 * m);
+static_assert(bav_strip_pt::max().delta_from(bav_strip_mark) == 0.2000000000000001 * m);
 static_assert(bav_strip_pt::is_within_bounds(-0.5999999999999999 * m, bav_strip_mark));
 static_assert(!bav_strip_pt::is_within_bounds(-0.6 * m, bav_strip_mark));
 static_assert(bav_strip_pt::is_within_bounds(0.2000000000000001 * m, bav_strip_mark));
@@ -1656,8 +1654,8 @@ inline constexpr struct bav_strip_int_mark final :
 } bav_strip_int_mark;
 using bav_strip_int_pt = quantity_point<bav_strip[m], bav_strip_int_mark, int>;
 
-static_assert(bav_strip_int_pt::min().quantity_from(bav_strip_int_mark) == -13 * m);
-static_assert(bav_strip_int_pt::max().quantity_from(bav_strip_int_mark) == 7 * m);
+static_assert(bav_strip_int_pt::min().delta_from(bav_strip_int_mark) == -13 * m);
+static_assert(bav_strip_int_pt::max().delta_from(bav_strip_int_mark) == 7 * m);
 
 // A wrapper representation is stepped through the value it wraps: [-6°, 4°], as is_within_bounds says.
 static_assert(trim_offset2::min() == trim_offset2{-6. * deg, trim_centre_plus_one});
@@ -1672,7 +1670,7 @@ using bav_east_pt = quantity_point<bav_azimuth[deg], bav_east, double>;
 template<typename QP>
 concept has_point_max = requires { QP::max(); };
 
-static_assert(bav_east_pt::min().quantity_from(bav_east) == -90. * deg);
+static_assert(bav_east_pt::min().delta_from(bav_east) == -90. * deg);
 static_assert(!has_point_max<bav_east_pt>);
 
 // Nor is a bound the point's quantity type can't hold (0.1 m in a `float` point).
@@ -1697,12 +1695,12 @@ static_assert(trim_angle::try_make(just_below_minus_10 * deg, trim_zero).error()
 static_assert(trim_angle::try_make(not_a_number * deg, trim_zero).error() == bounds_violation{});
 static_assert(!trim_angle_plain::try_make(11. * deg, trim_zero).has_value());
 
-static_assert(bav_height::try_make(0. * m)->quantity_from_zero() == 0. * m);
+static_assert(bav_height::try_make(0. * m)->delta_from_zero() == 0. * m);
 static_assert(!bav_height::try_make(-1. * m).has_value());
 
 static_assert(trim_offset::try_make(5. * deg, trim_centre) == trim_offset{5. * deg, trim_centre});
-static_assert(quantity_point<si::degree, trim_centre, double>::try_make(5. * deg, trim_centre)
-                ->quantity_from(trim_zero) == 9. * deg);
+static_assert(quantity_point<si::degree, trim_centre, double>::try_make(5. * deg, trim_centre)->delta_from(trim_zero) ==
+              9. * deg);
 static_assert(!trim_offset::try_make(6. * deg, trim_centre).has_value());
 static_assert(trim_offset2::try_make(4. * deg, trim_centre_plus_one).has_value());
 

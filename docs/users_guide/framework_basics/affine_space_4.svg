@@ -88,7 +88,7 @@
          id="tspan2-9-0-96-4-1-8-8"
          style="font-size:2.11667px;fill:#a4a4a4;fill-opacity:1;stroke-width:0;stroke-dasharray:none"
          x="70.745201"
-         y="98.145279">qp1.quantity_from(D)</tspan></text>
+         y="98.145279">qp1.delta_from(D)</tspan></text>
     <g
        id="path8-0-9-8-0"
        transform="translate(0,0.52916663)">

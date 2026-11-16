@@ -23,6 +23,7 @@
 #include <mp-units/bits/diagnostics.h>
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
+#include <mp-units/systems/iupac.h>
 #include <mp-units/systems/si/prefixes.h>
 #include <mp-units/systems/si/units.h>
 #include <mp-units/systems/usc.h>
@@ -121,8 +122,11 @@ static_assert(isq::mass(1 * oz_t) == isq::mass(20 * dwt));
 static_assert(isq::mass(1 * lb_t) == isq::mass(12 * oz_t));
 
 // Pressure
-// the next test is currently disabled; it surfaced #614
-// static_assert(isq::pressure(1'000 * inHg) == isq::pressure(3'386'389 * si::pascal));
+// the conventional inHg is exactly 25.4 conventional mmHg, 3386.388 640 341 Pa
+static_assert(equivalent(inHg, mag_ratio<254, 10>* iupac::millimetre_of_mercury));
+static_assert(equivalent(inHg, mag_ratio<3'386'388'640'341, 1'000'000'000>* si::pascal));
+// the formerly disabled integer comparison (#614), now at the exact value
+static_assert(isq::pressure(1'000'000'000LL * inHg) == isq::pressure(3'386'388'640'341LL * si::pascal));
 
 // Temperature
 static_assert(delta<isq::thermodynamic_temperature[deg_F]>(9) ==

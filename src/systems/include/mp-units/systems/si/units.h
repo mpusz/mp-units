@@ -140,6 +140,16 @@ inline constexpr auto hectare = si::hecto<are>;
 inline constexpr struct litre final : named_unit<"L", cubic(si::deci<si::metre>)> {} litre;
 inline constexpr struct tonne final : named_unit<"t", mag<1000> * si::kilogram> {} tonne;
 inline constexpr struct dalton final : named_unit<"Da", mag_ratio<16'605'390'666'050, 10'000'000'000'000> * mag_power<10, -27> * si::kilogram> {} dalton;
+#ifdef pascal
+#pragma push_macro("pascal")
+#undef pascal
+#define MP_UNITS_REDEFINE_PASCAL
+#endif
+inline constexpr struct bar final : named_unit<"bar", mag_power<10, 5> * si::pascal> {} bar;
+#ifdef MP_UNITS_REDEFINE_PASCAL
+#pragma pop_macro("pascal")
+#undef MP_UNITS_REDEFINE_PASCAL
+#endif
 // TODO A different value is provided in the SI Brochure and different in the ISO 80000
 inline constexpr struct electronvolt final : named_unit<"eV", mag_ratio<1'602'176'634, 1'000'000'000> * mag_power<10, -19> * si::joule> {} electronvolt;
 // TODO the below are logarithmic units - how to support those?

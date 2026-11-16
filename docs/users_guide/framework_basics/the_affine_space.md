@@ -155,10 +155,10 @@ would predefine such a type for this domain.
 quantity_point<isq::distance[si::metre]> qp1(100 * m);
 quantity_point<isq::distance[si::metre]> qp2 = point<m>(120);
 
-assert(qp1.quantity_from_zero() == 100 * m);
-assert(qp2.quantity_from_zero() == 120 * m);
-assert(qp2.quantity_from(qp1) == 20 * m);
-assert(qp1.quantity_from(qp2) == -20 * m);
+assert(qp1.delta_from_zero() == 100 * m);
+assert(qp2.delta_from_zero() == 120 * m);
+assert(qp2.delta_from(qp1) == 20 * m);
+assert(qp1.delta_from(qp2) == -20 * m);
 
 assert(qp2 - qp1 == 20 * m);
 assert(qp1 - qp2 == -20 * m);
@@ -170,7 +170,7 @@ In the above code `100 * m` and `120 * m` still create two quantities that serve
 _displacement vectors_ here. Quantity point objects can be explicitly constructed from
 such quantities only when their origin is an instantiation of the `natural_point_origin<QuantitySpec>`.
 
-It is really important to understand that even though we can use `.quantity_from_zero()`
+It is really important to understand that even though we can use `.delta_from_zero()`
 to obtain the _displacement vector_ of a point from its default origin, the point by itself
 does not represent or have any associated physical value. It is just a point in some space.
 The same point can be expressed with different _displacement vectors_ from different origins.
@@ -184,8 +184,8 @@ are compatible:
 quantity_point<si::metre> qp1{isq::distance(100 * m)};
 quantity_point<si::metre> qp2 = point<isq::height[m]>(120);
 
-assert(qp2.quantity_from(qp1) == 20 * m);
-assert(qp1.quantity_from(qp2) == -20 * m);
+assert(qp2.delta_from(qp1) == 20 * m);
+assert(qp1.delta_from(qp2) == -20 * m);
 assert(qp2 - qp1 == 20 * m);
 assert(qp1 - qp2 == -20 * m);
 ```
@@ -262,12 +262,12 @@ inline constexpr struct origin : absolute_point_origin<isq::distance> {} origin;
 quantity_point<si::metre, origin> qp1 = origin + 100 * m;
 quantity_point<si::metre, origin> qp2 = 120 * m + origin;
 
-// assert(qp1.quantity_from_zero() == 100 * m);   // Compile-time error
-// assert(qp2.quantity_from_zero() == 120 * m);   // Compile-time error
-assert(qp1.quantity_from(origin) == 100 * m);
-assert(qp2.quantity_from(origin) == 120 * m);
-assert(qp2.quantity_from(qp1) == 20 * m);
-assert(qp1.quantity_from(qp2) == -20 * m);
+// assert(qp1.delta_from_zero() == 100 * m);   // Compile-time error
+// assert(qp2.delta_from_zero() == 120 * m);   // Compile-time error
+assert(qp1.delta_from(origin) == 100 * m);
+assert(qp2.delta_from(origin) == 120 * m);
+assert(qp2.delta_from(qp1) == 20 * m);
+assert(qp1.delta_from(qp2) == -20 * m);
 
 assert(qp1 - origin == 100 * m);
 assert(qp2 - origin == 120 * m);
@@ -305,11 +305,11 @@ quantity_point qp1{100 * m, origin};
 Again, CTAD always helps to use precisely the type we need in a current case.
 
 Additionally, if a quantity point is defined in terms of a custom, named origin, then we
-can't use a `quantity_from_zero()` member function anymore. This is to prevent surprises,
+can't use a `delta_from_zero()` member function anymore. This is to prevent surprises,
 as our origin may not necessarily be perceived as an absolute zero in the domain we model.
 Also, as we will learn soon, we can define several related origins in one space, and then
 it gets harder to understand which one is the zero one. This is why, to be specific and
-always correct about the points we use, a `quantity_from(QP)` member function can be used
+always correct about the points we use, a `delta_from(QP)` member function can be used
 (where `QP` can either be an origin or another quantity point).
 
 Finally, please note that it is not allowed to subtract two point origins defined in terms
@@ -330,8 +330,8 @@ inline constexpr struct origin2 : absolute_point_origin<isq::distance> {} origin
 quantity_point qp1 = origin1 + 100 * m;
 quantity_point qp2 = origin2 + 120 * m;
 
-assert(qp1.quantity_from(origin1) == 100 * m);
-assert(qp2.quantity_from(origin2) == 120 * m);
+assert(qp1.delta_from(origin1) == 100 * m);
+assert(qp2.delta_from(origin2) == 120 * m);
 
 assert(qp1 - origin1 == 100 * m);
 assert(qp2 - origin2 == 120 * m);
@@ -341,9 +341,9 @@ assert(origin2 - qp2 == -120 * m);
 // assert(qp2 - qp1 == 20 * m);                    // Compile-time error
 // assert(qp1 - origin2 == 100 * m);               // Compile-time error
 // assert(qp2 - origin1 == 120 * m);               // Compile-time error
-// assert(qp2.quantity_from(qp1) == 20 * m);       // Compile-time error
-// assert(qp1.quantity_from(origin2) == 100 * m);  // Compile-time error
-// assert(qp2.quantity_from(origin1) == 120 * m);  // Compile-time error
+// assert(qp2.delta_from(qp1) == 20 * m);       // Compile-time error
+// assert(qp1.delta_from(origin2) == 100 * m);  // Compile-time error
+// assert(qp2.delta_from(origin1) == 120 * m);  // Compile-time error
 ```
 
 
@@ -370,24 +370,24 @@ quantity_point qp2 = D + 120 * m;
 assert(qp1.quantity_ref_from(qp1.point_origin) == 100 * m);
 assert(qp2.quantity_ref_from(qp2.point_origin) == 120 * m);
 
-assert(qp2.quantity_from(qp1) == 30 * m);
-assert(qp1.quantity_from(qp2) == -30 * m);
+assert(qp2.delta_from(qp1) == 30 * m);
+assert(qp1.delta_from(qp2) == -30 * m);
 assert(qp2 - qp1 == 30 * m);
 assert(qp1 - qp2 == -30 * m);
 
-assert(qp1.quantity_from(A) == 120 * m);
-assert(qp1.quantity_from(B) == 110 * m);
-assert(qp1.quantity_from(C) == 100 * m);
-assert(qp1.quantity_from(D) == 90 * m);
+assert(qp1.delta_from(A) == 120 * m);
+assert(qp1.delta_from(B) == 110 * m);
+assert(qp1.delta_from(C) == 100 * m);
+assert(qp1.delta_from(D) == 90 * m);
 assert(qp1 - A == 120 * m);
 assert(qp1 - B == 110 * m);
 assert(qp1 - C == 100 * m);
 assert(qp1 - D == 90 * m);
 
-assert(qp2.quantity_from(A) == 150 * m);
-assert(qp2.quantity_from(B) == 140 * m);
-assert(qp2.quantity_from(C) == 130 * m);
-assert(qp2.quantity_from(D) == 120 * m);
+assert(qp2.delta_from(A) == 150 * m);
+assert(qp2.delta_from(B) == 140 * m);
+assert(qp2.delta_from(C) == 130 * m);
+assert(qp2.delta_from(D) == 120 * m);
 assert(qp2 - A == 150 * m);
 assert(qp2 - B == 140 * m);
 assert(qp2 - C == 130 * m);
@@ -499,14 +499,14 @@ inline constexpr struct ocean_surface : absolute_point_origin<isq::altitude> {} 
 template<>
 inline constexpr auto mp_units::frame_projection<sea_level, ocean_surface> =
     [](QuantityPointOf<isq::altitude> auto qp) {
-        return ocean_surface - qp.quantity_from(sea_level);
+        return ocean_surface - qp.delta_from(sea_level);
     };
 
 // The inverse must be provided explicitly — the library never derives it automatically:
 template<>
 inline constexpr auto mp_units::frame_projection<ocean_surface, sea_level> =
     [](QuantityPointOf<isq::altitude> auto qp) {
-        return sea_level - qp.quantity_from(ocean_surface);
+        return sea_level - qp.delta_from(ocean_surface);
     };
 ```
 
@@ -560,7 +560,7 @@ struct CameraCalibration { double R[3][3]; double t[3]; };
 template<>
 inline constexpr auto mp_units::frame_projection<world_frame, camera_frame> =
     [](QuantityPointOf<isq::length> auto qp, const CameraCalibration& cal) {
-        return camera_frame + forward_transform(cal, qp.quantity_from(world_frame));
+        return camera_frame + forward_transform(cal, qp.delta_from(world_frame));
     };
 
 // Different call sites supply different calibrations — no global state required:
@@ -630,7 +630,7 @@ arithmetic operations.
 
     ```cpp
     // Convert to plain angular_measure for trig functions
-    const quantity<angular_measure> lat_angle = isq::angular_measure(lat.quantity_from(geographic::equator));
+    const quantity<angular_measure> lat_angle = isq::angular_measure(lat.delta_from(geographic::equator));
     const quantity result = sin(lat_angle);  // Works with angular_measure
     ```
 
@@ -1254,7 +1254,7 @@ A _point_ with a custom origin has no unique numerical representation, so its va
 requested from an explicit origin instead:
 
 ```cpp
-double above_sea_level = altitude.quantity_from(sea_level).numerical_value_in(m);
+double above_sea_level = altitude.delta_from(sea_level).numerical_value_in(m);
 ```
 
 

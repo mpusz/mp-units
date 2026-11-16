@@ -78,8 +78,8 @@ std::optional<hw_voltage_quantity_point> read_hw_voltage()
 
 void print(QuantityPoint auto qp)
 {
-  std::cout << MP_UNITS_STD_FMT::format(
-                 "{:10} ({:5})", qp, value_cast<double, si::volt>(qp).quantity_from(natural_point_origin<isq::voltage>))
+  std::cout << MP_UNITS_STD_FMT::format("{:10} ({:5})", qp,
+                                        value_cast<double, si::volt>(qp).delta_from(natural_point_origin<isq::voltage>))
             << "\n";
 }
 

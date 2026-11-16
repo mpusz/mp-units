@@ -44,6 +44,9 @@ import std;
 #include <optional>
 #include <type_traits>
 #include <utility>
+#if __has_include(<stdfloat>)
+#include <stdfloat>
+#endif
 #if MP_UNITS_HOSTED
 #include <chrono>
 #include <complex>
@@ -67,12 +70,20 @@ static_assert(sizeof(quantity<si::metre>) == sizeof(double));
 static_assert(sizeof(quantity<isq::length[m]>) == sizeof(double));
 static_assert(sizeof(quantity<si::metre, short>) == sizeof(short));
 static_assert(sizeof(quantity<isq::length[m], short>) == sizeof(short));
+static_assert(sizeof(quantity<si::metre, std::int8_t>) == sizeof(std::int8_t));
+static_assert(sizeof(quantity<si::metre, std::uint8_t>) == sizeof(std::uint8_t));
 
 template<template<auto, typename> typename Q>
 concept invalid_types = requires {
   requires !requires { typename Q<isq::dim_length, double>; };  // dimension instead of reference
   requires !requires { typename Q<isq::length, double>; };      // quantity_spec instead of reference
   requires !requires { typename Q<isq::length[m], bool>; };     // bool is not a valid representation type
+  requires !requires { typename Q<isq::length[m], char>; };     // nor is a character type
+  requires !requires { typename Q<isq::length[m], wchar_t>; };
+  requires !requires { typename Q<isq::length[m], char8_t>; };
+  requires !requires { typename Q<isq::length[m], char16_t>; };
+  requires !requires { typename Q<isq::length[m], char32_t>; };
+  requires !requires { typename Q<si::metre, char>; };
   requires !requires { typename Q<isq::length[m], quantity<isq::length[m]>>; };  // quantity used as Rep
 #if MP_UNITS_HOSTED
   requires !requires {
@@ -103,6 +114,11 @@ static_assert(!has_magnitude<quantity<isq::length[m]>>);
 static_assert(has_magnitude<quantity<isq::velocity[m / s], double>>);
 static_assert(QuantityOf<decltype(std::declval<quantity<isq::velocity[m / s], double>>().magnitude()),
                          quantity_tensor_order::scalar>);
+
+// the magnitude of an unsigned value is the value itself
+static_assert(magnitude(4u) == 4u);
+static_assert(magnitude(std::uint8_t{200}) == std::uint8_t{200});
+static_assert((4u * isq::velocity[m / s]).magnitude().numerical_value_in(m / s) == 4u);
 
 #if MP_UNITS_HOSTED
 QUANTITY_SPEC(complex_velocity, isq::velocity, quantity_field::complex);
@@ -529,6 +545,11 @@ static_assert(
 
 #endif
 
+// fixed-width FP: scaling factor is computed in long double and narrowed via static_cast
+#if defined(__STDCPP_FLOAT32_T__)
+static_assert(quantity<km, std::float32_t>(std::float32_t{2} * km).numerical_value_in(m) == std::float32_t{2000});
+static_assert(quantity<m, std::float32_t>(std::float32_t{2000} * m).numerical_value_in(km) == std::float32_t{2});
+#endif
 
 ///////////////////////////////////
 // converting to a different unit

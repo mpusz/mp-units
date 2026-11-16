@@ -126,7 +126,7 @@ using hal_altitude = quantity_point<isq::altitude[si::metre], height_above_launc
 template<class CharT, class Traits>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const hal_altitude& a)
 {
-  return os << a.quantity_from(height_above_launch) << " HAL";
+  return os << a.delta_from(height_above_launch) << " HAL";
 }
 
 template<typename Char>
@@ -134,7 +134,7 @@ struct MP_UNITS_STD_FMT::formatter<hal_altitude, Char> : formatter<hal_altitude:
   template<typename FormatContext>
   auto format(const hal_altitude& a, FormatContext& ctx) const -> decltype(ctx.out())
   {
-    formatter<hal_altitude::quantity_type, Char>::format(a.quantity_from(height_above_launch), ctx);
+    formatter<hal_altitude::quantity_type, Char>::format(a.delta_from(height_above_launch), ctx);
     return MP_UNITS_STD_FMT::format_to(ctx.out(), " HAL");
   }
 };
@@ -152,7 +152,7 @@ public:
   void current(msl_altitude alt) { current_ = alt; }
   [[nodiscard]] msl_altitude current() const { return current_; }
 
-  [[nodiscard]] hal_altitude hal() const { return height_above_launch + current_.quantity_from(launch_); }
+  [[nodiscard]] hal_altitude hal() const { return height_above_launch + current_.delta_from(launch_); }
 };
 
 
@@ -167,7 +167,7 @@ int main()
   std::cout << MP_UNITS_STD_FMT::format("hal = {::N[.2f]}\n", uav.hal());
 
   const msl_altitude ground_level = mean_sea_level + 123 * m;
-  std::cout << MP_UNITS_STD_FMT::format("agl = {::N[.2f]}\n", uav.current().quantity_from(ground_level));
+  std::cout << MP_UNITS_STD_FMT::format("agl = {::N[.2f]}\n", uav.current().delta_from(ground_level));
 
   struct waypoint {
     std::string name;

@@ -107,13 +107,13 @@ int main()
 
   std::cout << "Same time point in different timezones:\n";
   std::cout << "  PST: " << (pst_event - pst) << " after PST midnight\n";
-  std::cout << "  UTC: " << utc_event.quantity_from(utc) << " after UTC midnight\n";
+  std::cout << "  UTC: " << utc_event.delta_from(utc) << " after UTC midnight\n";
   std::cout << "  JST: " << jst_event.quantity_ref_from(jst) << " after JST midnight\n";
   std::cout << "(2 PM PST = 10 PM UTC = 7 AM JST next day)\n\n";
 
   std::cout << "Both from UTC:\n";
-  std::cout << "  PST: " << pst_event.quantity_from(utc) << "\n";
-  std::cout << "  JST: " << jst_event.quantity_from(utc) << "\n\n";
+  std::cout << "  PST: " << pst_event.delta_from(utc) << "\n";
+  std::cout << "  JST: " << jst_event.delta_from(utc) << "\n\n";
 
   // Prove they're the same point: subtract them
   quantity time_diff = jst_event - pst_event;
@@ -128,8 +128,8 @@ int main()
 All origins branching from the same absolute origin share the same affine space, which means:
 
 - **Arithmetic just works**: You can subtract points from different origins
-- **Flexible queries**: Use `.quantity_from(origin)` to get the quantity from any origin
-  in the same space, or `.quantity_from(other_point)` to avoid sign issues with subtraction
+- **Flexible queries**: Use `.delta_from(origin)` to get the quantity from any origin
+  in the same space, or `.delta_from(other_point)` to avoid sign issues with subtraction
   order
 - **Implicit conversions**: Points from different related origins convert automatically;
   use `.point_for(origin)` to explicitly change the internal reference point if needed
@@ -142,12 +142,12 @@ All origins branching from the same absolute origin share the same affine space,
 
 2. **Relative origin conversion**: Define `sea_level` as absolute origin and `airport_ground`
    as relative origin (`sea_level + 500 * si::metre`). Create a point for aircraft at
-   2000 m above airport ground, then use `.quantity_from(sea_level)` to get the altitude
+   2000 m above airport ground, then use `.delta_from(sea_level)` to get the altitude
    above sea level.
 
 3. **Practice arithmetic**: Create two _altitude_ points from different relative origins
    (both based on the same absolute origin). Subtract them to prove they can interoperate,
-   and use `.quantity_from(sea_level)` to express both altitudes relative to the common
+   and use `.delta_from(sea_level)` to express both altitudes relative to the common
    absolute origin.
 
 ## What You Learned

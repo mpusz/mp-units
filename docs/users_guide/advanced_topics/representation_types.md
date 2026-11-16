@@ -45,8 +45,8 @@ Independent of character, a representation type must be:
 - **[`UnitMagnitudeScalable`](#how-scaling-works)**, so the library can apply a unit magnitude
   ratio to it during unit conversion,
 - **not opted out** through [`disable_representation<T>`](#disable_representation) (a quantity
-  or [quantity-like](concepts.md#QuantityLike) type, a container of either, and `bool` are
-  opted out by default).
+  or [quantity-like](concepts.md#QuantityLike) type, a container of either, `bool`, and the
+  character types are opted out by default).
 
 On top of that baseline, the type's two character axes each add their own requirements. The
 field is reported by [`numeric_field<T>`](#numeric_field) and the order by
@@ -278,8 +278,10 @@ representation at all?".
 
 **Default:** A type is opted out when it is, or its elements are, a quantity or a
 [quantity-like](concepts.md#QuantityLike) type. So a bare `quantity`, a `std::chrono::duration`,
-and a container of either are all rejected. The library also opts out `bool`,
-which is totally ordered and supports arithmetic yet is not a meaningful representation.
+and a container of either are all rejected. The library also opts out `bool` and the character
+types `char`, `wchar_t`, `char8_t`, `char16_t`, and `char32_t`. They are totally ordered and
+support arithmetic, yet they hold a truth value or a character, not a number. `signed char`
+and `unsigned char` stay representations, as `std::int8_t` and `std::uint8_t` name them.
 
 **When to specialize:** When a type accidentally satisfies a representation concept but must
 never store a quantity:
@@ -1077,12 +1079,13 @@ quantity<si::metre, double> length2 = 3.14 * m;
 quantity<si::metre, long double> length3 = 2.718L * m;
 ```
 
-!!! note "Why is `bool` excluded?"
+!!! note "Why are `bool` and the character types excluded?"
 
-    Although `bool` technically satisfies the syntactic requirements (it is copyable, totally
-    ordered, and supports arithmetic operations), it is excluded via
-    `disable_representation<bool> = true` because using boolean values as physical quantities
-    rarely makes sense and can lead to confusing code.
+    Although `bool` and the character types technically satisfy the syntactic requirements
+    (they are copyable, totally ordered, and support arithmetic operations), they are excluded
+    through `disable_representation` because a truth value or a character is not the number of
+    a quantity. `quantity<si::metre, char>` is almost always a mistake, and the 8-bit integers
+    `std::int8_t` and `std::uint8_t` remain available.
 
 The library also supports `std::complex` for complex-valued quantities:
 

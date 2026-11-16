@@ -39,10 +39,11 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
-      - name: Set up Python 3.12
+      - name: Set up Python 3.14
         uses: actions/setup-python@v6
         with:
-          python-version: 3.x
+          # cmake-format (cmakelang, unmaintained) crashes on Python 3.15: re.Scanner rejects its capturing groups
+          python-version: "3.14"
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip

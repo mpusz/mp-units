@@ -8,6 +8,31 @@ This page documents the version history and changes for the **mp-units** library
 
 ### 2.6.0 <small>TBD</small> { id="2.6.0" }
 
+- feat: `mp-units/systems/iupac.h` provides the non-SI units of the IUPAC Green Book that
+      no other system defines: `iupac::torr` (`Torr`, exactly 1/760 of the standard
+      atmosphere), `iupac::millimetre_of_mercury` (`mmHg`, the conventional 13 595.1 kg/m³
+      column under the standard gravity), `iupac::thermochemical_calorie` (`cal_th`), and
+      `iupac::international_table_calorie` (`cal_IT`). `iupac::unit_symbols::atm` names
+      `codata::standard_atmosphere` (#867)
+- feat: `si::bar` added to the non-SI units accepted for use with the SI, and
+      `yard_pound::british_thermal_unit` (`Btu`, the International Table BTU) and
+      `yard_pound::pound_mole` (`lb-mol`) added (#867)
+- (!) fix: `usc::inch_of_mercury` is exactly 25.4 conventional mmHg, 3386.388 640 341 Pa.
+      It was the rounded 3386.389 Pa, so converted values change in the seventh
+      significant digit (#867)
+- fix: the displacement between two point origins keeps a named unit that already is the
+      coarsest exact one, so a `-27 cm` origin offset and the point differences across it
+      print in `cm` rather than in `(1/100 m)`
+- refactor: `quantity_from()` and `quantity_from_zero()` of a quantity point are renamed to
+      `delta_from()` and `delta_from_zero()`. They return a delta, and once a point is a
+      `quantity` too, "quantity from" no longer says which one. The former names are
+      deprecated
+- fix: `magnitude` of an unsigned value returns the value, where it called `std::abs`,
+      which has no unsigned overload
+- (!) refactor: `char`, `wchar_t`, `char8_t`, `char16_t`, and `char32_t` are not
+      representation types, as `bool` isn't. A character type holds a character, not a
+      number, so `quantity<si::metre, char>` is ill-formed. `signed char` and `unsigned char`,
+      the types of `std::int8_t` and `std::uint8_t`, stay representation types
 - feat: a vector quantity composes from a single value holding its components, the
       inverse of its tuple protocol: `quantity<flight_velocity[km / h], vec3> v =
       std::tuple{fwd, lat, vert};`. Any type a structured binding decomposes through

@@ -452,7 +452,7 @@ template<Unit auto To, auto R, auto PO, typename Rep>
     using std::floor;
 #endif
     return ReturnType{
-      quantity{static_cast<Rep>(floor(res.quantity_from_zero().numerical_value_ref_in(res.unit))), res.reference}, PO};
+      quantity{static_cast<Rep>(floor(res.delta_from_zero().numerical_value_ref_in(res.unit))), res.reference}, PO};
   } else {
     if (res > qp) return res - quantity{representation_values<Rep>::one(), res.reference};
     return res;
@@ -512,7 +512,7 @@ template<Unit auto To, auto R, auto PO, typename Rep>
     using std::ceil;
 #endif
     return ReturnType{
-      quantity{static_cast<Rep>(ceil(res.quantity_from_zero().numerical_value_ref_in(res.unit))), res.reference}, PO};
+      quantity{static_cast<Rep>(ceil(res.delta_from_zero().numerical_value_ref_in(res.unit))), res.reference}, PO};
   } else {
     if (res < qp) return res + quantity{representation_values<Rep>::one(), res.reference};
     return res;
@@ -573,7 +573,7 @@ template<Unit auto To, auto R, auto PO, typename Rep>
   const auto diff1 = res_high - qp;
   if (diff0 == diff1) {
     // TODO How to extend this to custom representation types?
-    if (static_cast<std::int64_t>(res_low.quantity_from_zero().numerical_value_ref_in(To)) & 1) return res_high;
+    if (static_cast<std::int64_t>(res_low.delta_from_zero().numerical_value_ref_in(To)) & 1) return res_high;
     return res_low;
   } else if (diff0 < diff1)
     return res_low;

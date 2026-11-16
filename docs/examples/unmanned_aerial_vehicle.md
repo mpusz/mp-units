@@ -80,7 +80,7 @@ formatting that appends "AMSL" (Above Mean Sea Level) to clearly identify the re
     For trigonometric functions, explicit conversion to `angular_measure` is required:
 
     ```cpp
-    const quantity lat_angle = isq::angular_measure(lat.quantity_from(geographic::equator));
+    const quantity lat_angle = isq::angular_measure(lat.delta_from(geographic::equator));
     sin(lat_angle);  // OK - explicitly converted
     ```
 
@@ -138,7 +138,7 @@ The UAV class demonstrates safe relative _altitude_ tracking:
 --8<-- "example/unmanned_aerial_vehicle.cpp:147:158"
 ```
 
-The `quantity_from()` method safely computes the difference between two points in the same
+The `delta_from()` method safely computes the difference between two points in the same
 reference system, returning a relative _altitude_ (_height_) quantity.
 
 ## Custom Formatting for Each System
@@ -219,10 +219,10 @@ cannot be confused.
 ### 3. Safe Relative Calculations
 
 ```cpp
-quantity<isq::altitude[m]> hal = current_.quantity_from(launch_);
+quantity<isq::altitude[m]> hal = current_.delta_from(launch_);
 ```
 
-The `quantity_from()` method safely computes relative _altitudes_ between points in the same
+The `delta_from()` method safely computes relative _altitudes_ between points in the same
 reference system.
 
 ### 4. Custom Formatting Per Reference

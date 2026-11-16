@@ -45,6 +45,7 @@ import std;
 #include <mp-units/systems/international.h>
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/isq_angle.h>
+#include <mp-units/systems/iupac.h>
 #include <mp-units/systems/natural.h>
 #include <mp-units/systems/si.h>
 #include <mp-units/systems/typographic.h>
