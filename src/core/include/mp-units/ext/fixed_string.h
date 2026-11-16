@@ -108,11 +108,13 @@ struct fixed_string_iface {
     return basic_fixed_string<CharT, 1 + N>(txt, it);
   }
 
+  // Deferred reason 1: hidden friend in a class template.
   template<typename CharT, std::size_t N, std::size_t N2>
   [[nodiscard]] consteval friend basic_fixed_string<CharT, N + N2 - 1> operator+(
     const basic_fixed_string<CharT, N>& lhs, const CharT (&rhs)[N2]) noexcept
+    MP_UNITS_PRE_DEFERRED(rhs[N2 - 1] == CharT{})
   {
-    MP_UNITS_PRECONDITION(rhs[N2 - 1] == CharT{});
+    MP_UNITS_PRE_DEFERRED_COMPAT(rhs[N2 - 1] == CharT{});
     CharT txt[N + N2];
     CharT* it = txt;
     for (CharT ch : lhs) *it++ = ch;
@@ -121,10 +123,12 @@ struct fixed_string_iface {
   }
 
   template<typename CharT, std::size_t N, std::size_t N1>
+  // Deferred reason 1: hidden friend in a class template.
   [[nodiscard]] consteval friend basic_fixed_string<CharT, N1 + N - 1> operator+(
     const CharT (&lhs)[N1], const basic_fixed_string<CharT, N>& rhs) noexcept
+    MP_UNITS_PRE_DEFERRED(lhs[N1 - 1] == CharT{})
   {
-    MP_UNITS_PRECONDITION(lhs[N1 - 1] == CharT{});
+    MP_UNITS_PRE_DEFERRED_COMPAT(lhs[N1 - 1] == CharT{});
     CharT txt[N1 + N];
     CharT* it = txt;
     for (std::size_t i = 0; i != N1 - 1; ++i) *it++ = lhs[i];
@@ -142,9 +146,11 @@ struct fixed_string_iface {
   }
 
   template<typename CharT, std::size_t N, std::size_t N2>
+  // Deferred reason 1: hidden friend in a class template.
   [[nodiscard]] friend consteval bool operator==(const basic_fixed_string<CharT, N>& lhs, const CharT (&rhs)[N2])
+    MP_UNITS_PRE_DEFERRED(rhs[N2 - 1] == CharT{})
   {
-    MP_UNITS_PRECONDITION(rhs[N2 - 1] == CharT{});
+    MP_UNITS_PRE_DEFERRED_COMPAT(rhs[N2 - 1] == CharT{});
     return lhs.view() == std::basic_string_view<CharT>(std::cbegin(rhs), std::cend(rhs) - 1);
   }
 
@@ -156,9 +162,12 @@ struct fixed_string_iface {
   }
 
   template<typename CharT, std::size_t N, std::size_t N2>
+  // Deferred reasons 1 and 2 together: a hidden friend with a deduced return type. The `auto` is
+  // load-bearing - the comparison category comes from `basic_string_view`.
   [[nodiscard]] friend consteval auto operator<=>(const basic_fixed_string<CharT, N>& lhs, const CharT (&rhs)[N2])
+    MP_UNITS_PRE_DEFERRED(rhs[N2 - 1] == CharT{})
   {
-    MP_UNITS_PRECONDITION(rhs[N2 - 1] == CharT{});
+    MP_UNITS_PRE_DEFERRED_COMPAT(rhs[N2 - 1] == CharT{});
     return lhs.view() <=> std::basic_string_view<CharT>(std::cbegin(rhs), std::cend(rhs) - 1);
   }
 
@@ -222,26 +231,28 @@ public:
   {
   }
 
+  // Deferred reason 5: a `noexcept` constructor, which GCC 16 crashes on under `-fno-exceptions`.
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   [[nodiscard]] consteval explicit(false) basic_fixed_string(const CharT (&txt)[N + 1]) noexcept
+    MP_UNITS_PRE_DEFERRED(txt[N] == CharT{})
   {
-    MP_UNITS_PRECONDITION(txt[N] == CharT{});
+    MP_UNITS_PRE_DEFERRED_COMPAT(txt[N] == CharT{});
     for (std::size_t i = 0; i < N; ++i) data_[i] = txt[i];
   }
 
   template<std::input_iterator It, std::sentinel_for<It> S>
     requires std::same_as<std::iter_value_t<It>, CharT>
-  [[nodiscard]] constexpr basic_fixed_string(It begin, S end)
+  [[nodiscard]] constexpr basic_fixed_string(It begin, S end) MP_UNITS_PRE(std::distance(begin, end) == N)
   {
-    MP_UNITS_PRECONDITION(std::distance(begin, end) == N);
+    MP_UNITS_EXPECTS(std::distance(begin, end) == N);
     for (auto it = data_; begin != end; ++begin, ++it) *it = *begin;
   }
 
   template<std::ranges::input_range R>
     requires std::same_as<std::ranges::range_value_t<R>, CharT>
-  [[nodiscard]] constexpr basic_fixed_string(std::from_range_t, R&& r)
+  [[nodiscard]] constexpr basic_fixed_string(std::from_range_t, R&& r) MP_UNITS_PRE(std::ranges::size(r) == N)
   {
-    MP_UNITS_PRECONDITION(std::ranges::size(r) == N);
+    MP_UNITS_EXPECTS(std::ranges::size(r) == N);
     for (auto it = data_; auto&& element : std::forward<R>(r)) *it++ = std::forward<decltype(element)>(element);
   }
 

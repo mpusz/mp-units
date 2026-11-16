@@ -28,7 +28,9 @@
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
+#include <cmath>
 #include <complex>
+#include <limits>
 #include <sstream>
 #endif
 #ifdef MP_UNITS_MODULES
@@ -597,5 +599,42 @@ TEST_CASE("cartesian_vector embed/project between 2D and 3D", "[vector]")
   SECTION("project . embed is the identity on 2D")
   {
     REQUIRE(project(embed(utility::cartesian_vector{1.0, 2.0})) == utility::cartesian_vector{1.0, 2.0});
+  }
+}
+
+// The `magnitude` CPO's postcondition is `!(r < 0)` and not `r >= 0`: the magnitude of a vector
+// with a NaN component is a NaN, and every comparison with a NaN is false. Rewriting it the
+// positive way makes this abort.
+TEST_CASE("magnitude postcondition accepts what it must", "[vector][nan]")
+{
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+
+  SECTION("a NaN component propagates")
+  {
+    REQUIRE(std::isnan(magnitude(utility::cartesian_vector{nan, 1.0, 0.0})));
+    REQUIRE(std::isnan(magnitude(utility::cartesian_vector{1.0, nan, 0.0})));
+  }
+
+  // An infinite component ought to give an infinite magnitude - IEEE 754 says `hypot` with an
+  // infinite argument is `+inf` - but libstdc++'s three-argument `std::hypot` returns a NaN where
+  // its two-argument overload correctly returns `inf`. That is outside this library; what matters
+  // here is that whatever comes back satisfies the postcondition rather than aborting.
+  SECTION("an infinite component does not trip the postcondition")
+  {
+    const double inf = std::numeric_limits<double>::infinity();
+    const auto result = magnitude(utility::cartesian_vector{inf, 1.0, 0.0});
+    REQUIRE((std::isinf(result) || std::isnan(result)));
+  }
+
+  // A complex magnitude is a legitimate `Scalar` with no ordering, so the contract must not narrow
+  // the accepted representations.
+  SECTION("a complex representation is still accepted")
+  {
+    REQUIRE(magnitude(utility::cartesian_vector{3. + 4.i, 0. + 0.i, 0. + 0.i}) == 5.0);
+  }
+
+  SECTION("an ordinary magnitude is unaffected")
+  {
+    REQUIRE(magnitude(utility::cartesian_vector{3.0, 4.0, 0.0}) == 5.0);
   }
 }
