@@ -231,11 +231,12 @@ public:
   {
   }
 
+  // Deferred reason 5: a `noexcept` constructor, which GCC 16 crashes on under `-fno-exceptions`.
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   [[nodiscard]] consteval explicit(false) basic_fixed_string(const CharT (&txt)[N + 1]) noexcept
-    MP_UNITS_PRE(txt[N] == CharT{})
+    MP_UNITS_PRE_DEFERRED(txt[N] == CharT{})
   {
-    MP_UNITS_EXPECTS(txt[N] == CharT{});
+    MP_UNITS_PRE_DEFERRED_COMPAT(txt[N] == CharT{});
     for (std::size_t i = 0; i < N; ++i) data_[i] = txt[i];
   }
 

@@ -115,13 +115,15 @@
 // declaration contracts do not work, the same check somewhere else.
 #define MP_UNITS_PRE(...) pre(__VA_ARGS__)
 
-// `MP_UNITS_PRE_DEFERRED` is for a position GCC 16 cannot compile a `pre` in. There are four, each
-// reduced to a standalone reproducer and none of them matching an open GCC report:
+// `MP_UNITS_PRE_DEFERRED` is for a position GCC 16 cannot compile a `pre` in. There are five, each
+// reduced to a standalone reproducer. The first four match no open GCC report, the fifth is GCC PR
+// 127173:
 //
 //   1. a hidden friend defined inside a class template   -> "contract condition is not constant"
 //   2. a function template with a deduced return type    -> ICE in extract_insn, at recog.cc:2892
 //   3. a constructor reached by compile-time construction of a `symbol_text`  -> "not constant"
 //   4. a function reached during constant evaluation from `div_round`         -> "not constant"
+//   5. a `noexcept` constructor, with `-fno-exceptions`  -> ICE in maybe_apply_function_contracts
 //
 // The contract is still written on the declaration and merely disabled there, rather than moved
 // into the body. That matters for more than tidiness: a predicate that only ever appears in a body
