@@ -94,6 +94,9 @@ static_assert(1 * l == 1 * cubic(dm));
 
 static_assert(1 * t == 1000 * kg);
 
+static_assert(equivalent(bar, mag_power<10, 5>* Pa));
+static_assert(1 * bar == 100'000 * Pa);
+
 // invoke_with_prefixed
 #if MP_UNITS_HOSTED && (__cpp_lib_constexpr_cmath || MP_UNITS_COMP_GCC)
 

@@ -80,6 +80,7 @@ intended.
 - **[nebkat](https://github.com/nebkat)**
 - **[NoahBres](https://github.com/NoahBres)**
 - **[oschonrock](https://github.com/oschonrock)**
+- **[pauloacmartinez](https://github.com/pauloacmartinez)**
 - **[Radnyx](https://github.com/Radnyx)**
 - **[RalphSteinhagen](https://github.com/RalphSteinhagen)**
 - **[rbrugo](https://github.com/rbrugo)**
@@ -93,7 +94,7 @@ intended.
 - **[uilianries](https://github.com/uilianries)**
 - **[yasamoka](https://github.com/yasamoka)**
 
-_46 people, last updated 2026-10-12._
+_47 people, last updated 2026-11-13._
 
 <!-- CONTRIBUTORS_END -->
 

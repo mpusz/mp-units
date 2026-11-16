@@ -81,6 +81,16 @@ inline constexpr auto kip = si::kilo<pound_force>;
 // pressure
 inline constexpr struct psi final : named_unit<"psi", pound_force / square(inch)> {} psi;
 
+// energy
+// https://en.wikipedia.org/wiki/British_thermal_unit
+// The International Table BTU, exactly 1055.055 852 62 J: the IT calorie per gram and kelvin, taken
+// for a pound and a degree Fahrenheit. The thermochemical BTU is a different unit.
+inline constexpr struct british_thermal_unit final : named_unit<"Btu", mag_ratio<105'505'585'262, 100'000'000> * si::joule> {} british_thermal_unit;
+
+// amount of substance
+// The amount whose mass in pounds equals the molar mass in grams per mole: exactly 453.592 37 mol.
+inline constexpr struct pound_mole final : named_unit<"lb-mol", mag_ratio<45'359'237, 100'000> * si::mole> {} pound_mole;
+
 // power
 // https://en.wikipedia.org/wiki/Horsepower#Definitions
 inline constexpr struct mechanical_horsepower final : named_unit<"hp(I)", mag<33'000> * foot * pound_force / si::minute> {} mechanical_horsepower;
@@ -116,6 +126,9 @@ inline constexpr auto lbf = pound_force;
 
 using yard_pound::kip;
 using yard_pound::psi;
+
+inline constexpr auto Btu = british_thermal_unit;
+inline constexpr auto lb_mol = pound_mole;
 
 inline constexpr auto hp = mechanical_horsepower;
 

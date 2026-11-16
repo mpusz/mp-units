@@ -52,6 +52,7 @@ add_library(
     imperial_test.cpp
     isq_angle_test.cpp
     isq_test.cpp
+    iupac_test.cpp
     limits_test.cpp
     natural_test.cpp
     photometric_test.cpp
