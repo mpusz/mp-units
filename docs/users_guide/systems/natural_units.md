@@ -55,7 +55,7 @@ In natural units where $c = 1$ and $\hbar = 1$:
 
 The **mp-units** natural units system uses a quantity specification hierarchy that provides
 type safety while respecting the physics of natural units. Quantities with a defining equation
-are annotated in _italics_; quantities marked with `is_kind` form independent sub-hierarchies.
+are annotated in _italics_; quantities marked with `subkind` form independent sub-hierarchies.
 
 The four dimension groups and their rules are described below.
 
@@ -115,7 +115,7 @@ _Velocities_ and _angles_ are both dimensionless. A natural _speed_ is the plain
 $\beta = v / c$, so it is an ordinary child of `dimensionless` with a recipe, and the
 recipe works in every direction: `speed * duration` is a _length_ and `length / duration`
 is a _speed_, both implicitly. _Angular measure_ is a **separate quantity kind**: the
-`is_kind` marker (the dashed arrow) makes leaving or entering it an explicit conversion, and
+`subkind` marker (the dashed arrow) makes leaving or entering it an explicit conversion, and
 a _speed_ cannot be converted to an _angle_ at all.
 
 ## Dimensional Relationships

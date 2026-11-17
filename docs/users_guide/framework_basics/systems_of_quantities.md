@@ -488,7 +488,7 @@ rather than `dimensionless`. It converts to `dimensionless` implicitly.
 
 !!! info
 
-    Only a root quantity from the hierarchy tree or the one marked with `is_kind` specifier
+    Only a root quantity from the hierarchy tree or the one marked with `subkind` specifier
     in the `quantity_spec` definition can be put as a template parameter to the `kind_of`
     specifier. For example, `kind_of<isq::width>` will fail to compile. However, we can call
     `get_kind(q)` to obtain a kind of any quantity:
@@ -498,17 +498,17 @@ rather than `dimensionless`. It converts to `dimensionless` implicitly.
     ```
 
 
-## Creating distinct quantity kinds with `is_kind`
+## Creating distinct quantity kinds with `subkind`
 
 While dimension-based type safety prevents many errors, sometimes quantities share the same
-dimension but represent fundamentally incompatible physical concepts. The `is_kind` specifier
+dimension but represent fundamentally incompatible physical concepts. The `subkind` specifier
 allows creating distinct quantity types that cannot be mixed even though they share the same
 dimension and quantity hierarchy tree.
 
 
-### When to Use `is_kind`
+### When to Use `subkind`
 
-Use `is_kind` to create **distinct subkinds within an existing quantity hierarchy** when:
+Use `subkind` to create **distinct subkinds within an existing quantity hierarchy** when:
 
 1. **Multiple incompatible concepts** need to share the **same parent quantity's properties**
    (unit or quantity type)
@@ -517,7 +517,7 @@ Use `is_kind` to create **distinct subkinds within an existing quantity hierarch
 3. They represent **different reference frames** or measurement contexts, but derive from
    the same physical basis
 
-The key insight: use `is_kind` when quantities need to **inherit** from a parent
+The key insight: use `subkind` when quantities need to **inherit** from a parent
 (quantity type, unit) but must be **isolated** from each other.
 
 Common examples of subkinds within existing trees include:
@@ -532,7 +532,7 @@ Common examples of subkinds within existing trees include:
 
 !!! important
 
-    The `is_kind` specifier creates **subkinds within an existing quantity hierarchy tree**,
+    The `subkind` specifier creates **subkinds within an existing quantity hierarchy tree**,
     not independent trees. This allows the subkind to **inherit properties** from its parent:
 
     - **Unit of measure**: _fluid head_ and _water head_ inherit metre from _height_;
@@ -546,41 +546,41 @@ Common examples of subkinds within existing trees include:
     define separate root quantities instead (e.g., _frequency_ and _activity_ are
     independent roots, not subkinds).
 
-To create a distinct quantity kind as a subkind, add the `is_kind` specifier to the
+To create a distinct quantity kind as a subkind, add the `subkind` specifier to the
 `quantity_spec` definition:
 
 === "C++23"
 
     ```cpp
-    inline constexpr struct fluid_head : quantity_spec<isq::height, is_kind> {} fluid_head;
-    inline constexpr struct water_head : quantity_spec<isq::height, is_kind> {} water_head;
+    inline constexpr struct fluid_head : quantity_spec<isq::height, subkind> {} fluid_head;
+    inline constexpr struct water_head : quantity_spec<isq::height, subkind> {} water_head;
     // Both inherit metre as unit and length as dimension from isq::height
     ```
 
 === "C++20"
 
     ```cpp
-    inline constexpr struct fluid_head : quantity_spec<fluid_head, isq::height, is_kind> {} fluid_head;
-    inline constexpr struct water_head : quantity_spec<water_head, isq::height, is_kind> {} water_head;
+    inline constexpr struct fluid_head : quantity_spec<fluid_head, isq::height, subkind> {} fluid_head;
+    inline constexpr struct water_head : quantity_spec<water_head, isq::height, subkind> {} water_head;
     // Both inherit metre as unit and length as dimension from isq::height
     ```
 
 === "Portable"
 
     ```cpp
-    QUANTITY_SPEC(fluid_head, isq::height, is_kind);
-    QUANTITY_SPEC(water_head, isq::height, is_kind);
+    QUANTITY_SPEC(fluid_head, isq::height, subkind);
+    QUANTITY_SPEC(water_head, isq::height, subkind);
     // Both inherit metre as unit and length as dimension from isq::height
     ```
 
 Both `fluid_head` and `water_head` are subkinds of _height_ (inheriting its dimension of
-_length_ and unit of metre), but marking them with `is_kind` makes them distinct
+_length_ and unit of metre), but marking them with `subkind` makes them distinct
 incompatible kinds that require explicit conversion.
 
 
-### Behavior of `is_kind` quantities
+### Behavior of `subkind` quantities
 
-Quantities marked with `is_kind` behave differently from regular hierarchy members:
+Quantities marked with `subkind` behave differently from regular hierarchy members:
 
 1. **Cannot be implicitly converted to each other**:
 
@@ -616,7 +616,7 @@ Quantities marked with `is_kind` behave differently from regular hierarchy membe
 
     !!! warning
 
-        Implicit conversion from `is_kind` quantities to their base is **not allowed**:
+        Implicit conversion from `subkind` quantities to their base is **not allowed**:
 
         ```cpp
         quantity<isq::height[m]> h = h_fluid;  // Compile-time error!
@@ -624,7 +624,7 @@ Quantities marked with `is_kind` behave differently from regular hierarchy membe
 
 4. **Can be used with `kind_of`**:
 
-    Unlike regular hierarchy members, `is_kind` quantities can be used with `kind_of`:
+    Unlike regular hierarchy members, `subkind` quantities can be used with `kind_of`:
 
     ```cpp
     static_assert(get_kind(fluid_head) == kind_of<fluid_head>);
@@ -670,9 +670,9 @@ This pattern:
 - **Documents the relationship** between different quantity kinds
 
 
-### Guidelines for using `is_kind`
+### Guidelines for using `subkind`
 
-**Use `is_kind` when:**
+**Use `subkind` when:**
 
 - Quantities share a parent but have **fundamentally different physical meanings**
 - Adding or comparing them **is physically nonsensical** (e.g., _plane angles_ + _solid angles_,
@@ -681,7 +681,7 @@ This pattern:
 - Conversions between kinds either don't exist (_plane_ vs _solid angles_) or require
   domain-specific formulas (_fluid head_ ↔ _water head_ via _specific gravity_)
 
-**Don't use `is_kind` when:**
+**Don't use `subkind` when:**
 
 - Quantities are naturally part of the same hierarchy (use regular `quantity_spec` hierarchy)
 - Conversions are just unit changes (use regular unit conversions)
@@ -689,7 +689,7 @@ This pattern:
 
 !!! tip
 
-    For a complete practical example demonstrating how `is_kind` prevents catastrophic
+    For a complete practical example demonstrating how `subkind` prevents catastrophic
     engineering errors in hydraulic systems, see
     [Workshop: Preventing Confusion with Distinct Kinds](../../workshops/extensions/distinct_quantity_kinds.md).
 

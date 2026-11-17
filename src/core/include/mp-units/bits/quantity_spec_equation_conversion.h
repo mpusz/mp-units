@@ -136,7 +136,7 @@ struct carried_kinds_result {
   using den = Den;
 };
 
-// Every `is_kind` ancestor-or-self of a quantity, as a sorted factor list. The nearest one is the
+// Every `subkind` ancestor-or-self of a quantity, as a sorted factor list. The nearest one is the
 // kind root, so the walk jumps straight to it, and a quantity whose kind root is the undeclared root
 // of its tree has none.
 template<typename Q>
@@ -222,8 +222,8 @@ struct kind_target_carried_kinds {
   using den = merge_quantity_spec_factors<typename explicit_netted::den, typename side::num_part::den>;
 };
 
-// What a named quantity carries: its `is_kind` chain (every `is_kind` ancestor-or-self) and
-// whatever its equation carries, recursively. A base quantity not declared `is_kind` carries
+// What a named quantity carries: its `subkind` chain (every `subkind` ancestor-or-self) and
+// whatever its equation carries, recursively. A base quantity not declared `subkind` carries
 // nothing. It is a class template, so the compiler computes it once per quantity.
 template<typename Q>
 struct carried_kinds : carried_kinds_result<decltype(detail::declared_kinds_of<Q>()), type_list<>> {};

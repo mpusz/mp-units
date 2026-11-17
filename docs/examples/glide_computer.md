@@ -21,7 +21,7 @@ tags:
 
 - [`glide_computer_lib/glide_computer_lib.h`](https://github.com/mpusz/mp-units/blob/c54d18e4892d8b4c0173054750aca5507fbf8e2e/example/glide_computer_lib/include/glide_computer_lib.h) - Glider performance models and polar curves
 - [`glide_computer_lib/glide_computer_lib.cpp`](https://github.com/mpusz/mp-units/blob/c54d18e4892d8b4c0173054750aca5507fbf8e2e/example/glide_computer_lib/glide_computer_lib.cpp) - Implementation
-- [`include/geographic.h`](https://github.com/mpusz/mp-units/blob/master/example/include/geographic.h) - Geographic primitives: bounded coordinates (_latitude_, _longitude_, _elevation_) and orientation angles (_azimuth_, _bearing_, _heading_) with overflow policies and type-safe `is_kind` constraints
+- [`include/geographic.h`](https://github.com/mpusz/mp-units/blob/master/example/include/geographic.h) - Geographic primitives: bounded coordinates (_latitude_, _longitude_, _elevation_) and orientation angles (_azimuth_, _bearing_, _heading_) with overflow policies and type-safe `subkind` constraints
 
 **Example:**
 
@@ -103,7 +103,7 @@ The module defines **six distinct angle types** for geographic and aviation use:
 - **_Bearing_**: 0° = North, clockwise, wraps [-180°, 180°)
 - **_Heading_**: 0° = North, counter-clockwise, wraps [-180°, 180°)
 
-All types use **`is_kind`** to prevent accidental mixing (e.g., `latitude + longitude` or
+All types use **`subkind`** to prevent accidental mixing (e.g., `latitude + longitude` or
 `bearing + heading` won't compile). Each has:
 
 - Distinct point origins with appropriate overflow policies
@@ -118,7 +118,7 @@ All types use **`is_kind`** to prevent accidental mixing (e.g., `latitude + long
 
 The `spherical_distance` function calculates the shortest _distance_ between two points
 on Earth's surface using the great-circle formula. Since _latitude_ and _longitude_ use
-`is_kind`, the function explicitly converts them to plain `angular_measure` for
+`subkind`, the function explicitly converts them to plain `angular_measure` for
 trigonometric operations:
 
 ```cpp title="geographic.h" linenums="377"

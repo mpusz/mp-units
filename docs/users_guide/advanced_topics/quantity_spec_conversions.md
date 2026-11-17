@@ -17,7 +17,7 @@ quantity kinds are involved.
 A quantity specification comes in one of three shapes:
 
 - A **named quantity** is defined with `quantity_spec`. It has a dimension, an optional
-    **parent**, an optional **equation**, and may be marked with `is_kind`.
+    **parent**, an optional **equation**, and may be marked with `subkind`.
 - A **derived quantity** is a product of powers of named quantities, such as
     `isq::mass * pow<2>(isq::length) / pow<2>(isq::time)`. The library keeps it
     normalized, so equal names are merged, zero exponents disappear, and `dimensionless`
@@ -35,8 +35,8 @@ The rules refer to a few facts about a named quantity:
 - Its **tree** is the chain of parents. The **root** is the top of that chain. Two named
     quantities are in the same tree when they share a root.
 - Its **kind root** is the nearest quantity on the way up, itself included, that was
-    declared with `is_kind`. If there is none, the kind root is the root. A quantity
-    declared with `is_kind` is a **declared kind**. _Angular measure_ and _storage
+    declared with `subkind`. If there is none, the kind root is the root. A quantity
+    declared with `subkind` is a **declared kind**. _Angular measure_ and _storage
     capacity_ are the usual examples, see
     [Nested quantity kinds](../framework_basics/dimensionless_quantities.md#nested-quantity-kinds).
 - Its **equation** is the one given in its definition or, if none was given, its parent's,
@@ -83,8 +83,8 @@ inline constexpr struct displacement : quantity_spec<length, quantity_tensor_ord
 inline constexpr struct velocity : quantity_spec<speed, displacement / duration> {} velocity;
 inline constexpr struct acceleration : quantity_spec<velocity / duration> {} acceleration;
 inline constexpr struct force : quantity_spec<mass * acceleration> {} force;
-inline constexpr struct angular_measure : quantity_spec<dimensionless, arc_length / radius, is_kind> {} angular_measure;
-inline constexpr struct phase_angle : quantity_spec<angular_measure, is_kind> {} phase_angle;
+inline constexpr struct angular_measure : quantity_spec<dimensionless, arc_length / radius, subkind> {} angular_measure;
+inline constexpr struct phase_angle : quantity_spec<angular_measure, subkind> {} phase_angle;
 inline constexpr struct rotational_displacement : quantity_spec<angular_measure, path_length / radius> {} rotational_displacement;
 inline constexpr struct rotation : quantity_spec<dimensionless> {} rotation;
 ```

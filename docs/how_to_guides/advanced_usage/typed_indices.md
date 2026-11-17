@@ -10,13 +10,13 @@ For background on the concepts used here, see:
 
 <!-- markdownlint-disable MD013 -->
 - [Dimensionless Quantities](../../users_guide/framework_basics/dimensionless_quantities.md) —
-  `is_kind` and its semantics
+  `subkind` and its semantics
 - [The Affine Space](../../users_guide/framework_basics/the_affine_space.md) —
   `quantity_point`, origins, and their algebra
 - [Workshop: Affine Spaces and Origins](../../workshops/foundation/affine_spaces.md) —
   hands-on exercises with absolute and relative origins
 - [Workshop: Strongly-Typed Counts](../../workshops/advanced/strongly_typed_counts.md) —
-  the same `is_kind` pattern for screen coordinates and counts
+  the same `subkind` pattern for screen coordinates and counts
 <!-- markdownlint-enable MD013 -->
 
 
@@ -63,7 +63,7 @@ using namespace mp_units;
 
 namespace seq {
 
-inline constexpr struct offset : quantity_spec<dimensionless, is_kind> {} offset;
+inline constexpr struct offset : quantity_spec<dimensionless, subkind> {} offset;
 
 // "element" is the base unit of the offset kind
 inline constexpr struct element : named_unit<"el", one, kind_of<offset>> {} element;
@@ -74,7 +74,7 @@ inline constexpr auto Kiel = iec::kibi<element>;  // 1 Kiel = 1024 el  (IEC kibi
 }  // namespace seq
 ```
 
-The `is_kind` specifier makes `offset` a distinct dimensionless kind: same dimension
+The `subkind` specifier makes `offset` a distinct dimensionless kind: same dimension
 as `one`, but the type system prevents mixing it with arbitrary dimensionless values.
 The named `element` unit gives quantities meaningful output (`3 el`, `2 kel`) and
 allows both SI and IEC scaled prefixes to attach cleanly.
@@ -370,14 +370,14 @@ a representation: the origin and offset infrastructure remains unchanged.
 
 If indices into different containers must be mutually incompatible (to prevent
 cross-container access bugs), define each as a plain named subtype of `seq::offset`
-— without `is_kind`:
+— without `subkind`:
 
 ```cpp
 inline constexpr struct vertex_index : quantity_spec<seq::offset> {} vertex_index;
 inline constexpr struct texcoord_index : quantity_spec<seq::offset> {} texcoord_index;
 ```
 
-Omitting `is_kind` is intentional and important: because they still derive from
+Omitting `subkind` is intentional and important: because they still derive from
 `seq::offset`, they satisfy `QuantityOf<seq::offset>` and `QuantityPointOf<seq::index>`,
 so `idx0()`, `to_size_t()`, and subtraction to get a `seq::offset` displacement all
 continue to work.  The type safety comes from them being distinct named quantity specs:
@@ -397,9 +397,9 @@ site.
 - [The Affine Space](../../users_guide/framework_basics/the_affine_space.md) —
   detailed explanation of `quantity_point`, origins, and their algebra
 - [Dimensionless Quantities](../../users_guide/framework_basics/dimensionless_quantities.md) —
-  `is_kind`, the unit `one`, and their superpowers
+  `subkind`, the unit `one`, and their superpowers
 - [Workshop: Affine Spaces and Origins](../../workshops/foundation/affine_spaces.md) —
   hands-on exercises with absolute and relative origins
 - [Workshop: Strongly-Typed Counts](../../workshops/advanced/strongly_typed_counts.md) —
-  the `is_kind` pattern for coordinates and counts
+  the `subkind` pattern for coordinates and counts
 <!-- markdownlint-enable MD013 -->

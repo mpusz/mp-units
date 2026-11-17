@@ -26,6 +26,9 @@ This page documents the version history and changes for the **mp-units** library
 - fix: `representation_canonical_type` forwards a reference to the unqualified type, as it
       already did a `const`, so a specialization for an expression-template proxy applies
       also when an operator returns a reference to the proxy (#837)
+- (!) refactor: `is_kind` is renamed to `subkind`. It is a tag that makes a quantity a kind
+      of its own, not a predicate, and an `is_` prefix reads as one. The former name is
+      deprecated
 - refactor: `scale<To>(M, value)` is renamed to `scale_by_magnitude<To>(M, value)`, which
       says what the value is scaled by. The former name is deprecated
 - fix: the displacement between two point origins keeps a named unit that already is the

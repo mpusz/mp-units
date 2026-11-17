@@ -49,7 +49,7 @@ QUANTITY_SPEC(Bragg_angle, angular_measure);                                    
 QUANTITY_SPEC(short_range_order_parameter, dimensionless);                                // 12-5.1
 QUANTITY_SPEC(long_range_order_parameter, dimensionless);                                 // 12-5.2
 // a scattering amplitude relative to that of a single electron, so not a ratio of like quantities
-QUANTITY_SPEC(atomic_scattering_factor, dimensionless, is_kind, quantity_field::complex);  // 12-5.3
+QUANTITY_SPEC(atomic_scattering_factor, dimensionless, subkind, quantity_field::complex);  // 12-5.3
 QUANTITY_SPEC(structure_factor, atomic_scattering_factor);                                 // 12-5.4
 QUANTITY_SPEC(Burgers_vector, displacement);                                               // 12-6
 QUANTITY_SPEC(particle_position_vector, position_vector);                                  // 12-7.1
@@ -68,8 +68,8 @@ QUANTITY_SPEC(Debye_angular_frequency, angular_frequency);    // 12-10
 QUANTITY_SPEC(Debye_temperature, thermodynamic_temperature);  // 12-11
 // not in ISO 80000; the counts that items 12-12 and 12-16 divide. Adding vibrational modes to
 // electronic states is meaningless, so each roots its own kind below the shared count parent
-QUANTITY_SPEC(number_of_vibrational_modes, number_of_entities, is_kind);
-QUANTITY_SPEC(number_of_states, number_of_entities, is_kind);
+QUANTITY_SPEC(number_of_vibrational_modes, number_of_entities, subkind);
+QUANTITY_SPEC(number_of_states, number_of_entities, subkind);
 QUANTITY_SPEC(density_of_vibrational_states, number_of_vibrational_modes / (volume * angular_frequency),
               non_negative);  // 12-12
 QUANTITY_SPEC(thermodynamic_Gruneisen_parameter, dimensionless,

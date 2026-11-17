@@ -654,8 +654,8 @@ explicitly, so the type system enforces that the conversion is intentional.
 === "With mp-units: Distinct kinds"
 
     ```cpp
-    inline constexpr struct fluid_head : quantity_spec<isq::height, is_kind> {} fluid_head;
-    inline constexpr struct water_head : quantity_spec<isq::height, is_kind> {} water_head;
+    inline constexpr struct fluid_head : quantity_spec<isq::height, subkind> {} fluid_head;
+    inline constexpr struct water_head : quantity_spec<isq::height, subkind> {} water_head;
     inline constexpr struct specific_gravity : quantity_spec<dimensionless> {} specific_gravity;
 
     constexpr QuantityOf<water_head> auto to_water_head(QuantityOf<fluid_head> auto h_fluid,
@@ -704,8 +704,8 @@ other numeric values that shouldn't be mixed:
 === "With mp-units: Distinct kinds"
 
     ```cpp
-    inline constexpr struct item_count : quantity_spec<dimensionless, is_kind> {} item_count;
-    inline constexpr struct widget_count : quantity_spec<dimensionless, is_kind> {} widget_count;
+    inline constexpr struct item_count : quantity_spec<dimensionless, subkind> {} item_count;
+    inline constexpr struct widget_count : quantity_spec<dimensionless, subkind> {} widget_count;
 
     quantity items = item_count(10);
     quantity widgets = widget_count(20);

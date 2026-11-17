@@ -272,10 +272,10 @@ and others should not be possible to be intermixed with each other:
 ```cpp
 namespace ni {
 
-inline constexpr struct SampleCount : quantity_spec<dimensionless, is_kind> {} SampleCount;
-inline constexpr struct UnitSampleAmount : quantity_spec<dimensionless, is_kind> {} UnitSampleAmount;
-inline constexpr struct MIDIClock : quantity_spec<dimensionless, is_kind> {} MIDIClock;
-inline constexpr struct BeatCount : quantity_spec<dimensionless, is_kind> {} BeatCount;
+inline constexpr struct SampleCount : quantity_spec<dimensionless, subkind> {} SampleCount;
+inline constexpr struct UnitSampleAmount : quantity_spec<dimensionless, subkind> {} UnitSampleAmount;
+inline constexpr struct MIDIClock : quantity_spec<dimensionless, subkind> {} MIDIClock;
+inline constexpr struct BeatCount : quantity_spec<dimensionless, subkind> {} BeatCount;
 ```
 
 We should also be able to create derived quantities from those. For example,

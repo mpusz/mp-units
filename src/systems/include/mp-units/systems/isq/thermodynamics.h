@@ -96,8 +96,8 @@ QUANTITY_SPEC(Joule_Thomson_coefficient, thermodynamic_temperature / pressure);
 QUANTITY_SPEC(thermodynamic_efficiency, dimensionless, work / heat);
 QUANTITY_SPEC(maximum_efficiency, thermodynamic_temperature / thermodynamic_temperature, non_negative);
 QUANTITY_SPEC(specific_gas_constant, entropy / mass, non_negative);
-QUANTITY_SPEC(mass_concentration_of_water, mass_density, mass / volume, is_kind);
-QUANTITY_SPEC(mass_concentration_of_water_vapour, mass_density, mass / volume, is_kind);
+QUANTITY_SPEC(mass_concentration_of_water, mass_density, mass / volume, subkind);
+QUANTITY_SPEC(mass_concentration_of_water_vapour, mass_density, mass / volume, subkind);
 QUANTITY_SPEC(mass_ratio_of_water_to_dry_matter, mass / mass, non_negative);
 QUANTITY_SPEC(mass_ratio_of_water_vapour_to_dry_gas, mass / mass, non_negative);
 QUANTITY_SPEC(mass_fraction_of_water, mass_ratio_of_water_to_dry_matter / mass_ratio_of_water_to_dry_matter,

@@ -59,11 +59,11 @@ struct is_declared_kind_impl : std::false_type {};
 #if MP_UNITS_API_NO_CRTP
 template<auto... Args>
 struct is_declared_kind_impl<quantity_spec<Args...>> :
-    std::bool_constant<mp_units::contains<struct is_kind, Args...>()> {};
+    std::bool_constant<mp_units::contains<struct subkind, Args...>()> {};
 #else
 template<typename Self, auto... Args>
 struct is_declared_kind_impl<quantity_spec<Self, Args...>> :
-    std::bool_constant<mp_units::contains<struct is_kind, Args...>()> {};
+    std::bool_constant<mp_units::contains<struct subkind, Args...>()> {};
 #endif
 
 template<typename Q>
@@ -89,7 +89,7 @@ struct kind_root_impl<kind_of_<N>> {
 template<typename N>
 struct kind_root_impl<open_factor<N>> : kind_root_impl<N> {};
 
-// The nearest ancestor-or-self declared with `is_kind`, else the root of the tree.
+// The nearest ancestor-or-self declared with `subkind`, else the root of the tree.
 template<typename Q>
 using kind_root = kind_root_impl<Q>::type;
 

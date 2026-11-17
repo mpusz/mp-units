@@ -324,7 +324,7 @@ quantity E_total = KE + E0;  // quantity<hep::total_energy[...]>
 ### Distinct Quantity Subkinds
 
 Some quantities are physically incompatible even though they share the same
-dimension, unit, *and* parent quantity. The HEP system uses the `is_kind`
+dimension, unit, *and* parent quantity. The HEP system uses the `subkind`
 specifier to make mixing them a compile error.
 
 **_Relativistic time_.** `proper_time` (τ, Lorentz-invariant) and
@@ -559,10 +559,10 @@ type-safe.
 Even dimensionless values can be distinguished by physical meaning:
 
 ```cpp
-inline constexpr struct efficiency : quantity_spec<dimensionless, is_kind> {} efficiency;
-inline constexpr struct branching_ratio : quantity_spec<dimensionless, is_kind> {} branching_ratio;
-inline constexpr struct event_count : quantity_spec<dimensionless, is_kind> {} event_count;
-inline constexpr struct yield : quantity_spec<dimensionless, is_kind> {} yield;
+inline constexpr struct efficiency : quantity_spec<dimensionless, subkind> {} efficiency;
+inline constexpr struct branching_ratio : quantity_spec<dimensionless, subkind> {} branching_ratio;
+inline constexpr struct event_count : quantity_spec<dimensionless, subkind> {} event_count;
+inline constexpr struct yield : quantity_spec<dimensionless, subkind> {} yield;
 
 quantity<yield[one]> compute_yield(quantity<efficiency[one]> eff,
                                    quantity<event_count[one], int> n_events);

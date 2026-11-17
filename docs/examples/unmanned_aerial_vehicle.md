@@ -18,7 +18,7 @@ tags:
 <!-- markdownlint-disable MD013 -->
 **Library:**
 
-- [`include/geographic.h`](https://github.com/mpusz/mp-units/blob/master/example/include/geographic.h) - Geographic primitives: 6 bounded angle types (_latitude_, _longitude_, _elevation_, _azimuth_, _bearing_, _heading_) with distinct point origins, overflow policies, and `is_kind` type safety
+- [`include/geographic.h`](https://github.com/mpusz/mp-units/blob/master/example/include/geographic.h) - Geographic primitives: 6 bounded angle types (_latitude_, _longitude_, _elevation_, _azimuth_, _bearing_, _heading_) with distinct point origins, overflow policies, and `subkind` type safety
 
 **Example:**
 
@@ -69,13 +69,13 @@ formatting that appends "AMSL" (Above Mean Sea Level) to clearly identify the re
 
 !!! note "Geographic Coordinate Types"
 
-    The `geographic` module provides **6 distinct angle types**, each with `is_kind` to prevent
+    The `geographic` module provides **6 distinct angle types**, each with `subkind` to prevent
     accidental mixing:
 
     - **Coordinates**: _latitude_ (reflects ±90°), _longitude_ (wraps [-180°, 180°)), _elevation_ (reflects ±90°)
     - **Orientation**: _azimuth_ (0° = East, CCW), _bearing_ (0° = North, CW), _heading_ (0° = North, CCW)
 
-    All use half-open intervals `[min, max)` for wrapping (max wraps to min). The `is_kind` marker
+    All use half-open intervals `[min, max)` for wrapping (max wraps to min). The `subkind` marker
     prevents operations like `latitude + longitude` or `bearing + heading` at compile time.
     For trigonometric functions, explicit conversion to `angular_measure` is required:
 

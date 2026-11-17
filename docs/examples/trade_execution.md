@@ -37,17 +37,17 @@ The example encodes this with derived quantity specifications:
 --8<-- "example/trade_execution.cpp:44:52"
 ```
 
-Both `market_quantity` and `notional_value` carry `is_kind`, making each the root of its
+Both `market_quantity` and `notional_value` carry `subkind`, making each the root of its
 own kind family:
 
-- **`market_quantity`** with `is_kind` — _market quantity_ is its own kind, distinct from
+- **`market_quantity`** with `subkind` — _market quantity_ is its own kind, distinct from
   generic `dimensionless` quantities (ratios, percentages, etc.). Without it, a _market
   quantity_ would silently convert to a plain number.
-- **`notional_value`** with `is_kind` — _notional value_ is its own kind, distinct from
+- **`notional_value`** with `subkind` — _notional value_ is its own kind, distinct from
   _currency_. Without it, a _notional value_ would silently convert to a plain _currency_
   amount, defeating the type safety the derived quantity is meant to provide.
 
-`is_kind` on `market_quantity` disables implicit construction from plain integers, so a
+`subkind` on `market_quantity` disables implicit construction from plain integers, so a
 `Qty` helper alias is provided: `Qty(137)` calls the quantity spec directly as a factory.
 
 The relationship `notional_value = currency × market_quantity` is the _defining
@@ -111,7 +111,7 @@ quoted price. The product
 
 Each fill is constructed with an explicit `Price{...}` (the constructor is explicit, so
 direct initialization is required) and `Qty(137)` (the `market_quantity` spec called
-directly as a factory, required because `is_kind` disables implicit construction from
+directly as a factory, required because `subkind` disables implicit construction from
 plain integers). The accumulator variables `total_notional` and `total_qty` are
 zero-initialized via copy initialization from `{}`. The `notional_value` quantity
 specification ensures that adding two _price_ quantities does not accidentally produce a
@@ -160,7 +160,7 @@ human-readable `USD` value at varying precisions.
 - **Derived Quantities**: The `notional_value` specification makes the
   _price_ × _market quantity_ algebra compile-time-safe — you cannot confuse a
   _notional value_ with a _price_ or a plain _currency_ amount
-- **Kind Safety**: `is_kind` on both `market_quantity` and `notional_value` ensures that
+- **Kind Safety**: `subkind` on both `market_quantity` and `notional_value` ensures that
   _market quantity_ and _notional value_ do not silently decay to their parent kinds
   (`dimensionless` and _currency_ respectively)
 - **Lossless Accumulation**: Integer arithmetic in `USD_8` avoids floating-point drift

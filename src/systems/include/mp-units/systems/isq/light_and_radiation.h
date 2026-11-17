@@ -70,10 +70,10 @@ QUANTITY_SPEC(spectral_radiant_exposure, radiant_exposure / wavelength, non_nega
 // efficiency of the source, so each is a distinct subkind of a common parent (like fluid and water head)
 MP_UNITS_PHOTOMETRIC_QSPEC(luminous_efficacy, luminous_flux_of<Condition> / power, non_negative);
 MP_UNITS_PHOTOMETRIC_QSPEC(luminous_efficacy_of_radiation, luminous_efficacy_of<Condition>,
-                           luminous_flux_of<Condition> / radiant_flux, is_kind, non_negative);
+                           luminous_flux_of<Condition> / radiant_flux, subkind, non_negative);
 MP_UNITS_PHOTOMETRIC_QSPEC(spectral_luminous_efficacy, luminous_efficacy_of_radiation_of<Condition>);
 MP_UNITS_PHOTOMETRIC_QSPEC(maximum_luminous_efficacy, luminous_efficacy_of_radiation_of<Condition>);
-MP_UNITS_PHOTOMETRIC_QSPEC(luminous_efficacy_of_source, luminous_efficacy_of<Condition>, is_kind, non_negative);
+MP_UNITS_PHOTOMETRIC_QSPEC(luminous_efficacy_of_source, luminous_efficacy_of<Condition>, subkind, non_negative);
 MP_UNITS_PHOTOMETRIC_QSPEC(luminous_efficiency,
                            luminous_efficacy_of_radiation_of<Condition> / luminous_efficacy_of_radiation_of<Condition>,
                            non_negative);
@@ -85,7 +85,7 @@ MP_UNITS_PHOTOMETRIC_QSPEC(luminous_exposure, illuminance_of<Condition>* time, n
 
 // photon quantities (ISO 80000-7:2019, items 7-19 to 7-25)
 QUANTITY_SPEC(photon_energy, energy, non_negative);
-QUANTITY_SPEC(photon_number, number_of_entities, radiant_energy / photon_energy, is_kind);
+QUANTITY_SPEC(photon_number, number_of_entities, radiant_energy / photon_energy, subkind);
 QUANTITY_SPEC(photon_flux, photon_number / duration, non_negative);
 QUANTITY_SPEC(photon_intensity, photon_flux / solid_angular_measure, non_negative);
 QUANTITY_SPEC(photon_radiance, photon_intensity / area, non_negative);

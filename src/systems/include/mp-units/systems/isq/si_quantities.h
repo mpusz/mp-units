@@ -42,8 +42,8 @@ QUANTITY_SPEC(radius, width);  // differs from ISO 80000
 QUANTITY_SPEC(path_length, length);
 inline constexpr auto arc_length = path_length;
 QUANTITY_SPEC(area, pow<2>(length), non_negative);
-QUANTITY_SPEC(angular_measure, dimensionless, arc_length / radius, is_kind);
-QUANTITY_SPEC(solid_angular_measure, dimensionless, area / pow<2>(radius), is_kind, non_negative);
+QUANTITY_SPEC(angular_measure, dimensionless, arc_length / radius, subkind);
+QUANTITY_SPEC(solid_angular_measure, dimensionless, area / pow<2>(radius), subkind, non_negative);
 QUANTITY_SPEC(period_duration, duration);
 inline constexpr auto period = period_duration;
 QUANTITY_SPEC(frequency, inverse(period_duration), non_negative);

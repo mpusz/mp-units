@@ -21,7 +21,7 @@ For background on the concepts used here, see:
 - [Character of a Quantity](../../users_guide/framework_basics/character_of_a_quantity.md) -
   scalar, vector, and tensor characters
 - [Systems of Quantities](../../users_guide/framework_basics/systems_of_quantities.md) -
-  the quantity hierarchy, `is_kind`, and quantity-kind safety
+  the quantity hierarchy, `subkind`, and quantity-kind safety
 - [Representation Types](../../users_guide/advanced_topics/representation_types.md) -
   what a type must provide to act as a representation
 <!-- markdownlint-enable MD013 -->
@@ -88,7 +88,7 @@ satisfy a small set of rules, all checked at compile time:
 3. **Every axis shares the whole's hierarchy root.** All axes, and the whole, descend from
    the same ancestor (here `isq::velocity`). This is what makes them the *same kind* of
    physical _quantity_.
-4. **Each axis is a distinct kind.** Declaring an axis with `is_kind` starts a new kind, so
+4. **Each axis is a distinct kind.** Declaring an axis with `subkind` starts a new kind, so
    the _forward_, _lateral_, and _vertical velocities_ cannot be substituted for one
    another.
 5. **Each axis differs in kind from the whole.** The whole stays a plain child of the root,
@@ -101,15 +101,15 @@ Applied to the drone:
 inline constexpr struct flight_velocity : quantity_spec<isq::velocity> {} flight_velocity;
 
 // the axes: each its own kind, all sharing the isq::velocity hierarchy root
-inline constexpr struct forward_velocity : quantity_spec<isq::velocity, is_kind> {} forward_velocity;
-inline constexpr struct lateral_velocity : quantity_spec<isq::velocity, is_kind> {} lateral_velocity;
-inline constexpr struct vertical_velocity : quantity_spec<isq::velocity, is_kind> {} vertical_velocity;
+inline constexpr struct forward_velocity : quantity_spec<isq::velocity, subkind> {} forward_velocity;
+inline constexpr struct lateral_velocity : quantity_spec<isq::velocity, subkind> {} lateral_velocity;
+inline constexpr struct vertical_velocity : quantity_spec<isq::velocity, subkind> {} vertical_velocity;
 ```
 
 These sit in the `isq::speed` kind as follows. The whole `flight_velocity` is a plain child
 of `velocity`, so it stays in the `speed` kind. Each axis branches off as a kind of its
 own, drawn as a separate box reached by a dashed edge, the same way the User's Guide marks
-an `is_kind` boundary:
+a `subkind` boundary:
 
 ```mermaid
 flowchart TD
@@ -134,10 +134,10 @@ The three axes are siblings of `flight_velocity` in the type hierarchy, not its 
 The decomposition that pairs them with the whole is the `component_vectors` specialization
 below, not an inheritance relationship.
 
-!!! info "Why `is_kind` on the axes"
+!!! info "Why `subkind` on the axes"
 
-    Without `is_kind`, all three axes would still belong to the `isq::velocity` kind, and
-    the library would let you add a _forward velocity_ to a _vertical_ one. `is_kind` makes
+    Without `subkind`, all three axes would still belong to the `isq::velocity` kind, and
+    the library would let you add a _forward velocity_ to a _vertical_ one. `subkind` makes
     each axis a kind of its own, so cross-axis arithmetic is rejected, while same-axis
     arithmetic (adding two _forward velocities_, for example) still works. See
     [Systems of Quantities](../../users_guide/framework_basics/systems_of_quantities.md)
@@ -475,7 +475,7 @@ get<isq::acceleration>(v);  // error: not one of the declared axes
 - [Character of a Quantity](../../users_guide/framework_basics/character_of_a_quantity.md) -
   scalar, vector, and tensor characters and their operations
 - [Systems of Quantities](../../users_guide/framework_basics/systems_of_quantities.md) -
-  the quantity hierarchy, `is_kind`, and quantity-kind safety
+  the quantity hierarchy, `subkind`, and quantity-kind safety
 - [Representation Types](../../users_guide/advanced_topics/representation_types.md) -
   the requirements a representation must meet
 - [Using a Linear Algebra Library as the Representation](../../examples/linear_algebra.md) -

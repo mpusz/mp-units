@@ -401,17 +401,17 @@ kind states its coefficient with `log_coefficient<N>`:
 inline constexpr struct electric_potential :
     quantity_spec<isq::energy / (isq::electric_current * isq::time), log_coefficient<2>> {} electric_potential;
 
-// sound_pressure is root-power but shares the (power) pressure dimension, so is_kind makes it its
+// sound_pressure is root-power but shares the (power) pressure dimension, so subkind makes it its
 // own kind, while it stays kind_of pressure so the unit Pa applies:
 inline constexpr struct sound_pressure :
-    quantity_spec<isq::pressure, is_kind, log_coefficient<2>> {} sound_pressure;
+    quantity_spec<isq::pressure, subkind, log_coefficient<2>> {} sound_pressure;
 ```
 
 So a root-power kind carries `log_coefficient<2>` on its root (`electric_potential`), and
-every quantity of that kind inherits it through `get_kind`. `is_kind` is needed only when
+every quantity of that kind inherits it through `get_kind`. `subkind` is needed only when
 a root-power quantity *shares a dimension with a power one* (`sound_pressure` versus
-general `pressure`): its natural kind root is the power `pressure`, so `is_kind` gives it
-its own subkind. Because `is_kind` makes `sound_pressure` a distinct kind, converting to or
+general `pressure`): its natural kind root is the power `pressure`, so `subkind` gives it
+its own subkind. Because `subkind` makes `sound_pressure` a distinct kind, converting to or
 from plain `pressure` is explicit in **both** directions, the widening up as well as the
 narrowing down, so a `sound_pressure` value never silently decays to `pressure`'s
 coefficient `1`.
@@ -441,7 +441,7 @@ own kind carrying that value: pH uses `-1`, stellar magnitude `-5/2`.
 ```cpp
 // pH is its own kind (a subkind of concentration) with coefficient -1; the pH unit just reads it
 inline constexpr struct hydrogen_ion_concentration :
-    quantity_spec<isq::concentration, is_kind, log_coefficient<-1>> {} hydrogen_ion_concentration;
+    quantity_spec<isq::concentration, subkind, log_coefficient<-1>> {} hydrogen_ion_concentration;
 ```
 
 **The cost.** A kind specifier means classifying the library's kinds: a
@@ -975,11 +975,11 @@ come out as three units over two kinds:
 
 ```cpp
 // a digital sample level is a root-power quantity of its own dimensionless kind
-inline constexpr struct digital_level : quantity_spec<dimensionless, is_kind, log_coefficient<2>> {} digital_level;
+inline constexpr struct digital_level : quantity_spec<dimensionless, subkind, log_coefficient<2>> {} digital_level;
 // the statistic is its own kind (the coefficient comes from the parent), because the peak
 // and the RMS of one signal differ by its crest factor, which is not a fixed offset
-inline constexpr struct peak_sample_level : quantity_spec<digital_level, is_kind> {} peak_sample_level;
-inline constexpr struct rms_sample_level : quantity_spec<digital_level, is_kind> {} rms_sample_level;
+inline constexpr struct peak_sample_level : quantity_spec<digital_level, subkind> {} peak_sample_level;
+inline constexpr struct rms_sample_level : quantity_spec<digital_level, subkind> {} rms_sample_level;
 
 // one unit per cell: the sine definition agrees with the square one on a peak value and
 // sits 3.01 dB lower on an RMS one
@@ -996,7 +996,7 @@ say which one it came from. Only three units appear because the peak column of t
 is one cell in practice: both definitions reference full scale there, so `dBFS (peak)`
 serves them both, and `dBov` is left where it is actually used, on RMS values.
 
-The `is_kind` on the two statistics is what keeps the framework from
+The `subkind` on the two statistics is what keeps the framework from
 [converting](#conversions-within-the-log-domain) a peak figure into an RMS one by adding
 3.01 dB. Those two differ by the signal's crest factor, which is 3.01 dB for a sine and
 anything at all for music, so the crest factor stays where it belongs, in a measurement the
@@ -1045,7 +1045,7 @@ reads it, with no override:
 ```cpp
 // the transfer function is its own root-power kind (coefficient 2); dB reads it
 inline constexpr struct sensitivity :
-    quantity_spec<isq::voltage / isq::sound_pressure, is_kind, log_coefficient<2>> {} sensitivity;
+    quantity_spec<isq::voltage / isq::sound_pressure, subkind, log_coefficient<2>> {} sensitivity;
 inline constexpr struct dB_VPa : named_unit<"dB(V/Pa)", dB<sensitivity>, V / Pa> {} dB_VPa;
 ```
 

@@ -91,7 +91,7 @@ quantities. The system should:
 using namespace mp_units;
 
 // TODO: Define pixel_x as a distinct kind of dimensionless
-// Hint: Use quantity_spec<dimensionless, is_kind> to make it distinct from other counts
+// Hint: Use quantity_spec<dimensionless, subkind> to make it distinct from other counts
 
 // TODO: Define pixel_y as a distinct kind of dimensionless
 
@@ -190,12 +190,12 @@ int main()
 
     using namespace mp_units;
 
-    // Define distinct dimensionless quantity types using is_kind
-    inline constexpr struct pixel_x : quantity_spec<dimensionless, is_kind> {} pixel_x;
-    inline constexpr struct pixel_y : quantity_spec<dimensionless, is_kind> {} pixel_y;
-    inline constexpr struct sprite_count : quantity_spec<dimensionless, is_kind> {} sprite_count;
-    inline constexpr struct frame_count : quantity_spec<dimensionless, is_kind> {} frame_count;
-    inline constexpr struct buffer_index : quantity_spec<dimensionless, is_kind> {} buffer_index;
+    // Define distinct dimensionless quantity types using subkind
+    inline constexpr struct pixel_x : quantity_spec<dimensionless, subkind> {} pixel_x;
+    inline constexpr struct pixel_y : quantity_spec<dimensionless, subkind> {} pixel_y;
+    inline constexpr struct sprite_count : quantity_spec<dimensionless, subkind> {} sprite_count;
+    inline constexpr struct frame_count : quantity_spec<dimensionless, subkind> {} frame_count;
+    inline constexpr struct buffer_index : quantity_spec<dimensionless, subkind> {} buffer_index;
 
     // Define specialized quantities (children of the distinct kinds)
     inline constexpr struct resolution_width : quantity_spec<pixel_x> {} resolution_width;
@@ -268,7 +268,7 @@ int main()
     ### Type safety without boilerplate
 
     By defining `pixel_x`, `pixel_y`, `sprite_count`, `frame_count`, and `buffer_index` as
-    distinct kinds of dimensionless quantities using `is_kind`, you get:
+    distinct kinds of dimensionless quantities using `subkind`, you get:
 
     - **Automatic type safety**: Cannot mix coordinates, counts, frames, and indices
     - **All arithmetic operators**: Addition, subtraction, comparison, etc., work
@@ -276,14 +276,14 @@ int main()
     - **Zero overhead**: Compiles to the same machine code as raw integers
     - **Clear semantics**: Function signatures document what each parameter represents
 
-    ### The power of `is_kind`
+    ### The power of `subkind`
 
-    The `is_kind` specifier creates distinct quantity **subkinds** within the quantity
+    The `subkind` specifier creates distinct quantity **subkinds** within the quantity
     hierarchy:
 
     ```cpp
-    inline constexpr struct pixel_x : quantity_spec<dimensionless, is_kind> {} pixel_x;
-    inline constexpr struct pixel_y : quantity_spec<dimensionless, is_kind> {} pixel_y;
+    inline constexpr struct pixel_x : quantity_spec<dimensionless, subkind> {} pixel_x;
+    inline constexpr struct pixel_y : quantity_spec<dimensionless, subkind> {} pixel_y;
     ```
 
     This means:
@@ -299,7 +299,7 @@ int main()
     You can create hierarchies within your custom kinds:
 
     ```cpp
-    inline constexpr struct pixel_x : quantity_spec<dimensionless, is_kind> {} pixel_x;
+    inline constexpr struct pixel_x : quantity_spec<dimensionless, subkind> {} pixel_x;
     inline constexpr struct resolution_width : quantity_spec<pixel_x> {} resolution_width;
     ```
 
@@ -333,7 +333,7 @@ int main()
 
     ### When to use this approach
 
-    Use dimensionless quantities with `is_kind` for:
+    Use dimensionless quantities with `subkind` for:
 
     - **Counts and indices**: item counts, array indices, iteration counts
     - **Coordinates**: screen pixels, grid positions (when axes should not mix)
@@ -376,7 +376,7 @@ int main()
 
     However, this prevents using the unit `one` and its superpowers (implicit construction from
     numeric literals, implicit conversion to numeric types). The approach shown in the main
-    workshop (using `one` with `is_kind` quantity specs) is more flexible and ergonomic for most
+    workshop (using `one` with `subkind` quantity specs) is more flexible and ergonomic for most
     use cases.
 
 
@@ -392,7 +392,7 @@ int main()
 
 - **mp-units** provides strongly-typed numeric types through dimensionless quantities,
   solving a decades-old C++ problem for countable values
-- Use `is_kind` to create distinct quantity types that cannot be accidentally mixed
+- Use `subkind` to create distinct quantity types that cannot be accidentally mixed
 - All arithmetic operators work automatically—no boilerplate needed
 - Unit `one` provides superpowers: implicit construction from raw values, explicit
   conversion to raw values, and comparison with raw values

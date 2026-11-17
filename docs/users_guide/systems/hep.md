@@ -197,9 +197,9 @@ For complete hierarchy trees and all available specialized quantities, see the
 
 Some HEP quantities share the same dimension, unit, and even the same parent quantity,
 yet represent fundamentally **incompatible physical concepts** that should never be added
-to or compared with each other. The HEP system uses the `is_kind` specifier to enforce
+to or compared with each other. The HEP system uses the `subkind` specifier to enforce
 this at compile time. See
-[Creating Distinct Quantity Kinds with `is_kind`](../framework_basics/systems_of_quantities.md#creating-distinct-quantity-kinds-with-is_kind)
+[Creating Distinct Quantity Kinds with `subkind`](../framework_basics/systems_of_quantities.md#creating-distinct-quantity-kinds-with-subkind)
 for the general mechanism.
 
 ### Relativistic Time: `proper_time` and `coordinate_time`

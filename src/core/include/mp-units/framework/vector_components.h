@@ -125,7 +125,7 @@ concept ValidVectorAxes =
   ((... && (count_equal<get_hierarchy_root(Axes), get_hierarchy_root(Axes)...>() == sizeof...(Axes))) ||
    unsatisfied<"all component axes must share a common hierarchy root (be the same kind of quantity)">()) &&
   ((... && (count_equal<get_kind_tree_root(Axes), get_kind_tree_root(Axes)...>() == 1)) ||
-   unsatisfied<"component axes must be distinct kinds (declare each with is_kind)">());
+   unsatisfied<"component axes must be distinct kinds (declare each with subkind)">());
 
 }  // namespace detail
 
@@ -144,7 +144,7 @@ concept ValidVectorAxes =
  *
  * The axis-intrinsic preconditions are enforced here: every axis must be a vector quantity, the
  * axes must share a common hierarchy root (be the same kind of quantity), and they must be
- * pairwise-distinct kinds (declare each with `is_kind`). A specialization that violates them is
+ * pairwise-distinct kinds (declare each with `subkind`). A specialization that violates them is
  * ill-formed at the point of definition. The relational preconditions (axes share the whole's
  * hierarchy root, differ from the whole's kind, and fit the representation) need the whole and the
  * representation, so they are enforced when a `quantity` is actually decomposed.
@@ -244,7 +244,7 @@ concept NamedDecomposable =
   (axes_share_hierarchy_root<QS>(declared_axes<QS>{}) ||
    unsatisfied<"every component axis must share the whole's hierarchy root">()) &&
   (axes_distinct_from_whole_kind<QS>(declared_axes<QS>{}) ||
-   unsatisfied<"every component axis must be a different kind than the whole (declare it with is_kind)">()) &&
+   unsatisfied<"every component axis must be a different kind than the whole (declare it with subkind)">()) &&
   (extent<Rep>() != dynamic_extent ||
    unsatisfied<"the representation must state its length at compile time through std::tuple_size">()) &&
   (declared_axes<QS>::size == extent<Rep>() ||

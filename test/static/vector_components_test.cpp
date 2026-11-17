@@ -48,9 +48,9 @@ using vec3i = utility::cartesian_vector<int>;
 
 // the aviation hierarchy: a 3D whole plus 1D-vector component axes (each its own kind)
 QUANTITY_SPEC(flight_velocity, isq::velocity);
-QUANTITY_SPEC(forward_velocity, isq::velocity, is_kind);
-QUANTITY_SPEC(wind_drift, isq::velocity, is_kind);
-QUANTITY_SPEC(sink_rate, isq::velocity, is_kind);
+QUANTITY_SPEC(forward_velocity, isq::velocity, subkind);
+QUANTITY_SPEC(wind_drift, isq::velocity, subkind);
+QUANTITY_SPEC(sink_rate, isq::velocity, subkind);
 
 }  // namespace
 
@@ -102,16 +102,16 @@ QUANTITY_SPEC(w_too_many, isq::velocity);
 QUANTITY_SPEC(w_too_few, isq::velocity);
 QUANTITY_SPEC(w_axis_eq_whole, isq::velocity);
 QUANTITY_SPEC(w_no_base, isq::velocity);
-QUANTITY_SPEC(px, isq::velocity);  // plain children (not is_kind) -> share the velocity kind
+QUANTITY_SPEC(px, isq::velocity);  // plain children (not subkind) -> share the velocity kind
 QUANTITY_SPEC(py, isq::velocity);
 QUANTITY_SPEC(pz, isq::velocity);
-QUANTITY_SPEC(thrust, isq::force, is_kind);  // forces: a different hierarchy root than velocity
-QUANTITY_SPEC(drag, isq::force, is_kind);
-QUANTITY_SPEC(lift, isq::force, is_kind);
-QUANTITY_SPEC(a1, isq::velocity, is_kind);
-QUANTITY_SPEC(a2, isq::velocity, is_kind);
-QUANTITY_SPEC(a3, isq::velocity, is_kind);
-QUANTITY_SPEC(a4, isq::velocity, is_kind);
+QUANTITY_SPEC(thrust, isq::force, subkind);  // forces: a different hierarchy root than velocity
+QUANTITY_SPEC(drag, isq::force, subkind);
+QUANTITY_SPEC(lift, isq::force, subkind);
+QUANTITY_SPEC(a1, isq::velocity, subkind);
+QUANTITY_SPEC(a2, isq::velocity, subkind);
+QUANTITY_SPEC(a3, isq::velocity, subkind);
+QUANTITY_SPEC(a4, isq::velocity, subkind);
 
 // axis-intrinsic violations are rejected by `vector_axes` itself (such a specialization is
 // ill-formed at the point of definition); tested here through the validity concept
@@ -160,9 +160,9 @@ static_assert(invalid_decompositions<>);
 namespace {
 
 QUANTITY_SPEC(cplx_flight_velocity, isq::velocity, quantity_field::complex);
-QUANTITY_SPEC(cplx_forward, isq::velocity, is_kind, quantity_field::complex);
-QUANTITY_SPEC(cplx_drift, isq::velocity, is_kind, quantity_field::complex);
-QUANTITY_SPEC(cplx_sink, isq::velocity, is_kind, quantity_field::complex);
+QUANTITY_SPEC(cplx_forward, isq::velocity, subkind, quantity_field::complex);
+QUANTITY_SPEC(cplx_drift, isq::velocity, subkind, quantity_field::complex);
+QUANTITY_SPEC(cplx_sink, isq::velocity, subkind, quantity_field::complex);
 QUANTITY_SPEC(cplx_speed, isq::speed, quantity_field::complex);  // a complex *scalar*
 
 }  // namespace

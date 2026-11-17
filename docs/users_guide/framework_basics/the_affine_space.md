@@ -624,7 +624,7 @@ arithmetic operations.
     separate `absolute_point_origin` types connected via `frame_projection`. This ensures
     type safety while allowing the framework to handle coordinate transformations automatically.
 
-    **Type Safety with `is_kind`**: All geographic quantity specs use `is_kind` to prevent
+    **Type Safety with `subkind`**: All geographic quantity specs use `subkind` to prevent
     accidental mixing of different angle types (e.g., `latitude + longitude`, `bearing + heading`).
     This requires explicit conversion when using trigonometric functions:
 

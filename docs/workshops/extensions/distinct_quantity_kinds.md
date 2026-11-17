@@ -16,9 +16,9 @@ Traditional code using raw `double` values allows such mistakes to silently comp
 Remarkably, even units libraries from C++ and also other programming languages cannot
 prevent this error—they only check dimensional compatibility, not physical meaning.
 
-This workshop demonstrates how **mp-units** uses `is_kind` to create distinct quantity
+This workshop demonstrates how **mp-units** uses `subkind` to create distinct quantity
 **subkinds within an existing hierarchy**—a capability unique among units libraries worldwide.
-The key insight: `is_kind` lets quantities **inherit** properties (dimension, unit) from a
+The key insight: `subkind` lets quantities **inherit** properties (dimension, unit) from a
 parent while **isolating** them from each other. Just as the library prevents mixing
 _plane angles_ and _solid angles_ (both subkinds of _dimensionless_), you can create
 custom subkinds like _fluid head_ and _water head_ (both subkinds of _height_) that
@@ -124,7 +124,7 @@ Here's how different approaches handle (or fail to handle) this scenario:
 The fundamental limitation: **Units libraries check dimensional compatibility
 (_length_ + _length_ = OK), but cannot enforce that quantities with the same dimension
 may represent incompatible physical concepts.** This is where **mp-units** breaks new
-ground with its `is_kind` feature.
+ground with its `subkind` feature.
 
 **Problems common to all these approaches:**
 
@@ -245,8 +245,8 @@ int main()
     using namespace mp_units;
 
     // 1. Define the distinct kinds (The Safety Layer)
-    inline constexpr struct fluid_head : quantity_spec<isq::height, is_kind> {} fluid_head;
-    inline constexpr struct water_head : quantity_spec<isq::height, is_kind> {} water_head;
+    inline constexpr struct fluid_head : quantity_spec<isq::height, subkind> {} fluid_head;
+    inline constexpr struct water_head : quantity_spec<isq::height, subkind> {} water_head;
 
     // 2. Define a type for Specific Gravity (Dimensionless)
     inline constexpr struct specific_gravity : quantity_spec<dimensionless> {} specific_gravity;
@@ -313,7 +313,7 @@ int main()
 
     **How the solution works:**
 
-    By marking `fluid_head` and `water_head` with `is_kind`, we create distinct quantity types
+    By marking `fluid_head` and `water_head` with `subkind`, we create distinct quantity types
     that cannot be mixed despite sharing the `length` dimension:
 
     - **Compile-time prevention**: Direct addition, comparison, or assignment between fluid head
@@ -337,10 +337,10 @@ int main()
 
 ??? abstract "What you learned?"
 
-    ### `is_kind` creates absolute type separation
+    ### `subkind` creates absolute type separation
 
     Unlike regular `quantity_spec` inheritance where subtypes can implicitly convert to their
-    parent, `is_kind` creates **incompatible types** even when they share the same dimension:
+    parent, `subkind` creates **incompatible types** even when they share the same dimension:
 
     ```cpp
     // Regular inheritance - implicit conversions allowed:
@@ -351,9 +351,9 @@ int main()
     quantity b = length_b(10 * m);
     quantity sum = a + b;  // ✅ Compiles! Result: isq::length
 
-    // With is_kind - no implicit conversions:
-    inline constexpr struct fluid_head : quantity_spec<isq::height, is_kind> {} fluid_head;
-    inline constexpr struct water_head : quantity_spec<isq::height, is_kind> {} water_head;
+    // With subkind - no implicit conversions:
+    inline constexpr struct fluid_head : quantity_spec<isq::height, subkind> {} fluid_head;
+    inline constexpr struct water_head : quantity_spec<isq::height, subkind> {} water_head;
 
     quantity h_fluid = fluid_head(2 * m);
     quantity h_water = water_head(10 * m);
@@ -414,12 +414,12 @@ int main()
 
     ### Comparison with built-in protections
 
-    **mp-units** uses `is_kind` internally for dimensionless angle types:
+    **mp-units** uses `subkind` internally for dimensionless angle types:
 
     ```cpp
     // Built-in to mp-units:
-    inline constexpr struct angular_measure : quantity_spec<dimensionless, is_kind> {} angular_measure;
-    inline constexpr struct solid_angular_measure : quantity_spec<dimensionless, is_kind> {} solid_angular_measure;
+    inline constexpr struct angular_measure : quantity_spec<dimensionless, subkind> {} angular_measure;
+    inline constexpr struct solid_angular_measure : quantity_spec<dimensionless, subkind> {} solid_angular_measure;
 
     quantity angle = angular_measure(π * rad);
     quantity solid = solid_angular_measure(4*π * sr);
@@ -433,7 +433,7 @@ int main()
     - _Voltage_ (RMS vs peak)
     - _Power_ (true vs apparent)
 
-    ### When to use `is_kind` vs regular `quantity_spec`
+    ### When to use `subkind` vs regular `quantity_spec`
 
     **Use regular `quantity_spec` when:**
 
@@ -441,7 +441,7 @@ int main()
     - Addition/comparison makes physical sense
     - Common ancestor captures the relationship
 
-    **Use `is_kind` when:**
+    **Use `subkind` when:**
 
     - Same dimension but fundamentally different meanings
     - Direct mixing produces physically nonsense results
@@ -456,8 +456,8 @@ int main()
 
 ## Takeaways
 
-- **`is_kind` creates incompatible types**: Even when quantities share the same dimension,
-  `is_kind` prevents mixing them without explicit conversion
+- **`subkind` creates incompatible types**: Even when quantities share the same dimension,
+  `subkind` prevents mixing them without explicit conversion
 - **Domain-specific safety**: Hydraulic engineering's distinction between _energy_ measurements
   in different reference frames (_fluid head_ vs _water head_) becomes a compile-time guarantee
 - **Explicit conversions**: Physics-based conversions (through _specific gravity_) are visible

@@ -447,8 +447,11 @@ concept QSProperty = !QuantitySpec<T>;
 
 MP_UNITS_EXPORT_BEGIN
 
-inline constexpr struct is_kind {
-} is_kind;
+inline constexpr struct subkind {
+} subkind;
+
+// the former name of `subkind`, of the same type, so a quantity declared with it is still a kind
+[[deprecated("2.6.0: Use `subkind` instead")]] inline constexpr struct subkind is_kind = subkind;
 
 inline constexpr struct non_negative {
 } non_negative;
@@ -641,7 +644,7 @@ struct propagate_equation<Q, true> {
  *
  * @tparam Q quantity specification of a parent quantity
  * @tparam Args optionally a value of a `quantity_character` in case the base quantity should not be real scalar
- *              or `is_kind` in case the quantity starts a new hierarchy tree of a kind
+ *              or `subkind` in case the quantity starts a new hierarchy tree of a kind
  */
 #if MP_UNITS_API_NO_CRTP
 template<detail::NamedQuantitySpec auto QS, detail::QSProperty auto... Args>
@@ -685,7 +688,7 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
  * For example:
  *
  * @code{.cpp}
- * inline constexpr struct angular_measure : quantity_spec<dimensionless, arc_length / radius, is_kind> {} angular_measure;
+ * inline constexpr struct angular_measure : quantity_spec<dimensionless, arc_length / radius, subkind> {} angular_measure;
  * inline constexpr struct velocity : quantity_spec<speed, displacement / duration> {} velocity;
  * inline constexpr struct weight : quantity_spec<force, mass * acceleration_of_free_fall> {} weight;
  * inline constexpr struct kinetic_energy : quantity_spec<mechanical_energy, mass * pow<2>(speed)> {} kinetic_energy;
@@ -698,7 +701,7 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
  *
  * @tparam Q quantity specification of a parent quantity
  * @tparam Args optionally a value of `quantity_character` in case the base quantity should not
- *              be real scalar or `is_kind` in case the quantity starts a new hierarchy tree of a kind
+ *              be real scalar or `subkind` in case the quantity starts a new hierarchy tree of a kind
  */
 // clang-format on
 #if MP_UNITS_API_NO_CRTP

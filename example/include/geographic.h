@@ -86,7 +86,7 @@ namespace geographic {
 // - heading_azimuth: 0° = North, increases counter-clockwise
 //   Conversion: heading = geometric_azimuth - 90°
 //
-// All geographic quantity specs are marked with is_kind to prevent accidental mixing
+// All geographic quantity specs are marked with subkind to prevent accidental mixing
 // (e.g., latitude + longitude, bearing + heading) and to require explicit conversions
 // between different angle reference frames.
 //
@@ -95,14 +95,14 @@ namespace geographic {
 //   sin(angle);  // Now works with plain angular_measure
 
 // Basic geographic coordinates
-QUANTITY_SPEC(geo_latitude, mp_units::isq::angular_measure, mp_units::is_kind);
-QUANTITY_SPEC(geo_longitude, mp_units::isq::angular_measure, mp_units::is_kind);
-QUANTITY_SPEC(geo_elevation, mp_units::isq::angular_measure, mp_units::is_kind);
+QUANTITY_SPEC(geo_latitude, mp_units::isq::angular_measure, mp_units::subkind);
+QUANTITY_SPEC(geo_longitude, mp_units::isq::angular_measure, mp_units::subkind);
+QUANTITY_SPEC(geo_elevation, mp_units::isq::angular_measure, mp_units::subkind);
 
 // Orientation angles (different zero references and rotation directions)
-QUANTITY_SPEC(geometric_azimuth, mp_units::isq::angular_measure, mp_units::is_kind);
-QUANTITY_SPEC(geo_bearing, mp_units::isq::angular_measure, mp_units::is_kind);
-QUANTITY_SPEC(heading_azimuth, mp_units::isq::angular_measure, mp_units::is_kind);
+QUANTITY_SPEC(geometric_azimuth, mp_units::isq::angular_measure, mp_units::subkind);
+QUANTITY_SPEC(geo_bearing, mp_units::isq::angular_measure, mp_units::subkind);
+QUANTITY_SPEC(heading_azimuth, mp_units::isq::angular_measure, mp_units::subkind);
 
 // Note: equator carries no `reflect_in_range` bounds. Latitude reflection at the
 // poles is coupled with a 180° longitude shift, which a single-axis policy

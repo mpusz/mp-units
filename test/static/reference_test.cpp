@@ -56,13 +56,13 @@ QUANTITY_SPEC_(period_duration, time);
 QUANTITY_SPEC_(frequency, inverse(period_duration));
 QUANTITY_SPEC_(activity, inverse(time));
 QUANTITY_SPEC_(area, length* length);
-QUANTITY_SPEC_(angular_measure, dimensionless, arc_length / radius, is_kind);
-QUANTITY_SPEC_(solid_angular_measure, dimensionless, area / pow<2>(radius), is_kind);
+QUANTITY_SPEC_(angular_measure, dimensionless, arc_length / radius, subkind);
+QUANTITY_SPEC_(solid_angular_measure, dimensionless, area / pow<2>(radius), subkind);
 QUANTITY_SPEC_(speed, length / time);
 QUANTITY_SPEC_(acceleration, speed / time);
 QUANTITY_SPEC_(force, mass* acceleration);
 QUANTITY_SPEC_(power, force* speed);
-QUANTITY_SPEC_(storage_capacity, dimensionless, is_kind);
+QUANTITY_SPEC_(storage_capacity, dimensionless, subkind);
 
 // base units
 inline constexpr struct second_ final : named_unit<"s", kind_of<time>> {} second;

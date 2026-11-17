@@ -74,8 +74,8 @@ QUANTITY_SPEC(path_length, length);  // actual distance traveled along a traject
 QUANTITY_SPEC(displacement, length,
               quantity_tensor_order::vector);        // shortest distance between two points (vector)
 QUANTITY_SPEC(position_vector, displacement);        // position relative to origin (vector)
-QUANTITY_SPEC(interaction_length, length, is_kind);  // mean distance before nuclear interaction with matter
-QUANTITY_SPEC(radiation_length, length, is_kind);    // mean distance over which electron energy falls to 1/e
+QUANTITY_SPEC(interaction_length, length, subkind);  // mean distance before nuclear interaction with matter
+QUANTITY_SPEC(radiation_length, length, subkind);    // mean distance over which electron energy falls to 1/e
 QUANTITY_SPEC(nuclear_interaction_length,
               interaction_length);        // mean distance before nuclear interaction
 QUANTITY_SPEC(mean_free_path, length);    // average distance between collisions
@@ -87,8 +87,8 @@ QUANTITY_SPEC(radius, length);            // radial distance from axis/center
 QUANTITY_SPEC(range, length);             // distance a particle travels before stopping
 
 // specialized time quantities
-QUANTITY_SPEC(proper_time, duration, is_kind);      // time in particle's rest frame (Lorentz-invariant)
-QUANTITY_SPEC(coordinate_time, duration, is_kind);  // time in lab/detector frame (frame-dependent)
+QUANTITY_SPEC(proper_time, duration, subkind);      // time in particle's rest frame (Lorentz-invariant)
+QUANTITY_SPEC(coordinate_time, duration, subkind);  // time in lab/detector frame (frame-dependent)
 QUANTITY_SPEC(lifetime, duration);                  // decay time quantities
 QUANTITY_SPEC(half_life, lifetime);                 // time for 50% decay (t₁/₂)
 QUANTITY_SPEC(mean_lifetime, lifetime);             // average decay time (τ = t₁/₂/ln(2))
@@ -139,7 +139,7 @@ QUANTITY_SPEC(scattering_angle, angle);        // deflection angle in collision
 QUANTITY_SPEC(opening_angle, angle);           // angle between decay products/jets
 QUANTITY_SPEC(azimuthal_angle, angle);         // angle in transverse plane (φ)
 QUANTITY_SPEC(polar_angle, angle);             // angle from beam axis (θ)
-QUANTITY_SPEC(phase, dimensionless, is_kind);  // quantum phase (cyclic, dimensionless, incompatible with angle)
+QUANTITY_SPEC(phase, dimensionless, subkind);  // quantum phase (cyclic, dimensionless, incompatible with angle)
 
 // frequency and related
 QUANTITY_SPEC(frequency, inverse(duration));
@@ -154,8 +154,8 @@ QUANTITY_SPEC(proper_velocity, displacement / proper_time,
               quantity_tensor_order::vector);  // four-velocity spatial part
 // Note: lorentz_factor and relativistic_beta are dimensionless but have specific physical meaning
 // They are distinct "kinds" to prevent accidental mixing with generic dimensionless values
-QUANTITY_SPEC(lorentz_factor, dimensionless, is_kind, non_negative);  // γ = E/E₀ (relativistic time dilation factor)
-QUANTITY_SPEC(relativistic_beta, dimensionless, is_kind,
+QUANTITY_SPEC(lorentz_factor, dimensionless, subkind, non_negative);  // γ = E/E₀ (relativistic time dilation factor)
+QUANTITY_SPEC(relativistic_beta, dimensionless, subkind,
               non_negative);  // β = v/c (velocity as fraction of light speed)
 
 // interaction and collisions

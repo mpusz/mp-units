@@ -662,7 +662,7 @@ solver, so you can focus on the physics.
 
 <!-- markdownlint-disable MD013 -->
 - [Dimensionless Quantities](../../users_guide/framework_basics/dimensionless_quantities.md) —
-  `is_kind`, `quantity_spec`, and the library's treatment of dimension one
+  `subkind`, `quantity_spec`, and the library's treatment of dimension one
 - [Faster-Than-Lightspeed Constants](../../users_guide/framework_basics/faster_than_lightspeed_constants.md) —
   how compile-time named constants eliminate runtime boundary arithmetic
 - [IAU System](../../users_guide/systems/iau.md) —

@@ -50,7 +50,7 @@ QUANTITY_SPEC(waiting_probability, dimensionless, non_negative);
 QUANTITY_SPEC(call_intensity, inverse(duration), non_negative);
 inline constexpr auto calling_rate = call_intensity;
 QUANTITY_SPEC(completed_call_intensity, call_intensity);
-QUANTITY_SPEC(storage_capacity, dimensionless, is_kind, non_negative);
+QUANTITY_SPEC(storage_capacity, dimensionless, subkind, non_negative);
 inline constexpr auto storage_size = storage_capacity;
 QUANTITY_SPEC(equivalent_binary_storage_capacity, storage_capacity);
 QUANTITY_SPEC(transfer_rate, storage_capacity / duration, non_negative);

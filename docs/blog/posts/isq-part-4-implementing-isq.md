@@ -226,19 +226,19 @@ flowchart TD
     dimensionless --- ...
 ```
 
-To enable such support in the library, we provided an `is_kind` specifier that
+To enable such support in the library, we provided a `subkind` specifier that
 can be appended to the quantity specification:
 
 ```cpp
 inline constexpr struct dimensionless final            : quantity_spec<detail::derived_quantity_spec<>{}> {} dimensionless;
 inline constexpr struct rotation final                 : quantity_spec<dimensionless> {} rotation;
 inline constexpr struct thermodynamic_efficiency : quantity_spec<dimensionless, work / heat> {} efficiency;
-inline constexpr struct angular_measure final          : quantity_spec<dimensionless, arc_length / radius, is_kind> {} angular_measure;
+inline constexpr struct angular_measure final          : quantity_spec<dimensionless, arc_length / radius, subkind> {} angular_measure;
 inline constexpr struct rotational_displacement final  : quantity_spec<angular_measure, path_length / radius> {} rotational_displacement;
 inline constexpr struct phase_angle final              : quantity_spec<angular_measure> {} phase_angle;
-inline constexpr struct solid_angular_measure final    : quantity_spec<dimensionless, area / pow<2>(radius), is_kind> {} solid_angular_measure;
+inline constexpr struct solid_angular_measure final    : quantity_spec<dimensionless, area / pow<2>(radius), subkind> {} solid_angular_measure;
 inline constexpr struct drag_factor final              : quantity_spec<dimensionless, drag_force / (mass_density * pow<2>(speed) * area)> {} drag_factor;
-inline constexpr struct storage_capacity final         : quantity_spec<dimensionless, is_kind> {} storage_capacity;
+inline constexpr struct storage_capacity final         : quantity_spec<dimensionless, subkind> {} storage_capacity;
 ```
 
 With the above, we can constrain `radian`, `steradian`, and `bit` to be allowed for usage

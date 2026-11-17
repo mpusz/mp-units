@@ -290,36 +290,36 @@ flowchart TD
     dimensionless -.- storage_capacity
 ```
 
-To provide such support in the library, we use the `is_kind` specifier in the quantity
+To provide such support in the library, we use the `subkind` specifier in the quantity
 specification. This feature is not limited to dimensionless quantities—it can be used
 with any dimension to create distinct quantity kinds. For a comprehensive explanation
-of `is_kind` and how to use it with dimensional quantities, see
-[Creating distinct quantity kinds with `is_kind`](systems_of_quantities.md#creating-distinct-quantity-kinds-with-is_kind).
+of `subkind` and how to use it with dimensional quantities, see
+[Creating distinct quantity kinds with `subkind`](systems_of_quantities.md#creating-distinct-quantity-kinds-with-subkind).
 
-For dimensionless quantities specifically, the `is_kind` specifier is applied as follows:
+For dimensionless quantities specifically, the `subkind` specifier is applied as follows:
 
 === "C++23"
 
     ```cpp
-    inline constexpr struct angular_measure : quantity_spec<dimensionless, arc_length / radius, is_kind> {} angular_measure;
-    inline constexpr struct solid_angular_measure : quantity_spec<dimensionless, area / pow<2>(radius), is_kind> {} solid_angular_measure;
-    inline constexpr struct storage_capacity : quantity_spec<dimensionless, is_kind> {} storage_capacity;
+    inline constexpr struct angular_measure : quantity_spec<dimensionless, arc_length / radius, subkind> {} angular_measure;
+    inline constexpr struct solid_angular_measure : quantity_spec<dimensionless, area / pow<2>(radius), subkind> {} solid_angular_measure;
+    inline constexpr struct storage_capacity : quantity_spec<dimensionless, subkind> {} storage_capacity;
     ```
 
 === "C++20"
 
     ```cpp
-    inline constexpr struct angular_measure : quantity_spec<angular_measure, dimensionless, arc_length / radius, is_kind> {} angular_measure;
-    inline constexpr struct solid_angular_measure : quantity_spec<solid_angular_measure, dimensionless, area / pow<2>(radius), is_kind> {} solid_angular_measure;
-    inline constexpr struct storage_capacity : quantity_spec<storage_capacity, dimensionless, is_kind> {} storage_capacity;
+    inline constexpr struct angular_measure : quantity_spec<angular_measure, dimensionless, arc_length / radius, subkind> {} angular_measure;
+    inline constexpr struct solid_angular_measure : quantity_spec<solid_angular_measure, dimensionless, area / pow<2>(radius), subkind> {} solid_angular_measure;
+    inline constexpr struct storage_capacity : quantity_spec<storage_capacity, dimensionless, subkind> {} storage_capacity;
     ```
 
 === "Portable"
 
     ```cpp
-    QUANTITY_SPEC(angular_measure, dimensionless, arc_length / radius, is_kind);
-    QUANTITY_SPEC(solid_angular_measure, dimensionless, area / pow<2>(radius), is_kind);
-    QUANTITY_SPEC(storage_capacity, dimensionless, is_kind);
+    QUANTITY_SPEC(angular_measure, dimensionless, arc_length / radius, subkind);
+    QUANTITY_SPEC(solid_angular_measure, dimensionless, area / pow<2>(radius), subkind);
+    QUANTITY_SPEC(storage_capacity, dimensionless, subkind);
     ```
 
 With the above, we can constrain `radian`, `steradian`, and `bit` to be allowed for usage
@@ -437,10 +437,10 @@ While the compiler allows these operations, they may not make semantic sense—a
 and widgets together, or comparing them directly, is likely a logic error in most domains.
 
 
-#### Explicit construction with `is_kind`: Maximum type safety
+#### Explicit construction with `subkind`: Maximum type safety
 
-To address the type safety concerns shown above, **mp-units** offers the `is_kind` specifier.
-When you mark a quantity with `is_kind`, it becomes a distinct quantity kind that cannot be
+To address the type safety concerns shown above, **mp-units** offers the `subkind` specifier.
+When you mark a quantity with `subkind`, it becomes a distinct quantity kind that cannot be
 implicitly mixed with other kinds (even with the parent kind). Such sub-kinds inherit
 properties of the parent kind (dimension, character, unit, etc.). This also disables
 the implicit conversion from raw values because those are now more than just tagged numbers.
@@ -448,7 +448,7 @@ They have strong semantical meaning and the library should respect that.
 
 This however, creates an important trade-off:
 
-=== "Without `is_kind` (implicit conversion)"
+=== "Without `subkind` (implicit conversion)"
 
     ```cpp
     inline constexpr struct item_count : quantity_spec<dimensionless> {} item_count;
@@ -491,11 +491,11 @@ This however, creates an important trade-off:
     **Cons**: Using raw values at call sites lacks clarity; can mix different dimensionless
     types in arithmetic and comparisons because they share common `dimensionless` root
 
-=== "With `is_kind` (explicit construction)"
+=== "With `subkind` (explicit construction)"
 
     ```cpp
-    inline constexpr struct item_count : quantity_spec<dimensionless, is_kind> {} item_count;
-    inline constexpr struct widget_count : quantity_spec<dimensionless, is_kind> {} widget_count;
+    inline constexpr struct item_count : quantity_spec<dimensionless, subkind> {} item_count;
+    inline constexpr struct widget_count : quantity_spec<dimensionless, subkind> {} widget_count;
 
     void process(quantity<item_count[one]> items, quantity<widget_count[one]> widgets)
     {
@@ -539,10 +539,10 @@ This however, creates an important trade-off:
 
 **Choosing the right approach:**
 
-- **Use `is_kind`** when type safety is paramount and you want to prevent any accidental mixing
+- **Use `subkind`** when type safety is paramount and you want to prevent any accidental mixing
   of semantically different counts or coordinates. Accept the verbosity of explicit construction.
 
-- **Skip `is_kind`** for convenience when the types rarely interact and the risk of mixing
+- **Skip `subkind`** for convenience when the types rarely interact and the risk of mixing
   them is low, or when you need to frequently pass raw values to functions.
 
 
@@ -651,9 +651,9 @@ Traditional approaches to creating strong numeric types each face different trad
 === "mp-units (specialized for numeric types)"
 
     ```cpp
-    inline constexpr struct pixel_x : quantity_spec<dimensionless, is_kind> {} pixel_x;
-    inline constexpr struct pixel_y : quantity_spec<dimensionless, is_kind> {} pixel_y;
-    inline constexpr struct pixel_area : quantity_spec<dimensionless, pixel_x * pixel_y, is_kind> {} pixel_area;
+    inline constexpr struct pixel_x : quantity_spec<dimensionless, subkind> {} pixel_x;
+    inline constexpr struct pixel_y : quantity_spec<dimensionless, subkind> {} pixel_y;
+    inline constexpr struct pixel_area : quantity_spec<dimensionless, pixel_x * pixel_y, subkind> {} pixel_area;
 
     inline constexpr struct fhd : named_unit<"FHD", mag<1920 * 1080> * one, kind_of<pixel_area>> {} fhd;
     inline constexpr struct uhd_4k : named_unit<"4K", mag<3840 * 2160> * one, kind_of<pixel_area>> {} uhd_4k;
@@ -700,7 +700,7 @@ analysis that generic strong-type libraries cannot provide.
 
 ### Why Dimensionless Instead of Custom Dimensions
 
-Dimensionless quantities with `is_kind` automatically work with unit `one` and its scaled
+Dimensionless quantities with `subkind` automatically work with unit `one` and its scaled
 versions, support explicit conversions to/from raw types, and participate in ISQ for
 derived quantities. Custom dimensions are better for physically distinct concepts
 (see [Workshop: Custom Base Dimensions](../../workshops/extensions/custom_base_dimensions.md)).

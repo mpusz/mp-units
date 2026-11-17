@@ -803,7 +803,7 @@ class SystemsParser:
                 # Third param might be an equation
                 if (
                     third_param
-                    and third_param != "is_kind"
+                    and third_param not in ("subkind", "is_kind")
                     and third_param != "non_negative"
                     and not third_param.startswith(
                         (
@@ -823,7 +823,7 @@ class SystemsParser:
                 # Third param might be an equation
                 if (
                     third_param
-                    and third_param != "is_kind"
+                    and third_param not in ("subkind", "is_kind")
                     and third_param != "non_negative"
                     and not third_param.startswith(
                         (
@@ -4448,7 +4448,7 @@ class DocumentationGenerator:
             result += "\n\n**Legend:**\n\n"
             result += (
                 "- Subgraphs with a dotted line from the parent indicate a distinct quantity kind "
-                "(created with `is_kind`). "
+                "(created with `subkind`). "
                 "These subtrees are type-isolated: quantities inside cannot be added or compared to those "
                 "outside their subgraph without explicit conversion.\n"
             )

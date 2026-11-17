@@ -135,7 +135,7 @@ static_assert(verify(hep::phase, scalar, one));  // phase is dimensionless (cycl
 static_assert(utility::implicitly_convertible(hep::decay_length, hep::length));
 static_assert(utility::implicitly_convertible(hep::nuclear_interaction_length, hep::interaction_length));
 
-// is_kind quantities form subkinds
+// a quantity declared with `subkind` converts to its parent only explicitly
 static_assert(!utility::implicitly_convertible(hep::radiation_length, hep::length));
 static_assert(utility::explicitly_convertible(hep::radiation_length, hep::length));
 static_assert(!utility::implicitly_convertible(hep::interaction_length, hep::length));
@@ -190,7 +190,7 @@ static_assert(utility::implicitly_convertible(hep::scattering_angle, hep::angle)
 static_assert(utility::implicitly_convertible(hep::opening_angle, hep::angle));
 static_assert(!utility::implicitly_convertible(hep::scattering_angle, hep::opening_angle));
 
-// Phase is a distinct kind (marked with is_kind) - cannot convert to/from angle
+// Phase is a distinct kind (marked with subkind) - cannot convert to/from angle
 static_assert(!utility::implicitly_convertible(hep::phase, hep::angle));
 static_assert(!utility::explicitly_convertible(hep::phase, hep::angle));
 static_assert(!utility::castable(hep::phase, hep::angle));
@@ -230,7 +230,7 @@ static_assert(!utility::implicitly_convertible(hep::frequency, hep::decay_consta
 static_assert(utility::implicitly_convertible(inverse(hep::mean_lifetime), hep::frequency));
 
 // lorentz_factor and relativistic_beta are distinct dimensionless kinds
-// They cannot be created from arbitrary dimensionless values (marked with is_kind)
+// They cannot be created from arbitrary dimensionless values (marked with subkind)
 static_assert(!utility::implicitly_convertible(dimensionless, hep::lorentz_factor));
 static_assert(!utility::implicitly_convertible(dimensionless, hep::relativistic_beta));
 static_assert(!utility::implicitly_convertible(hep::lorentz_factor, hep::relativistic_beta));

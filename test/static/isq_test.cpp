@@ -785,7 +785,7 @@ static_assert(utility::explicitly_convertible(inverse(isq::speed * ::zzz_isq_tes
 // explicit both ways, and from a kind of the parent: the edge is not a trade between unrelated
 // kinds.
 QUANTITY_SPEC(turn_rate, isq::angular_velocity, inverse(isq::duration));
-QUANTITY_SPEC(turn_rate_kind, isq::angular_velocity, inverse(isq::duration), is_kind);
+QUANTITY_SPEC(turn_rate_kind, isq::angular_velocity, inverse(isq::duration), subkind);
 QUANTITY_SPEC(plain_ratio, dimensionless, isq::length / isq::width);
 QUANTITY_SPEC(angled_ratio, dimensionless, isq::angular_measure* isq::length / isq::width);
 QUANTITY_SPEC(solid_angled_ratio, dimensionless, isq::solid_angular_measure* isq::length / isq::width);

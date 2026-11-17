@@ -38,8 +38,8 @@ import std;
 
 // The facts about a named quantity specification that follow from its parent chain and its
 // equation alone: root, ancestry, whether it defines its equation, and depth. Everything that
-// needs the `is_kind` property (kind roots) lives in `quantity_spec_hierarchy_conversion.h`,
-// because this header is included before `is_kind` is declared.
+// needs the `subkind` property (kind roots) lives in `quantity_spec_hierarchy_conversion.h`,
+// because this header is included before `subkind` is declared.
 //
 // The root and the depth are class templates, so the compiler computes each once per quantity
 // specification. The ancestry and equation checks are consteval functions.

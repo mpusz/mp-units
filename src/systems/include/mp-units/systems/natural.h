@@ -56,13 +56,13 @@ QUANTITY_SPEC(length, inverse_energy);
 QUANTITY_SPEC(energy_squared, pow<2>(energy));
 
 
-// Dimensionless quantities. Only angular_measure is a kind (is_kind prevents implicit cross-conversion)
+// Dimensionless quantities. Only angular_measure is a kind (subkind prevents implicit cross-conversion)
 // speed: β = v/c, a plain ratio (not a kind) and the root of the velocity hierarchy
 // velocity: directional speed
 // angular_measure: θ = arc/radius; separate kind — angles are not speeds
 QUANTITY_SPEC(speed,           dimensionless,  length / duration);            // v = l/t, a plain ratio (beta)
 QUANTITY_SPEC(velocity,        speed);
-QUANTITY_SPEC(angular_measure, dimensionless, is_kind);
+QUANTITY_SPEC(angular_measure, dimensionless, subkind);
 
 // Derived quantities with explicit quantity equations
 QUANTITY_SPEC(momentum,     energy,         mass * velocity);      // p = mv

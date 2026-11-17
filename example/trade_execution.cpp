@@ -46,8 +46,8 @@ inline constexpr struct dim_currency final : base_dimension<"$"> {} dim_currency
 // clang-format on
 
 QUANTITY_SPEC(currency, dim_currency);
-QUANTITY_SPEC(market_quantity, dimensionless, is_kind);
-QUANTITY_SPEC(notional_value, currency, currency* market_quantity, is_kind);
+QUANTITY_SPEC(market_quantity, dimensionless, subkind);
+QUANTITY_SPEC(notional_value, currency, currency* market_quantity, subkind);
 
 inline constexpr auto Qty = market_quantity;
 

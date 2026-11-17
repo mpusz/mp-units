@@ -58,6 +58,6 @@ inline constexpr auto luminal_speed = speed_of_light_in_vacuum;
 
 // ISO 80000-9 item 9-1; parent of every count of discrete entities. A count is not a plain ratio, so
 // it is a kind of its own, and counts that must not be added root their own kind below it
-QUANTITY_SPEC(number_of_entities, dimensionless, is_kind, non_negative);
+QUANTITY_SPEC(number_of_entities, dimensionless, subkind, non_negative);
 
 }  // namespace mp_units::isq

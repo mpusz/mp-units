@@ -90,9 +90,9 @@ kind and list the axes in coordinate order:
 
 ```cpp
 inline constexpr struct flight_velocity : quantity_spec<isq::velocity> {} flight_velocity;
-inline constexpr struct forward_velocity : quantity_spec<isq::velocity, is_kind> {} forward_velocity;
-inline constexpr struct lateral_velocity : quantity_spec<isq::velocity, is_kind> {} lateral_velocity;
-inline constexpr struct vertical_velocity : quantity_spec<isq::velocity, is_kind> {} vertical_velocity;
+inline constexpr struct forward_velocity : quantity_spec<isq::velocity, subkind> {} forward_velocity;
+inline constexpr struct lateral_velocity : quantity_spec<isq::velocity, subkind> {} lateral_velocity;
+inline constexpr struct vertical_velocity : quantity_spec<isq::velocity, subkind> {} vertical_velocity;
 
 template<>
 struct mp_units::component_vectors<flight_velocity> :

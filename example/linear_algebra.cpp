@@ -113,12 +113,12 @@ using vec3 = utility::cartesian_vector<double>;
 [[nodiscard]] vec3 make_vec3(double x, double y, double z) { return {x, y, z}; }
 
 // The drone's body-frame velocity is one physical vector whose axes have distinct meanings. Each
-// axis is its own kind (`is_kind`), so the type system keeps them from being mixed, while they all
+// axis is its own kind (`subkind`), so the type system keeps them from being mixed, while they all
 // share the `isq::velocity` hierarchy root. The whole is a plain child of `isq::velocity`.
 QUANTITY_SPEC(flight_velocity, isq::velocity);
-QUANTITY_SPEC(forward_velocity, isq::velocity, is_kind);
-QUANTITY_SPEC(lateral_velocity, isq::velocity, is_kind);
-QUANTITY_SPEC(vertical_velocity, isq::velocity, is_kind);
+QUANTITY_SPEC(forward_velocity, isq::velocity, subkind);
+QUANTITY_SPEC(lateral_velocity, isq::velocity, subkind);
+QUANTITY_SPEC(vertical_velocity, isq::velocity, subkind);
 
 }  // namespace
 

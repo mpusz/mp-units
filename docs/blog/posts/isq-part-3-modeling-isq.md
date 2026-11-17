@@ -340,7 +340,7 @@ static_assert(same_type<kind_of<isq::length> / isq::duration, isq::length / isq:
 
 !!! info
 
-    Only a root quantity from the hierarchy tree or the one marked with `is_kind` specifier
+    Only a root quantity from the hierarchy tree or the one marked with `subkind` specifier
     in the `quantity_spec` definition can be put as a template parameter to the `kind_of`
     specifier. For example, `kind_of<isq::width>` will fail to compile. However, we can call
     `get_kind(q)` to obtain a kind of any quantity:

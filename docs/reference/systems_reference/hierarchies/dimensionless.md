@@ -195,4 +195,4 @@ flowchart LR
 
 **Legend:**
 
-- Subgraphs with a dotted line from the parent indicate a distinct quantity kind (created with `is_kind`). These subtrees are type-isolated: quantities inside cannot be added or compared to those outside their subgraph without explicit conversion.
+- Subgraphs with a dotted line from the parent indicate a distinct quantity kind (created with `subkind`). These subtrees are type-isolated: quantities inside cannot be added or compared to those outside their subgraph without explicit conversion.
