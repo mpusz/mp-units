@@ -146,24 +146,32 @@ using representation_underlying_type_t = typename representation_underlying_type
  *
  * The `quantity` deduction guides and the concepts that compute the representation type resulting
  * from an arithmetic operation use this trait so that the stored representation is always a
- * materialized concrete type. The primary template simply decays the type, which is correct for
- * scalars and for vector/matrix types whose operators return a concrete value (e.g. `cartesian_vector`,
- * GLM). Specialize it for an expression-template type to name its evaluated type (for example to
- * `Eigen::Matrix`'s `PlainObject`, or Blaze's `ResultType`) — see the integration guide.
+ * materialized concrete type. A `const` or a reference is forwarded to the unqualified type, which
+ * the primary template maps to itself. That is correct for scalars and for vector/matrix types whose
+ * operators return a concrete value (e.g. `cartesian_vector`, GLM). Specialize it for an expression-template type to
+ * name its evaluated type (for example to `Eigen::Matrix`'s `PlainObject`, or Blaze's `ResultType`) — see the
+ * integration guide.
  *
  * @tparam T the representation value type (possibly an expression-template proxy)
  */
 MP_UNITS_EXPORT template<typename T>
 struct representation_canonical_type {
-  using type = std::remove_cvref_t<T>;
+  using type = T;
 };
 
-// A top-level `const` is forwarded to the unqualified type (mirroring `representation_underlying_type`
-// above) so that library specializations only need to handle the unqualified type. This matters
-// because expression-template libraries return their proxies by `const` value (e.g.
-// `decltype(Eigen::Vector3d{} * 2.0)` is a `const Eigen::CwiseBinaryOp<...>`).
+// A top-level `const` (mirroring `representation_underlying_type` above) and a reference are forwarded
+// to the unqualified type, so that a specialization only needs to handle the unqualified type.
+// Expression-template libraries return their proxies by `const` value (e.g.
+// `decltype(Eigen::Vector3d{} * 2.0)` is a `const Eigen::CwiseBinaryOp<...>`), and a result type of an
+// operator that is a reference to a proxy must not bypass the specialization either.
 template<typename T>
 struct representation_canonical_type<const T> : representation_canonical_type<T> {};
+
+template<typename T>
+struct representation_canonical_type<T&> : representation_canonical_type<T> {};
+
+template<typename T>
+struct representation_canonical_type<T&&> : representation_canonical_type<T> {};
 
 MP_UNITS_EXPORT template<typename T>
 using representation_canonical_type_t = typename representation_canonical_type<T>::type;

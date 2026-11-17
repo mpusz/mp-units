@@ -219,6 +219,21 @@ using common_quantity_for =
   quantity<mp_units::get_common_reference(Q1::reference, Q2::reference),
            representation_canonical_type_t<std::invoke_result_t<Func, typename Q1::rep, typename Q2::rep>>>;
 
+// Brings an operand of a binary operation to the operation's common quantity type `Common`. An operand
+// that already has the representation type of `Common` and can be read in its unit (which needs an
+// equivalent unit) is returned by reference instead of being copied, as a copy is not free for a vector
+// or a matrix representation. Bind the result to `const auto&`: it then refers either to the operand
+// or to a converted temporary whose lifetime is extended, and `numerical_value_ref_in(Common::unit)`
+// reads the value of both without a copy.
+template<typename Common, auto R, typename Rep>
+[[nodiscard]] constexpr decltype(auto) to_common_quantity(const quantity<R, Rep>& q)
+{
+  if constexpr (std::is_same_v<Rep, typename Common::rep> && requires { q.numerical_value_ref_in(Common::unit); })
+    return (q);
+  else
+    return Common(q);
+}
+
 template<typename Rep, Unit U1, Unit U2>
 [[nodiscard]] consteval bool overflows_non_zero_common_values(U1 u1, U2 u2)
 {
@@ -342,8 +357,8 @@ template<typename Q1, typename Q2, typename Cmp>
   // `return` after the `if constexpr` chain would trip MSVC Debug C4702 ("unreachable code") on
   // instantiations where the optimization branch returns.
   auto fallback_cmp = [&] {
-    const ct ct_lhs(lhs);
-    const ct ct_rhs(rhs);
+    const auto& ct_lhs = to_common_quantity<ct>(lhs);
+    const auto& ct_rhs = to_common_quantity<ct>(rhs);
     MP_UNITS_DIAGNOSTIC_PUSH
     MP_UNITS_DIAGNOSTIC_IGNORE_FLOAT_EQUAL
     return cmp(ct_lhs.numerical_value_ref_in(ct::unit), ct_rhs.numerical_value_ref_in(ct::unit));
@@ -388,8 +403,8 @@ struct quantity_iface {
   [[nodiscard]] friend constexpr Quantity auto operator+(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
   {
     using ret = common_quantity_for<std::plus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>;
-    const ret ret_lhs(lhs);
-    const ret ret_rhs(rhs);
+    const auto& ret_lhs = to_common_quantity<ret>(lhs);
+    const auto& ret_rhs = to_common_quantity<ret>(rhs);
     return quantity{ret_lhs.numerical_value_ref_in(ret::unit) + ret_rhs.numerical_value_ref_in(ret::unit),
                     ret::reference};
   }
@@ -414,8 +429,8 @@ struct quantity_iface {
   [[nodiscard]] friend constexpr Quantity auto operator-(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
   {
     using ret = common_quantity_for<std::minus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>;
-    const ret ret_lhs(lhs);
-    const ret ret_rhs(rhs);
+    const auto& ret_lhs = to_common_quantity<ret>(lhs);
+    const auto& ret_rhs = to_common_quantity<ret>(rhs);
     return quantity{ret_lhs.numerical_value_ref_in(ret::unit) - ret_rhs.numerical_value_ref_in(ret::unit),
                     ret::reference};
   }
@@ -442,8 +457,8 @@ struct quantity_iface {
   {
     MP_UNITS_PRECONDITION_DEBUG(rhs != 0);
     using ret = common_quantity_for<std::modulus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>;
-    const ret ret_lhs(lhs);
-    const ret ret_rhs(rhs);
+    const auto& ret_lhs = to_common_quantity<ret>(lhs);
+    const auto& ret_rhs = to_common_quantity<ret>(rhs);
     return quantity{ret_lhs.numerical_value_ref_in(ret::unit) % ret_rhs.numerical_value_ref_in(ret::unit),
                     ret::reference};
   }

@@ -122,7 +122,8 @@ template<Quantity Q1, Quantity Q2>
 [[nodiscard]] MP_UNITS_LA_CONSTEXPR QuantityOf<Q1::quantity_spec * Q2::quantity_spec> auto cross(const Q1& q1,
                                                                                                  const Q2& q2)
 {
-  return cross(q1.numerical_value_in(q1.unit), q2.numerical_value_in(q2.unit)) * (Q1::reference * Q2::reference);
+  return cross(q1.numerical_value_ref_in(q1.unit), q2.numerical_value_ref_in(q2.unit)) *
+         (Q1::reference * Q2::reference);
 }
 
 // --- compile-time guarantees -------------------------------------------------------------------

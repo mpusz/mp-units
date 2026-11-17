@@ -20,6 +20,12 @@ This page documents the version history and changes for the **mp-units** library
 - (!) fix: `usc::inch_of_mercury` is exactly 25.4 conventional mmHg, 3386.388 640 341 Pa.
       It was the rounded 3386.389 Pa, so converted values change in the seventh
       significant digit (#867)
+- perf: `+`, `-`, `%`, and the comparisons read an operand that already has the common
+      representation type and an equivalent unit by reference rather than copying it. A
+      copy isn't free for a vector or a matrix representation (#837)
+- fix: `representation_canonical_type` forwards a reference to the unqualified type, as it
+      already did a `const`, so a specialization for an expression-template proxy applies
+      also when an operator returns a reference to the proxy (#837)
 - fix: the displacement between two point origins keeps a named unit that already is the
       coarsest exact one, so a `-27 cm` origin offset and the point differences across it
       print in `cm` rather than in `(1/100 m)`

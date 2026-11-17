@@ -1962,3 +1962,47 @@ static_assert(std::equality_comparable_with<std::optional<quantity<si::metre, ut
 #endif
 
 }  // namespace
+
+
+// `representation_canonical_type` forwards a `const` and a reference to the unqualified type, so that a
+// specialization for an expression-template proxy applies to every result type an operator can yield
+namespace {
+
+struct canonical_test_proxy {};
+
+}  // namespace
+
+template<>
+struct mp_units::representation_canonical_type<canonical_test_proxy> {
+  using type = double;
+};
+
+namespace {
+
+using namespace mp_units;
+
+static_assert(std::same_as<representation_canonical_type_t<int>, int>);
+static_assert(std::same_as<representation_canonical_type_t<const int&>, int>);
+static_assert(std::same_as<representation_canonical_type_t<canonical_test_proxy>, double>);
+static_assert(std::same_as<representation_canonical_type_t<const canonical_test_proxy>, double>);
+static_assert(std::same_as<representation_canonical_type_t<canonical_test_proxy&>, double>);
+static_assert(std::same_as<representation_canonical_type_t<const canonical_test_proxy&>, double>);
+static_assert(std::same_as<representation_canonical_type_t<canonical_test_proxy&&>, double>);
+
+// An operand of `+`, `-`, `%`, or a comparison that already has the representation type and an
+// equivalent unit of the common quantity is read by reference instead of being copied (GH #837), also
+// when its quantity specification differs. Any other operand is converted.
+template<typename Common, typename Q>
+using to_common_quantity_result = decltype(detail::to_common_quantity<Common>(std::declval<const Q&>()));
+
+static_assert(std::same_as<to_common_quantity_result<quantity<si::metre, int>, quantity<si::metre, int>>,
+                           const quantity<si::metre, int>&>);
+static_assert(
+  std::same_as<to_common_quantity_result<quantity<isq::length[si::metre], int>, quantity<isq::height[si::metre], int>>,
+               const quantity<isq::height[si::metre], int>&>);
+static_assert(std::same_as<to_common_quantity_result<quantity<si::metre, double>, quantity<si::metre, int>>,
+                           quantity<si::metre, double>>);
+static_assert(std::same_as<to_common_quantity_result<quantity<si::metre, int>, quantity<si::kilo<si::metre>, int>>,
+                           quantity<si::metre, int>>);
+
+}  // namespace
