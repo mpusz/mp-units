@@ -777,6 +777,36 @@ TEST_CASE("'abs()' and 'sqrt()' postconditions accept what they must", "[math][n
   }
 }
 
+// `hypot`, an even `pow`, and `exp` can't return a negative value either, and their postconditions
+// use the same predicate, so a NaN and an infinity have to pass through them too.
+TEST_CASE("'hypot()', 'pow()', and 'exp()' postconditions accept what they must", "[math][nan]")
+{
+  const auto nan = std::numeric_limits<double>::quiet_NaN();
+  const auto inf = std::numeric_limits<double>::infinity();
+
+  SECTION("a NaN propagates through hypot")
+  {
+    REQUIRE(isnan(hypot(nan * isq::length[m], 1.0 * isq::length[m])));
+    REQUIRE(isnan(hypot(nan * isq::length[m], 1.0 * isq::length[m], 1.0 * isq::length[m])));
+  }
+
+  SECTION("an even power of a negative value is non-negative")
+  {
+    REQUIRE(pow<2>(-3.0 * isq::length[m]) == 9.0 * isq::area[m2]);
+    REQUIRE(pow<3>(-3.0 * isq::length[m]) == -27.0 * isq::volume[m3]);
+  }
+
+  SECTION("a NaN propagates through an even power")
+  {
+    REQUIRE(isnan(pow<2>(nan * isq::length[m])));
+    REQUIRE(isnan(pow<4, 2>(nan * isq::length[m])));
+  }
+
+  SECTION("a NaN propagates through exp") { REQUIRE(isnan(exp(nan * one))); }
+
+  SECTION("exp of minus infinity is zero") { REQUIRE(exp(-inf * one) == 0.0 * one); }
+}
+
 // `round` breaks a tie by testing the parity of the lower candidate, which casts it to
 // `std::int64_t`. Once the ULP reaches 1 the value is already integral, the two candidates compare
 // equal, and the difference test reports a tie that is not one - so a huge value took the tie path

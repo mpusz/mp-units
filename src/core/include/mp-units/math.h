@@ -102,7 +102,8 @@ template<std::intmax_t Num, std::intmax_t Den = 1, auto R, typename Rep>
                ;
   }
 [[nodiscard]] constexpr quantity<pow<Num, Den>(R), Rep> pow(const quantity<R, Rep>& q) noexcept
-
+  MP_UNITS_POST(r : !(Num % Den == 0 && (Num / Den) % 2 == 0) ||
+                detail::value_is_non_negative(r.numerical_value_ref_in(r.unit)))
 {
   if constexpr (Num == 0) {
     return {representation_values<Rep>::one(), pow<0>(R)};
@@ -112,9 +113,12 @@ template<std::intmax_t Num, std::intmax_t Den = 1, auto R, typename Rep>
 #if MP_UNITS_HOSTED
     using std::pow;
 #endif
-    return {
+    const quantity<pow<Num, Den>(R), Rep> result{
       static_cast<Rep>(pow(q.numerical_value_ref_in(q.unit), static_cast<double>(Num) / static_cast<double>(Den))),
       pow<Num, Den>(R)};
+    MP_UNITS_POST_COMPAT(!(Num % Den == 0 && (Num / Den) % 2 == 0) ||
+                         detail::value_is_non_negative(result.numerical_value_ref_in(result.unit)));
+    return result;
   }
 }
 
@@ -137,14 +141,9 @@ template<auto R, typename Rep>
 #if MP_UNITS_HOSTED
   using std::sqrt;
 #endif
-  // No `MP_UNITS_POST_COMPAT` here, deliberately. The declaration contract above costs nothing, but
-  // giving the body a named result of the return type, which is the only way the GSL backends can
-  // check the same predicate, instantiates `quantity<sqrt(R), Rep>` machinery the single-expression
-  // return never needs. On the `isq/fractional_exponents` compile-cost benchmark that one line was
-  // +481 instantiations, about 2%, and it was the only measurable cost in this whole branch: the
-  // forty declaration preconditions and every other postcondition together cost nothing. So the
-  // postcondition is stated where it belongs and goes unchecked until a compiler can run it.
-  return {static_cast<Rep>(sqrt(q.numerical_value_ref_in(q.unit))), sqrt(R)};
+  const quantity<sqrt(R), Rep> result{static_cast<Rep>(sqrt(q.numerical_value_ref_in(q.unit))), sqrt(R)};
+  MP_UNITS_POST_COMPAT(detail::value_is_non_negative(result.numerical_value_ref_in(result.unit)));
+  return result;
 }
 
 /**
@@ -182,12 +181,15 @@ template<ReferenceOf<dimensionless> auto R, typename Rep>
            || requires(Rep v) { std::exp(v); }
 #endif
 [[nodiscard]] constexpr quantity<R, Rep> exp(const quantity<R, Rep>& q)
+  MP_UNITS_POST(r : detail::value_is_non_negative(r.numerical_value_ref_in(r.unit)))
 {
 #if MP_UNITS_HOSTED
   using std::exp;
 #endif
-  return value_cast<get_unit(R)>(
+  const quantity<R, Rep> result = value_cast<get_unit(R)>(
     quantity{static_cast<Rep>(exp(q.numerical_value_in(q.unit))), detail::clone_reference_with<one>(R)});
+  MP_UNITS_POST_COMPAT(detail::value_is_non_negative(result.numerical_value_ref_in(result.unit)));
+  return result;
 }
 
 /**
@@ -635,13 +637,16 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
   }
 [[nodiscard]] constexpr QuantityOf<get_quantity_spec(get_common_reference(R1, R2))> auto hypot(
   const quantity<R1, Rep1>& x, const quantity<R2, Rep2>& y) noexcept
+  MP_UNITS_POST(r : detail::value_is_non_negative(r.numerical_value_ref_in(r.unit)))
 {
   constexpr auto ref = get_common_reference(R1, R2);
   constexpr auto unit = get_unit(ref);
 #if MP_UNITS_HOSTED
   using std::hypot;
 #endif
-  return quantity{hypot(x.numerical_value_in(unit), y.numerical_value_in(unit)), ref};
+  const quantity result{hypot(x.numerical_value_in(unit), y.numerical_value_in(unit)), ref};
+  MP_UNITS_POST_COMPAT(detail::value_is_non_negative(result.numerical_value_ref_in(result.unit)));
+  return result;
 }
 
 /**
@@ -659,13 +664,16 @@ template<auto R1, typename Rep1, auto R2, typename Rep2, auto R3, typename Rep3>
   }
 [[nodiscard]] constexpr QuantityOf<get_quantity_spec(get_common_reference(R1, R2, R3))> auto hypot(
   const quantity<R1, Rep1>& x, const quantity<R2, Rep2>& y, const quantity<R3, Rep3>& z) noexcept
+  MP_UNITS_POST(r : detail::value_is_non_negative(r.numerical_value_ref_in(r.unit)))
 {
   constexpr auto ref = get_common_reference(R1, R2, R3);
   constexpr auto unit = get_unit(ref);
 #if MP_UNITS_HOSTED
   using std::hypot;
 #endif
-  return quantity{hypot(x.numerical_value_in(unit), y.numerical_value_in(unit), z.numerical_value_in(unit)), ref};
+  const quantity result{hypot(x.numerical_value_in(unit), y.numerical_value_in(unit), z.numerical_value_in(unit)), ref};
+  MP_UNITS_POST_COMPAT(detail::value_is_non_negative(result.numerical_value_ref_in(result.unit)));
+  return result;
 }
 
 /**
