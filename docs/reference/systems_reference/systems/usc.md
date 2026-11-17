@@ -19,7 +19,7 @@
 | <span id="cable"></span><code>cable</code> | cb(us) | `cb` | <code>mag<120> * <wbr>[yard_<wbr>pound::fathom](yard_pound.md#fathom)</code> |
 | <span id="chain"></span><code>chain</code> | ch | `ch` | <code>mag<4> * <wbr>[rod](#survey1893-rod)</code> |
 | <span id="cup"></span><code>cup</code> | c | `c` | <code>mag_ratio<1, 2> * <wbr>[pint](#pint)</code> |
-| <span id="degree_Fahrenheit"></span><code>degree_<wbr>Fahrenheit</code> | ℉ (\`F) | `deg_F` | <code>[rankine](#rankine)<br>origin: [fahrenheit_<wbr>zero](#fahrenheit_zero)</code> |
+| <span id="degree_Fahrenheit"></span><code>degree_<wbr>Fahrenheit</code> | °F (\`F) | `deg_F` | <code>[rankine](#rankine)<br>origin: [fahrenheit_<wbr>zero](#fahrenheit_zero)</code> |
 | <span id="dry_barrel"></span><code>dry_<wbr>barrel</code> | bbl | `dry_bbl` | <code>mag<7056> * <wbr>cubic([yard_<wbr>pound::inch](yard_pound.md#inch))</code> |
 | <span id="dry_gallon"></span><code>dry_<wbr>gallon</code> | gal | `dry_gal` | <code>mag_ratio<1, 2> * <wbr>[peck](#peck)</code> |
 | <span id="dry_pint"></span><code>dry_<wbr>pint</code> | pt | `dry_pt` | <code>mag_ratio<1, 2> * <wbr>[dry_<wbr>quart](#dry_quart)</code> |

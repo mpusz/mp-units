@@ -154,8 +154,8 @@ int main()
 
   quantity_point temp = point<deg_C>(20.);
 
-  std::cout << "Celsius:    " << temp << "\n";           // 20 ℃
-  std::cout << "Fahrenheit: " << temp.in(deg_F) << "\n"; // 68 ℉
+  std::cout << "Celsius:    " << temp << "\n";           // 20 °C
+  std::cout << "Fahrenheit: " << temp.in(deg_F) << "\n"; // 68 °F
   std::cout << "Kelvin:     " << temp.in(K) << "\n";     // 293.15 K
 
   std::cout << "\nAre they equal? " << (temp.in(K) == temp.in(deg_C) ? "Yes" : "No") << "\n";
@@ -165,7 +165,7 @@ int main()
 
 **Key insight**: `.in(unit)` changes both the unit *and* the origin to that unit's built-in
 reference point, so printing `temp.in(K)` shows `293.15 K` (from absolute zero) while
-printing `temp` or `temp.in(deg_C)` shows `20 ℃` (from the ice point).
+printing `temp` or `temp.in(deg_C)` shows `20 °C` (from the ice point).
 
 
 ## Challenges

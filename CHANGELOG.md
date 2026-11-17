@@ -26,6 +26,10 @@ This page documents the version history and changes for the **mp-units** library
 - fix: `representation_canonical_type` forwards a reference to the unqualified type, as it
       already did a `const`, so a specialization for an expression-template proxy applies
       also when an operator returns a reference to the proxy (#837)
+- (!) refactor: the text symbols of `si::degree_Celsius` and `usc::degree_Fahrenheit` change
+      from `℃` and `℉` to `°C` and `°F`, following the Unicode Standard's recommendation
+      (chapter 22, Letterlike Symbols) to write them with U+00B0 DEGREE SIGN rather than with
+      the compatibility characters U+2103 and U+2109. The portable symbols are unchanged
 - (!) refactor: `is_kind` is renamed to `subkind`. It is a tag that makes a quantity a kind
       of its own, not a predicate, and an `is_` prefix reads as one. The former name is
       deprecated

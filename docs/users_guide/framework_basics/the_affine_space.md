@@ -1077,14 +1077,14 @@ namespace si {
 inline constexpr struct kelvin :
     named_unit<"K", kind_of<isq::thermodynamic_temperature>, absolute_zero> {} kelvin;
 inline constexpr struct degree_Celsius :
-    named_unit<{u8"℃", "`C"}, kelvin, ice_point> {} degree_Celsius;
+    named_unit<{u8"°C", "`C"}, kelvin, ice_point> {} degree_Celsius;
 
 }
 
 namespace usc {
 
 inline constexpr struct degree_Fahrenheit :
-    named_unit<{u8"℉", "`F"}, mag_ratio<5, 9> * si::degree_Celsius,
+    named_unit<{u8"°F", "`F"}, mag_ratio<5, 9> * si::degree_Celsius,
                fahrenheit_zero> {} degree_Fahrenheit;
 
 }
@@ -1172,14 +1172,14 @@ print_temp("Clamped to max", clamped);
 The above prints:
 
 ```text
-Room reference temperature: 21 ℃ (69.8 ℉, 294.15 K)
+Room reference temperature: 21 °C (69.8 °F, 294.15 K)
 
 | Temperature delta  |   Room reference   |     Ice point      |   Absolute zero    |
 |====================|====================|====================|====================|
-| Lowest             |       -3 ℃        |       18 ℃        |     291.15 ℃      |
-| Default            |        0 ℃        |       21 ℃        |     294.15 ℃      |
-| Highest            |        3 ℃        |       24 ℃        |     297.15 ℃      |
-| Clamped to max     |        3 ℃        |       24 ℃        |     297.15 ℃      |
+| Lowest             |       -3 °C        |       18 °C        |     291.15 °C      |
+| Default            |        0 °C        |       21 °C        |     294.15 °C      |
+| Highest            |        3 °C        |       24 °C        |     297.15 °C      |
+| Clamped to max     |        3 °C        |       24 °C        |     297.15 °C      |
 ```
 
 
@@ -1203,7 +1203,7 @@ Text output is supported for `quantity_point` when its point origin equals
 
     ```cpp
     quantity_point temp = point<deg_C>(20.);
-    std::cout << temp;  // "20 ℃"
+    std::cout << temp;  // "20 °C"
     ```
 
 Text output is **not** provided when a non-default origin is used, for example:

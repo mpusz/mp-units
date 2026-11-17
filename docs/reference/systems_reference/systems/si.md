@@ -58,7 +58,7 @@
 | <span id="becquerel"></span><code>becquerel</code> | Bq | `Bq` | <code>[one](core.md#one) / <wbr>[second](#second)<br>kind: [isq::activity](isq.md#activity)</code> |
 | <span id="candela"></span><code>candela</code> | cd | `cd` | <code>kind: [isq::luminous_<wbr>intensity](isq.md#luminous_intensity)</code> |
 | <span id="coulomb"></span><code>coulomb</code> | C | `C` | <code>[ampere](#ampere) * <wbr>[second](#second)</code> |
-| <span id="degree_Celsius"></span><code>degree_<wbr>Celsius</code> | ℃ (\`C) | `deg_C` | <code>[kelvin](#kelvin)<br>origin: [ice_<wbr>point](#ice_point)</code> |
+| <span id="degree_Celsius"></span><code>degree_<wbr>Celsius</code> | °C (\`C) | `deg_C` | <code>[kelvin](#kelvin)<br>origin: [ice_<wbr>point](#ice_point)</code> |
 | <span id="farad"></span><code>farad</code> | F | `F` | <code>[coulomb](#coulomb) / <wbr>[volt](#volt)</code> |
 | <span id="gram"></span><code>gram</code> | g | `g` | <code>kind: [isq::mass](isq.md#mass)</code> |
 | <span id="gray"></span><code>gray</code> | Gy | `Gy` | <code>[joule](#joule) / <wbr>[kilogram](#kilogram)<br>kind: [isq::absorbed_<wbr>dose](isq.md#absorbed_dose)</code> |

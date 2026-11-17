@@ -67,8 +67,8 @@ inline constexpr struct newton_ final : named_unit<"N", kilogram * metre / squar
 inline constexpr struct pascal_ final : named_unit<"Pa", newton / square(metre)> {} pascal;
 inline constexpr struct joule_ final : named_unit<"J", newton * metre> {} joule;
 inline constexpr struct watt_ final : named_unit<"W", joule / second> {} watt;
-inline constexpr struct degree_Celsius_ final : named_unit<symbol_text{u8"℃", "`C"}, kelvin> {} degree_Celsius;
-inline constexpr struct degree_Fahrenheit_ final : named_unit<symbol_text{u8"℉", "`F"}, mag_ratio<5, 9> * degree_Celsius> {} degree_Fahrenheit;
+inline constexpr struct degree_Celsius_ final : named_unit<symbol_text{u8"°C", "`C"}, kelvin> {} degree_Celsius;
+inline constexpr struct degree_Fahrenheit_ final : named_unit<symbol_text{u8"°F", "`F"}, mag_ratio<5, 9> * degree_Celsius> {} degree_Fahrenheit;
 
 inline constexpr struct minute_ final : named_unit<"min", mag<60> * second> {} minute;
 inline constexpr struct hour_ final : named_unit<"h", mag<60> * minute> {} hour;

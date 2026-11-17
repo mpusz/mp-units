@@ -49,7 +49,7 @@ using usf = unit_symbol_formatting;
 static_assert(unit_symbol(metre) == "m");
 static_assert(unit_symbol(second) == "s");
 static_assert(unit_symbol(joule) == "J");
-static_assert(unit_symbol(degree_Celsius) == "\u2103");
+static_assert(unit_symbol(degree_Celsius) == "\u00b0C");
 static_assert(unit_symbol<usf{.char_set = basic}>(degree_Celsius) == "`C");
 static_assert(unit_symbol(kilogram) == "kg");
 static_assert(unit_symbol(hour) == "h");

@@ -296,7 +296,7 @@ constexpr Unit auto two_pi = mag<2> * π;
 ```cpp
 // Value-preserving conversions
 quantity distance = (5 * km).in(m);                            // 5000 m
-quantity temp = delta<deg_C>(3).in<double>(deg_F);             // 5.4 ℉
+quantity temp = delta<deg_C>(3).in<double>(deg_F);             // 5.4 °F
 quantity pressure = (101325. * Pa).in(bar);                    // 1.01325 bar
 int distance_value = (42 * m).numerical_value_in(m);           // 42
 

@@ -759,6 +759,7 @@ TEST_CASE("fill and align pad to the display width, not to UTF-8 code units", "[
     CHECK(utility::detail::display_width(std::string_view{"m/s"}) == 3);
     CHECK(utility::detail::display_width(std::string_view{"m/s²"}) == 4);
     CHECK(utility::detail::display_width(std::string_view{"g₀"}) == 2);
+    CHECK(utility::detail::display_width(std::string_view{"°C"}) == 2);
     CHECK(utility::detail::display_width(std::string_view{"中"}) == 2);    // CJK ideograph: two columns
     CHECK(utility::detail::display_width(std::string_view{"\xff"}) == 1);  // malformed UTF-8: one column
     CHECK(utility::detail::display_width(std::wstring_view{L"m/s"}) == 3);
@@ -1271,7 +1272,7 @@ TEST_CASE("default quantity_point formatting", "[quantity_point][ostream][fmt]")
       const quantity_point qp = point<si::degree_Celsius>(20.);
       os << qp;
 
-      SECTION("iostream") { CHECK(os.str() == "20 ℃"); }
+      SECTION("iostream") { CHECK(os.str() == "20 °C"); }
       SECTION("default format {}") { CHECK(MP_UNITS_STD_FMT::format("{}", qp) == os.str()); }
       SECTION("explicit {:%N%?%U}") { CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U}", qp) == os.str()); }
     }
@@ -1294,7 +1295,7 @@ TEST_CASE("default quantity_point formatting", "[quantity_point][ostream][fmt]")
       const quantity_point qp = point<si::degree_Celsius>(20.);
       os << qp.in(usc::degree_Fahrenheit);
 
-      SECTION("iostream") { CHECK(os.str() == "68 ℉"); }
+      SECTION("iostream") { CHECK(os.str() == "68 °F"); }
       SECTION("default format {}") { CHECK(MP_UNITS_STD_FMT::format("{}", qp.in(usc::degree_Fahrenheit)) == os.str()); }
     }
 
@@ -1323,7 +1324,7 @@ TEST_CASE("default quantity_point formatting", "[quantity_point][ostream][fmt]")
 
     SECTION("compound difference combines into a single coherent sub-multiple")
     {
-      // `℃`, `K`, and `℉` all reduce to `kelvin`, so the two origin displacement units (`1/20 K` and
+      // `°C`, `K`, and `°F` all reduce to `kelvin`, so the two origin displacement units (`1/20 K` and
       // `1/9 K`) collapse to their single shared sub-multiple `1/180 K` rather than an ugly composite.
       const quantity sum = (point<si::degree_Celsius>(0) - point<si::kelvin>(0)) +
                            (point<usc::degree_Fahrenheit>(0) - point<si::degree_Celsius>(0));
@@ -1350,5 +1351,9 @@ TEST_CASE("default quantity_point formatting", "[quantity_point][ostream][fmt]")
     SECTION("width = 10") { CHECK(MP_UNITS_STD_FMT::format("{:10}", qp) == "      42 m"); }
     SECTION("width = 10, align = left") { CHECK(MP_UNITS_STD_FMT::format("{:<10}", qp) == "42 m      "); }
     SECTION("width = 10, fill = *") { CHECK(MP_UNITS_STD_FMT::format("{:*<10}", qp) == "42 m******"); }
+    SECTION("width = 10, align = center, two-code-point symbol")
+    {
+      CHECK(MP_UNITS_STD_FMT::format("{:*^10}", point<si::degree_Celsius>(20)) == "**20 °C***");
+    }
   }
 }

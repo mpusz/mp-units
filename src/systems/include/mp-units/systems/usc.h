@@ -125,7 +125,7 @@ inline constexpr struct rankine final : named_unit<symbol_text{u8"°R", "`R"}, m
 inline constexpr struct fahrenheit_zero final : relative_point_origin<::mp_units::point<si::milli<rankine>>(459'670)> {} fahrenheit_zero;
 [[deprecated("2.6.0: Use `fahrenheit_zero` instead")]]
 inline constexpr auto zeroth_degree_Fahrenheit = fahrenheit_zero;
-inline constexpr struct degree_Fahrenheit final : named_unit<symbol_text{u8"℉", "`F"}, rankine, fahrenheit_zero> {} degree_Fahrenheit;
+inline constexpr struct degree_Fahrenheit final : named_unit<symbol_text{u8"°F", "`F"}, rankine, fahrenheit_zero> {} degree_Fahrenheit;
 // clang-format on
 
 namespace unit_symbols {

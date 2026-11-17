@@ -22,15 +22,18 @@ while temperature _points_ additionally require an offset (+32 for C→F).
 
 !!! quote "The weather forecast in Europe"
 
-    Today there is 19 ℃ outside. Tomorrow we can expect increase to 21 ℃. Unfortunately,
-    a cold front is approaching so in the following days the temperature will drop by 5 ℃.
+    Today there is 19 °C outside. Tomorrow we can expect increase to 21 °C.
+    Unfortunately, a cold front is approaching so in the following days the temperature
+    will drop by 5 °C.
 
 A US citizen listening to this forecast wants to convert those temperatures to degree
 Fahrenheit. Please help him with this task:
 
-1. Express both temperature points (today and tomorrow) in ℉.
-2. Find out how much warmer it will be tomorrow (temperature difference in both ℃ and ℉).
-3. Calculate the temperature that is forecasted for the rest of the week (after the 5 ℃ drop).
+1. Express both temperature points (today and tomorrow) in °F.
+2. Find out how much warmer it will be tomorrow (temperature difference in both °C
+   and °F).
+3. Calculate the temperature that is forecasted for the rest of the week (after the
+   5 °C drop).
 
 **Challenge**: Refactor the code below from using raw doubles and unsafe macros to
 **mp-units** strong types that prevent temperature conversion errors.
@@ -60,10 +63,10 @@ int main()
   double diff_C = tomorrow_pt_C - today_pt_C;
   double later_pt_C = tomorrow_pt_C - 5;
 
-  std::cout << "Today: " << today_pt_C << " ℃ (" << POINT_C_TO_F(today_pt_C) << " ℉)\n";
-  std::cout << "Tomorrow: " << tomorrow_pt_C << " ℃ (" << POINT_C_TO_F(tomorrow_pt_C) << " ℉)\n";
-  std::cout << "Diff: " << diff_C << " ℃ (" << DELTA_C_TO_F(diff_C) << " ℉)\n";
-  std::cout << "Later: " << later_pt_C << " ℃ (" << POINT_C_TO_F(later_pt_C) << " ℉)\n";
+  std::cout << "Today: " << today_pt_C << " °C (" << POINT_C_TO_F(today_pt_C) << " °F)\n";
+  std::cout << "Tomorrow: " << tomorrow_pt_C << " °C (" << POINT_C_TO_F(tomorrow_pt_C) << " °F)\n";
+  std::cout << "Diff: " << diff_C << " °C (" << DELTA_C_TO_F(diff_C) << " °F)\n";
+  std::cout << "Later: " << later_pt_C << " °C (" << POINT_C_TO_F(later_pt_C) << " °F)\n";
 }
 ```
 
@@ -150,9 +153,9 @@ int main()
 
     ```cpp
     quantity_point temp = point<deg_C>(20.);
-    std::cout << temp;           // "20 ℃"
+    std::cout << temp;           // "20 °C"
     std::cout << temp.in(K);     // "293.15 K"
-    std::cout << temp.in(deg_F); // "68 ℉"
+    std::cout << temp.in(deg_F); // "68 °F"
     ```
 
     `.in(unit)` converts both the value and the origin to the target unit's built-in

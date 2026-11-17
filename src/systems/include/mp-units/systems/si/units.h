@@ -102,7 +102,7 @@ inline constexpr struct henry final : named_unit<"H", weber / ampere> {} henry;
 inline constexpr struct ice_point final : relative_point_origin<::mp_units::point<milli<kelvin>>(273'150)> {} ice_point;
 [[deprecated("2.6.0: Use `ice_point` instead")]]
 inline constexpr auto zeroth_degree_Celsius = ice_point;
-inline constexpr struct degree_Celsius final : named_unit<symbol_text{u8"℃", "`C"}, kelvin, ice_point> {} degree_Celsius;
+inline constexpr struct degree_Celsius final : named_unit<symbol_text{u8"°C", "`C"}, kelvin, ice_point> {} degree_Celsius;
 
 template<isq::PhotometricCondition auto C = isq::photopic_vision>
 struct lumen_ final : named_unit<"lm", candela_of<C> * steradian, kind_of<isq::luminous_flux_of<C>>> {};

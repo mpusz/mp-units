@@ -824,8 +824,8 @@ Text output is supported for `quantity_point` only when its point origin equals
 
     ```cpp
     quantity_point temp = point<deg_C>(20.);
-    std::cout << temp;                 // "20 ℃"
-    std::println("{}", temp);          // "20 ℃"
+    std::cout << temp;                 // "20 °C"
+    std::println("{}", temp);          // "20 °C"
     ```
 
 In both cases the formatter accepts the same format specification as `quantity`.
