@@ -28,13 +28,14 @@ quantity in_mm = length.in(mm);               // 10 000 ± 100 mm
 The class stores the central value and the absolute standard uncertainty (σ) and exposes
 them through observers:
 
-| Observer                 | Meaning                           |
-|--------------------------|-----------------------------------|
-| `value()`                | the central value                 |
-| `uncertainty()`          | the absolute standard uncertainty |
-| `relative_uncertainty()` | `uncertainty() / abs(value())`    |
-| `lower_bound()`          | `value() - uncertainty()`         |
-| `upper_bound()`          | `value() + uncertainty()`         |
+| Observer                    | Meaning                                       |
+|-----------------------------|-----------------------------------------------|
+| `value()`                   | the central value                             |
+| `uncertainty()`             | the absolute standard uncertainty             |
+| `relative_uncertainty()`    | `uncertainty() / abs(value())`                |
+| `lower_bound()`             | `value() - uncertainty()`                     |
+| `upper_bound()`             | `value() + uncertainty()`                     |
+| `expanded_uncertainty(k)`   | `k * uncertainty()`, with `k = 2` by default  |
 
 The relative standard uncertainty divides by the *absolute* value, following GUM and the VIM:
 it is a magnitude and is never negative, while the central value may well be (CODATA publishes
@@ -72,8 +73,58 @@ policies decide on the estimate at either end of a range: at an origin that chec
 with the same central value apart, compare their `uncertainty()`.
 
 The order is not a statistical statement. Two values with different central values compare
-as unequal even when their uncertainty intervals overlap. For interval-aware comparisons,
-use the `lower_bound()`/`upper_bound()` observers explicitly.
+as unequal even when their uncertainty intervals overlap. The functions in the next section
+answer that question instead.
+
+## Checking agreement and limits
+
+We often want to know whether two measurements agree, or whether a measurement meets
+a specification. Neither `==` nor `<` answers that, because both compare the central
+values only. A standard uncertainty is not a hard interval either, since
+`value ± uncertainty` covers only about 68 % of a normal distribution. Each check below
+therefore takes a coverage factor `k`, the multiple of the standard uncertainty it allows.
+The default `k = 2` covers about 95 %, which is the usual choice when reporting an
+expanded uncertainty.
+
+`metrologically_compatible(x, y, k)` tells whether two values agree. They do when the
+difference of the central values is at most `k` times the standard uncertainty of that
+difference, `√(σ_x² + σ_y²)` (VIM 2.47). An exact value has a zero uncertainty, so the
+same function checks a measurement against a reference value:
+
+```cpp
+metrologically_compatible(uncertain{10.0, 0.3}, uncertain{10.9, 0.4});  // true: 0.9 ≤ 2 × 0.5
+metrologically_compatible(uncertain{10.0, 0.1}, 10.3);                  // false: 0.3 > 2 × 0.1
+```
+
+Unlike equality, the relation is not transitive. `a` may agree with `b`, and `b` with `c`,
+while `a` and `c` don't.
+
+`certainly_within(x, lower_limit, upper_limit, k)` and `possibly_within(...)` compare a
+value with the limits of a specification (JCGM 106). The first accepts the value only when
+the whole interval `value ± k·uncertainty` lies within the limits. The second accepts it when
+the interval overlaps them, so the measurement can't rule out that the true value conforms:
+
+```cpp
+const uncertain reading{10.0, 0.5};
+certainly_within(reading, 9.0, 11.0);  // true: [9, 11] fits
+certainly_within(reading, 9.0, 10.5);  // false: 11 > 10.5
+possibly_within(reading, 10.5, 12.0);  // true: [9, 11] overlaps
+```
+
+Each of them also takes quantities or quantity points whose representation is
+`uncertain<T>`. The operands and the limits are then compared in their common unit, and
+points across their origins. One operand of `metrologically_compatible` may be exact:
+
+```cpp
+const quantity length = uncertain{10.0, 0.3} * m;
+metrologically_compatible(length, uncertain{1090.0, 40.0} * cm);  // true: 90 cm ≤ 2 × 50 cm
+certainly_within(length, 900.0 * cm, 11.0 * m);                   // true
+
+const quantity_point temp = point<deg_C>(uncertain{20.0, 0.1});
+metrologically_compatible(temp, point<K>(293.3));                 // true: 0.15 K ≤ 2 × 0.1 K
+```
+
+A NaN central value, limit, or coverage factor makes each of them return `false`.
 
 ## Uncertainty propagation
 

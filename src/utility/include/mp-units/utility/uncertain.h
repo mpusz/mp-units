@@ -48,6 +48,26 @@ import std;
 
 namespace mp_units::utility {
 
+namespace detail {
+
+// A quantity or a point whose representation is the `uncertain` specialization `U`, or its exact
+// `value_type`. The other operand of a hidden friend of `U` may be exact, and requiring one of these
+// two representations keeps the friends of two different `uncertain` specializations from both
+// being viable for the same call.
+template<typename Q, typename U>
+concept MeasuredOrExact = std::same_as<typename Q::rep, U> || std::same_as<typename Q::rep, typename U::value_type>;
+
+// A measured quantity or point with the representation `U`, and two exact limits it compares with
+template<typename Val, typename Lower, typename Upper, typename U>
+concept BoundedBy = (mp_units::Quantity<Val> || mp_units::QuantityPoint<Val>) && std::same_as<typename Val::rep, U> &&
+                    requires(const Val& val, const Lower& lower_limit, const Upper& upper_limit) {
+                      { lower_limit <= val } -> std::convertible_to<bool>;
+                      { val <= upper_limit } -> std::convertible_to<bool>;
+                      { upper_limit < lower_limit } -> std::convertible_to<bool>;
+                    };
+
+}  // namespace detail
+
 /**
  * @brief A representation type for values with uncertainties
  *
@@ -182,6 +202,141 @@ public:
 
   /// @brief Returns the upper bound of the uncertainty interval (value + σ)
   [[nodiscard]] constexpr value_type upper_bound() const { return value() + uncertainty(); }
+
+  /**
+   * @brief Returns the expanded uncertainty U = k·σ (GUM 6.2.1)
+   *
+   * @param coverage_factor The coverage factor `k`. The default `2` gives a coverage probability
+   *        of about 95 % for a normal distribution (GUM 6.3.3).
+   */
+  [[nodiscard]] constexpr value_type expanded_uncertainty(value_type coverage_factor = static_cast<value_type>(2)) const
+    MP_UNITS_PRE(!(coverage_factor < representation_values<value_type>::zero()))
+  {
+    MP_UNITS_EXPECTS(!(coverage_factor < representation_values<value_type>::zero()));
+    return coverage_factor * uncertainty();
+  }
+
+  /**
+   * @brief Checks whether two measured values agree within their uncertainties
+   *
+   * Metrological compatibility (VIM 2.47): `|x - y| <= k·√(σ_x² + σ_y²)`. An exact value is the
+   * case `σ = 0`, so the same function checks a measurement against a reference value. The two
+   * values are taken as independent. Unlike `==`, the relation is not transitive.
+   *
+   * @param coverage_factor The coverage factor, `2` (about 95 %) by default
+   */
+  [[nodiscard]] friend constexpr bool metrologically_compatible(const uncertain& lhs, const uncertain& rhs,
+                                                                value_type coverage_factor = static_cast<value_type>(2))
+    MP_UNITS_PRE(!(coverage_factor < representation_values<value_type>::zero()))
+  {
+    MP_UNITS_EXPECTS(!(coverage_factor < representation_values<value_type>::zero()));
+    using std::abs;
+    using std::hypot;
+    return abs(lhs.value() - rhs.value()) <= coverage_factor * hypot(lhs.uncertainty(), rhs.uncertainty());
+  }
+
+  /**
+   * @brief Checks whether the whole expanded uncertainty interval lies within the limits
+   *
+   * Conformity with a specification (JCGM 106): the value is accepted only if
+   * `[value - U, value + U]`, with `U = k·σ`, fits inside the limits.
+   *
+   * @param coverage_factor The coverage factor, `2` (about 95 %) by default
+   */
+  [[nodiscard]] friend constexpr bool certainly_within(const uncertain& val, const value_type& lower_limit,
+                                                       const value_type& upper_limit,
+                                                       value_type coverage_factor = static_cast<value_type>(2))
+    MP_UNITS_PRE(!(upper_limit < lower_limit) && !(coverage_factor < representation_values<value_type>::zero()))
+  {
+    MP_UNITS_EXPECTS(!(upper_limit < lower_limit) && !(coverage_factor < representation_values<value_type>::zero()));
+    const value_type expanded = val.expanded_uncertainty(coverage_factor);
+    return lower_limit <= val.value() - expanded && val.value() + expanded <= upper_limit;
+  }
+
+  /**
+   * @brief Checks whether the expanded uncertainty interval overlaps the limits
+   *
+   * The value can't be rejected as outside the limits: `[value - U, value + U]`, with
+   * `U = k·σ`, has at least one point in common with them.
+   *
+   * @param coverage_factor The coverage factor, `2` (about 95 %) by default
+   */
+  [[nodiscard]] friend constexpr bool possibly_within(const uncertain& val, const value_type& lower_limit,
+                                                      const value_type& upper_limit,
+                                                      value_type coverage_factor = static_cast<value_type>(2))
+    MP_UNITS_PRE(!(upper_limit < lower_limit) && !(coverage_factor < representation_values<value_type>::zero()))
+  {
+    MP_UNITS_EXPECTS(!(upper_limit < lower_limit) && !(coverage_factor < representation_values<value_type>::zero()));
+    const value_type expanded = val.expanded_uncertainty(coverage_factor);
+    return val.value() - expanded <= upper_limit && lower_limit <= val.value() + expanded;
+  }
+
+  /**
+   * @brief Checks whether two measured quantities, or two measured points, agree within their
+   *        uncertainties
+   *
+   * The quantity form of `metrologically_compatible`. Both operands are converted to their
+   * common unit by `lhs - rhs`, including the uncertainty of a conversion factor built from a
+   * measured constant. An operand may be exact, with `value_type` as its representation.
+   *
+   * @param coverage_factor The coverage factor, `2` (about 95 %) by default
+   */
+  template<typename Lhs, typename Rhs>
+    requires((mp_units::Quantity<Lhs> && mp_units::Quantity<Rhs>) ||
+             (mp_units::QuantityPoint<Lhs> && mp_units::QuantityPoint<Rhs>)) &&
+            detail::MeasuredOrExact<Lhs, uncertain> && detail::MeasuredOrExact<Rhs, uncertain> &&
+            requires(const Lhs& lhs, const Rhs& rhs) { lhs - rhs; }
+  [[nodiscard]] friend constexpr bool metrologically_compatible(const Lhs& lhs, const Rhs& rhs,
+                                                                value_type coverage_factor = static_cast<value_type>(2))
+    MP_UNITS_PRE(!(coverage_factor < representation_values<value_type>::zero()))
+  {
+    MP_UNITS_EXPECTS(!(coverage_factor < representation_values<value_type>::zero()));
+    const auto difference = lhs - rhs;
+    return metrologically_compatible(difference.numerical_value_ref_in(difference.unit),
+                                     representation_values<value_type>::zero(), coverage_factor);
+  }
+
+  /**
+   * @brief Checks whether the whole expanded uncertainty interval of a measured quantity, or of
+   *        a measured point, lies within the limits
+   *
+   * The quantity form of `certainly_within`. The limits are exact, and are compared in their
+   * common unit with the value.
+   *
+   * @param coverage_factor The coverage factor, `2` (about 95 %) by default
+   */
+  template<typename Val, typename Lower, typename Upper>
+    requires detail::BoundedBy<Val, Lower, Upper, uncertain>
+  [[nodiscard]] friend constexpr bool certainly_within(const Val& val, const Lower& lower_limit,
+                                                       const Upper& upper_limit,
+                                                       value_type coverage_factor = static_cast<value_type>(2))
+    MP_UNITS_PRE(!(upper_limit < lower_limit) && !(coverage_factor < representation_values<value_type>::zero()))
+  {
+    MP_UNITS_EXPECTS(!(upper_limit < lower_limit) && !(coverage_factor < representation_values<value_type>::zero()));
+    const auto expanded = expanded_quantity(val, coverage_factor);
+    return lower_limit <= val - expanded && val + expanded <= upper_limit;
+  }
+
+  /**
+   * @brief Checks whether the expanded uncertainty interval of a measured quantity, or of a
+   *        measured point, overlaps the limits
+   *
+   * The quantity form of `possibly_within`. The limits are exact, and are compared in their
+   * common unit with the value.
+   *
+   * @param coverage_factor The coverage factor, `2` (about 95 %) by default
+   */
+  template<typename Val, typename Lower, typename Upper>
+    requires detail::BoundedBy<Val, Lower, Upper, uncertain>
+  [[nodiscard]] friend constexpr bool possibly_within(const Val& val, const Lower& lower_limit,
+                                                      const Upper& upper_limit,
+                                                      value_type coverage_factor = static_cast<value_type>(2))
+    MP_UNITS_PRE(!(upper_limit < lower_limit) && !(coverage_factor < representation_values<value_type>::zero()))
+  {
+    MP_UNITS_EXPECTS(!(upper_limit < lower_limit) && !(coverage_factor < representation_values<value_type>::zero()));
+    const auto expanded = expanded_quantity(val, coverage_factor);
+    return val - expanded <= upper_limit && lower_limit <= val + expanded;
+  }
 
   /// @brief Unary negation (uncertainty unchanged)
   [[nodiscard]] constexpr uncertain operator-() const { return uncertain(-value(), uncertainty()); }
@@ -531,6 +686,17 @@ public:
   }
 
 private:
+  // `k·σ` of a measured quantity or point, as an exact quantity in its unit
+  template<typename Val>
+  [[nodiscard]] static constexpr auto expanded_quantity(const Val& val, const value_type& coverage_factor)
+  {
+    if constexpr (mp_units::QuantityPoint<Val>)
+      return expanded_quantity(val.quantity_ref_from(Val::point_origin), coverage_factor);
+    else
+      return mp_units::quantity<Val::reference, value_type>{
+        val.numerical_value_ref_in(Val::unit).expanded_uncertainty(coverage_factor), Val::reference};
+  }
+
   value_type value_{};
   value_type uncertainty_{};
 };

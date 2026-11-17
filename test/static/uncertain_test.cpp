@@ -71,6 +71,39 @@ static_assert(uncertain{10., 0.5}.uncertainty() != uncertain{10., 0.1}.uncertain
 static_assert(std::same_as<decltype(uncertain<int>{} <=> uncertain<int>{}), std::weak_ordering>);
 static_assert(std::same_as<decltype(uncertain<double>{} <=> uncertain<double>{}), std::partial_ordering>);
 
+// the expanded uncertainty uses the coverage factor `k = 2` unless told otherwise
+static_assert(uncertain{10., 0.5}.expanded_uncertainty() == 1.);
+static_assert(uncertain{10., 0.5}.expanded_uncertainty(3.) == 1.5);
+static_assert(uncertain{10, 3}.expanded_uncertainty() == 6);
+
+// a specification check: the whole interval inside the limits, or any part of it
+static_assert(certainly_within(uncertain{10., 0.5}, 9., 11.));
+static_assert(!certainly_within(uncertain{10., 0.5}, 9., 10.5));
+static_assert(certainly_within(uncertain{10., 0.5}, 9., 10.5, 1.));
+static_assert(certainly_within(uncertain{10., 0.}, 10., 10.));
+static_assert(possibly_within(uncertain{10., 0.5}, 10.5, 12.));
+static_assert(possibly_within(uncertain{10., 0.5}, 11., 12.));
+static_assert(!possibly_within(uncertain{10., 0.5}, 11., 12., 1.));
+static_assert(!possibly_within(uncertain{10., 0.5}, 7., 8.9));
+static_assert(certainly_within(uncertain{10, 1}, 8, 12));
+static_assert(!certainly_within(uncertain{10, 1}, 8, 11));
+
+// the quantity forms need a measured operand, and quantities that can be subtracted or compared
+template<typename Lhs, typename Rhs>
+concept can_check_compatibility = requires(const Lhs& lhs, const Rhs& rhs) { metrologically_compatible(lhs, rhs); };
+static_assert(can_check_compatibility<quantity<si::metre, uncertain<double>>, quantity<si::centi<si::metre>, double>>);
+static_assert(can_check_compatibility<quantity<si::metre, double>, quantity<si::metre, uncertain<double>>>);
+static_assert(!can_check_compatibility<quantity<si::metre, double>, quantity<si::metre, double>>);
+static_assert(
+  !can_check_compatibility<quantity<si::metre, uncertain<double>>, quantity<si::second, uncertain<double>>>);
+static_assert(!can_check_compatibility<quantity<si::metre, uncertain<double>>, quantity<si::metre, uncertain<float>>>);
+
+template<typename Val, typename Limit>
+concept can_check_limits = requires(const Val& val, const Limit& limit) { certainly_within(val, limit, limit); };
+static_assert(can_check_limits<quantity<si::metre, uncertain<double>>, quantity<si::centi<si::metre>, double>>);
+static_assert(!can_check_limits<quantity<si::metre, double>, quantity<si::metre, double>>);
+static_assert(!can_check_limits<quantity<si::metre, uncertain<double>>, quantity<si::second, double>>);
+
 // the element type is constrained, so an unsupported one is rejected at instantiation rather
 // than deep inside a propagation formula
 template<typename T>

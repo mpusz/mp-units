@@ -14,6 +14,13 @@ This page documents the version history and changes for the **mp-units** library
       `[0 kg, 1000 kg]`, was rejected while one on the lower bound was accepted. Values
       with equal central values are now equivalent, for example as `std::set` keys, and
       the order is at most a weak one
+- feat: `uncertain<T>` checks agreement and limits with a coverage factor `k`, 2 by
+      default. `metrologically_compatible(x, y, k)` tells whether two values agree within
+      their combined uncertainty, and `certainly_within(x, lower, upper, k)` and
+      `possibly_within(...)` whether the interval `value ± k·uncertainty` lies within, or
+      overlaps, the limits. Each takes `uncertain<T>` values, or quantities and quantity
+      points with that representation, compared in their common unit.
+      `expanded_uncertainty(k)` returns `k·uncertainty()`
 - feat: `mp-units/systems/iupac.h` provides the non-SI units of the IUPAC Green Book that
       no other system defines: `iupac::torr` (`Torr`, exactly 1/760 of the standard
       atmosphere), `iupac::millimetre_of_mercury` (`mmHg`, the conventional 13 595.1 kg/m³

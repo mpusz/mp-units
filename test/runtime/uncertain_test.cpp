@@ -71,6 +71,101 @@ TEST_CASE("uncertain observers", "[uncertain]")
   CHECK_THAT(negative.relative_uncertainty(), WithinRel(3.6e-13 / 2.00231930436092));
 }
 
+TEST_CASE("metrological compatibility", "[uncertain]")
+{
+  SECTION("two measurements agree when their difference is within k times its uncertainty")
+  {
+    // the difference is 0.5 with a standard uncertainty of √(0.3² + 0.4²) = 0.5
+    CHECK(metrologically_compatible(uncertain{10., 0.3}, uncertain{10.5, 0.4}));
+    CHECK(metrologically_compatible(uncertain{10., 0.3}, uncertain{10.9, 0.4}));
+    CHECK_FALSE(metrologically_compatible(uncertain{10., 0.3}, uncertain{11.1, 0.4}));
+    CHECK_FALSE(metrologically_compatible(uncertain{10., 0.3}, uncertain{10.9, 0.4}, 1.));
+  }
+
+  SECTION("a measurement is checked against an exact reference value")
+  {
+    CHECK(metrologically_compatible(uncertain{10., 0.1}, 10.15));
+    CHECK(metrologically_compatible(10.15, uncertain{10., 0.1}));
+    CHECK_FALSE(metrologically_compatible(uncertain{10., 0.1}, 10.3));
+  }
+
+  SECTION("two exact values are compatible only when they are equal")
+  {
+    CHECK(metrologically_compatible(uncertain{10., 0.}, 10.));
+    CHECK_FALSE(metrologically_compatible(uncertain{10., 0.}, 10.001));
+  }
+
+  SECTION("the relation is not transitive")
+  {
+    const uncertain lhs{10., 0.3};
+    const uncertain mid{10.8, 0.3};
+    const uncertain rhs{11.6, 0.3};
+    CHECK(metrologically_compatible(lhs, mid));
+    CHECK(metrologically_compatible(mid, rhs));
+    CHECK_FALSE(metrologically_compatible(lhs, rhs));
+  }
+
+  SECTION("an integral representation") { CHECK(metrologically_compatible(uncertain{10, 3}, uncertain{18, 4})); }
+}
+
+TEST_CASE("metrological compatibility and limits of quantities and points", "[uncertain]")
+{
+  SECTION("two quantities are compared in their common unit")
+  {
+    // 1000 ± 30 cm against 1090 ± 40 cm: the difference is 90 cm with an uncertainty of 50 cm
+    CHECK(metrologically_compatible(uncertain{10., 0.3} * m, uncertain{1090., 40.} * cm));
+    CHECK_FALSE(metrologically_compatible(uncertain{10., 0.3} * m, uncertain{1090., 40.} * cm, 1.));
+  }
+
+  SECTION("a measured quantity is checked against an exact one")
+  {
+    CHECK(metrologically_compatible(uncertain{10., 0.1} * m, 10.15 * m));
+    CHECK(metrologically_compatible(1015. * cm, uncertain{10., 0.1} * m));
+    CHECK_FALSE(metrologically_compatible(uncertain{10., 0.1} * m, 10.3 * m));
+  }
+
+  SECTION("two points are compared across their origins")
+  {
+    // 20 ± 0.1 °C is 293.15 ± 0.1 K
+    CHECK(metrologically_compatible(point<deg_C>(uncertain{20., 0.1}), point<K>(293.3)));
+    CHECK_FALSE(metrologically_compatible(point<deg_C>(uncertain{20., 0.1}), point<K>(293.4)));
+  }
+
+  SECTION("a quantity is checked against limits in another unit")
+  {
+    const quantity reading = uncertain{10., 0.5} * m;
+    CHECK(certainly_within(reading, 900. * cm, 11. * m));
+    CHECK_FALSE(certainly_within(reading, 900. * cm, 1050. * cm));
+    CHECK(possibly_within(reading, 1050. * cm, 12. * m));
+    CHECK_FALSE(possibly_within(reading, 1060. * cm, 12. * m, 1.));
+  }
+
+  SECTION("a point is checked against limits on another origin")
+  {
+    const quantity_point reading = point<deg_C>(uncertain{20., 0.1});
+    CHECK(certainly_within(reading, point<deg_C>(19.), point<K>(293.5)));
+    CHECK_FALSE(certainly_within(reading, point<deg_C>(19.), point<K>(293.3)));
+    CHECK(possibly_within(reading, point<K>(293.3), point<deg_C>(21.)));
+    CHECK_FALSE(possibly_within(reading, point<K>(293.4), point<deg_C>(21.)));
+  }
+}
+
+TEST_CASE("a coverage factor or a limit that is NaN is accepted and nothing passes", "[uncertain][nan]")
+{
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  const uncertain val{10., 0.5};
+
+  CHECK(std::isnan(val.expanded_uncertainty(nan)));
+  CHECK_FALSE(metrologically_compatible(val, val, nan));
+  CHECK_FALSE(metrologically_compatible(val, uncertain{nan, 0.5}));
+  CHECK_FALSE(certainly_within(val, 9., 11., nan));
+  CHECK_FALSE(certainly_within(val, nan, 11.));
+  CHECK_FALSE(certainly_within(val, 9., nan));
+  CHECK_FALSE(possibly_within(val, 9., 11., nan));
+  CHECK_FALSE(possibly_within(val, nan, 11.));
+  CHECK_FALSE(possibly_within(val, 9., nan));
+}
+
 TEST_CASE("uncertainty propagation for independent values", "[uncertain]")
 {
   const uncertain lhs{3.0, 0.3};
