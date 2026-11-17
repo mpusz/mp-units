@@ -40,7 +40,7 @@ MP_UNITS_EXPORT
 namespace mp_units {
 
 // NOLINTNEXTLINE(readability-enum-initial-value)
-enum class unit_symbol_solidus : std::int8_t {
+enum class unit_symbol_solidus {
   one_denominator,  // m/s;   kg m⁻¹ s⁻¹
   always,           // m/s;   kg/(m s)
   never,            // m s⁻¹; kg m⁻¹ s⁻¹
@@ -48,7 +48,7 @@ enum class unit_symbol_solidus : std::int8_t {
 };
 
 // NOLINTNEXTLINE(readability-enum-initial-value)
-enum class unit_symbol_separator : std::int8_t {
+enum class unit_symbol_separator {
   space,          // kg m²/s²
   half_high_dot,  // kg⋅m²/s²  (valid only for the `unicode` character set)
   default_separator [[deprecated("2.6.0: Name the value explicitly, e.g. `space`")]] = space

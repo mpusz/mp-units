@@ -44,7 +44,7 @@ MP_UNITS_EXPORT_BEGIN
 
 #if MP_UNITS_HOSTED
 
-enum class prefix_range : std::uint8_t { engineering, full };
+enum class prefix_range { engineering, full };
 
 /**
  * @brief Calls an invocable with a quantity scaled to an automatically selected SI prefix

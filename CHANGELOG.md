@@ -20,6 +20,11 @@ This page documents the version history and changes for the **mp-units** library
 - (!) fix: `usc::inch_of_mercury` is exactly 25.4 conventional mmHg, 3386.388 640 341 Pa.
       It was the rounded 3386.389 Pa, so converted values change in the seventh
       significant digit (#867)
+- refactor: `quantity_tensor_order`, `quantity_field`, `character_set`,
+      `unit_symbol_solidus`, `unit_symbol_separator`, and `si::prefix_range` don't name an
+      underlying type, as P3045 specifies them. The standard makes `std::int8_t` and
+      `std::uint8_t` optional, so a standard enumeration can't be built on them. Each now
+      has the size of an `int`
 - perf: `+`, `-`, `%`, and the comparisons read an operand that already has the common
       representation type and an equivalent unit by reference rather than copying it. A
       copy isn't free for a vector or a matrix representation (#837)

@@ -46,7 +46,7 @@ import std;
 namespace mp_units {
 
 // NOLINTNEXTLINE(readability-enum-initial-value)
-MP_UNITS_EXPORT enum class character_set : std::int8_t {
+MP_UNITS_EXPORT enum class character_set {
   unicode,  // µs; m³;  L²MT⁻³
   utf8 [[deprecated("2.6.0: Use `unicode` instead")]] = unicode,
   basic,  // us; m^3; L^2MT^-3

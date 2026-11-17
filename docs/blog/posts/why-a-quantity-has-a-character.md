@@ -678,8 +678,8 @@ just this:
 
 ```cpp
 // the two orthogonal axes
-enum class quantity_tensor_order : std::int8_t { scalar, vector, tensor };  // rank-ordered: a lower order fills a higher
-enum class quantity_field : std::int8_t { real, complex };                  // matched exactly: never one for the other
+enum class quantity_tensor_order { scalar, vector, tensor };  // rank-ordered: a lower order fills a higher
+enum class quantity_field { real, complex };                  // matched exactly: never one for the other
 
 // a character is exactly one of each
 struct quantity_character {

@@ -101,7 +101,7 @@ be preferred by users.
 This is why the library lets you select the character set to render a symbol in:
 
 ```cpp
-enum class character_set : std::int8_t {
+enum class character_set {
   unicode,  // µs; m³;  L²MT⁻³
   basic     // us; m^3; L^2MT^-3
 };
@@ -174,13 +174,13 @@ L^2MT^-3
 algorithm. It contains three orthogonal fields, each with a default value.
 
 ```cpp
-enum class unit_symbol_solidus : std::int8_t {
+enum class unit_symbol_solidus {
   one_denominator,  // m/s;   kg m⁻¹ s⁻¹
   always,           // m/s;   kg/(m s)
   never             // m s⁻¹; kg m⁻¹ s⁻¹
 };
 
-enum class unit_symbol_separator : std::int8_t {
+enum class unit_symbol_separator {
   space,          // kg m²/s²
   half_high_dot   // kg⋅m²/s²  (valid only for the `unicode` character set)
 };

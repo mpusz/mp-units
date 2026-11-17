@@ -44,8 +44,8 @@ namespace mp_units {
 // tensor) and its *numeric field* (real, complex). The enumerators are declared in increasing order
 // (scalar < vector < tensor, real < complex) because combining the characters of a derived quantity's
 // factors takes their maximum.
-MP_UNITS_EXPORT enum class quantity_tensor_order : std::int8_t { scalar, vector, tensor };
-MP_UNITS_EXPORT enum class quantity_field : std::int8_t { real, complex };
+MP_UNITS_EXPORT enum class quantity_tensor_order { scalar, vector, tensor };
+MP_UNITS_EXPORT enum class quantity_field { real, complex };
 
 namespace detail {
 
