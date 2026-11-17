@@ -84,6 +84,7 @@ intended.
 - **[Radnyx](https://github.com/Radnyx)**
 - **[RalphSteinhagen](https://github.com/RalphSteinhagen)**
 - **[rbrugo](https://github.com/rbrugo)**
+- **[reach2sayan](https://github.com/reach2sayan)**
 - **[reneparis](https://github.com/reneparis)**
 - **[rothmichaels](https://github.com/rothmichaels)**
 - **[sohamroy19](https://github.com/sohamroy19)**
@@ -94,7 +95,7 @@ intended.
 - **[uilianries](https://github.com/uilianries)**
 - **[yasamoka](https://github.com/yasamoka)**
 
-_47 people, last updated 2026-11-13._
+_48 people, last updated 2026-11-17._
 
 <!-- CONTRIBUTORS_END -->
 
