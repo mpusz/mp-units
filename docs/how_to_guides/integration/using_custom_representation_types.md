@@ -664,8 +664,8 @@ custom types.
 
 **Implementation References:**
 
-- [`representation_concepts.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/representation_concepts.h) - The public `RepresentationOf` concept (built on internal, not-yet-public character concepts) and the `magnitude` CPO
-- [`customization_points.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/customization_points.h) - User-specializable customization points: the character traits (`numeric_field`, `tensor_order`, `disable_representation`) and CPOs (`real`, `imag`, `modulus`), plus `representation_underlying_type`, `representation_canonical_type`, `treat_as_floating_point`, `representation_values`, `constraint_violation_handler`, `quantity_like_traits`, `quantity_point_like_traits`
+- [`representation_concepts.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/representation_concepts.h) - The public `RepresentationOf` concept (built on internal, not-yet-public character concepts) and the `real`, `imag`, `modulus`, and `magnitude` CPOs
+- [`customization_points.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/customization_points.h) - User-specializable customization points: the character traits (`numeric_field`, `tensor_order`, `disable_representation`), plus `representation_underlying_type`, `representation_canonical_type`, `treat_as_floating_point`, `representation_values`, `constraint_violation_handler`, `quantity_like_traits`, `quantity_point_like_traits`
 - [`quantity_traits.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/quantity_traits.h) - Public helpers (`unit_for`, `reference_for`, `rep_for`)
 - [`scaling.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/scaling.h) - Built-in scaling implementation
 - [`value_cast.h`](https://github.com/mpusz/mp-units/blob/master/src/core/include/mp-units/framework/value_cast.h) - `value_cast`, `is_integral_scaling`, and `implicitly_scalable`

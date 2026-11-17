@@ -493,6 +493,60 @@ static_assert(numeric_field<real_vec_with_api> == quantity_field::real);
 static_assert(!utility::specified<decltype(numeric_field<complex_vec_no_api>)>);
 static_assert(!utility::specified<decltype(numeric_field<complex_mat_no_api>)>);
 
+// The `real`/`imag` CPOs return a real value of the argument's tensor order, and `modulus` returns a
+// real scalar. A customization returning anything else leaves the CPO unsatisfied.
+template<typename T>
+concept real_part_available = requires(const T& value) { real(value); };
+template<typename T>
+concept imag_part_available = requires(const T& value) { imag(value); };
+template<typename T>
+concept modulus_available = requires(const T& value) { modulus(value); };
+
+static_assert(std::same_as<decltype(real(std::complex<double>{})), double>);
+static_assert(std::same_as<decltype(imag(std::complex<double>{})), double>);
+static_assert(std::same_as<decltype(modulus(std::complex<double>{})), double>);
+static_assert(
+  std::same_as<decltype(real(utility::cartesian_vector<std::complex<double>>{})), utility::cartesian_vector<double>>);
+static_assert(
+  std::same_as<decltype(imag(utility::cartesian_tensor<std::complex<double>>{})), utility::cartesian_tensor<double>>);
+static_assert(!real_part_available<double>);
+static_assert(!modulus_available<double>);
+
+struct complex_valued_parts {
+  std::complex<double> data;
+  constexpr std::complex<double> real() const { return data; }
+  constexpr std::complex<double> imag() const { return data; }
+  constexpr std::complex<double> modulus() const { return data; }
+};
+struct no_parts {};
+struct scalar_parts_of_nothing {
+  constexpr no_parts real() const { return {}; }
+  constexpr no_parts imag() const { return {}; }
+};
+
+// a customization returning a reference is read by value
+struct parts_by_reference {
+  double re, im;
+  constexpr const double& real() const { return re; }
+  constexpr const double& imag() const { return im; }
+  constexpr const double& modulus() const { return re; }
+};
+static_assert(std::same_as<decltype(real(parts_by_reference{})), double>);
+static_assert(std::same_as<decltype(imag(parts_by_reference{})), double>);
+static_assert(std::same_as<decltype(modulus(parts_by_reference{})), double>);
+
+static_assert(!real_part_available<complex_valued_parts>);
+static_assert(!imag_part_available<complex_valued_parts>);
+static_assert(!modulus_available<complex_valued_parts>);
+static_assert(!real_part_available<scalar_parts_of_nothing>);
+static_assert(!imag_part_available<scalar_parts_of_nothing>);
+// a vector whose parts are scalars doesn't keep its order
+static_assert(!real_part_available<complex_vec_with_api>);
+// exposing the API still classifies these types complex, so they are not real representations either
+static_assert(numeric_field<complex_valued_parts> == quantity_field::complex);
+static_assert(!RepresentationOf<complex_valued_parts, quantity_field::real>);
+static_assert(!RepresentationOf<complex_valued_parts, quantity_field::complex>);
+
 // utility::cartesian_tensor<double>: second-order tensor; tensor-only - never a (lower-rank) vector or scalar
 static_assert(RepresentationOf<utility::cartesian_tensor<double>, quantity_field::real>);
 static_assert(!RepresentationOf<utility::cartesian_tensor<double>, quantity_field::complex>);

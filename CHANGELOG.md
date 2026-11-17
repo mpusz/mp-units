@@ -573,6 +573,11 @@ This page documents the version history and changes for the **mp-units** library
         `MP_UNITS_BUILD_INTEGRATION_{EIGEN,GLM,BLAZE}` CMake options added to skip an
         integration whose library is installed but does not build with the toolchain in use
         (#843)
+- (!) refactor: the `real`, `imag`, and `modulus` CPOs constrain what a customization
+        returns. `real` and `imag` return a real value of the argument's tensor order and
+        `modulus` a real scalar. A customization returning anything else leaves the CPO
+        unsatisfied. `modulus` of a complex quantity doesn't compile any more, because `abs`
+        of such a quantity returns a complex quantity
 - feat: `representation_canonical_type` customization point added (materializes
         expression-template representations before storing them in a `quantity`)
 - feat: quantity character split into two orthogonal axes, `quantity_tensor_order` (scalar,

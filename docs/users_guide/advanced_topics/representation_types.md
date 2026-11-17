@@ -210,6 +210,11 @@ in the following priority order:
 3. `c.abs()` member function
 4. `abs(c)` free function found via ADL
 
+`real` and `imag` must return a real value of the argument's tensor order (a real scalar for
+a complex scalar, a real vector for a complex vector), and `modulus` must return a real
+scalar. Only the first implementation found in the lists above counts: if it returns
+anything else, the CPO is not satisfied and the next one isn't tried.
+
 **`mp_units::magnitude(v)`** - Returns the magnitude (norm) of a vector or tensor as a scalar:
 
 1. `v.magnitude()` member function

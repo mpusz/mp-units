@@ -155,6 +155,115 @@ concept Complex = (numeric_field<T> == quantity_field::complex);
 template<typename T>
 concept RealScalar = Real<T> && BaseScalar<T> && std::totally_ordered<T>;
 
+}  // namespace detail
+
+
+/////////////// real / imag / modulus CUSTOMIZATION POINTS ///////////////
+
+namespace detail {
+
+// The real and imaginary parts of a representation are real and keep its tensor order. A complex
+// scalar yields a `RealScalar`, and a complex vector or tensor yields a real one of the same order.
+// `R` is decayed because the CPOs return by value whatever the customization returns.
+template<typename R, typename T>
+concept RealCounterpartOf = Real<std::remove_cvref_t<R>> && (tensor_order<std::remove_cvref_t<R>> == tensor_order<T>) &&
+                            (tensor_order<T> != 0 || RealScalar<std::remove_cvref_t<R>>);
+
+// The modulus |z| of a scalar is a real scalar. The length of a vector comes from `magnitude`.
+template<typename R>
+concept ModulusResult = RealScalar<std::remove_cvref_t<R>>;
+
+}  // namespace detail
+
+// The return-type constraint is repeated in each `requires`-clause, branch by branch in the order of
+// the `if constexpr` chain. A constrained placeholder alone is checked only while deducing the return
+// type, so a customization returning the wrong type would be a hard error instead of an unsatisfied
+// constraint. Following the chain also keeps a member returning the wrong type from falling through
+// to the free function.
+
+namespace detail::real_impl {
+
+struct real_t {
+  template<typename T>
+  [[nodiscard]] constexpr RealCounterpartOf<T> auto operator()(const T& clx) const
+    requires requires { { clx.real() } -> RealCounterpartOf<T>; } ||
+             (!requires { clx.real(); } && requires { { real(clx) } -> RealCounterpartOf<T>; })
+  {
+    if constexpr (requires { clx.real(); })
+      return clx.real();
+    else if constexpr (requires { real(clx); })
+      return real(clx);
+  }
+};
+
+}  // namespace detail::real_impl
+
+inline namespace cpo {
+
+MP_UNITS_EXPORT inline constexpr ::mp_units::detail::real_impl::real_t real;
+
+}
+
+namespace detail::imag_impl {
+
+struct imag_t {
+  template<typename T>
+  [[nodiscard]] constexpr RealCounterpartOf<T> auto operator()(const T& clx) const
+    requires requires { { clx.imag() } -> RealCounterpartOf<T>; } ||
+             (!requires { clx.imag(); } && requires { { imag(clx) } -> RealCounterpartOf<T>; })
+  {
+    if constexpr (requires { clx.imag(); })
+      return clx.imag();
+    else if constexpr (requires { imag(clx); })
+      return imag(clx);
+  }
+};
+
+}  // namespace detail::imag_impl
+
+inline namespace cpo {
+
+MP_UNITS_EXPORT inline constexpr ::mp_units::detail::imag_impl::imag_t imag;
+
+}
+
+namespace detail::modulus_impl {
+
+void modulus() = delete;  // poison pill
+void abs() = delete;      // poison pill
+
+struct modulus_t {
+  template<typename T>
+  [[nodiscard]] constexpr ModulusResult auto operator()(const T& clx) const
+    requires requires { { clx.modulus() } -> ModulusResult; } ||
+             (!requires { clx.modulus(); } && requires { { modulus(clx) } -> ModulusResult; }) ||
+             (!requires { clx.modulus(); } && !requires { modulus(clx); } &&
+              requires { { clx.abs() } -> ModulusResult; }) ||
+             (!requires { clx.modulus(); } && !requires { modulus(clx); } && !requires { clx.abs(); } &&
+              requires { { abs(clx) } -> ModulusResult; })
+  {
+    if constexpr (requires { clx.modulus(); })
+      return clx.modulus();
+    else if constexpr (requires { modulus(clx); })
+      return modulus(clx);
+    // `std` made a precedence of using `abs` for modulus on `std::complex`
+    else if constexpr (requires { clx.abs(); })
+      return clx.abs();
+    else if constexpr (requires { abs(clx); })
+      return abs(clx);
+  }
+};
+
+}  // namespace detail::modulus_impl
+
+inline namespace cpo {
+
+MP_UNITS_EXPORT inline constexpr ::mp_units::detail::modulus_impl::modulus_t modulus;
+
+}
+
+namespace detail {
+
 // A complex scalar is `Complex` (so `real`/`imag` work) and, on top of the shared scalar algebra,
 // supports `modulus` and reconstruction from its parts. Construction from `(real, imag)` is what
 // lets users (and the framework's complex paths) build and round-trip a value efficiently.
