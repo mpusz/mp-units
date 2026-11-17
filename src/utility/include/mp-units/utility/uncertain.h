@@ -36,6 +36,7 @@
 import std;
 #else
 #include <cmath>
+#include <compare>
 #include <concepts>
 #include <iosfwd>
 #include <string>
@@ -114,9 +115,12 @@ namespace mp_units::utility {
 //   `RealScalar` does not imply it: it requires `std::copyable` and `std::equality_comparable`
 //   rather than `std::regular`, so neither default-construction nor construction from `int` is
 //   guaranteed. Stating it here also keeps the requirement independent of whether the
-//   precondition macro expands to anything in a given configuration.
+//   precondition macro expands to anything in a given configuration,
+// - `std::three_way_comparable` is what the order of `uncertain<T>` is defined by: it compares the
+//   central values with `<=>`.
 MP_UNITS_EXPORT template<typename T>
-  requires RealScalar<T> && (!disable_representation<T>) && requires { representation_values<T>::zero(); }
+  requires RealScalar<T> && (!disable_representation<T>) && requires { representation_values<T>::zero(); } &&
+           std::three_way_comparable<T>
 class uncertain {
 public:
   using value_type = T;
@@ -295,12 +299,25 @@ public:
    * @brief Comparison of two uncertain values
    *
    * `RealScalar` requires `std::totally_ordered`, so a real scalar representation cannot opt out
-   * of ordering. The order is primarily by the central value, with the uncertainty as a
-   * tie-breaker, which keeps it total and consistent with equality. It is structural, not
-   * statistical: values with overlapping uncertainty intervals still compare as unequal. For
-   * interval-aware comparisons use the `lower_bound()`/`upper_bound()` observers.
+   * of ordering. Both the order and equality compare the central values only, so two values with
+   * the same central value and different uncertainties are equal, and the order is at most a weak
+   * one. A comparison with an exact value, such as a bound or zero, depends on the central value
+   * alone. The comparison is not statistical: two values with different central values compare as
+   * unequal even when their uncertainty intervals overlap. For interval-aware comparisons use the
+   * `lower_bound()`/`upper_bound()` observers, and compare `uncertainty()` to tell two values with
+   * the same central value apart.
    */
-  [[nodiscard]] constexpr auto operator<=>(const uncertain&) const = default;
+  [[nodiscard]] friend constexpr bool operator==(const uncertain& lhs, const uncertain& rhs)
+  {
+    return lhs.value() == rhs.value();
+  }
+
+  [[nodiscard]] friend constexpr std::common_comparison_category_t<std::compare_three_way_result_t<value_type>,
+                                                                   std::weak_ordering>
+  operator<=>(const uncertain& lhs, const uncertain& rhs)
+  {
+    return lhs.value() <=> rhs.value();
+  }
 
   friend std::ostream& operator<<(std::ostream& os, const uncertain& arg)
   {

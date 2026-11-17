@@ -8,6 +8,12 @@ This page documents the version history and changes for the **mp-units** library
 
 ### 2.6.0 <small>TBD</small> { id="2.6.0" }
 
+- (!) fix: `uncertain<T>` compares central values only, in both `==` and `<=>`, and
+      the uncertainty no longer takes part. A value whose central value equals the upper
+      bound of a `check_in_range` origin, such as `1000 ± 0.5 kg` against
+      `[0 kg, 1000 kg]`, was rejected while one on the lower bound was accepted. Values
+      with equal central values are now equivalent, for example as `std::set` keys, and
+      the order is at most a weak one
 - feat: `mp-units/systems/iupac.h` provides the non-SI units of the IUPAC Green Book that
       no other system defines: `iupac::torr` (`Torr`, exactly 1/760 of the standard
       atmosphere), `iupac::millimetre_of_mercury` (`mmHg`, the conventional 13 595.1 kg/m³

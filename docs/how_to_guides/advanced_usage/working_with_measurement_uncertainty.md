@@ -62,15 +62,18 @@ In practice `double`, `float`, and the integral types qualify. Two kinds of type
 Constraining the element type means an unsupported one is rejected where `uncertain<T>` is
 named, rather than deep inside a propagation formula.
 
-Comparison is total. The order is primarily by the central value, with the uncertainty as
-a tie-breaker, which keeps it consistent with equality. A real scalar representation is
-required to be `std::totally_ordered`, so a type without `<` could not be used for
-a real scalar quantity at all, and features such as the `clamp_to_range` and
-`clamp_non_negative` overflow policies apply `<` directly to the representation.
+Comparison is total, NaN aside. Both the order and equality compare the central values
+only, so `uncertain{10., 0.1} == uncertain{10., 0.5}` holds. A real scalar representation
+is required to be `std::totally_ordered`, so a type without `<` could not be used for a
+real scalar quantity at all, and features such as the bounds policies of a point origin
+apply `<` directly to the representation. Comparing the central values alone makes those
+policies decide on the estimate at either end of a range: at an origin that checks
+`[0 kg, 1000 kg]`, `1000 ± 0.5 kg` is accepted, as `0 ± 0.5 kg` is. To tell two values
+with the same central value apart, compare their `uncertainty()`.
 
-The order is a structural one, not a statistical statement. Two values whose uncertainty
-intervals overlap still compare as unequal. For interval-aware comparisons, use the
-`lower_bound()`/`upper_bound()` observers explicitly.
+The order is not a statistical statement. Two values with different central values compare
+as unequal even when their uncertainty intervals overlap. For interval-aware comparisons,
+use the `lower_bound()`/`upper_bound()` observers explicitly.
 
 ## Uncertainty propagation
 
