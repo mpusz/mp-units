@@ -82,7 +82,7 @@ Monitoring a rectangular tank being filled with water:
 
 ```text
 fill height at 200 s = 0.04 m (20 % full)
-fill weight at 200 s = 100 kg g₀ (980.665 N)
+fill weight at 200 s = 100 g₀ kg (980.665 N)
 spare capacity at 200 s = 0.08 m³
 input flow rate = 0.1 kg/s
 float rise rate = 2e-04 m/s

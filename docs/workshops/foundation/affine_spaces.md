@@ -56,6 +56,7 @@ Given:
 
 ```cpp
 // ce-embed height=650 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
+#include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
 #include <iostream>
 
@@ -76,6 +77,7 @@ int main()
 ??? tip "Solution"
 
     ```cpp
+    #include <mp-units/systems/isq.h>
     #include <mp-units/systems/si.h>
     #include <iostream>
 

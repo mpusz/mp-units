@@ -49,6 +49,7 @@ Create an error policy that:
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
 #include <mp-units/systems/yard_pound.h>
+#include <mp-units/utility/constrained.h>
 #include <chrono>
 #include <iostream>
 #include <optional>
@@ -58,6 +59,7 @@ Create an error policy that:
 #include <string_view>
 
 using namespace mp_units;
+using namespace mp_units::utility;
 using namespace mp_units::si::unit_symbols;
 using namespace mp_units::yard_pound::unit_symbols;
 
@@ -184,6 +186,7 @@ int main()
     #include <mp-units/systems/isq.h>
     #include <mp-units/systems/si.h>
     #include <mp-units/systems/yard_pound.h>
+    #include <mp-units/utility/constrained.h>
     #include <chrono>
     #include <iostream>
     #include <optional>
@@ -193,6 +196,7 @@ int main()
     #include <string_view>
 
     using namespace mp_units;
+    using namespace mp_units::utility;
     using namespace mp_units::si::unit_symbols;
     using namespace mp_units::yard_pound::unit_symbols;
 

@@ -92,17 +92,27 @@ static_assert(isq::radius(1 * m) - 0.5 * m == isq::radius(0.5 * m));
     left-hand-side argument type:
 
     ```cpp
-    static_assert((1 * m += 1 * km) == 1001 * m);
-    static_assert((isq::length(1 * m) += isq::height(1 * m)) == isq::length(1 * m));
-    static_assert((isq::height(1.5 * m) -= 1 * m) == isq::height(0.5 * m));
+    quantity q1 = 1 * m;
+    q1 += 1 * km;                     // 1001 m, still in metres
+
+    quantity q2 = isq::length(1 * m);
+    q2 += isq::height(1 * m);         // 2 m, still an isq::length
+
+    quantity q3 = isq::height(1.5 * m);
+    q3 -= 1 * m;                      // 0.5 m, still an isq::height
     ```
 
     If we will break typical library's convertibility rules, the following code will not compile:
 
     ```cpp
-    quantity q1 = 1 * m -= 0.5 * m;                         // Compile-time error(1)
-    quantity q2 = 1 * km += 1 * m;                          // Compile-time error(2)
-    quantity q3 = isq::height(1 * m) += isq::length(1 * m); // Compile-time error(3)
+    quantity q4 = 1 * m;
+    q4 -= 0.5 * m;                    // Compile-time error(1)
+
+    quantity q5 = 1 * km;
+    q5 += 1 * m;                      // Compile-time error(2)
+
+    quantity q6 = isq::height(1 * m);
+    q6 += isq::length(1 * m);         // Compile-time error(3)
     ```
 
     1. Conversion of the floating-point to integral representation type is
