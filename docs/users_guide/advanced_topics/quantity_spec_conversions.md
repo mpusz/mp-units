@@ -439,7 +439,15 @@ The rules say which operation applies when more than one could:
     their equations. A pair of siblings waits while some other factor still has an
     equation that mentions their tree, so that siblings are paired only once every factor
     of their tree is present. When a tree offers several ways to pair, the rank of the
-    pairing is the best over all pairings of that tree's factors.
+    pairing is the best over all pairings of that tree's factors. When siblings pair as
+    `cast`, the library also tries expanding each factor whose equation names another
+    branch of its own tree, a quantity of that tree that is not one of its ancestors, and
+    keeps the better rank. With `pixel_pitch` a _length_ defined as
+    `length / pixel_count` and `image_width` a _length_ defined as
+    `pixel_pitch * pixel_count`, `image_width / pixel_count` to `pixel_pitch` is
+    `implicit`, like `image_width` to `pixel_pitch * pixel_count`. An equation that names
+    only an ancestor is not expanded for this, so `image_width / pixel_count` to `height`
+    stays `cast`, like `pixel_pitch` to `height`.
 - **Different roots stay apart.** Two named quantities of the same dimension from
     different trees, left over after pairing, end the conversion with `none`, unless the
     equation of either mentions the other's tree, in which case the equations decide. This

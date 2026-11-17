@@ -135,6 +135,8 @@ QUANTITY_SPEC_(pixel_count, dimensionless);
 QUANTITY_SPEC_(pixel_x, pixel_count);
 QUANTITY_SPEC_(pixel_y, pixel_count);
 QUANTITY_SPEC_(pixel_area, dimensionless, pixel_x * pixel_y);
+QUANTITY_SPEC_(pixel_pitch, length, length / pixel_count);
+QUANTITY_SPEC_(image_width, length, pixel_pitch * pixel_count);
 
 // V2 workaround: altitude and depth are signed coordinates (can be negative)
 QUANTITY_SPEC_(altitude, length);                    // signed vertical coordinate
@@ -984,6 +986,16 @@ static_assert(convertible(north_speed * energy, east_speed* energy) == cast);
 static_assert(convertible(electromagnetism_power * time / period_duration, active_power) == implicit);
 static_assert(convertible(active_power, electromagnetism_power* time / period_duration) == implicit);
 static_assert(convertible(pow<2>(active_power), pow<2>(electromagnetism_power* time / period_duration)) == implicit);
+
+// a factor whose equation names a sibling is expanded rather than paired with that sibling
+static_assert(convertible(image_width / pixel_count, pixel_pitch) == implicit);
+static_assert(convertible(image_width / pixel_count, pixel_pitch) ==
+              convertible(image_width, pixel_pitch* pixel_count));
+static_assert(convertible(pixel_pitch, image_width / pixel_count) == implicit);
+static_assert(convertible(image_width, pixel_pitch) == cast);
+// pairing stays one of the choices, and an equation that names only an ancestor is not expanded for it
+static_assert(convertible(pixel_pitch, height) == cast);
+static_assert(convertible(image_width / pixel_count, height) == cast);
 
 // a factor common to both sides doesn't change how they relate
 static_assert(convertible(north_speed * mass, east_speed* mass) == convertible(north_speed, east_speed));

@@ -134,6 +134,12 @@ This page documents the version history and changes for the **mp-units** library
       from a kind none at all. A `kind_of<isq::angular_velocity>` converts to a child
       defined as `inverse(isq::duration)` only explicitly, and two siblings that each
       carry a declared kind the other lacks don't convert, as their squares already didn't
+- fix: a quantity defined as a sibling times other factors, divided by those factors,
+      converts to the sibling. With `price` defined as
+      `currency / count`, and `notional`, another child of `currency`, defined as
+      `price * count`, `notional / count` converts to `price` implicitly, as `notional`
+      converts to `price * count`. The two used to pair as siblings and needed
+      `quantity_cast`
 - (!) fix: ISQ definitions corrected against ISO/IEC 80000. `isq::angular_repetency` is
       `phase_angle / wavelength` (k = 2π/λ, like `angular_frequency`), so a phase speed
       ω/k converts to `length / time` implicitly and `1 / wavelength` is an angular
