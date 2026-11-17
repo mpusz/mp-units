@@ -528,6 +528,7 @@ static_assert(std::is_same_v<decltype(pow<-1>(pow<-1>(kilometre))), decltype(pow
 static_assert(is_of_type<pow<0>(metre), one_>);
 static_assert(is_of_type<pow<1>(metre), metre_>);
 static_assert(is_of_type<pow<2, 2>(metre), metre_>);
+static_assert(is_of_type<pow<4, 2>(metre), derived_unit<power<metre_, 2>>>);
 static_assert(is_of_type<pow<2>(one), one_>);
 static_assert(is_of_type<pow<2>(percent), derived_unit<power<percent_, 2>>>);
 static_assert(is_of_type<pow<2>(radian), derived_unit<power<radian_, 2>>>);

@@ -793,6 +793,7 @@ TEST_CASE("'hypot()', 'pow()', and 'exp()' postconditions accept what they must"
   SECTION("an even power of a negative value is non-negative")
   {
     REQUIRE(pow<2>(-3.0 * isq::length[m]) == 9.0 * isq::area[m2]);
+    REQUIRE(pow<4, 2>(-3.0 * isq::length[m]) == 9.0 * isq::area[m2]);
     REQUIRE(pow<3>(-3.0 * isq::length[m]) == -27.0 * isq::volume[m3]);
   }
 

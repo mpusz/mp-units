@@ -140,6 +140,10 @@ This page documents the version history and changes for the **mp-units** library
       `price * count`, `notional / count` converts to `price` implicitly, as `notional`
       converts to `price * count`. The two used to pair as siblings and needed
       `quantity_cast`
+- fix: `pow` of a single named dimension, quantity specification, or unit reduces the
+      exponent, so `pow<4, 2>(si::metre)` is `pow<2>(si::metre)` and `pow<4, 2>` of a
+      length quantity compares with an area. It used to give `power<metre, 4, 2>`, a
+      different type from `power<metre, 2>`
 - (!) fix: ISQ definitions corrected against ISO/IEC 80000. `isq::angular_repetency` is
       `phase_angle / wavelength` (k = 2π/λ, like `angular_frequency`), so a phase speed
       ω/k converts to `length / time` implicitly and `1 / wavelength` is an angular

@@ -606,10 +606,10 @@ template<std::intmax_t Num, std::intmax_t Den, template<typename...> typename To
       return expr_pow_impl<-exp.num, exp.den, To, OneType, Pred>(type_list<>{}, type_list<T>{});
   } else if constexpr (is_specialization_of<T, To>)
     return expr_pow_impl<Num, Den, To, OneType, Pred>(typename T::_num_{}, typename T::_den_{});
-  else if constexpr (Den == 1)
-    return To<power<T, Num>>{};
+  else if constexpr (exp.den == 1)
+    return To<power<T, exp.num>>{};
   else
-    return To<power<T, Num, Den>>{};
+    return To<power<T, exp.num, exp.den>>{};
 }
 
 

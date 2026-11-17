@@ -237,6 +237,8 @@ static_assert(acceleration != speed);
 static_assert(is_of_type<pow<0>(length), dimension_one_>);
 static_assert(is_of_type<pow<1>(length), length_>);
 static_assert(is_of_type<pow<2, 2>(length), length_>);
+static_assert(is_of_type<pow<4, 2>(length), derived_dimension<mp_units::power<length_, 2>>>);
+static_assert(is_of_type<pow<2, 4>(length), derived_dimension<mp_units::power<length_, 1, 2>>>);
 static_assert(is_of_type<pow<2>(dimension_one), dimension_one_>);
 static_assert(is_of_type<pow<2>(length), derived_dimension<mp_units::power<length_, 2>>>);
 static_assert(is_of_type<pow<1, 2>(length), derived_dimension<mp_units::power<length_, 1, 2>>>);
@@ -253,6 +255,7 @@ static_assert(is_of_type<pow<-1>(length), derived_dimension<dimension_one_, per<
 static_assert(is_of_type<pow<-2>(length), derived_dimension<dimension_one_, per<mp_units::power<length_, 2>>>>);
 static_assert(is_of_type<pow<-1, 2>(length), derived_dimension<dimension_one_, per<mp_units::power<length_, 1, 2>>>>);
 static_assert(is_of_type<pow<1, -2>(length), derived_dimension<dimension_one_, per<mp_units::power<length_, 1, 2>>>>);
+static_assert(is_of_type<pow<-4, 2>(length), derived_dimension<dimension_one_, per<mp_units::power<length_, 2>>>>);
 static_assert(is_of_type<pow<-1>(length / time), derived_dimension<time_, per<length_>>>);
 static_assert(is_of_type<pow<-1>(pow<-1>(length)), length_>);
 static_assert(std::is_same_v<decltype(pow<-1>(length)), decltype(inverse(length))>);
