@@ -26,6 +26,8 @@ This page documents the version history and changes for the **mp-units** library
 - fix: `representation_canonical_type` forwards a reference to the unqualified type, as it
       already did a `const`, so a specialization for an expression-template proxy applies
       also when an operator returns a reference to the proxy (#837)
+- refactor: `scale<To>(M, value)` is renamed to `scale_by_magnitude<To>(M, value)`, which
+      says what the value is scaled by. The former name is deprecated
 - fix: the displacement between two point origins keeps a named unit that already is the
       coarsest exact one, so a `-27 cm` origin offset and the point differences across it
       print in `cm` rather than in `(1/100 m)`

@@ -54,45 +54,52 @@ static_assert(detail::int_power<long double>(2, 63) == 9223372036854775808.0L);
 static_assert(detail::int_power<double>(2, -3) == 0.125);
 static_assert(detail::int_power<double>(10, 3) == 1000.0);
 
-// scale<To>(M{}, value) — integer-to-integer path (exact arithmetic, no floating point)
+// scale_by_magnitude<To>(M{}, value) — integer-to-integer path (exact arithmetic, no floating point)
 
 // integral factor: exact integer multiply
-static_assert(scale<int>(mag<1000>, 5) == 5000);
-static_assert(scale<long>(mag<60>, 2l) == 120l);
+static_assert(scale_by_magnitude<int>(mag<1000>, 5) == 5000);
+static_assert(scale_by_magnitude<long>(mag<60>, 2l) == 120l);
 
 // integral inverse: exact integer divide
-static_assert(scale<int>(mag_ratio<1, 1000>, 5000) == 5);
-static_assert(scale<int>(mag_ratio<1, 60>, 120) == 2);
+static_assert(scale_by_magnitude<int>(mag_ratio<1, 1000>, 5000) == 5);
+static_assert(scale_by_magnitude<int>(mag_ratio<1, 60>, 120) == 2);
 
 // rational M (3/2 * 4 == 6): exact widened integer arithmetic (int64_t for int)
-static_assert(scale<int>(mag_ratio<3, 2>, 4) == 6);
+static_assert(scale_by_magnitude<int>(mag_ratio<3, 2>, 4) == 6);
 // (1/3 * 9 == 3)
-static_assert(scale<int>(mag_ratio<1, 3>, 9) == 3);
+static_assert(scale_by_magnitude<int>(mag_ratio<1, 3>, 9) == 3);
 
 // identity
-static_assert(scale<int>(mag<1>, 42) == 42);
+static_assert(scale_by_magnitude<int>(mag<1>, 42) == 42);
 
 // floating-point path
-static_assert(scale<double>(mag_ratio<1, 2>, 1.0) == 0.5);
-static_assert(scale<float>(mag<3>, 1.0f) == 3.0f);
+static_assert(scale_by_magnitude<double>(mag_ratio<1, 2>, 1.0) == 0.5);
+static_assert(scale_by_magnitude<float>(mag<3>, 1.0f) == 3.0f);
 
 // rounding policies on the integral-inverse (pure divisor) path
-static_assert(scale<int>(mag_ratio<1, 1000>, 1567, rounded) == 2);
-static_assert(scale<int>(mag_ratio<1, 1000>, 1500, rounded) == 2);  // tie rounds to even
-static_assert(scale<int>(mag_ratio<1, 1000>, 2500, rounded) == 2);  // tie rounds to even
-static_assert(scale<int>(mag_ratio<1, 1000>, -1234, truncated) == -1);
-static_assert(scale<int>(mag_ratio<1, 1000>, -1234, rounded_down) == -2);
-static_assert(scale<int>(mag_ratio<1, 1000>, -1234, rounded_up) == -1);
-static_assert(scale<int>(mag_ratio<1, 1000>, 1234, rounded_up) == 2);
+static_assert(scale_by_magnitude<int>(mag_ratio<1, 1000>, 1567, rounded) == 2);
+static_assert(scale_by_magnitude<int>(mag_ratio<1, 1000>, 1500, rounded) == 2);  // tie rounds to even
+static_assert(scale_by_magnitude<int>(mag_ratio<1, 1000>, 2500, rounded) == 2);  // tie rounds to even
+static_assert(scale_by_magnitude<int>(mag_ratio<1, 1000>, -1234, truncated) == -1);
+static_assert(scale_by_magnitude<int>(mag_ratio<1, 1000>, -1234, rounded_down) == -2);
+static_assert(scale_by_magnitude<int>(mag_ratio<1, 1000>, -1234, rounded_up) == -1);
+static_assert(scale_by_magnitude<int>(mag_ratio<1, 1000>, 1234, rounded_up) == 2);
 
 // rounding policies on the rational path (widened integer arithmetic)
-static_assert(scale<int>(mag_ratio<3, 2>, 3, truncated) == 4);    // 4.5
-static_assert(scale<int>(mag_ratio<3, 2>, 3, rounded) == 4);      // tie rounds to even
-static_assert(scale<int>(mag_ratio<3, 2>, 5, rounded) == 8);      // 7.5, tie rounds to even
-static_assert(scale<int>(mag_ratio<3, 2>, 3, rounded_up) == 5);   // 4.5
-static_assert(scale<int>(mag_ratio<3, 2>, -3, truncated) == -4);  // -4.5
-static_assert(scale<int>(mag_ratio<3, 2>, -3, rounded_down) == -5);
-static_assert(scale<int>(mag_ratio<3, 2>, -3, rounded) == -4);  // tie rounds to even
+static_assert(scale_by_magnitude<int>(mag_ratio<3, 2>, 3, truncated) == 4);    // 4.5
+static_assert(scale_by_magnitude<int>(mag_ratio<3, 2>, 3, rounded) == 4);      // tie rounds to even
+static_assert(scale_by_magnitude<int>(mag_ratio<3, 2>, 5, rounded) == 8);      // 7.5, tie rounds to even
+static_assert(scale_by_magnitude<int>(mag_ratio<3, 2>, 3, rounded_up) == 5);   // 4.5
+static_assert(scale_by_magnitude<int>(mag_ratio<3, 2>, -3, truncated) == -4);  // -4.5
+static_assert(scale_by_magnitude<int>(mag_ratio<3, 2>, -3, rounded_down) == -5);
+static_assert(scale_by_magnitude<int>(mag_ratio<3, 2>, -3, rounded) == -4);  // tie rounds to even
+
+// `scale` remains as the deprecated name of `scale_by_magnitude`
+MP_UNITS_DIAGNOSTIC_PUSH
+MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
+static_assert(scale<int>(mag<1000>, 5) == 5000);
+static_assert(scale<int>(mag_ratio<3, 2>, 3, rounded) == 4);
+MP_UNITS_DIAGNOSTIC_POP
 
 // UnitMagnitudeScalable concept
 static_assert(detail::UnitMagnitudeScalable<int>);

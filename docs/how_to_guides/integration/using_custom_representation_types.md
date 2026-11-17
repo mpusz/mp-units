@@ -316,10 +316,10 @@ public:
     requires mp_units::treat_as_floating_point<T>
   [[nodiscard]] friend constexpr auto operator*(const bounded_value& val, M m)
   {
-    constexpr T new_lo = mp_units::scale<T>(M{}, T{Min});
-    constexpr T new_hi = mp_units::scale<T>(M{}, T{Max});
+    constexpr T new_lo = mp_units::scale_by_magnitude<T>(M{}, T{Min});
+    constexpr T new_hi = mp_units::scale_by_magnitude<T>(M{}, T{Max});
 
-    const T scaled = mp_units::scale<T>(m, val.value());
+    const T scaled = mp_units::scale_by_magnitude<T>(m, val.value());
 
     if constexpr (new_lo <= new_hi)
       return bounded_value<T, new_lo, new_hi, Policy>(scaled);  // different type!

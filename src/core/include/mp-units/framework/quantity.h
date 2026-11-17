@@ -319,8 +319,8 @@ concept DifferentlySignedIntegers =
 template<typename LhsRep, typename RhsRep, UnitMagnitude M1, typename V1, UnitMagnitude M2, typename V2, typename Cmp>
 [[nodiscard]] constexpr auto scaled_sign_aware_compare(M1 lhs_m, const V1& lhs_val, M2 rhs_m, const V2& rhs_val, Cmp)
 {
-  const auto lhs = scale<LhsRep>(lhs_m, lhs_val);
-  const auto rhs = scale<RhsRep>(rhs_m, rhs_val);
+  const auto lhs = scale_by_magnitude<LhsRep>(lhs_m, lhs_val);
+  const auto rhs = scale_by_magnitude<RhsRep>(rhs_m, rhs_val);
   if constexpr (std::is_same_v<Cmp, std::compare_three_way>)
     return detail::cmp_three_way(lhs, rhs);
   else
@@ -370,8 +370,8 @@ template<typename Q1, typename Q2, typename Cmp>
     if constexpr (!overflows_non_zero_common_values<wide_t>(Q1::unit, Q2::unit)) {
       constexpr UnitMagnitude auto lhs_m = get_canonical_unit(Q1::unit).mag / get_canonical_unit(ct::unit).mag;
       constexpr UnitMagnitude auto rhs_m = get_canonical_unit(Q2::unit).mag / get_canonical_unit(ct::unit).mag;
-      return cmp(scale<wide_t>(lhs_m, lhs.numerical_value_is_an_implementation_detail_),
-                 scale<wide_t>(rhs_m, rhs.numerical_value_is_an_implementation_detail_));
+      return cmp(scale_by_magnitude<wide_t>(lhs_m, lhs.numerical_value_is_an_implementation_detail_),
+                 scale_by_magnitude<wide_t>(rhs_m, rhs.numerical_value_is_an_implementation_detail_));
     } else {
       return fallback_cmp();
     }

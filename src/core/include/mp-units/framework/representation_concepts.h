@@ -396,7 +396,7 @@ namespace detail {
 //
 // The scaled result need not be `T` itself, nor even weakly-regular: expression-template
 // linear algebra libraries (e.g. Eigen, Blaze) return lazy proxy types from `operator*` /
-// `operator/` rather than a materialized vector/matrix.  `scale()` always materializes the
+// `operator/` rather than a materialized vector/matrix.  `scale_by_magnitude()` always materializes the
 // result via `static_cast<To>` (direct-initialization), so it is sufficient that `T` be
 // constructible from the scaled result.
 //
@@ -444,7 +444,7 @@ concept UsesIntegerScaling = integral<value_type_t<T>> && requires(T value, wide
 };
 
 // A type that provides its own magnitude-aware operator*(T, UnitMagnitude) customization
-// point.  scale() will prefer this path when available, and the return type may differ
+// point.  scale_by_magnitude() will prefer this path when available, and the return type may differ
 // from the input (e.g. a wrapper with scaled bounds).
 template<typename T>
 concept UsesUnitMagnitudeAwareScaling = requires(const T& v) { v * mag<1>; };
@@ -452,7 +452,7 @@ concept UsesUnitMagnitudeAwareScaling = requires(const T& v) { v * mag<1>; };
 /**
  * @brief UnitMagnitudeScalable
  *
- * A type is `UnitMagnitudeScalable` if the library's `scale()` can apply a unit
+ * A type is `UnitMagnitudeScalable` if the library's `scale_by_magnitude()` can apply a unit
  * magnitude ratio to it.  The three sub-concepts map to the scaling paths:
  *
  *  - `UsesUnitMagnitudeAwareScaling<T>` — type provides `operator*(T, UnitMagnitude)` (preferred)

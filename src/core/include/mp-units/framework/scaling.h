@@ -361,7 +361,7 @@ template<typename To, rounding_mode Mode, UnitMagnitude M, typename From>
  */
 MP_UNITS_EXPORT template<typename To, UnitMagnitude M, typename From>
   requires detail::UnitMagnitudeScalable<From>
-[[nodiscard]] constexpr auto scale(M m, const From& value)
+[[nodiscard]] constexpr auto scale_by_magnitude(M m, const From& value)
 {
   return detail::scale_impl<To, detail::rounding_mode::truncated>(m, value);
 }
@@ -372,9 +372,30 @@ MP_UNITS_EXPORT template<typename To, UnitMagnitude M, typename From>
  */
 MP_UNITS_EXPORT template<typename To, UnitMagnitude M, typename From, RoundingPolicy Policy>
   requires detail::UnitMagnitudeScalable<From>
-[[nodiscard]] constexpr auto scale(M m, const From& value, Policy)
+[[nodiscard]] constexpr auto scale_by_magnitude(M m, const From& value, Policy)
 {
   return detail::scale_impl<To, detail::rounding_mode_of<Policy>>(m, value);
+}
+
+/**
+ * The former name of @ref scale_by_magnitude.
+ */
+MP_UNITS_EXPORT template<typename To, UnitMagnitude M, typename From>
+  requires detail::UnitMagnitudeScalable<From>
+[[deprecated("2.6.0: Use `scale_by_magnitude` instead")]] [[nodiscard]] constexpr auto scale(M m, const From& value)
+{
+  return ::mp_units::scale_by_magnitude<To>(m, value);
+}
+
+/**
+ * The former name of @ref scale_by_magnitude.
+ */
+MP_UNITS_EXPORT template<typename To, UnitMagnitude M, typename From, RoundingPolicy Policy>
+  requires detail::UnitMagnitudeScalable<From>
+[[deprecated("2.6.0: Use `scale_by_magnitude` instead")]] [[nodiscard]] constexpr auto scale(M m, const From& value,
+                                                                                             Policy policy)
+{
+  return ::mp_units::scale_by_magnitude<To>(m, value, policy);
 }
 
 }  // namespace mp_units

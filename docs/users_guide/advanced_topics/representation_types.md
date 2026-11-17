@@ -932,12 +932,12 @@ provide `operator*` and `operator/` for your own types.
 ### Built-in scaling algorithm
 
 When two quantities of convertible units are combined or converted, the library applies the
-unit magnitude `M` to the representation value via `scale<To>(M, value)`. The
+unit magnitude `M` to the representation value via `scale_by_magnitude<To>(M, value)`. The
 built-in decision tree is:
 
 ```mermaid
 flowchart TD
-    A["scale(M, value)"] --> MA{"provides<br>op*(T, UnitMagnitude)?"}
+    A["scale_by_magnitude(M, value)"] --> MA{"provides<br>op*(T, UnitMagnitude)?"}
     MA -- "Yes" --> MAR["<b>Unit-magnitude-aware scaling</b><br>calls value * M{}<br>return type may differ from input<br><br>e.g. custom type<br>with scaled bounds"]
     MA -- "No (fallback)" --> B{"treat_as_floating_point&lt;T&gt;<br>or treat_as_floating_point&lt;representation_underlying_type_t&lt;T&gt;&gt;<br>?"}
     B -- True --> FP["<b>UsesFloatingPointScaling</b><br>ratio at source's representation_underlying_type_t precision<br><br>e.g. double, cartesian_vector&lt;double&gt;"]
@@ -1044,10 +1044,10 @@ public:
   template<mp_units::UnitMagnitude M>
   [[nodiscard]] friend constexpr auto operator*(const bounded_value& val, M m)
   {
-    constexpr T new_lo = mp_units::scale<T>(M{}, T{Min});
-    constexpr T new_hi = mp_units::scale<T>(M{}, T{Max});
+    constexpr T new_lo = mp_units::scale_by_magnitude<T>(M{}, T{Min});
+    constexpr T new_hi = mp_units::scale_by_magnitude<T>(M{}, T{Max});
 
-    const T scaled = mp_units::scale<T>(m, val.value());
+    const T scaled = mp_units::scale_by_magnitude<T>(m, val.value());
 
     if constexpr (new_lo <= new_hi)
       return bounded_value<T, new_lo, new_hi, Policy>(scaled);
@@ -1057,12 +1057,12 @@ public:
 };
 ```
 
-The `scale` function handles precision optimization automatically — when the
+The `scale_by_magnitude` function handles precision optimization automatically — when the
 magnitude's inverse is integral (e.g. degree-to-radian with π/180), it divides by the
 inverse instead of multiplying, avoiding FP rounding errors.
 
-The library calls `value * M{}` in `scale()` before trying the built-in paths.
-Because the return type may differ from the input, `quantity::in(unit)` propagates
+The library calls `value * M{}` in `scale_by_magnitude()` before trying the built-in
+paths. Because the return type may differ from the input, `quantity::in(unit)` propagates
 the new representation type through `sudo_cast`, and the resulting `quantity` (or
 `quantity_point`) automatically uses the scaled-bounds representation.
 

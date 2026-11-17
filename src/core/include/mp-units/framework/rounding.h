@@ -109,7 +109,7 @@ MP_UNITS_EXPORT_END
 namespace detail {
 
 // Internal representation of the rounding policies used to parameterize the conversion
-// engine (`sudo_cast`, `scale`) without instantiating it for every policy tag type.
+// engine (`sudo_cast`, `scale_by_magnitude`) without instantiating it for every policy tag type.
 enum class rounding_mode : std::int8_t { truncated, rounded, rounded_down, rounded_up };
 
 template<RoundingPolicy Policy>
