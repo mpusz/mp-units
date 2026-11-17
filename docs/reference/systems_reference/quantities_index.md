@@ -256,6 +256,7 @@ Alphabetical list of all quantities.
 - [`isentropic_expansion_factor` (isq)](systems/isq.md#isentropic_expansion_factor)
 - [`isentropic_exponent` (isq)](systems/isq.md#isentropic_exponent)
 - [`isothermal_compressibility` (isq)](systems/isq.md#isothermal_compressibility)
+- [`kerma` (isq)](systems/isq.md#kerma)
 - [`kinematic_viscosity` (isq)](systems/isq.md#kinematic_viscosity)
 - [`kinetic_energy` (hep)](systems/hep.md#kinetic_energy)
 - [`kinetic_energy` (isq)](systems/isq.md#kinetic_energy)
@@ -500,6 +501,7 @@ Alphabetical list of all quantities.
 - [`specific_Helmholtz_energy` (isq)](systems/isq.md#specific_Helmholtz_energy)
 - [`specific_Helmholtz_function` (isq)](systems/isq.md#specific_Helmholtz_function)
 - [`specific_energy` (isq)](systems/isq.md#specific_energy)
+- [`specific_energy_imparted` (isq)](systems/isq.md#specific_energy_imparted)
 - [`specific_enthalpy` (isq)](systems/isq.md#specific_enthalpy)
 - [`specific_entropy` (isq)](systems/isq.md#specific_entropy)
 - [`specific_gas_constant` (isq)](systems/isq.md#specific_gas_constant)
@@ -609,4 +611,4 @@ Alphabetical list of all quantities.
 - [`work` (isq)](systems/isq.md#work)
 - [`work_function` (isq)](systems/isq.md#work_function)
 
-**Total quantities:** 603
+**Total quantities:** 605

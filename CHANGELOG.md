@@ -30,6 +30,10 @@ This page documents the version history and changes for the **mp-units** library
       from `℃` and `℉` to `°C` and `°F`, following the Unicode Standard's recommendation
       (chapter 22, Letterlike Symbols) to write them with U+00B0 DEGREE SIGN rather than with
       the compatibility characters U+2103 and U+2109. The portable symbols are unchanged
+- feat: `isq::specific_energy_imparted` (ISO 80000-10 item 10-81.2) and `isq::kerma`
+      (item 10-86.1) are children of `isq::absorbed_dose`, so both take the gray. The SI
+      Brochure gives the gray for absorbed dose and kerma, and a CIPM note for specific
+      energy imparted. Like an absorbed dose, neither adds to an `isq::dose_equivalent`
 - (!) refactor: `is_kind` is renamed to `subkind`. It is a tag that makes a quantity a kind
       of its own, not a predicate, and an `is_` prefix reads as one. The former name is
       deprecated

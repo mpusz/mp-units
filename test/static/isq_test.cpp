@@ -425,6 +425,8 @@ static_assert(verify(isq::activity, scalar, non_negative, Bq, one / s));
 static_assert(verify(isq::absorbed_dose, scalar, non_negative, Gy, J / kg, m2 / s2));
 static_assert(verify(isq::ionizing_radiation_quality_factor, scalar, non_negative, one));
 static_assert(verify(isq::dose_equivalent, scalar, non_negative, Sv, J / kg, m2 / s2));
+static_assert(verify(isq::specific_energy_imparted, scalar, non_negative, Gy, J / kg, m2 / s2));
+static_assert(verify(isq::kerma, scalar, non_negative, Gy, J / kg, m2 / s2));
 
 // information science and technology
 static_assert(verify(isq::traffic_intensity, scalar, non_negative, E));
@@ -542,6 +544,22 @@ static_assert(requires { isq::linear_absorption_coefficient(1. / m) < isq::linea
 static_assert(get_kind(isq::absorptance) == get_kind(isq::reflectance));
 static_assert(get_kind(isq::reflectance) == get_kind(isq::transmittance));
 static_assert(requires { isq::absorptance(0.3 * one) + isq::reflectance(0.2 * one); });
+
+// ISO 80000-1 calls mutually comparable quantities quantities of the same kind. ISO 80000-10 equates
+// the mean specific energy imparted in a small domain with the absorbed dose (item 10-81.1), and a
+// kerma is compared with the absorbed dose it produces, so both are of the kind of absorbed dose. A
+// dose equivalent is also J/kg, but the sievert carries the radiation quality factor, so it is a
+// different kind and doesn't add to kerma
+static_assert(get_kind(isq::specific_energy_imparted) == get_kind(isq::absorbed_dose));
+static_assert(get_kind(isq::kerma) == get_kind(isq::absorbed_dose));
+static_assert(get_kind(isq::kerma) != get_kind(isq::dose_equivalent));
+static_assert(isq::kerma(1. * Gy) == isq::absorbed_dose(1. * Gy));
+static_assert(isq::specific_energy_imparted(1. * Gy) == isq::absorbed_dose(1. * Gy));
+static_assert(requires { isq::kerma(1. * Gy) + isq::absorbed_dose(1. * Gy); });
+template<template<auto, typename> typename Q>
+concept kerma_adds_to_dose_equivalent =
+  requires { Q<isq::kerma[Gy], double>(1. * Gy) + Q<isq::dose_equivalent[Sv], double>(1. * Sv); };
+static_assert(!kerma_adds_to_dose_equivalent<quantity>);
 
 // a photon number counts photons, so it does not mix with plain ratios (as `isq::storage_capacity`)
 static_assert(get_kind(isq::photon_number) != get_kind(isq::absorptance));

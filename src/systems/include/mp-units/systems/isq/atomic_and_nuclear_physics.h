@@ -35,5 +35,11 @@
 MP_UNITS_EXPORT
 namespace mp_units::isq {
 
+// ionizing radiation (ISO 80000-10:2019, items 10-81.2 and 10-86.1)
+// TODO ISO 80000-10 defines specific energy imparted as `energy_imparted / mass`, and the recipe
+// awaits `energy_imparted` (item 10-80.1). Kerma is defined from the mean sum of the initial kinetic
+// energies of the liberated charged particles, which ISO 80000-10 doesn't list as a quantity of its own
+QUANTITY_SPEC(specific_energy_imparted, absorbed_dose);
+QUANTITY_SPEC(kerma, absorbed_dose);
 
 }  // namespace mp_units::isq

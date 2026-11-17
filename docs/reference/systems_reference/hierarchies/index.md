@@ -314,7 +314,7 @@ This section contains all quantity hierarchy trees across all systems, grouped b
 ## Dimension: L²T⁻²
 
 - [`hep::absorbed_dose`](absorbed_dose_hep.md) (1 quantity)
-- [`isq::absorbed_dose`](absorbed_dose_isq.md) (1 quantity)
+- [`isq::absorbed_dose`](absorbed_dose_isq.md) (3 quantities)
 - [`isq::dose_equivalent`](dose_equivalent.md) (1 quantity)
 - [`isq::specific_energy`](specific_energy.md) (5 quantities)
 
