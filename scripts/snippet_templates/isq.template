@@ -1,0 +1,15 @@
+// SI unit symbols plus the ISQ quantity names, for samples that use `length`,
+// `speed` etc. unqualified. Not the default: a sample that defines such a name
+// would collide with the using-directive.
+#ifdef MP_UNITS_MODULES
+import mp_units;
+#else
+#include <mp-units/math.h>
+#include <mp-units/systems/isq.h>
+#include <mp-units/systems/si.h>
+#include <iostream>
+#endif
+using namespace mp_units;
+using namespace mp_units::isq;
+using namespace mp_units::si::unit_symbols;
+{{BODY}}

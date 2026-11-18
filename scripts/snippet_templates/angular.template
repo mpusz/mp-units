@@ -1,0 +1,13 @@
+// angular collides with SI on deg, rad and sr.
+#ifdef MP_UNITS_MODULES
+import mp_units;
+#else
+#include <mp-units/math.h>
+#include <mp-units/systems/isq.h>
+#include <mp-units/systems/angular.h>
+#include <mp-units/systems/si.h>
+#include <iostream>
+#endif
+using namespace mp_units;
+using namespace mp_units::angular::unit_symbols;
+{{BODY}}

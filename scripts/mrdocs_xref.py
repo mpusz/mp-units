@@ -82,6 +82,10 @@ _MEMBER_LINK = re.compile(r'href="([^":#?]+/)"')
 # by the Compiler Explorer transform in `docs/javascripts/ce_embed.js`.
 _DOC_CODE = re.compile(r'(?s)<pre><code class="language-([\w+-]+)">(.*?)</code></pre>')
 
+# The line in an example that tells `scripts/check_doc_snippets.py` how to compile
+# it. The reader has no use for it, so `_fence` drops it.
+_SNIPPET_MARKER = re.compile(r"^[ \t]*//[ \t]*snippet-template:.*\n?", re.M)
+
 # A link from a doc comment into the hand-written documentation, written as
 # `[text](docs:users_guide/framework_basics/systems_of_units)`. The target is a
 # page under `docs/`, whichever section it belongs to: the user's guide, a how-to
@@ -574,6 +578,10 @@ def _fence(markup: str) -> str:
     def one(match: re.Match) -> str:
         language, body = match.groups()
         body = html.unescape(body)
+        # The marker tells the snippet checker how to compile the example, or
+        # that it cannot be compiled at all. It is addressed to the build, not
+        # to the reader, so it is dropped on the way to the page.
+        body = _SNIPPET_MARKER.sub("", body)
         # MrDocs opens the block with a newline of its own, which `<pre>` keeps
         # and which would otherwise render as a blank first line.
         body = body.strip("\n")

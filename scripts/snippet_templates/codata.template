@@ -1,0 +1,15 @@
+// CODATA constants and the `uncertain` representation, for samples about measured
+// values and the uncertainty they carry. SI alone reaches neither.
+#ifdef MP_UNITS_MODULES
+import mp_units;
+#else
+#include <mp-units/math.h>
+#include <mp-units/systems/codata.h>
+#include <mp-units/systems/isq.h>
+#include <mp-units/systems/si.h>
+#include <mp-units/utility/uncertain.h>
+#include <iostream>
+#endif
+using namespace mp_units;
+using namespace mp_units::si::unit_symbols;
+{{BODY}}

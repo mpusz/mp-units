@@ -1,0 +1,14 @@
+// hep declares 27 symbols that SI also declares (m, g, kg, cm, h, L, eV ...), so SI's unit
+// symbols cannot be brought in alongside it.
+#ifdef MP_UNITS_MODULES
+import mp_units;
+#else
+#include <mp-units/math.h>
+#include <mp-units/systems/isq.h>
+#include <mp-units/systems/hep.h>
+#include <mp-units/systems/si.h>
+#include <iostream>
+#endif
+using namespace mp_units;
+using namespace mp_units::hep::unit_symbols;
+{{BODY}}

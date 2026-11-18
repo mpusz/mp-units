@@ -1,0 +1,13 @@
+// Default template: SI unit symbols. A sample needing another system adds its own
+// `using namespace` line, which is also what a reader needs to see.
+#ifdef MP_UNITS_MODULES
+import mp_units;
+#else
+#include <mp-units/math.h>
+#include <mp-units/systems/isq.h>
+#include <mp-units/systems/si.h>
+#include <iostream>
+#endif
+using namespace mp_units;
+using namespace mp_units::si::unit_symbols;
+{{BODY}}
