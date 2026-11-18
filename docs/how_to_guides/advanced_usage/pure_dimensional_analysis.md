@@ -250,10 +250,7 @@ uses dimensions to enforce compile-time constraints on state variables:
 
 ```cpp
 template<mp_units::Dimension auto... Ds>
-constexpr bool are_time_derivatives = false;
-
-template<mp_units::Dimension auto D>
-constexpr bool are_time_derivatives<D> = true;
+constexpr bool are_time_derivatives = true;
 
 template<mp_units::Dimension auto D1, mp_units::Dimension auto D2, mp_units::Dimension auto... Ds>
 constexpr bool are_time_derivatives<D1, D2, Ds...> =
