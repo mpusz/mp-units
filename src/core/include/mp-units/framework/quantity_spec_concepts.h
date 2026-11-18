@@ -95,7 +95,7 @@ MP_UNITS_EXPORT template<QuantitySpec From, QuantitySpec To>
 }  // namespace utility
 
 /**
- * @brief A concept matching all quantity specifications of a provided property
+ * A concept matching all quantity specifications of a provided property
  *
  * `V` may be another quantity specification, in which case this is satisfied by every specification
  * implicitly convertible to it, or a character (a bare `quantity_tensor_order`, a bare

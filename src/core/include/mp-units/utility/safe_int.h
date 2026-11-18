@@ -65,7 +65,7 @@ concept OverflowPolicy = requires(std::string_view msg) { EP::on_overflow(msg); 
 // ============================================================================
 
 /**
- * @brief Error policy that terminates the program on overflow (always available, freestanding-safe).
+ * Error policy that terminates the program on overflow (always available, freestanding-safe).
  */
 MP_UNITS_EXPORT struct safe_int_terminate_policy : terminate_policy {
   [[noreturn]] static void on_overflow(std::string_view) noexcept { std::abort(); }
@@ -74,7 +74,7 @@ MP_UNITS_EXPORT struct safe_int_terminate_policy : terminate_policy {
 #if MP_UNITS_HAS_EXCEPTIONS
 
 /**
- * @brief Error policy that throws std::overflow_error on overflow (hosted, exceptions enabled).
+ * Error policy that throws std::overflow_error on overflow (hosted, exceptions enabled).
  */
 MP_UNITS_EXPORT struct safe_int_throw_policy : throw_policy {
   [[noreturn]] static void on_overflow(std::string_view msg) { throw std::overflow_error(std::string(msg)); }
@@ -414,7 +414,7 @@ struct safe_int_binary_ops {
 // ============================================================================
 
 /**
- * @brief Wraps an integral type with overflow detection.
+ * Wraps an integral type with overflow detection.
  *
  * This class wraps any integral type and models all requirements for mp-units
  * representation types (RealScalar, UnitMagnitudeScalable, etc.). Every arithmetic

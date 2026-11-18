@@ -53,7 +53,7 @@ using reference_t = reference<MP_UNITS_NTTP_HACK(decltype(Q)), MP_UNITS_NTTP_HAC
 MP_UNITS_EXPORT_BEGIN
 
 /**
- * @brief Quantity reference type
+ * Quantity reference type
  *
  * Quantity reference describes all the properties of a quantity besides its
  * representation type.
@@ -135,7 +135,7 @@ struct reference {
   [[nodiscard]] friend consteval detail::reference_t<inverse(Q{}), inverse(U{})> inverse(reference) { return {}; }
 
   /**
-   * @brief Computes the value of a reference raised to the `Num/Den` power
+   * Computes the value of a reference raised to the `Num/Den` power
    *
    * @tparam Num Exponent numerator
    * @tparam Den Exponent denominator
@@ -151,7 +151,7 @@ struct reference {
   }
 
   /**
-   * @brief Computes the square root of a reference
+   * Computes the square root of a reference
    *
    * @param r Reference being the base of the operation
    *
@@ -160,7 +160,7 @@ struct reference {
   [[nodiscard]] friend consteval detail::reference_t<sqrt(Q{}), sqrt(U{})> sqrt(reference) { return {}; }
 
   /**
-   * @brief Computes the cubic root of a reference
+   * Computes the cubic root of a reference
    *
    * @param r Reference being the base of the operation
    *

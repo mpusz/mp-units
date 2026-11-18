@@ -65,7 +65,7 @@ concept ConstraintPolicy = requires(std::string_view msg) { EP::on_constraint_vi
 // ============================================================================
 
 /**
- * @brief Error policy that terminates the program on constraint violation (freestanding-safe).
+ * Error policy that terminates the program on constraint violation (freestanding-safe).
  */
 MP_UNITS_EXPORT struct terminate_policy {
   [[noreturn]] static void on_constraint_violation(std::string_view) noexcept { std::abort(); }
@@ -74,7 +74,7 @@ MP_UNITS_EXPORT struct terminate_policy {
 #if MP_UNITS_HAS_EXCEPTIONS
 
 /**
- * @brief Error policy that throws std::domain_error on constraint violation (hosted, exceptions enabled).
+ * Error policy that throws std::domain_error on constraint violation (hosted, exceptions enabled).
  */
 MP_UNITS_EXPORT struct throw_policy {
   [[noreturn]] static void on_constraint_violation(std::string_view msg) { throw std::domain_error(std::string(msg)); }
@@ -195,7 +195,7 @@ struct constrained_binary_ops {
 // ============================================================================
 
 /**
- * @brief A transparent wrapper that carries an error policy for domain constraint enforcement.
+ * A transparent wrapper that carries an error policy for domain constraint enforcement.
  *
  * This wrapper does not check anything itself. It serves as a signal to the mp-units
  * library that domain constraint violations should be reported via the ErrorPolicy

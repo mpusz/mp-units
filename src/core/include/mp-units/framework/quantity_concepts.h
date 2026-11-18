@@ -53,7 +53,7 @@ constexpr bool is_derived_from_specialization_of_quantity =
 }  // namespace detail
 
 /**
- * @brief A concept matching all quantities in the library
+ * A concept matching all quantities in the library
  *
  * Satisfied by all types being a either specialization or derived from `quantity`
  */
@@ -75,7 +75,7 @@ concept QuantityLikeImpl = requires(const T& qty, const Traits<T>::rep& num) {
 }  // namespace detail
 
 /**
- * @brief A concept matching all quantities of the provided property
+ * A concept matching all quantities of the provided property
  *
  * `V` may be a quantity specification, in which case this is satisfied by all quantities with the
  * reference satisfying @c ReferenceOf<V>, or a character (a bare `quantity_tensor_order`, a bare
@@ -103,7 +103,7 @@ concept QuantityOf =
                   }));
 
 /**
- * @brief A concept matching all external quantities like types
+ * A concept matching all external quantities like types
  *
  * Satisfied by all external types (not-defined in mp-units) that via a `quantity_like_traits` provide
  * all quantity-specific information.

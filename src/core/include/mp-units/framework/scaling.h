@@ -48,7 +48,7 @@ namespace mp_units {
 namespace detail {
 
 /**
- * @brief Intentionally silent narrowing cast with compiler float-conversion diagnostics suppressed.
+ * Intentionally silent narrowing cast with compiler float-conversion diagnostics suppressed.
  *
  * @tparam To    target type
  * @tparam From  source type (deduced)
@@ -86,7 +86,7 @@ template<typename To, typename From>
 // translation unit that opens both namespaces.
 namespace utility {
 
-/// @brief Is `value` still representable in `To` after truncation?
+/// Is `value` still representable in `To` after truncation?
 ///
 /// Answers `true` for any pair the question does not apply to, which is every case except a
 /// floating-point source with an integral target. That case is the one where the conversion is
@@ -150,7 +150,7 @@ template<typename T>
 }
 
 /**
- * @brief Integer division with the quotient rounded according to @c Mode
+ * Integer division with the quotient rounded according to @c Mode
  */
 template<rounding_mode Mode, typename T, typename D>
 // Deferred reason 2: deduced return type. The `auto` is load-bearing - the quotient type is derived
@@ -197,7 +197,7 @@ template<rounding_mode Mode, typename T, typename D>
 }
 
 /**
- * @brief Rounds a floating-point value to an integral value according to @c Mode
+ * Rounds a floating-point value to an integral value according to @c Mode
  *
  * Hand-rolled rather than delegating to `std::trunc`/`std::floor`/`std::ceil`, which lower to
  * a single hardware instruction but are not usable in constant expressions before C++23 and are not
@@ -349,7 +349,7 @@ template<typename To, rounding_mode Mode, UnitMagnitude M, typename From>
 }  // namespace detail
 
 /**
- * @brief Scale @p value by the unit magnitude passed as @p m, converting to type @c To.
+ * Scale @p value by the unit magnitude passed as @p m, converting to type @c To.
  *
  * When @p From provides a magnitude-aware @c operator*(From,M) customization point, it is
  * used first.  The return type may differ from @c To (e.g. a representation with scaled
@@ -367,7 +367,7 @@ MP_UNITS_EXPORT template<typename To, UnitMagnitude M, typename From>
 }
 
 /**
- * @brief Scale @p value by the unit magnitude passed as @p m, converting to type @c To,
+ * Scale @p value by the unit magnitude passed as @p m, converting to type @c To,
  *        with the result rounded according to @p policy.
  */
 MP_UNITS_EXPORT template<typename To, UnitMagnitude M, typename From, RoundingPolicy Policy>

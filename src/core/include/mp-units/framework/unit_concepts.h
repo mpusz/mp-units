@@ -61,7 +61,7 @@ MP_UNITS_EXPORT template<symbol_text Symbol, auto... Args>
 struct named_unit;
 
 /**
- * @brief A concept matching all unit types in the library
+ * A concept matching all unit types in the library
  *
  * Satisfied by all unit types provided by the library.
  */
@@ -73,13 +73,13 @@ concept Unit = std::is_base_of_v<detail::unit_interface, T> && detail::SymbolicC
                !detail::is_specialization_of_prefixed_unit<std::remove_const_t<T>>;
 
 /**
- * @brief A concept to be used to define prefixes for a unit
+ * A concept to be used to define prefixes for a unit
  */
 MP_UNITS_EXPORT template<typename T>
 concept PrefixableUnit = Unit<T> && is_derived_from_specialization_of_v<T, named_unit>;
 
 /**
- * @brief A concept matching all units associated with the provided quantity spec
+ * A concept matching all units associated with the provided quantity spec
  *
  * Satisfied by all units for which an associated quantity spec is implicitly convertible to
  * the provided @c QS value.
@@ -121,7 +121,7 @@ concept OffsetUnit = Unit<T> && requires { T::_point_origin_; };
 }  // namespace detail
 
 /**
- * @brief A concept matching constants that are measured rather than exact by definition
+ * A concept matching constants that are measured rather than exact by definition
  *
  * Satisfied by all constants defined with a `relative_standard_uncertainty` or a
  * `standard_uncertainty` argument. Exact constants do not have such an argument, so the

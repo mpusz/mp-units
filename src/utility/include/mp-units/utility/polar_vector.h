@@ -64,7 +64,7 @@ namespace mp_units::utility {
 // `+`, `-`, dot, and cross are not (they are not component-wise here), so convert to Cartesian for
 // those.
 
-/// @brief Maps an angle quantity kind to the unit that measures one radian in that kind's system.
+/// Maps an angle quantity kind to the unit that measures one radian in that kind's system.
 ///
 /// The facades need the radian of whatever angle system a stored angle belongs to, to reach the
 /// plain-number `std::sin`/`cos`/`atan2`. This customization point supplies it, keyed on the angle
@@ -210,7 +210,7 @@ template<Unit auto U, std::floating_point T>
 
 }  // namespace detail
 
-/// @brief A 2-D polar coordinate facade: a scalar-`quantity` radius `r` and an angle `theta` from
+/// A 2-D polar coordinate facade: a scalar-`quantity` radius `r` and an angle `theta` from
 /// the +x axis (counter-clockwise).
 ///
 /// `RadiusRef` is the radius reference - a unit like `si::metre`, or a `quantity_spec[unit]` like

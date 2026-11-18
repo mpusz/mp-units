@@ -79,7 +79,7 @@ concept has_element_type_member = requires { typename T::element_type; };
 }  // namespace detail
 
 /**
- * @brief Describes the underlying arithmetic/element type of a representation type.
+ * Describes the underlying arithmetic/element type of a representation type.
  *
  * The library uses this trait to discover the "scalar element" inside a representation
  * type (e.g. `int` for `safe_int<int>`, `double` for `cartesian_vector<double>`). It is
@@ -137,7 +137,7 @@ MP_UNITS_EXPORT template<typename T>
 using representation_underlying_type_t = typename representation_underlying_type<T>::type;
 
 /**
- * @brief Maps a representation value type to the concrete type a quantity should store.
+ * Maps a representation value type to the concrete type a quantity should store.
  *
  * Expression-template linear algebra libraries (e.g. Eigen, Blaze, Armadillo) return lazy proxy
  * types from their arithmetic operators. Such a proxy keeps references to its operands and must
@@ -416,7 +416,7 @@ inline constexpr bool disable_representation<T> = true;
 MP_UNITS_EXPORT_BEGIN
 
 /**
- * @brief Specifies if a value of a type should be treated as a floating-point value
+ * Specifies if a value of a type should be treated as a floating-point value
  *
  * This type trait should be specialized for a custom representation type to specify
  * that values of this type should be treated by the library as a floating-point ones
@@ -433,7 +433,7 @@ constexpr bool treat_as_floating_point =
 #endif
 
 /**
- * @brief Specifies if a specific conversion between two types is representable without data loss
+ * Specifies if a specific conversion between two types is representable without data loss
  *
  * @deprecated Use `mp_units::implicitly_scalable` instead.
  *
@@ -461,7 +461,7 @@ template<typename Rep>
 constexpr bool is_tensor = false;
 
 /**
- * @brief A type trait that defines zero, one, min, and max for a representation type
+ * A type trait that defines zero, one, min, and max for a representation type
  *
  * The zero, one, min, and max member functions in mp_units::quantity forward their work to
  * these methods. This type can be specialized if the representation Rep requires a specific
@@ -508,7 +508,7 @@ template<typename Rep>
 using quantity_values [[deprecated("2.5.0: Use `representation_values` instead")]] = representation_values<Rep>;
 
 /**
- * @brief Customization point for handling domain constraint violations.
+ * Customization point for handling domain constraint violations.
  *
  * The library calls `constraint_violation_handler<Rep>::on_violation(msg)` when
  * a domain constraint is violated (e.g., out-of-bounds value, non-negativity).
@@ -535,7 +535,7 @@ concept HasConstraintViolationHandler =
 MP_UNITS_EXPORT_BEGIN
 
 /**
- * @brief Provides support for external quantity-like types
+ * Provides support for external quantity-like types
  *
  * The type trait should provide the @c reference object, a type alias @c rep,
  * and static member functions @c to_numerical_value(T) that returns the raw value
@@ -553,7 +553,7 @@ template<typename T>
 struct quantity_like_traits;
 
 /**
- * @brief Provides support for external quantity point-like types
+ * Provides support for external quantity point-like types
  *
  * The type trait should provide nested @c reference and @c origin objects,
  * a type alias @c rep, and static member functions @c to_numerical_value(T) that
@@ -572,7 +572,7 @@ template<typename T>
 struct quantity_point_like_traits;
 
 /**
- * @brief Opts a vector quantity into decomposition into named component vectors
+ * Opts a vector quantity into decomposition into named component vectors
  *
  * Specialize for a vector @c quantity_spec and inherit from @c vector_axes, listing the per-axis
  * quantity specs in coordinate order (see @c mp-units/framework/vector_components.h):
@@ -600,7 +600,7 @@ template<QuantitySpec auto QS>
 struct component_vectors;
 
 /**
- * @brief The former name of @c component_vectors
+ * The former name of @c component_vectors
  *
  * A specialization of it still declares the axes, and @c component_vectors takes precedence when
  * both are specialized.

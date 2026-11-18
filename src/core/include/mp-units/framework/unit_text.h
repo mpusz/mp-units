@@ -62,7 +62,7 @@ namespace mp_units {
 MP_UNITS_EXPORT_BEGIN
 
 /**
- * @brief Puts a space ' ' sign before a unit symbol
+ * Puts a space ' ' sign before a unit symbol
  *
  * Quantities of some units (e.g. degree, arcminute, arcsecond) should not be printed with the
  * space between a number and a unit. For those a partial specialization with the value `false` should

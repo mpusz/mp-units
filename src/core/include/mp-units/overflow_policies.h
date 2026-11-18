@@ -353,7 +353,7 @@ template<Quantity V>
 // ============================================================================
 
 /**
- * @brief Policy that tests whether the value lies between `min` and `max`.
+ * Policy that tests whether the value lies between `min` and `max`.
  *
  * Each end is included unless it is given as @ref exclusive_bound.
  *
@@ -396,7 +396,7 @@ check_in_range(Lo, Hi) -> check_in_range<Lo, Hi>;
 #endif
 
 /**
- * @brief Policy that clamps the value to `[min, max]`.
+ * Policy that clamps the value to `[min, max]`.
  *
  * Saturates out-of-range values to the nearest boundary.
  * Use when you want to "correct" invalid values rather than signal an error.
@@ -427,7 +427,7 @@ template<detail::RangeBound Lo, detail::RangeBound Hi>
 clamp_to_range(Lo, Hi) -> clamp_to_range<detail::bound_value_t<Lo>>;
 
 /**
- * @brief Policy that wraps the value into the half-open range `[min, max)`.
+ * Policy that wraps the value into the half-open range `[min, max)`.
  *
  * Uses modulo arithmetic to wrap values into the range.
  * Use for periodic/cyclic quantities (angles, time-of-day, etc.).
@@ -482,7 +482,7 @@ template<detail::RangeBound Lo, detail::RangeBound Hi>
 wrap_to_range(Lo, Hi) -> wrap_to_range<detail::bound_value_t<Lo>>;
 
 /**
- * @brief Policy that reflects (folds) the value at both boundaries.
+ * Policy that reflects (folds) the value at both boundaries.
  *
  * Values that exceed `[min, max]` are "bounced back" from the boundary.
  * For example, with `[-90, 90]` for a latitude: 91 -> 89, 180 -> 0, 270 -> -90.
@@ -542,7 +542,7 @@ reflect_in_range(Lo, Hi) -> reflect_in_range<detail::bound_value_t<Lo>>;
 namespace detail {
 
 /**
- * @brief Sentinel for the lower domain bound of a half-line `[0, ∞)` policy.
+ * Sentinel for the lower domain bound of a half-line `[0, ∞)` policy.
  *
  * Used as the `.min` member of `check_non_negative` and `clamp_non_negative` so that
  * `quantity_point::min()` and `std::numeric_limits<quantity_point>::lowest()` return
@@ -597,7 +597,7 @@ struct zero_quantity_t {
 }  // namespace detail
 
 /**
- * @brief Policy that tests whether the value is ≥ 0.
+ * Policy that tests whether the value is ≥ 0.
  *
  * Intended for quantities that are inherently non-negative (e.g., _length_, _mass_,
  * _duration_). Automatically applied to `natural_point_origin<QS>` when `QS` is tagged
@@ -626,7 +626,7 @@ MP_UNITS_EXPORT struct check_non_negative {
 };
 
 /**
- * @brief Policy that clamps the value to `[0, ∞)`.
+ * Policy that clamps the value to `[0, ∞)`.
  *
  * Saturates negative values to zero. Use when small negative values can arise from
  * floating-point rounding in a naturally non-negative domain (e.g., a computed energy

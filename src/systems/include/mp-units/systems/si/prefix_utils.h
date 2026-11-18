@@ -47,7 +47,7 @@ MP_UNITS_EXPORT_BEGIN
 enum class prefix_range { engineering, full };
 
 /**
- * @brief Calls an invocable with a quantity scaled to an automatically selected SI prefix
+ * Calls an invocable with a quantity scaled to an automatically selected SI prefix
  *
  * Selects an SI prefix such that the integral part of the quantity's numerical value
  * has at least @c min_integral_digits digits.

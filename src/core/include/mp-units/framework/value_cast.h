@@ -135,7 +135,7 @@ concept ValidRoundingPolicyFor =
 MP_UNITS_EXPORT_BEGIN
 
 /**
- * @brief Returns `true` if the scaling factor from @p from to @p to is an exact positive integer.
+ * Returns `true` if the scaling factor from @p from to @p to is an exact positive integer.
  *
  * This is the key predicate used by the default `implicitly_scalable` to decide whether
  * conversions between integer-like representation types are non-truncating (and therefore
@@ -155,7 +155,7 @@ MP_UNITS_EXPORT_BEGIN
 }
 
 /**
- * @brief Controls whether conversion from `quantity<FromUnit, FromRep>` to
+ * Controls whether conversion from `quantity<FromUnit, FromRep>` to
  *        `quantity<ToUnit, ToRep>` is implicit or explicit.
  *
  * The default is `true` iff the scaling is non-truncating: either `ToRep` is floating-point,
@@ -174,7 +174,7 @@ constexpr bool implicitly_scalable =
   treat_as_floating_point<ToRep> || (!treat_as_floating_point<FromRep> && is_integral_scaling(FromUnit, ToUnit));
 
 /**
- * @brief Explicit cast of a quantity's unit
+ * Explicit cast of a quantity's unit
  *
  * Implicit conversions between quantities of different types are allowed only for "safe"
  * (e.g. non-truncating) conversion. In truncating cases an explicit cast have to be used.
@@ -198,7 +198,7 @@ template<auto ToU, typename FwdQ, RoundingPolicy Policy = truncated_t, Quantity 
 }
 
 /**
- * @brief Explicit cast of a quantity's representation type
+ * Explicit cast of a quantity's representation type
  *
  * Implicit conversions between quantities of different types are allowed only for "safe"
  * (e.g. non-truncating) conversion. In truncating cases an explicit cast have to be used.
@@ -220,7 +220,7 @@ template<typename ToRep, typename FwdQ, RoundingPolicy Policy = truncated_t, Qua
 }
 
 /**
- * @brief Explicit cast of a quantity's unit and representation type
+ * Explicit cast of a quantity's unit and representation type
  *
  * Implicit conversions between quantities of different types are allowed only for "safe"
  * (e.g. non-truncating) conversion. In truncating cases an explicit cast have to be used.
@@ -256,7 +256,7 @@ template<typename ToRep, Unit auto ToU, typename FwdQ, RoundingPolicy Policy = t
 
 
 /**
- * @brief Explicit cast of a quantity's representation
+ * Explicit cast of a quantity's representation
  *
  * Implicit conversions between quantities of different types are allowed only for "safe"
  * (e.g. non-truncating) conversion. In truncating cases an explicit cast have to be used.
@@ -287,7 +287,7 @@ template<Quantity ToQ, typename FwdQ, RoundingPolicy Policy = truncated_t, Quant
 }
 
 /**
- * @brief Explicit cast of a quantity point's unit
+ * Explicit cast of a quantity point's unit
  *
  * Implicit conversions between quantity points of different types are allowed only for "safe"
  * (e.g. non-truncating) conversion. In truncating cases an explicit cast have to be used.
@@ -312,7 +312,7 @@ template<Unit auto ToU, typename FwdQP, RoundingPolicy Policy = truncated_t,
 }
 
 /**
- * @brief Explicit cast of a quantity point's representation type
+ * Explicit cast of a quantity point's representation type
  *
  * Implicit conversions between quantity points of different types are allowed only for "safe"
  * (e.g. non-truncating) conversion. In truncating cases an explicit cast have to be used.
@@ -336,7 +336,7 @@ template<typename ToRep, typename FwdQP, RoundingPolicy Policy = truncated_t,
 }
 
 /**
- * @brief Explicit cast of a quantity point's unit and representation type
+ * Explicit cast of a quantity point's unit and representation type
  *
  * Implicit conversions between quantities of different types are allowed only for "safe"
  * (e.g. non-truncating) conversion. In truncating cases an explicit cast have to be used.
@@ -372,7 +372,7 @@ template<typename ToRep, Unit auto ToU, typename FwdQP, RoundingPolicy Policy = 
 }
 
 /**
- * @brief Explicit cast of a quantity point's representation
+ * Explicit cast of a quantity point's representation
  *
  * Implicit conversions between quantities of different types are allowed only for "safe"
  * (e.g. non-truncating) conversion. In truncating cases an explicit cast have to be used.
@@ -408,7 +408,7 @@ template<Quantity ToQ, typename FwdQP, RoundingPolicy Policy = truncated_t,
 }
 
 /**
- * @brief Explicit cast of a quantity point's representation, including potentially the point origin
+ * Explicit cast of a quantity point's representation, including potentially the point origin
  *
  * Implicit conversions between quantities of different types are allowed only for "safe"
  * (e.g. non-truncating) conversion. In truncating cases an explicit cast have to be used.

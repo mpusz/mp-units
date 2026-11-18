@@ -42,7 +42,7 @@ MP_UNITS_EXPORT
 namespace mp_units {
 
 /**
- * @brief Explicit cast of a quantity type
+ * Explicit cast of a quantity type
  *
  * This cast converts only a quantity type. It might be used to force some quantity type
  * conversions that are not implicitly allowed but are allowed explicitly.
@@ -69,7 +69,7 @@ template<QuantitySpec auto ToQS, typename FwdQ, Quantity Q = std::remove_cvref_t
 }
 
 /**
- * @brief Explicit cast of a quantity point type
+ * Explicit cast of a quantity point type
  *
  * This cast converts only a quantity point type. It might be used to force some quantity point type
  * conversions that are not implicitly allowed but are allowed explicitly.

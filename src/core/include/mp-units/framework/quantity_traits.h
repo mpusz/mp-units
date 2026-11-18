@@ -100,7 +100,7 @@ struct rep_for_impl<T> {
 MP_UNITS_EXPORT_BEGIN
 
 /**
- * @brief Public helper that yields the unit associated with a quantity-like type.
+ * Public helper that yields the unit associated with a quantity-like type.
  *
  * Derived from the type's own `::unit` member (for `quantity` / `quantity_point`) or from
  * `quantity_like_traits<T>` / `quantity_point_like_traits<T>` for external types.
@@ -114,7 +114,7 @@ template<typename T>
 constexpr auto unit_for = detail::unit_for_impl<T>::value;
 
 /**
- * @brief Public helper that yields the reference (unit + quantity spec) associated with a
+ * Public helper that yields the reference (unit + quantity spec) associated with a
  *        quantity-like type.
  *
  * Derived from the type's own `::reference` member (for `quantity` / `quantity_point`) or
@@ -129,7 +129,7 @@ template<typename T>
 constexpr auto reference_for = detail::reference_for_impl<T>::value;
 
 /**
- * @brief Public alias that yields the representation type of a quantity-like type.
+ * Public alias that yields the representation type of a quantity-like type.
  *
  * Derived from the type's own `::rep` member (for `quantity` / `quantity_point`) or from
  * `quantity_like_traits<T>::rep` / `quantity_point_like_traits<T>::rep` for external types.

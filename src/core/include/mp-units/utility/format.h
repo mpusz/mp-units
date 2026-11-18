@@ -530,7 +530,7 @@ template<std::forward_iterator It, typename Specs>
 }
 
 /**
- * @brief Writes a string to an output iterator with fill/align/width padding.
+ * Writes a string to an output iterator with fill/align/width padding.
  *
  * Avoids instantiating format_to/vformat_to infrastructure for the common padding use-case
  * inside formatter<Unit>, formatter<Dimension>, and formatter<quantity> specializations.

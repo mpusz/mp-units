@@ -130,7 +130,7 @@ concept ValidVectorAxes =
 }  // namespace detail
 
 /**
- * @brief Ordered list of the 1D-vector component axes a vector quantity decomposes into
+ * Ordered list of the 1D-vector component axes a vector quantity decomposes into
  *
  * A user opts a vector whole into decomposition by specializing `component_vectors` (the
  * customization point in `customization_points.h`) and inheriting from this template, listing the

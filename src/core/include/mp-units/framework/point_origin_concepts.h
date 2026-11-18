@@ -41,7 +41,7 @@ constexpr bool is_specialization_of_relative_point_origin = false;
 }  // namespace detail
 
 /**
- * @brief A concept matching all quantity point origins in the library
+ * A concept matching all quantity point origins in the library
  *
  * Satisfied by either quantity points or by all types derived from `absolute_point_origin` class template.
  */

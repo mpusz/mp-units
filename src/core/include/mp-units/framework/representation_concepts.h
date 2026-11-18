@@ -450,7 +450,7 @@ template<typename T>
 concept UsesUnitMagnitudeAwareScaling = requires(const T& v) { v * mag<1>; };
 
 /**
- * @brief UnitMagnitudeScalable
+ * UnitMagnitudeScalable
  *
  * A type is `UnitMagnitudeScalable` if the library's `scale_by_magnitude()` can apply a unit
  * magnitude ratio to it.  The three sub-concepts map to the scaling paths:

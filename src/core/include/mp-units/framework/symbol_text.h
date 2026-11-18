@@ -172,7 +172,7 @@ struct symbol_text_iface {
 
 
 /**
- * @brief A symbol text representation
+ * A symbol text representation
  *
  * This class template is responsible for definition and handling of a symbol text
  * representation. In the libary it is used to define symbols of units and prefixes.

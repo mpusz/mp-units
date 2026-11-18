@@ -176,7 +176,7 @@ MP_UNITS_EXPORT enum class MP_UNITS_QCL_DEPRECATED quantity_character_legacy : s
 #undef MP_UNITS_QCL_DEPRECATED
 
 /**
- * @brief Quantity character
+ * Quantity character
  *
  * A quantity character classifies a quantity along two orthogonal axes:
  *

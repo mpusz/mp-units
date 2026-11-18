@@ -91,7 +91,7 @@ constexpr bool is_derived_from_specialization_of_quantity_spec =
   requires(T* type) { detail::to_base_specialization_of_quantity_spec(type); };
 
 /**
- * @brief Concept matching all named quantity specification types
+ * Concept matching all named quantity specification types
  *
  * Satisfied by all types that derive from `quantity_spec`.
  */
@@ -100,7 +100,7 @@ concept NamedQuantitySpec =
   QuantitySpec<T> && is_derived_from_specialization_of_quantity_spec<T> && !QuantityKindSpec<T>;
 
 /**
- * @brief Concept matching all derived quantity specification types
+ * Concept matching all derived quantity specification types
  *
  * Satisfied by all `derived_quantity_spec` specializations.
  *
@@ -158,7 +158,7 @@ template<typename... Qs1, typename... Qs2>
 }
 
 /**
- * @brief Initializes quantity character
+ * Initializes quantity character
  *
  * If a quantity character value is present in template parameters, this value will be used.
  * Otherwise, an inherited/derived value provided through the function argument is returned.
@@ -464,7 +464,7 @@ inline constexpr struct possibly_negative {
 } possibly_negative;
 
 /**
- * @brief Quantity Specification
+ * Quantity Specification
  *
  * This type specifies all the properties of a quantity and allow modeling most of the quantities in the ISO 80000.
  * It serves to define base and derived quantities as well as quantity kinds. Each quantity specification
@@ -491,7 +491,7 @@ struct quantity_spec;
 MP_UNITS_EXPORT_END
 
 /**
- * @brief Specialization defining a base quantity
+ * Specialization defining a base quantity
  *
  * Base quantity is a quantity in a conventionally chosen subset of a given system of quantities, where no quantity
  * in the subset can be expressed in terms of the other quantities within that subset. They are referred to as
@@ -551,7 +551,7 @@ struct quantity_spec<Self, Dim, Args...> : detail::quantity_spec_interface<Self>
 };
 
 /**
- * @brief Specialization defining a named quantity being the result of a quantity calculus
+ * Specialization defining a named quantity being the result of a quantity calculus
  *
  * Derived quantity is a quantity, in a system of quantities, defined in terms of other quantities
  * of that system.
@@ -618,7 +618,7 @@ struct propagate_equation<Q, true> {
 }  // namespace detail
 
 /**
- * @brief Specialization defining a leaf quantity in the hierarchy
+ * Specialization defining a leaf quantity in the hierarchy
  *
  * Quantities of the same kind form a hierarchy. This specialization adds new leaf to such a tree which
  * can later be used as a parent by other quantities.
@@ -676,7 +676,7 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
 
 // clang-format off
 /**
- * @brief Specialization defining a leaf derived quantity in the hierarchy and refining paren't equation
+ * Specialization defining a leaf derived quantity in the hierarchy and refining paren't equation
  *
  * Quantities of the same kind form a hierarchy. This specialization adds new leaf to such a tree which
  * can later be used as a parent by other quantities. Additionally, this definition adds additional
@@ -773,7 +773,7 @@ struct derived_quantity_spec_impl :
 }  // namespace detail
 
 /**
- * @brief A specification of a derived quantity
+ * A specification of a derived quantity
  *
  * Derived quantity is a quantity, in a system of quantities, defined in terms of other quantities of that system.
  * Its dimension is an expression of the dependence of a quantity on the base quantities of a system of
@@ -820,7 +820,7 @@ template<detail::SymbolicTerm... Expr>
 struct derived_quantity_spec : detail::derived_quantity_spec_impl<Expr...> {};
 
 /**
- * @brief Quantity of dimension one
+ * Quantity of dimension one
  *
  * Quantity of dimension one also commonly named as "dimensionless" is a quantity with a dimension
  * for which all the exponents of the factors corresponding to the base dimensions are zero.
@@ -828,7 +828,7 @@ struct derived_quantity_spec : detail::derived_quantity_spec_impl<Expr...> {};
 MP_UNITS_EXPORT QUANTITY_SPEC(dimensionless, derived_quantity_spec<>{});
 
 /**
- * @brief Quantity kind specifier
+ * Quantity kind specifier
  *
  * Specifies that the provided `Q` should be treated as a quantity kind.
  */

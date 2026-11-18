@@ -56,7 +56,7 @@ template<typename T>
 concept MagArg = std::integral<T> || is_mag_constant<T> || std::is_same_v<T, ratio>;
 
 /**
- * @brief  A sentinel type representing the factor (-1) in a unit magnitude.
+ * A sentinel type representing the factor (-1) in a unit magnitude.
  *
  * Always appears as the first element in a pack when present.  Two occurrences cancel each other out.
  * This enables support for negative magnitudes in named constants.
@@ -73,7 +73,7 @@ template<typename M>
 constexpr bool is_negative_tag = std::is_same_v<M, negative_tag>;
 
 /**
- * @brief  Any type which can be used as a basis vector in a power_v.
+ * Any type which can be used as a basis vector in a power_v.
  *
  * We have two categories.
  *
@@ -188,7 +188,7 @@ template<typename T>
 }
 
 /**
- * @brief  Multiply one magnitude element's contribution into an optional running product.
+ * Multiply one magnitude element's contribution into an optional running product.
  *
  * Used by try_get_value.  Taking M as an NTTP (rather than a function argument) makes it a
  * constant expression on all compilers, including GCC 12.
@@ -346,7 +346,7 @@ template<typename CharT, UnitMagnitude auto Num, UnitMagnitude auto Den, UnitMag
 }
 
 /**
- * @brief  The interface of unit magnitudes: every operation, as hidden friends.
+ * The interface of unit magnitudes: every operation, as hidden friends.
  *
  * A hidden friend of a class template is redeclared by every specialization, and magnitude-heavy
  * code instantiates thousands of specializations per translation unit (every product materializes
@@ -414,7 +414,7 @@ struct unit_magnitude_interface {
   }
 
   /**
-   * @brief  Like get_value<T> but returns std::nullopt instead of aborting on overflow.
+   * Like get_value<T> but returns std::nullopt instead of aborting on overflow.
    *
    * Useful for overflow-detection in concepts and constraints, where a hard abort would
    * prevent the expression from being softly evaluated in a `requires` clause.
@@ -434,7 +434,7 @@ struct unit_magnitude_interface {
   }
 
   /**
-   * @brief  The value of a Magnitude in a desired type T.
+   * The value of a Magnitude in a desired type T.
    */
   template<typename T, auto... Ms>
     requires((is_integral_impl(Ms) && ...)) || treat_as_floating_point<T>
@@ -812,7 +812,7 @@ struct unit_magnitude_interface {
 };
 
 /**
- * @brief  A representation for positive real numbers which optimizes taking products and rational powers.
+ * A representation for positive real numbers which optimizes taking products and rational powers.
  *
  * Magnitudes can be treated as values.  Each type encodes exactly one value.  Users can multiply, divide, raise to
  * rational powers, and compare for equality.  The class itself is empty; the whole interface lives in the

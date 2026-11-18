@@ -40,31 +40,31 @@ namespace mp_units::utility {
 // scalar kinds, and the tensor order. The algebra primitives, scaling engine, and representation
 // concepts that drive them remain implementation detail.
 
-/// @brief A real-field representation type.
+/// A real-field representation type.
 MP_UNITS_EXPORT template<typename T>
 concept Real = ::mp_units::detail::Real<T>;
 
-/// @brief A complex-field representation type.
+/// A complex-field representation type.
 MP_UNITS_EXPORT template<typename T>
 concept Complex = ::mp_units::detail::Complex<T>;
 
-/// @brief A real scalar (tensor order 0): real field, totally ordered, self-scalable.
+/// A real scalar (tensor order 0): real field, totally ordered, self-scalable.
 MP_UNITS_EXPORT template<typename T>
 concept RealScalar = ::mp_units::detail::RealScalar<T>;
 
-/// @brief A complex scalar: complex field with `real()`/`imag()`/`modulus()`.
+/// A complex scalar: complex field with `real()`/`imag()`/`modulus()`.
 MP_UNITS_EXPORT template<typename T>
 concept ComplexScalar = ::mp_units::detail::ComplexScalar<T>;
 
-/// @brief A scalar (real or complex, tensor order 0) - the element type a vector/tensor is built from.
+/// A scalar (real or complex, tensor order 0) - the element type a vector/tensor is built from.
 MP_UNITS_EXPORT template<typename T>
 concept Scalar = ::mp_units::detail::Scalar<T>;
 
-/// @brief A vector (a scalar, or a magnitude-bearing tensor-order-1 type).
+/// A vector (a scalar, or a magnitude-bearing tensor-order-1 type).
 MP_UNITS_EXPORT template<typename T>
 concept Vector = ::mp_units::detail::Vector<T>;
 
-/// @brief A second-order tensor (or a lower-order type filling its slot).
+/// A second-order tensor (or a lower-order type filling its slot).
 MP_UNITS_EXPORT template<typename T>
 concept Tensor = ::mp_units::detail::Tensor<T>;
 

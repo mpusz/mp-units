@@ -60,7 +60,7 @@ namespace mp_units::detail {
 }
 
 /**
- * @brief Provides compile-time rational arithmetic support.
+ * Provides compile-time rational arithmetic support.
  *
  * This class is really similar to @c std::ratio.  An important difference is the fact that the objects of that class
  * are used as class NTTPs rather then a type template parameter kind.

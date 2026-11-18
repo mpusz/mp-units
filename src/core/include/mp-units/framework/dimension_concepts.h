@@ -41,7 +41,7 @@ MP_UNITS_EXPORT template<symbol_text Symbol>
 struct base_dimension;
 
 /**
- * @brief A concept matching all dimensions in the library.
+ * A concept matching all dimensions in the library.
  *
  * Satisfied by all dimension types in the library.
  */
@@ -54,7 +54,7 @@ concept Dimension = std::is_base_of_v<detail::dimension_interface, T> && detail:
 namespace detail {
 
 /**
- * @brief A concept matching all named base dimensions in the library.
+ * A concept matching all named base dimensions in the library.
  *
  * Satisfied by all dimension types derived from a specialization of `base_dimension`.
  */
@@ -64,7 +64,7 @@ concept BaseDimension = Dimension<T> && is_derived_from_specialization_of_v<T, b
 }  // namespace detail
 
 /**
- * @brief A concept checking if the argument is of the same dimension.
+ * A concept checking if the argument is of the same dimension.
  *
  * Satisfied when both argument satisfy a `Dimension` concept and when they compare equal.
  */

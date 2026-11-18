@@ -46,7 +46,7 @@ concept AbsolutePointOrigin = PointOrigin<T> && is_derived_from_specialization_o
 }  // namespace detail
 
 /**
- * @brief User-specializable variable template for runtime coordinate frame transformations.
+ * User-specializable variable template for runtime coordinate frame transformations.
  *
  * Connects pairs of absolute point origin values with user-supplied callables. Specialize per
  * (From, To) pair with a callable invocable as:
@@ -68,7 +68,7 @@ constexpr bool is_quantity_point = false;
 }  // namespace detail
 
 /**
- * @brief A concept matching all quantity points in the library
+ * A concept matching all quantity points in the library
  *
  * Satisfied by all types being either a specialization or derived from `quantity_point`
  */
@@ -79,7 +79,7 @@ MP_UNITS_EXPORT template<QuantityPoint auto QP, auto... Args>
 struct relative_point_origin;
 
 /**
- * @brief A concept matching all quantity point origins for a specified quantity type in the library
+ * A concept matching all quantity point origins for a specified quantity type in the library
  *
  * Satisfied by all quantity point origins that are defined using a provided quantity specification.
  */
@@ -133,7 +133,7 @@ concept SameAbsolutePointOriginAs =
 
 
 /**
- * @brief A concept matching all quantity points of the provided property
+ * A concept matching all quantity points of the provided property
  *
  * Satisfied by all quantity points with a quantity_spec being the instantiation derived from
  * the provided quantity_spec type, quantity points having the origin with the same
@@ -153,7 +153,7 @@ concept QuantityPointOf =
     requires { requires QuantitySpecOf<decltype(QP::quantity_spec), V> && RepresentationOf<typename QP::rep, V>; }));
 
 /**
- * @brief A concept matching all external quantity point like types
+ * A concept matching all external quantity point like types
  *
  * Satisfied by all external types (not-defined in mp-units) that via a `quantity_point_like_traits` provide
  * all quantity_point-specific information.

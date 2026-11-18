@@ -58,7 +58,7 @@ constexpr bool is_mag_constant = is_derived_from_specialization_of_v<T, mag_cons
 }  // namespace detail
 
 /**
- * @brief  Concept to detect whether T is a valid UnitMagnitude.
+ * Concept to detect whether T is a valid UnitMagnitude.
  */
 MP_UNITS_EXPORT template<typename T>
 concept UnitMagnitude = is_specialization_of_v<std::remove_const_t<T>, detail::unit_magnitude>;

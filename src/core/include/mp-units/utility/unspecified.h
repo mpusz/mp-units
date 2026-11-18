@@ -35,7 +35,7 @@ import std;
 
 namespace mp_units::utility {
 
-/// @brief Sentinel default for a specializable variable-template customization point with no usable
+/// Sentinel default for a specializable variable-template customization point with no usable
 /// default.
 ///
 /// A variable template cannot be `= delete`d the way a function can, so a customization point that
@@ -46,7 +46,7 @@ namespace mp_units::utility {
 MP_UNITS_EXPORT struct unspecified_t {};
 MP_UNITS_EXPORT inline constexpr unspecified_t unspecified{};
 
-/// @brief Satisfied when a customization point has been given a value (i.e. is not `unspecified`).
+/// Satisfied when a customization point has been given a value (i.e. is not `unspecified`).
 MP_UNITS_EXPORT template<typename T>
 concept specified = !std::same_as<std::remove_cvref_t<T>, unspecified_t>;
 

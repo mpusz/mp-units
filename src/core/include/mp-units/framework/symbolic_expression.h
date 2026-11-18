@@ -102,7 +102,7 @@ template<typename T>
 concept SymbolicTerm = SymbolicArg<T> && SymbolicConstant<T>;
 
 /**
- * @brief Type list type used by the expression template framework
+ * Type list type used by the expression template framework
  *
  * @tparam Ts The list of types
  */
@@ -112,7 +112,7 @@ struct type_list {};
 }  // namespace detail
 
 /**
- * @brief Type list type storing the list of components with negative exponents
+ * Type list type storing the list of components with negative exponents
  *
  * @note Can't be empty
  */
@@ -152,7 +152,7 @@ constexpr bool ratio_one<N, N> = true;
 
 
 /**
- * @brief Type container for exponents with ratio different than `1`
+ * Type container for exponents with ratio different than `1`
  *
  * Ratio must be mathematically valid and non-negative. Negative exponents are passed to
  * `per<...>` with inverted sign (as positive exponents).
@@ -250,7 +250,7 @@ using power_or_T_list = power_or_T_list_impl<T, R>::type;
 
 
 /**
- * @brief Consolidates contiguous ranges of exponents of the same type
+ * Consolidates contiguous ranges of exponents of the same type
  *
  * If there is more than one exponent with the same type they are aggregated into one type by adding
  * their powers.
@@ -305,7 +305,7 @@ using expr_consolidate = expr_consolidate_impl<List>::type;
 
 
 /**
- * @brief Simplifies the expression template
+ * Simplifies the expression template
  *
  * Analyzes provided numerator and denominator type lists and simplifies elements with the same type.
  * If the same power exists in both list, this elements gets omitted. Otherwise, the power of its
@@ -390,7 +390,7 @@ struct expr_less_impl<power<T, Ints1...>, power<T, Ints2...>, Pred> :
     std::bool_constant<ratio{Ints1...} < ratio{Ints2...}> {};
 
 /**
- * @brief Compares two types with a given predicate
+ * Compares two types with a given predicate
  *
  * Algorithm accounts not only for explicit types but also for the case when they
  * are wrapped within `power<T, Num, Den>`.
@@ -434,7 +434,7 @@ template<SymbolicArg OneType, typename List>
 }
 
 /**
- * @brief Divides expression template spec to numerator and denominator parts
+ * Divides expression template spec to numerator and denominator parts
  */
 template<SymbolicArg OneType, typename... Ts>
 struct expr_fractions : decltype(expr_fractions_impl<OneType, type_list<Ts...>>()) {};
@@ -462,7 +462,7 @@ template<typename NumList, typename DenList, SymbolicArg OneType, template<typen
 }
 
 /**
- * @brief Creates an expression template spec based on provided numerator and denominator parts
+ * Creates an expression template spec based on provided numerator and denominator parts
  */
 template<typename NumList, typename DenList, SymbolicArg OneType, template<typename, typename> typename Pred,
          template<typename...> typename To>
@@ -477,7 +477,7 @@ template<typename NumList, typename DenList, SymbolicArg OneType, template<typen
 }
 
 /**
- * @brief Multiplies two sorted expression template specs
+ * Multiplies two sorted expression template specs
  *
  * @tparam To destination type list to put the result to
  * @tparam OneType type that represents the value `1`
@@ -512,7 +512,7 @@ template<template<typename...> typename To, SymbolicArg OneType,
 }
 
 /**
- * @brief Divides two sorted expression template specs
+ * Divides two sorted expression template specs
  *
  * @tparam To destination type list to put the result to
  * @tparam OneType type that represents the value `1`
@@ -548,7 +548,7 @@ template<template<typename...> typename To, SymbolicArg OneType,
 }
 
 /**
- * @brief Inverts the expression template spec
+ * Inverts the expression template spec
  *
  * @tparam T expression template spec to invert
  * @tparam OneType type that represents the value `1`
@@ -579,7 +579,7 @@ template<std::intmax_t Num, std::intmax_t Den, template<typename...> typename To
 
 
 /**
- * @brief Computes the value of an expression raised to the `Num/Den` power
+ * Computes the value of an expression raised to the `Num/Den` power
  *
  * @tparam Num Exponent numerator
  * @tparam Den Exponent denominator
@@ -640,7 +640,7 @@ template<typename List, ratio R>
 using rational_power_list = decltype(detail::apply_rational_power<R>(List{}));
 
 /**
- * @brief Returns the numerator and denominator contributions of a single projected element.
+ * Returns the numerator and denominator contributions of a single projected element.
  *
  * Three cases once `Projected` is examined:
  *  - A `To<...>` composite: expand its `_num_`/`_den_` directly.
@@ -702,7 +702,7 @@ template<template<typename> typename Proj, template<typename...> typename To, Sy
 }
 
 /**
- * @brief Maps contents of one expression template to another resulting in a different type list
+ * Maps contents of one expression template to another resulting in a different type list
  *
  * @tparam Proj Projection to be used for mapping
  * @tparam To destination type list to put the result to

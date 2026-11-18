@@ -94,7 +94,7 @@ constexpr UnitMagnitude auto mag_ratio = detail::make_magnitude<detail::ratio{N,
 #endif
 
 /**
- * @brief  Create a Magnitude which is some rational number raised to a rational power.
+ * Create a Magnitude which is some rational number raised to a rational power.
  */
 template<detail::MagArg auto Base, int Num, int Den = 1>
   requires detail::is_positive_mag_arg<Base>

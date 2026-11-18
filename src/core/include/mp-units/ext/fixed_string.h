@@ -201,7 +201,7 @@ MP_UNITS_EXPORT
 namespace mp_units {
 
 /**
- * @brief A compile-time fixed string
+ * A compile-time fixed string
  *
  * @tparam CharT Character type to be used by the string
  * @tparam N The size of the string

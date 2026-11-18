@@ -745,7 +745,7 @@ template<auto R, typename Rep, typename T, std::size_t... Idxs>
 MP_UNITS_EXPORT_BEGIN
 
 /**
- * @brief A quantity
+ * A quantity
  *
  * Property of a phenomenon, body, or substance, where the property has a magnitude that can be
  * expressed by means of a number and a reference.

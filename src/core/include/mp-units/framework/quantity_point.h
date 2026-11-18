@@ -1037,7 +1037,7 @@ struct bounds_violation {
 #endif  // MP_UNITS_HAS_EXPECTED
 
 /**
- * @brief A quantity point
+ * A quantity point
  *
  * An absolute quantity measured from an origin.
  *

@@ -61,7 +61,7 @@ namespace mp_units {
 // which is hosted-only.
 
 /**
- * @brief Computes the absolute value of a quantity
+ * Computes the absolute value of a quantity
  *
  * @param q Quantity being the base of the operation
  * @return Quantity The absolute value of a provided quantity
@@ -83,7 +83,7 @@ template<auto R, typename Rep>
 }
 
 /**
- * @brief Computes the value of a quantity raised to the `Num/Den` power
+ * Computes the value of a quantity raised to the `Num/Den` power
  *
  * Both the quantity value and its quantity specification are the base of the operation.
  *
@@ -123,7 +123,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, auto R, typename Rep>
 }
 
 /**
- * @brief Computes the square root of a quantity
+ * Computes the square root of a quantity
  *
  * Both the quantity value and its quantity specification are the base of the operation.
  *
@@ -147,7 +147,7 @@ template<auto R, typename Rep>
 }
 
 /**
- * @brief Computes the cubic root of a quantity
+ * Computes the cubic root of a quantity
  *
  * Both the quantity value and its quantity specification are the base of the operation.
  *
@@ -168,7 +168,7 @@ template<auto R, typename Rep>
 }
 
 /**
- * @brief Computes Euler's raised to the given power
+ * Computes Euler's raised to the given power
  *
  * @note Such an operation has sense only for a dimensionless quantity.
  *
@@ -193,7 +193,7 @@ template<ReferenceOf<dimensionless> auto R, typename Rep>
 }
 
 /**
- * @brief Determines if a quantity is finite.
+ * Determines if a quantity is finite.
  *
  * @param a: Quantity to analyze.
  * @return bool: Whether the quantity is finite or not.
@@ -212,7 +212,7 @@ template<auto R, typename Rep>
 }
 
 /**
- * @brief Determines if a quantity point is finite.
+ * Determines if a quantity point is finite.
  *
  * @param a: Quantity point to analyze.
  * @return bool: Whether the quantity point is finite or not.
@@ -225,7 +225,7 @@ template<auto R, auto PO, typename Rep>
 }
 
 /**
- * @brief Determines if a quantity is infinite.
+ * Determines if a quantity is infinite.
  *
  * @param a: Quantity to analyze.
  * @return bool: Whether the quantity is infinite or not.
@@ -244,7 +244,7 @@ template<auto R, typename Rep>
 }
 
 /**
- * @brief Determines if a quantity point is infinite.
+ * Determines if a quantity point is infinite.
  *
  * @param a: Quantity point to analyze.
  * @return bool: Whether the quantity point is infinite or not.
@@ -258,7 +258,7 @@ template<auto R, auto PO, typename Rep>
 
 
 /**
- * @brief Determines if a quantity is a nan.
+ * Determines if a quantity is a nan.
  *
  * @param a: Quantity to analyze.
  * @return bool: Whether the quantity is a NaN or not.
@@ -278,7 +278,7 @@ template<auto R, typename Rep>
 
 
 /**
- * @brief Determines if a quantity point is a nan.
+ * Determines if a quantity point is a nan.
  *
  * @param a: Quantity point to analyze.
  * @return bool: Whether the quantity point is a NaN or not.
@@ -291,7 +291,7 @@ template<auto R, auto PO, typename Rep>
 }
 
 /**
- * @brief Computes the fma of 3 quantities
+ * Computes the fma of 3 quantities
  *
  * @param a: Multiplicand
  * @param x: Multiplicand
@@ -320,7 +320,7 @@ fma(const quantity<R, Rep1>& a, const quantity<S, Rep2>& x, const quantity<T, Re
 }
 
 /**
- * @brief Computes the fma of 2 quantities and a quantity point
+ * Computes the fma of 2 quantities and a quantity point
  *
  * @param a: Multiplicand
  * @param x: Multiplicand
@@ -349,7 +349,7 @@ fma(const quantity<R, Rep1>& a, const quantity<S, Rep2>& x, const quantity_point
 }
 
 /**
- * @brief Computes the floating-point remainder of the division operation x / y.
+ * Computes the floating-point remainder of the division operation x / y.
  */
 template<auto R1, typename Rep1, auto R2, typename Rep2>
   requires detail::QuantitiesOfTheSameKind<quantity<R1, Rep1>, quantity<R2, Rep2>> && requires(Rep1 v1, Rep2 v2) {
@@ -372,7 +372,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
 }
 
 /**
- * @brief Computes the IEEE remainder of the floating point division operation x / y.
+ * Computes the IEEE remainder of the floating point division operation x / y.
  */
 template<auto R1, typename Rep1, auto R2, typename Rep2>
   requires detail::QuantitiesOfTheSameKind<quantity<R1, Rep1>, quantity<R2, Rep2>> && requires(Rep1 v1, Rep2 v2) {
@@ -396,7 +396,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
 
 
 /**
- * @brief Returns the epsilon of the quantity
+ * Returns the epsilon of the quantity
  *
  * The returned value is defined by a <tt>std::numeric_limits<typename Q::rep>::epsilon()</tt>.
  *
@@ -413,7 +413,7 @@ template<typename Rep, Reference R>
 }
 
 /**
- * @brief Computes the largest quantity with integer representation and unit type To with its number not greater than q
+ * Computes the largest quantity with integer representation and unit type To with its number not greater than q
  *
  * @tparam q Quantity being the base of the operation
  * @return Quantity The rounded quantity with unit type To
@@ -441,7 +441,7 @@ template<Unit auto To, auto R, typename Rep>
 }
 
 /**
- * @brief Computes the largest quantity point with integer representation and unit type To with its number not greater
+ * Computes the largest quantity point with integer representation and unit type To with its number not greater
  *        than qp
  *
  * @param qp QuantityPoint being the base of the operation
@@ -473,7 +473,7 @@ template<Unit auto To, auto R, auto PO, typename Rep>
 }
 
 /**
- * @brief Computes the smallest quantity with integer representation and unit type To with its number not less than q
+ * Computes the smallest quantity with integer representation and unit type To with its number not less than q
  *
  * @tparam q Quantity being the base of the operation
  * @return Quantity The rounded quantity with unit type To
@@ -501,7 +501,7 @@ template<Unit auto To, auto R, typename Rep>
 }
 
 /**
- * @brief Computes the smallest quantity point with integer representation and unit type To with its number not less
+ * Computes the smallest quantity point with integer representation and unit type To with its number not less
  *        than qp
  *
  * @param qp Quantity point being the base of the operation
@@ -533,7 +533,7 @@ template<Unit auto To, auto R, auto PO, typename Rep>
 }
 
 /**
- * @brief Computes the nearest quantity with integer representation and unit type `To` to `q`
+ * Computes the nearest quantity with integer representation and unit type `To` to `q`
  *
  * Returns the value `res` representable in `To` unit that is the closest to `q`. If there are two
  * such values, returns the even value (that is, the value `res` such that `res % 2 == 0`).
@@ -570,7 +570,7 @@ template<Unit auto To, auto R, typename Rep>
 }
 
 /**
- * @brief Computes the nearest quantity point with integer representation and unit type `To` to `qp`
+ * Computes the nearest quantity point with integer representation and unit type `To` to `qp`
  *
  * Returns the value `res` representable in `To` unit that is the closest to `qp`. If there are two
  * such values, returns the even value (that is, the value `res` such that `res % 2 == 0`).
@@ -608,7 +608,7 @@ template<Unit auto To, auto R, auto PO, typename Rep>
 }
 
 /**
- * @brief Computes the inverse of a quantity in a provided unit
+ * Computes the inverse of a quantity in a provided unit
  */
 template<Unit auto To, auto R, typename Rep>
 [[nodiscard]] constexpr Quantity auto inverse(const quantity<R, Rep>& q)
@@ -623,7 +623,7 @@ template<Unit auto To, auto R, typename Rep>
 }
 
 /**
- * @brief Computes the square root of the sum of the squares of x and y,
+ * Computes the square root of the sum of the squares of x and y,
  *        without undue overflow or underflow at intermediate stages of the computation
  */
 template<auto R1, typename Rep1, auto R2, typename Rep2>
@@ -650,7 +650,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
 }
 
 /**
- * @brief Computes the square root of the sum of the squares of x, y, and z,
+ * Computes the square root of the sum of the squares of x, y, and z,
  *        without undue overflow or underflow at intermediate stages of the computation
  */
 template<auto R1, typename Rep1, auto R2, typename Rep2, auto R3, typename Rep3>
@@ -677,7 +677,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2, auto R3, typename Rep3>
 }
 
 /**
- * @brief Linear interpolation or extrapolation
+ * Linear interpolation or extrapolation
  *
  * Computes the linear interpolation between `a` and `b`, if the parameter `t` is inside `[​0​, 1)`
  * (the linear extrapolation otherwise), i.e. the result of `a + t(b − a)` with accounting for
@@ -706,7 +706,7 @@ template<auto R1, auto Origin, typename Rep1, auto R2, typename Rep2, typename F
 }
 
 /**
- * @brief Computes the midpoint of two points
+ * Computes the midpoint of two points
  */
 template<auto R1, auto Origin, typename Rep1, auto R2, typename Rep2>
   requires requires(Rep1 a, Rep2 b) {

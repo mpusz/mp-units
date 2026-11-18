@@ -37,7 +37,7 @@ struct reference;
 MP_UNITS_EXPORT_BEGIN
 
 /**
- * @brief A concept matching all references in the library.
+ * A concept matching all references in the library.
  *
  * Satisfied by all specializations of @c reference.
  */
@@ -45,7 +45,7 @@ template<typename T>
 concept Reference = Unit<T> || is_specialization_of<std::remove_const_t<T>, reference>;
 
 /**
- * @brief A concept matching all references of the provided quantity spec
+ * A concept matching all references of the provided quantity spec
  *
  * Satisfied by all references for which @c QuantitySpecOf<QS> is true.
  */

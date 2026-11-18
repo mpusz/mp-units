@@ -68,7 +68,7 @@ template<typename... Expr>
 struct derived_unit_impl;
 
 /**
- * @brief A canonical representation of a unit
+ * A canonical representation of a unit
  *
  * A canonical representation of a unit consists of:
  * - a reference unit being the result of extraction of all the intermediate derived units,
@@ -323,7 +323,7 @@ struct scaled_unit_impl : detail::unit_interface, detail::propagate_point_origin
 }  // namespace detail
 
 /**
- * @brief Unit being a scaled version of another unit
+ * Unit being a scaled version of another unit
  *
  * @tparam M magnitude describing the scale factor
  * @tparam U reference unit being scaled
@@ -344,7 +344,7 @@ constexpr bool is_specialization_of_scaled_unit<scaled_unit<M, U>> = true;
 }  // namespace detail
 
 /**
- * @brief A named unit
+ * A named unit
  *
  * Defines a unit with a special name. It may be used to provide a base unit in the system
  * of units (e.g. `metre`) or a name assigned to another scaled or derived unit
@@ -374,7 +374,7 @@ MP_UNITS_EXPORT template<symbol_text Symbol, auto... Args>
 struct named_unit;
 
 /**
- * @brief Specialization for unit of a specified base quantity
+ * Specialization for unit of a specified base quantity
  *
  * Associates a unit with a specified base quantity.
  * For example `si::metre` is a unit to measure `isq::length` in the SI system.
@@ -409,7 +409,7 @@ struct named_unit<Symbol, QS, PO> : detail::unit_interface {
 };
 
 /**
- * @brief Specialization for a unit with special name
+ * Specialization for a unit with special name
  *
  * Allows assigning a special name to another scaled or derived unit (e.g. `hour`, `joule`).
  *
@@ -432,7 +432,7 @@ struct named_unit<Symbol, U, PO> : decltype(U)::_base_type_ {
 };
 
 /**
- * @brief Specialization for a unit with special name valid only for a specific quantity
+ * Specialization for a unit with special name valid only for a specific quantity
  *
  * The same as the above but additionally limits the usage of this unit to provided quantities.
  *
@@ -460,7 +460,7 @@ struct named_unit<Symbol, U, QS, PO> : decltype(U)::_base_type_ {
 };
 
 /**
- * @brief Relative standard uncertainty of a measured constant
+ * Relative standard uncertainty of a measured constant
  *
  * Wraps the relative standard uncertainty (GUM/CODATA `u_r`) of a measured constant as an exact
  * symbolic magnitude so that no representation type is imposed at the definition point. It is
@@ -498,7 +498,7 @@ relative_standard_uncertainty(M) -> relative_standard_uncertainty<M>;
 #endif
 
 /**
- * @brief Absolute standard uncertainty of a measured constant
+ * Absolute standard uncertainty of a measured constant
  *
  * Wraps the standard uncertainty (GUM/CODATA `u`) of a measured constant as an exact symbolic
  * expression of the same shape as the constant's value: a magnitude times a unit of the same
@@ -537,7 +537,7 @@ standard_uncertainty(U) -> standard_uncertainty<U>;
 #endif
 
 /**
- * @brief Named constant definition
+ * Named constant definition
  *
  * It is very similar to `named_unit` but:
  * - allows negative exponents in the unit definition (TODO )
@@ -555,7 +555,7 @@ struct named_constant<Symbol, U> : decltype(U)::_base_type_ {
 };
 
 /**
- * @brief Specialization for a measured constant declaring its relative standard uncertainty
+ * Specialization for a measured constant declaring its relative standard uncertainty
  *
  * The same as the above but additionally stores the relative standard uncertainty of a constant
  * that is measured rather than exact by definition. The value transcribes the entry published in
@@ -577,7 +577,7 @@ struct named_constant<Symbol, U, RSU> : decltype(U)::_base_type_ {
 };
 
 /**
- * @brief Specialization for a measured constant declaring its absolute standard uncertainty
+ * Specialization for a measured constant declaring its absolute standard uncertainty
  *
  * The same as the above but stores the standard uncertainty in the form the source metrology
  * table publishes it: an absolute value in a unit of the constant's own dimension. The relative
@@ -596,7 +596,7 @@ struct named_constant<Symbol, U, SU> : decltype(U)::_base_type_ {
 };
 
 /**
- * @brief Returns the relative standard uncertainty of a measured constant
+ * Returns the relative standard uncertainty of a measured constant
  *
  * For a constant declared with `standard_uncertainty`, the result is derived as the exact ratio
  * of the uncertainty's canonical magnitude to the constant's one (`u_r = u(x)/|x|`, so the
@@ -617,7 +617,7 @@ MP_UNITS_EXPORT template<MeasuredConstant U>
 }
 
 /**
- * @brief Returns the standard uncertainty of a measured constant
+ * Returns the standard uncertainty of a measured constant
  *
  * The result is a unit expression of the constant's own dimension (constants are units in this
  * library, and so are their uncertainties). For a constant declared with
@@ -640,7 +640,7 @@ MP_UNITS_EXPORT template<MeasuredConstant U>
 
 
 /**
- * @brief A prefixed unit
+ * A prefixed unit
  *
  * Defines a new unit that is a scaled version of another unit with the scaling
  * factor specified by a predefined prefix.
@@ -704,7 +704,7 @@ constexpr auto common_unit_scaled_result = get_common_scaled_unit(U1{}, U2{}, Re
 }  // namespace detail
 
 /**
- * @brief Measurement unit for an accumulation of two quantities of different units
+ * Measurement unit for an accumulation of two quantities of different units
  *
  * While adding two quantities of different units we can often identify which of those unit should be used
  * to prevent data truncation. For example, adding `1 * m + 1 * mm` will end up in a quantity expressed in
@@ -734,7 +734,7 @@ struct derived_unit_impl : detail::unit_interface, detail::expr_fractions<one, E
 }  // namespace detail
 
 /**
- * @brief Measurement unit for a derived quantity
+ * Measurement unit for a derived quantity
  *
  * Derived units are defined as products of powers of the base units.
  *
@@ -782,7 +782,7 @@ template<detail::SymbolicTerm... Expr>
 struct derived_unit final : detail::derived_unit_impl<Expr...> {};
 
 /**
- * @brief Unit one
+ * Unit one
  *
  * Unit of a dimensionless quantity.
  */

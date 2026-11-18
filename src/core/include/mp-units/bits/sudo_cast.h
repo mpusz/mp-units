@@ -49,7 +49,7 @@ using maybe_common_type =
   conditional<has_common_type_v<T, Other>, std::common_type<T, Other>, std::type_identity<T>>::type;
 
 /**
- * @brief Type-related details about the conversion from one quantity to another
+ * Type-related details about the conversion from one quantity to another
  *
  * This trait helps to determine what representations to use at which step in the conversion process,
  * in order to avoid overflow and underflow while not causing excessive computations.
@@ -67,7 +67,7 @@ struct conversion_type_traits {
 };
 
 /**
- * @brief Explicit cast between different quantity types
+ * Explicit cast between different quantity types
  *
  * @note This is a low-level facility and is too powerful to be used by the users directly. They should either use
  * `value_cast` or `quantity_cast`.
@@ -112,7 +112,7 @@ template<Quantity To, rounding_mode Mode = rounding_mode::truncated, typename Fw
 
 
 /**
- * @brief Explicit cast between different quantity_point types
+ * Explicit cast between different quantity_point types
  *
  * @note This is a low-level facility and is too powerful to be used by the users directly. They should either use
  * `value_cast` or `quantity_cast`.

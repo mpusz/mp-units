@@ -46,7 +46,7 @@ import std;
 
 namespace mp_units::utility {
 
-/// @brief A 3-D spherical coordinate facade (ISO physics convention): a scalar-`quantity` radius
+/// A 3-D spherical coordinate facade (ISO physics convention): a scalar-`quantity` radius
 /// `r`, inclination `theta` from +z in `[0, pi]`, and azimuth `phi` from +x in `[-pi, pi]`.
 ///
 /// Like `polar_vector` it is a conversion facade, not a quantity representation. Construct from
