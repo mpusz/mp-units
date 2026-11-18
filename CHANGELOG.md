@@ -104,7 +104,8 @@ This page documents the version history and changes for the **mp-units** library
 - (!) refactor: `char`, `wchar_t`, `char8_t`, `char16_t`, and `char32_t` are not
       representation types, as `bool` isn't. A character type holds a character, not a
       number, so `quantity<si::metre, char>` is ill-formed. `signed char` and `unsigned char`,
-      the types of `std::int8_t` and `std::uint8_t`, stay representation types
+      the types of `std::int8_t` and `std::uint8_t`, stay representation types. A literal
+      zero of a character type, such as `'\0'`, doesn't compare against a quantity either
 - feat: a vector quantity composes from a single value holding its components, the
       inverse of its tuple protocol: `quantity<flight_velocity[km / h], vec3> v =
       std::tuple{fwd, lat, vert};`. Any type a structured binding decomposes through

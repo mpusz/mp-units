@@ -1658,6 +1658,21 @@ static_assert(!(0. * m != 0));
 static_assert(!(0 * m != 0.));
 static_assert(!(0. * m != 0.));
 
+// Only a literal zero of a representation type compares against a quantity: neither `false` nor a
+// character such as `'\0'`.
+template<typename T>
+concept zero_comparable = requires(T val) { 0 * m == val; };
+static_assert(zero_comparable<int> && zero_comparable<double>);
+static_assert(zero_comparable<signed char> && zero_comparable<unsigned char>);
+static_assert(!zero_comparable<bool>);
+static_assert(!zero_comparable<char>);
+static_assert(!zero_comparable<wchar_t>);
+static_assert(!zero_comparable<char16_t>);
+static_assert(!zero_comparable<char32_t>);
+#ifdef __cpp_char8_t
+static_assert(!zero_comparable<char8_t>);
+#endif
+
 ///////////////////////
 // ordering operators
 ///////////////////////

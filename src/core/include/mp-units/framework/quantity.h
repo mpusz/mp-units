@@ -72,9 +72,10 @@ namespace mp_units {
 
 namespace detail {
 
+// A literal `0` of an arithmetic type that is a valid representation, so neither `false` nor `'\0'`.
 struct zero {
   template<typename T>
-    requires std::is_arithmetic_v<T> && (!std::is_same_v<T, bool>)
+    requires std::is_arithmetic_v<T> && (!disable_representation<T>)
   consteval explicit(false) zero(T val)
   {
     if (val != T{0}) MP_UNITS_THROW(std::logic_error("not zero"));
