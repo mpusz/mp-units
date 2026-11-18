@@ -8,6 +8,9 @@ This page documents the version history and changes for the **mp-units** library
 
 ### 2.6.0 <small>TBD</small> { id="2.6.0" }
 
+- fix: `wrap_to_range` and `reflect_in_range` no longer overflow a standard integer
+      representation when the length of the range, or the period of the reflection (twice
+      that length), exceeds the representation's maximum
 - (!) fix: a quantity point is default-constructible only where its origin lies within the
       range of the bounds policy that construction applies, judged by the policy's `min`
       and `max`. Value-initialization stores a zero delta, the origin itself, so `T{}` and

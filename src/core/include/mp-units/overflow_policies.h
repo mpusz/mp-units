@@ -251,6 +251,65 @@ template<Quantity V>
   return diff < V::zero() ? V{diff + modulus} : diff;
 }
 
+// A standard integer representation reduces a value with exact unsigned arithmetic instead, so that
+// a range wider than half the type, whose length or period doesn't fit in the representation,
+// reduces without overflow too.
+template<typename V>
+concept StdIntegralQuantity = Quantity<V> && std::integral<typename V::rep>;
+
+// Maps an integer to its distance from the lowest value of its type, preserving order. Every
+// difference of two such distances fits in the unsigned type.
+template<std::integral T>
+[[nodiscard]] constexpr std::make_unsigned_t<T> to_biased(T val)
+{
+  using U = std::make_unsigned_t<T>;
+  return static_cast<U>(static_cast<U>(val) - static_cast<U>(std::numeric_limits<T>::min()));
+}
+
+template<std::integral T>
+[[nodiscard]] constexpr T from_biased(std::make_unsigned_t<T> val)
+{
+  using U = std::make_unsigned_t<T>;
+  return static_cast<T>(static_cast<U>(val + static_cast<U>(std::numeric_limits<T>::min())));
+}
+
+// qty wrapped into [vmin, vmax), for vmin < vmax.
+template<StdIntegralQuantity V>
+[[nodiscard]] constexpr V wrap_integral(const V& qty, const V& vmin, const V& vmax)
+{
+  using T = V::rep;
+  using U = std::make_unsigned_t<T>;
+  const U lo = to_biased(vmin.numerical_value_in(V::unit));
+  const U pos = to_biased(qty.numerical_value_in(V::unit));
+  const U range = static_cast<U>(to_biased(vmax.numerical_value_in(V::unit)) - lo);
+  U offset{};
+  if (pos >= lo)
+    offset = static_cast<U>(static_cast<U>(pos - lo) % range);
+  else {
+    const U back = static_cast<U>(static_cast<U>(lo - pos) % range);
+    offset = back == 0 ? U{} : static_cast<U>(range - back);
+  }
+  return V{from_biased<T>(static_cast<U>(lo + offset)), V::reference};
+}
+
+// qty reflected into [vmin, vmax], for vmin < vmax. The period is twice the range, which may not fit in
+// the unsigned type, but then every distance is already shorter than the period.
+template<StdIntegralQuantity V>
+[[nodiscard]] constexpr V reflect_integral(const V& qty, const V& vmin, const V& vmax)
+{
+  using T = V::rep;
+  using U = std::make_unsigned_t<T>;
+  const U lo = to_biased(vmin.numerical_value_in(V::unit));
+  const U pos = to_biased(qty.numerical_value_in(V::unit));
+  const U range = static_cast<U>(to_biased(vmax.numerical_value_in(V::unit)) - lo);
+  // A point d below vmin reflects to d above it, so both sides fold the distance from vmin.
+  const U dist = pos >= lo ? static_cast<U>(pos - lo) : static_cast<U>(lo - pos);
+  const bool period_fits = range <= std::numeric_limits<U>::max() / 2;
+  const U in_period = period_fits ? static_cast<U>(dist % static_cast<U>(2 * range)) : dist;
+  const U offset = in_period <= range ? in_period : static_cast<U>(range - static_cast<U>(in_period - range));
+  return V{from_biased<T>(static_cast<U>(lo + offset)), V::reference};
+}
+
 // True for an infinite or NaN floating-point value: v - v is NaN exactly then, and always zero for
 // an integral representation.
 template<Quantity V>
@@ -391,13 +450,20 @@ struct wrap_to_range {
   {
     const V vmin = detail::bound_in<V>(min);
     const V vmax = detail::bound_in<V>(max);
-    if (detail::is_non_finite(v)) return v - v;  // no position on the circle: NaN
+    if constexpr (!detail::StdIntegralQuantity<V>) {
+      // A standard integer is always finite, and `v - v` of a narrow one is promoted to `int`.
+      if (detail::is_non_finite(v)) return v - v;  // no position on the circle: NaN
+    }
     if (v >= vmin && v < vmax) return v;
-    const V range = vmax - vmin;
-    if constexpr (requires { v % range; }) {
-      // An integral representation takes the exact remainder, which never overflows.
-      return V{vmin + detail::offset_modulo(v, vmin, range)};
+    if constexpr (detail::StdIntegralQuantity<V>) {
+      // Exact, and without overflow even for a range longer than the representation's maximum.
+      return detail::wrap_integral(v, vmin, vmax);
+    } else if constexpr (requires { v % v; }) {
+      // Another representation with an exact remainder never overflows either, provided that the
+      // length of the range fits in it.
+      return V{vmin + detail::offset_modulo(v, vmin, V{vmax - vmin})};
     } else {
+      const V range = vmax - vmin;
       if (v >= vmax)
         v = vmin + detail::reduce_modulo(V{v - vmin}, range);
       else {
@@ -431,16 +497,26 @@ struct reflect_in_range {
   {
     const V vmin = detail::bound_in<V>(min);
     const V vmax = detail::bound_in<V>(max);
-    if (detail::is_non_finite(v)) return v - v;  // no reflected position: NaN
+    if constexpr (!detail::StdIntegralQuantity<V>) {
+      // A standard integer is always finite, and `v - v` of a narrow one is promoted to `int`.
+      if (detail::is_non_finite(v)) return v - v;  // no reflected position: NaN
+    }
     if (v >= vmin && v <= vmax) return v;
-    const V range = vmax - vmin;
-    const V period{2 * range};
-    if constexpr (requires { v % period; }) {
-      // An integral representation takes the exact remainder, which never overflows.
+    if constexpr (detail::StdIntegralQuantity<V>) {
+      // Exact, and without overflow even for a range whose period, or length, exceeds the
+      // representation's maximum.
+      return detail::reflect_integral(v, vmin, vmax);
+    } else if constexpr (requires { v % v; }) {
+      // Another representation with an exact remainder never overflows either, provided that the
+      // period (twice the length of the range) fits in it.
+      const V range = vmax - vmin;
+      const V period{2 * range};
       V offset = detail::offset_modulo(v, vmin, period);
       if (offset > range) offset = period - offset;
       return V{vmin + offset};
     } else {
+      const V range = vmax - vmin;
+      const V period{2 * range};
       // Position within one period [0, 2 range), then folded back onto [0, range].
       V pos = v >= vmin ? detail::reduce_modulo(V{v - vmin}, period) : detail::reduce_modulo(V{vmin - v}, period);
       if (v < vmin && pos != V::zero()) pos = period - pos;

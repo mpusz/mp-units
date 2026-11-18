@@ -1506,6 +1506,26 @@ static_assert(wrap_to_range{-180 * deg, 180 * deg}(-181 * deg) == 179 * deg);
 static_assert(reflect_in_range{-90 * deg, 90 * deg}(91 * deg) == 89 * deg);
 static_assert(reflect_in_range{-90 * deg, 90 * deg}(-91 * deg) == -89 * deg);
 
+// A range longer than the representation's maximum (or, for reflect_in_range, one whose period of
+// twice that length is) still reduces exactly: the length is never formed in the representation.
+static_assert(wrap_to_range{-2'000'000'000 * m, 2'000'000'000 * m}(std::numeric_limits<int>::max() * m) ==
+              (std::numeric_limits<int>::max() - 4'000'000'000LL) * m);
+static_assert(wrap_to_range{-2'000'000'000 * m, 2'000'000'000 * m}(std::numeric_limits<int>::min() * m) ==
+              (std::numeric_limits<int>::min() + 4'000'000'000LL) * m);
+static_assert(wrap_to_range{std::numeric_limits<int>::min() * m,
+                            std::numeric_limits<int>::max() * m}(std::numeric_limits<int>::max() * m) ==
+              std::numeric_limits<int>::min() * m);
+static_assert(reflect_in_range{-2'000'000'000 * m, 2'000'000'000 * m}(2'100'000'000 * m) == 1'900'000'000 * m);
+static_assert(reflect_in_range{-2'000'000'000 * m, 2'000'000'000 * m}(-2'100'000'000 * m) == -1'900'000'000 * m);
+static_assert(reflect_in_range{-1'000'000'000 * m, 1'000'000'000 * m}(std::numeric_limits<int>::max() * m) ==
+              (2'000'000'000LL - std::numeric_limits<int>::max()) * m);
+static_assert(reflect_in_range{-1'000'000'000 * m, 1'000'000'000 * m}(std::numeric_limits<int>::min() * m) ==
+              (-2'000'000'000LL - std::numeric_limits<int>::min()) * m);
+static_assert(reflect_in_range{0u * m, 3'000'000'000u * m}(4'000'000'000u * m) == 2'000'000'000u * m);
+static_assert(wrap_to_range{std::int8_t{-100} * m, std::int8_t{100} * m}(std::int8_t{127} * m) == std::int8_t{-73} * m);
+static_assert(reflect_in_range{std::int8_t{-100} * m, std::int8_t{100} * m}(std::int8_t{-128} * m) ==
+              std::int8_t{-72} * m);
+
 // check_in_range needs both ends: a single argument would leave max value-initialized.
 template<auto Lo>
 concept can_check_one_sided = requires { check_in_range{Lo}; };
