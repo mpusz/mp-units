@@ -137,10 +137,17 @@ inline constexpr bool is_complete = requires { sizeof(T) > 0; };
 
 // Hack for a compiler bug: MSVC crashes with an internal compiler error (C1001) when `mag_ratio`
 // passes `detail::ratio{N, D}` to `make_magnitude` as a non-type template argument, so `mag_ratio`
-// builds the magnitude from prime factorizations there. Confirmed on MSVC 19.51 (`_MSC_VER` 1951).
-// Older versions were not tested and keep the hack. Extend the branch to a newer version only after
-// that version is confirmed to have the same bug.
-#if MP_UNITS_COMP_MSVC && MP_UNITS_COMP_MSVC <= 1951
+// builds the magnitude from prime factorizations there. Minimal reproducer, accepted by GCC and Clang:
+//   namespace ns {
+//   struct R { int v; constexpr R(int x) : v{x} {} };
+//   template<R V> consteval int f() { return 0; }
+//   }
+//   template<int N> constexpr int x = ns::f<ns::R{N}>();  // error C1001 when instantiated
+//   constexpr int y = x<1>;
+// Confirmed on MSVC 19.51 and 19.52 (`_MSC_VER` 1951 and 1952). Older versions were not tested and
+// keep the hack. Extend the branch to a newer version only after that version is confirmed to have
+// the same bug.
+#if MP_UNITS_COMP_MSVC && MP_UNITS_COMP_MSVC <= 1952
 #define MP_UNITS_MAG_RATIO_HACK 1
 #else
 #define MP_UNITS_MAG_RATIO_HACK 0
