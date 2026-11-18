@@ -458,9 +458,10 @@ public:
    * the same central value and different uncertainties are equal, and the order is at most a weak
    * one. A comparison with an exact value, such as a bound or zero, depends on the central value
    * alone. The comparison is not statistical: two values with different central values compare as
-   * unequal even when their uncertainty intervals overlap. For interval-aware comparisons use the
-   * `lower_bound()`/`upper_bound()` observers, and compare `uncertainty()` to tell two values with
-   * the same central value apart.
+   * unequal even when their uncertainty intervals overlap. `metrologically_compatible` tells whether
+   * two values agree within their uncertainties, and `certainly_within` and `possibly_within` tell
+   * whether a value lies within limits. Compare `uncertainty()` to tell two values with the same
+   * central value apart.
    */
   [[nodiscard]] friend constexpr bool operator==(const uncertain& lhs, const uncertain& rhs)
   {
