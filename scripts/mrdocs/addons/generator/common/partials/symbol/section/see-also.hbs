@@ -1,0 +1,19 @@
+{{! See Also references (@see, @sa).
+
+    Overrides the stock template, which renders each entry as its own paragraph.
+    The entries render as a bulleted list, as elsewhere in the documentation.
+    The bullets cannot come from the doc comment: `@see` takes a paragraph
+    argument, and a list written there collapses onto a single line.
+
+    The bullet is written here rather than through `markup/li`, because the item
+    has to end in exactly one newline: none and the entries run together, two
+    and Markdown treats the list as loose and wraps every item in a paragraph.
+}}
+{{#if symbol.doc.sees}}
+{{#> markup/section name="see-also"}}
+{{#> markup/dynamic-level-h }}See Also{{/markup/dynamic-level-h~}}
+{{#each symbol.doc.sees}}
+- {{> doc/block/see .}}
+{{/each}}
+{{/markup/section}}
+{{/if}}

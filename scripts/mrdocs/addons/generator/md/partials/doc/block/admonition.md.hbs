@@ -1,0 +1,19 @@
+{{!--
+    An admonition written in a doc comment: `@note`, `@warning`, `@tip`,
+    `@important`, `@caution`.
+
+    Without this, the Markdown generator falls back to the HTML generator's
+    partial, which emits a kind-less `<div class="admonition">` titled by an
+    `<h4>`. Material for MkDocs colors and captions an admonition from the kind
+    class and an `admonition-title`, so that form renders as an unstyled box
+    and looks nothing like the admonitions the generator itself produces. Keep
+    this in step with `markup/admonition.md.hbs`, which handles those.
+
+    The body arrives as block content that already carries its own `<p>` tags,
+    so it is not wrapped again: a `@note` may hold a list.
+--}}
+
+<div class="admonition {{admonish}}" markdown="0"><p class="admonition-title">{{titlecase admonish}}</p>
+{{> doc/block-container ~}}
+</div>
+
