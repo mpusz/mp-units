@@ -380,23 +380,6 @@ using proj_window_pt = quantity_point<proj_length[m], proj_window, counted_doubl
 
 int projections = 0;
 
-// A user-defined checking policy that counts its evaluations.
-struct counting_check {
-  quantity<proj_length[m], double> min;
-  quantity<proj_length[m], double> max;
-  static inline int calls = 0;
-  template<Quantity V>
-  constexpr bool operator()(V v) const
-  {
-    ++calls;
-    return V{min} <= v && v <= V{max};
-  }
-};
-
-inline constexpr struct counted_zero final :
-    absolute_point_origin<proj_length, counting_check{0. * proj_length[m], 10. * proj_length[m]}> {
-} counted_zero;
-
 }  // namespace
 
 template<>
@@ -409,8 +392,10 @@ inline constexpr auto mp_units::frame_projection<proj_src, proj_tgt> =
 TEST_CASE("a conversion through a frame projection reports a violation once", "[bounded][projection]")
 {
   counting_policy::violations = 0;
+  projections = 0;
   const proj_window_pt p{proj_src_pt{-120. * m, proj_src}};
   CHECK(counting_policy::violations == 1);
+  CHECK(projections == 1);
   // The handler returned, so the value is stored unchanged.
   CHECK(p.delta_from(proj_window) == proj_window_pt{20. * m, proj_window}.delta_from(proj_window));
 }
@@ -441,6 +426,27 @@ TEST_CASE("try_make from a projected point projects it once", "[bounded][project
   CHECK(proj_window_pt::try_make(proj_src_pt{-105. * m, proj_src}).has_value());
   CHECK(projections == 1);
 }
+
+namespace {
+
+// A user-defined checking policy that counts its evaluations.
+struct counting_check {
+  quantity<proj_length[m], double> min;
+  quantity<proj_length[m], double> max;
+  static inline int calls = 0;
+  template<Quantity V>
+  constexpr bool operator()(V v) const
+  {
+    ++calls;
+    return V{min} <= v && v <= V{max};
+  }
+};
+
+inline constexpr struct counted_zero final :
+    absolute_point_origin<proj_length, counting_check{0. * proj_length[m], 10. * proj_length[m]}> {
+} counted_zero;
+
+}  // namespace
 
 TEST_CASE("try_make evaluates the checking policy once", "[bounded][try_make]")
 {

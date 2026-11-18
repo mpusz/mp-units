@@ -287,13 +287,27 @@ public:
             detail::MeasuredOrExact<Lhs, uncertain> && detail::MeasuredOrExact<Rhs, uncertain> &&
             requires(const Lhs& lhs, const Rhs& rhs) { lhs - rhs; }
   [[nodiscard]] friend constexpr bool metrologically_compatible(const Lhs& lhs, const Rhs& rhs,
-                                                                value_type coverage_factor = static_cast<value_type>(2))
+                                                                value_type coverage_factor)
     MP_UNITS_PRE(!(coverage_factor < representation_values<value_type>::zero()))
   {
     MP_UNITS_EXPECTS(!(coverage_factor < representation_values<value_type>::zero()));
     const auto difference = lhs - rhs;
     return metrologically_compatible(difference.numerical_value_ref_in(difference.unit),
                                      representation_values<value_type>::zero(), coverage_factor);
+  }
+
+  // The coverage factor of the quantity forms defaults through an overload: MSVC 19.51 rejects
+  // a default argument of a template hidden friend that names a type (C2061).
+
+  /// `metrologically_compatible(lhs, rhs, 2)`
+  template<typename Lhs, typename Rhs>
+    requires((mp_units::Quantity<Lhs> && mp_units::Quantity<Rhs>) ||
+             (mp_units::QuantityPoint<Lhs> && mp_units::QuantityPoint<Rhs>)) &&
+            detail::MeasuredOrExact<Lhs, uncertain> && detail::MeasuredOrExact<Rhs, uncertain> &&
+            requires(const Lhs& lhs, const Rhs& rhs) { lhs - rhs; }
+  [[nodiscard]] friend constexpr bool metrologically_compatible(const Lhs& lhs, const Rhs& rhs)
+  {
+    return metrologically_compatible(lhs, rhs, static_cast<value_type>(2));
   }
 
   /**
@@ -308,13 +322,21 @@ public:
   template<typename Val, typename Lower, typename Upper>
     requires detail::BoundedBy<Val, Lower, Upper, uncertain>
   [[nodiscard]] friend constexpr bool certainly_within(const Val& val, const Lower& lower_limit,
-                                                       const Upper& upper_limit,
-                                                       value_type coverage_factor = static_cast<value_type>(2))
+                                                       const Upper& upper_limit, value_type coverage_factor)
     MP_UNITS_PRE(!(upper_limit < lower_limit) && !(coverage_factor < representation_values<value_type>::zero()))
   {
     MP_UNITS_EXPECTS(!(upper_limit < lower_limit) && !(coverage_factor < representation_values<value_type>::zero()));
     const auto expanded = expanded_quantity(val, coverage_factor);
     return lower_limit <= val - expanded && val + expanded <= upper_limit;
+  }
+
+  /// `certainly_within(val, lower_limit, upper_limit, 2)`
+  template<typename Val, typename Lower, typename Upper>
+    requires detail::BoundedBy<Val, Lower, Upper, uncertain>
+  [[nodiscard]] friend constexpr bool certainly_within(const Val& val, const Lower& lower_limit,
+                                                       const Upper& upper_limit)
+  {
+    return certainly_within(val, lower_limit, upper_limit, static_cast<value_type>(2));
   }
 
   /**
@@ -329,13 +351,21 @@ public:
   template<typename Val, typename Lower, typename Upper>
     requires detail::BoundedBy<Val, Lower, Upper, uncertain>
   [[nodiscard]] friend constexpr bool possibly_within(const Val& val, const Lower& lower_limit,
-                                                      const Upper& upper_limit,
-                                                      value_type coverage_factor = static_cast<value_type>(2))
+                                                      const Upper& upper_limit, value_type coverage_factor)
     MP_UNITS_PRE(!(upper_limit < lower_limit) && !(coverage_factor < representation_values<value_type>::zero()))
   {
     MP_UNITS_EXPECTS(!(upper_limit < lower_limit) && !(coverage_factor < representation_values<value_type>::zero()));
     const auto expanded = expanded_quantity(val, coverage_factor);
     return val - expanded <= upper_limit && lower_limit <= val + expanded;
+  }
+
+  /// `possibly_within(val, lower_limit, upper_limit, 2)`
+  template<typename Val, typename Lower, typename Upper>
+    requires detail::BoundedBy<Val, Lower, Upper, uncertain>
+  [[nodiscard]] friend constexpr bool possibly_within(const Val& val, const Lower& lower_limit,
+                                                      const Upper& upper_limit)
+  {
+    return possibly_within(val, lower_limit, upper_limit, static_cast<value_type>(2));
   }
 
   /// Unary negation (uncertainty unchanged)
