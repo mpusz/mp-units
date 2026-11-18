@@ -311,6 +311,37 @@ NO_CLANG_FORMAT = (
 )
 
 
+# How long a lock may go without naming its owner before it is treated as
+# abandoned. The holder writes the pid immediately after `mkdir`, so a gap this
+# long is a process that died in between rather than one still starting up.
+_UNCLAIMED_LOCK = 10.0
+
+
+def _lock_owner(owner: Path) -> int | None:
+    """The pid holding the lock, or `None` if the holder is gone."""
+    try:
+        pid = int(owner.read_text().strip())
+    except (OSError, ValueError):
+        # Nothing has claimed it. For a moment that is the window between `mkdir` and
+        # the write, and mistaking it for a corpse would break the exclusion.
+        try:
+            age = time.time() - owner.parent.stat().st_mtime
+        except OSError:
+            return None
+        return None if age > _UNCLAIMED_LOCK else 0
+    if os.name == "nt":
+        # There `os.kill(pid, 0)` sends a Ctrl-C (`CTRL_C_EVENT` is 0) rather than
+        # probing, so a holder is taken to be alive and the timeout applies.
+        return pid
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return None
+    except PermissionError:
+        return pid  # someone else's process, so it is alive
+    return pid
+
+
 @contextlib.contextmanager
 def _exclusive(timeout: float = 900.0):
     """Serialise generation across processes.
@@ -324,25 +355,49 @@ def _exclusive(timeout: float = 900.0):
     neither serves it nor treats creating it as a change to rebuild for.
     """
     lock = _cache_root() / "generate.lock"
+    owner = lock / "pid"
     lock.parent.mkdir(parents=True, exist_ok=True)
     deadline = time.monotonic() + timeout
+    announced = False
     while True:
         try:
             lock.mkdir()
             break
         except FileExistsError:
-            if time.monotonic() >= deadline:
-                # Better to generate and risk the clash than to hang a build
-                # forever behind a lock whose owner died.
+            holder = _lock_owner(owner)
+            if holder is None:
+                # The owner died without unwinding: it was killed, or its terminal
+                # closed. Waiting out the full timeout for a lock nobody holds
+                # looks like a hang.
+                print(f"warning: clearing a stale lock at {lock}", file=sys.stderr)
+                # Separately, because an owner that died before writing its pid
+                # left no file to unlink, and the directory still has to go.
+                with contextlib.suppress(OSError):
+                    owner.unlink()
+                with contextlib.suppress(OSError):
+                    lock.rmdir()
+                continue
+            if not announced:
+                # Without this the script prints nothing at all while it waits,
+                # which is indistinguishable from having hung.
                 print(
-                    f"warning: ignoring a stale lock at {lock}",
+                    "waiting for another generation to finish"
+                    + (f" (pid {holder})" if holder else ""),
                     file=sys.stderr,
                 )
+                announced = True
+            if time.monotonic() >= deadline:
+                # Better to generate and risk the clash than to wait forever.
+                print(f"warning: ignoring the lock at {lock}", file=sys.stderr)
                 break
             time.sleep(0.5)
+    with contextlib.suppress(OSError):
+        owner.write_text(str(os.getpid()))
     try:
         yield
     finally:
+        with contextlib.suppress(OSError):
+            owner.unlink()
         with contextlib.suppress(OSError):
             lock.rmdir()
 
