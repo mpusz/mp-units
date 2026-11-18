@@ -453,13 +453,11 @@ def _sync(staging: Path, destination: Path) -> tuple[int, int, int]:
         if path.is_file()
     }
 
-    for relative in sorted(stale - fresh):
-        # written by the caller once generation has succeeded, so it is never in staging
-        if destination / relative == CACHE:
-            continue
-        (destination / relative).unlink()
-        removed += 1
-
+    # Written before anything is removed. A `properdocs serve` may be reading this
+    # tree, and it collects the file list up front: a page that disappears
+    # between the listing and the read crashes the build. Adding first and
+    # deleting after leaves a reader seeing both the old and the new name for a
+    # moment instead of neither.
     for relative in sorted(fresh):
         source, target = staging / relative, destination / relative
         if target.is_file() and target.read_bytes() == source.read_bytes():
@@ -468,6 +466,13 @@ def _sync(staging: Path, destination: Path) -> tuple[int, int, int]:
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, target)
         written += 1
+
+    for relative in sorted(stale - fresh):
+        # written by the caller once generation has succeeded, so it is never in staging
+        if destination / relative == CACHE:
+            continue
+        (destination / relative).unlink()
+        removed += 1
 
     # deepest first, so a directory emptied by its children's removal also goes
     for directory in sorted(
