@@ -138,9 +138,9 @@ inline constexpr struct north_cw final :
 } north_cw;
 
 // Heading azimuth: 0° = North, counter-clockwise positive (heading = geometric_azimuth - 90°)
-// Implemented as a relative origin: offset -90° from east
+// Implemented as a relative origin: North lies at +90° from east
 inline constexpr struct north_ccw final :
-    mp_units::relative_point_origin<east - 90.0 * mp_units::si::degree,
+    mp_units::relative_point_origin<east + 90.0 * mp_units::si::degree,
                                     mp_units::wrap_to_range{-180 * mp_units::si::degree, 180 * mp_units::si::degree}> {
 } north_ccw;
 

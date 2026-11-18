@@ -154,7 +154,7 @@ Output clearly shows which reference system is being used:
 ```text
 hal = 1219.20 m HAL
 agl = 2925.00 m
-EPPR: 54.24772° N 18.6745° E, 4.88 m AMSL, -24.61 m HAE(EGM2008-1)
+EPPR: 54.24772° N 18.6745° E, 4.88 m AMSL, 34.37 m HAE(EGM2008-1)
 ```
 
 ## Practical UAV Operations

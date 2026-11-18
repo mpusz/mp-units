@@ -608,7 +608,7 @@ arithmetic operations.
     - **_Geometric Azimuth_** (mirrored): 0° = East, counter-clockwise, wraps [-180°, 180°)
     - **_Heading_** (mirrored): 0° = North, counter-clockwise, wraps [-180°, 180°)
         - Conversion: `heading = geometric_azimuth - 90°` (simple offset)
-        - Uses `relative_point_origin<east + delta<geometric_azimuth[degree]>(-90.)>`
+        - Uses `relative_point_origin<east + delta<geometric_azimuth[degree]>(90.)>`
     - **_Bearing_** (mirrored): 0° = North, clockwise, wraps [-180°, 180°)
         - Conversion: `bearing = 90° - geometric_azimuth` (involves negation)
         - Cannot use `relative_point_origin` (requires separate `absolute_point_origin`)

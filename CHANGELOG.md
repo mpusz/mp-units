@@ -11,6 +11,9 @@ This page documents the version history and changes for the **mp-units** library
 - fix: `wrap_to_range` and `reflect_in_range` no longer overflow a standard integer
       representation when the length of the range, or the period of the reflection (twice
       that length), exceeds the representation's maximum
+- fix: the UAV example adds the geoid undulation to the MSL altitude (h = H + N) and
+      stores it as a signed `isq::altitude`, and the `north_ccw` origin of the `geographic`
+      example lies at +90° from `east`
 - (!) fix: a quantity point is default-constructible only where its origin lies within the
       range of the bounds policy that construction applies, judged by the policy's `min`
       and `max`. Value-initialization stores a zero delta, the origin itself, so `T{}` and
