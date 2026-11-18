@@ -31,15 +31,18 @@ import html
 import importlib.util
 import posixpath
 import re
-import sys
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
 from properdocs.exceptions import PluginError
+from properdocs.plugins import get_plugin_logger
 from properdocs.structure.nav import Link, Section
 from properdocs.utils import get_relative_url
+
+# A warning logged here fails `properdocs build --strict`, and a print would not.
+_log = get_plugin_logger("mrdocs")
 
 # Where `mrdocs` writes its output, relative to `docs_dir`.
 API_DIR = "reference/api_reference/mrdocs"
@@ -80,12 +83,14 @@ _MEMBER_LINK = re.compile(r'href="([^":#?]+/)"')
 _DOC_CODE = re.compile(r'(?s)<pre><code class="language-([\w+-]+)">(.*?)</code></pre>')
 
 # A link from a doc comment into the hand-written documentation, written as
-# `[text](guide:users_guide/framework_basics/systems_of_units)`. A doc comment
-# cannot spell the path itself: generated pages sit at five different nesting
-# depths, `nest_namespace_pages` moves them, and the `legible-names` suffix in a
-# page name is not stable between runs. The scheme survives MrDocs untouched, so
-# the hop is computed here, against the page that is actually being rendered.
-_GUIDE = re.compile(r'(?<=href=")guide:([^"#]+)(#[^"]*)?(?=")')
+# `[text](docs:users_guide/framework_basics/systems_of_units)`. The target is a
+# page under `docs/`, whichever section it belongs to: the user's guide, a how-to
+# guide, or a tutorial. A doc comment cannot spell the path itself: generated
+# pages sit at five different nesting depths, `nest_namespace_pages` moves them,
+# and the `legible-names` suffix in a page name is not stable between runs. The
+# scheme survives MrDocs untouched, so the hop is computed here, against the page
+# that is actually being rendered.
+_DOC_LINK = re.compile(r'(?<=href=")docs:([^"#]+)(#[^"]*)?(?=")')
 
 # A synopsis block, and what is worth colouring inside one.
 _SYNOPSIS = re.compile(
@@ -584,8 +589,8 @@ def _fence(markup: str) -> str:
     return _DOC_CODE.sub(one, markup)
 
 
-def _guide_links(markup: str, page, docs_dir: Path) -> str:
-    """Resolve `guide:` targets to a URL relative to the page being rendered.
+def _doc_links(markup: str, page, docs_dir: Path) -> str:
+    """Resolve `docs:` targets to a URL relative to the page being rendered.
 
     The link sits in raw HTML that MrDocs emitted, so ProperDocs does not rewrite it
     the way it rewrites a Markdown link: the served URL has to be built here, or
@@ -595,15 +600,11 @@ def _guide_links(markup: str, page, docs_dir: Path) -> str:
     def one(match: re.Match) -> str:
         target, anchor = match.group(1), match.group(2) or ""
         if not (docs_dir / f"{target}.md").is_file():
-            print(
-                f"WARNING -  mrdocs: {page.file.src_uri} links to an unknown page "
-                f"'{target}'",
-                file=sys.stderr,
-            )
+            _log.warning(f"{page.file.src_uri} links to an unknown page '{target}'")
             return match.group(0)
         return get_relative_url(f"{target}/", page.url) + anchor
 
-    return _GUIDE.sub(one, markup)
+    return _DOC_LINK.sub(one, markup)
 
 
 def _definitions(markdown: str, src_uri: str) -> str:
@@ -855,7 +856,7 @@ def on_page_markdown(markdown: str, page, config, files, **kwargs):
         markdown = _highlight(markdown)
         markdown = _heading(markdown, page)
         markdown = _fence(markdown)
-        markdown = _guide_links(markdown, page, Path(config["docs_dir"]))
+        markdown = _doc_links(markdown, page, Path(config["docs_dir"]))
 
     definitions = _definitions(markdown, src_uri)
     return f"{markdown}\n\n{definitions}\n" if definitions else markdown
