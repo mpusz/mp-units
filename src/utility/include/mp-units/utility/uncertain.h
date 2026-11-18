@@ -216,6 +216,8 @@ public:
     return coverage_factor * uncertainty();
   }
 
+  // Deferred reason 1 for every hidden friend below that takes a coverage factor.
+
   /**
    * Checks whether two measured values agree within their uncertainties
    *
@@ -227,9 +229,9 @@ public:
    */
   [[nodiscard]] friend constexpr bool metrologically_compatible(const uncertain& lhs, const uncertain& rhs,
                                                                 value_type coverage_factor = static_cast<value_type>(2))
-    MP_UNITS_PRE(!(coverage_factor < representation_values<value_type>::zero()))
+    MP_UNITS_PRE_DEFERRED(!(coverage_factor < representation_values<value_type>::zero()))
   {
-    MP_UNITS_EXPECTS(!(coverage_factor < representation_values<value_type>::zero()));
+    MP_UNITS_PRE_DEFERRED_COMPAT(!(coverage_factor < representation_values<value_type>::zero()));
     using std::abs;
     using std::hypot;
     return abs(lhs.value() - rhs.value()) <= coverage_factor * hypot(lhs.uncertainty(), rhs.uncertainty());
@@ -246,9 +248,11 @@ public:
   [[nodiscard]] friend constexpr bool certainly_within(const uncertain& val, const value_type& lower_limit,
                                                        const value_type& upper_limit,
                                                        value_type coverage_factor = static_cast<value_type>(2))
-    MP_UNITS_PRE(!(upper_limit < lower_limit) && !(coverage_factor < representation_values<value_type>::zero()))
+    MP_UNITS_PRE_DEFERRED(!(upper_limit < lower_limit) &&
+                          !(coverage_factor < representation_values<value_type>::zero()))
   {
-    MP_UNITS_EXPECTS(!(upper_limit < lower_limit) && !(coverage_factor < representation_values<value_type>::zero()));
+    MP_UNITS_PRE_DEFERRED_COMPAT(!(upper_limit < lower_limit) &&
+                                 !(coverage_factor < representation_values<value_type>::zero()));
     const value_type expanded = val.expanded_uncertainty(coverage_factor);
     return lower_limit <= val.value() - expanded && val.value() + expanded <= upper_limit;
   }
@@ -264,9 +268,11 @@ public:
   [[nodiscard]] friend constexpr bool possibly_within(const uncertain& val, const value_type& lower_limit,
                                                       const value_type& upper_limit,
                                                       value_type coverage_factor = static_cast<value_type>(2))
-    MP_UNITS_PRE(!(upper_limit < lower_limit) && !(coverage_factor < representation_values<value_type>::zero()))
+    MP_UNITS_PRE_DEFERRED(!(upper_limit < lower_limit) &&
+                          !(coverage_factor < representation_values<value_type>::zero()))
   {
-    MP_UNITS_EXPECTS(!(upper_limit < lower_limit) && !(coverage_factor < representation_values<value_type>::zero()));
+    MP_UNITS_PRE_DEFERRED_COMPAT(!(upper_limit < lower_limit) &&
+                                 !(coverage_factor < representation_values<value_type>::zero()));
     const value_type expanded = val.expanded_uncertainty(coverage_factor);
     return val.value() - expanded <= upper_limit && lower_limit <= val.value() + expanded;
   }
@@ -288,9 +294,9 @@ public:
             requires(const Lhs& lhs, const Rhs& rhs) { lhs - rhs; }
   [[nodiscard]] friend constexpr bool metrologically_compatible(const Lhs& lhs, const Rhs& rhs,
                                                                 value_type coverage_factor)
-    MP_UNITS_PRE(!(coverage_factor < representation_values<value_type>::zero()))
+    MP_UNITS_PRE_DEFERRED(!(coverage_factor < representation_values<value_type>::zero()))
   {
-    MP_UNITS_EXPECTS(!(coverage_factor < representation_values<value_type>::zero()));
+    MP_UNITS_PRE_DEFERRED_COMPAT(!(coverage_factor < representation_values<value_type>::zero()));
     const auto difference = lhs - rhs;
     return metrologically_compatible(difference.numerical_value_ref_in(difference.unit),
                                      representation_values<value_type>::zero(), coverage_factor);
@@ -323,9 +329,11 @@ public:
     requires detail::BoundedBy<Val, Lower, Upper, uncertain>
   [[nodiscard]] friend constexpr bool certainly_within(const Val& val, const Lower& lower_limit,
                                                        const Upper& upper_limit, value_type coverage_factor)
-    MP_UNITS_PRE(!(upper_limit < lower_limit) && !(coverage_factor < representation_values<value_type>::zero()))
+    MP_UNITS_PRE_DEFERRED(!(upper_limit < lower_limit) &&
+                          !(coverage_factor < representation_values<value_type>::zero()))
   {
-    MP_UNITS_EXPECTS(!(upper_limit < lower_limit) && !(coverage_factor < representation_values<value_type>::zero()));
+    MP_UNITS_PRE_DEFERRED_COMPAT(!(upper_limit < lower_limit) &&
+                                 !(coverage_factor < representation_values<value_type>::zero()));
     const auto expanded = expanded_quantity(val, coverage_factor);
     return lower_limit <= val - expanded && val + expanded <= upper_limit;
   }
@@ -352,9 +360,11 @@ public:
     requires detail::BoundedBy<Val, Lower, Upper, uncertain>
   [[nodiscard]] friend constexpr bool possibly_within(const Val& val, const Lower& lower_limit,
                                                       const Upper& upper_limit, value_type coverage_factor)
-    MP_UNITS_PRE(!(upper_limit < lower_limit) && !(coverage_factor < representation_values<value_type>::zero()))
+    MP_UNITS_PRE_DEFERRED(!(upper_limit < lower_limit) &&
+                          !(coverage_factor < representation_values<value_type>::zero()))
   {
-    MP_UNITS_EXPECTS(!(upper_limit < lower_limit) && !(coverage_factor < representation_values<value_type>::zero()));
+    MP_UNITS_PRE_DEFERRED_COMPAT(!(upper_limit < lower_limit) &&
+                                 !(coverage_factor < representation_values<value_type>::zero()));
     const auto expanded = expanded_quantity(val, coverage_factor);
     return val - expanded <= upper_limit && lower_limit <= val + expanded;
   }
