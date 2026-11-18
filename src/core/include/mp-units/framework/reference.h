@@ -139,9 +139,6 @@ struct reference {
    *
    * @tparam Num Exponent numerator
    * @tparam Den Exponent denominator
-   * @param r Reference being the base of the operation
-   *
-   * @return The result of computation
    */
   template<std::intmax_t Num, std::intmax_t Den = 1>
     requires(Den != 0)
@@ -152,19 +149,11 @@ struct reference {
 
   /**
    * Computes the square root of a reference
-   *
-   * @param r Reference being the base of the operation
-   *
-   * @return The result of computation
    */
   [[nodiscard]] friend consteval detail::reference_t<sqrt(Q{}), sqrt(U{})> sqrt(reference) { return {}; }
 
   /**
    * Computes the cubic root of a reference
-   *
-   * @param r Reference being the base of the operation
-   *
-   * @return The result of computation
    */
   [[nodiscard]] friend consteval detail::reference_t<cbrt(Q{}), cbrt(U{})> cbrt(reference) { return {}; }
 };
