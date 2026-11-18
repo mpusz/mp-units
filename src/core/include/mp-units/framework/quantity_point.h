@@ -646,6 +646,29 @@ template<PointOrigin auto PO, Quantity Q>
     return within_bounds(bounds_po_for(PO)._bounds_, Q::zero() + bounds_offset_in<PO, Q>());
 }
 
+// True iff a special value of Q, from `std::numeric_limits`, lies within the range that the bounds at PO
+// declare by their `min` and `max`, as for default construction. A NaN lies in no range, and +∞ in exactly
+// those without an upper end, so neither goes through any arithmetic: a constant expression can't produce
+// or consume a NaN portably. Without bounds it is true.
+template<PointOrigin auto PO, Quantity Q>
+[[nodiscard]] consteval bool limit_within_bounds(const Q& val)
+{
+  if constexpr (!any_ancestor_has_bounds(PO))
+    return true;
+  else if constexpr (!bounds_exact_in<PO, Q>())
+    return false;
+  else {
+    constexpr auto bpo = bounds_po_for(PO);
+    if (val != val) return false;
+    if constexpr (requires { Q::max(); })
+      if (Q::max() < val) return !requires { bpo._bounds_.max; };
+    if constexpr (HasQuantityBounds<MP_UNITS_NONCONST_TYPE(PO)>)
+      return within_bounds(PO._bounds_, val);
+    else
+      return within_bounds(bpo._bounds_, val + bounds_offset_in<PO, Q>());
+  }
+}
+
 // True iff storing a value of type Q at PO applies a checking policy.
 template<PointOrigin auto PO, Quantity Q>
 [[nodiscard]] consteval bool construction_checks_bounds()
@@ -1191,11 +1214,29 @@ public:
 #endif
 
   // construction and assignment
-  // Value-initialization stores a zero delta, the origin itself, so a point is default-constructible
-  // only where the origin lies within its range.
+  /**
+   * Default-constructs a point whose origin has no bounds, as its representation type is.
+   *
+   * Default-initialization, as in `quantity_point p;`, leaves the delta from the origin
+   * indeterminate for a representation such as `double`. Value-initialization, as in
+   * `quantity_point{}`, stores a zero delta, which is the origin itself.
+   */
   [[nodiscard]] quantity_point()
-    requires(detail::origin_within_bounds<PO, quantity_type>())
+    requires(!detail::any_ancestor_has_bounds(PO))
   = default;
+
+  /**
+   * Default-constructs a point whose origin has bounds, own or inherited, at the origin itself.
+   *
+   * Default-initialization and value-initialization both store a zero delta, which is the origin
+   * itself, so a bounded point never holds an indeterminate value. The constructor
+   * is offered only where the origin lies within the range of the policy.
+   */
+  [[nodiscard]] constexpr quantity_point()
+    requires(detail::any_ancestor_has_bounds(PO) && detail::origin_within_bounds<PO, quantity_type>())
+      : quantity_from_origin_is_an_implementation_detail_(quantity_type::zero())
+  {
+  }
 
   template<typename FwdQ, QuantityOf<quantity_spec> Q = std::remove_cvref_t<FwdQ>>
     requires std::constructible_from<quantity_type, FwdQ> && (point_origin == default_point_origin(R)) &&
@@ -1695,19 +1736,9 @@ MP_UNITS_EXPORT_END
 template<auto R, auto PO, typename Rep>
   requires std::numeric_limits<Rep>::is_specialized
 class std::numeric_limits<mp_units::quantity_point<R, PO, Rep>> : public std::numeric_limits<Rep> {
-  // The members below that construct a value of the representation as a point are offered only where no
-  // bounds apply: a policy would check or change that value, so `quiet_NaN()` would violate the
-  // precondition at an origin with `check_in_range`, and `infinity()` would be clamped by
-  // `clamp_to_range`.
-  static constexpr bool unbounded = !mp_units::detail::any_ancestor_has_bounds(PO);
+  using quantity_limits = std::numeric_limits<mp_units::quantity<R, Rep>>;
 
 public:
-  static constexpr bool has_infinity = unbounded && std::numeric_limits<Rep>::has_infinity;
-  static constexpr bool has_quiet_NaN = unbounded && std::numeric_limits<Rep>::has_quiet_NaN;
-  static constexpr bool has_signaling_NaN = unbounded && std::numeric_limits<Rep>::has_signaling_NaN;
-  // [numeric.limits.members] requires the three above to be true wherever is_iec559 is.
-  static constexpr bool is_iec559 = unbounded && std::numeric_limits<Rep>::is_iec559;
-
   static constexpr mp_units::quantity_point<R, PO, Rep> min() noexcept
     requires requires { mp_units::quantity_point<R, PO, Rep>::min(); }
   {
@@ -1728,41 +1759,62 @@ public:
     return min();
   }
 
+  // The members below construct a special value of the representation as a point. Each is offered only
+  // where its value lies within the range that the bounds declare by their `min` and `max`, the rule of
+  // default construction. So `infinity()` is offered with `check_non_negative`, whose range has no upper
+  // end, but not with `check_in_range`, and a NaN, which lies in no range, is never offered where bounds
+  // apply.
   static constexpr mp_units::quantity_point<R, PO, Rep> epsilon() noexcept
-    requires unbounded && requires { std::numeric_limits<mp_units::quantity<R, Rep>>::epsilon(); }
+    requires requires { quantity_limits::epsilon(); } &&
+             (mp_units::detail::limit_within_bounds<PO>(quantity_limits::epsilon()))
   {
-    return {std::numeric_limits<mp_units::quantity<R, Rep>>::epsilon(), PO};
+    return {quantity_limits::epsilon(), PO};
   }
 
   static constexpr mp_units::quantity_point<R, PO, Rep> round_error() noexcept
-    requires unbounded && requires { std::numeric_limits<mp_units::quantity<R, Rep>>::round_error(); }
+    requires requires { quantity_limits::round_error(); } &&
+             (mp_units::detail::limit_within_bounds<PO>(quantity_limits::round_error()))
   {
-    return {std::numeric_limits<mp_units::quantity<R, Rep>>::round_error(), PO};
+    return {quantity_limits::round_error(), PO};
   }
 
   static constexpr mp_units::quantity_point<R, PO, Rep> infinity() noexcept
-    requires unbounded && requires { std::numeric_limits<mp_units::quantity<R, Rep>>::infinity(); }
+    requires requires { quantity_limits::infinity(); } &&
+             (mp_units::detail::limit_within_bounds<PO>(quantity_limits::infinity()))
   {
-    return {std::numeric_limits<mp_units::quantity<R, Rep>>::infinity(), PO};
+    return {quantity_limits::infinity(), PO};
   }
 
   static constexpr mp_units::quantity_point<R, PO, Rep> quiet_NaN() noexcept
-    requires unbounded && requires { std::numeric_limits<mp_units::quantity<R, Rep>>::quiet_NaN(); }
+    requires requires { quantity_limits::quiet_NaN(); } &&
+             (mp_units::detail::limit_within_bounds<PO>(quantity_limits::quiet_NaN()))
   {
-    return {std::numeric_limits<mp_units::quantity<R, Rep>>::quiet_NaN(), PO};
+    return {quantity_limits::quiet_NaN(), PO};
   }
 
   static constexpr mp_units::quantity_point<R, PO, Rep> signaling_NaN() noexcept
-    requires unbounded && requires { std::numeric_limits<mp_units::quantity<R, Rep>>::signaling_NaN(); }
+    requires requires { quantity_limits::signaling_NaN(); } &&
+             (mp_units::detail::limit_within_bounds<PO>(quantity_limits::quiet_NaN()))
   {
-    return {std::numeric_limits<mp_units::quantity<R, Rep>>::signaling_NaN(), PO};
+    return {quantity_limits::signaling_NaN(), PO};
   }
 
   static constexpr mp_units::quantity_point<R, PO, Rep> denorm_min() noexcept
-    requires unbounded && requires { std::numeric_limits<mp_units::quantity<R, Rep>>::denorm_min(); }
+    requires requires { quantity_limits::denorm_min(); } &&
+             (mp_units::detail::limit_within_bounds<PO>(quantity_limits::denorm_min()))
   {
-    return {std::numeric_limits<mp_units::quantity<R, Rep>>::denorm_min(), PO};
+    return {quantity_limits::denorm_min(), PO};
   }
+
+  // Each flag holds where its member is offered. is_iec559 promises every value of the format, which a
+  // range doesn't have, so it is false wherever bounds apply. [numeric.limits.members] requires the three
+  // flags above it to be true wherever it is.
+  static constexpr bool has_infinity = std::numeric_limits<Rep>::has_infinity && requires { infinity(); };
+  static constexpr bool has_quiet_NaN = std::numeric_limits<Rep>::has_quiet_NaN && requires { quiet_NaN(); };
+  static constexpr bool has_signaling_NaN =
+    std::numeric_limits<Rep>::has_signaling_NaN && requires { signaling_NaN(); };
+  static constexpr bool is_iec559 =
+    !mp_units::detail::any_ancestor_has_bounds(PO) && std::numeric_limits<Rep>::is_iec559;
 };
 
 #if MP_UNITS_HOSTED

@@ -765,6 +765,15 @@ Bounds are enforced at these points:
 
 After each mutation the library transparently applies the bounds policy specified on the origin.
 
+A bounded point is default-constructed at its origin. Value-initialization, as in
+`point_type{}`, and default-initialization, as in `point_type p;`, both store a zero delta,
+which is the origin itself. A bounded point therefore never holds an indeterminate value,
+and its default constructor is offered only where the origin lies within the range of the
+policy, as its `min` and `max` declare. With `check_in_range{10 * m, 20 * m}` on an
+absolute origin, neither form compiles, and neither does `std::vector<point_type>(n)`, since
+each would store 0 m. A point without bounds is default-constructed like its representation
+type, so with `double` default-initialization leaves its delta indeterminate.
+
 ### Bounds the Point Can Hold
 
 A policy compares a value with its bounds in the value's own type. Each bound therefore has
@@ -864,6 +873,21 @@ _Hierarchical bounds validation_ note in the
     accept, which can differ from the translated bound by the rounding of each offset.
     Without a bounds policy, `std::numeric_limits` delegates to the representation type's
     limits.
+
+    `lowest()` returns `min()` in both cases. Where bounds apply, own or inherited, each of
+    `epsilon()`, `round_error()`, `infinity()`, `quiet_NaN()`, `signaling_NaN()`, and
+    `denorm_min()` is offered only where its value lies within the range that the bounds
+    declare by their `min` and `max`, the rule of default construction:
+
+    - On `[0, ∞)`, as with `check_non_negative`, `infinity()` is offered, and so are the
+      positive finite values of `epsilon()`, `round_error()`, and `denorm_min()`.
+    - On `[-10°, 10°]` only those three are, and on `(-∞, 0]` none of the six.
+    - A NaN lies in no range, so `quiet_NaN()` and `signaling_NaN()` are never offered where
+      bounds apply, even with a policy such as `clamp_to_range` that would store one.
+
+    `has_infinity`, `has_quiet_NaN`, and `has_signaling_NaN` are `true` exactly where the
+    matching member is offered. `is_iec559` is `false` wherever bounds apply, since a range
+    doesn't hold every value of the format.
 
 ### Validating Untrusted Values
 

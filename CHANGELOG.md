@@ -14,19 +14,24 @@ This page documents the version history and changes for the **mp-units** library
 - fix: the UAV example adds the geoid undulation to the MSL altitude (h = H + N) and
       stores it as a signed `isq::altitude`, and the `north_ccw` origin of the `geographic`
       example lies at +90° from `east`
-- (!) fix: a quantity point is default-constructible only where its origin lies within the
-      range of the bounds policy that construction applies, judged by the policy's `min`
-      and `max`. Value-initialization stores a zero delta, the origin itself, so `T{}` and
-      `std::vector<T>(n)` used to store a value outside the range, such as 0 m at an
-      origin with `check_in_range{10 * m, 20 * m}`, without applying the policy
+- (!) fix: a quantity point whose origin has bounds, its own or inherited, is
+      default-constructed at its origin. Default-initialization and value-initialization
+      both store a zero delta, so such a point is no longer trivially default-constructible.
+      Its default constructor is offered only where the origin lies within the range of the
+      policy, judged by the policy's `min` and `max`. Value-initialization used to store a
+      value outside the range without applying the policy, such as 0 m at an origin with
+      `check_in_range{10 * m, 20 * m}`. Default-initialization used to leave the delta
+      indeterminate
 - (!) refactor: an argument of `absolute_point_origin` or `relative_point_origin` after the
       quantity specification or the origin point must be a bounds policy. Any other argument
       used to be accepted and ignored
 - (!) fix: at an origin with bounds, its own or inherited, `std::numeric_limits` of a
-      quantity point provides `lowest()` from the lower bound where there is one, and no
-      `epsilon()`, `round_error()`, `infinity()`, `quiet_NaN()`, `signaling_NaN()`, or
-      `denorm_min()`. `has_infinity`, `has_quiet_NaN`, `has_signaling_NaN`, and
-      `is_iec559` are `false` there. These members constructed a value of the
+      quantity point provides `lowest()` from the lower bound where there is one, and each
+      of `epsilon()`, `round_error()`, `infinity()`, `quiet_NaN()`, `signaling_NaN()`, and
+      `denorm_min()` only where its value lies within the range that the policy's `min` and
+      `max` declare. So `infinity()` is provided on `[0, ∞)` and a NaN never is.
+      `has_infinity`, `has_quiet_NaN`, and `has_signaling_NaN` follow the members, and
+      `is_iec559` is `false` there. These members constructed a value of the
       representation as a point, which the policy checked or changed: `quiet_NaN()`
       violated the precondition at a `check_in_range` origin, and `clamp_to_range` turned
       `infinity()` into its upper bound. For a point that inherits its bounds, `lowest()`

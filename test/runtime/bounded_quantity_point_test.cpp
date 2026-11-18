@@ -30,7 +30,10 @@
 import std;
 #else
 #include <cmath>
+#include <cstddef>
+#include <cstring>
 #include <limits>
+#include <new>
 #include <stdexcept>
 #include <string_view>
 #endif
@@ -62,6 +65,17 @@ using safe_double = constrained<double, throw_policy>;
 using qp_check = quantity_point<test_angle_check[deg], check_origin, safe_double>;
 
 }  // namespace
+
+// Default-initialization of a bounded point stores the origin. The storage is filled with a NaN pattern
+// first, so a constructor that left the delta indeterminate would leave the NaN behind.
+TEST_CASE("default-initialization of a bounded point stores the origin", "[bounded][default]")
+{
+  using bounded_pt = quantity_point<test_angle_check[deg], check_origin>;
+  alignas(bounded_pt) std::byte storage[sizeof(bounded_pt)];
+  std::memset(storage, 0xff, sizeof(storage));
+  const auto* constructed = ::new (static_cast<void*>(storage)) bounded_pt;
+  CHECK(constructed->delta_from(check_origin) == 0. * deg);
+}
 
 TEST_CASE("check_in_range throws on construction outside bounds", "[bounded][check]")
 {

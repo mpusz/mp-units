@@ -1940,46 +1940,113 @@ static_assert(std::same_as<decltype(trim_angle{0. * deg, trim_zero}.point_for(tr
 }  // namespace
 
 // ----------------------------------------------------------------------------
-// numeric_limits at a bounded origin: lowest() follows min(), and the members that construct a value
-// of the representation as a point are offered only where no bounds apply.
+// numeric_limits at a bounded origin: lowest() follows min(), and a member that constructs a special
+// value of the representation as a point is offered only where that value lies within the range that
+// the bounds declare by their min and max, the rule of default construction.
 // ----------------------------------------------------------------------------
 
 namespace {
 
 template<typename QP>
-concept has_value_limits = requires {
-  std::numeric_limits<QP>::epsilon();
-  std::numeric_limits<QP>::round_error();
-  std::numeric_limits<QP>::infinity();
-  std::numeric_limits<QP>::quiet_NaN();
-  std::numeric_limits<QP>::signaling_NaN();
-  std::numeric_limits<QP>::denorm_min();
-};
-
+concept limits_epsilon = requires { std::numeric_limits<QP>::epsilon(); };
 template<typename QP>
-concept has_any_value_limit =
-  requires { std::numeric_limits<QP>::epsilon(); } || requires { std::numeric_limits<QP>::round_error(); } ||
-  requires { std::numeric_limits<QP>::infinity(); } || requires { std::numeric_limits<QP>::quiet_NaN(); } ||
-  requires { std::numeric_limits<QP>::signaling_NaN(); } || requires { std::numeric_limits<QP>::denorm_min(); };
+concept limits_round_error = requires { std::numeric_limits<QP>::round_error(); };
+template<typename QP>
+concept limits_infinity = requires { std::numeric_limits<QP>::infinity(); };
+template<typename QP>
+concept limits_quiet_NaN = requires { std::numeric_limits<QP>::quiet_NaN(); };
+template<typename QP>
+concept limits_signaling_NaN = requires { std::numeric_limits<QP>::signaling_NaN(); };
+template<typename QP>
+concept limits_denorm_min = requires { std::numeric_limits<QP>::denorm_min(); };
 
-static_assert(has_value_limits<quantity_point<mission_range[m], home_base>>);
-static_assert(!has_any_value_limit<trim_angle_plain>);
-static_assert(!has_any_value_limit<quantity_point<test_angle_clamp[deg], clamp_origin>>);
-// Bounds inherited from an ancestor count as well.
-using bpq_inherited_pt = quantity_point<si::degree, trim_centre_plus_one, double>;
-static_assert(!has_any_value_limit<bpq_inherited_pt>);
-static_assert(std::numeric_limits<bpq_inherited_pt>::lowest() == bpq_inherited_pt::min());
-static_assert(std::numeric_limits<bpq_inherited_pt>::lowest().delta_from(trim_centre_plus_one) == -6. * deg);
+// Without bounds, all of them.
+using bpq_unbounded_pt = quantity_point<mission_range[m], home_base>;
+static_assert(limits_epsilon<bpq_unbounded_pt> && limits_round_error<bpq_unbounded_pt> &&
+              limits_infinity<bpq_unbounded_pt> && limits_quiet_NaN<bpq_unbounded_pt> &&
+              limits_signaling_NaN<bpq_unbounded_pt> && limits_denorm_min<bpq_unbounded_pt>);
+static_assert(std::numeric_limits<bpq_unbounded_pt>::has_infinity);
+static_assert(std::numeric_limits<bpq_unbounded_pt>::has_quiet_NaN);
+static_assert(std::numeric_limits<bpq_unbounded_pt>::is_iec559);
 
-// The flags agree with the members.
+// [-10°, 10°] holds the small positive values, but neither infinity nor a NaN.
+static_assert(limits_epsilon<trim_angle_plain> && limits_round_error<trim_angle_plain> &&
+              limits_denorm_min<trim_angle_plain>);
+static_assert(!limits_infinity<trim_angle_plain>);
+static_assert(!limits_quiet_NaN<trim_angle_plain>);
+static_assert(!limits_signaling_NaN<trim_angle_plain>);
 static_assert(!std::numeric_limits<trim_angle_plain>::has_infinity);
 static_assert(!std::numeric_limits<trim_angle_plain>::has_quiet_NaN);
 static_assert(!std::numeric_limits<trim_angle_plain>::has_signaling_NaN);
 static_assert(!std::numeric_limits<trim_angle_plain>::is_iec559);
-static_assert(std::numeric_limits<quantity_point<mission_range[m], home_base>>::is_iec559);
+
+// An adjusting policy is judged by its range too: clamp_to_range would store a NaN, but a NaN lies in no
+// range.
+using bpq_clamp_pt = quantity_point<test_angle_clamp[deg], clamp_origin>;
+static_assert(limits_epsilon<bpq_clamp_pt>);
+static_assert(!limits_infinity<bpq_clamp_pt>);
+static_assert(!limits_quiet_NaN<bpq_clamp_pt>);
+
+// Bounds inherited from an ancestor count as well, judged in the frame of the origin that owns them.
+using bpq_inherited_pt = quantity_point<si::degree, trim_centre_plus_one, double>;
+static_assert(limits_epsilon<bpq_inherited_pt>);
+static_assert(!limits_infinity<bpq_inherited_pt>);
+static_assert(!limits_quiet_NaN<bpq_inherited_pt>);
 static_assert(!std::numeric_limits<bpq_inherited_pt>::has_quiet_NaN);
-static_assert(std::numeric_limits<quantity_point<mission_range[m], home_base>>::has_infinity);
-static_assert(std::numeric_limits<quantity_point<mission_range[m], home_base>>::has_quiet_NaN);
+static_assert(std::numeric_limits<bpq_inherited_pt>::lowest() == bpq_inherited_pt::min());
+static_assert(std::numeric_limits<bpq_inherited_pt>::lowest().delta_from(trim_centre_plus_one) == -6. * deg);
+
+// [0, ∞) has no upper end, so it holds infinity, with either policy.
+inline constexpr struct bpq_nn_check final : absolute_point_origin<isq::length, check_non_negative{}> {
+} bpq_nn_check;
+inline constexpr struct bpq_nn_clamp final : absolute_point_origin<isq::length, clamp_non_negative{}> {
+} bpq_nn_clamp;
+inline constexpr struct bpq_nn_check_plus_five final :
+    relative_point_origin<quantity_point<isq::length[m], bpq_nn_check, double>{5. * m, bpq_nn_check}> {
+} bpq_nn_check_plus_five;
+
+using bpq_nn_check_pt = quantity_point<isq::length[m], bpq_nn_check, double>;
+using bpq_nn_clamp_pt = quantity_point<isq::length[m], bpq_nn_clamp, double>;
+using bpq_nn_inherited_pt = quantity_point<isq::length[m], bpq_nn_check_plus_five, double>;
+
+static_assert(limits_infinity<bpq_nn_check_pt> && limits_epsilon<bpq_nn_check_pt> &&
+              limits_round_error<bpq_nn_check_pt> && limits_denorm_min<bpq_nn_check_pt>);
+static_assert(!limits_quiet_NaN<bpq_nn_check_pt>);
+static_assert(!limits_signaling_NaN<bpq_nn_check_pt>);
+static_assert(std::numeric_limits<bpq_nn_check_pt>::has_infinity);
+static_assert(!std::numeric_limits<bpq_nn_check_pt>::has_quiet_NaN);
+static_assert(!std::numeric_limits<bpq_nn_check_pt>::has_signaling_NaN);
+static_assert(!std::numeric_limits<bpq_nn_check_pt>::is_iec559);
+static_assert(std::numeric_limits<bpq_nn_check_pt>::infinity().delta_from(bpq_nn_check) ==
+              std::numeric_limits<double>::infinity() * m);
+
+static_assert(limits_infinity<bpq_nn_clamp_pt>);
+static_assert(!limits_quiet_NaN<bpq_nn_clamp_pt>);
+static_assert(std::numeric_limits<bpq_nn_clamp_pt>::has_infinity);
+
+static_assert(limits_infinity<bpq_nn_inherited_pt>);
+static_assert(!limits_quiet_NaN<bpq_nn_inherited_pt>);
+
+// (-∞, 0]: +∞ and the small positive values lie outside, so none of them is offered, and has_infinity is
+// false even though -∞ lies inside. lowest() is the lowest finite value of the representation.
+struct bpq_non_positive {
+  quantity<si::metre> max = 0. * m;
+  template<Quantity V>
+  constexpr bool operator()(const V& val) const
+  {
+    return !(V{max} < val);
+  }
+};
+
+inline constexpr struct bpq_np final : absolute_point_origin<isq::length, bpq_non_positive{}> {
+} bpq_np;
+using bpq_np_pt = quantity_point<isq::length[m], bpq_np, double>;
+
+static_assert(!limits_infinity<bpq_np_pt>);
+static_assert(!limits_epsilon<bpq_np_pt>);
+static_assert(!limits_denorm_min<bpq_np_pt>);
+static_assert(!std::numeric_limits<bpq_np_pt>::has_infinity);
+static_assert(std::numeric_limits<bpq_np_pt>::lowest().delta_from(bpq_np) == std::numeric_limits<double>::lowest() * m);
 
 // An argument of a point origin is a bounds policy only through a `min` or `max` data member: a quantity,
 // whose `min()` and `max()` are static member functions, isn't one.
@@ -2002,8 +2069,9 @@ static_assert(mp_units::detail::is_bounds_arg<bpq_static_min_policy{}>);
 }  // namespace
 
 // ----------------------------------------------------------------------------
-// Default construction: value-initialization stores a zero delta, the origin itself, so a point is
-// default-constructible only where the origin lies within the range of the policy, by its min and max.
+// Default construction: a bounded point is default-constructed at its origin, by default-initialization
+// as well as by value-initialization, so it is default-constructible only where the origin lies within
+// the range of the policy, by its min and max.
 // ----------------------------------------------------------------------------
 
 namespace {
@@ -2037,7 +2105,21 @@ static_assert(!std::default_initializable<quantity_point<bdc_length[m], bdc_clam
 static_assert(std::default_initializable<quantity_point<bdc_length[m], bdc_inner>>);
 static_assert(std::default_initializable<quantity_point<test_angle_wrap[deg], wrap_origin>>);
 static_assert(std::default_initializable<bav_height>);
-static_assert(std::is_trivially_default_constructible_v<quantity_point<bdc_length[m], bdc_in>>);
+// A bounded point is default-constructed at its origin, so it isn't trivially default-constructible, and
+// default-initialization stores the origin as value-initialization does. A point without bounds stays
+// trivial, like its representation (quantity_point_test.cpp).
+static_assert(!std::is_trivially_default_constructible_v<quantity_point<bdc_length[m], bdc_in>>);
+static_assert(std::is_trivially_copyable_v<quantity_point<bdc_length[m], bdc_in>>);
+
+template<typename P>
+consteval P default_initialized()
+{
+  P default_initialized_point;
+  return default_initialized_point;
+}
+static_assert(default_initialized<quantity_point<bdc_length[m], bdc_in>>().delta_from(bdc_in) == 0. * m);
+static_assert(default_initialized<quantity_point<bdc_length[m], bdc_inner>>().delta_from(bdc_inner) == 0. * m);
+static_assert(default_initialized<quantity_point<bdc_length[m], bdc_in, int>>().delta_from(bdc_in) == 0 * m);
 
 // Construction from a value still works where default construction doesn't.
 static_assert(std::constructible_from<quantity_point<bdc_length[m], bdc_out>, quantity<m>, decltype(bdc_out)>);
