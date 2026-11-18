@@ -181,8 +181,25 @@ struct point_origin_interface {
 
 namespace detail {
 
+// A bounds policy is recognized by a `min` or `max` data member, static or not. A static member function
+// of that name, which a quantity has, doesn't count: naming it through an object yields a function, not
+// an object.
+template<typename R>
+concept ObjectReference = std::is_object_v<std::remove_reference_t<R>>;
+
+template<typename T>
+concept HasMinDataMember = requires(const T& arg) {
+  { arg.min } -> ObjectReference;
+};
+
+template<typename T>
+concept HasMaxDataMember = requires(const T& arg) {
+  { arg.max } -> ObjectReference;
+};
+
 template<auto Arg>
-constexpr bool is_bounds_arg = requires { Arg.min; } || requires { Arg.max; };
+constexpr bool is_bounds_arg =
+  HasMinDataMember<std::remove_cvref_t<decltype(Arg)>> || HasMaxDataMember<std::remove_cvref_t<decltype(Arg)>>;
 
 template<auto... Args>
 consteval int bounds_arg_count()
@@ -213,6 +230,7 @@ consteval auto bounds_arg()
 MP_UNITS_EXPORT template<QuantitySpec auto QS, auto... Args>
 struct absolute_point_origin : detail::point_origin_interface {
   static_assert(detail::bounds_arg_count<Args...>() <= 1, "at most one bounds policy may be provided");
+  static_assert((detail::is_bounds_arg<Args> && ...), "an argument of a point origin must be a bounds policy");
   static constexpr QuantitySpec auto _quantity_spec_ = QS;
   static constexpr auto _bounds_ = detail::bounds_arg<Args...>();
 };
@@ -220,6 +238,7 @@ struct absolute_point_origin : detail::point_origin_interface {
 MP_UNITS_EXPORT template<QuantityPoint auto QP, auto... Args>
 struct relative_point_origin : detail::point_origin_interface {
   static_assert(detail::bounds_arg_count<Args...>() <= 1, "at most one bounds policy may be provided");
+  static_assert((detail::is_bounds_arg<Args> && ...), "an argument of a point origin must be a bounds policy");
   static constexpr QuantityPoint auto _quantity_point_ = QP;
   static constexpr QuantitySpec auto _quantity_spec_ = []() {
     // select the strongest of specs
@@ -600,6 +619,52 @@ template<PointOrigin auto PO, Quantity Q>
   } else {
     return true;
   }
+}
+
+// `T` is the underlying type of the representation wrapper `Rep`, such as `double` of `constrained<double>`.
+template<typename T, typename Rep>
+concept UnderlyingRepresentationOf = (!std::same_as<T, Rep>) && requires {
+  typename representation_underlying_type_t<Rep>;
+} && std::same_as<T, representation_underlying_type_t<Rep>>;
+
+// True iff the zero delta at PO, the origin itself, lies within the range of the policy that construction
+// applies. As in the nesting rule, the range is that of the policy's `min` and `max`, so the answer is known
+// at compile time for every policy. Without bounds it is true, and with bounds but without a zero of Q,
+// false.
+template<PointOrigin auto PO, Quantity Q>
+[[nodiscard]] consteval bool origin_within_bounds()
+{
+  if constexpr (!any_ancestor_has_bounds(PO))
+    return true;
+  else if constexpr (!requires { Q::zero(); })
+    return false;
+  else if constexpr (!bounds_exact_in<PO, Q>())
+    return false;
+  else if constexpr (HasQuantityBounds<MP_UNITS_NONCONST_TYPE(PO)>)
+    return within_bounds(PO._bounds_, Q::zero());
+  else
+    return within_bounds(bounds_po_for(PO)._bounds_, Q::zero() + bounds_offset_in<PO, Q>());
+}
+
+// True iff storing a value of type Q at PO applies a checking policy.
+template<PointOrigin auto PO, Quantity Q>
+[[nodiscard]] consteval bool construction_checks_bounds()
+{
+  return any_ancestor_has_bounds(PO) && enforced_bounds_check<PO, Q>();
+}
+
+// True iff no checking policy applies to the points constructed when a point of type QP is projected to
+// the absolute origin ToAbs: the point at the absolute origin of QP that the library passes to the
+// projection, unless QP is measured from there already, and the point the projection returns. Other
+// points that the projection constructs are not covered.
+template<QuantityPoint QP, PointOrigin auto ToAbs>
+[[nodiscard]] consteval bool projection_checks_no_bounds()
+{
+  using at_src = decltype(std::declval<const QP&>().point_for(QP::absolute_point_origin));
+  using at_tgt = decltype(std::declval<const QP&>().point_for(ToAbs));
+  return (QP::point_origin == QP::absolute_point_origin ||
+          !construction_checks_bounds<at_src::point_origin, typename at_src::quantity_type>()) &&
+         !construction_checks_bounds<at_tgt::point_origin, typename at_tgt::quantity_type>();
 }
 
 // The bounds precondition of storing v (expressed relative to PO's origin frame) at PO. It holds
@@ -1060,15 +1125,44 @@ public:
     return detail::bounds_contain<PO>(quantity_type{std::forward<FwdQ>(q)});
   }
 
+  /**
+   * Tells whether converting `qp` with `quantity_point{qp}` would pass the bounds of the point's origin.
+   *
+   * The value tested is the one the selected converting constructor stores: `qp` measured from
+   * `point_origin`, for a point from the same absolute origin, projected with `frame_projection` for a
+   * point from another absolute origin, or imported for a point-like type. It is then tested as by the
+   * overload taking a quantity and an origin.
+   *
+   * Offered under the same conditions as that overload. For a point from another absolute origin, it
+   * also requires that no checking policy applies to the point that the projection returns, nor to the
+   * point that it is given unless `qp` is measured from its absolute origin. A checking policy there
+   * would report a rejected value as a precondition violation or through a handler, instead of
+   * returning `false`. It doesn't cover anything the projection does itself.
+   */
+  template<typename QP>
+    requires(QuantityPoint<QP> || QuantityPointLike<QP>) && (!std::same_as<QP, quantity_point>) &&
+            std::constructible_from<quantity_point, const QP&> && (detail::bounds_exact_in<PO, quantity_type>()) &&
+            (detail::enforced_bounds_check<PO, quantity_type>()) &&
+            (!QuantityPoint<QP> || QuantityPointOf<QP, absolute_point_origin> ||
+             detail::projection_checks_no_bounds<QP, absolute_point_origin>())
+  [[nodiscard]] static constexpr bool is_within_bounds(const QP& qp)
+  {
+    return detail::bounds_contain<PO>(quantity_from_any_point(qp));
+  }
+
 #if MP_UNITS_HAS_EXPECTED
   /**
    * Constructs `quantity_point{q, po}`, or returns @ref bounds_violation for a value that
-   * @ref is_within_bounds rejects.
+   * @ref is_within_bounds rejects. The overload without an origin takes a quantity at the default
+   * origin, and the overload taking a point of another type or a point-like value constructs
+   * `quantity_point{qp}`.
    *
-   * Written only in terms of @ref is_within_bounds and the constructor, so a rejected value is not
-   * passed to the constructor. This makes it the wide-contract alternative to the constructor, whose
-   * precondition such a value violates when the representation has no `constraint_violation_handler`.
-   * The same function can be written over `std::optional` or another error type. Available where
+   * The value is converted and tested once. A rejected value is never stored, and a value that passes
+   * is stored without being tested again. This makes it the wide-contract counterpart of the
+   * constructor, whose precondition a rejected value violates when the representation has no
+   * `constraint_violation_handler`. The same function can be written over `std::optional` or another
+   * error type from @ref is_within_bounds and the constructor. The constructor then tests the value a
+   * second time, and a point from another absolute origin is projected again. Available where
    * `<expected>` is.
    *
    * @see @ref is_within_bounds for the test alone
@@ -1076,23 +1170,32 @@ public:
   template<typename FwdQ>
     requires requires(const FwdQ& q) { is_within_bounds(q, PO); } &&
              std::constructible_from<quantity_point, FwdQ, decltype(PO)>
-  [[nodiscard]] static constexpr std::expected<quantity_point, bounds_violation> try_make(FwdQ&& q, decltype(PO) po)
+  [[nodiscard]] static constexpr std::expected<quantity_point, bounds_violation> try_make(FwdQ&& q, decltype(PO))
   {
-    if (!is_within_bounds(std::as_const(q), po)) return std::unexpected(bounds_violation{});
-    return quantity_point{std::forward<FwdQ>(q), po};
+    return stored_if_within_bounds(quantity_type{std::forward<FwdQ>(q)});
   }
 
-  template<typename FwdQ>
+  template<typename FwdQ, QuantityOf<quantity_spec> Q = std::remove_cvref_t<FwdQ>>
     requires requires(const FwdQ& q) { is_within_bounds(q); } && std::constructible_from<quantity_point, FwdQ>
   [[nodiscard]] static constexpr std::expected<quantity_point, bounds_violation> try_make(FwdQ&& q)
   {
-    if (!is_within_bounds(std::as_const(q))) return std::unexpected(bounds_violation{});
-    return quantity_point{std::forward<FwdQ>(q)};
+    return stored_if_within_bounds(quantity_type{std::forward<FwdQ>(q)});
+  }
+
+  template<typename QP>
+    requires(QuantityPoint<QP> || QuantityPointLike<QP>) && requires(const QP& qp) { is_within_bounds(qp); }
+  [[nodiscard]] static constexpr std::expected<quantity_point, bounds_violation> try_make(const QP& qp)
+  {
+    return stored_if_within_bounds(quantity_from_any_point(qp));
   }
 #endif
 
   // construction and assignment
-  [[nodiscard]] quantity_point() = default;
+  // Value-initialization stores a zero delta, the origin itself, so a point is default-constructible
+  // only where the origin lies within its range.
+  [[nodiscard]] quantity_point()
+    requires(detail::origin_within_bounds<PO, quantity_type>())
+  = default;
 
   template<typename FwdQ, QuantityOf<quantity_spec> Q = std::remove_cvref_t<FwdQ>>
     requires std::constructible_from<quantity_type, FwdQ> && (point_origin == default_point_origin(R)) &&
@@ -1143,8 +1246,8 @@ public:
 
   template<QuantityPoint QP>
     requires(!QuantityPointOf<QP, absolute_point_origin>) && requires(const QP& src) {
-      { src.point_for(point_origin) } -> QuantityPointOf<point_origin>;
-      quantity_type{src.point_for(point_origin) - point_origin};
+      { src.point_for(absolute_point_origin) } -> QuantityPointOf<absolute_point_origin>;
+      quantity_type{src.point_for(absolute_point_origin) - point_origin};
     }
   [[nodiscard]] constexpr explicit quantity_point(const QP& qp)
     MP_UNITS_PRE_CONSTEVAL_HACK(detail::bounds_precondition<point_origin>(quantity_from_projected_point(qp))) :
@@ -1178,8 +1281,20 @@ public:
   {
     if constexpr (std::is_same_v<NewPO, MP_UNITS_NONCONST_TYPE(point_origin)>)
       return *this;
-    else
-      return ::mp_units::quantity_point{*this - new_origin, new_origin};
+    else {
+      // The offset of an origin may have a plain representation, so `*this - new_origin` can yield the
+      // underlying type of a wrapper such as `constrained`. The point then keeps Rep, and with it the
+      // violation handler of Rep. Any other change of representation, such as an integral promotion,
+      // still happens.
+      const auto delta = *this - new_origin;
+      using delta_type = std::remove_cvref_t<decltype(delta)>;
+      using same_rep = quantity_point<delta_type::reference, NewPO{}, Rep>;
+      if constexpr (detail::UnderlyingRepresentationOf<typename delta_type::rep, Rep> &&
+                    std::constructible_from<same_rep, delta_type, NewPO>)
+        return same_rep{delta, new_origin};
+      else
+        return ::mp_units::quantity_point{delta, new_origin};
+    }
   }
 
   template<PointOrigin NewPO, typename... Args>
@@ -1509,11 +1624,41 @@ private:
       return quantity_type{qp - point_origin};
   }
 
+  // The projection stops at the absolute origin of this point, and the delta is measured from
+  // point_origin there. The bounds of point_origin are then applied only by the caller, and not also by
+  // a point constructed at point_origin before it.
   template<QuantityPoint QP>
   [[nodiscard]] static constexpr quantity_type quantity_from_projected_point(const QP& qp)
   {
-    auto at_dest = qp.point_for(point_origin);
-    return quantity_type{at_dest - point_origin};
+    return quantity_type{qp.point_for(absolute_point_origin) - point_origin};
+  }
+
+  // Stores a value that try_make has already tested against the bounds of the origin, if there are any,
+  // without testing it again.
+  struct unchecked_t {};
+  constexpr quantity_point(unchecked_t, const quantity_type& q) : quantity_from_origin_is_an_implementation_detail_(q)
+  {
+  }
+
+#if MP_UNITS_HAS_EXPECTED
+  [[nodiscard]] static constexpr std::expected<quantity_point, bounds_violation> stored_if_within_bounds(
+    const quantity_type& v)
+  {
+    if (!detail::bounds_contain<PO>(v)) return std::unexpected(bounds_violation{});
+    return quantity_point{unchecked_t{}, v};
+  }
+#endif
+
+  // The value that the converting constructor selected by `quantity_point{qp}` stores.
+  template<typename QP>
+  [[nodiscard]] static constexpr quantity_type quantity_from_any_point(const QP& qp)
+  {
+    if constexpr (QuantityPointOf<QP, absolute_point_origin>)
+      return quantity_from_point(qp);
+    else if constexpr (QuantityPoint<QP>)
+      return quantity_from_projected_point(qp);
+    else
+      return quantity_from_point_like(qp);
   }
 
   template<QuantityPointLike QP>
@@ -1550,7 +1695,19 @@ MP_UNITS_EXPORT_END
 template<auto R, auto PO, typename Rep>
   requires std::numeric_limits<Rep>::is_specialized
 class std::numeric_limits<mp_units::quantity_point<R, PO, Rep>> : public std::numeric_limits<Rep> {
+  // The members below that construct a value of the representation as a point are offered only where no
+  // bounds apply: a policy would check or change that value, so `quiet_NaN()` would violate the
+  // precondition at an origin with `check_in_range`, and `infinity()` would be clamped by
+  // `clamp_to_range`.
+  static constexpr bool unbounded = !mp_units::detail::any_ancestor_has_bounds(PO);
+
 public:
+  static constexpr bool has_infinity = unbounded && std::numeric_limits<Rep>::has_infinity;
+  static constexpr bool has_quiet_NaN = unbounded && std::numeric_limits<Rep>::has_quiet_NaN;
+  static constexpr bool has_signaling_NaN = unbounded && std::numeric_limits<Rep>::has_signaling_NaN;
+  // [numeric.limits.members] requires the three above to be true wherever is_iec559 is.
+  static constexpr bool is_iec559 = unbounded && std::numeric_limits<Rep>::is_iec559;
+
   static constexpr mp_units::quantity_point<R, PO, Rep> min() noexcept
     requires requires { mp_units::quantity_point<R, PO, Rep>::min(); }
   {
@@ -1563,48 +1720,46 @@ public:
     return mp_units::quantity_point<R, PO, Rep>::max();
   }
 
+  // The lowest value of a point is its min(): the lower bound of its origin or of its nearest bounded
+  // ancestor, or the lowest value of the representation without one.
   static constexpr mp_units::quantity_point<R, PO, Rep> lowest() noexcept
-    requires(!mp_units::detail::excludes_min(PO._bounds_)) &&
-            (requires { PO._bounds_.min; } || requires { std::numeric_limits<mp_units::quantity<R, Rep>>::lowest(); })
+    requires requires { mp_units::quantity_point<R, PO, Rep>::min(); }
   {
-    if constexpr (requires { PO._bounds_.min; })
-      return min();
-    else
-      return {std::numeric_limits<mp_units::quantity<R, Rep>>::lowest(), PO};
+    return min();
   }
 
   static constexpr mp_units::quantity_point<R, PO, Rep> epsilon() noexcept
-    requires requires { std::numeric_limits<mp_units::quantity<R, Rep>>::epsilon(); }
+    requires unbounded && requires { std::numeric_limits<mp_units::quantity<R, Rep>>::epsilon(); }
   {
     return {std::numeric_limits<mp_units::quantity<R, Rep>>::epsilon(), PO};
   }
 
   static constexpr mp_units::quantity_point<R, PO, Rep> round_error() noexcept
-    requires requires { std::numeric_limits<mp_units::quantity<R, Rep>>::round_error(); }
+    requires unbounded && requires { std::numeric_limits<mp_units::quantity<R, Rep>>::round_error(); }
   {
     return {std::numeric_limits<mp_units::quantity<R, Rep>>::round_error(), PO};
   }
 
   static constexpr mp_units::quantity_point<R, PO, Rep> infinity() noexcept
-    requires requires { std::numeric_limits<mp_units::quantity<R, Rep>>::infinity(); }
+    requires unbounded && requires { std::numeric_limits<mp_units::quantity<R, Rep>>::infinity(); }
   {
     return {std::numeric_limits<mp_units::quantity<R, Rep>>::infinity(), PO};
   }
 
   static constexpr mp_units::quantity_point<R, PO, Rep> quiet_NaN() noexcept
-    requires requires { std::numeric_limits<mp_units::quantity<R, Rep>>::quiet_NaN(); }
+    requires unbounded && requires { std::numeric_limits<mp_units::quantity<R, Rep>>::quiet_NaN(); }
   {
     return {std::numeric_limits<mp_units::quantity<R, Rep>>::quiet_NaN(), PO};
   }
 
   static constexpr mp_units::quantity_point<R, PO, Rep> signaling_NaN() noexcept
-    requires requires { std::numeric_limits<mp_units::quantity<R, Rep>>::signaling_NaN(); }
+    requires unbounded && requires { std::numeric_limits<mp_units::quantity<R, Rep>>::signaling_NaN(); }
   {
     return {std::numeric_limits<mp_units::quantity<R, Rep>>::signaling_NaN(), PO};
   }
 
   static constexpr mp_units::quantity_point<R, PO, Rep> denorm_min() noexcept
-    requires requires { std::numeric_limits<mp_units::quantity<R, Rep>>::denorm_min(); }
+    requires unbounded && requires { std::numeric_limits<mp_units::quantity<R, Rep>>::denorm_min(); }
   {
     return {std::numeric_limits<mp_units::quantity<R, Rep>>::denorm_min(), PO};
   }

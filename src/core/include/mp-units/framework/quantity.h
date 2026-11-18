@@ -1301,10 +1301,11 @@ public:
     return mp_units::quantity<R, Rep>::max();
   }
 
+  // min() of a quantity is already the lowest value of its representation (representation_values).
   static constexpr mp_units::quantity<R, Rep> lowest() noexcept
-    requires requires { std::numeric_limits<Rep>::lowest(); }
+    requires requires { mp_units::quantity<R, Rep>::min(); }
   {
-    return {std::numeric_limits<Rep>::lowest(), R};
+    return min();
   }
 
   static constexpr mp_units::quantity<R, Rep> epsilon() noexcept

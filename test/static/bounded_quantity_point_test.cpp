@@ -48,9 +48,6 @@ QUANTITY_SPEC(test_angle_wrap, isq::angular_measure);
 QUANTITY_SPEC(test_angle_reflect, isq::angular_measure);
 QUANTITY_SPEC(test_angle_wrap_constrained, isq::angular_measure);
 QUANTITY_SPEC(test_angle_reflect_constrained, isq::angular_measure);
-QUANTITY_SPEC(test_angle_unordered_args, isq::angular_measure);
-
-struct test_origin_tag final {};
 
 inline constexpr struct clamp_origin final :
     absolute_point_origin<test_angle_clamp, clamp_to_range{-90 * deg, 90 * deg}> {
@@ -68,9 +65,6 @@ inline constexpr struct reflect_constrained_origin final :
     absolute_point_origin<test_angle_reflect_constrained, reflect_in_range{-90 * deg, 90 * deg}> {
 } reflect_constrained_origin;
 
-inline constexpr struct unordered_args_origin final :
-    absolute_point_origin<test_angle_unordered_args, test_origin_tag{}, clamp_to_range{-45 * deg, 45 * deg}> {
-} unordered_args_origin;
 
 // Separate origins for unit conversion tests (need double bounds)
 QUANTITY_SPEC(test_angle_clamp_convert, isq::angular_measure);
@@ -133,7 +127,6 @@ inline constexpr struct kyiv_meridian final :
 using qp_clamp = quantity_point<test_angle_clamp[deg], clamp_origin, double>;
 using qp_wrap = quantity_point<test_angle_wrap[deg], wrap_origin, double>;
 using qp_reflect = quantity_point<test_angle_reflect[deg], reflect_origin, double>;
-using qp_unordered_args = quantity_point<test_angle_unordered_args[deg], unordered_args_origin, double>;
 using qp_clamp_int = quantity_point<test_angle_clamp[deg], clamp_origin, int>;
 
 // constrained rep: bounds stored as int, incoming value type is constrained<double>
@@ -194,12 +187,6 @@ static_assert(qp_wrap(180.0 * deg, wrap_origin).delta_from(wrap_origin) == -180.
 static_assert(qp_reflect(45.0 * deg, reflect_origin).delta_from(reflect_origin) == 45.0 * deg);
 static_assert(qp_reflect(91.0 * deg, reflect_origin).delta_from(reflect_origin) == 89.0 * deg);
 
-// ============================================================================
-// Bounds argument does not require first position in NTTP pack
-// ============================================================================
-
-static_assert(qp_unordered_args(50.0 * deg, unordered_args_origin).delta_from(unordered_args_origin) == 45.0 * deg);
-static_assert(qp_unordered_args(-50.0 * deg, unordered_args_origin).delta_from(unordered_args_origin) == -45.0 * deg);
 static_assert(qp_reflect(-91.0 * deg, reflect_origin).delta_from(reflect_origin) == -89.0 * deg);
 static_assert(qp_reflect(90.0 * deg, reflect_origin).delta_from(reflect_origin) == 90.0 * deg);
 static_assert(qp_reflect(-90.0 * deg, reflect_origin).delta_from(reflect_origin) == -90.0 * deg);
@@ -1718,5 +1705,321 @@ static_assert(bav_tx_frequency::try_make(5.8 * GHz, bav_tuning_zero).has_value()
 static_assert(!bav_tx_frequency::try_make(3. * GHz, bav_tuning_zero).has_value());
 
 #endif  // MP_UNITS_HAS_EXPECTED
+
+}  // namespace
+
+
+// ============================================================================
+// Asking the bounds of a conversion from another point: is_within_bounds(qp) and
+// try_make(qp) test the value that the converting constructor `quantity_point{qp}` stores.
+// ============================================================================
+
+namespace {
+
+QUANTITY_SPEC(bpq_length, isq::length);
+
+// Two absolute origins without bounds, connected by a frame projection that inverts the axis, and
+// a bounded relative origin in the target frame: [0 m, 10 m] at +100 m.
+inline constexpr struct bpq_src final : absolute_point_origin<bpq_length> {
+} bpq_src;
+
+inline constexpr struct bpq_tgt final : absolute_point_origin<bpq_length> {
+} bpq_tgt;
+
+inline constexpr struct bpq_window final :
+    relative_point_origin<quantity_point<bpq_length[m], bpq_tgt, double>{100. * m, bpq_tgt},
+                          check_in_range{0. * m, 10. * m}> {
+} bpq_window;
+
+// A target frame whose absolute origin has bounds of its own.
+inline constexpr struct bpq_tgt_bounded final : absolute_point_origin<bpq_length, check_in_range{0. * m, 10. * m}> {
+} bpq_tgt_bounded;
+
+// A point-like type that stores a trim angle in degrees, measured from trim_zero.
+struct bpq_raw_trim {
+  double degrees;
+};
+
+}  // namespace
+
+template<>
+inline constexpr auto mp_units::frame_projection<bpq_src, bpq_tgt> =
+  [](mp_units::QuantityPointOf<bpq_length> auto qp) constexpr { return bpq_tgt - qp.delta_from(bpq_src); };
+
+template<>
+inline constexpr auto mp_units::frame_projection<bpq_src, bpq_tgt_bounded> =
+  [](mp_units::QuantityPointOf<bpq_length> auto qp) constexpr { return bpq_tgt_bounded - qp.delta_from(bpq_src); };
+
+template<>
+struct mp_units::quantity_point_like_traits<bpq_raw_trim> {
+  static constexpr auto reference = mp_units::si::degree;
+  static constexpr auto point_origin = trim_zero;
+  static constexpr bool explicit_import = true;
+  static constexpr bool explicit_export = true;
+  using rep = double;
+  [[nodiscard]] static constexpr rep to_numerical_value(const bpq_raw_trim& v) noexcept { return v.degrees; }
+  [[nodiscard]] static constexpr bpq_raw_trim from_numerical_value(const rep& v) noexcept { return {v}; }
+};
+
+namespace {
+
+template<typename QP, typename From>
+concept can_query_point_bounds = requires(const From& from) { QP::is_within_bounds(from); };
+
+// ----------------------------------------------------------------------------
+// A point at the same absolute origin: trim_centre is [-1°, 9°] in the frame of trim_zero.
+// ----------------------------------------------------------------------------
+
+static_assert(trim_offset::is_within_bounds(trim_angle_plain{9. * deg, trim_zero}));
+static_assert(trim_offset::is_within_bounds(trim_angle_plain{-1. * deg, trim_zero}));
+static_assert(!trim_offset::is_within_bounds(trim_angle_plain{9.5 * deg, trim_zero}));
+static_assert(!trim_offset::is_within_bounds(trim_angle_plain{-1.5 * deg, trim_zero}));
+
+// A change of unit as well: 0.15 rad is 8.59°, 0.16 rad is 9.17°.
+static_assert(trim_offset::is_within_bounds(quantity_point<si::radian, trim_zero, double>{0.15 * rad, trim_zero}));
+static_assert(!trim_offset::is_within_bounds(quantity_point<si::radian, trim_zero, double>{0.16 * rad, trim_zero}));
+
+// The same type is a copy, which applies no bounds, so there is nothing to ask.
+static_assert(!can_query_point_bounds<trim_offset, trim_offset>);
+
+// An adjusting policy accepts every value, as in the overload taking a quantity.
+static_assert(!can_query_point_bounds<quantity_point<test_angle_clamp[deg], clamp_origin>,
+                                      quantity_point<test_angle_clamp[rad], clamp_origin>>);
+
+// ----------------------------------------------------------------------------
+// A point at another absolute origin, converted through a frame projection.
+// ----------------------------------------------------------------------------
+
+using bpq_src_pt = quantity_point<bpq_length[m], bpq_src, double>;
+using bpq_window_pt = quantity_point<bpq_length[m], bpq_window, double>;
+
+// -105 m from bpq_src is +105 m from bpq_tgt, so +5 m in the window.
+static_assert(bpq_window_pt{bpq_src_pt{-105. * m, bpq_src}}.delta_from(bpq_window) == 5. * m);
+static_assert(bpq_window_pt::is_within_bounds(bpq_src_pt{-105. * m, bpq_src}));
+static_assert(bpq_window_pt::is_within_bounds(bpq_src_pt{-110. * m, bpq_src}));
+static_assert(bpq_window_pt::is_within_bounds(bpq_src_pt{-100. * m, bpq_src}));
+static_assert(!bpq_window_pt::is_within_bounds(bpq_src_pt{-111. * m, bpq_src}));
+static_assert(!bpq_window_pt::is_within_bounds(bpq_src_pt{-99. * m, bpq_src}));
+
+// Into a bounded absolute origin the projection constructs a point there, which applies its bounds
+// before the query could answer, so the query is not offered. The conversion still is.
+using bpq_tgt_bounded_pt = quantity_point<bpq_length[m], bpq_tgt_bounded, double>;
+static_assert(std::constructible_from<bpq_tgt_bounded_pt, bpq_src_pt>);
+static_assert(!can_query_point_bounds<bpq_tgt_bounded_pt, bpq_src_pt>);
+
+// ----------------------------------------------------------------------------
+// A point-like type.
+// ----------------------------------------------------------------------------
+
+static_assert(trim_angle::is_within_bounds(bpq_raw_trim{10.}));
+static_assert(!trim_angle::is_within_bounds(bpq_raw_trim{11.}));
+
+#if MP_UNITS_HAS_EXPECTED
+
+static_assert(trim_offset::try_make(trim_angle_plain{9. * deg, trim_zero}) == trim_offset{5. * deg, trim_centre});
+static_assert(trim_offset::try_make(trim_angle_plain{9.5 * deg, trim_zero}).error() == bounds_violation{});
+static_assert(bpq_window_pt::try_make(bpq_src_pt{-105. * m, bpq_src})->delta_from(bpq_window) == 5. * m);
+static_assert(!bpq_window_pt::try_make(bpq_src_pt{-111. * m, bpq_src}).has_value());
+static_assert(trim_angle::try_make(bpq_raw_trim{10.}).has_value());
+static_assert(!trim_angle::try_make(bpq_raw_trim{11.}).has_value());
+
+// A const lvalue, which the overload taking a point would match as well as the one taking a quantity.
+inline constexpr auto bpq_height = 5. * m;
+inline constexpr auto bpq_trim = trim_angle_plain{9. * deg, trim_zero};
+static_assert(bav_height::try_make(bpq_height).has_value());
+inline constexpr auto bpq_trim_delta = 9. * deg;
+static_assert(trim_angle::try_make(bpq_trim_delta, trim_zero).has_value());
+static_assert(trim_offset::try_make(bpq_trim) == trim_offset{5. * deg, trim_centre});
+
+#endif  // MP_UNITS_HAS_EXPECTED
+
+}  // namespace
+
+// ----------------------------------------------------------------------------
+// Which projections the query is offered for: the points that the library constructs on the way
+// must not be checked. A projection may return a point at a bounded relative origin of the target
+// frame, and the source may be measured from below a bounded absolute origin.
+// ----------------------------------------------------------------------------
+
+namespace {
+
+inline constexpr struct bpq_tgt2 final : absolute_point_origin<bpq_length> {
+} bpq_tgt2;
+
+inline constexpr struct bpq_window2 final :
+    relative_point_origin<quantity_point<bpq_length[m], bpq_tgt2, double>{100. * m, bpq_tgt2},
+                          check_in_range{0. * m, 10. * m}> {
+} bpq_window2;
+
+inline constexpr struct bpq_tgt_clamped final :
+    absolute_point_origin<bpq_length, clamp_to_range{-1000. * m, 1000. * m}> {
+} bpq_tgt_clamped;
+
+inline constexpr struct bpq_window3 final :
+    relative_point_origin<quantity_point<bpq_length[m], bpq_tgt_clamped, double>{100. * m, bpq_tgt_clamped},
+                          check_in_range{0. * m, 10. * m}> {
+} bpq_window3;
+
+inline constexpr struct bpq_src_bounded final :
+    absolute_point_origin<bpq_length, check_in_range{-1000. * m, 1000. * m}> {
+} bpq_src_bounded;
+
+inline constexpr struct bpq_src_rel final :
+    relative_point_origin<quantity_point<bpq_length[m], bpq_src_bounded, double>{-100. * m, bpq_src_bounded}> {
+} bpq_src_rel;
+
+}  // namespace
+
+// Returns a point measured from the bounded window2, so the projection itself checks the value.
+template<>
+inline constexpr auto mp_units::frame_projection<bpq_src, bpq_tgt2> =
+  [](mp_units::QuantityPointOf<bpq_length> auto qp) constexpr {
+    return bpq_window2 + (-qp.delta_from(bpq_src) - 100. * mp_units::si::metre);
+  };
+
+template<>
+inline constexpr auto mp_units::frame_projection<bpq_src, bpq_tgt_clamped> =
+  [](mp_units::QuantityPointOf<bpq_length> auto qp) constexpr { return bpq_tgt_clamped - qp.delta_from(bpq_src); };
+
+template<>
+inline constexpr auto mp_units::frame_projection<bpq_src_bounded, bpq_tgt> =
+  [](mp_units::QuantityPointOf<bpq_length> auto qp) constexpr { return bpq_tgt - qp.delta_from(bpq_src_bounded); };
+
+namespace {
+
+// The projection returns a point at a bounded origin: not offered, although the target's absolute
+// origin has no bounds.
+using bpq_window2_pt = quantity_point<bpq_length[m], bpq_window2, double>;
+static_assert(std::constructible_from<bpq_window2_pt, bpq_src_pt>);
+static_assert(!can_query_point_bounds<bpq_window2_pt, bpq_src_pt>);
+
+// An adjusting policy at the target's absolute origin rejects nothing: offered.
+using bpq_window3_pt = quantity_point<bpq_length[m], bpq_window3, double>;
+static_assert(can_query_point_bounds<bpq_window3_pt, bpq_src_pt>);
+static_assert(bpq_window3_pt::is_within_bounds(bpq_src_pt{-105. * m, bpq_src}));
+static_assert(!bpq_window3_pt::is_within_bounds(bpq_src_pt{-111. * m, bpq_src}));
+
+// A source measured from the bounded absolute origin is passed to the projection as it is: offered.
+// One measured from a relative origin below it is first converted to that origin, which checks it:
+// not offered.
+using bpq_src_bounded_pt = quantity_point<bpq_length[m], bpq_src_bounded, double>;
+using bpq_src_rel_pt = quantity_point<bpq_length[m], bpq_src_rel, double>;
+static_assert(can_query_point_bounds<bpq_window_pt, bpq_src_bounded_pt>);
+static_assert(bpq_window_pt::is_within_bounds(bpq_src_bounded_pt{-105. * m, bpq_src_bounded}));
+static_assert(std::constructible_from<bpq_window_pt, bpq_src_rel_pt>);
+static_assert(!can_query_point_bounds<bpq_window_pt, bpq_src_rel_pt>);
+
+// point_for keeps a wrapper representation when the offset of the origin is a plain double, so the
+// wrapper's violation handler still applies. An integral promotion is kept as before (see
+// quantity_point_test.cpp).
+static_assert(std::same_as<decltype(trim_offset{0. * deg, trim_centre}.point_for(trim_zero)),
+                           quantity_point<si::degree, trim_zero, constrained<double, terminate_policy>>>);
+static_assert(std::same_as<decltype(trim_angle{0. * deg, trim_zero}.point_for(trim_centre)),
+                           quantity_point<si::degree, trim_centre, constrained<double, terminate_policy>>>);
+
+}  // namespace
+
+// ----------------------------------------------------------------------------
+// numeric_limits at a bounded origin: lowest() follows min(), and the members that construct a value
+// of the representation as a point are offered only where no bounds apply.
+// ----------------------------------------------------------------------------
+
+namespace {
+
+template<typename QP>
+concept has_value_limits = requires {
+  std::numeric_limits<QP>::epsilon();
+  std::numeric_limits<QP>::round_error();
+  std::numeric_limits<QP>::infinity();
+  std::numeric_limits<QP>::quiet_NaN();
+  std::numeric_limits<QP>::signaling_NaN();
+  std::numeric_limits<QP>::denorm_min();
+};
+
+template<typename QP>
+concept has_any_value_limit =
+  requires { std::numeric_limits<QP>::epsilon(); } || requires { std::numeric_limits<QP>::round_error(); } ||
+  requires { std::numeric_limits<QP>::infinity(); } || requires { std::numeric_limits<QP>::quiet_NaN(); } ||
+  requires { std::numeric_limits<QP>::signaling_NaN(); } || requires { std::numeric_limits<QP>::denorm_min(); };
+
+static_assert(has_value_limits<quantity_point<mission_range[m], home_base>>);
+static_assert(!has_any_value_limit<trim_angle_plain>);
+static_assert(!has_any_value_limit<quantity_point<test_angle_clamp[deg], clamp_origin>>);
+// Bounds inherited from an ancestor count as well.
+using bpq_inherited_pt = quantity_point<si::degree, trim_centre_plus_one, double>;
+static_assert(!has_any_value_limit<bpq_inherited_pt>);
+static_assert(std::numeric_limits<bpq_inherited_pt>::lowest() == bpq_inherited_pt::min());
+static_assert(std::numeric_limits<bpq_inherited_pt>::lowest().delta_from(trim_centre_plus_one) == -6. * deg);
+
+// The flags agree with the members.
+static_assert(!std::numeric_limits<trim_angle_plain>::has_infinity);
+static_assert(!std::numeric_limits<trim_angle_plain>::has_quiet_NaN);
+static_assert(!std::numeric_limits<trim_angle_plain>::has_signaling_NaN);
+static_assert(!std::numeric_limits<trim_angle_plain>::is_iec559);
+static_assert(std::numeric_limits<quantity_point<mission_range[m], home_base>>::is_iec559);
+static_assert(!std::numeric_limits<bpq_inherited_pt>::has_quiet_NaN);
+static_assert(std::numeric_limits<quantity_point<mission_range[m], home_base>>::has_infinity);
+static_assert(std::numeric_limits<quantity_point<mission_range[m], home_base>>::has_quiet_NaN);
+
+// An argument of a point origin is a bounds policy only through a `min` or `max` data member: a quantity,
+// whose `min()` and `max()` are static member functions, isn't one.
+static_assert(mp_units::detail::is_bounds_arg<check_in_range{0. * m, 1. * m}>);
+static_assert(mp_units::detail::is_bounds_arg<check_non_negative{}>);
+static_assert(!mp_units::detail::is_bounds_arg<0. * m>);
+static_assert(!mp_units::detail::is_bounds_arg<0>);
+
+// A static data member counts as well.
+struct bpq_static_min_policy {
+  static constexpr quantity<si::metre> min = 0. * m;
+  template<Quantity V>
+  constexpr bool operator()(const V& v) const
+  {
+    return v >= V{min};
+  }
+};
+static_assert(mp_units::detail::is_bounds_arg<bpq_static_min_policy{}>);
+
+}  // namespace
+
+// ----------------------------------------------------------------------------
+// Default construction: value-initialization stores a zero delta, the origin itself, so a point is
+// default-constructible only where the origin lies within the range of the policy, by its min and max.
+// ----------------------------------------------------------------------------
+
+namespace {
+
+QUANTITY_SPEC(bdc_length, isq::length);
+
+inline constexpr struct bdc_in final : absolute_point_origin<bdc_length, check_in_range{0. * m, 10. * m}> {
+} bdc_in;
+
+inline constexpr struct bdc_out final : absolute_point_origin<bdc_length, check_in_range{10. * m, 20. * m}> {
+} bdc_out;
+
+inline constexpr struct bdc_open final :
+    absolute_point_origin<bdc_length, check_in_range{exclusive_bound{0. * m}, 10. * m}> {
+} bdc_open;
+
+inline constexpr struct bdc_clamped final : absolute_point_origin<bdc_length, clamp_to_range{10. * m, 20. * m}> {
+} bdc_clamped;
+
+// Without bounds of its own: 0 m from it is 12 m from bdc_out, inside the inherited range. An
+// origin outside an inherited range is not tested, as defining one already violates the bounds.
+inline constexpr struct bdc_inner final :
+    relative_point_origin<quantity_point<bdc_length[m], bdc_out, double>{12. * m, bdc_out}> {
+} bdc_inner;
+
+static_assert(std::default_initializable<quantity_point<mission_range[m], home_base>>);
+static_assert(std::default_initializable<quantity_point<bdc_length[m], bdc_in>>);
+static_assert(!std::default_initializable<quantity_point<bdc_length[m], bdc_out>>);
+static_assert(!std::default_initializable<quantity_point<bdc_length[m], bdc_open>>);
+static_assert(!std::default_initializable<quantity_point<bdc_length[m], bdc_clamped>>);
+static_assert(std::default_initializable<quantity_point<bdc_length[m], bdc_inner>>);
+static_assert(std::default_initializable<quantity_point<test_angle_wrap[deg], wrap_origin>>);
+static_assert(std::default_initializable<bav_height>);
+static_assert(std::is_trivially_default_constructible_v<quantity_point<bdc_length[m], bdc_in>>);
+
+// Construction from a value still works where default construction doesn't.
+static_assert(std::constructible_from<quantity_point<bdc_length[m], bdc_out>, quantity<m>, decltype(bdc_out)>);
 
 }  // namespace

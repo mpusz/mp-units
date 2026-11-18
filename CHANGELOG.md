@@ -8,6 +8,38 @@ This page documents the version history and changes for the **mp-units** library
 
 ### 2.6.0 <small>TBD</small> { id="2.6.0" }
 
+- (!) fix: a quantity point is default-constructible only where its origin lies within the
+      range of the bounds policy that construction applies, judged by the policy's `min`
+      and `max`. Value-initialization stores a zero delta, the origin itself, so `T{}` and
+      `std::vector<T>(n)` used to store a value outside the range, such as 0 m at an
+      origin with `check_in_range{10 * m, 20 * m}`, without applying the policy
+- (!) refactor: an argument of `absolute_point_origin` or `relative_point_origin` after the
+      quantity specification or the origin point must be a bounds policy. Any other argument
+      used to be accepted and ignored
+- (!) fix: at an origin with bounds, its own or inherited, `std::numeric_limits` of a
+      quantity point provides `lowest()` from the lower bound where there is one, and no
+      `epsilon()`, `round_error()`, `infinity()`, `quiet_NaN()`, `signaling_NaN()`, or
+      `denorm_min()`. `has_infinity`, `has_quiet_NaN`, `has_signaling_NaN`, and
+      `is_iec559` are `false` there. These members constructed a value of the
+      representation as a point, which the policy checked or changed: `quiet_NaN()`
+      violated the precondition at a `check_in_range` origin, and `clamp_to_range` turned
+      `infinity()` into its upper bound. For a point that inherits its bounds, `lowest()`
+      used to be the lowest value of the representation
+- feat: `is_within_bounds` and `try_make` of a quantity point also take a point of another
+      type or a point-like value, and test the value that the converting constructor
+      stores. For a point from another absolute origin, they are offered only when no
+      checking policy applies to the point that the frame projection returns, nor to the
+      point it is given unless the source is measured from its absolute origin
+- feat: `try_make` tests the value once, and stores a value that passes without the
+      constructor testing it again. For a point from another absolute origin, it calls
+      the frame projection once
+- fix: a conversion from a point of another absolute origin no longer constructs a point at
+      the target's relative origin before the constructor tests the value. That point could
+      have a representation other than the target's, so the violation handler of a
+      `constrained` target representation was bypassed and a precondition violated instead
+- fix: `point_for()` keeps a wrapper representation such as `constrained` when the offset
+      of the origin is of its underlying type, so a violation is reported through the
+      representation's handler. The result used to be a point of the underlying type
 - (!) fix: `uncertain<T>` compares central values only, in both `==` and `<=>`, and
       the uncertainty no longer takes part. A value whose central value equals the upper
       bound of a `check_in_range` origin, such as `1000 ± 0.5 kg` against

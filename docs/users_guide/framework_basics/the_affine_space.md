@@ -898,9 +898,39 @@ std::expected<trim_angle, bounds_violation> try_make_trim(quantity<si::degree> r
 }
 ```
 
+`try_make` tests the value once. A value that passes is stored without the constructor
+testing it again.
+
+Both functions also take a point of another type, and test the conversion that
+constructing the point from it performs. The point may be measured from another origin
+with the same absolute origin, be stored in another unit or representation, be a
+point-like type measured from the origin of the target, or come from another absolute
+origin through a [frame projection](#frame-proj). Here a `trim_angle` is converted to a
+point measured from a narrower origin:
+
+```cpp
+inline constexpr struct takeoff_trim :
+    relative_point_origin<trim_zero + 0. * deg, check_in_range{-5. * deg, 5. * deg}> {} takeoff_trim;
+
+using takeoff_angle = quantity_point<si::degree, takeoff_trim>;
+
+std::expected<takeoff_angle, bounds_violation> for_takeoff(trim_angle trim)
+{
+  return takeoff_angle::try_make(trim);
+}
+```
+
+A frame projection is given a point at the absolute origin of the source, unless the
+source is measured from there already, and returns a point in the frame of the target.
+Constructing either of them applies the bounds of its origin, and a checking policy there
+would report a rejected value as a violation instead of as `false` or a
+`bounds_violation`. For a point from another absolute origin, both functions are therefore
+offered only when no checking policy applies to these points.
+
 A rejected value is never passed to the constructor. The representation's violation
 handler is not called and no precondition is violated, so both functions work in code
-built with `-fno-exceptions` and under any contract evaluation semantic.
+built with `-fno-exceptions` and under any contract evaluation semantic, apart from
+anything a frame projection does itself, such as throwing.
 
 The test follows construction in two steps:
 
