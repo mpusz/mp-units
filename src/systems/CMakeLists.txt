@@ -21,59 +21,61 @@
 # SOFTWARE.
 
 add_mp_units_module(
-    systems mp-units-systems
+    systems
+    mp-units-systems
     DEPENDENCIES mp-units::core
-    HEADERS include/mp-units/systems/angular/units.h
-            include/mp-units/systems/codata/adopted_values.h
-            include/mp-units/systems/codata/codata2014.h
-            include/mp-units/systems/codata/codata2014_essential.h
-            include/mp-units/systems/codata/codata2018.h
-            include/mp-units/systems/codata/codata2018_essential.h
-            include/mp-units/systems/codata/codata2022.h
-            include/mp-units/systems/codata/codata2022_essential.h
-            include/mp-units/systems/codata/math_constants.h
-            include/mp-units/systems/hep/constants.h
-            include/mp-units/systems/hep/quantities.h
-            include/mp-units/systems/hep/units.h
-            include/mp-units/systems/iec/binary_prefixes.h
-            include/mp-units/systems/iec/quantities.h
-            include/mp-units/systems/iec/unit_symbols.h
-            include/mp-units/systems/iec/units.h
-            include/mp-units/systems/isq/atomic_and_nuclear_physics.h
-            include/mp-units/systems/isq/base_quantities.h
-            include/mp-units/systems/isq/condensed_matter_physics.h
-            include/mp-units/systems/isq/electromagnetism.h
-            include/mp-units/systems/isq/information_science_and_technology.h
-            include/mp-units/systems/isq/light_and_radiation.h
-            include/mp-units/systems/isq/mechanics.h
-            include/mp-units/systems/isq/shared_quantities.h
-            include/mp-units/systems/isq/si_quantities.h
-            include/mp-units/systems/isq/space_and_time.h
-            include/mp-units/systems/isq/thermodynamics.h
-            include/mp-units/systems/si/constants.h
-            include/mp-units/systems/si/core.h
-            include/mp-units/systems/si/prefixes.h
-            include/mp-units/systems/si/unit_symbols.h
-            include/mp-units/systems/si/unit_symbols_essential.h
-            include/mp-units/systems/si/units.h
-            include/mp-units/systems/angular.h
-            include/mp-units/systems/astronomy.h
-            include/mp-units/systems/cgs.h
-            include/mp-units/systems/codata.h
-            include/mp-units/systems/hep.h
-            include/mp-units/systems/iau.h
-            include/mp-units/systems/iec.h
-            include/mp-units/systems/iec80000.h
-            include/mp-units/systems/imperial.h
-            include/mp-units/systems/international.h # deprecated wrapper
-            include/mp-units/systems/isq.h
-            include/mp-units/systems/isq_angle.h
-            include/mp-units/systems/iupac.h
-            include/mp-units/systems/natural.h
-            include/mp-units/systems/si.h
-            include/mp-units/systems/typographic.h
-            include/mp-units/systems/usc.h
-            include/mp-units/systems/yard_pound.h
+    HEADERS
+        include/mp-units/systems/angular/units.h
+        include/mp-units/systems/codata/adopted_values.h
+        include/mp-units/systems/codata/codata2014.h
+        include/mp-units/systems/codata/codata2014_essential.h
+        include/mp-units/systems/codata/codata2018.h
+        include/mp-units/systems/codata/codata2018_essential.h
+        include/mp-units/systems/codata/codata2022.h
+        include/mp-units/systems/codata/codata2022_essential.h
+        include/mp-units/systems/codata/math_constants.h
+        include/mp-units/systems/hep/constants.h
+        include/mp-units/systems/hep/quantities.h
+        include/mp-units/systems/hep/units.h
+        include/mp-units/systems/iec/binary_prefixes.h
+        include/mp-units/systems/iec/quantities.h
+        include/mp-units/systems/iec/unit_symbols.h
+        include/mp-units/systems/iec/units.h
+        include/mp-units/systems/isq/atomic_and_nuclear_physics.h
+        include/mp-units/systems/isq/base_quantities.h
+        include/mp-units/systems/isq/condensed_matter_physics.h
+        include/mp-units/systems/isq/electromagnetism.h
+        include/mp-units/systems/isq/information_science_and_technology.h
+        include/mp-units/systems/isq/light_and_radiation.h
+        include/mp-units/systems/isq/mechanics.h
+        include/mp-units/systems/isq/shared_quantities.h
+        include/mp-units/systems/isq/si_quantities.h
+        include/mp-units/systems/isq/space_and_time.h
+        include/mp-units/systems/isq/thermodynamics.h
+        include/mp-units/systems/si/constants.h
+        include/mp-units/systems/si/core.h
+        include/mp-units/systems/si/prefixes.h
+        include/mp-units/systems/si/unit_symbols.h
+        include/mp-units/systems/si/unit_symbols_essential.h
+        include/mp-units/systems/si/units.h
+        include/mp-units/systems/angular.h
+        include/mp-units/systems/astronomy.h
+        include/mp-units/systems/cgs.h
+        include/mp-units/systems/codata.h
+        include/mp-units/systems/hep.h
+        include/mp-units/systems/iau.h
+        include/mp-units/systems/iec.h
+        include/mp-units/systems/iec80000.h
+        include/mp-units/systems/imperial.h
+        include/mp-units/systems/international.h # deprecated wrapper
+        include/mp-units/systems/isq.h
+        include/mp-units/systems/isq_angle.h
+        include/mp-units/systems/iupac.h
+        include/mp-units/systems/natural.h
+        include/mp-units/systems/si.h
+        include/mp-units/systems/typographic.h
+        include/mp-units/systems/usc.h
+        include/mp-units/systems/yard_pound.h
     MODULE_INTERFACE_UNIT mp-units-systems.cpp
 )
 
@@ -83,15 +85,14 @@ set_source_files_properties(include/mp-units/systems/international.h PROPERTIES 
 if(NOT MP_UNITS_API_FREESTANDING)
     target_sources(
         mp-units-systems
-        PUBLIC FILE_SET
-               HEADERS
-               BASE_DIRS
-               ${CMAKE_CURRENT_SOURCE_DIR}/include
-               FILES
-               include/mp-units/systems/angular/math.h
-               include/mp-units/systems/si/math.h
-               include/mp-units/systems/si/chrono.h
-               include/mp-units/systems/si/prefix_utils.h
+        PUBLIC
+            FILE_SET HEADERS
+                BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include
+                FILES
+                    include/mp-units/systems/angular/math.h
+                    include/mp-units/systems/si/math.h
+                    include/mp-units/systems/si/chrono.h
+                    include/mp-units/systems/si/prefix_utils.h
     )
 endif()
 

@@ -83,9 +83,9 @@ macro(CHECK_CXX_FEATURE_SUPPORTED CONDITION VARIABLE)
             set(CMAKE_FEATURE_EXISTS_INCLUDES)
         endif()
         string(APPEND _CFS_SOURCE "#include <version>\n")
-        string(APPEND
-               _CFS_SOURCE
-               "
+        string(
+            APPEND _CFS_SOURCE
+            "
 int main()
 {
   static_assert(${CONDITION});
@@ -96,12 +96,15 @@ int main()
             message(CHECK_START "Checking C++ feature test macro '${CONDITION}'")
         endif()
         try_compile(
-            ${VARIABLE} SOURCE_FROM_VAR
-            "CheckFeatureExists.cxx" _CFS_SOURCE
-            COMPILE_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS} ${CHECK_FEATURE_EXISTS_LINK_OPTIONS}
-                                ${CHECK_FEATURE_EXISTS_LIBS}
-            CMAKE_FLAGS -DCOMPILE_DEFINITIONS:STRING=${MACRO_CHECK_FEATURE_EXISTS_FLAGS}
-                        "${CMAKE_FEATURE_EXISTS_INCLUDES}"
+            ${VARIABLE}
+            SOURCE_FROM_VAR "CheckFeatureExists.cxx" _CFS_SOURCE
+            COMPILE_DEFINITIONS
+                ${CMAKE_REQUIRED_DEFINITIONS}
+                ${CHECK_FEATURE_EXISTS_LINK_OPTIONS}
+                ${CHECK_FEATURE_EXISTS_LIBS}
+            CMAKE_FLAGS
+                -DCOMPILE_DEFINITIONS:STRING=${MACRO_CHECK_FEATURE_EXISTS_FLAGS}
+                "${CMAKE_FEATURE_EXISTS_INCLUDES}"
         )
         if(${VARIABLE})
             if(NOT CMAKE_REQUIRED_QUIET)

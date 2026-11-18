@@ -28,99 +28,100 @@ endfunction()
 
 # core library definition
 add_mp_units_module(
-    core mp-units-core
-    HEADERS include/mp-units/bits/compiler.h
-            include/mp-units/bits/config.h
-            include/mp-units/bits/constexpr_math.h
-            include/mp-units/bits/core_gmf.h
-            include/mp-units/bits/diagnostics.h
-            include/mp-units/bits/double_width_int.h
-            include/mp-units/bits/fixed_point.h
-            include/mp-units/bits/int_power.h
-            include/mp-units/bits/get_associated_quantity.h
-            include/mp-units/bits/hacks.h
-            include/mp-units/bits/import_std_prelude.h
-            include/mp-units/bits/module_macros.h
-            include/mp-units/bits/quantity_spec_conversion_impl.h
-            include/mp-units/bits/quantity_spec_equation_conversion.h
-            include/mp-units/bits/quantity_spec_hierarchy_conversion.h
-            include/mp-units/bits/quantity_spec_hierarchy.h
-            include/mp-units/bits/ratio.h
-            include/mp-units/bits/sudo_cast.h
-            include/mp-units/bits/text_tools.h
-            include/mp-units/bits/type_list.h
-            include/mp-units/bits/unit_conversion_impl.h
-            include/mp-units/bits/unit_magnitude.h
-            include/mp-units/bits/unsatisfied.h
-            include/mp-units/ext/algorithm.h
-            include/mp-units/ext/contracts.h
-            include/mp-units/ext/fixed_string.h
-            include/mp-units/ext/inplace_vector.h
-            include/mp-units/ext/prime.h
-            include/mp-units/ext/type_name.h
-            include/mp-units/ext/type_traits.h
-            include/mp-units/framework/compare.h
-            include/mp-units/framework/construction_helpers.h
-            include/mp-units/framework/customization_points.h
-            include/mp-units/framework/dimension.h
-            include/mp-units/framework/dimension_concepts.h
-            include/mp-units/framework/point_origin_concepts.h
-            include/mp-units/framework/quantity.h
-            include/mp-units/framework/quantity_cast.h
-            include/mp-units/framework/quantity_character.h
-            include/mp-units/framework/quantity_concepts.h
-            include/mp-units/framework/quantity_point.h
-            include/mp-units/framework/quantity_point_concepts.h
-            include/mp-units/framework/quantity_spec.h
-            include/mp-units/framework/quantity_spec_conversion.h
-            include/mp-units/framework/quantity_spec_definitions.h
-            include/mp-units/framework/quantity_spec_concepts.h
-            include/mp-units/framework/quantity_traits.h
-            include/mp-units/framework/reference.h
-            include/mp-units/framework/reference_concepts.h
-            include/mp-units/framework/representation_concepts.h
-            include/mp-units/framework/rounding.h
-            include/mp-units/framework/scaling.h
-            include/mp-units/framework/symbol_text.h
-            include/mp-units/framework/symbolic_expression.h
-            include/mp-units/framework/unit.h
-            include/mp-units/framework/unit_conversion.h
-            include/mp-units/framework/unit_definitions.h
-            include/mp-units/framework/unit_text.h
-            include/mp-units/framework/unit_concepts.h
-            include/mp-units/framework/unit_magnitude.h
-            include/mp-units/framework/unit_magnitude_concepts.h
-            include/mp-units/framework/unit_symbol_formatting.h
-            include/mp-units/framework/value_cast.h
-            include/mp-units/framework/vector_components.h
-            include/mp-units/utility/constrained.h
-            include/mp-units/utility/safe_int.h
-            include/mp-units/utility/representation.h
-            include/mp-units/utility/unspecified.h
-            include/mp-units/compat_macros.h
-            include/mp-units/concepts.h
-            include/mp-units/core.h
-            include/mp-units/framework.h
-            include/mp-units/math.h
-            include/mp-units/overflow_policies.h
+    core
+    mp-units-core
+    HEADERS
+        include/mp-units/bits/compiler.h
+        include/mp-units/bits/config.h
+        include/mp-units/bits/constexpr_math.h
+        include/mp-units/bits/core_gmf.h
+        include/mp-units/bits/diagnostics.h
+        include/mp-units/bits/double_width_int.h
+        include/mp-units/bits/fixed_point.h
+        include/mp-units/bits/int_power.h
+        include/mp-units/bits/get_associated_quantity.h
+        include/mp-units/bits/hacks.h
+        include/mp-units/bits/import_std_prelude.h
+        include/mp-units/bits/module_macros.h
+        include/mp-units/bits/quantity_spec_conversion_impl.h
+        include/mp-units/bits/quantity_spec_equation_conversion.h
+        include/mp-units/bits/quantity_spec_hierarchy_conversion.h
+        include/mp-units/bits/quantity_spec_hierarchy.h
+        include/mp-units/bits/ratio.h
+        include/mp-units/bits/sudo_cast.h
+        include/mp-units/bits/text_tools.h
+        include/mp-units/bits/type_list.h
+        include/mp-units/bits/unit_conversion_impl.h
+        include/mp-units/bits/unit_magnitude.h
+        include/mp-units/bits/unsatisfied.h
+        include/mp-units/ext/algorithm.h
+        include/mp-units/ext/contracts.h
+        include/mp-units/ext/fixed_string.h
+        include/mp-units/ext/inplace_vector.h
+        include/mp-units/ext/prime.h
+        include/mp-units/ext/type_name.h
+        include/mp-units/ext/type_traits.h
+        include/mp-units/framework/compare.h
+        include/mp-units/framework/construction_helpers.h
+        include/mp-units/framework/customization_points.h
+        include/mp-units/framework/dimension.h
+        include/mp-units/framework/dimension_concepts.h
+        include/mp-units/framework/point_origin_concepts.h
+        include/mp-units/framework/quantity.h
+        include/mp-units/framework/quantity_cast.h
+        include/mp-units/framework/quantity_character.h
+        include/mp-units/framework/quantity_concepts.h
+        include/mp-units/framework/quantity_point.h
+        include/mp-units/framework/quantity_point_concepts.h
+        include/mp-units/framework/quantity_spec.h
+        include/mp-units/framework/quantity_spec_conversion.h
+        include/mp-units/framework/quantity_spec_definitions.h
+        include/mp-units/framework/quantity_spec_concepts.h
+        include/mp-units/framework/quantity_traits.h
+        include/mp-units/framework/reference.h
+        include/mp-units/framework/reference_concepts.h
+        include/mp-units/framework/representation_concepts.h
+        include/mp-units/framework/rounding.h
+        include/mp-units/framework/scaling.h
+        include/mp-units/framework/symbol_text.h
+        include/mp-units/framework/symbolic_expression.h
+        include/mp-units/framework/unit.h
+        include/mp-units/framework/unit_conversion.h
+        include/mp-units/framework/unit_definitions.h
+        include/mp-units/framework/unit_text.h
+        include/mp-units/framework/unit_concepts.h
+        include/mp-units/framework/unit_magnitude.h
+        include/mp-units/framework/unit_magnitude_concepts.h
+        include/mp-units/framework/unit_symbol_formatting.h
+        include/mp-units/framework/value_cast.h
+        include/mp-units/framework/vector_components.h
+        include/mp-units/utility/constrained.h
+        include/mp-units/utility/safe_int.h
+        include/mp-units/utility/representation.h
+        include/mp-units/utility/unspecified.h
+        include/mp-units/compat_macros.h
+        include/mp-units/concepts.h
+        include/mp-units/core.h
+        include/mp-units/framework.h
+        include/mp-units/math.h
+        include/mp-units/overflow_policies.h
     MODULE_INTERFACE_UNIT mp-units-core.cpp
 )
 
 if(NOT MP_UNITS_API_FREESTANDING)
     target_sources(
         mp-units-core
-        PUBLIC FILE_SET
-               HEADERS
-               BASE_DIRS
-               ${CMAKE_CURRENT_SOURCE_DIR}/include
-               FILES
-               include/mp-units/bits/constexpr_format.h
-               include/mp-units/bits/ostream.h
-               include/mp-units/bits/requires_hosted.h
-               include/mp-units/ext/format.h
-               include/mp-units/utility/format.h
-               include/mp-units/format.h # deprecated
-               include/mp-units/ostream.h # deprecated
+        PUBLIC
+            FILE_SET HEADERS
+                BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include
+                FILES
+                    include/mp-units/bits/constexpr_format.h
+                    include/mp-units/bits/ostream.h
+                    include/mp-units/bits/requires_hosted.h
+                    include/mp-units/ext/format.h
+                    include/mp-units/utility/format.h
+                    include/mp-units/format.h # deprecated
+                    include/mp-units/ostream.h # deprecated
     )
 endif()
 
@@ -131,8 +132,9 @@ set_feature_flag(API_STD_FORMAT)
 set_feature_flag(API_NO_CRTP)
 
 # Text formatting
-if(NOT MP_UNITS_API_FREESTANDING AND (NOT MP_UNITS_API_STD_FORMAT OR (MP_UNITS_API_STD_FORMAT STREQUAL "AUTO"
-                                                                      AND NOT MP_UNITS_LIB_FORMAT_SUPPORTED))
+if(
+    NOT MP_UNITS_API_FREESTANDING
+    AND (NOT MP_UNITS_API_STD_FORMAT OR (MP_UNITS_API_STD_FORMAT STREQUAL "AUTO" AND NOT MP_UNITS_LIB_FORMAT_SUPPORTED))
 )
     if(NOT TARGET fmt::fmt)
         find_package(fmt REQUIRED)
@@ -192,8 +194,10 @@ if(CMAKE_CXX_MODULE_STD)
     # target does *not* inherit -- so it pulls in `<version>` for real consumers yet expands to
     # nothing when `std.cc` is compiled. An absolute path is required because the synthetic target
     # also does not inherit the consumer's INCLUDE_DIRECTORIES.
-    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND NOT MP_UNITS_BUILD_CXX_MODULES AND CMAKE_CXX_COMPILER_VERSION
-                                                                                   VERSION_LESS 17
+    if(
+        CMAKE_CXX_COMPILER_ID STREQUAL "GNU"
+        AND NOT MP_UNITS_BUILD_CXX_MODULES
+        AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 17
     )
         target_compile_options(
             mp-units-core
@@ -207,14 +211,17 @@ endif()
 # UTF-8 source and execution character set
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(
-        mp-units-core ${MP_UNITS_TARGET_SCOPE}
+        mp-units-core
+        ${MP_UNITS_TARGET_SCOPE}
         /utf-8 # Specifies both the source character set and the execution character set as UTF-8
     )
 endif()
 
 target_compile_definitions(
-    mp-units-core ${MP_UNITS_TARGET_SCOPE} MP_UNITS_HOSTED=$<NOT:$<BOOL:${MP_UNITS_API_FREESTANDING}>>
-                  MP_UNITS_API_THROWING_CONSTRAINTS=$<BOOL:${MP_UNITS_API_THROWING_CONSTRAINTS}>
+    mp-units-core
+    ${MP_UNITS_TARGET_SCOPE}
+    MP_UNITS_HOSTED=$<NOT:$<BOOL:${MP_UNITS_API_FREESTANDING}>>
+    MP_UNITS_API_THROWING_CONSTRAINTS=$<BOOL:${MP_UNITS_API_THROWING_CONSTRAINTS}>
 )
 
 if(MP_UNITS_API_FREESTANDING)
@@ -226,8 +233,10 @@ if(MP_UNITS_API_FREESTANDING)
 endif()
 
 # https://github.com/llvm/llvm-project/issues/131410
-if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 20
-   AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 20.2
+if(
+    CMAKE_CXX_COMPILER_ID STREQUAL "Clang"
+    AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 20
+    AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 20.2
 )
     target_compile_options(mp-units-core ${MP_UNITS_TARGET_SCOPE} -Wno-unused-result)
 endif()

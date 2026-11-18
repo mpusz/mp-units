@@ -24,10 +24,11 @@ cmake_minimum_required(VERSION 3.21)
 
 function(ensure_entry_point)
     if(NOT PROJECT_IS_TOP_LEVEL)
-        message(FATAL_ERROR
-                    "'${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt' is meant to be used only "
-                    "as a CMake entry point and should not be included from other CMake files. "
-                    "Include '${CMAKE_CURRENT_SOURCE_DIR}/src/CMakeLists.txt' directly instead."
+        message(
+            FATAL_ERROR
+            "'${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt' is meant to be used only "
+            "as a CMake entry point and should not be included from other CMake files. "
+            "Include '${CMAKE_CURRENT_SOURCE_DIR}/src/CMakeLists.txt' directly instead."
         )
     endif()
 endfunction()

@@ -381,7 +381,7 @@ pre-commit run --all-files
 This will run:
 
 - `clang-format` for code formatting with the `.clang-format` file provided in the repo,
-- `cmake-format` to format the CMake files,
+- `gersemi` to format the CMake files,
 - `markdownlint-cli2` for the Markdown documentation (`MD013` caps the line length, so prose
   has to be wrapped),
 - `shellcheck` for the shell scripts and `actionlint` for the GitHub Actions workflows,

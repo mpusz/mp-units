@@ -45,14 +45,12 @@ target_link_libraries(mp-units-integrations INTERFACE mp-units::core)
 target_sources(
     mp-units-integrations
     INTERFACE
-        FILE_SET
-        HEADERS
-        BASE_DIRS
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
-        FILES
-        include/mp-units/integrations/blaze.h
-        include/mp-units/integrations/eigen.h
-        include/mp-units/integrations/glm.h
+        FILE_SET HEADERS
+            BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include
+            FILES
+                include/mp-units/integrations/blaze.h
+                include/mp-units/integrations/eigen.h
+                include/mp-units/integrations/glm.h
 )
 set_target_properties(mp-units-integrations PROPERTIES EXPORT_NAME integrations)
 add_library(mp-units::integrations ALIAS mp-units-integrations)
@@ -120,10 +118,10 @@ function(add_mp_units_integration name)
         set(export_name mp-units-integrations-${name}-targets)
         set(config_dir ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units-integrations-${name})
         if(MP_UNITS_BUILD_CXX_MODULES)
-            install(TARGETS ${target}
-                    EXPORT ${export_name}
-                    FILE_SET CXX_MODULES
-                    DESTINATION ${CMAKE_INSTALL_LIBDIR}/miu
+            install(
+                TARGETS ${target}
+                EXPORT ${export_name}
+                FILE_SET CXX_MODULES DESTINATION ${CMAKE_INSTALL_LIBDIR}/miu
             )
         else()
             install(TARGETS ${target} EXPORT ${export_name})
@@ -134,7 +132,8 @@ function(add_mp_units_integration name)
         set(MP_UNITS_INTEGRATION_DEP_PACKAGE ${dep_package})
         set(MP_UNITS_INTEGRATION_TARGETS_FILE ${export_name})
         configure_file(
-            ${CMAKE_CURRENT_SOURCE_DIR}/mp-units-integration-config.cmake.in mp-units-integrations-${name}Config.cmake
+            ${CMAKE_CURRENT_SOURCE_DIR}/mp-units-integration-config.cmake.in
+            mp-units-integrations-${name}Config.cmake
             @ONLY
         )
         install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mp-units-integrations-${name}Config.cmake DESTINATION ${config_dir})

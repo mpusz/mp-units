@@ -37,7 +37,7 @@ option(MP_UNITS_DEV_CLANG_TIDY "Enables clang-tidy" OFF)
 set(MP_UNITS_DEV_TIME_TRACE
     NONE
     CACHE STRING
-          "Enables `-ftime-trace` for a selected scope: NONE, ALL, MODULES, HEADERS. MODULES and HEADERS do not affect unit tests."
+    "Enables `-ftime-trace` for a selected scope: NONE, ALL, MODULES, HEADERS. MODULES and HEADERS do not affect unit tests."
 )
 check_cache_var_values(MP_UNITS_DEV_TIME_TRACE NONE ALL MODULES HEADERS)
 
@@ -58,7 +58,8 @@ if(MP_UNITS_DEV_IWYU)
     enable_iwyu(
         REQUIRED
         MAPPING_FILE "${PROJECT_SOURCE_DIR}/.mp-units.imp"
-        NO_FORWARD_DECLARATIONS QUOTED_INCLUDES_FIRST
+        NO_FORWARD_DECLARATIONS
+        QUOTED_INCLUDES_FIRST
         MAX_LINE_LENGTH 120
         NO_COMMENTS
     )

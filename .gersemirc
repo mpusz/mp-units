@@ -1,0 +1,3 @@
+definitions: [., .gersemi]
+indent: 4
+line_length: 120

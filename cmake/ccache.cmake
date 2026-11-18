@@ -66,7 +66,13 @@ function(enable_ccache)
         # otherwise, it will not work for XCode
     endif()
 
-    set(_options QUIET REQUIRED ACCOUNT_FOR_COMPILE_TIME_HEADER_CHANGES ACCOUNT_FOR_PCH ACCOUNT_FOR_MODULES)
+    set(_options
+        QUIET
+        REQUIRED
+        ACCOUNT_FOR_COMPILE_TIME_HEADER_CHANGES
+        ACCOUNT_FOR_PCH
+        ACCOUNT_FOR_MODULES
+    )
     set(_one_value_args PROGRAM MODE BASE_DIR)
     set(_multi_value_args PREFIXES)
     cmake_parse_arguments(PARSE_ARGV 0 _enable_ccache "${_options}" "${_one_value_args}" "${_multi_value_args}")
@@ -187,8 +193,19 @@ function(enable_ccache)
     endif()
 
     if(CMAKE_GENERATOR MATCHES "Ninja|Makefiles")
-        foreach(_lang IN ITEMS C CXX OBJC OBJCXX CUDA)
-            set(CMAKE_${_lang}_COMPILER_LAUNCHER ${CMAKE_COMMAND} -E env ${_ccacheEnv} ${CCACHE_PATH} PARENT_SCOPE)
+        foreach(
+            _lang
+            IN
+            ITEMS C CXX OBJC OBJCXX CUDA
+        )
+            set(CMAKE_${_lang}_COMPILER_LAUNCHER
+                ${CMAKE_COMMAND}
+                -E
+                env
+                ${_ccacheEnv}
+                ${CCACHE_PATH}
+                PARENT_SCOPE
+            )
         endforeach()
     elseif(CMAKE_GENERATOR STREQUAL Xcode)
         # Each of the Xcode project variables allow specifying only a single value, but the ccache command line needs to have multiple options.

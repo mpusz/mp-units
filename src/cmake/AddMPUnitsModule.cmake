@@ -76,16 +76,18 @@ function(add_mp_units_module name target_name)
 
     if(ARG_HEADERS)
         target_sources(
-            ${target_name} PUBLIC FILE_SET HEADERS BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include FILES ${ARG_HEADERS}
+            ${target_name}
+            PUBLIC FILE_SET HEADERS BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include FILES ${ARG_HEADERS}
         )
     endif()
 
     if(MP_UNITS_BUILD_CXX_MODULES)
         target_sources(${target_name} PUBLIC FILE_SET CXX_MODULES FILES ${ARG_MODULE_INTERFACE_UNIT})
-        install(TARGETS ${target_name}
-                EXPORT mp-unitsTargets
-                FILE_SET HEADERS FILE_SET CXX_MODULES
-                DESTINATION ${CMAKE_INSTALL_LIBDIR}/miu
+        install(
+            TARGETS ${target_name}
+            EXPORT mp-unitsTargets
+            FILE_SET HEADERS
+            FILE_SET CXX_MODULES DESTINATION ${CMAKE_INSTALL_LIBDIR}/miu
         )
     else()
         install(TARGETS ${target_name} EXPORT mp-unitsTargets FILE_SET HEADERS)

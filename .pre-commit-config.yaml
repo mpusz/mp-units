@@ -33,14 +33,10 @@ repos:
     rev: v21.1.8
     hooks:
       - id: clang-format
-  - repo: https://github.com/cheshirekow/cmake-format-precommit
-    rev: v0.6.13
+  - repo: https://github.com/BlankSpruce/gersemi-pre-commit
+    rev: 0.29.2
     hooks:
-      - id: cmake-format
-        additional_dependencies: ["cmakelang[YAML]"]
-      # - id: cmake-lint
-      #   additional_dependencies: ["cmakelang"]
-      #   exclude: "cmake/.*"
+      - id: gersemi
   - repo: https://github.com/psf/black
     rev: 26.3.1
     hooks:

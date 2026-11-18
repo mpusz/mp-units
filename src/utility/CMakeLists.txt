@@ -24,25 +24,27 @@
 # beyond the C++29 standardization target (which is `core` = framework + math). Hosted-only for now;
 # `constrained`/`safe_int` (the freestanding numerics) stay in `core` pending a separate decision.
 add_mp_units_module(
-    utility mp-units-utility DEPENDENCIES mp-units::core mp-units::systems MODULE_INTERFACE_UNIT mp-units-utility.cpp
+    utility
+    mp-units-utility
+    DEPENDENCIES mp-units::core mp-units::systems
+    MODULE_INTERFACE_UNIT mp-units-utility.cpp
 )
 
 if(NOT MP_UNITS_API_FREESTANDING)
     target_sources(
         mp-units-utility
-        PUBLIC FILE_SET
-               HEADERS
-               BASE_DIRS
-               ${CMAKE_CURRENT_SOURCE_DIR}/include
-               FILES
-               include/mp-units/cartesian_vector.h
-               include/mp-units/random.h
-               include/mp-units/utility/cartesian_tensor.h
-               include/mp-units/utility/cartesian_vector.h
-               include/mp-units/utility/polar_vector.h
-               include/mp-units/utility/random.h
-               include/mp-units/utility/spherical_vector.h
-               include/mp-units/utility/uncertain.h
+        PUBLIC
+            FILE_SET HEADERS
+                BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include
+                FILES
+                    include/mp-units/cartesian_vector.h
+                    include/mp-units/random.h
+                    include/mp-units/utility/cartesian_tensor.h
+                    include/mp-units/utility/cartesian_vector.h
+                    include/mp-units/utility/polar_vector.h
+                    include/mp-units/utility/random.h
+                    include/mp-units/utility/spherical_vector.h
+                    include/mp-units/utility/uncertain.h
     )
 endif()
 

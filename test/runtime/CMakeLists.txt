@@ -47,7 +47,8 @@ target_link_libraries(unit_tests_runtime PRIVATE mp-units::mp-units Catch2::Catc
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(
-        unit_tests_runtime PRIVATE /wd4244 # 'conversion' conversion from 'type1' to 'type2', possible loss of data
+        unit_tests_runtime
+        PRIVATE /wd4244 # 'conversion' conversion from 'type1' to 'type2', possible loss of data
     )
 endif()
 
@@ -71,8 +72,8 @@ function(add_linear_algebra_test backend)
     endif()
     add_executable(linear_algebra_test-${backend} linear_algebra_test.cpp)
     target_link_libraries(
-        linear_algebra_test-${backend} PRIVATE mp-units::mp-units mp-units::integrations-${backend}
-                                               Catch2::Catch2WithMain
+        linear_algebra_test-${backend}
+        PRIVATE mp-units::mp-units mp-units::integrations-${backend} Catch2::Catch2WithMain
     )
     catch_discover_tests(linear_algebra_test-${backend})
 endfunction()
@@ -93,8 +94,8 @@ function(add_polar_spherical_integration_test backend)
     endif()
     add_executable(polar_spherical_integration_test-${backend} polar_spherical_integration_test.cpp)
     target_link_libraries(
-        polar_spherical_integration_test-${backend} PRIVATE mp-units::mp-units mp-units::integrations-${backend}
-                                                            Catch2::Catch2WithMain
+        polar_spherical_integration_test-${backend}
+        PRIVATE mp-units::mp-units mp-units::integrations-${backend} Catch2::Catch2WithMain
     )
     catch_discover_tests(polar_spherical_integration_test-${backend})
 endfunction()

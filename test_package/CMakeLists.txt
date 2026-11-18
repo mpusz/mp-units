@@ -77,10 +77,12 @@ function(add_integration_test_package backend dependency)
     endif()
     add_executable(test_package_integration-${backend}-headers test_package_integration.cpp)
     target_compile_features(
-        test_package_integration-${backend}-headers PRIVATE $<IF:$<BOOL:${CMAKE_CXX_MODULE_STD}>,cxx_std_23,cxx_std_20>
+        test_package_integration-${backend}-headers
+        PRIVATE $<IF:$<BOOL:${CMAKE_CXX_MODULE_STD}>,cxx_std_23,cxx_std_20>
     )
     target_link_libraries(
-        test_package_integration-${backend}-headers PRIVATE mp-units::integrations mp-units::systems ${dependency}
+        test_package_integration-${backend}-headers
+        PRIVATE mp-units::integrations mp-units::systems ${dependency}
     )
 
     if(MP_UNITS_BUILD_CXX_MODULES AND mp_units_single_config)
@@ -88,11 +90,13 @@ function(add_integration_test_package backend dependency)
         if(TARGET mp-units::integrations-${backend})
             add_executable(test_package_integration-${backend} test_package_integration.cpp)
             target_compile_features(
-                test_package_integration-${backend} PRIVATE $<IF:$<BOOL:${CMAKE_CXX_MODULE_STD}>,cxx_std_23,cxx_std_20>
+                test_package_integration-${backend}
+                PRIVATE $<IF:$<BOOL:${CMAKE_CXX_MODULE_STD}>,cxx_std_23,cxx_std_20>
             )
             target_compile_definitions(test_package_integration-${backend} PRIVATE MP_UNITS_MODULES)
             target_link_libraries(
-                test_package_integration-${backend} PRIVATE mp-units::mp-units mp-units::integrations-${backend}
+                test_package_integration-${backend}
+                PRIVATE mp-units::mp-units mp-units::integrations-${backend}
             )
         endif()
     endif()

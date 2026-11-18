@@ -90,7 +90,8 @@ function(add_linear_algebra_example backend)
     # header-mode variant: `#include <mp-units/integrations/<backend>.h>`
     add_executable(linear_algebra-${backend}-headers linear_algebra.cpp)
     target_link_libraries(
-        linear_algebra-${backend}-headers PRIVATE mp-units::mp-units mp-units::integrations-${backend}
+        linear_algebra-${backend}-headers
+        PRIVATE mp-units::mp-units mp-units::integrations-${backend}
     )
 endfunction()
 

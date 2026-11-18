@@ -50,8 +50,8 @@ message(STATUS "MP_UNITS_BUILD_INTEGRATION_GLM: ${MP_UNITS_BUILD_INTEGRATION_GLM
 message(STATUS "MP_UNITS_BUILD_INTEGRATION_BLAZE: ${MP_UNITS_BUILD_INTEGRATION_BLAZE}")
 
 # check for C++ features
-check_cxx_feature_supported(__cpp_lib_format MP_UNITS_LIB_FORMAT_SUPPORTED)
-check_cxx_feature_supported(__cpp_explicit_this_parameter MP_UNITS_EXPLICIT_THIS_PARAMETER_SUPPORTED)
+CHECK_CXX_FEATURE_SUPPORTED(__cpp_lib_format MP_UNITS_LIB_FORMAT_SUPPORTED)
+CHECK_CXX_FEATURE_SUPPORTED(__cpp_explicit_this_parameter MP_UNITS_EXPLICIT_THIS_PARAMETER_SUPPORTED)
 
 # libc++ has a basic supports for std::format but does not set __cpp_lib_format
 # https://github.com/llvm/llvm-project/issues/77773
@@ -113,8 +113,10 @@ endif()
 
 # throwing constraints format their message at compile time, which the library does only through {fmt}
 if(MP_UNITS_API_THROWING_CONSTRAINTS AND (MP_UNITS_API_FREESTANDING OR MP_UNITS_API_STD_FORMAT))
-    message(FATAL_ERROR "'MP_UNITS_API_THROWING_CONSTRAINTS' needs a hosted build with {fmt} "
-                        "('MP_UNITS_API_STD_FORMAT' set to OFF)"
+    message(
+        FATAL_ERROR
+        "'MP_UNITS_API_THROWING_CONSTRAINTS' needs a hosted build with {fmt} "
+        "('MP_UNITS_API_STD_FORMAT' set to OFF)"
     )
 endif()
 
@@ -156,7 +158,9 @@ add_subdirectory(integrations)
 
 # project-wide wrapper
 add_mp_units_module(
-    mp-units mp-units DEPENDENCIES mp-units::core mp-units::systems mp-units::utility
+    mp-units
+    mp-units
+    DEPENDENCIES mp-units::core mp-units::systems mp-units::utility
     MODULE_INTERFACE_UNIT mp-units.cpp
 )
 
@@ -171,8 +175,11 @@ if(MP_UNITS_BUILD_INSTALL)
     # installation
     install(EXPORT mp-unitsTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units NAMESPACE mp-units::)
 
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mp-unitsConfig.cmake
-                  ${CMAKE_CURRENT_BINARY_DIR}/mp-unitsConfigVersion.cmake
-                  ${CMAKE_CURRENT_BINARY_DIR}/import-std-setup.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units
+    install(
+        FILES
+            ${CMAKE_CURRENT_BINARY_DIR}/mp-unitsConfig.cmake
+            ${CMAKE_CURRENT_BINARY_DIR}/mp-unitsConfigVersion.cmake
+            ${CMAKE_CURRENT_BINARY_DIR}/import-std-setup.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units
     )
 endif()

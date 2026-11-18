@@ -26,7 +26,8 @@ if(NOT MP_UNITS_API_FREESTANDING)
 endif()
 target_link_libraries(unit_tests_static_truncating PRIVATE mp-units::mp-units)
 target_compile_options(
-    unit_tests_static_truncating PRIVATE $<IF:$<CXX_COMPILER_ID:MSVC>,/wd4242 /wd4244,-Wno-conversion>
+    unit_tests_static_truncating
+    PRIVATE $<IF:$<CXX_COMPILER_ID:MSVC>,/wd4242 /wd4244,-Wno-conversion>
 )
 
 add_library(
@@ -75,8 +76,13 @@ add_library(
 
 if(NOT MP_UNITS_API_FREESTANDING)
     target_sources(
-        unit_tests_static PRIVATE fractional_exponent_quantity.cpp math_test.cpp quantity_character_test.cpp
-                                  uncertain_test.cpp vector_components_test.cpp
+        unit_tests_static
+        PRIVATE
+            fractional_exponent_quantity.cpp
+            math_test.cpp
+            quantity_character_test.cpp
+            uncertain_test.cpp
+            vector_components_test.cpp
     )
 endif()
 

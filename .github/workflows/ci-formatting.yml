@@ -42,7 +42,6 @@ jobs:
       - name: Set up Python 3.14
         uses: actions/setup-python@v6
         with:
-          # cmake-format (cmakelang, unmaintained) crashes on Python 3.15: re.Scanner rejects its capturing groups
           python-version: "3.14"
       - name: Install dependencies
         run: |
