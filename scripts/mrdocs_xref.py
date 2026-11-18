@@ -824,12 +824,36 @@ def on_post_page(output: str, page, config, **kwargs):
     return output
 
 
+_TITLE_CODE = re.compile(r"(?m)\A# `(.+)`$")
+_ENTITY = re.compile(r"&(lt|gt|amp|quot|#39);")
+_ENTITY_TEXT = {"lt": "<", "gt": ">", "amp": "&", "quot": '"', "#39": "'"}
+
+
+def _unescape(text: str) -> str:
+    return _ENTITY.sub(lambda m: _ENTITY_TEXT[m.group(1)], text)
+
+
+def _heading(markdown: str, page) -> str:
+    """Spell the angle brackets in a page title as themselves.
+
+    MrDocs escapes the declaration for HTML, so `operator<=>` arrives as
+    `operator&lt;=&gt;`. The page heading is a code span (see the
+    wrapper layout), and Markdown does not resolve entities inside one, so those
+    would reach the reader literally. The nav takes its text from `page.title`,
+    which is set from the same escaped front matter, so fix both.
+    """
+    if page.title:
+        page.title = _unescape(page.title)
+    return _TITLE_CODE.sub(lambda m: f"# `{_unescape(m.group(1))}`", markdown, count=1)
+
+
 def on_page_markdown(markdown: str, page, config, files, **kwargs):
     src_uri = page.file.src_uri
     if src_uri.startswith(f"{API_DIR}/"):
         markdown = _conforming(markdown)
         _leaked(markdown, src_uri)
         markdown = _highlight(markdown)
+        markdown = _heading(markdown, page)
         markdown = _fence(markdown)
         markdown = _guide_links(markdown, page, Path(config["docs_dir"]))
 
