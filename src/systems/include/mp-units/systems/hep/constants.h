@@ -96,7 +96,11 @@ inline constexpr struct universe_mean_density final :
 
 // clang-format on
 
-// CODATA 2014 values (used by some older HEP frameworks)
+/**
+ * The HEP physical constants with their CODATA 2014 values
+ *
+ * Used by some older HEP frameworks.
+ */
 namespace codata2014 {
 
 // clang-format off
@@ -156,7 +160,12 @@ inline constexpr struct nuclear_magneton final :
 
 }  // namespace codata2014
 
-// CODATA 2018 values (used by more recent HEP frameworks like CLHEP, Gaudi, Geant4)
+/**
+ * The HEP physical constants with their CODATA 2018 values
+ *
+ * The default, used by CLHEP, Gaudi, and Geant4: the namespace is inline, so
+ * `hep::electron_mass` names its value.
+ */
 inline namespace codata2018 {
 
 // clang-format off
@@ -219,7 +228,11 @@ inline constexpr struct nuclear_magneton final :
 
 }  // namespace codata2018
 
-// CODATA 2022 values (used by ROOT and most recent HEP software)
+/**
+ * The HEP physical constants with their CODATA 2022 values
+ *
+ * Used by ROOT and most recent HEP software.
+ */
 namespace codata2022 {
 
 // clang-format off

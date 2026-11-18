@@ -32,6 +32,22 @@
 #endif
 // IWYU pragma: end_exports
 
+/**
+ * The British imperial system of units
+ *
+ * Extends @ref yard_pound with units specific to the United Kingdom, such as the stone and
+ * the imperial gallon.
+ *
+ * @code{.cpp}
+ * using imperial::unit_symbols::st;
+ *
+ * quantity body_mass = 11. * st;
+ * quantity in_kilograms = body_mass.in(kg);  // 69.8532 kg
+ * @endcode
+ *
+ * @see [Yard-Pound Systems](docs:users_guide/systems/yard_pound) in the User's Guide
+ * @see [Imperial System](docs:reference/systems_reference/systems/imperial) for every entity it defines
+ */
 MP_UNITS_EXPORT
 namespace mp_units::imperial {
 

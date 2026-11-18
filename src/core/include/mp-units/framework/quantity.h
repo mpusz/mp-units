@@ -68,6 +68,22 @@ import std;
 #endif
 #endif
 
+/**
+ * The quantities and units framework
+ *
+ * The part of the library targeted for standardization: quantities, both deltas and points,
+ * quantity specifications, dimensions, units, references, and the concepts that constrain
+ * them. The systems of quantities and units built with it live in the nested namespaces.
+ *
+ * Most code starts from these entities:
+ *
+ * - @ref quantity, a number with a unit and a quantity type, such as `42 * km`
+ * - @ref quantity_point, a point measured from an origin, such as a _temperature_ reading
+ * - @ref quantity_spec, the base of a quantity type definition, such as _length_ or _speed_
+ * - @ref named_unit, the base of a unit definition, such as the metre
+ *
+ * @see [API Reference](docs:reference/api_reference/overview) for how this reference is organized
+ */
 namespace mp_units {
 
 namespace detail {

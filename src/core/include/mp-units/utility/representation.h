@@ -32,6 +32,19 @@
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/framework/representation_concepts.h>
 
+/**
+ * Tools for authoring representation types and other extensions
+ *
+ * Stable and supported, but not part of the API proposed for standardization. It holds the
+ * concepts, traits, and helpers a representation type needs to work like the library's own,
+ * and the representation types the library provides, such as @ref cartesian_vector and
+ * @ref uncertain.
+ *
+ * @code{.cpp}
+ * static_assert(utility::castable(isq::height, isq::width));
+ * static_assert(!utility::explicitly_convertible(isq::height, isq::width));
+ * @endcode
+ */
 namespace mp_units::utility {
 
 // The value-classification concepts a customer needs to build, test, or constrain their own

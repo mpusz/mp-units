@@ -46,6 +46,12 @@
 MP_UNITS_EXPORT
 namespace mp_units::codata {
 
+/**
+ * The CODATA 2014 recommended values
+ *
+ * The last regular adjustment before the 2019 SI redefinition, so the Planck constant, the
+ * elementary charge, the Boltzmann constant, and the Avogadro constant are measured values here.
+ */
 namespace codata2014 {
 
 // clang-format off

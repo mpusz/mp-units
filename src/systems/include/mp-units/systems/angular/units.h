@@ -33,6 +33,24 @@
 MP_UNITS_EXPORT
 namespace mp_units {
 
+/**
+ * A system of units that treats _angle_ as a base dimension
+ *
+ * Experimental and standalone, without the ISQ quantity hierarchy. It provides angular units
+ * such as the radian, the degree, and the steradian, and trigonometric functions that take
+ * or return them.
+ *
+ * @code{.cpp}
+ * using angular::unit_symbols::deg;
+ * using angular::unit_symbols::rad;
+ *
+ * quantity angle = 90. * deg;
+ * quantity in_radians = angle.in(rad);  // 1.5708 rad
+ * @endcode
+ *
+ * @see [Strong Angular System](docs:users_guide/systems/strong_angular_system) in the User's Guide
+ * @see [Angular System](docs:reference/systems_reference/systems/angular) for every entity it defines
+ */
 namespace angular {
 
 // clang-format off

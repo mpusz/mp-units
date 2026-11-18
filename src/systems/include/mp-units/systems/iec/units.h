@@ -32,6 +32,19 @@
 #include <mp-units/framework/unit.h>
 #endif
 
+/**
+ * The units of IEC 80000 that are outside the SI
+ *
+ * It holds units such as the bit, the byte, the baud, and the var, and the binary prefixes
+ * such as kibi and mebi.
+ *
+ * @code{.cpp}
+ * quantity storage = 16. * iec::bit;
+ * quantity in_bytes = storage.in(iec::byte);  // 2 B
+ * @endcode
+ *
+ * @see [IEC System](docs:reference/systems_reference/systems/iec) for every entity it defines
+ */
 MP_UNITS_EXPORT
 namespace mp_units::iec {
 

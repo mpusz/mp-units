@@ -32,6 +32,23 @@
 #endif
 // IWYU pragma: end_exports
 
+/**
+ * Units of the international yard and pound of 1959, and related units
+ *
+ * The common base of @ref imperial and @ref usc. Besides the inch, the foot, the mile, and the
+ * pound, it holds units such as the nautical mile, the pound-force, and the British thermal
+ * unit.
+ *
+ * @code{.cpp}
+ * using yard_pound::unit_symbols::mi;
+ *
+ * quantity marathon = 26.2 * mi;
+ * quantity in_kilometres = marathon.in(km);  // 42.1648 km
+ * @endcode
+ *
+ * @see [Yard-Pound Systems](docs:users_guide/systems/yard_pound) in the User's Guide
+ * @see [Yard Pound System](docs:reference/systems_reference/systems/yard_pound) for every entity it defines
+ */
 MP_UNITS_EXPORT
 namespace mp_units::yard_pound {
 

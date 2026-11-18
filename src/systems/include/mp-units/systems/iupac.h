@@ -33,6 +33,20 @@
 #endif
 // IWYU pragma: end_exports
 
+/**
+ * Units used in chemistry that are outside the SI
+ *
+ * It holds units such as the torr, the millimetre of mercury, and the thermochemical calorie.
+ *
+ * @code{.cpp}
+ * using iupac::unit_symbols::Torr;
+ *
+ * quantity pressure = 760. * Torr;
+ * quantity in_kilopascals = pressure.in(kPa);  // 101.325 kPa
+ * @endcode
+ *
+ * @see [IUPAC System](docs:reference/systems_reference/systems/iupac) for every entity it defines
+ */
 MP_UNITS_EXPORT
 namespace mp_units::iupac {
 

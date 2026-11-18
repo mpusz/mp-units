@@ -34,6 +34,21 @@
 #endif
 // IWYU pragma: end_exports
 
+/**
+ * The constants and units of the International Astronomical Union (IAU)
+ *
+ * The IAU nominal solar and planetary values, and units such as the parsec and the solar mass.
+ *
+ * @code{.cpp}
+ * using iau::unit_symbols::pc;
+ *
+ * quantity distance = 1. * pc;
+ * quantity in_astronomical_units = distance.in(au);  // 206265 au
+ * @endcode
+ *
+ * @see [IAU Astronomical Units](docs:users_guide/systems/iau) in the User's Guide
+ * @see [IAU System](docs:reference/systems_reference/systems/iau) for every entity it defines
+ */
 MP_UNITS_EXPORT
 namespace mp_units::iau {
 

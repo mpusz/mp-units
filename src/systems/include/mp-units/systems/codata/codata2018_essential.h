@@ -46,6 +46,12 @@
 MP_UNITS_EXPORT
 namespace mp_units::codata {
 
+/**
+ * The CODATA 2018 recommended values
+ *
+ * The first adjustment after the 2019 SI redefinition, so it takes the defining constants exactly
+ * from the SI.
+ */
 namespace codata2018 {
 
 // clang-format off

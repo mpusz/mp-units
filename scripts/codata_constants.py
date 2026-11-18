@@ -1007,6 +1007,27 @@ MATH_CONSTANTS_HEADER = LICENSE + """\
 #include <mp-units/framework/unit.h>
 #endif
 
+/**
+ * The CODATA recommended values of the fundamental physical constants
+ *
+ * One nested namespace per supported adjustment. The latest one, 2022, is inline, so
+ * `codata::magnetic_constant` names its value and `codata::codata2018::magnetic_constant`
+ * pins an older one. Values fixed by convention rather than measured, such as the standard
+ * acceleration of gravity, live directly in this namespace.
+ *
+ * @code{.cpp}
+ * #include <mp-units/systems/codata.h>
+ * #include <mp-units/systems/si.h>
+ *
+ * using namespace mp_units;
+ *
+ * quantity electron_mass = 1. * codata::electron_mass;                   // CODATA 2022
+ * quantity electron_mass_2018 = 1. * codata::codata2018::electron_mass;  // CODATA 2018
+ * @endcode
+ *
+ * @see [CODATA Fundamental Physical Constants](docs:users_guide/systems/codata) in the User's Guide
+ * @see [CODATA System](docs:reference/systems_reference/systems/codata) for every entity it defines
+ */
 MP_UNITS_EXPORT
 namespace mp_units::codata {
 
@@ -1080,6 +1101,18 @@ ADJUSTMENT_DOC = {
     " namespace).",
 }
 
+# The doc comment of an adjustment namespace, read by MrDocs. It goes in the `essential`
+# header only, because a namespace may carry one comment.
+NAMESPACE_DOC = {
+    "2014": "/**\n * The CODATA 2014 recommended values\n *\n * The last regular adjustment"
+    " before the 2019 SI redefinition, so the Planck constant, the\n * elementary charge, the"
+    " Boltzmann constant, and the Avogadro constant are measured values here.\n */",
+    "2018": "/**\n * The CODATA 2018 recommended values\n *\n * The first adjustment after the"
+    " 2019 SI redefinition, so it takes the defining constants exactly\n * from the SI.\n */",
+    "2022": "/**\n * The CODATA 2022 recommended values\n *\n * The current adjustment and the"
+    " default: the namespace is inline, so `codata::electron_mass`\n * names its value.\n */",
+}
+
 ESSENTIAL_DOC = (
     '// This is the `essential` tier: the NIST "Frequently used constants" selection,'
     " kept in its\n// own header because the complete table costs two orders of"
@@ -1119,6 +1152,7 @@ def adjustment_header(adjustment: str, body: str, uses_wien: bool, tier: str) ->
         + "#include <mp-units/framework/unit.h>\n"
         + "#endif\n"
         + "\nMP_UNITS_EXPORT\nnamespace mp_units::codata {\n"
+        + ("\n" + NAMESPACE_DOC[adjustment] if tier == "essential" else "")
         + f"\n{inline}namespace codata{adjustment} {{\n"
         + "\n// clang-format off"
         + body

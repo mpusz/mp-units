@@ -34,6 +34,27 @@
 #endif
 // IWYU pragma: end_exports
 
+/**
+ * The ISQ with _angle_ as a base quantity
+ *
+ * Experimental. Redefines the angular quantities of @ref isq with an _angle_ dimension, so
+ * that quantities such as _torque_ and _angular momentum_ carry an _angle_ dimension.
+ *
+ * @code{.cpp}
+ * using angular::unit_symbols::deg;
+ * using angular::unit_symbols::rad;
+ *
+ * const quantity lever = isq_angle::position_vector(20 * cm);
+ * const quantity force = isq_angle::force(500 * N);
+ * const quantity angle = isq_angle::angular_measure(90. * deg);
+ * const quantity torque =
+ *   isq_angle::torque(lever * force * angular::sin(angle) / (1 * isq_angle::cotes_angle));
+ * std::cout << torque.in(N * m / rad) << '\n';  // 100 m N/rad
+ * @endcode
+ *
+ * @see [Strong Angular System](docs:users_guide/systems/strong_angular_system) in the User's Guide
+ * @see [ISQ Angle System](docs:reference/systems_reference/systems/isq_angle) for every entity it defines
+ */
 MP_UNITS_EXPORT
 namespace mp_units::isq_angle {
 

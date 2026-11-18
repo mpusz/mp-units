@@ -35,6 +35,20 @@
 MP_UNITS_EXPORT
 namespace mp_units {
 
+/**
+ * The International System of Units (SI)
+ *
+ * The system of units built on top of the @ref isq. It provides the SI base units, the derived
+ * units with special names, the SI prefixes, and the defining constants of the 2019 SI.
+ *
+ * @code{.cpp}
+ * quantity distance = 2 * km + 500 * m;                 // 2500 m
+ * quantity speed = (distance / (5. * min)).in(km / h);  // 30 km/h
+ * @endcode
+ *
+ * @see [The International System of Units (SI)](docs:users_guide/systems/si) in the User's Guide
+ * @see [SI System](docs:reference/systems_reference/systems/si) for every entity it defines
+ */
 namespace si {
 
 // clang-format off
@@ -124,6 +138,16 @@ inline constexpr struct katal final : named_unit<"kat", mole / second, kind_of<i
 
 }  // namespace si
 
+/**
+ * Units outside the SI that are used alongside it
+ *
+ * It holds units such as the minute, the litre, the tonne, and the electronvolt.
+ *
+ * @code{.cpp}
+ * quantity duration = 90 * min;
+ * quantity in_hours = duration.in<double>(h);  // 1.5 h
+ * @endcode
+ */
 namespace non_si {
 
 // clang-format off

@@ -32,6 +32,12 @@
 MP_UNITS_EXPORT
 namespace mp_units::si {
 
+/**
+ * The defining constants of the 2019 SI
+ *
+ * The seven constants whose exact values define the SI units. The namespace is inline, so
+ * `si::speed_of_light_in_vacuum` names them.
+ */
 inline namespace si2019 {
 
 // clang-format off

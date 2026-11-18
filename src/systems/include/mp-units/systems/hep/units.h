@@ -38,6 +38,26 @@
 #endif
 // IWYU pragma: end_exports
 
+/**
+ * The system of quantities and units of high energy physics (HEP)
+ *
+ * _Energy_ and _electric charge_ are base quantities instead of _mass_ and _electric current_.
+ * Its conventions follow CLHEP, Gaudi, Geant4, and ROOT, which express _length_ in millimetres,
+ * _time_ in nanoseconds, _energy_ in megaelectronvolts, and _electric charge_ in positron
+ * charges. The physical constants default to the CODATA 2018 values, and @ref codata2014 and
+ * @ref codata2022 hold the 2014 and 2022 values.
+ *
+ * @code{.cpp}
+ * using hep::unit_symbols::GeV;
+ * using hep::unit_symbols::MeV;
+ *
+ * quantity higgs_energy = 125.1 * GeV;
+ * quantity in_megaelectronvolts = higgs_energy.in(MeV);  // 125100 MeV
+ * @endcode
+ *
+ * @see [High Energy Physics (HEP) System](docs:users_guide/systems/hep) in the User's Guide
+ * @see [HEP System](docs:reference/systems_reference/systems/hep) for every entity it defines
+ */
 MP_UNITS_EXPORT
 namespace mp_units::hep {
 

@@ -38,6 +38,27 @@
 #include <mp-units/framework/unit.h>
 #endif
 
+/**
+ * The CODATA recommended values of the fundamental physical constants
+ *
+ * One nested namespace per supported adjustment. The latest one, 2022, is inline, so
+ * `codata::magnetic_constant` names its value and `codata::codata2018::magnetic_constant`
+ * pins an older one. Values fixed by convention rather than measured, such as the standard
+ * acceleration of gravity, live directly in this namespace.
+ *
+ * @code{.cpp}
+ * #include <mp-units/systems/codata.h>
+ * #include <mp-units/systems/si.h>
+ *
+ * using namespace mp_units;
+ *
+ * quantity electron_mass = 1. * codata::electron_mass;                   // CODATA 2022
+ * quantity electron_mass_2018 = 1. * codata::codata2018::electron_mass;  // CODATA 2018
+ * @endcode
+ *
+ * @see [CODATA Fundamental Physical Constants](docs:users_guide/systems/codata) in the User's Guide
+ * @see [CODATA System](docs:reference/systems_reference/systems/codata) for every entity it defines
+ */
 MP_UNITS_EXPORT
 namespace mp_units::codata {
 

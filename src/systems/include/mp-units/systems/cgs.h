@@ -32,6 +32,22 @@
 #endif
 // IWYU pragma: end_exports
 
+/**
+ * The centimetre-gram-second system of units (CGS)
+ *
+ * The CGS base units and its named mechanical derived units, such as the gal, the dyne, the erg, and
+ * the poise.
+ *
+ * @code{.cpp}
+ * using cgs::unit_symbols::dyn;
+ *
+ * quantity force = 1. * dyn;
+ * quantity in_newtons = force.in(N);  // 1e-05 N
+ * @endcode
+ *
+ * @see [Centimetre-Gram-Second (CGS) System](docs:users_guide/systems/cgs) in the User's Guide
+ * @see [CGS System](docs:reference/systems_reference/systems/cgs) for every entity it defines
+ */
 MP_UNITS_EXPORT
 namespace mp_units::cgs {
 

@@ -65,6 +65,22 @@ import std;
 #endif
 // NOLINTEND(cppcoreguidelines-macro-usage)
 
+/**
+ * The International System of Quantities (ISQ)
+ *
+ * The system of quantities of ISO/IEC 80000. It defines the quantities, such as _length_,
+ * _speed_, and _energy_, the equations that relate them, and their dimensions, but no units.
+ * Units come from a system of units built on top of it, such as the SI in @ref si, which the
+ * SI Brochure bases on the ISQ.
+ *
+ * @code{.cpp}
+ * quantity tower_height = isq::height(42 * m);
+ * quantity<isq::length[m]> length = tower_height;  // a height is a length
+ * @endcode
+ *
+ * @see [International System of Quantities (ISQ)](docs:users_guide/systems/isq) in the User's Guide
+ * @see [ISQ System](docs:reference/systems_reference/systems/isq) for every entity it defines
+ */
 MP_UNITS_EXPORT
 namespace mp_units::isq {
 

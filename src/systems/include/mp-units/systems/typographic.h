@@ -32,6 +32,21 @@
 #endif
 // IWYU pragma: end_exports
 
+/**
+ * Typographic units of _length_
+ *
+ * The point and the pica in their US and desktop publishing variants, the Didot point and the
+ * cicero, the TeX point, and the Japanese q and h.
+ *
+ * @code{.cpp}
+ * using typographic::unit_symbols::pt;
+ *
+ * quantity font_size = 12. * pt;
+ * quantity in_millimetres = font_size.in(mm);  // 4.23333 mm
+ * @endcode
+ *
+ * @see [Typographic System](docs:reference/systems_reference/systems/typographic) for every entity it defines
+ */
 MP_UNITS_EXPORT
 namespace mp_units::typographic {
 

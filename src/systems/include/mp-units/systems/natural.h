@@ -31,6 +31,22 @@
 #endif
 // IWYU pragma: end_exports
 
+/**
+ * A system of natural units, where the speed of light and the reduced Planck constant are 1
+ *
+ * _Energy_ is the only base dimension, so _mass_, _length_, and _time_ are all measured in powers
+ * of the electronvolt.
+ *
+ * @code{.cpp}
+ * using natural::unit_symbols::GeV;
+ *
+ * quantity proton_mass = natural::mass(0.938 * GeV);
+ * quantity duration = natural::duration(1. / GeV);  // time is an inverse energy
+ * @endcode
+ *
+ * @see [Natural Units](docs:users_guide/systems/natural_units) in the User's Guide
+ * @see [Natural System](docs:reference/systems_reference/systems/natural) for every entity it defines
+ */
 MP_UNITS_EXPORT
 namespace mp_units::natural {
 

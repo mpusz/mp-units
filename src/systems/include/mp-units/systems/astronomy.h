@@ -32,6 +32,21 @@
 #endif
 // IWYU pragma: end_exports
 
+/**
+ * Units commonly used in astronomy beyond the IAU values
+ *
+ * It holds units such as the light-year, the jansky, and the sidereal day. The IAU nominal
+ * values are in @ref iau.
+ *
+ * @code{.cpp}
+ * using astronomy::unit_symbols::ly;
+ *
+ * quantity distance = 4.24 * ly;
+ * quantity in_kilometres = distance.in(km);  // 4.01135e+13 km
+ * @endcode
+ *
+ * @see [Astronomy System](docs:reference/systems_reference/systems/astronomy) for every entity it defines
+ */
 MP_UNITS_EXPORT
 namespace mp_units::astronomy {
 

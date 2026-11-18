@@ -33,6 +33,22 @@
 #endif
 // IWYU pragma: end_exports
 
+/**
+ * The United States customary system of units
+ *
+ * Extends @ref yard_pound with units specific to the United States, such as the US gallon
+ * and the barrel.
+ *
+ * @code{.cpp}
+ * using usc::unit_symbols::gal;
+ *
+ * quantity volume = 1. * gal;
+ * quantity in_litres = volume.in(L);  // 3.78541 L
+ * @endcode
+ *
+ * @see [Yard-Pound Systems](docs:users_guide/systems/yard_pound) in the User's Guide
+ * @see [USC System](docs:reference/systems_reference/systems/usc) for every entity it defines
+ */
 MP_UNITS_EXPORT
 namespace mp_units::usc {
 
@@ -58,6 +74,17 @@ inline constexpr struct chain final : named_unit<"ch", mag<4> * rod> {} chain;
 inline constexpr struct furlong final : named_unit<"fur", mag<10> * chain> {} furlong;
 // clang-format on
 
+/**
+ * The units of _length_ based on the US survey foot
+ *
+ * The survey foot, link, rod, chain, furlong, survey mile, and league, defined from the US
+ * survey foot of 1200/3937 m, which the US deprecated as of January 1, 2023.
+ *
+ * @code{.cpp}
+ * quantity difference = 1. * usc::survey1893::us_survey_foot - 1. * yard_pound::foot;
+ * quantity in_micrometres = difference.in(um);  // 0.609601 µm
+ * @endcode
+ */
 namespace survey1893 {
 
 // clang-format off

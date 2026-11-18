@@ -45,6 +45,12 @@
 MP_UNITS_EXPORT
 namespace mp_units::codata {
 
+/**
+ * The CODATA 2022 recommended values
+ *
+ * The current adjustment and the default: the namespace is inline, so `codata::electron_mass`
+ * names its value.
+ */
 inline namespace codata2022 {
 
 // clang-format off
