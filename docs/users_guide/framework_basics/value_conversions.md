@@ -398,3 +398,8 @@ In the table below, `p` is one of the rounding policies (`truncated`, `rounded`,
 
 The non-member functions may also be called without a policy, in which case they keep the
 `static_cast`-like (`truncated`) truncating semantics.
+
+A raw number follows the same rules as `in`: `x.numerical_value_in(u)` and
+`x.numerical_value_in<T>(u)` compile only where the conversion preserves the value, and
+`x.numerical_value_in(u, p)` and `x.numerical_value_in<T>(u, p)` take a policy for the
+rest. A _point_ provides them only when it is measured from its default origin.

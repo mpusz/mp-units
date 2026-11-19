@@ -855,6 +855,22 @@ static_assert(point<m>(2500).numerical_value_in(km, rounded) == 2);  // tie roun
 static_assert(point<m>(2501).numerical_value_in(km, rounded) == 3);
 static_assert(point<m>(2500).numerical_value_in(km, rounded_up) == 3);
 static_assert(point<m>(2999).numerical_value_in(km, rounded_down) == 2);
+// numerical_value_in<Rep>(U) and numerical_value_in<Rep>(U, policy): the same, in another representation
+static_assert(point<m>(2).numerical_value_in<double>(m) == 2.);
+static_assert(point<deg_C>(20).numerical_value_in<double>(K) == 293.15);
+static_assert(point<m>(2500).numerical_value_in<long>(km, rounded) == 2);
+
+template<typename AtCustomOrigin = quantity_point<si::metre, mean_sea_level, int>,
+         typename AtDefaultOrigin = quantity_point<si::metre, natural_point_origin<kind_of<isq::length>>, int>>
+concept invalid_point_numerical_value_in =
+  requires(AtCustomOrigin at_custom_origin, AtDefaultOrigin at_default_origin) {
+    requires !requires {
+      at_custom_origin.template numerical_value_in<double>(m);
+    };  // no unique number at a custom origin
+    requires !requires { at_default_origin.template numerical_value_in<int>(km); };  // scaling down truncates
+  };
+static_assert(invalid_point_numerical_value_in<>);
+
 // numerical_value_in round-trips construction
 static_assert(point<deg_C>(point<deg_C>(20.5).numerical_value_in(deg_C)) == point<deg_C>(20.5));
 

@@ -1443,6 +1443,24 @@ public:
     return in(U{}, policy).delta_from_zero().numerical_value_in(U{});
   }
 
+  // Not `noexcept`, unlike the overloads above: converting to `ToRep` may throw, as a checked
+  // representation does on overflow.
+  template<RepresentationOf<quantity_spec> ToRep, UnitOf<quantity_spec> U>
+    requires(PO == default_point_origin(R)) && detail::RepConstructibleFrom<ToRep, rep> &&
+            detail::ImplicitConversion<unit, rep, U{}, ToRep>
+  [[nodiscard]] constexpr RepresentationOf<quantity_spec> auto numerical_value_in(U) const
+  {
+    return in<ToRep>(U{}).delta_from_zero().numerical_value_in(U{});
+  }
+
+  template<RepresentationOf<quantity_spec> ToRep, UnitOf<quantity_spec> U, RoundingPolicy Policy>
+    requires(PO == default_point_origin(R)) && std::constructible_from<ToRep, rep> &&
+            detail::ExplicitlyCastable<unit, U{}, ToRep> && detail::ValidRoundingPolicyFor<Policy, rep, ToRep>
+  [[nodiscard]] constexpr RepresentationOf<quantity_spec> auto numerical_value_in(U, Policy policy) const
+  {
+    return in<ToRep>(U{}, policy).delta_from_zero().numerical_value_in(U{});
+  }
+
   template<UnitOf<quantity_spec> U>
     requires(PO == default_point_origin(R)) && detail::ExplicitlyCastable<unit, U{}, rep>
   [[deprecated(

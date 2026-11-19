@@ -411,6 +411,23 @@ static_assert(quantity<isq::length[m], int>(2 * km).numerical_value_in(m) == 200
 static_assert(quantity<isq::length[km], int>(2 * km).numerical_value_in(km) == 2);
 static_assert(quantity<isq::length[km]>(1500 * m).numerical_value_in(km) == 1.5);
 
+// numerical_value_in<Rep>(U): the number in another representation, refused wherever `in<Rep>(U)` is
+static_assert(std::is_same_v<decltype((2 * km).numerical_value_in<double>(m)), double>);
+static_assert((2 * km).numerical_value_in<double>(m) == 2000.);
+static_assert((1500 * m).numerical_value_in<double>(km) == 1.5);
+static_assert((1.5 * m).numerical_value_in<int>(mm, truncated) == 1500);
+static_assert((2500 * m).numerical_value_in<long>(km, rounded) == 2);  // tie rounds to even
+static_assert((2999 * m).numerical_value_in<long>(km, rounded_down) == 2);
+
+template<typename Integral = quantity<si::metre, int>, typename Floating = quantity<si::metre>>
+concept invalid_numerical_value_in = requires(Integral integral, Floating floating) {
+  requires !requires { integral.template numerical_value_in<int>(km); };  // scaling down truncates
+  requires !requires { floating.template numerical_value_in<int>(mm); };  // a floating-point value narrows
+  requires !requires { integral.template numerical_value_in<int>(s); };   // not a unit of length
+  requires !requires { floating.template numerical_value_in<double>(km, rounded_down); };  // undeliverable
+};
+static_assert(invalid_numerical_value_in<>);
+
 
 ////////////////////////////////////////////////////////
 // explicit conversion to a number (when unit is one)

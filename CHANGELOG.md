@@ -8,6 +8,10 @@ This page documents the version history and changes for the **mp-units** library
 
 ### 2.6.0 <small>TBD</small> { id="2.6.0" }
 
+- feat: `numerical_value_in<Rep>(unit)` and `numerical_value_in<Rep>(unit, policy)` return
+      the numerical value in another representation type, with the rules of
+      `in<Rep>(unit)` and `in<Rep>(unit, policy)`, for a quantity and for a point at its
+      default origin
 - fix: `wrap_to_range` and `reflect_in_range` no longer overflow a standard integer
       representation when the length of the range, or the period of the reflection (twice
       that length), exceeds the representation's maximum
