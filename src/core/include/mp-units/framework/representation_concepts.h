@@ -591,6 +591,33 @@ MP_UNITS_DIAGNOSTIC_POP
 // whenever the concept is checked, and that instantiates `representable_character<T>` for every `T`
 // that reaches a `RepresentationOf` constraint. Computing it means evaluating `Scalar`, `Vector` and
 // `Tensor` on `T`.
+/**
+ * A concept matching the types that can store the numerical value of a given quantity
+ *
+ * Satisfied by a representation type whose character the quantity specification or character
+ * `V` admits. The field has to match exactly, and a lower order may stand in for a higher one:
+ * `double` represents both _speed_ and _velocity_, while `std::complex<double>` represents
+ * neither.
+ *
+ * @code{.cpp}
+ * // a weather record whose fields all use the numeric type the station reports in
+ * template<RepresentationOf<quantity_field::real> Rep>
+ * struct weather_record {
+ *   quantity<isq::thermodynamic_temperature[K], Rep> temperature;
+ *   quantity<isq::pressure[Pa], Rep> pressure;
+ *   quantity<isq::speed[m / s], Rep> wind_speed;
+ * };
+ *
+ * weather_record<float> compact;
+ * weather_record<double> precise;
+ * // doesn't compile: the fields are real quantities
+ * // weather_record<std::complex<double>> bad;
+ * @endcode
+ *
+ * @see [Concepts](docs:users_guide/advanced_topics/concepts#RepresentationOf) in the User's Guide
+ * @see [Representation Types](docs:users_guide/advanced_topics/representation_types) for the requirements and
+ * customization points
+ */
 MP_UNITS_EXPORT template<typename T, auto V>
 concept RepresentationOf = (!disable_representation<T>) && detail::SomeRepresentation<T> &&
                            detail::CharacterConstraint<V> && requires { requires detail::CharacterAdmitted<T, V>; };

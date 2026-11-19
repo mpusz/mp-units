@@ -61,6 +61,47 @@ constexpr bool is_specialization_of_quantity_spec<quantity_spec<Derived, Params.
 
 // `is_base_of_v` rather than `derived_from`: one constraint atom instead of two, evaluated per type; the base is
 // always public and unambiguous, so the convertibility atom `derived_from` adds can never fail here.
+/**
+ * A concept matching every quantity specification
+ *
+ * Satisfied by a named quantity defined with `quantity_spec`, such as `isq::height`, by a
+ * quantity kind made with `kind_of`, and by the unnamed specification a quantity equation
+ * produces, such as `isq::length / isq::time`.
+ *
+ * @code{.cpp}
+ * // a symbolic expression that tracks the quantity it computes
+ * template<QuantitySpec auto QS>
+ * class symbolic_expression {
+ *   std::string expr_;
+ * public:
+ *   explicit symbolic_expression(std::string expr) : expr_(std::move(expr)) {}
+ *   [[nodiscard]] const std::string& expression() const { return expr_; }
+ * };
+ *
+ * template<QuantitySpec auto QS1, QuantitySpec auto QS2>
+ * symbolic_expression<QS1 / QS2> operator/(const symbolic_expression<QS1>& lhs,
+ *                                          const symbolic_expression<QS2>& rhs)
+ * {
+ *   return symbolic_expression<QS1 / QS2>("(" + lhs.expression() + " / " + rhs.expression() + ")");
+ * }
+ *
+ * inline const symbolic_expression<isq::length> distance("d");
+ * inline const symbolic_expression<isq::duration> duration("t");
+ * inline const auto speed = distance / duration;  // a symbolic expression of length / duration
+ * // doesn't compile; unconstrained, it would accept a unit
+ * // symbolic_expression<si::metre> bad("d");
+ * @endcode
+ *
+ * @code{.cpp}
+ * // values of types nobody spells, so naming what each one is helps where `auto` alone doesn't
+ * constexpr QuantitySpec auto power_spec = isq::energy / isq::duration;
+ * constexpr Dimension auto power_dimension = get_dimension(power_spec);
+ * constexpr Unit auto power_unit = si::joule / si::second;
+ * constexpr Reference auto power_reference = power_spec[power_unit];
+ * @endcode
+ *
+ * @see [Concepts](docs:users_guide/advanced_topics/concepts#QuantitySpec) in the User's Guide
+ */
 MP_UNITS_EXPORT template<typename T>
 concept QuantitySpec = std::is_base_of_v<detail::quantity_spec_interface_base, T> && detail::SymbolicConstant<T> &&
                        !detail::is_specialization_of_quantity_spec<std::remove_const_t<T>>;
@@ -95,17 +136,39 @@ MP_UNITS_EXPORT template<QuantitySpec From, QuantitySpec To>
 }  // namespace utility
 
 /**
- * A concept matching all quantity specifications of a provided property
+ * A concept matching the quantity specifications that convert to a given one or admit a given character
  *
  * `V` may be another quantity specification, in which case this is satisfied by every specification
  * implicitly convertible to it, or a character (a bare `quantity_tensor_order`, a bare
  * `quantity_field`, or a full `quantity_character`), in which case it is satisfied by every
  * specification that *admits* that character. A quantity kind admits every character. As in
- * `QuantityOf`, the type of `V` selects the reading.
+ * @ref QuantityOf, the type of `V` selects the reading.
  *
- * Ask this where no quantity exists yet to ask `QuantityOf` about, such as constraining a reference
- * taken as a template parameter (`utility::polar_vector` requires a radius whose specification admits
- * scalar).
+ * Ask this where no quantity exists yet to ask @ref QuantityOf about, such as constraining a
+ * reference taken as a template parameter (@ref utility::polar_vector requires a radius whose
+ * specification admits scalar).
+ *
+ * @code{.cpp}
+ * // a gauge reports a magnitude, never a direction
+ * template<QuantitySpecOf<quantity_tensor_order::scalar> auto QS>
+ * struct gauge_reading {
+ *   quantity<QS[mm], double> value;
+ * };
+ *
+ * constexpr gauge_reading<isq::thickness> coating{isq::thickness(0.25 * mm)};
+ * // doesn't compile; unconstrained, it would accept a vector quantity, as a scalar may store one
+ * // gauge_reading<isq::displacement> bad;
+ * @endcode
+ *
+ * @code{.cpp}
+ * // values of types nobody spells, so naming what each one is and which quantity it belongs to
+ * // helps where `auto` alone doesn't
+ * constexpr QuantitySpecOf<isq::power> auto power_spec = isq::energy / isq::duration;
+ * constexpr UnitOf<isq::power> auto power_unit = si::joule / si::second;
+ * constexpr ReferenceOf<isq::power> auto power_reference = power_spec[power_unit];
+ * @endcode
+ *
+ * @see [Concepts](docs:users_guide/advanced_topics/concepts#QuantitySpecOf) in the User's Guide
  */
 MP_UNITS_EXPORT template<typename T, auto V>
 concept QuantitySpecOf =

@@ -53,9 +53,35 @@ constexpr bool is_derived_from_specialization_of_quantity =
 }  // namespace detail
 
 /**
- * A concept matching all quantities in the library
+ * A concept matching every quantity
  *
- * Satisfied by all types being a either specialization or derived from `quantity`
+ * Satisfied by every specialization of @ref quantity and every type derived from one. Its
+ * counterpart for points is @ref QuantityPoint, and the two tell apart overloads that a delta and
+ * a point need to handle differently:
+ *
+ * @code{.cpp}
+ * // one name for printing a temperature and a temperature difference
+ * void print_temp(std::string_view title, QuantityPoint auto temp)
+ * {
+ *   std::cout << title << ": " << temp << " (" << temp.delta_from(si::absolute_zero).in(K)
+ *             << " above absolute zero)\n";
+ * }
+ *
+ * void print_temp(std::string_view title, Quantity auto temp)
+ * {
+ *   std::cout << title << ": " << temp << " (" << temp.in(K) << ")\n";
+ * }
+ *
+ * void report()
+ * {
+ *   quantity_point today = point<deg_C>(19.);
+ *   quantity_point tomorrow = point<deg_C>(21.);
+ *   print_temp("tomorrow", tomorrow);        // tomorrow: 21 °C (294.15 K above absolute zero)
+ *   print_temp("change", tomorrow - today);  // change: 2 °C (2 K)
+ * }
+ * @endcode
+ *
+ * @see [Concepts](docs:users_guide/advanced_topics/concepts#Quantity) in the User's Guide
  */
 MP_UNITS_EXPORT template<typename T>
 concept Quantity = detail::is_derived_from_specialization_of_quantity<T>;
@@ -89,6 +115,21 @@ concept QuantityLikeImpl = requires(const T& qty, const Traits<T>::rep& num) {
  *
  * The type of `V` selects the reading: a specification asks only the quantity-tree question, and a
  * character only the character question.
+ *
+ * @code{.cpp}
+ * // the library's own signature example: an interface that names the quantities it takes
+ * constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::length> auto distance,
+ *                                                 QuantityOf<isq::duration> auto duration)
+ * {
+ *   return distance / duration;
+ * }
+ *
+ * constexpr quantity speed = avg_speed(220. * km, 2. * h);  // 110 km/h
+ * // doesn't compile: the arguments are swapped
+ * // auto bad = avg_speed(2. * h, 220. * km);
+ * @endcode
+ *
+ * @see [Concepts](docs:users_guide/advanced_topics/concepts#QuantityOf) in the User's Guide
  */
 MP_UNITS_EXPORT template<typename Q, auto V>
 concept QuantityOf =

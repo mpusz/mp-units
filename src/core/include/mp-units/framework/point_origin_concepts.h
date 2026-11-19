@@ -40,13 +40,11 @@ constexpr bool is_specialization_of_relative_point_origin = false;
 
 }  // namespace detail
 
-/**
- * A concept matching all quantity point origins in the library
- *
- * Satisfied by either quantity points or by all types derived from `absolute_point_origin` class template.
- */
 // `is_base_of_v` rather than `derived_from`: one constraint atom instead of two, evaluated per type; the base is
 // always public and unambiguous, so the convertibility atom `derived_from` adds can never fail here.
+/**
+ * A concept matching every point origin
+ */
 MP_UNITS_EXPORT template<typename T>
 concept PointOrigin = std::is_base_of_v<detail::point_origin_interface, T> && detail::SymbolicConstant<T> &&
                       !detail::is_specialization_of_absolute_point_origin<std::remove_const_t<T>> &&

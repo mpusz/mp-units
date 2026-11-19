@@ -68,9 +68,35 @@ constexpr bool is_quantity_point = false;
 }  // namespace detail
 
 /**
- * A concept matching all quantity points in the library
+ * A concept matching every quantity point
  *
- * Satisfied by all types being either a specialization or derived from `quantity_point`
+ * Satisfied by every specialization of @ref quantity_point and every type derived from one. Its
+ * counterpart for deltas is @ref Quantity, and the two tell apart overloads that a delta and a
+ * point need to handle differently:
+ *
+ * @code{.cpp}
+ * // one name for printing a temperature and a temperature difference
+ * void print_temp(std::string_view title, QuantityPoint auto temp)
+ * {
+ *   std::cout << title << ": " << temp << " (" << temp.delta_from(si::absolute_zero).in(K)
+ *             << " above absolute zero)\n";
+ * }
+ *
+ * void print_temp(std::string_view title, Quantity auto temp)
+ * {
+ *   std::cout << title << ": " << temp << " (" << temp.in(K) << ")\n";
+ * }
+ *
+ * void report()
+ * {
+ *   quantity_point today = point<deg_C>(19.);
+ *   quantity_point tomorrow = point<deg_C>(21.);
+ *   print_temp("tomorrow", tomorrow);        // tomorrow: 21 °C (294.15 K above absolute zero)
+ *   print_temp("change", tomorrow - today);  // change: 2 °C (2 K)
+ * }
+ * @endcode
+ *
+ * @see [Concepts](docs:users_guide/advanced_topics/concepts#QuantityPoint) in the User's Guide
  */
 MP_UNITS_EXPORT template<typename T>
 concept QuantityPoint = detail::is_quantity_point<T>;
@@ -79,9 +105,30 @@ MP_UNITS_EXPORT template<QuantityPoint auto QP, auto... Args>
 struct relative_point_origin;
 
 /**
- * A concept matching all quantity point origins for a specified quantity type in the library
+ * A concept matching the point origins of a given quantity
  *
- * Satisfied by all quantity point origins that are defined using a provided quantity specification.
+ * Satisfied by a point origin defined for a quantity that `QS` converts to implicitly. So an
+ * origin of _altitude_ serves _altitude_ and _height_, but not _length_ or _thermodynamic
+ * temperature_.
+ *
+ * @code{.cpp}
+ * inline constexpr struct mean_sea_level final :
+ *   absolute_point_origin<isq::altitude> {} mean_sea_level;
+ *
+ * // a runway surveyed against one datum, which both of its points are measured from
+ * template<PointOriginFor<isq::altitude> auto Datum>
+ * struct runway_survey {
+ *   quantity_point<isq::altitude[m], Datum> threshold;
+ *   quantity_point<isq::altitude[m], Datum> far_end;
+ * };
+ *
+ * constexpr runway_survey<mean_sea_level> runway{mean_sea_level + isq::altitude(110. * m),
+ *                                                mean_sea_level + isq::altitude(116. * m)};
+ * // doesn't compile: not an origin of altitude
+ * // runway_survey<si::absolute_zero> bad;
+ * @endcode
+ *
+ * @see [Concepts](docs:users_guide/advanced_topics/concepts#PointOriginFor) in the User's Guide
  */
 MP_UNITS_EXPORT template<typename T, auto QS>
 concept PointOriginFor = PointOrigin<T> && QuantitySpecOf<MP_UNITS_NTTP_HACK(decltype(QS)), T::_quantity_spec_>;
@@ -133,14 +180,34 @@ concept SameAbsolutePointOriginAs =
 
 
 /**
- * A concept matching all quantity points of the provided property
+ * A concept matching the quantity points of a given quantity or origin
  *
- * Satisfied by all quantity points with a quantity_spec being the instantiation derived from
- * the provided quantity_spec type, quantity points having the origin with the same
- * `absolute_point_origin`, or quantity points of the character named by `V` (a bare
- * `quantity_tensor_order`, a bare `quantity_field`, or a full `quantity_character`).
+ * `V` may be a quantity specification, in which case this is satisfied by every point whose
+ * reference satisfies @ref ReferenceOf with `V`, a point origin, in which case it is satisfied by
+ * every point measured from the same absolute origin, or a character (a bare
+ * `quantity_tensor_order`, a bare `quantity_field`, or a full `quantity_character`), in which
+ * case it is satisfied by every point of that character.
  *
- * A point isn't a `Quantity`, so `QuantityPointOf` is where its character is asked.
+ * A point isn't a @ref Quantity, so `QuantityPointOf` is where its character is asked.
+ *
+ * @code{.cpp}
+ * // the ideal gas law needs a temperature measured from absolute zero, never a difference
+ * constexpr QuantityOf<isq::pressure> auto gas_pressure(
+ *   QuantityOf<dimensionless> auto particles, QuantityPointOf<si::absolute_zero> auto temp,
+ *   QuantityOf<isq::volume> auto volume)
+ * {
+ *   return particles * si::boltzmann_constant * temp.delta_from(si::absolute_zero) / volume;
+ * }
+ *
+ * constexpr quantity particles = 2.5e22 * one;
+ * constexpr quantity volume = 1. * L;
+ * constexpr quantity pressure = gas_pressure(particles, point<K>(300.), volume);   // ≈ 103.5 kPa
+ * constexpr quantity same = gas_pressure(particles, point<deg_C>(26.85), volume);  // in Celsius
+ * // doesn't compile: a temperature difference isn't a temperature
+ * // auto bad = gas_pressure(particles, delta<deg_C>(26.85), volume);
+ * @endcode
+ *
+ * @see [Concepts](docs:users_guide/advanced_topics/concepts#QuantityPointOf) in the User's Guide
  */
 MP_UNITS_EXPORT template<typename QP, auto V>
 concept QuantityPointOf =
