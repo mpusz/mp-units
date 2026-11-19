@@ -655,9 +655,20 @@ def _generate_api_reference(docs_dir: Path) -> None:
         raise SystemExit("mrdocs: generating the API reference failed")
 
 
+# Whether this is `properdocs serve`, where `scripts/docs_serve.py` regenerates the reference in the
+# background instead, so that a rebuild never waits for MrDocs.
+_serving = False
+
+
+def on_startup(*, command, dirty):
+    global _serving
+    _serving = command == "serve"
+
+
 def on_config(config, **kwargs):
     _corpus.reset(config["docs_dir"])
-    _generate_api_reference(_corpus.docs_dir)
+    if not (_serving and (_corpus.docs_dir / API_DIR).is_dir()):
+        _generate_api_reference(_corpus.docs_dir)
     if not (_corpus.docs_dir / API_DIR).is_dir():
         return config
 

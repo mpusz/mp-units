@@ -5065,11 +5065,24 @@ def generate_if_needed(source_root: Path, force: bool = False) -> int:
 
 
 # ProperDocs hook integration
+
+# Whether this is `properdocs serve`, where `scripts/docs_serve.py` regenerates the reference in the
+# background instead, so that a rebuild never waits for it.
+_serving = False
+
+
+def on_startup(*, command, dirty):
+    global _serving
+    _serving = command == "serve"
+
+
 def on_pre_build(config, **kwargs):
     """ProperDocs hook: generate systems reference before building docs"""
     # Determine source root from properdocs config
     docs_dir = Path(config["docs_dir"])
     source_root = docs_dir.parent
+    if _serving and (docs_dir / "reference/systems_reference/systems").is_dir():
+        return None
 
     return generate_if_needed(source_root, force=False)
 

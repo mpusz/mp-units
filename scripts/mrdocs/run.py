@@ -268,6 +268,9 @@ def _input_hash() -> str:
     hasher = hashlib.sha256()
     hasher.update(VERSION.encode())
     hasher.update(CONFIG.read_bytes())
+    # This script post-processes the pages (synopsis layout, comment stripping), so a change to it
+    # changes the output as much as a header does.
+    hasher.update(Path(__file__).read_bytes())
 
     # The synopses are laid out by clang-format, so the style file and the
     # formatter's version change the output just as a header does.
@@ -581,6 +584,49 @@ def _split_markup(fragment: str) -> tuple[list[tuple[str, str]], str]:
     return stream, "".join(char for kind, char in stream if kind == "char")
 
 
+def _strip_comments(stream: list[tuple[str, str]]) -> list[tuple[str, str]]:
+    """Drop the `//` comments MrDocs copies from a definition into its synopsis.
+
+    A concept's synopsis is its constraint as written, so maintainer notes inside it (why an atom
+    is wrapped, which compiler runs out of heap) reach the reference. They say nothing about the
+    API, and a comment also stops clang-format from joining what follows it. A line that held only
+    a comment goes entirely. A `//` inside a string literal, such as a deprecation message, is kept.
+    """
+    out: list[tuple[str, str]] = []
+    in_string = in_comment = whole_line = False
+    previous = ""
+    for kind, value in stream:
+        if in_comment:
+            if kind == "char" and value == "\n":
+                in_comment = False
+                if not whole_line:
+                    out.append((kind, value))
+            continue
+        if kind == "tag":
+            out.append((kind, value))
+            continue
+        if value == '"' and previous != "\\":
+            in_string = not in_string
+        elif (
+            not in_string
+            and value == "/"
+            and previous == "/"
+            and out
+            and out[-1] == ("char", "/")
+        ):
+            out.pop()
+            # a comment alone on its line takes the indentation before it and its newline too
+            while out and out[-1][0] == "char" and out[-1][1] in " \t":
+                out.pop()
+            whole_line = not out or out[-1] == ("char", "\n")
+            in_comment = True
+            previous = ""
+            continue
+        out.append((kind, value))
+        previous = value
+    return out
+
+
 def _reapply_markup(stream: list[tuple[str, str]], formatted: str) -> str:
     """Put the links back, following clang-format's whitespace.
 
@@ -607,7 +653,7 @@ def _reapply_markup(stream: list[tuple[str, str]], formatted: str) -> str:
 
 
 def _derived_style(binary: str, directory: Path) -> Path | None:
-    """The project's style with the token-rewriting options turned off.
+    """The project's style with the token-rewriting options turned off, and a narrower limit.
 
     Built from `--dump-config` rather than by appending to .clang-format,
     because the options to override are already set there and clang-format
@@ -638,6 +684,9 @@ def _derived_style(binary: str, directory: Path) -> Path | None:
     config = yaml.safe_load(dumped.stdout)
     config["BreakStringLiterals"] = False
     config["QualifierAlignment"] = "Leave"
+    # The source is formatted at 120 columns, which overflows the rendered code block and makes it
+    # scroll sideways. 90 matches the prose width of the documentation and fits a desktop window.
+    config["ColumnLimit"] = 90
 
     style = directory / ".clang-format"
     style.write_text(yaml.safe_dump(config, sort_keys=False), encoding="utf-8")
@@ -677,8 +726,9 @@ def format_synopses(root: Path, binary: str) -> tuple[int, int]:
             continue
         bodies[page] = text
         for number, match in enumerate(matches):
-            stream, plain = _split_markup(match.group(2))
-            plain = plain.strip()
+            stream, _ = _split_markup(match.group(2))
+            stream = _strip_comments(stream)
+            plain = "".join(char for kind, char in stream if kind == "char").strip()
             if not plain:
                 continue
             # A class synopsis is a fragment with no terminator. Left as-is it

@@ -11,12 +11,13 @@ repo_url: https://github.com/mpusz/mp-units
 # Copyright
 copyright: Copyright &copy; 2018-2023 Mateusz Pusz
 
-# Watch additional directories for changes during 'properdocs serve'
-watch:
-  - src/systems/include/mp-units/systems
-
 # Hooks
+#
+# The headers are not in a `watch:` list. While serving, `scripts/docs_serve.py` regenerates the two
+# references from them in the background and writes only pages whose content changed, so the
+# server rebuilds only when a page did.
 hooks:
+  - scripts/docs_serve.py
   - scripts/systems_reference.py
   # Navigation, cross-references and synopsis highlighting for the API
   # reference. Also regenerates it, from `on_config` rather than the more
