@@ -93,13 +93,14 @@ struct mp_units::quantity_like_traits<Meter> {
 };
 ```
 
-### Step 2: Verify the Concept
+### Step 2: Verify the Conversions
 
-Check that the [`QuantityLike`](../../users_guide/advanced_topics/concepts.md#QuantityLike)
-concept is satisfied:
+Check that the conversions exist in the directions the trait asks for:
 
 ```cpp
-static_assert(mp_units::QuantityLike<Meter>);
+static_assert(std::convertible_to<Meter, quantity<si::metre, int>>);   // implicit import
+static_assert(std::constructible_from<Meter, quantity<si::metre, int>>);  // explicit export
+static_assert(!std::convertible_to<quantity<si::metre, int>, Meter>);
 ```
 
 ### Step 3: Use the Conversions
@@ -181,8 +182,9 @@ information at compile time. **mp-units** provides variable templates to query:
 - `reference_for<T>` - extracts the full reference (unit + quantity specification)
 - `rep_for<T>` - extracts the representation type
 
-These utilities are particularly useful in generic code and work with any type that satisfies
-`QuantityLike` or `QuantityPointLike`, including `std::chrono` types. They are convenient
+These utilities are particularly useful in generic code and work with any type that a
+`quantity_like_traits` or `quantity_point_like_traits` specialization describes, including
+`std::chrono` types. They are convenient
 accessors that automatically use the underlying `quantity_like_traits` or
 `quantity_point_like_traits` you've defined for custom types.
 
@@ -272,13 +274,16 @@ struct mp_units::quantity_point_like_traits<Timestamp> {
 ```
 
 <!-- markdownlint-disable-next-line MD024 -->
-### Step 2: Verify the Concept
+### Step 2: Verify the Conversions
 
-Check that the [`QuantityPointLike`](../../users_guide/advanced_topics/concepts.md#QuantityPointLike)
-concept is satisfied:
+Check that the conversions exist in the directions the trait asks for:
 
 ```cpp
-static_assert(mp_units::QuantityPointLike<Timestamp>);
+using timestamp_point = quantity_point<si::second, default_point_origin(si::second), int>;
+
+static_assert(std::convertible_to<Timestamp, timestamp_point>);      // implicit import
+static_assert(std::constructible_from<Timestamp, timestamp_point>);  // explicit export
+static_assert(!std::convertible_to<timestamp_point, Timestamp>);
 ```
 
 <!-- markdownlint-disable-next-line MD024 -->
@@ -437,7 +442,6 @@ or to integrate with external libraries while maintaining strong dimensional saf
 
 <!-- markdownlint-disable MD013 -->
 - [The Affine Space](../../users_guide/framework_basics/the_affine_space.md) - Understanding quantity points
-- [Concepts](../../users_guide/advanced_topics/concepts.md) - `QuantityLike` and `QuantityPointLike` concepts
 - [Value Conversions](../../users_guide/framework_basics/value_conversions.md) - Understanding conversion rules
 <!-- markdownlint-enable MD013 -->
 

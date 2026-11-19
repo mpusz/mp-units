@@ -24,6 +24,7 @@
 
 // IWYU pragma: private, include <mp-units/framework.h>
 #include <mp-units/bits/module_macros.h>
+#include <mp-units/compat_macros.h>
 #include <mp-units/framework/symbolic_expression.h>
 
 namespace mp_units {
@@ -38,16 +39,23 @@ constexpr bool is_specialization_of_absolute_point_origin = false;
 template<typename T>
 constexpr bool is_specialization_of_relative_point_origin = false;
 
-}  // namespace detail
-
+// Every point origin. Exposition-only: an interface needs `PointOriginFor`, which pins the quantity,
+// or the library's own checks that two origins share an absolute one, never this concept alone.
+//
 // `is_base_of_v` rather than `derived_from`: one constraint atom instead of two, evaluated per type; the base is
 // always public and unambiguous, so the convertibility atom `derived_from` adds can never fail here.
+template<typename T>
+concept PointOrigin = std::is_base_of_v<point_origin_interface, T> && SymbolicConstant<T> &&
+                      !is_specialization_of_absolute_point_origin<std::remove_const_t<T>> &&
+                      !is_specialization_of_relative_point_origin<std::remove_const_t<T>>;
+
+}  // namespace detail
+
 /**
  * A concept matching every point origin
  */
 MP_UNITS_EXPORT template<typename T>
-concept PointOrigin = std::is_base_of_v<detail::point_origin_interface, T> && detail::SymbolicConstant<T> &&
-                      !detail::is_specialization_of_absolute_point_origin<std::remove_const_t<T>> &&
-                      !detail::is_specialization_of_relative_point_origin<std::remove_const_t<T>>;
+concept PointOrigin MP_UNITS_DEPRECATED_CONCEPT("2.6.0: Use `PointOriginFor` or pass the origin as a value") =
+  detail::PointOrigin<T>;
 
 }  // namespace mp_units

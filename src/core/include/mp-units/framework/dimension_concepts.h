@@ -25,6 +25,7 @@
 // IWYU pragma: private, include <mp-units/framework.h>
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
+#include <mp-units/compat_macros.h>
 #include <mp-units/ext/type_traits.h>
 #include <mp-units/framework/symbol_text.h>
 #include <mp-units/framework/symbolic_expression.h>
@@ -95,6 +96,7 @@ concept BaseDimension = Dimension<T> && is_derived_from_specialization_of_v<T, b
  * A concept matching a dimension equal to a given one
  */
 MP_UNITS_EXPORT template<typename T, auto D>
-concept DimensionOf = Dimension<T> && Dimension<MP_UNITS_NTTP_HACK(decltype(D))> && (T{} == D);
+concept DimensionOf MP_UNITS_DEPRECATED_CONCEPT("2.6.0: Compare the dimensions with `==` instead") =
+  Dimension<T> && Dimension<MP_UNITS_NTTP_HACK(decltype(D))> && (T{} == D);
 
 }  // namespace mp_units

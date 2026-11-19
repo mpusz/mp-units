@@ -46,14 +46,14 @@ using sys_days =
 template<Unit auto U, typename C, typename Rep = double>
 using time_point = quantity_point<U, chrono_point_origin<C>, Rep>;
 
-static_assert(QuantityLike<std::chrono::seconds>);
+static_assert(detail::QuantityLike<std::chrono::seconds>);
 static_assert(!Quantity<std::chrono::seconds>);
 static_assert(!QuantityPoint<std::chrono::seconds>);
-static_assert(!QuantityPointLike<std::chrono::seconds>);
+static_assert(!detail::QuantityPointLike<std::chrono::seconds>);
 
-static_assert(QuantityPointLike<sys_seconds>);
+static_assert(detail::QuantityPointLike<sys_seconds>);
 static_assert(!Quantity<sys_seconds>);
-static_assert(!QuantityLike<sys_seconds>);
+static_assert(!detail::QuantityLike<sys_seconds>);
 static_assert(!QuantityPoint<sys_seconds>);
 
 // construction - same rep type

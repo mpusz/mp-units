@@ -398,7 +398,7 @@ struct named_unit<Symbol, QS> : detail::unit_interface {
   static constexpr auto _quantity_spec_ = QS;
 };
 
-template<symbol_text Symbol, detail::QuantityKindSpec auto QS, PointOrigin auto PO>
+template<symbol_text Symbol, detail::QuantityKindSpec auto QS, detail::PointOrigin auto PO>
   requires(!Symbol.empty()) &&
           (detail::BaseDimension<MP_UNITS_NONCONST_TYPE(QS._dimension_)> || detail::remove_kind(QS) == dimensionless)
 struct named_unit<Symbol, QS, PO> : detail::unit_interface {
@@ -423,7 +423,7 @@ struct named_unit<Symbol, U> : decltype(U)::_base_type_ {
   static constexpr auto _symbol_ = Symbol;  ///< Unique unit identifier
 };
 
-template<symbol_text Symbol, Unit auto U, PointOrigin auto PO>
+template<symbol_text Symbol, Unit auto U, detail::PointOrigin auto PO>
   requires(!Symbol.empty()) && detail::is_positive_canonical_unit_mag<U>
 struct named_unit<Symbol, U, PO> : decltype(U)::_base_type_ {
   using _base_type_ = named_unit;           // exposition only
@@ -449,7 +449,7 @@ struct named_unit<Symbol, U, QS> : decltype(U)::_base_type_ {
   static constexpr auto _quantity_spec_ = QS;
 };
 
-template<symbol_text Symbol, Unit auto U, detail::QuantityKindSpec auto QS, PointOrigin auto PO>
+template<symbol_text Symbol, Unit auto U, detail::QuantityKindSpec auto QS, detail::PointOrigin auto PO>
   requires(!Symbol.empty()) && (QS._dimension_ == detail::get_associated_quantity(U)._dimension_) &&
           detail::is_positive_canonical_unit_mag<U>
 struct named_unit<Symbol, U, QS, PO> : decltype(U)::_base_type_ {

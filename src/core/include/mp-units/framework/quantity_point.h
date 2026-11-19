@@ -56,23 +56,23 @@ namespace mp_units {
 
 namespace detail {
 
-template<PointOrigin PO>
+template<detail::PointOrigin PO>
 constexpr bool is_specialization_of_natural_point_origin = false;
 
-template<PointOrigin PO>
+template<detail::PointOrigin PO>
 [[nodiscard]] consteval bool is_natural_point_origin(PO)
 {
   return is_specialization_of_natural_point_origin<PO>;
 }
 
-template<PointOrigin PO>
+template<detail::PointOrigin PO>
 [[deprecated("2.6.0: Use `is_natural_point_origin` instead")]] [[nodiscard]] consteval bool is_zeroth_point_origin(
   PO po)
 {
   return is_natural_point_origin(po);
 }
 
-template<typename FwdQ, PointOrigin PO, Quantity Q = std::remove_cvref_t<FwdQ>>
+template<typename FwdQ, detail::PointOrigin PO, Quantity Q = std::remove_cvref_t<FwdQ>>
   requires PointOriginFor<PO, Q::quantity_spec>
 [[nodiscard]] constexpr QuantityPoint auto make_quantity_point(FwdQ&& q, PO po)
 {
@@ -112,27 +112,27 @@ template<Quantity auto Q>
 }
 
 struct point_origin_interface {
-  template<PointOrigin PO>
+  template<detail::PointOrigin PO>
   [[nodiscard]] friend consteval QuantitySpec auto get_quantity_spec(PO po)
   {
     return po._quantity_spec_;
   }
 
-  template<PointOrigin PO, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
+  template<detail::PointOrigin PO, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
     requires PointOriginFor<PO, Q::quantity_spec>
   [[nodiscard]] friend constexpr QuantityPoint auto operator+(PO po, FwdQ&& q)
   {
     return quantity_point{std::forward<FwdQ>(q), po};
   }
 
-  template<typename FwdQ, PointOrigin PO, Quantity Q = std::remove_cvref_t<FwdQ>>
+  template<typename FwdQ, detail::PointOrigin PO, Quantity Q = std::remove_cvref_t<FwdQ>>
     requires PointOriginFor<PO, Q::quantity_spec>
   [[nodiscard]] friend constexpr QuantityPoint auto operator+(FwdQ&& q, PO po)
   {
     return po + std::forward<FwdQ>(q);
   }
 
-  template<PointOrigin PO, Quantity Q>
+  template<detail::PointOrigin PO, Quantity Q>
     requires PointOriginFor<PO, Q::quantity_spec>
   [[nodiscard]] friend constexpr QuantityPoint auto operator-(PO po, const Q& q)
     requires requires { -q; }
@@ -140,7 +140,7 @@ struct point_origin_interface {
     return po + (-q);
   }
 
-  template<PointOrigin PO1, detail::SameAbsolutePointOriginAs<PO1{}> PO2>
+  template<detail::PointOrigin PO1, detail::SameAbsolutePointOriginAs<PO1{}> PO2>
     requires(PointOriginFor<PO2, get_quantity_spec(PO1{})> || PointOriginFor<PO1, get_quantity_spec(PO2{})>) &&
             (is_derived_from_specialization_of_v<PO1, relative_point_origin> ||
              is_derived_from_specialization_of_v<PO2, relative_point_origin>)
@@ -157,7 +157,7 @@ struct point_origin_interface {
     return detail::coarsen_origin_displacement<raw>();
   }
 
-  template<PointOrigin PO1, PointOrigin PO2>
+  template<detail::PointOrigin PO1, detail::PointOrigin PO2>
   [[nodiscard]] friend consteval bool operator==(PO1 po1, PO2 po2)
   {
     if constexpr (is_derived_from_specialization_of_v<PO1, absolute_point_origin> &&
@@ -247,7 +247,7 @@ struct relative_point_origin : detail::point_origin_interface {
     else
       return QP.quantity_spec;
   }();
-  static constexpr PointOrigin auto _absolute_point_origin_ = QP.absolute_point_origin;
+  static constexpr detail::PointOrigin auto _absolute_point_origin_ = QP.absolute_point_origin;
   static constexpr auto _bounds_ = detail::bounds_arg<Args...>();
 };
 
@@ -309,8 +309,8 @@ MP_UNITS_EXPORT template<Reference R>
 
 namespace detail {
 
-template<PointOrigin PO>
-[[nodiscard]] consteval PointOrigin auto get_absolute_point_origin(PO po)
+template<detail::PointOrigin PO>
+[[nodiscard]] consteval detail::PointOrigin auto get_absolute_point_origin(PO po)
 {
   if constexpr (is_derived_from_specialization_of_v<PO, absolute_point_origin>)
     return po;
@@ -325,7 +325,7 @@ namespace detail {
 // Compiles to the quantity offset from PO's own _quantity_point_ reference origin,
 // i.e., the value stored in the relative_point_origin<QP> template argument.
 // Only valid when PO is a relative_point_origin.
-template<PointOrigin PO>
+template<detail::PointOrigin PO>
   requires requires { PO::_quantity_point_; }
 [[nodiscard]] consteval auto offset_from_parent(PO)
 {
@@ -335,7 +335,7 @@ template<PointOrigin PO>
 
 // True iff PO carries a bounds policy of its own (a _bounds_ member that is not unspecified).
 // Unlike has_quantity_bounds_v, it runs no nesting check.
-template<PointOrigin PO>
+template<detail::PointOrigin PO>
 [[nodiscard]] consteval bool has_own_bounds(PO)
 {
   // Clang 16 rejects (and Clang 17 crashes on) the nested consteval calls inside the `if constexpr`
@@ -352,7 +352,7 @@ template<PointOrigin PO>
 }
 
 // True iff an origin above PO (PO itself excluded) carries bounds of its own.
-template<PointOrigin PO>
+template<detail::PointOrigin PO>
 [[nodiscard]] consteval bool has_bounded_ancestor(PO)
 {
   if constexpr (is_derived_from_specialization_of_v<PO, relative_point_origin>) {
@@ -365,7 +365,7 @@ template<PointOrigin PO>
 
 // The nearest origin above PO (PO itself excluded) that carries bounds of its own.
 // Only valid when has_bounded_ancestor(PO) is true.
-template<PointOrigin PO>
+template<detail::PointOrigin PO>
 [[nodiscard]] consteval auto nearest_bounded_ancestor(PO)
 {
   constexpr auto parent_po = PO::_quantity_point_.point_origin;
@@ -377,7 +377,7 @@ template<PointOrigin PO>
 
 // The cumulative offset from PO's frame to the frame of nearest_bounded_ancestor(PO).
 // Only valid when has_bounded_ancestor(PO) is true.
-template<PointOrigin PO>
+template<detail::PointOrigin PO>
 [[nodiscard]] consteval auto offset_to_bounded_ancestor(PO)
 {
   constexpr auto parent_po = PO::_quantity_point_.point_origin;
@@ -417,7 +417,7 @@ template<typename Policy>
 // ancestor bound needs an included bound of PO strictly inside it. The variable is instantiated when
 // PO's bounds are first used, and the compiler caches it, so the static_asserts fire once per origin
 // rather than at each enforce_bounds call.
-template<PointOrigin PO>
+template<detail::PointOrigin PO>
 constexpr bool has_quantity_bounds_v = [] {
   if constexpr (has_own_bounds(PO{})) {
     static_assert(
@@ -462,10 +462,10 @@ constexpr bool has_quantity_bounds_v = [] {
 }();
 
 template<typename PO>
-concept HasQuantityBounds = PointOrigin<PO> && has_quantity_bounds_v<PO>;
+concept HasQuantityBounds = detail::PointOrigin<PO> && has_quantity_bounds_v<PO>;
 
 // Returns true if PO or any ancestor has quantity_bounds defined.
-template<PointOrigin PO>
+template<detail::PointOrigin PO>
 consteval bool any_ancestor_has_bounds(PO)
 {
   if constexpr (HasQuantityBounds<PO>)
@@ -478,7 +478,7 @@ consteval bool any_ancestor_has_bounds(PO)
 
 // Returns the nearest (self or ancestor) PointOrigin that has bounds defined.
 // Only valid when any_ancestor_has_bounds<PO>() is true.
-template<PointOrigin PO>
+template<detail::PointOrigin PO>
 [[nodiscard]] consteval auto bounds_po_for(PO po)
 {
   if constexpr (HasQuantityBounds<PO>)
@@ -492,7 +492,7 @@ template<PointOrigin PO>
 // Returns the compile-time cumulative quantity offset from PO's frame to the
 // nearest bounds-owning ancestor's frame.
 // Only valid when !HasQuantityBounds<PO> && any_ancestor_has_bounds<PO>() is true.
-template<PointOrigin PO>
+template<detail::PointOrigin PO>
 [[nodiscard]] consteval auto bounds_offset(PO)
 {
   static_assert(is_derived_from_specialization_of_v<PO, relative_point_origin>,
@@ -519,7 +519,7 @@ template<Quantity V, typename Policy>
 // floating-point representation keeps the offset's unit. Any other one is converted to Q's unit too, so
 // the translated value stays in Q's quantity type, which bounds_exact_in requires to be exact.
 // Only valid when !HasQuantityBounds<PO> && any_ancestor_has_bounds(PO) is true.
-template<PointOrigin auto PO, Quantity Q>
+template<detail::PointOrigin auto PO, Quantity Q>
 [[nodiscard]] constexpr Quantity auto bounds_offset_in()
 {
   constexpr auto off = bounds_offset(PO);
@@ -532,7 +532,7 @@ template<PointOrigin auto PO, Quantity Q>
 // True iff each bound of the bounds owner is exact in the type the check runs in. So must be the
 // offset into the owner's frame, unless Q's representation is a floating-point one. A truncated
 // constant would move the bound.
-template<PointOrigin auto PO, Quantity Q>
+template<detail::PointOrigin auto PO, Quantity Q>
 [[nodiscard]] consteval bool bounds_exact_in()
 {
   if constexpr (HasQuantityBounds<MP_UNITS_NONCONST_TYPE(PO)>)
@@ -553,7 +553,7 @@ template<PointOrigin auto PO, Quantity Q>
 // Apply bounds to q (expressed relative to PO's origin frame).
 // Uses compile-time lookup to find the bounds owner and its offset from PO — at most a
 // single runtime translate/apply/un-translate with no recursive function calls.
-template<PointOrigin auto PO, auto R, typename Rep>
+template<detail::PointOrigin auto PO, auto R, typename Rep>
 constexpr quantity<R, Rep> enforce_bounds(quantity<R, Rep> q)
 {
   static_assert(bounds_exact_in<PO, quantity<R, Rep>>(),
@@ -589,7 +589,7 @@ constexpr quantity<R, Rep> enforce_bounds(quantity<R, Rep> q)
 // Tells whether `enforce_bounds<PO>(q)` would accept q without reporting a violation. It mirrors
 // enforce_bounds: the same bounds owner, the same offset arithmetic, and the same call of the
 // checking policy's predicate. Only valid when `enforced_bounds_check<PO, Q>()` is true.
-template<PointOrigin auto PO, Quantity Q>
+template<detail::PointOrigin auto PO, Quantity Q>
 [[nodiscard]] constexpr bool bounds_contain(const Q& q)
 {
   static_assert(bounds_exact_in<PO, Q>(),
@@ -608,7 +608,7 @@ template<PointOrigin auto PO, Quantity Q>
 // one, i.e. its operator() returns `bool` for the value it is handed (vacuously true when there are
 // no bounds at all). Construction applies only that policy, and the nesting check in
 // has_quantity_bounds_v keeps its range within those of the origins above.
-template<PointOrigin auto PO, Quantity Q>
+template<detail::PointOrigin auto PO, Quantity Q>
 [[nodiscard]] consteval bool enforced_bounds_check()
 {
   if constexpr (HasQuantityBounds<MP_UNITS_NONCONST_TYPE(PO)>) {
@@ -631,7 +631,7 @@ concept UnderlyingRepresentationOf = (!std::same_as<T, Rep>) && requires {
 // applies. As in the nesting rule, the range is that of the policy's `min` and `max`, so the answer is known
 // at compile time for every policy. Without bounds it is true, and with bounds but without a zero of Q,
 // false.
-template<PointOrigin auto PO, Quantity Q>
+template<detail::PointOrigin auto PO, Quantity Q>
 [[nodiscard]] consteval bool origin_within_bounds()
 {
   if constexpr (!any_ancestor_has_bounds(PO))
@@ -650,7 +650,7 @@ template<PointOrigin auto PO, Quantity Q>
 // declare by their `min` and `max`, as for default construction. A NaN lies in no range, and +∞ in exactly
 // those without an upper end, so neither goes through any arithmetic: a constant expression can't produce
 // or consume a NaN portably. Without bounds it is true.
-template<PointOrigin auto PO, Quantity Q>
+template<detail::PointOrigin auto PO, Quantity Q>
 [[nodiscard]] consteval bool limit_within_bounds(const Q& val)
 {
   if constexpr (!any_ancestor_has_bounds(PO))
@@ -670,7 +670,7 @@ template<PointOrigin auto PO, Quantity Q>
 }
 
 // True iff storing a value of type Q at PO applies a checking policy.
-template<PointOrigin auto PO, Quantity Q>
+template<detail::PointOrigin auto PO, Quantity Q>
 [[nodiscard]] consteval bool construction_checks_bounds()
 {
   return any_ancestor_has_bounds(PO) && enforced_bounds_check<PO, Q>();
@@ -680,7 +680,7 @@ template<PointOrigin auto PO, Quantity Q>
 // the absolute origin ToAbs: the point at the absolute origin of QP that the library passes to the
 // projection, unless QP is measured from there already, and the point the projection returns. Other
 // points that the projection constructs are not covered.
-template<QuantityPoint QP, PointOrigin auto ToAbs>
+template<QuantityPoint QP, detail::PointOrigin auto ToAbs>
 [[nodiscard]] consteval bool projection_checks_no_bounds()
 {
   using at_src = decltype(std::declval<const QP&>().point_for(QP::absolute_point_origin));
@@ -695,7 +695,7 @@ template<QuantityPoint QP, PointOrigin auto ToAbs>
 // constraint_violation_handler to report a rejection to, and the policy rejects v. Where it can
 // fail, it is the precondition of the quantity_point constructors, increments, decrements, and
 // compound assignments that store v.
-template<PointOrigin auto PO, Quantity Q>
+template<detail::PointOrigin auto PO, Quantity Q>
 [[nodiscard]] constexpr bool bounds_precondition(const Q& v)
 {
   if constexpr (any_ancestor_has_bounds(PO) && enforced_bounds_check<PO, Q>() &&
@@ -742,9 +742,9 @@ template<Quantity Q>
 // sentence is not gated.
 template<typename PO, auto PointPO>
 concept OriginRelatedTo =
-  PointOrigin<PO> && (same_absolute_point_origins(PO{}, PointPO) ||
-                      unsatisfied<"A point measured from '{}' has no quantity from the unrelated origin '{}'">(
-                        type_name(PointPO), type_name(PO{})));
+  detail::PointOrigin<PO> && (same_absolute_point_origins(PO{}, PointPO) ||
+                              unsatisfied<"A point measured from '{}' has no quantity from the unrelated origin '{}'">(
+                                type_name(PointPO), type_name(PO{})));
 
 // Two points whose origins are measured from the same absolute origin, which is what their difference
 // and their comparison need. `QuantityPoint<QP2>` leads because `qp - origin` makes the
@@ -954,7 +954,7 @@ template<typename T>
 // Where min() (Lower) or max() of a point of Q at PO comes from.
 enum class point_limit_source : std::uint8_t { none, own_bound, inherited_bound, representation };
 
-template<PointOrigin auto PO, Quantity Q, bool Lower>
+template<detail::PointOrigin auto PO, Quantity Q, bool Lower>
 [[nodiscard]] consteval point_limit_source limit_source()
 {
   constexpr bool rep_limit = Lower ? requires { Q::min(); } : requires { Q::max(); };
@@ -987,7 +987,7 @@ template<PointOrigin auto PO, Quantity Q, bool Lower>
 // is not floating-point. A floating-point one rounds, so the result is then moved one value at a
 // time to the last one that the policy's comparison still accepts after the translation that
 // enforcement applies.
-template<PointOrigin auto PO, Quantity Q, bool Lower>
+template<detail::PointOrigin auto PO, Quantity Q, bool Lower>
 [[nodiscard]] consteval Q inherited_limit()
 {
   constexpr auto bpo = bounds_po_for(PO);
@@ -1065,8 +1065,8 @@ public:
     detail::definite_character<quantity_spec._character_>();
 #endif
   static constexpr Unit auto unit = get_unit(reference);
-  static constexpr PointOrigin auto absolute_point_origin = detail::get_absolute_point_origin(PO);
-  static constexpr PointOrigin auto point_origin = PO;
+  static constexpr detail::PointOrigin auto absolute_point_origin = detail::get_absolute_point_origin(PO);
+  static constexpr detail::PointOrigin auto point_origin = PO;
   using rep = Rep;
   using quantity_type = quantity<reference, Rep>;
 
@@ -1163,7 +1163,7 @@ public:
    * returning `false`. It doesn't cover anything the projection does itself.
    */
   template<typename QP>
-    requires(QuantityPoint<QP> || QuantityPointLike<QP>) && (!std::same_as<QP, quantity_point>) &&
+    requires(QuantityPoint<QP> || detail::QuantityPointLike<QP>) && (!std::same_as<QP, quantity_point>) &&
             std::constructible_from<quantity_point, const QP&> && (detail::bounds_exact_in<PO, quantity_type>()) &&
             (detail::enforced_bounds_check<PO, quantity_type>()) &&
             (!QuantityPoint<QP> || QuantityPointOf<QP, absolute_point_origin> ||
@@ -1206,7 +1206,7 @@ public:
   }
 
   template<typename QP>
-    requires(QuantityPoint<QP> || QuantityPointLike<QP>) && requires(const QP& qp) { is_within_bounds(qp); }
+    requires(QuantityPoint<QP> || detail::QuantityPointLike<QP>) && requires(const QP& qp) { is_within_bounds(qp); }
   [[nodiscard]] static constexpr std::expected<quantity_point, bounds_violation> try_make(const QP& qp)
   {
     return stored_if_within_bounds(quantity_from_any_point(qp));
@@ -1261,7 +1261,7 @@ public:
       detail::bounds_precondition<point_origin>(quantity_from_origin_is_an_implementation_detail_));
   }
 
-  template<typename FwdQ, PointOrigin PO2, Quantity Q = std::remove_cvref_t<FwdQ>>
+  template<typename FwdQ, detail::PointOrigin PO2, Quantity Q = std::remove_cvref_t<FwdQ>>
     requires PointOriginFor<PO2, Q::quantity_spec> && std::constructible_from<quantity_type, FwdQ> &&
              detail::SameAbsolutePointOriginAs<PO2, PO> &&
              (detail::bounds_exact_in<PO2{}, quantity<Q::reference, typename Q::rep>>()) &&
@@ -1299,7 +1299,7 @@ public:
       detail::bounds_precondition<point_origin>(quantity_from_origin_is_an_implementation_detail_));
   }
 
-  template<QuantityPointLike QP>
+  template<detail::QuantityPointLike QP>
     requires(quantity_point_like_traits<QP>::point_origin == point_origin) &&
             std::constructible_from<quantity_type, quantity<quantity_point_like_traits<QP>::reference,
                                                             typename quantity_point_like_traits<QP>::rep>>
@@ -1338,7 +1338,7 @@ public:
     }
   }
 
-  template<PointOrigin NewPO, typename... Args>
+  template<detail::PointOrigin NewPO, typename... Args>
     requires detail::HasFrameProjection<absolute_point_origin, detail::get_absolute_point_origin(NewPO{})> &&
              requires(quantity_point<reference, absolute_point_origin, Rep> at_src, Args... args) {
                {
@@ -1348,7 +1348,7 @@ public:
   [[nodiscard]] constexpr QuantityPointOf<(NewPO{})> auto point_for(NewPO new_origin, Args&&... args) const
   {
     auto at_src = point_for(absolute_point_origin);
-    constexpr PointOrigin auto abs_tgt = detail::get_absolute_point_origin(NewPO{});
+    constexpr detail::PointOrigin auto abs_tgt = detail::get_absolute_point_origin(NewPO{});
     auto at_tgt = frame_projection<absolute_point_origin, abs_tgt>(at_src, std::forward<Args>(args)...);
     if constexpr (std::is_same_v<NewPO, MP_UNITS_NONCONST_TYPE(abs_tgt)>)
       return at_tgt;
@@ -1357,21 +1357,21 @@ public:
   }
 
   // data access
-  template<PointOrigin PO2>
+  template<detail::PointOrigin PO2>
     requires(PO2{} == point_origin)
   [[nodiscard]] constexpr quantity_type& quantity_ref_from(PO2) & noexcept
   {
     return quantity_from_origin_is_an_implementation_detail_;
   }
 
-  template<PointOrigin PO2>
+  template<detail::PointOrigin PO2>
     requires(PO2{} == point_origin)
   [[nodiscard]] constexpr const quantity_type& quantity_ref_from(PO2) const& noexcept
   {
     return quantity_from_origin_is_an_implementation_detail_;
   }
 
-  template<PointOrigin PO2>
+  template<detail::PointOrigin PO2>
     requires(PO2{} == point_origin)
   constexpr const quantity_type&& quantity_ref_from(PO2) const&& noexcept
 #if MP_UNITS_HAS_DELETED_FUNCTION_MESSAGE
@@ -1435,7 +1435,7 @@ public:
     return in(U{}).delta_from_zero().numerical_value_in(U{});
   }
 
-  template<UnitOf<quantity_spec> U, RoundingPolicy Policy>
+  template<UnitOf<quantity_spec> U, detail::RoundingPolicy Policy>
     requires(PO == default_point_origin(R)) && detail::ExplicitlyCastable<unit, U{}, rep> &&
             detail::ValidRoundingPolicyFor<Policy, rep, rep>
   [[nodiscard]] constexpr RepresentationOf<quantity_spec> auto numerical_value_in(U, Policy policy) const noexcept
@@ -1453,7 +1453,7 @@ public:
     return in<ToRep>(U{}).delta_from_zero().numerical_value_in(U{});
   }
 
-  template<RepresentationOf<quantity_spec> ToRep, UnitOf<quantity_spec> U, RoundingPolicy Policy>
+  template<RepresentationOf<quantity_spec> ToRep, UnitOf<quantity_spec> U, detail::RoundingPolicy Policy>
     requires(PO == default_point_origin(R)) && std::constructible_from<ToRep, rep> &&
             detail::ExplicitlyCastable<unit, U{}, ToRep> && detail::ValidRoundingPolicyFor<Policy, rep, ToRep>
   [[nodiscard]] constexpr RepresentationOf<quantity_spec> auto numerical_value_in(U, Policy policy) const
@@ -1505,21 +1505,21 @@ public:
     return in_impl(ToU{}, [](const auto& q) { return q.template in<ToRep>(ToU{}); });
   }
 
-  template<UnitOf<quantity_spec> ToU, RoundingPolicy Policy>
+  template<UnitOf<quantity_spec> ToU, detail::RoundingPolicy Policy>
     requires detail::ExplicitlyCastable<unit, ToU{}, rep> && detail::ValidRoundingPolicyFor<Policy, rep, rep>
   [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto in(ToU, Policy policy) const
   {
     return in_impl(ToU{}, [policy](const auto& q) { return q.in(ToU{}, policy); });
   }
 
-  template<RepresentationOf<quantity_spec> ToRep, RoundingPolicy Policy>
+  template<RepresentationOf<quantity_spec> ToRep, detail::RoundingPolicy Policy>
     requires std::constructible_from<ToRep, rep> && detail::ValidRoundingPolicyFor<Policy, rep, ToRep>
   [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto in(Policy policy) const
   {
     return ::mp_units::quantity_point{quantity_ref_from(point_origin).template in<ToRep>(policy), point_origin};
   }
 
-  template<RepresentationOf<quantity_spec> ToRep, UnitOf<quantity_spec> ToU, RoundingPolicy Policy>
+  template<RepresentationOf<quantity_spec> ToRep, UnitOf<quantity_spec> ToU, detail::RoundingPolicy Policy>
     requires std::constructible_from<ToRep, rep> && detail::ExplicitlyCastable<unit, ToU{}, ToRep> &&
              detail::ValidRoundingPolicyFor<Policy, rep, ToRep>
   [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto in(ToU, Policy policy) const
@@ -1554,7 +1554,7 @@ public:
   }
 
   // conversion operators
-  template<typename QP_, QuantityPointLike QP = std::remove_cvref_t<QP_>>
+  template<typename QP_, detail::QuantityPointLike QP = std::remove_cvref_t<QP_>>
     requires(point_origin == quantity_point_like_traits<QP>::point_origin) &&
             std::convertible_to<quantity_type, quantity<quantity_point_like_traits<QP>::reference,
                                                         typename quantity_point_like_traits<QP>::rep>>
@@ -1572,7 +1572,7 @@ public:
       quantity_from_origin_is_an_implementation_detail_.numerical_value_is_an_implementation_detail_);
   }
 
-  template<typename QP_, QuantityPointLike QP = std::remove_cvref_t<QP_>>
+  template<typename QP_, detail::QuantityPointLike QP = std::remove_cvref_t<QP_>>
     requires(point_origin == quantity_point_like_traits<QP>::point_origin) &&
             std::convertible_to<quantity_type, quantity<quantity_point_like_traits<QP>::reference,
                                                         typename quantity_point_like_traits<QP>::rep>>
@@ -1720,7 +1720,7 @@ private:
       return quantity_from_point_like(qp);
   }
 
-  template<QuantityPointLike QP>
+  template<detail::QuantityPointLike QP>
   [[nodiscard]] static constexpr quantity_type quantity_from_point_like(const QP& qp)
   {
     return quantity_type{quantity_point_like_traits<QP>::to_numerical_value(qp),
@@ -1742,7 +1742,7 @@ quantity_point(Q q) -> quantity_point<Q::reference, default_point_origin(Q::refe
 template<Quantity Q, PointOriginFor<Q::quantity_spec> PO, typename Rep = Q::rep>
 quantity_point(Q q, PO) -> quantity_point<Q::reference, PO{}, Rep>;
 
-template<QuantityPointLike QP, typename Rep = quantity_point_like_traits<QP>::rep>
+template<detail::QuantityPointLike QP, typename Rep = quantity_point_like_traits<QP>::rep>
 quantity_point(QP)
   -> quantity_point<quantity_point_like_traits<QP>::reference, quantity_point_like_traits<QP>::point_origin, Rep>;
 

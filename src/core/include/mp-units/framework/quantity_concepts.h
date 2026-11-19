@@ -143,23 +143,19 @@ concept QuantityOf =
                     requires QuantitySpecOf<decltype(Q::quantity_spec), V> && RepresentationOf<typename Q::rep, V>;
                   }));
 
-/**
- * A concept matching all external quantities like types
- *
- * Satisfied by all external types (not-defined in mp-units) that via a `quantity_like_traits` provide
- * all quantity-specific information.
- */
-MP_UNITS_EXPORT template<typename T>
-concept QuantityLike = !Quantity<T> && detail::QuantityLikeImpl<T, quantity_like_traits> && requires {
+namespace detail {
+
+// An external type that a `quantity_like_traits` specialization describes as a quantity. Exposition-only,
+// as in P3045: users specialize the traits and never need to name the concept.
+template<typename T>
+concept QuantityLike = !Quantity<T> && QuantityLikeImpl<T, quantity_like_traits> && requires {
   typename quantity<quantity_like_traits<T>::reference, typename quantity_like_traits<T>::rep>;
 };
-
-namespace detail {
 
 template<typename T>
   requires Quantity<T> || QuantityLike<T>
 constexpr bool is_quantity_abstraction<T> = true;
 
-}
+}  // namespace detail
 
 }  // namespace mp_units

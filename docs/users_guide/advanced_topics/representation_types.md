@@ -45,7 +45,7 @@ Independent of character, a representation type must be:
 - **[`UnitMagnitudeScalable`](#how-scaling-works)**, so the library can apply a unit magnitude
   ratio to it during unit conversion,
 - **not opted out** through [`disable_representation<T>`](#disable_representation) (a quantity
-  or [quantity-like](concepts.md#QuantityLike) type, a container of either, `bool`, and the
+  or [quantity-like][external-quantities] type, a container of either, `bool`, and the
   character types are opted out by default).
 
 On top of that baseline, the type's two character axes each add their own requirements. The
@@ -282,7 +282,7 @@ character-agnostic escape hatch: the field and order are answered by the `numeri
 representation at all?".
 
 **Default:** A type is opted out when it is, or its elements are, a quantity or a
-[quantity-like](concepts.md#QuantityLike) type. So a bare `quantity`, a `std::chrono::duration`,
+[quantity-like][external-quantities] type. So a bare `quantity`, a `std::chrono::duration`,
 and a container of either are all rejected. The library also opts out `bool` and the character
 types `char`, `wchar_t`, `char8_t`, `char16_t`, and `char32_t`. They are totally ordered and
 support arithmetic, yet they hold a truth value or a character, not a number. `signed char`
@@ -1170,3 +1170,5 @@ library that has no plugin, and the caveats (expression templates, the unsupport
 - [Ensure Ultimate Safety](../../how_to_guides/advanced_usage/ultimate_safety.md) - Combining `constrained` reps with bounded quantity points
 - [Working with Measurement Uncertainty](../../how_to_guides/advanced_usage/working_with_measurement_uncertainty.md) - The `uncertain<T>` representation and the `fold_conversion_uncertainty` customization point
 <!-- markdownlint-enable MD013 -->
+
+[external-quantities]: ../../how_to_guides/integration/converting_external_quantity_types.md

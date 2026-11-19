@@ -12,6 +12,14 @@ This page documents the version history and changes for the **mp-units** library
       the numerical value in another representation type, with the rules of
       `in<Rep>(unit)` and `in<Rep>(unit, policy)`, for a quantity and for a point at its
       default origin
+- (!) refactor: `QuantityLike` and `QuantityPointLike` are implementation details, as in
+      P3045. A type that `quantity_like_traits` or `quantity_point_like_traits` describes
+      converts as before. Code that named a concept, such as a `static_assert` checking a
+      traits specialization, checks the conversion instead
+- refactor: `DimensionOf` and `PointOrigin` are deprecated, as P3045 no longer proposes
+      them. `PointOriginFor` stays as the way to constrain an origin. The deprecation warns
+      on GCC 13 and Clang 19 and later, the first compilers to accept `[[deprecated]]` on
+      a concept
 - fix: `wrap_to_range` and `reflect_in_range` no longer overflow a standard integer
       representation when the length of the range, or the period of the reflection (twice
       that length), exceeds the representation's maximum

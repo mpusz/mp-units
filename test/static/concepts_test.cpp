@@ -80,7 +80,9 @@ static_assert(!Dimension<base_dimension<"L">>);
 static_assert(!Dimension<struct si::metre>);
 static_assert(!Dimension<int>);
 
-// DimensionOf
+// DimensionOf (deprecated)
+MP_UNITS_DIAGNOSTIC_PUSH
+MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
 static_assert(DimensionOf<struct isq::dim_length, isq::dim_length>);
 static_assert(DimensionOf<struct isq::dim_length, get_dimension(isq::height)>);
 static_assert(DimensionOf<struct isq::dim_length, get_dimension(isq::radius)>);
@@ -100,6 +102,7 @@ static_assert(
   DimensionOf<decltype(get_dimension(isq::force) * get_dimension(isq::duration)), get_dimension(isq::impulse)>);
 static_assert(DimensionOf<decltype(get_dimension(isq::angular_momentum) / get_dimension(isq::angular_velocity)),
                           get_dimension(isq::moment_of_inertia)>);
+MP_UNITS_DIAGNOSTIC_POP
 
 // QuantitySpec
 inline constexpr auto speed = isq::length / isq::duration;
@@ -783,14 +786,14 @@ static_assert(QuantityOf<quantity<one>, isq::angular_measure>);
 static_assert(!QuantityOf<quantity<dimensionless[one]>, isq::rotation>);
 static_assert(!QuantityOf<quantity<dimensionless[one]>, isq::angular_measure>);
 
-// QuantityLike
+// detail::QuantityLike
 #if MP_UNITS_HOSTED
-static_assert(QuantityLike<std::chrono::seconds>);
-static_assert(QuantityLike<std::chrono::hours>);
+static_assert(detail::QuantityLike<std::chrono::seconds>);
+static_assert(detail::QuantityLike<std::chrono::hours>);
 #endif
-static_assert(!QuantityLike<quantity<isq::duration[si::second]>>);
-static_assert(!QuantityLike<quantity_point<isq::length[si::metre], my_origin>>);
-static_assert(!QuantityLike<int>);
+static_assert(!detail::QuantityLike<quantity<isq::duration[si::second]>>);
+static_assert(!detail::QuantityLike<quantity_point<isq::length[si::metre], my_origin>>);
+static_assert(!detail::QuantityLike<int>);
 
 // QuantityPoint
 static_assert(QuantityPoint<quantity_point<si::metre, my_origin>>);
@@ -831,20 +834,20 @@ static_assert(QuantityPointOf<quantity_point<isq::radius[si::metre], my_origin>,
 static_assert(QuantityPointOf<quantity_point<isq::radius[si::metre], my_relative_origin>, my_relative_origin>);
 static_assert(QuantityPointOf<quantity_point<isq::radius[si::metre], my_relative_origin>, my_origin>);
 
-// PointOrigin
-static_assert(PointOrigin<struct my_origin>);
-static_assert(PointOrigin<struct my_relative_origin>);
-static_assert(!PointOrigin<absolute_point_origin<isq::length>>);
-static_assert(!PointOrigin<relative_point_origin<my_origin + 42 * si::metre>>);
-static_assert(!PointOrigin<quantity_point<si::metre, my_origin>>);
-static_assert(!PointOrigin<quantity_point<isq::length[si::metre], my_origin>>);
-static_assert(!PointOrigin<quantity_point<isq::radius[si::metre], my_origin>>);
-static_assert(!PointOrigin<decltype(isq::length[si::metre])>);
+// detail::PointOrigin
+static_assert(detail::PointOrigin<struct my_origin>);
+static_assert(detail::PointOrigin<struct my_relative_origin>);
+static_assert(!detail::PointOrigin<absolute_point_origin<isq::length>>);
+static_assert(!detail::PointOrigin<relative_point_origin<my_origin + 42 * si::metre>>);
+static_assert(!detail::PointOrigin<quantity_point<si::metre, my_origin>>);
+static_assert(!detail::PointOrigin<quantity_point<isq::length[si::metre], my_origin>>);
+static_assert(!detail::PointOrigin<quantity_point<isq::radius[si::metre], my_origin>>);
+static_assert(!detail::PointOrigin<decltype(isq::length[si::metre])>);
 #if MP_UNITS_HOSTED
-static_assert(!PointOrigin<std::chrono::seconds>);
-static_assert(!PointOrigin<std::chrono::time_point<std::chrono::system_clock>>);
+static_assert(!detail::PointOrigin<std::chrono::seconds>);
+static_assert(!detail::PointOrigin<std::chrono::time_point<std::chrono::system_clock>>);
 #endif
-static_assert(!PointOrigin<int>);
+static_assert(!detail::PointOrigin<int>);
 
 // PointOriginFor
 static_assert(PointOriginFor<struct my_origin, isq::length>);
@@ -872,14 +875,14 @@ static_assert(!PointOriginFor<std::chrono::time_point<std::chrono::system_clock>
 #endif
 static_assert(!PointOriginFor<int, isq::length>);
 
-// QuantityPointLike
+// detail::QuantityPointLike
 #if MP_UNITS_HOSTED
-static_assert(QuantityPointLike<std::chrono::time_point<std::chrono::system_clock>>);
-static_assert(!QuantityPointLike<std::chrono::seconds>);
+static_assert(detail::QuantityPointLike<std::chrono::time_point<std::chrono::system_clock>>);
+static_assert(!detail::QuantityPointLike<std::chrono::seconds>);
 #endif
-static_assert(!QuantityPointLike<quantity<isq::time[si::second]>>);
-static_assert(!QuantityPointLike<quantity_point<si::metre, my_origin>>);
-static_assert(!QuantityPointLike<int>);
+static_assert(!detail::QuantityPointLike<quantity<isq::time[si::second]>>);
+static_assert(!detail::QuantityPointLike<quantity_point<si::metre, my_origin>>);
+static_assert(!detail::QuantityPointLike<int>);
 
 // Quantity Character Concepts
 
@@ -956,8 +959,11 @@ static_assert(detail::SymbolicConstant<decltype(si::metre)>);
 static_assert(Dimension<decltype(isq::dim_length)>);
 static_assert(Dimension<decltype(dim_speed)>);
 static_assert(!Dimension<decltype(isq::length)>);
+MP_UNITS_DIAGNOSTIC_PUSH
+MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
 static_assert(DimensionOf<decltype(isq::dim_length), isq::dim_length>);
 static_assert(!DimensionOf<decltype(isq::dim_length), isq::dim_time>);
+MP_UNITS_DIAGNOSTIC_POP
 static_assert(detail::BaseDimension<decltype(isq::dim_length)>);
 static_assert(!detail::BaseDimension<decltype(dim_speed)>);
 
@@ -995,9 +1001,9 @@ static_assert(!Reference<decltype(isq::length)>);
 static_assert(ReferenceOf<decltype(isq::radius[si::metre]), isq::length>);
 static_assert(!ReferenceOf<decltype(si::second), isq::length>);
 
-static_assert(PointOrigin<decltype(my_origin)>);
-static_assert(PointOrigin<decltype(my_relative_origin)>);
-static_assert(!PointOrigin<decltype(si::metre)>);
+static_assert(detail::PointOrigin<decltype(my_origin)>);
+static_assert(detail::PointOrigin<decltype(my_relative_origin)>);
+static_assert(!detail::PointOrigin<decltype(si::metre)>);
 static_assert(PointOriginFor<decltype(my_origin), isq::length>);
 static_assert(!PointOriginFor<decltype(my_origin), isq::duration>);
 static_assert(detail::AbsolutePointOrigin<decltype(my_origin)>);
@@ -1022,8 +1028,8 @@ static_assert(!Reference<const struct si::metre&>);
 static_assert(!Reference<const decltype(length_in_metres)&>);
 static_assert(!Reference<volatile decltype(isq::length[si::metre])>);
 static_assert(!Reference<volatile decltype(length_in_metres)>);
-static_assert(!PointOrigin<const struct my_origin&>);
-static_assert(!PointOrigin<volatile struct my_origin>);
+static_assert(!detail::PointOrigin<const struct my_origin&>);
+static_assert(!detail::PointOrigin<volatile struct my_origin>);
 static_assert(!UnitMagnitude<const decltype(mag<10>)&>);
 static_assert(!UnitMagnitude<volatile decltype(mag<10>)>);
 
@@ -1031,8 +1037,8 @@ static_assert(!UnitMagnitude<volatile decltype(mag<10>)>);
 static_assert(!Dimension<const base_dimension<"L">>);
 static_assert(!Unit<const named_unit<"?", kind_of<isq::length>>>);
 static_assert(!Unit<const prefixed_unit<"?", mag<10>, si::second>>);
-static_assert(!PointOrigin<const absolute_point_origin<isq::length>>);
-static_assert(!PointOrigin<const relative_point_origin<my_origin + 42 * si::metre>>);
+static_assert(!detail::PointOrigin<const absolute_point_origin<isq::length>>);
+static_assert(!detail::PointOrigin<const relative_point_origin<my_origin + 42 * si::metre>>);
 
 // Only a non-const type may enter a symbolic expression, or a `const` second divided by a second
 // would not simplify. Each position is checked on its own, and `valid_symbolic_terms` proves that

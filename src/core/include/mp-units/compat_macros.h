@@ -337,4 +337,14 @@
 #define MP_UNITS_PRE_CONSTEVAL_HACK(...) MP_UNITS_PRE(__VA_ARGS__)
 #define MP_UNITS_EXPECTS_CONSTEVAL_HACK(...) MP_UNITS_EXPECTS(__VA_ARGS__)
 #endif
+
+// `[[deprecated]]` on a concept (CWG2428). GCC 13 and Clang 19 are the first to accept the attribute
+// there, and older ones reject the syntax, so for them the concept stays undeprecated. Apple Clang and
+// MSVC are untested and get nothing.
+#if (MP_UNITS_COMP_GCC && MP_UNITS_COMP_GCC >= 13) || \
+  (MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG >= 19 && !MP_UNITS_COMP_APPLE_CLANG)
+#define MP_UNITS_DEPRECATED_CONCEPT(msg) [[deprecated(msg)]]
+#else
+#define MP_UNITS_DEPRECATED_CONCEPT(msg)
+#endif
 // NOLINTEND(cppcoreguidelines-macro-usage)

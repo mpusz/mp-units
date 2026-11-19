@@ -41,7 +41,7 @@ namespace detail {
 
 // exposition-only: matches types derived from absolute_point_origin
 template<typename T>
-concept AbsolutePointOrigin = PointOrigin<T> && is_derived_from_specialization_of_v<T, absolute_point_origin>;
+concept AbsolutePointOrigin = detail::PointOrigin<T> && is_derived_from_specialization_of_v<T, absolute_point_origin>;
 
 }  // namespace detail
 
@@ -131,7 +131,7 @@ struct relative_point_origin;
  * @see [Concepts](docs:users_guide/advanced_topics/concepts#PointOriginFor) in the User's Guide
  */
 MP_UNITS_EXPORT template<typename T, auto QS>
-concept PointOriginFor = PointOrigin<T> && QuantitySpecOf<MP_UNITS_NTTP_HACK(decltype(QS)), T::_quantity_spec_>;
+concept PointOriginFor = detail::PointOrigin<T> && QuantitySpecOf<MP_UNITS_NTTP_HACK(decltype(QS)), T::_quantity_spec_>;
 
 MP_UNITS_EXPORT template<Reference auto R, PointOriginFor<get_quantity_spec(R)> auto PO,
                          RepresentationOf<get_quantity_spec(R)> Rep>
@@ -155,7 +155,7 @@ template<typename T>
   requires is_derived_from_specialization_of_quantity_point<T>
 constexpr bool is_quantity_point<T> = true;
 
-template<PointOrigin PO1, PointOrigin PO2>
+template<detail::PointOrigin PO1, detail::PointOrigin PO2>
 [[nodiscard]] consteval bool same_absolute_point_origins(PO1 po1, PO2 po2)
 {
   if constexpr (is_derived_from_specialization_of_v<PO1, absolute_point_origin> &&
@@ -174,7 +174,7 @@ template<PointOrigin PO1, PointOrigin PO2>
 
 template<typename T, auto V>
 concept SameAbsolutePointOriginAs =
-  PointOrigin<T> && PointOrigin<MP_UNITS_NTTP_HACK(decltype(V))> && same_absolute_point_origins(T{}, V);
+  detail::PointOrigin<T> && detail::PointOrigin<MP_UNITS_NTTP_HACK(decltype(V))> && same_absolute_point_origins(T{}, V);
 
 }  // namespace detail
 
@@ -219,19 +219,15 @@ concept QuantityPointOf =
    (detail::CharacterValue<V> &&
     requires { requires QuantitySpecOf<decltype(QP::quantity_spec), V> && RepresentationOf<typename QP::rep, V>; }));
 
-/**
- * A concept matching all external quantity point like types
- *
- * Satisfied by all external types (not-defined in mp-units) that via a `quantity_point_like_traits` provide
- * all quantity_point-specific information.
- */
-MP_UNITS_EXPORT template<typename T>
-concept QuantityPointLike = !QuantityPoint<T> && detail::QuantityLikeImpl<T, quantity_point_like_traits> && requires {
+namespace detail {
+
+// An external type that a `quantity_point_like_traits` specialization describes as a quantity point.
+// Exposition-only, as `QuantityLike` is: users specialize the traits and never need to name the concept.
+template<typename T>
+concept QuantityPointLike = !QuantityPoint<T> && QuantityLikeImpl<T, quantity_point_like_traits> && requires {
   typename quantity_point<quantity_point_like_traits<T>::reference, quantity_point_like_traits<T>::point_origin,
                           typename quantity_point_like_traits<T>::rep>;
 };
-
-namespace detail {
 
 template<auto From, auto To>
 concept HasFrameProjection =

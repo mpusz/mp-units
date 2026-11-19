@@ -370,7 +370,7 @@ MP_UNITS_EXPORT template<typename To, UnitMagnitude M, typename From>
  * Scale @p value by the unit magnitude passed as @p m, converting to type @c To,
  *        with the result rounded according to @p policy.
  */
-MP_UNITS_EXPORT template<typename To, UnitMagnitude M, typename From, RoundingPolicy Policy>
+MP_UNITS_EXPORT template<typename To, UnitMagnitude M, typename From, detail::RoundingPolicy Policy>
   requires detail::UnitMagnitudeScalable<From>
 [[nodiscard]] constexpr auto scale_by_magnitude(M m, const From& value, Policy)
 {
@@ -390,7 +390,7 @@ MP_UNITS_EXPORT template<typename To, UnitMagnitude M, typename From>
 /**
  * The former name of @ref scale_by_magnitude.
  */
-MP_UNITS_EXPORT template<typename To, UnitMagnitude M, typename From, RoundingPolicy Policy>
+MP_UNITS_EXPORT template<typename To, UnitMagnitude M, typename From, detail::RoundingPolicy Policy>
   requires detail::UnitMagnitudeScalable<From>
 [[deprecated("2.6.0: Use `scale_by_magnitude` instead")]] [[nodiscard]] constexpr auto scale(M m, const From& value,
                                                                                              Policy policy)

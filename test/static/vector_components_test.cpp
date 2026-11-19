@@ -457,7 +457,7 @@ static_assert(std::convertible_to<member_state, Q>);
 
 // a quantity-like type keeps converting through its traits even when it models the tuple protocol:
 // the composition does not compete with that conversion
-static_assert(QuantityLike<typed_la::registered_velocity>);
+static_assert(detail::QuantityLike<typed_la::registered_velocity>);
 inline constexpr typed_la::registered_velocity registered{30.0, -4.0, -2.5};
 static_assert(std::convertible_to<typed_la::registered_velocity, Q>);
 static_assert(Q{registered} == composed);

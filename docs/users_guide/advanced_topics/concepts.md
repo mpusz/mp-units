@@ -24,6 +24,11 @@ a base or derived [quantity](../../reference/glossary.md#quantity):
 `DimensionOf` concept is satisfied when both arguments satisfy a [`Dimension`](#Dimension)
 concept and when they compare equal.
 
+!!! warning "Deprecated"
+
+    `DimensionOf` is deprecated. Compare the dimensions instead, as in
+    `requires(get_dimension(QS) == isq::dim_length)`.
+
 
 ## `QuantitySpec<T>` { #QuantitySpec }
 
@@ -249,51 +254,6 @@ static_assert(QuantityOf<quantity<V, std::complex<double>>, quantity_field::comp
 ```
 
 
-### `QuantityLike<T>` { #QuantityLike }
-
-`QuantityLike` concept provides interoperability with other libraries and is satisfied by
-a
-  type `T` for which an instantiation of `quantity_like_traits` type trait yields a valid
-  type that provides:
-
-- `reference` static data member that matches the [`Reference`](#Reference) concept,
-- `rep` type that matches
-  [`RepresentationOf`](#RepresentationOf) concept with the character provided in `reference`,
-- `explicit_import` static data member convertible to `bool` that specifies that the conversion
-  from `T` to a `quantity` type should happen explicitly (if `true`),
-- `explicit_export` static data member convertible to `bool` that specifies that the conversion
-  from a `quantity` type to `T` should happen explicitly (if `true`),
-- `to_numerical_value(T)` static member function returning a raw value of the quantity,
-- `from_numerical_value(rep)` static member function returning `T`.
-
-??? abstract "Examples"
-
-    This is how support for `std::chrono::seconds` can be provided:
-
-    ```cpp
-    template<>
-    struct mp_units::quantity_like_traits<std::chrono::seconds> {
-      static constexpr auto reference = si::second;
-      static constexpr bool explicit_import = false;
-      static constexpr bool explicit_export = false;
-      using rep = std::chrono::seconds::rep;
-
-      [[nodiscard]] static constexpr rep to_numerical_value(const std::chrono::seconds& d)
-      {
-        return d.count();
-      }
-
-      [[nodiscard]] static constexpr std::chrono::seconds from_numerical_value(const rep& v)
-      {
-        return std::chrono::seconds(v);
-      }
-    };
-
-    quantity q = 42s;
-    std::chrono::seconds dur = 42 * s;
-    ```
-
-
 ## `PointOrigin<T>` { #PointOrigin }
 
 `PointOrigin` concept matches all
@@ -302,6 +262,11 @@ a
 
 - All types derived from an `absolute_point_origin` class template.
 - All types derived from a `relative_point_origin` class template.
+
+!!! warning "Deprecated"
+
+    `PointOrigin` is deprecated. To constrain an origin, use
+    [`PointOriginFor`](#PointOriginFor), which also pins the quantity it is an origin for.
 
 
 ### `PointOriginFor<T, V>` { #PointOriginFor }
@@ -353,53 +318,3 @@ _quantity_ of the same _reference_ and representation.
 ```cpp
 static_assert(QuantityPointOf<quantity_point<isq::velocity[m / s]>, quantity_tensor_order::vector>);
 ```
-
-
-### `QuantityPointLike<T>` { #QuantityPointLike }
-
-`QuantityPointLike` concept provides interoperability with other libraries and is satisfied
-  by a type `T` for which an instantiation of `quantity_point_like_traits` type trait yields
-  a valid type that provides:
-
-- `reference` static data member that matches the [`Reference`](#Reference) concept.
-- `point_origin` static data member that matches the [`PointOrigin`](#PointOrigin) concept.
-- `rep` type that matches
-  [`RepresentationOf`](#RepresentationOf) concept with the character provided in `reference`.
-- `explicit_import` static data member convertible to `bool` that specifies that the conversion
-  from `T` to a `quantity_point` type should happen explicitly (if `true`),
-- `explicit_export` static data member convertible to `bool` that specifies that the conversion
-  from a `quantity_point` type to `T` should happen explicitly (if `true`),
-- `to_numerical_value(T)` static member function returning a raw value of the quantity
-  being the offset
-  of the point from the origin,
-- `from_numerical_value(rep)` static member function returning `T`.
-
-
-??? abstract "Examples"
-
-    This is how support for a `std::chrono::time_point` of `std::chrono::seconds` can be provided:
-
-    ```cpp
-    template<typename C>
-    struct mp_units::quantity_point_like_traits<std::chrono::time_point<C, std::chrono::seconds>> {
-      static constexpr auto reference = si::second;
-      static constexpr struct point_origin_ : absolute_point_origin<isq::time> {} point_origin{};
-      static constexpr bool explicit_import = false;
-      static constexpr bool explicit_export = false;
-      using rep = std::chrono::seconds::rep;
-      using T = std::chrono::time_point<C, std::chrono::seconds>;
-
-      [[nodiscard]] static constexpr rep to_numerical_value(const T& tp)
-      {
-        return tp.time_since_epoch().count();
-      }
-
-      [[nodiscard]] static constexpr T from_numerical_value(const rep& v)
-      {
-        return T(std::chrono::seconds(v));
-      }
-    };
-
-    quantity_point qp = time_point_cast<std::chrono::seconds>(std::chrono::system_clock::now());
-    std::chrono::sys_seconds q = qp + 42 * s;
-    ```

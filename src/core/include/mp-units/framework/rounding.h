@@ -96,17 +96,14 @@ inline constexpr rounded_t rounded{};
 inline constexpr rounded_down_t rounded_down{};
 inline constexpr rounded_up_t rounded_up{};
 
-/**
- * A concept matching all rounding policies
- *
- * Satisfied only by the types of `truncated`, `rounded`, `rounded_down`, and `rounded_up`.
- */
-template<typename T>
-concept RoundingPolicy = contains<T, truncated_t, rounded_t, rounded_down_t, rounded_up_t>();
-
 MP_UNITS_EXPORT_END
 
 namespace detail {
+
+// The rounding policies a value conversion accepts. Exposition-only, as in P3045: a user passes one
+// of the four policy objects and never needs to name the concept.
+template<typename T>
+concept RoundingPolicy = contains<T, truncated_t, rounded_t, rounded_down_t, rounded_up_t>();
 
 // Internal representation of the rounding policies used to parameterize the conversion
 // engine (`sudo_cast`, `scale_by_magnitude`) without instantiating it for every policy tag type.
