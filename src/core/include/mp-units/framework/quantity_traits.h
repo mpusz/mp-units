@@ -100,30 +100,64 @@ struct rep_for_impl<T> {
 MP_UNITS_EXPORT_BEGIN
 
 /**
- * Public helper that yields the unit associated with a quantity-like type.
+ * The unit of a quantity type, or of a type that `quantity_like_traits` or
+ * `quantity_point_like_traits` describes
  *
- * Derived from the type's own `::unit` member (for `quantity` / `quantity_point`) or from
- * `quantity_like_traits<T>` / `quantity_point_like_traits<T>` for external types.
+ * Generic code uses it to produce a value in whatever type its caller uses, `std::chrono` or
+ * mp-units:
  *
- * This is **not** a customization point. Users teach the library about external types by
- * specializing `quantity_like_traits` / `quantity_point_like_traits`, not this helper.
+ * @code{.cpp}
+ * // snippet-template: none
+ * template<typename Duration>
+ * Duration eta(QuantityOf<isq::distance> auto remaining, QuantityOf<isq::speed> auto speed)
+ * {
+ *   return Duration(value_cast<rep_for<Duration>, unit_for<Duration>>(remaining / speed));
+ * }
  *
- * @tparam T a quantity-like or quantity-point-like type
+ * auto chrono_eta = eta<std::chrono::minutes>(isq::distance(50. * km), isq::speed(100. * km / h));
+ * auto quantity_eta = eta<quantity<min, int>>(isq::distance(50. * km), isq::speed(100. * km / h));
+ * @endcode
+ *
+ * It isn't a customization point. A type is described by specializing `quantity_like_traits` or
+ * `quantity_point_like_traits`.
+ *
+ * @tparam T a quantity or quantity point type, or a type that either trait describes
+ *
+ * @see @ref reference_for for the quantity specification together with the unit
+ * @see @ref rep_for for the representation type
+ * @see [Converting External Quantity Types](docs:how_to_guides/integration/converting_external_quantity_types)
  */
 template<typename T>
 constexpr auto unit_for = detail::unit_for_impl<T>::value;
 
 /**
- * Public helper that yields the reference (unit + quantity spec) associated with a
- *        quantity-like type.
+ * The reference of a quantity type, or of a type that `quantity_like_traits` or
+ * `quantity_point_like_traits` describes
  *
- * Derived from the type's own `::reference` member (for `quantity` / `quantity_point`) or
- * from `quantity_like_traits<T>` / `quantity_point_like_traits<T>` for external types.
+ * It carries the quantity specification as well as the unit, so a value built with it has the
+ * caller's quantity specification, such as `isq::height`, and not only its unit:
  *
- * This is **not** a customization point. Users teach the library about external types by
- * specializing `quantity_like_traits` / `quantity_point_like_traits`, not this helper.
+ * @code{.cpp}
+ * // snippet-template: none
+ * // a sensor reading, delivered as a raw number in the units the caller's type uses
+ * template<typename Q>
+ * Q from_register(std::int32_t raw)
+ * {
+ *   return Q(static_cast<rep_for<Q>>(raw) * reference_for<Q>);
+ * }
  *
- * @tparam T a quantity-like or quantity-point-like type
+ * auto delay = from_register<std::chrono::milliseconds>(1500);         // 1500 ms
+ * auto height = from_register<quantity<isq::height[mm], int>>(1500);   // 1500 mm
+ * @endcode
+ *
+ * It isn't a customization point. A type is described by specializing `quantity_like_traits` or
+ * `quantity_point_like_traits`.
+ *
+ * @tparam T a quantity or quantity point type, or a type that either trait describes
+ *
+ * @see @ref unit_for for the unit alone
+ * @see @ref rep_for for the representation type
+ * @see [Converting External Quantity Types](docs:how_to_guides/integration/converting_external_quantity_types)
  */
 template<typename T>
 constexpr auto reference_for = detail::reference_for_impl<T>::value;

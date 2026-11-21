@@ -200,9 +200,32 @@ struct real_t {
 
 inline namespace cpo {
 
+/**
+ * The real part of a complex value
+ *
+ * Calls `clx.real()`, or `real(clx)` found by ADL, and accepts only a result that is real and has
+ * the order of `clx`. Code written for any complex scalar calls it, whichever form the type provides:
+ *
+ * @code{.cpp}
+ * // the complex conjugate, for `std::complex` and for a type with free `real()` and `imag()`
+ * template<typename Complex>
+ * constexpr Complex conjugate(const Complex& value)
+ * {
+ *   return Complex(mp_units::real(value), -mp_units::imag(value));
+ * }
+ * @endcode
+ *
+ * @param clx a complex value
+ * @return the real part of `clx`
+ *
+ * @see @ref imag for the imaginary part
+ * @see @ref modulus for the modulus
+ * @see [Representation Types](docs:users_guide/advanced_topics/representation_types#customization-point-objects-cpos)
+ * in the User's Guide
+ */
 MP_UNITS_EXPORT inline constexpr ::mp_units::detail::real_impl::real_t real;
 
-}
+}  // namespace cpo
 
 namespace detail::imag_impl {
 
@@ -223,9 +246,32 @@ struct imag_t {
 
 inline namespace cpo {
 
+/**
+ * The imaginary part of a complex value
+ *
+ * Calls `clx.imag()`, or `imag(clx)` found by ADL, and accepts only a result that is real and has
+ * the order of `clx`. Code written for any complex scalar calls it, whichever form the type provides:
+ *
+ * @code{.cpp}
+ * // the phase angle of an impedance stored in any complex scalar type
+ * template<typename Complex>
+ * double phase(const Complex& impedance)
+ * {
+ *   return std::atan2(mp_units::imag(impedance), mp_units::real(impedance));
+ * }
+ * @endcode
+ *
+ * @param clx a complex value
+ * @return the imaginary part of `clx`
+ *
+ * @see @ref real for the real part
+ * @see @ref modulus for the modulus
+ * @see [Representation Types](docs:users_guide/advanced_topics/representation_types#customization-point-objects-cpos)
+ * in the User's Guide
+ */
 MP_UNITS_EXPORT inline constexpr ::mp_units::detail::imag_impl::imag_t imag;
 
-}
+}  // namespace cpo
 
 namespace detail::modulus_impl {
 
@@ -258,9 +304,36 @@ struct modulus_t {
 
 inline namespace cpo {
 
+/**
+ * The modulus of a complex scalar
+ *
+ * Calls the first of `clx.modulus()`, `modulus(clx)`, `clx.abs()` and `abs(clx)` that exists, with the
+ * free functions found by ADL, and accepts only a real scalar result. So `std::complex` works through
+ * its `abs`, and a type that names the operation `modulus` works too:
+ *
+ * @code{.cpp}
+ * // the length of a vector of complex components, such as a Jones vector in optics
+ * template<typename Complex, std::size_t N>
+ * auto hermitian_norm(const std::array<Complex, N>& components)
+ * {
+ *   auto sum = mp_units::modulus(components[0]) * mp_units::modulus(components[0]);
+ *   for (std::size_t index = 1; index < N; ++index)
+ *     sum += mp_units::modulus(components[index]) * mp_units::modulus(components[index]);
+ *   return std::sqrt(sum);
+ * }
+ * @endcode
+ *
+ * @param clx a complex scalar
+ * @return the modulus of `clx`, a real scalar
+ *
+ * @see @ref real for the real part
+ * @see @ref imag for the imaginary part
+ * @see [Representation Types](docs:users_guide/advanced_topics/representation_types#customization-point-objects-cpos)
+ * in the User's Guide
+ */
 MP_UNITS_EXPORT inline constexpr ::mp_units::detail::modulus_impl::modulus_t modulus;
 
-}
+}  // namespace cpo
 
 namespace detail {
 
@@ -377,9 +450,34 @@ struct magnitude_t {
 
 inline namespace cpo {
 
+/**
+ * The magnitude of a vector or tensor, as a non-negative scalar
+ *
+ * Calls `vec.magnitude()` or `magnitude(vec)` when the type provides one. Otherwise a vector or
+ * tensor uses its `norm()`, as linear algebra libraries name it, a real scalar its absolute
+ * value, and a complex scalar its modulus. So a scalar is treated as a one-dimensional vector,
+ * and one call covers every representation of a vector quantity:
+ *
+ * @code{.cpp}
+ * // snippet-template: none
+ * #include <mp-units/utility/cartesian_vector.h>
+ *
+ * double from_vector = mp_units::magnitude(utility::cartesian_vector{3., 4., 0.});  // 5
+ * double from_real = mp_units::magnitude(-5.);                                      // 5
+ * double from_complex = mp_units::magnitude(std::complex{3., 4.});                  // 5
+ * @endcode
+ *
+ * The `magnitude()` member function of a vector quantity calls it on the quantity's value.
+ *
+ * @param vec a vector, a tensor, or a scalar
+ * @return the magnitude of `vec`, a non-negative scalar
+ *
+ * @see [Representation Types](docs:users_guide/advanced_topics/representation_types#customization-point-objects-cpos)
+ * in the User's Guide
+ */
 MP_UNITS_EXPORT inline constexpr ::mp_units::detail::magnitude_impl::magnitude_t magnitude;
 
-}
+}  // namespace cpo
 
 
 /////////////// REPRESENTATION ///////////////

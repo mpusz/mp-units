@@ -782,9 +782,19 @@ template<detail::SymbolicTerm... Expr>
 struct derived_unit final : detail::derived_unit_impl<Expr...> {};
 
 /**
- * Unit one
+ * The unit of a quantity of dimension one
  *
- * Unit of a dimensionless quantity.
+ * A ratio of two quantities of the same dimension converts to it:
+ *
+ * @code{.cpp}
+ * quantity zoom = (2. * km / (500. * m)).in(one);  // 4
+ * @endcode
+ *
+ * @see @ref percent for hundredths
+ * @see @ref per_mille for thousandths
+ * @see @ref parts_per_million for millionths
+ * @see [Dimensionless Quantities](docs:users_guide/framework_basics/dimensionless_quantities) in the
+ * User's Guide
  */
 // clang-format off
 MP_UNITS_EXPORT inline constexpr struct one final : detail::derived_unit_impl<> {} one;

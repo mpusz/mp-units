@@ -93,6 +93,9 @@ addons-supplemental:
 ## `random.h` wrappers derive from `std::` distributions, giving us pages for
 ## `__generate`, `param` and friends. 144 such pages, and `utility` alone drops
 ## from 1065 pages to 538 without them.
+# Renders a function object as a function. It applies only to a type that is not implementation-defined,
+# so our customization point objects stay variables until cppalliance/mrdocs#1384 is fixed.
+auto-function-objects: true
 inherit-base-members: reference
 
 ## Our operators are hidden friends of a base that `implementation-defined`

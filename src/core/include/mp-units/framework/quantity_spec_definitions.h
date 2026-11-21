@@ -447,12 +447,56 @@ concept QSProperty = !QuantitySpec<T>;
 
 MP_UNITS_EXPORT_BEGIN
 
+/**
+ * Makes a quantity a kind of its own within the tree of its parent
+ *
+ * The quantity keeps the dimension and units of its parent, but doesn't add to, compare with, or
+ * implicitly convert to any other named quantity of its parent's kind, the parent included. That
+ * keeps apart quantities measured in the same unit that must not be mixed:
+ *
+ * @code{.cpp}
+ * // both count pixels, but a horizontal count added to a vertical one is a bug
+ * inline constexpr struct pixel_x : quantity_spec<dimensionless, subkind> {} pixel_x;
+ * inline constexpr struct pixel_y : quantity_spec<dimensionless, subkind> {} pixel_y;
+ *
+ * quantity left = pixel_x(10 * one);
+ * quantity top = pixel_y(20 * one);
+ * // doesn't compile: different kinds
+ * // auto bad = left + top;
+ * @endcode
+ *
+ * A quantity defined with it is a valid argument of @ref kind_of.
+ *
+ * @see [Subkind](docs:users_guide/framework_basics/systems_of_quantities#creating-distinct-quantity-kinds-with-subkind)
+ * in the User's Guide
+ */
 inline constexpr struct subkind {
 } subkind;
 
 // the former name of `subkind`, of the same type, so a quantity declared with it is still a kind
+/**
+ * The former name of @ref subkind
+ */
 [[deprecated("2.6.0: Use `subkind` instead")]] inline constexpr struct subkind is_kind = subkind;
 
+/**
+ * Marks a quantity that is never negative
+ *
+ * A point measured from the @ref natural_point_origin of such a quantity is checked not to lie
+ * below zero. A child quantity of real scalar character inherits the mark, unless it is defined
+ * with @ref possibly_negative. The result of a quantity equation never carries it, because the
+ * sign of a quantity can't be read from its defining equation. A quantity defined only by an
+ * equation states it explicitly:
+ *
+ * @code{.cpp}
+ * // litres per 100 km, which no engine runs below zero
+ * inline constexpr struct fuel_consumption :
+ *   quantity_spec<isq::volume / isq::length, non_negative> {} fuel_consumption;
+ * @endcode
+ *
+ * @see [Systems of Quantities](docs:users_guide/framework_basics/systems_of_quantities#non-negative-quantities)
+ * in the User's Guide
+ */
 inline constexpr struct non_negative {
 } non_negative;
 
@@ -460,6 +504,20 @@ inline constexpr struct non_negative {
 // where a quantity shares its parent's kind (and therefore its units) but not its domain: ISO
 // 80000-12 item 12-30 gives an effective mass that is negative near a band maximum, and it must
 // still be expressed in kilograms, which only a quantity of the mass kind may do.
+/**
+ * Cancels the @ref non_negative mark a child quantity would inherit from its parent
+ *
+ * It is for a quantity that shares its parent's kind, and so its units, but not its domain:
+ *
+ * @code{.cpp}
+ * // snippet-template: none
+ * // a signed vertical coordinate: negative below sea level, yet a length in metres
+ * inline constexpr struct altitude : quantity_spec<length, possibly_negative> {} altitude;
+ * @endcode
+ *
+ * @see [Systems of Quantities](docs:users_guide/framework_basics/systems_of_quantities#non-negative-quantities)
+ * in the User's Guide
+ */
 inline constexpr struct possibly_negative {
 } possibly_negative;
 
@@ -820,18 +878,36 @@ template<detail::SymbolicTerm... Expr>
 struct derived_quantity_spec : detail::derived_quantity_spec_impl<Expr...> {};
 
 /**
- * Quantity of dimension one
+ * The quantity of dimension one
  *
- * Quantity of dimension one also commonly named as "dimensionless" is a quantity with a dimension
- * for which all the exponents of the factors corresponding to the base dimensions are zero.
+ * A count, such as `3 * one`, is of this kind, and a ratio of two quantities of the same kind
+ * converts to it. Most quantities of dimension one are its children, such as _refractive index_ or
+ * _relative permittivity_, and they add to each other and to it. With the unit @ref one, they also
+ * take a raw number wherever a quantity is expected.
+ *
+ * A few are subkinds instead, such as _angular measure_, _solid angular measure_, _number of
+ * entities_, and _storage capacity_. They have dimension one too, but each is a kind of its own,
+ * so it doesn't add to or implicitly convert to `dimensionless` or its children, and it doesn't
+ * take a raw number. Only a plain value such as `3 * one`, which may be any quantity of dimension
+ * one, adds to all of them:
+ *
+ * @code{.cpp}
+ * // the gain of an amplifier, a ratio of two powers
+ * inline constexpr struct power_gain : quantity_spec<dimensionless> {} power_gain;
+ *
+ * quantity gain = power_gain(2. * kW / (1. * kW));  // 2
+ * quantity total = gain + 0.5;                      // 2.5, a raw number needs no `* one`
+ * // doesn't compile: an angle is a subkind
+ * // auto bad = gain + 0.5 * rad;
+ * @endcode
+ *
+ * @see [Dimensionless Quantities](docs:users_guide/framework_basics/dimensionless_quantities) in the
+ * User's Guide
+ * @see [dimensionless Hierarchy](docs:reference/systems_reference/hierarchies/dimensionless) in the
+ * Systems Reference
  */
 MP_UNITS_EXPORT QUANTITY_SPEC(dimensionless, derived_quantity_spec<>{});
 
-/**
- * Quantity kind specifier
- *
- * Specifies that the provided `Q` should be treated as a quantity kind.
- */
 namespace detail {
 
 template<QuantitySpec Q>
@@ -868,6 +944,25 @@ struct kind_of_<Q> : quantity_spec<kind_of_<Q>, Q{}>::_base_type_ {
 #endif
 };
 
+/**
+ * Every quantity of the kind of `Q`
+ *
+ * `Q` is the root of a quantity tree or a quantity defined with @ref subkind. A unit defined
+ * with it measures any quantity of that kind, and a quantity created with that unit alone converts
+ * implicitly to every quantity of the kind:
+ *
+ * @code{.cpp}
+ * // snippet-template: none
+ * inline constexpr struct metre final : named_unit<"m", kind_of<isq::length>> {} metre;
+ *
+ * quantity<isq::height[m]> height = 42 * m;  // `42 * m` may be any length, so it may be a height
+ * @endcode
+ *
+ * @tparam Q the quantity specification whose kind is meant
+ *
+ * @see [Systems of Quantities](docs:users_guide/framework_basics/systems_of_quantities#modeling-a-quantity-kind)
+ * in the User's Guide
+ */
 MP_UNITS_EXPORT template<QuantitySpec auto Q>
   requires requires { typename kind_of_<decltype(Q)>; }
 constexpr kind_of_<MP_UNITS_NTTP_HACK(decltype(Q))> kind_of;

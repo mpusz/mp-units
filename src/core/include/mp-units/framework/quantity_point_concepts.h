@@ -46,15 +46,38 @@ concept AbsolutePointOrigin = detail::PointOrigin<T> && is_derived_from_speciali
 }  // namespace detail
 
 /**
- * User-specializable variable template for runtime coordinate frame transformations.
+ * The projection of a point from the absolute origin `From` to the absolute origin `To`
  *
- * Connects pairs of absolute point origin values with user-supplied callables. Specialize per
- * (From, To) pair with a callable invocable as:
- *   frame_projection<From, To>(quantity_point_at_From, extra_args...) -> quantity_point_at_To
+ * Two absolute origins are unrelated until a specialization connects them with a callable that
+ * takes a point measured from `From`, and any extra arguments, and returns the point measured
+ * from `To`. It covers what the fixed offset of a relative origin can't, such as an axis that
+ * flips, a formula, or calibration data known only at runtime. `point_for` then converts between
+ * the two:
  *
- * Both directions must be explicitly specialized — the library never derives an inverse.
- * The primary template defaults to `utility::unspecified_t{}` so that `detail::HasFrameProjection`
- * can detect whether a specialization exists.
+ * @code{.cpp}
+ * inline constexpr struct sea_level final :
+ *   absolute_point_origin<isq::altitude> {} sea_level;
+ * inline constexpr struct ocean_surface final :
+ *   absolute_point_origin<isq::altitude> {} ocean_surface;
+ *
+ * // the ocean-surface frame counts downwards, as a depth does
+ * template<>
+ * inline constexpr auto mp_units::frame_projection<sea_level, ocean_surface> =
+ *   [](QuantityPointOf<isq::altitude> auto qp) {
+ *     return ocean_surface - qp.delta_from(sea_level);
+ *   };
+ *
+ * quantity_point altitude = sea_level + isq::altitude(-100. * m);
+ * quantity_point depth = altitude.point_for(ocean_surface);  // 100 m from ocean_surface
+ * @endcode
+ *
+ * The library never derives the inverse, so each direction is specialized on its own.
+ *
+ * @tparam From the absolute origin the point is measured from
+ * @tparam To the absolute origin the point is projected to
+ *
+ * @see [The Affine Space](docs:users_guide/framework_basics/the_affine_space#frame-proj) in the User's
+ * Guide
  */
 MP_UNITS_EXPORT template<detail::AbsolutePointOrigin auto From, detail::AbsolutePointOrigin auto To>
   requires(From != To)
@@ -139,6 +162,9 @@ class quantity_point;
 
 // Matched by pattern, as for `quantity`: a point is rejected as a representation before anything is
 // evaluated on it.
+/**
+ * A quantity point is not the representation of a quantity
+ */
 template<auto R, auto PO, typename Rep>
 inline constexpr bool disable_representation<quantity_point<R, PO, Rep>> = true;
 

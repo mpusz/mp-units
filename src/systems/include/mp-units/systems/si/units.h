@@ -191,10 +191,19 @@ using namespace non_si;
 
 }  // namespace si
 
+/**
+ * The degree of plane angle is written with no space, as in `90°`
+ */
 template<>
 inline constexpr bool space_before_unit_symbol<non_si::degree> = false;
+/**
+ * The arcminute is written with no space, as in `30′`
+ */
 template<>
 inline constexpr bool space_before_unit_symbol<non_si::arcminute> = false;
+/**
+ * The arcsecond is written with no space, as in `15″`
+ */
 template<>
 inline constexpr bool space_before_unit_symbol<non_si::arcsecond> = false;
 

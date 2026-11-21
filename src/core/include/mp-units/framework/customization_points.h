@@ -253,9 +253,53 @@ concept has_ambiguous_order = has_vector_indexing<T> && has_matrix_indexing<T>;
 // `RowsAtCompileTime` / `ColsAtCompileTime`). A type that exposes *both* shapes is ambiguous - only
 // its extents can decide - so it matches neither and stays `undefined` unless specialized: guessing
 // would disagree with an adapter, an ODR hazard across translation units.
+/**
+ * The tensor order of a representation type, 0 for a scalar, 1 for a vector, and 2 for a tensor
+ *
+ * The order is detected from the element access a type provides. `t(i, j)` or `t[i, j]` is order
+ * 2, `t[i]` is order 1, and neither is order 0. A type that provides both, as an N×1 matrix does,
+ * has no order, and isn't a representation, until it is specialized. Only its compile-time extents
+ * tell a vector from a matrix, so a specialization for such a type reads them:
+ *
+ * @code{.cpp}
+ * // snippet-template: none
+ * // an Eigen column vector is an N×1 matrix, which provides both `v[i]` and `v(i, j)`
+ * template<typename T>
+ *   requires requires { typename T::PlainObject; } && std::derived_from<T, Eigen::EigenBase<T>>
+ * constexpr std::size_t mp_units::tensor_order<T> =
+ *   (T::RowsAtCompileTime == 1 || T::ColsAtCompileTime == 1) ? 1 : 2;
+ * @endcode
+ *
+ * A scalar class that provides `operator[]`, as one giving access to its digits might, is
+ * specialized to 0 the same way.
+ *
+ * Generic code reads it to handle a vector's components:
+ *
+ * @code{.cpp}
+ * template<Quantity Q>
+ *   requires(tensor_order<typename Q::rep> == 1)
+ * void print(std::string_view name, const Q& q)
+ * {
+ *   const auto& components = q.numerical_value_in(q.unit);
+ *   std::cout << name << " = [" << components[0] << ", " << components[1] << ", "
+ *             << components[2] << "] " << unit_symbol(Q::unit) << "\n";
+ * }
+ * @endcode
+ *
+ * @tparam T a representation type
+ *
+ * @see @ref numeric_field for whether it is real or complex
+ * @see @ref quantity_tensor_order for the order of a quantity
+ * @see @ref RepresentationOf for how the order of a representation type is matched against a quantity
+ * @see [Representation Types](docs:users_guide/advanced_topics/representation_types#tensor_order) in the
+ * User's Guide
+ */
 MP_UNITS_EXPORT template<typename T>
 constexpr utility::unspecified_t tensor_order;
 
+/**
+ * The order detected from the element access of a type that provides at most one indexing shape
+ */
 template<typename T>
   requires(!detail::has_ambiguous_order<T>)
 constexpr std::size_t tensor_order<T> = detail::has_matrix_indexing<T>   ? std::size_t{2}
@@ -360,9 +404,39 @@ concept field_consistent = field_reachable<T> && (field_is_consistent<T>());
 // `imag()` stays real. A container with a complex element but no such API is left *unspecified* here
 // (not a representation until the author exposes the API or specializes this trait), rather than
 // silently misclassified.
+/**
+ * Whether a representation type is real or complex
+ *
+ * A scalar is complex when `real()` and `imag()` can be called on it, as members or as free
+ * functions found by ADL. A vector or tensor takes the field of its element, so a real matrix
+ * that provides element-wise `real()` and `imag()`, as Eigen's and Blaze's do, stays real. A
+ * vector or tensor of complex elements is complex only when its own type provides `real()` and
+ * `imag()` too. Otherwise it has no field, and isn't a representation, until it is specialized.
+ *
+ * A real scalar that provides `real()` and `imag()`, so that code written for complex numbers
+ * accepts it, is specialized back to real:
+ *
+ * @code{.cpp}
+ * class measured_value;  // a real number with `real()` and `imag()`, for generic complex code
+ *
+ * template<>
+ * inline constexpr quantity_field mp_units::numeric_field<measured_value> = quantity_field::real;
+ * @endcode
+ *
+ * @tparam T a representation type
+ *
+ * @see @ref tensor_order for whether it is a scalar, a vector, or a tensor
+ * @see @ref quantity_field for the field of a quantity
+ * @see @ref RepresentationOf for how the field of a representation type is matched against a quantity
+ * @see [Representation Types](docs:users_guide/advanced_topics/representation_types#numeric_field) in the
+ * User's Guide
+ */
 MP_UNITS_EXPORT template<typename T>
 constexpr utility::unspecified_t numeric_field;
 
+/**
+ * The field detected from the elements of a type whose order is known
+ */
 template<typename T>
   requires detail::field_consistent<T>
 constexpr quantity_field numeric_field<T> = detail::detect_numeric_field<T>();
@@ -385,22 +459,66 @@ constexpr bool is_quantity_abstraction = false;
 // bare quantity and a container of quantities are both excluded), and `bool` and the character types
 // are opted out as well. A custom type bars itself from ever being a representation with a one-line
 // specialization.
+/**
+ * Bars a type from being the representation of any quantity
+ *
+ * `true` for a type that is, or whose elements are, a quantity or a quantity-like type, so that
+ * a quantity is never stored inside another one under a second unit. `bool`, `char`, `wchar_t`,
+ * `char8_t`, `char16_t`, and `char32_t` are barred too. They support arithmetic, but hold a truth
+ * value or a character rather than a number.
+ *
+ * A type that has the operations of a number without being an amount of anything is barred
+ * with a specialization:
+ *
+ * @code{.cpp}
+ * class order_id;  // ordered, and stepped with `+`, but not an amount
+ *
+ * template<>
+ * inline constexpr bool mp_units::disable_representation<order_id> = true;
+ * @endcode
+ *
+ * @see [Representation Types](docs:users_guide/advanced_topics/representation_types#disable_representation)
+ * in the User's Guide
+ */
 MP_UNITS_EXPORT template<typename T>
 constexpr bool disable_representation = detail::is_quantity_abstraction<detail::value_type_t<T>>;
 
+/**
+ * `bool` holds a truth value rather than a number, so it isn't a representation
+ */
 template<>
 inline constexpr bool disable_representation<bool> = true;
 
-// A character type holds a character, not a number. `signed char` and `unsigned char` stay
-// representations, as `std::int8_t` and `std::uint8_t` name them.
+/**
+ * `char` holds a character rather than a number, so it isn't a representation
+ *
+ * `signed char` and `unsigned char` stay representations, as `std::int8_t` and `std::uint8_t`
+ * name them.
+ */
 template<>
 inline constexpr bool disable_representation<char> = true;
+
+/**
+ * `wchar_t` holds a character rather than a number, so it isn't a representation
+ */
 template<>
 inline constexpr bool disable_representation<wchar_t> = true;
+
+/**
+ * `char8_t` holds a character rather than a number, so it isn't a representation
+ */
 template<>
 inline constexpr bool disable_representation<char8_t> = true;
+
+/**
+ * `char16_t` holds a character rather than a number, so it isn't a representation
+ */
 template<>
 inline constexpr bool disable_representation<char16_t> = true;
+
+/**
+ * `char32_t` holds a character rather than a number, so it isn't a representation
+ */
 template<>
 inline constexpr bool disable_representation<char32_t> = true;
 
@@ -410,19 +528,37 @@ inline constexpr bool disable_representation<char32_t> = true;
 // otherwise evaluate on every unit, magnitude, dimension, or quantity specification for each
 // candidate. An exotic stateless representation can still opt back in with an explicit
 // specialization, which takes precedence over this constrained one.
+/**
+ * An empty, trivially constructible and destructible type carries no value, so it isn't a
+ * representation
+ */
 template<detail::SymbolicConstant T>
 inline constexpr bool disable_representation<T> = true;
 
 MP_UNITS_EXPORT_BEGIN
 
 /**
- * Specifies if a value of a type should be treated as a floating-point value
+ * Whether a representation type is treated as floating-point
  *
- * This type trait should be specialized for a custom representation type to specify
- * that values of this type should be treated by the library as a floating-point ones
- * which will enable implicit conversions between quantities.
+ * A conversion to a floating-point representation is implicit whatever the ratio of the units,
+ * as from millimetres to metres, while one to an integral type with a fractional ratio needs a
+ * cast. The default asks `std::chrono::treat_as_floating_point_v` (`std::is_floating_point_v` in a
+ * freestanding build) about the type, or about the type it wraps when
+ * @ref representation_underlying_type names one.
  *
- * @tparam Rep a representation type for which a type trait is defined
+ * A floating-point class type that wraps no fundamental type needs a specialization:
+ *
+ * @code{.cpp}
+ * class soft_float;  // floating-point arithmetic in software, for a CPU with no FPU
+ *
+ * template<>
+ * inline constexpr bool mp_units::treat_as_floating_point<soft_float> = true;
+ * @endcode
+ *
+ * @tparam Rep a representation type
+ *
+ * @see [Representation Types](docs:users_guide/advanced_topics/representation_types#treat_as_floating_point)
+ * in the User's Guide
  */
 template<typename Rep>
 constexpr bool treat_as_floating_point =
@@ -433,29 +569,36 @@ constexpr bool treat_as_floating_point =
 #endif
 
 /**
- * Specifies if a specific conversion between two types is representable without data loss
- *
- * @deprecated Use `mp_units::implicitly_scalable` instead.
- *
- * @tparam From a source representation type
- * @tparam To a destination representation type
+ * The former name of @ref implicitly_scalable
  */
 template<typename From, typename To>
 [[deprecated("2.6.0: Use `mp_units::implicitly_scalable` instead")]]
 constexpr bool is_value_preserving = treat_as_floating_point<To> || !treat_as_floating_point<From>;
 
+/**
+ * No longer used, as the character of a representation type is detected
+ */
 template<typename Rep>
 [[deprecated("2.5.0: `is_scalar` is no longer necessary and can simply be removed")]]
 constexpr bool is_scalar = false;
 
+/**
+ * No longer used, as the character of a representation type is detected
+ */
 template<typename Rep>
 [[deprecated("2.5.0: `is_complex` is no longer necessary and can simply be removed")]]
 constexpr bool is_complex = false;
 
+/**
+ * No longer used, as the character of a representation type is detected
+ */
 template<typename Rep>
 [[deprecated("2.5.0: `is_vector` is no longer necessary and can simply be removed")]]
 constexpr bool is_vector = false;
 
+/**
+ * No longer used, as the character of a representation type is detected
+ */
 template<typename Rep>
 [[deprecated("2.5.0: `is_tensor` is no longer necessary and can simply be removed")]]
 constexpr bool is_tensor = false;

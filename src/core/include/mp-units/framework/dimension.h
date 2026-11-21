@@ -199,11 +199,20 @@ template<detail::SymbolicTerm... Expr>
 struct derived_dimension final : detail::dimension_interface, detail::derived_dimension_impl<Expr...> {};
 
 /**
- * Dimension one
+ * The dimension in which every base dimension has the exponent zero
  *
- * Dimension for which all the exponents of the factors corresponding to the base
- * dimensions are zero. It is a dimension of a quantity of dimension one also known as
- * "dimensionless".
+ * It is the dimension of @ref dimensionless and of every quantity defined from it. Such a
+ * quantity may appear as a count or be created as a ratio of two quantities of the same
+ * dimension:
+ *
+ * @code{.cpp}
+ * // a screen 527 mm wide and 296 mm high
+ * quantity aspect_ratio = isq::width(527. * mm) / isq::height(296. * mm);
+ * constexpr bool is_ratio = aspect_ratio.dimension == dimension_one;  // true
+ * @endcode
+ *
+ * @see [Dimensionless Quantities](docs:users_guide/framework_basics/dimensionless_quantities) in the
+ * User's Guide
  */
 MP_UNITS_EXPORT inline constexpr struct dimension_one final :
     detail::dimension_interface,

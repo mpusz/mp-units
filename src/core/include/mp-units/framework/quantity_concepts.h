@@ -38,6 +38,9 @@ class quantity;
 // Matched by pattern, so that a quantity meeting a `Value` parameter of an operator is rejected without
 // instantiating the primary template's search for an element type, and without evaluating any
 // constraint for the many other types that ask this.
+/**
+ * A quantity is not the representation of another quantity
+ */
 template<auto R, typename Rep>
 inline constexpr bool disable_representation<quantity<R, Rep>> = true;
 

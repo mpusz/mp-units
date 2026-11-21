@@ -155,19 +155,33 @@ MP_UNITS_EXPORT_BEGIN
 }
 
 /**
- * Controls whether conversion from `quantity<FromUnit, FromRep>` to
- *        `quantity<ToUnit, ToRep>` is implicit or explicit.
+ * Whether a conversion between two quantity types is implicit
  *
- * The default is `true` iff the scaling is non-truncating: either `ToRep` is floating-point,
- * or both reps are non-floating-point and the unit magnitude ratio is an integral factor.
+ * `true` when converting a `quantity<FromUnit, FromRep>` to a `quantity<ToUnit, ToRep>` truncates
+ * nothing, which holds when `ToRep` is treated as floating-point (see @ref treat_as_floating_point),
+ * or when neither type is and the ratio of the units is an integer, as from metres to millimetres.
+ * Any other conversion needs `value_cast` or a rounding policy.
  *
- * Specialize this variable template to customize the implicit/explicit decision for
- * your own representation types.
+ * A fixed-point decimal type with six fractional digits stores `1234 mm` as `1.234 m` exactly, but
+ * isn't floating-point, so the default asks for a cast. Specializing @ref treat_as_floating_point
+ * for it would make the conversions implicit, but would also reject the `rounded_down` and
+ * `rounded_up` policies. When all the conversions a program makes fit in six digits, this
+ * specialization makes them implicit instead:
  *
- * @tparam FromUnit the source unit value (NTTP)
- * @tparam FromRep  the source representation type
- * @tparam ToUnit   the target unit value (NTTP)
- * @tparam ToRep    the target representation type
+ * @code{.cpp}
+ * class decimal;  // fixed-point, with six fractional digits
+ *
+ * template<auto FromUnit, auto ToUnit>
+ * constexpr bool mp_units::implicitly_scalable<FromUnit, decimal, ToUnit, decimal> = true;
+ * @endcode
+ *
+ * @tparam FromUnit the unit converted from
+ * @tparam FromRep the representation type converted from
+ * @tparam ToUnit the unit converted to
+ * @tparam ToRep the representation type converted to
+ *
+ * @see [Representation Types](docs:users_guide/advanced_topics/representation_types#implicitly_scalable) in
+ * the User's Guide
  */
 template<Unit auto FromUnit, typename FromRep, Unit auto ToUnit, typename ToRep>
 constexpr bool implicitly_scalable =

@@ -79,8 +79,14 @@ inline constexpr auto deg2 = square(degree);
 
 }  // namespace angular
 
+/**
+ * The degree of plane angle is written with no space, as in `90°`
+ */
 template<>
 inline constexpr bool space_before_unit_symbol<angular::degree> = false;
+/**
+ * The gradian is written with no space, as in `100ᵍ`
+ */
 template<>
 inline constexpr bool space_before_unit_symbol<angular::gradian> = false;
 

@@ -62,15 +62,35 @@ namespace mp_units {
 MP_UNITS_EXPORT_BEGIN
 
 /**
- * Puts a space ' ' sign before a unit symbol
+ * Whether a space separates a number from the symbol of the unit `U` in text output
  *
- * Quantities of some units (e.g. degree, arcminute, arcsecond) should not be printed with the
- * space between a number and a unit. For those a partial specialization with the value `false` should
- * be provided.
+ * `true` by default, as the SI requires. The degree, arcminute, and arcsecond of plane angle are
+ * written with no space, as in `90°`, and a unit with that convention gets a specialization:
+ *
+ * @code{.cpp}
+ * // right ascension in astronomy is written as 5ʰ 35ᵐ, with no space
+ * inline constexpr struct hour_angle final :
+ *   named_unit<symbol_text{u8"ʰ", "h"}, mag<15> * non_si::degree> {} hour_angle;
+ *
+ * template<>
+ * inline constexpr bool mp_units::space_before_unit_symbol<hour_angle> = false;
+ *
+ * void print_right_ascension() { std::cout << 5 * hour_angle << '\n'; }  // 5ʰ
+ * @endcode
+ *
+ * A format specification that places the symbol itself, as `{:%N %U}` does, overrides it.
+ *
+ * @tparam U the unit
+ *
+ * @see [Text Output](docs:users_guide/framework_basics/text_output#space_before_unit_symbol-customization-point)
+ * in the User's Guide
  */
 template<Unit auto U>
 constexpr bool space_before_unit_symbol = true;
 
+/**
+ * No space before the symbol of @ref one, which is empty
+ */
 template<>
 inline constexpr bool space_before_unit_symbol<one> = false;
 

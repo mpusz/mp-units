@@ -279,12 +279,42 @@ using natural_origin_base_t = natural_origin_base<QS>::type;
 template<QuantitySpec auto QS>
 struct natural_point_origin_ final : detail::natural_origin_base_t<QS> {};
 
+/**
+ * The natural origin of the quantity `QS`, its zero
+ *
+ * Code rarely names it. A point created with @ref point, or a `quantity_point` declared with no
+ * origin, is measured from it when its unit has no origin of its own, and `delta_from_zero()`
+ * reads how far such a point lies from zero. A point measured from an origin of the user's own,
+ * like `mean_height` below, has no `delta_from_zero()`, so code names the natural origin to ask the
+ * same question:
+ *
+ * @code{.cpp}
+ * // the mean height of adults, an origin for a height distribution
+ * inline constexpr struct mean_height final :
+ *   relative_point_origin<point<isq::height[mm]>(1700.)> {} mean_height;
+ *
+ * quantity_point tall = mean_height + 250. * mm;
+ * quantity from_mean = tall.delta_from(mean_height);                        // 250 mm
+ * quantity from_zero = tall.delta_from(natural_point_origin<isq::height>);  // 1950 mm
+ * @endcode
+ *
+ * For a quantity defined with @ref non_negative, it checks that no point lies below zero. A kind,
+ * as in `point<m>`, is never checked.
+ *
+ * @tparam QS the quantity specification of the points measured from it
+ *
+ * @see [The Affine Space](docs:users_guide/framework_basics/the_affine_space#natural_point_originquantityspec)
+ * in the User's Guide
+ */
 MP_UNITS_EXPORT template<QuantitySpec auto QS>
 constexpr natural_point_origin_<QS> natural_point_origin;
 
 template<QuantitySpec auto QS>
 using zeroth_point_origin_ [[deprecated("2.6.0: Use `natural_point_origin_` instead")]] = natural_point_origin_<QS>;
 
+/**
+ * The former name of @ref natural_point_origin
+ */
 MP_UNITS_EXPORT template<QuantitySpec auto QS>
 [[deprecated("2.6.0: Use `natural_point_origin` instead")]]
 constexpr natural_point_origin_<QS>

@@ -98,6 +98,23 @@ template<typename C>
 struct chrono_point_origin_ final : absolute_point_origin<isq::time> {
   using clock = C;
 };
+/**
+ * The epoch of the `std::chrono` clock `C`, as a point origin
+ *
+ * A quantity point measured from it converts to and from `std::chrono::time_point<C>`:
+ *
+ * @code{.cpp}
+ * // snippet-template: none
+ * using timestamp =
+ *   quantity_point<isq::time[si::second], chrono_point_origin<std::chrono::system_clock>>;
+ *
+ * const timestamp takeoff(std::chrono::system_clock::now());
+ * @endcode
+ *
+ * @tparam C the clock
+ *
+ * @see [Converting External Quantity Types](docs:how_to_guides/integration/converting_external_quantity_types)
+ */
 MP_UNITS_EXPORT template<typename C>
 constexpr chrono_point_origin_<C> chrono_point_origin;
 

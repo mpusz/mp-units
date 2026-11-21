@@ -38,12 +38,68 @@ MP_UNITS_EXPORT_BEGIN
 
 // common dimensionless units
 // clang-format off
+/**
+ * Percent, a hundredth of @ref one
+ *
+ * @code{.cpp}
+ * quantity efficiency = (1.7 * kW / (2. * kW)).in(percent);  // 85 %
+ * @endcode
+ *
+ * @see @ref per_mille for thousandths
+ * @see @ref parts_per_million for millionths
+ */
 inline constexpr struct percent final : named_unit<"%", mag_ratio<1, 100> * one> {} percent;
+
+/**
+ * Per mille, a thousandth of @ref one
+ *
+ * @code{.cpp}
+ * quantity salinity = (35. * g / (1. * kg)).in(per_mille);  // 35 ‰, typical of seawater
+ * @endcode
+ *
+ * @see @ref percent for hundredths
+ * @see @ref parts_per_million for millionths
+ */
 inline constexpr struct per_mille final : named_unit<symbol_text{u8"‰" /* U+2030 PER MILLE SIGN */, "%o"}, mag_ratio<1, 1000> * one> {} per_mille;
+
+/**
+ * Parts per million, a millionth of @ref one
+ *
+ * @code{.cpp}
+ * // the frequency error of a watch crystal
+ * quantity nominal = 32'768. * Hz;
+ * quantity measured = 32'768.5 * Hz;
+ * quantity error = ((measured - nominal) / nominal).in(ppm);  // ≈ 15.26 ppm
+ * @endcode
+ *
+ * @see @ref percent for hundredths
+ * @see @ref per_mille for thousandths
+ */
 inline constexpr struct parts_per_million final : named_unit<"ppm", mag_ratio<1, 1'000'000> * one> {} parts_per_million;
+
+/**
+ * The short name of @ref parts_per_million
+ */
 inline constexpr auto ppm = parts_per_million;
+
 // TODO make it a unit constant rather than a named unit when such support will be provided
+/**
+ * The number π, as a unit
+ *
+ * A quantity keeps the factor π in its unit, exactly, until it is converted to a unit without
+ * it:
+ *
+ * @code{.cpp}
+ * constexpr quantity radius = 2. * m;
+ * constexpr quantity area = pow<2>(radius) * π;  // 4 π m²
+ * constexpr quantity area_m2 = area.in(m2);      // ≈ 12.57 m²
+ * @endcode
+ */
 inline constexpr struct pi final : named_constant<symbol_text{u8"π" /* U+03C0 GREEK SMALL LETTER PI */, "pi"}, mag<detail::pi_c> * one> {} pi;
+
+/**
+ * The Greek-letter name of @ref pi
+ */
 inline constexpr auto π /* U+03C0 GREEK SMALL LETTER PI */ = pi;
 // clang-format on
 
