@@ -256,9 +256,11 @@ This page documents the version history and changes for the **mp-units** library
       `quantity_point`, and of the `std::common_type` of two quantities, as the plain type
       (`int`) instead of the library's internal spelling
       (`representation_canonical_type_t<int>`, `typename Q::rep`, or
-      `std::common_type_t<short, unsigned char>`). Multiplying or dividing a unit by a
-      `quantity` now states why it is ill-formed, as multiplying a unit by a number already
-      did.
+      `std::common_type_t<short, unsigned char>`). A `quantity` deduced from a value alone,
+      such as `quantity{42}`, keeps the internal spelling: the plain one would cost two
+      constraint checks in every `quantity x = other_quantity;`. Multiplying or dividing a
+      unit by a `quantity` now states why it is ill-formed, as multiplying a unit by a
+      number already did.
 - fix: a rejected `+`, `-`, `%`, `==` or `<=>` on two quantities of different kinds, and a
       rejected `hypot`, report that the quantities have no common quantity instead of an
       invalid call to `get_common_reference`. Three more mistakes get a sentence: a raw

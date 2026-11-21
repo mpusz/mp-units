@@ -1258,9 +1258,11 @@ template<Reference R, typename Value, typename Rep = representation_canonical_ty
   requires RepresentationOf<Rep, get_quantity_spec(R{})>
 quantity(Value v, R) -> quantity<R{}, Rep>;
 
-template<Reference auto R = one, typename Value, typename Rep = representation_canonical_type_t<Value>>
-  requires RepresentationOf<Rep, get_quantity_spec(R)>
-quantity(Value) -> quantity<R, Rep>;
+// Spelled without the defaulted `Rep`: every `quantity q = other_quantity;` considers this guide, and a
+// default is substituted before the constraint rejects it, which costs 2 constraint checks per declaration.
+template<Reference auto R = one, typename Value>
+  requires RepresentationOf<representation_canonical_type_t<Value>, get_quantity_spec(R)>
+quantity(Value) -> quantity<R, representation_canonical_type_t<Value>>;
 
 template<detail::QuantityLike Q, typename Rep = quantity_like_traits<Q>::rep>
 quantity(Q) -> quantity<quantity_like_traits<Q>::reference, Rep>;
