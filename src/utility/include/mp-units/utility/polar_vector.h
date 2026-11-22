@@ -64,31 +64,51 @@ namespace mp_units::utility {
 // `+`, `-`, dot, and cross are not (they are not component-wise here), so convert to Cartesian for
 // those.
 
-/// Maps an angle quantity kind to the unit that measures one radian in that kind's system.
-///
-/// The facades need the radian of whatever angle system a stored angle belongs to, to reach the
-/// plain-number `std::sin`/`cos`/`atan2`. This customization point supplies it, keyed on the angle
-/// *kind*. The lookup is `radian_of<get_quantity_spec(unit)>`, and `get_quantity_spec` of a bare unit
-/// yields a `kind_of<...>`, so a registration must be keyed on that same kind - the `QS == get_kind(QS)`
-/// constraint enforces this, turning an accidental key on a concrete spec (which would never match)
-/// into a clean compile error. The two built-in angle kinds are registered right below: SI's
-/// dimensionless angle (`si::radian`/`degree`/`arcminute`/...) and the opt-in strong `angular` system
-/// (`angular::radian`/`degree`/...). To use the facades with an angle system of your own, register its
-/// radian with a single specialization keyed on its kind (see the "Working with Polar and Spherical
-/// Coordinates" guide):
-/// @code
-/// template<>
-/// constexpr auto mp_units::utility::radian_of<kind_of<my::angle>> = my::radian;  // == get_quantity_spec(my::radian)
-/// @endcode
-/// It is left `unspecified` for every other kind, which is exactly what `detail::AngleUnit` rejects - so
-/// a non-angle unit is a clean compile error, not a silently wrong conversion.
+/**
+ * Customization point: the unit of one radian for an angle quantity kind
+ *
+ * The polar and spherical facades convert an angle through it to call `std::sin`, `std::cos`, and
+ * `std::atan2`, so they work with any angle system whose radian is registered here. The library
+ * registers the angle of the SI and that of the `angular` system. Another angle system needs one
+ * specialization, keyed on its kind:
+ *
+ * @code{.cpp}
+ * // snippet-template: none
+ * namespace my {
+ * inline constexpr struct dim_angle : base_dimension<"A"> {} dim_angle;
+ * inline constexpr struct angle : quantity_spec<dim_angle> {} angle;
+ * inline constexpr struct radian : named_unit<"rad", kind_of<angle>> {} radian;
+ * inline constexpr struct degree : named_unit<"deg", mag_ratio<1, 180> * π * radian> {} degree;
+ * }
+ *
+ * template<>
+ * inline constexpr auto mp_units::utility::radian_of<kind_of<my::angle>> = my::radian;
+ *
+ * utility::polar_vector position{2. * m, 90. * my::degree};  // converts through my::radian
+ * @endcode
+ *
+ * It accepts only a kind, which is what `get_quantity_spec` of a bare unit yields, so a
+ * specialization keyed on a concrete quantity specification doesn't compile. The facades reject
+ * an angle unit whose kind has no radian registered.
+ *
+ * @tparam QS the kind of the angle quantities
+ *
+ * @see [Polar and Spherical Coordinates](docs:how_to_guides/advanced_usage/polar_and_spherical_coordinates)
+ * in the How-to Guides
+ */
 MP_UNITS_EXPORT template<QuantitySpec auto QS>
   requires(QS == get_kind(QS))
 constexpr auto radian_of = unspecified;
 
+/**
+ * The radian of the angle of the `angular` system
+ */
 template<>
 constexpr auto radian_of<get_quantity_spec(angular::radian)> = angular::radian;
 
+/**
+ * The radian of the angle of the SI
+ */
 template<>
 constexpr auto radian_of<get_quantity_spec(si::radian)> = si::radian;
 

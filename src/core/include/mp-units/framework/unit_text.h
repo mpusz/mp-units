@@ -62,7 +62,8 @@ namespace mp_units {
 MP_UNITS_EXPORT_BEGIN
 
 /**
- * Whether a space separates a number from the symbol of the unit `U` in text output
+ * Customization point: whether a space separates a number from the symbol of the unit `U` in text
+ * output
  *
  * `true` by default, as the SI requires. The degree, arcminute, and arcsecond of plane angle are
  * written with no space, as in `90°`, and a unit with that convention gets a specialization:

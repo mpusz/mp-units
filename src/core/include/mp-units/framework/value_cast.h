@@ -155,7 +155,7 @@ MP_UNITS_EXPORT_BEGIN
 }
 
 /**
- * Whether a conversion between two quantity types is implicit
+ * Customization point: whether a conversion between two quantity types is implicit
  *
  * `true` when converting a `quantity<FromUnit, FromRep>` to a `quantity<ToUnit, ToRep>` truncates
  * nothing, which holds when `ToRep` is treated as floating-point (see @ref treat_as_floating_point),

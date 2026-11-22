@@ -46,7 +46,8 @@ concept AbsolutePointOrigin = detail::PointOrigin<T> && is_derived_from_speciali
 }  // namespace detail
 
 /**
- * The projection of a point from the absolute origin `From` to the absolute origin `To`
+ * Customization point: the projection of a point from the absolute origin `From` to the absolute
+ * origin `To`
  *
  * Two absolute origins are unrelated until a specialization connects them with a callable that
  * takes a point measured from `From`, and any extra arguments, and returns the point measured

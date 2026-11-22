@@ -35,15 +35,37 @@ import std;
 
 namespace mp_units::utility {
 
-/// Sentinel default for a specializable variable-template customization point with no usable
-/// default.
-///
-/// A variable template cannot be `= delete`d the way a function can, so a customization point that
-/// must be specialized before use defaults to `unspecified`, and a specialization replaces it with a
-/// real value. `specified` reports whether that has happened. This is public authoring vocabulary
-/// shared by the library's own customization points and by higher-level tools, hence it lives in the
-/// `mp_units::utility` namespace.
+/**
+ * The type of @ref unspecified
+ */
 MP_UNITS_EXPORT struct unspecified_t {};
+
+/**
+ * The default of a customization point that has no usable default
+ *
+ * A variable template can't be deleted the way a function can, so a customization point that has
+ * to be specialized before use starts as `unspecified`, and a specialization replaces it. Code
+ * then accepts only the types it was specialized for:
+ *
+ * @code{.cpp}
+ * // snippet-template: none
+ * // the unit a sensor reports in, known only for the sensors registered for it
+ * template<typename Sensor>
+ * constexpr auto native_unit = utility::unspecified;
+ *
+ * template<>
+ * inline constexpr auto native_unit<lidar> = mm;
+ *
+ * template<typename Sensor>
+ *   requires utility::specified<decltype(native_unit<Sensor>)>
+ * quantity<native_unit<Sensor>, int> read(const Sensor& sensor);
+ * @endcode
+ *
+ * The library's own customization points, such as @ref tensor_order and @ref radian_of, start
+ * this way.
+ *
+ * @see @ref specified for testing whether a customization point has a value
+ */
 MP_UNITS_EXPORT inline constexpr unspecified_t unspecified{};
 
 /// Satisfied when a customization point has been given a value (i.e. is not `unspecified`).

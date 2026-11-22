@@ -201,7 +201,7 @@ struct real_t {
 inline namespace cpo {
 
 /**
- * The real part of a complex value
+ * Customization point object: the real part of a complex value
  *
  * Calls `clx.real()`, or `real(clx)` found by ADL, and accepts only a result that is real and has
  * the order of `clx`. Code written for any complex scalar calls it, whichever form the type provides:
@@ -247,7 +247,7 @@ struct imag_t {
 inline namespace cpo {
 
 /**
- * The imaginary part of a complex value
+ * Customization point object: the imaginary part of a complex value
  *
  * Calls `clx.imag()`, or `imag(clx)` found by ADL, and accepts only a result that is real and has
  * the order of `clx`. Code written for any complex scalar calls it, whichever form the type provides:
@@ -305,7 +305,7 @@ struct modulus_t {
 inline namespace cpo {
 
 /**
- * The modulus of a complex scalar
+ * Customization point object: the modulus of a complex scalar
  *
  * Calls the first of `clx.modulus()`, `modulus(clx)`, `clx.abs()` and `abs(clx)` that exists, with the
  * free functions found by ADL, and accepts only a real scalar result. So `std::complex` works through
@@ -451,7 +451,7 @@ struct magnitude_t {
 inline namespace cpo {
 
 /**
- * The magnitude of a vector or tensor, as a non-negative scalar
+ * Customization point object: the magnitude of a vector or tensor, as a non-negative scalar
  *
  * Calls `vec.magnitude()` or `magnitude(vec)` when the type provides one. Otherwise a vector or
  * tensor uses its `norm()`, as linear algebra libraries name it, a real scalar its absolute

@@ -254,7 +254,7 @@ concept has_ambiguous_order = has_vector_indexing<T> && has_matrix_indexing<T>;
 // its extents can decide - so it matches neither and stays `undefined` unless specialized: guessing
 // would disagree with an adapter, an ODR hazard across translation units.
 /**
- * The tensor order of a representation type, 0 for a scalar, 1 for a vector, and 2 for a tensor
+ * Customization point: the tensor order of a representation type, 0 for a scalar, 1 for a vector, and 2 for a tensor
  *
  * The order is detected from the element access a type provides. `t(i, j)` or `t[i, j]` is order
  * 2, `t[i]` is order 1, and neither is order 0. A type that provides both, as an N×1 matrix does,
@@ -405,7 +405,7 @@ concept field_consistent = field_reachable<T> && (field_is_consistent<T>());
 // (not a representation until the author exposes the API or specializes this trait), rather than
 // silently misclassified.
 /**
- * Whether a representation type is real or complex
+ * Customization point: whether a representation type is real or complex
  *
  * A scalar is complex when `real()` and `imag()` can be called on it, as members or as free
  * functions found by ADL. A vector or tensor takes the field of its element, so a real matrix
@@ -460,7 +460,7 @@ constexpr bool is_quantity_abstraction = false;
 // are opted out as well. A custom type bars itself from ever being a representation with a one-line
 // specialization.
 /**
- * Bars a type from being the representation of any quantity
+ * Customization point: bars a type from being the representation of any quantity
  *
  * `true` for a type that is, or whose elements are, a quantity or a quantity-like type, so that
  * a quantity is never stored inside another one under a second unit. `bool`, `char`, `wchar_t`,
@@ -538,7 +538,7 @@ inline constexpr bool disable_representation<T> = true;
 MP_UNITS_EXPORT_BEGIN
 
 /**
- * Whether a representation type is treated as floating-point
+ * Customization point: whether a representation type is treated as floating-point
  *
  * A conversion to a floating-point representation is implicit whatever the ratio of the units,
  * as from millimetres to metres, while one to an integral type with a fractional ratio needs a
