@@ -69,7 +69,7 @@ inline constexpr struct degree final : named_unit<"tdeg", mag_ratio<1, 180> * mp
 
 // the one-line opt-in a custom-system author writes:
 template<>
-constexpr auto mp_units::utility::radian_of<get_quantity_spec(test_angle::radian)> = test_angle::radian;
+inline constexpr auto mp_units::utility::radian_of<get_quantity_spec(test_angle::radian)> = test_angle::radian;
 
 // The radius must be a radial magnitude, never an angle: neither coordinate may be swapped for the
 // other, and an angle-valued radius is a category error rejected at compile time.

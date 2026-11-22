@@ -202,7 +202,7 @@ inline constexpr struct degree : named_unit<"deg", mag_ratio<1, 180> * π * radi
 
 // the whole opt-in, one line - keyed on the angle *kind*:
 template<>
-constexpr auto mp_units::utility::radian_of<kind_of<my::angle>> = my::radian;
+inline constexpr auto mp_units::utility::radian_of<kind_of<my::angle>> = my::radian;
 
 polar_vector p{2.0 * m, 90.0 * my::degree};  // converts through my::radian
 ```

@@ -293,7 +293,7 @@ never store a quantity:
 
 ```cpp
 template<>
-constexpr bool mp_units::disable_representation<my_type> = true;
+inline constexpr bool mp_units::disable_representation<my_type> = true;
 ```
 
 ---
@@ -344,7 +344,7 @@ API or specializes `numeric_field`.
 
 ```cpp
 template<>
-constexpr quantity_field mp_units::numeric_field<my_real> = quantity_field::real;
+inline constexpr quantity_field mp_units::numeric_field<my_real> = quantity_field::real;
 ```
 
 Field matching is **exact**: a real quantity requires a real representation and a complex
@@ -592,7 +592,7 @@ automatic detection doesn't work correctly:
 
 ```cpp
 template<>
-constexpr bool mp_units::treat_as_floating_point<my_fixed_point_type> = true;
+inline constexpr bool mp_units::treat_as_floating_point<my_fixed_point_type> = true;
 ```
 
 **Impact:** When `treat_as_floating_point<Rep>` is `true`, the type is treated as

@@ -104,13 +104,13 @@ constexpr auto radian_of = unspecified;
  * The radian of the angle of the `angular` system
  */
 template<>
-constexpr auto radian_of<get_quantity_spec(angular::radian)> = angular::radian;
+inline constexpr auto radian_of<get_quantity_spec(angular::radian)> = angular::radian;
 
 /**
  * The radian of the angle of the SI
  */
 template<>
-constexpr auto radian_of<get_quantity_spec(si::radian)> = si::radian;
+inline constexpr auto radian_of<get_quantity_spec(si::radian)> = si::radian;
 
 namespace detail {
 
