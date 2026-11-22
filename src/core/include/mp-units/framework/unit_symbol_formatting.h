@@ -39,18 +39,65 @@ import std;
 MP_UNITS_EXPORT
 namespace mp_units {
 
+/**
+ * Selects when a unit symbol divides with a solidus and when it uses negative exponents
+ *
+ * The default writes a solidus only for a single unit in the denominator. A publication that asks
+ * for negative exponents throughout selects `never`:
+ *
+ * @code{.cpp}
+ * constexpr std::string_view text_unit = unit_symbol(m / s);  // "m/s"
+ * constexpr std::string_view paper_unit =
+ *   unit_symbol<{.solidus = unit_symbol_solidus::never}>(m / s);  // "m s⁻¹"
+ * @endcode
+ *
+ * The `1`, `a`, and `n` tokens of a format specification select `one_denominator`, `always`,
+ * and `never`.
+ *
+ * @see @ref character_set for the choice between Unicode and the basic character set
+ * @see @ref unit_symbol_separator for the separator of the multiplied units
+ * @see @ref unit_symbol_formatting for all the options `unit_symbol` takes
+ * @see [Text Output](docs:users_guide/framework_basics/text_output) in the User's Guide
+ */
 // NOLINTNEXTLINE(readability-enum-initial-value)
 enum class unit_symbol_solidus {
-  one_denominator,  // m/s;   kg m⁻¹ s⁻¹
-  always,           // m/s;   kg/(m s)
-  never,            // m s⁻¹; kg m⁻¹ s⁻¹
+  /// A solidus for a single unit in the denominator, as in `m/s`, negative exponents otherwise, as in `kg m⁻¹ s⁻¹`
+  one_denominator,
+  /// Always a solidus, as in `m/s` and `kg/(m s)`
+  always,
+  /// Never a solidus, as in `m s⁻¹` and `kg m⁻¹ s⁻¹`
+  never,
+  /// The former default, `one_denominator`
   default_solidus [[deprecated("2.6.0: Name the value explicitly, e.g. `one_denominator`")]] = one_denominator
 };
 
+// The result of `dot_unit` is stated after the sample, not in it: MrDocs splits the `⋅` of a code block
+// (cppalliance/mrdocs#1383). Move it back into a trailing comment once that is fixed.
+/**
+ * Selects what separates the multiplied units of a unit symbol
+ *
+ * The default is a space. A typeset document may select a half-high dot instead:
+ *
+ * @code{.cpp}
+ * constexpr std::string_view text_unit = unit_symbol(kg * m2 / s2);  // "kg m²/s²"
+ * constexpr std::string_view dot_unit =
+ *   unit_symbol<{.separator = unit_symbol_separator::half_high_dot}>(kg * m2 / s2);
+ * @endcode
+ *
+ * Here `dot_unit` is `kg⋅m²/s²`. The `s` and `d` tokens of a format specification select `space` and `half_high_dot`.
+ *
+ * @see @ref character_set for the choice between Unicode and the basic character set
+ * @see @ref unit_symbol_solidus for when a solidus divides
+ * @see @ref unit_symbol_formatting for all the options `unit_symbol` takes
+ * @see [Text Output](docs:users_guide/framework_basics/text_output) in the User's Guide
+ */
 // NOLINTNEXTLINE(readability-enum-initial-value)
 enum class unit_symbol_separator {
-  space,          // kg m²/s²
-  half_high_dot,  // kg⋅m²/s²  (valid only for the `unicode` character set)
+  /// A space, as in `kg m²/s²`
+  space,
+  /// A half-high dot, as in `kg⋅m²/s²`, valid only with `unicode`, and an error with `basic`
+  half_high_dot,
+  /// The former default, `space`
   default_separator [[deprecated("2.6.0: Name the value explicitly, e.g. `space`")]] = space
 };
 

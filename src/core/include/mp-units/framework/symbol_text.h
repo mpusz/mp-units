@@ -45,14 +45,39 @@ import std;
 
 namespace mp_units {
 
+/**
+ * Selects the characters a unit or dimension symbol is printed with
+ *
+ * Every symbol has a Unicode spelling and a spelling in the basic character set of C++, which is
+ * a subset of ASCII:
+ *
+ * @code{.cpp}
+ * // a log file parsed by scripts that expect plain ASCII
+ * constexpr std::string_view log_unit = unit_symbol<{.char_set = character_set::basic}>(us);  // "us"
+ * constexpr std::string_view screen_unit = unit_symbol(us);                                   // "µs"
+ * @endcode
+ *
+ * The `P` token of a format specification selects `basic` too.
+ *
+ * @see @ref unit_symbol_formatting for all the options `unit_symbol` takes
+ * @see @ref dimension_symbol_formatting for all the options `dimension_symbol` takes
+ * @see [Text Output](docs:users_guide/framework_basics/text_output) in the User's Guide
+ */
 // NOLINTNEXTLINE(readability-enum-initial-value)
 MP_UNITS_EXPORT enum class character_set {
-  unicode,  // µs; m³;  L²MT⁻³
+  /// Unicode, as in `µs`, `m³` and `L²MT⁻³`
+  unicode,
+  /// The former name of `unicode`
   utf8 [[deprecated("2.6.0: Use `unicode` instead")]] = unicode,
-  basic,  // us; m^3; L^2MT^-3
+  /// The basic character set, as in `us`, `m^3` and `L^2MT^-3`
+  basic,
+  /// The former name of `basic`
   portable [[deprecated("2.6.0: Use `basic` instead")]] = basic,
+  /// The former name of `basic`
   ascii [[deprecated("2.4.0: Use `basic` instead")]] = basic,
+  /// The former default, `unicode`
   default_character_set [[deprecated("2.6.0: Name the character set explicitly, e.g. `unicode`")]] = unicode,
+  /// The former default, `unicode`
   default_encoding [[deprecated("2.5.0: Name the character set explicitly, e.g. `unicode`")]] = unicode
 };
 

@@ -44,8 +44,67 @@ namespace mp_units {
 // tensor) and its *numeric field* (real, complex). The enumerators are declared in increasing order
 // (scalar < vector < tensor, real < complex) because combining the characters of a derived quantity's
 // factors takes their maximum.
-MP_UNITS_EXPORT enum class quantity_tensor_order { scalar, vector, tensor };
-MP_UNITS_EXPORT enum class quantity_field { real, complex };
+/**
+ * Whether a quantity is a scalar, a vector, or a tensor
+ *
+ * Every quantity specification has one, and a constraint can require, say, any vector quantity:
+ *
+ * @code{.cpp}
+ * // snippet-template: none
+ * #include <mp-units/utility/cartesian_vector.h>
+ *
+ * // an arrow on a 2D plot can show any vector
+ * void draw_arrow(QuantityOf<quantity_tensor_order::vector> auto v);
+ *
+ * draw_arrow(isq::velocity(utility::cartesian_vector{3., 4.} * (m / s)));
+ * // doesn't compile: speed is a scalar
+ * // draw_arrow(isq::speed(5. * m / s));
+ * @endcode
+ *
+ * @see @ref quantity_field for whether a quantity is real or complex
+ * @see @ref quantity_character for both axes together
+ * @see @ref tensor_order for the order of a representation type
+ * @see [The Character of a Quantity](docs:users_guide/framework_basics/character_of_a_quantity) in the
+ * User's Guide
+ */
+MP_UNITS_EXPORT enum class quantity_tensor_order {
+  /// Order 0, such as _speed_ or _mass_
+  scalar,
+  /// Order 1, such as _velocity_ or _force_
+  vector,
+  /// Order 2, such as _stress_ or _moment of inertia_
+  tensor
+};
+
+/**
+ * Whether a quantity is real or complex
+ *
+ * Every quantity specification has one, and a constraint can require any complex quantity:
+ *
+ * @code{.cpp}
+ * // snippet-template: none
+ * #include <complex>
+ *
+ * // a phasor diagram shows only complex quantities
+ * void plot_phasor(QuantityOf<quantity_field::complex> auto z);
+ *
+ * plot_phasor(isq::impedance(std::complex{3., 4.} * si::ohm));
+ * // doesn't compile: voltage is real
+ * // plot_phasor(isq::voltage(230. * V));
+ * @endcode
+ *
+ * @see @ref quantity_tensor_order for whether a quantity is a scalar, a vector, or a tensor
+ * @see @ref quantity_character for both axes together
+ * @see @ref numeric_field for the field of a representation type
+ * @see [The Character of a Quantity](docs:users_guide/framework_basics/character_of_a_quantity) in the
+ * User's Guide
+ */
+MP_UNITS_EXPORT enum class quantity_field {
+  /// Real, such as _voltage_ or _active power_
+  real,
+  /// Complex, such as _impedance_ or _complex power_
+  complex
+};
 
 namespace detail {
 
@@ -167,10 +226,17 @@ template<typename T>
 // steer new code toward the `quantity_tensor_order` and `quantity_field` axes.
 #define MP_UNITS_QCL_DEPRECATED \
   [[deprecated("2.6.0: use the 'quantity_tensor_order' and 'quantity_field' axes instead")]]
+/**
+ * The former character of a quantity, now @ref quantity_tensor_order and @ref quantity_field
+ */
 MP_UNITS_EXPORT enum class MP_UNITS_QCL_DEPRECATED quantity_character_legacy : std::int8_t {
+  /// A real scalar
   real_scalar MP_UNITS_QCL_DEPRECATED,
+  /// A complex scalar
   complex_scalar MP_UNITS_QCL_DEPRECATED,
+  /// A real vector
   vector MP_UNITS_QCL_DEPRECATED,
+  /// A real tensor
   tensor MP_UNITS_QCL_DEPRECATED
 };
 #undef MP_UNITS_QCL_DEPRECATED

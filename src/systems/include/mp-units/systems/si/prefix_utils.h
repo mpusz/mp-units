@@ -44,7 +44,24 @@ MP_UNITS_EXPORT_BEGIN
 
 #if MP_UNITS_HOSTED
 
-enum class prefix_range { engineering, full };
+/**
+ * Which SI prefixes @ref invoke_with_prefixed may choose
+ *
+ * @code{.cpp}
+ * // snippet-template: none
+ * #include <mp-units/systems/si/prefix_utils.h>
+ *
+ * auto print = [](auto q) { std::cout << q << '\n'; };
+ * si::invoke_with_prefixed(print, 0.05 * m, m);                           // 50 mm
+ * si::invoke_with_prefixed(print, 0.05 * m, m, si::prefix_range::full);  // 5 cm
+ * @endcode
+ */
+enum class prefix_range {
+  /// Only the prefixes of powers of 1000, such as `k`, `M`, and `m`
+  engineering,
+  /// Every prefix, `c`, `d`, `da`, and `h` included
+  full
+};
 
 /**
  * Calls an invocable with a quantity scaled to an automatically selected SI prefix

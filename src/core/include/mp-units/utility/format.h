@@ -76,12 +76,47 @@ import std;
 namespace mp_units::utility {
 MP_UNITS_EXPORT_BEGIN
 
-enum class fmt_align : std::int8_t { none, left, right, center, numeric };
+/**
+ * The alignment of a formatted value within its field width
+ *
+ * @ref parse_fill_align_width takes the alignment to use when the specification gives none. The
+ * formatter of `quantity` passes `right`:
+ *
+ * @code{.cpp}
+ * // snippet-template: none
+ * constexpr auto parse(std::format_parse_context& ctx)
+ * {
+ *   return utility::parse_fill_align_width(ctx, ctx.begin(), ctx.end(), specs_, utility::fmt_align::right);
+ * }
+ * @endcode
+ */
+enum class fmt_align : std::int8_t {
+  /// No alignment was given
+  none,
+  /// Aligned to the left, the `<` token
+  left,
+  /// Aligned to the right, the `>` token
+  right,
+  /// Centered, the `^` token
+  center,
+  /// Padded as `left`. @ref parse_align has no token for it
+  numeric
+};
+
+/**
+ * How a format specification gives a dynamic width or precision
+ *
+ * @ref handle_dynamic_spec reads the argument that a @ref fmt_arg_ref of `index` or `name` kind
+ * refers to.
+ */
 enum class fmt_arg_id_kind : std::int8_t {
+  /// No dynamic value, as in `{:10}` or `{}`
   none,
 #if MP_UNITS_USE_FMTLIB
+  /// By the name of an argument, as in `{:{width}}`, with {fmt} only
   name,
 #endif
+  /// By the index of an argument, as in `{:{1}}` or `{:{}}`
   index
 };
 
