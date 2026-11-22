@@ -25,6 +25,8 @@ This page documents the version history and changes for the **mp-units** library
       them. `PointOriginFor` stays as the way to constrain an origin. The deprecation warns
       on GCC 13 and Clang 19 and later, the first compilers to accept `[[deprecated]]` on
       a concept
+- refactor: `get_common_unit` is deprecated, as P3045 no longer proposes it.
+      `get_common_reference` returns the common unit when every argument is a unit
 - fix: `wrap_to_range` and `reflect_in_range` no longer overflow a standard integer
       representation when the length of the range, or the period of the reflection (twice
       that length), exceeds the representation's maximum

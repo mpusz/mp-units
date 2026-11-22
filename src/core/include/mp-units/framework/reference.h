@@ -243,30 +243,38 @@ constexpr auto operator/(R, Q&& q)
   = delete;
 #endif
 
-[[nodiscard]] consteval Unit auto get_common_unit(Unit auto u);
+MP_UNITS_EXPORT_END
 
-template<Unit U1, detail::UnitConvertibleTo<U1{}> U2>
-[[nodiscard]] consteval Unit auto get_common_unit(U1 u1, U2 u2);
+namespace detail {
+
+[[nodiscard]] consteval Unit auto find_common_unit(Unit auto u);
+
+template<Unit U1, UnitConvertibleTo<U1{}> U2>
+[[nodiscard]] consteval Unit auto find_common_unit(U1 u1, U2 u2);
+
+}  // namespace detail
+
+MP_UNITS_EXPORT_BEGIN
 
 [[nodiscard]] consteval Unit auto get_common_reference(Unit auto u1, Unit auto u2, Unit auto... rest)
   requires requires {
     mp_units::get_common_quantity_spec(get_quantity_spec(u1), get_quantity_spec(u2), get_quantity_spec(rest)...);
-    mp_units::get_common_unit(u1, u2, rest...);
+    mp_units::detail::find_common_unit(u1, u2, rest...);
   }
 {
-  return mp_units::get_common_unit(u1, u2, rest...);
+  return mp_units::detail::find_common_unit(u1, u2, rest...);
 }
 
 template<Reference R1, Reference R2, Reference... Rest>
 [[nodiscard]] consteval Reference auto get_common_reference(R1 r1, R2 r2, Rest... rest)
   requires(!(Unit<R1> && Unit<R2> && (... && Unit<Rest>))) && requires {
     mp_units::get_common_quantity_spec(get_quantity_spec(r1), get_quantity_spec(r2), get_quantity_spec(rest)...);
-    mp_units::get_common_unit(get_unit(r1), get_unit(r2), get_unit(rest)...);
+    mp_units::detail::find_common_unit(get_unit(r1), get_unit(r2), get_unit(rest)...);
   }
 {
   return detail::reference_t<mp_units::get_common_quantity_spec(get_quantity_spec(R1{}), get_quantity_spec(R2{}),
                                                                 get_quantity_spec(rest)...),
-                             mp_units::get_common_unit(get_unit(R1{}), get_unit(R2{}), get_unit(rest)...)>{};
+                             mp_units::detail::find_common_unit(get_unit(R1{}), get_unit(R2{}), get_unit(rest)...)>{};
 }
 
 MP_UNITS_EXPORT_END

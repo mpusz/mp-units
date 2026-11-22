@@ -103,45 +103,65 @@ inline constexpr struct pi final : named_constant<symbol_text{u8"π" /* U+03C0 G
 inline constexpr auto π /* U+03C0 GREEK SMALL LETTER PI */ = pi;
 // clang-format on
 
-// Common unit
-[[nodiscard]] consteval Unit auto get_common_unit(Unit auto u) { return u; }
+MP_UNITS_EXPORT_END
 
-template<Unit U1, detail::UnitConvertibleTo<U1{}> U2>
-[[nodiscard]] consteval Unit auto get_common_unit(U1 u1, U2 u2)
+namespace detail {
+
+// The common unit of a set of units. Users reach it through `get_common_reference`.
+// The name differs from the deprecated `mp_units::get_common_unit` because every unit
+// derives from `detail::unit_interface`, so `detail` is an associated namespace. A same-named
+// overload here would be a better match for an unqualified call, which would then never warn.
+[[nodiscard]] consteval Unit auto find_common_unit(Unit auto u) { return u; }
+
+template<Unit U1, UnitConvertibleTo<U1{}> U2>
+[[nodiscard]] consteval Unit auto find_common_unit(U1 u1, U2 u2)
 {
-  return detail::get_common_unit_impl(u1, u2);
+  return get_common_unit_impl(u1, u2);
 }
 
-template<Unit... Us, detail::UnitConvertibleTo<common_unit<Us...>{}> NewUnit>
-[[nodiscard]] consteval Unit auto get_common_unit(common_unit<Us...>, NewUnit)
+template<Unit... Us, UnitConvertibleTo<common_unit<Us...>{}> NewUnit>
+[[nodiscard]] consteval Unit auto find_common_unit(common_unit<Us...>, NewUnit)
 {
-  using type = detail::collapse_common_unit<NewUnit, Us...>;
-  if constexpr (detail::type_list_size<type> == 1)
-    return detail::type_list_front<type>{};
+  using type = collapse_common_unit<NewUnit, Us...>;
+  if constexpr (type_list_size<type> == 1)
+    return type_list_front<type>{};
   else
-    return detail::type_list_map<type, common_unit>{};
+    return type_list_map<type, common_unit>{};
 }
 
-template<Unit... Us, detail::UnitConvertibleTo<common_unit<Us...>{}> NewUnit>
-[[nodiscard]] consteval Unit auto get_common_unit(NewUnit nu, common_unit<Us...> cu)
+template<Unit... Us, UnitConvertibleTo<common_unit<Us...>{}> NewUnit>
+[[nodiscard]] consteval Unit auto find_common_unit(NewUnit nu, common_unit<Us...> cu)
 {
-  return mp_units::get_common_unit(cu, nu);
+  return mp_units::detail::find_common_unit(cu, nu);
 }
 
 template<Unit Front, Unit... Rest, Unit... Us>
-  requires(detail::UnitConvertibleTo<common_unit<Front, Rest...>, common_unit<Us...>{}>)
-[[nodiscard]] consteval Unit auto get_common_unit(common_unit<Front, Rest...>, common_unit<Us...>)
+  requires(UnitConvertibleTo<common_unit<Front, Rest...>, common_unit<Us...>{}>)
+[[nodiscard]] consteval Unit auto find_common_unit(common_unit<Front, Rest...>, common_unit<Us...>)
 {
   if constexpr (sizeof...(Rest) == 1)
-    return mp_units::get_common_unit(Front{}, mp_units::get_common_unit(Rest{}..., common_unit<Us...>{}));
+    return mp_units::detail::find_common_unit(Front{},
+                                              mp_units::detail::find_common_unit(Rest{}..., common_unit<Us...>{}));
   else
-    return mp_units::get_common_unit(Front{}, mp_units::get_common_unit(common_unit<Rest...>{}, common_unit<Us...>{}));
+    return mp_units::detail::find_common_unit(
+      Front{}, mp_units::detail::find_common_unit(common_unit<Rest...>{}, common_unit<Us...>{}));
 }
 
-[[nodiscard]] consteval Unit auto get_common_unit(Unit auto u1, Unit auto u2, Unit auto u3, Unit auto... rest)
-  requires requires { mp_units::get_common_unit(mp_units::get_common_unit(u1, u2), u3, rest...); }
+[[nodiscard]] consteval Unit auto find_common_unit(Unit auto u1, Unit auto u2, Unit auto u3, Unit auto... rest)
+  requires requires { mp_units::detail::find_common_unit(mp_units::detail::find_common_unit(u1, u2), u3, rest...); }
 {
-  return mp_units::get_common_unit(mp_units::get_common_unit(u1, u2), u3, rest...);
+  return mp_units::detail::find_common_unit(mp_units::detail::find_common_unit(u1, u2), u3, rest...);
+}
+
+}  // namespace detail
+
+MP_UNITS_EXPORT_BEGIN
+
+[[deprecated("2.6.0: Use `get_common_reference` instead")]] [[nodiscard]] consteval Unit auto get_common_unit(
+  Unit auto u, Unit auto... rest)
+  requires requires { mp_units::detail::find_common_unit(u, rest...); }
+{
+  return mp_units::detail::find_common_unit(u, rest...);
 }
 
 MP_UNITS_EXPORT_END

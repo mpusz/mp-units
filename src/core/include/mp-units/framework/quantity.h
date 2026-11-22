@@ -254,7 +254,7 @@ template<typename Common, auto R, typename Rep>
 template<typename Rep, Unit U1, Unit U2>
 [[nodiscard]] consteval bool overflows_non_zero_common_values(U1 u1, U2 u2)
 {
-  constexpr Unit auto cu = mp_units::get_common_unit(U1{}, U2{});
+  constexpr Unit auto cu = mp_units::detail::find_common_unit(U1{}, U2{});
   return scaling_overflows_non_zero_values<Rep>(u1, cu) || scaling_overflows_non_zero_values<Rep>(u2, cu);
 }
 

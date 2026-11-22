@@ -208,13 +208,13 @@ static_assert(unit_symbol(mag<2> / (mag<detail::pi_c> * mag<e>)*one) == "(2 e⁻
 static_assert(unit_symbol<usf{.solidus = always}>(mag<2> / (mag<detail::pi_c> * mag<e>)*one) == "(2/(e π))");
 
 // common units
-static_assert(unit_symbol(get_common_unit(kilo<metre>, mile)) == "[(1/15625 km), (1/25146 mi)]");
-static_assert(unit_symbol(get_common_unit(kilo<metre> / hour, metre / second)) == "[(1/5 km/h), (1/18 m/s)]");
-static_assert(unit_symbol(get_common_unit(kilo<metre> / hour, metre / second) / second) ==
+static_assert(unit_symbol(get_common_reference(kilo<metre>, mile)) == "[(1/15625 km), (1/25146 mi)]");
+static_assert(unit_symbol(get_common_reference(kilo<metre> / hour, metre / second)) == "[(1/5 km/h), (1/18 m/s)]");
+static_assert(unit_symbol(get_common_reference(kilo<metre> / hour, metre / second) / second) ==
               "[(1/5 km/h), (1/18 m/s)]/s");
-static_assert(unit_symbol(get_common_unit(kilo<metre> / hour, metre / second) * second) ==
+static_assert(unit_symbol(get_common_reference(kilo<metre> / hour, metre / second) * second) ==
               "[(1/5 km/h), (1/18 m/s)] s");
-static_assert(unit_symbol(get_common_unit(radian, degree)) == "[(1/π°), (1/180 rad)]");
+static_assert(unit_symbol(get_common_reference(radian, degree)) == "[(1/π°), (1/180 rad)]");
 
 // derived units
 static_assert(unit_symbol(one) == "");  // NOLINT(readability-container-size-empty)
