@@ -13,19 +13,25 @@
 The table below provides the minimum compiler version required to compile the code using
 a specific C++ feature:
 
-| C++ Feature                   | C++ version | gcc  |   clang    |  apple-clang   | MSVC  |
-|-------------------------------|:-----------:|:----:|:----------:|:--------------:|:-----:|
-| **Minimum support**           |     20      | 12+  | 16+ && !19 | 15-16 && !17.0 | 19.5+ |
-| **`std::format`**             |     20      | 13+  |    17+     |      16+       | 19.5+ |
-| **C++ modules**               |     20      | None |    17+     |      None      | None  |
-| **`import std;`**             |     23      | 15+  |    18+     |      None      | 19.5+ |
-| **Explicit `this` parameter** |     23      | 14+  |    18+     |      17+       | 19.5+ |
-| **Contracts**                 |     26      | 16+  |    None    |      None      | None  |
+| C++ Feature                   | C++ version | gcc  |       clang       |  apple-clang   | MSVC  |
+|-------------------------------|:-----------:|:----:|:-----------------:|:--------------:|:-----:|
+| **Minimum support**           |     20      | 12+  | 16+ && !19 && !22 | 15-16 && !17.0 | 19.5+ |
+| **`std::format`**             |     20      | 13+  |        17+        |      16+       | 19.5+ |
+| **C++ modules**               |     20      | None |        17+        |      None      | None  |
+| **`import std;`**             |     23      | 15+  |        18+        |      None      | 19.5+ |
+| **Explicit `this` parameter** |     23      | 14+  |        18+        |      17+       | 19.5+ |
+| **Contracts**                 |     26      | 16+  |       None        |      None      | None  |
 
 ??? note "Clang-19 unfixable bug"
 
     Unfortunately, Clang-19 does not build **mp-units** because of an
     [unfixable bug in the compiler](https://github.com/llvm/llvm-project/pull/118288).
+
+??? note "Clang-22 bug"
+
+    Unfortunately, Clang-22 does not build **mp-units** because of a
+    [bug in the compiler](https://github.com/llvm/llvm-project/issues/175831). The fix shipped
+    in Clang-23, and Clang-22.1.8 was the last Clang-22 release.
 
 ??? note "Apple Clang-17.0 unfixable bug"
 
