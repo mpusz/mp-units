@@ -424,6 +424,15 @@ static_assert(!RepresentationOf<char, quantity_field::real>);
 static_assert(RepresentationOf<signed char, quantity_tensor_order::scalar>);
 static_assert(RepresentationOf<unsigned char, quantity_tensor_order::scalar>);
 
+// cv-qualified or reference type: not a representation, the unqualified object type is
+static_assert(!RepresentationOf<const int, quantity_tensor_order::scalar>);
+static_assert(!RepresentationOf<volatile int, quantity_tensor_order::scalar>);
+static_assert(!RepresentationOf<const volatile int, quantity_tensor_order::scalar>);
+static_assert(!RepresentationOf<volatile double, quantity_field::real>);
+static_assert(!RepresentationOf<int&, quantity_tensor_order::scalar>);
+static_assert(!RepresentationOf<const int&, quantity_tensor_order::scalar>);
+static_assert(!RepresentationOf<int&&, quantity_tensor_order::scalar>);
+
 // non-numeric type: not a representation at all
 static_assert(!RepresentationOf<std::optional<int>, quantity_tensor_order::scalar>);
 

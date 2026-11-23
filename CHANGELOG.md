@@ -8,6 +8,11 @@ This page documents the version history and changes for the **mp-units** library
 
 ### 2.6.0 <small>TBD</small> { id="2.6.0" }
 
+- (!) fix: `RepresentationOf` rejects a cv-qualified type and a reference. A `const`
+      type already failed it, but a `volatile` one was accepted, and every arithmetic
+      operation of the quantity then accessed a volatile object. Read a hardware register
+      into a plain value and convert that value instead. Checking a reference used to be
+      a hard error, and it is now `false`
 - feat: `numerical_value_in<Rep>(unit)` and `numerical_value_in<Rep>(unit, policy)` return
       the numerical value in another representation type, with the rules of
       `in<Rep>(unit)` and `in<Rep>(unit, policy)`, for a quantity and for a point at its
