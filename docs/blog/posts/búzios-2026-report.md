@@ -269,13 +269,18 @@ has to be finished and released. Then it needs production experience.
 
 ## Supporting the project
 
-All of this needs time and resources. Doing it alone is hard, so I am looking for
-sponsors. If your company depends on **mp-units** or wants quantities and units in the C++
+I am grateful to the C++ Alliance for covering my travel to Búzios. Thanks to that, I
+could present three papers in SG6 and get the feedback described above. But finishing
+everything listed in the previous section will take hundreds or even thousands of hours.
+I run a one-person company, and paying for that time on my own isn't easy, so I am asking
+for your support.
+
+If your company depends on **mp-units** or wants quantities and units in the C++
 standard, please [get in touch](https://train-it.eu/contact) to discuss a sponsorship. A
 company can also book my
 [Domain Modeling with the C++ Type System](https://train-it.eu/workshops/domain-modeling-with-types/)
-workshop for its team, which also helps fund this work. Individuals can support the
-project through [GitHub Sponsors](https://github.com/sponsors/mpusz).
+workshop for its team, which helps fund this work. Individuals can support the project
+through [GitHub Sponsors](https://github.com/sponsors/mpusz).
 
 *[CWG]: Core Language Working Group
 *[DIS]: Draft International Standard
