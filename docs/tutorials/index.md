@@ -45,7 +45,7 @@ Experience compile-time safety in action:
 - [Quantity Specifications](type_safety/quantity_specifications.md) (~20 min) - Quantity hierarchies and type-safe interfaces
 - [Generic Interfaces](type_safety/generic_interfaces.md) (~15 min) - Flexible functions with QuantityOf
 
-### 4. Affine Space (~90 minutes)
+### 4. Affine Space (~110 minutes)
 
 Understand points vs quantities:
 

@@ -169,7 +169,7 @@ How compile-time dimensional analysis works:
 
     Developers who want to eliminate runtime errors and write self-documenting code.
 
-#### 4. Affine Space (~90 minutes)
+#### 4. Affine Space (~110 minutes)
 
 The distinction between points and quantities:
 
