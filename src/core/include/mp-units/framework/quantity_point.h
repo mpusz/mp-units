@@ -1087,7 +1087,7 @@ public:
   static constexpr Dimension auto dimension = quantity_spec._dimension_;
 #if !MP_UNITS_EAGER_STATIC_MEMBER_INIT_HACK
   // Deprecated in 2.6.0. Ill-formed for a point of a quantity kind, which admits every character. Omitted on
-  // MSVC up to 19.51 (see `MP_UNITS_EAGER_STATIC_MEMBER_INIT_HACK`).
+  // MSVC up to 19.52 (see `MP_UNITS_EAGER_STATIC_MEMBER_INIT_HACK`).
   [[deprecated(
     "2.6.0: a quantity's character is no longer a value to inspect; ask "
     "`QuantityPointOf<QP, quantity_tensor_order::vector>`, `QuantityPointOf<QP, quantity_field::complex>`, or "

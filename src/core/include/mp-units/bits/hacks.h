@@ -160,9 +160,10 @@ inline constexpr bool is_complete = requires { sizeof(T) > 0; };
 //   template<typename T, int V> concept C = true;
 //   template<int R, C<R> auto PO> struct X {};
 //   X b = X<0, 1>{};  // error C2641
-// Confirmed on MSVC 19.51 (`_MSC_VER` 1951). Older versions were not tested and keep the hack.
-// Extend the branch to a newer version only after that version is confirmed to have the same bug.
-#if MP_UNITS_COMP_MSVC && MP_UNITS_COMP_MSVC <= 1951
+// Confirmed on MSVC 19.51 and 19.52 (`_MSC_VER` 1951 and 1952). Older versions were not tested and
+// keep the hack. Extend the branch to a newer version only after that version is confirmed to have
+// the same bug.
+#if MP_UNITS_COMP_MSVC && MP_UNITS_COMP_MSVC <= 1952
 #define MP_UNITS_QUANTITY_POINT_CTAD_HACK 1
 #else
 #define MP_UNITS_QUANTITY_POINT_CTAD_HACK 0
@@ -180,6 +181,27 @@ inline constexpr bool is_complete = requires { sizeof(T) > 0; };
 #define MP_UNITS_EAGER_STATIC_MEMBER_INIT_HACK 1
 #else
 #define MP_UNITS_EAGER_STATIC_MEMBER_INIT_HACK 0
+#endif
+
+// Hack for a compiler bug: MSVC 19.52 checks the constraint of a constrained `auto` non-type template
+// parameter, like `QuantitySpec auto Q` of `kind_of`, while it compiles a class template that passes
+// a dependent argument to it, and rejects the argument (C7601) when the type of the variable template
+// mentions `decltype(Q)`. A `requires` clause on the plain `auto` parameter is accepted, so the hack
+// spells the constraint that way. Minimal reproducer, accepted by GCC and Clang:
+//   template<typename T> concept Any = true;
+//   template<typename T> struct W {};
+//   template<Any auto V> constexpr W<decltype(V)> k;  // fine with `template<auto V> requires Any<decltype(V)>`
+//   template<auto N> struct S {};
+//   template<auto N> constexpr S<N> s;
+//   template<auto A> struct B {};
+//   template<auto C> struct X : B<k<s<C>>> {};  // error C7601
+// It broke `si::candela_`, `lumen_`, and `lux_`, whose base is `named_unit<..., kind_of<isq::..._of<C>>>`.
+// Confirmed on MSVC 19.52 (`_MSC_VER` 1952) only; 19.51 accepts it. Extend the branch to a newer version
+// only after that version is confirmed to have the same bug.
+#if MP_UNITS_COMP_MSVC == 1952
+#define MP_UNITS_CONSTRAINED_AUTO_NTTP_HACK 1
+#else
+#define MP_UNITS_CONSTRAINED_AUTO_NTTP_HACK 0
 #endif
 
 // Hack for a compiler bug: GCC 16 fails to constant-evaluate a contract predicate in some valid
