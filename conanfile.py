@@ -245,7 +245,8 @@ class MPUnitsConan(ConanFile):
                 self.requires("fmt/12.2.0", transitive_headers=True)
 
     def build_requirements(self):
-        self.tool_requires("cmake/[>=4.4.0 <5]")
+        # CMake 4.5.0 breaks `import std` and the C++ module std targets with Clang; lift the pin once CMake fixes it
+        self.tool_requires("cmake/[>=4.4.0 <4.5]")
         if self.options.freestanding:
             return
         if self._build_all:
