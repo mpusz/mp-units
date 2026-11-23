@@ -41,7 +41,8 @@ class TestPackageConan(ConanFile):
             self.requires(ref)
 
     def build_requirements(self):
-        self.tool_requires("cmake/[>=4.4.0 <5]")
+        # CMake 4.5.0 breaks `import std` and the C++ module std targets with Clang; lift the pin once CMake fixes it
+        self.tool_requires("cmake/[>=4.4.0 <4.5]")
 
     def layout(self):
         cmake_layout(self)
