@@ -77,9 +77,11 @@ template<auto R, typename Rep>
 #if MP_UNITS_HOSTED || __cpp_lib_freestanding_cstdlib >= 202306L
   using std::abs;
 #endif
-  const quantity<R, Rep> result{static_cast<Rep>(abs(q.numerical_value_ref_in(q.unit))), R};
-  MP_UNITS_POST_COMPAT(detail::value_is_non_negative(result.numerical_value_ref_in(result.unit)));
-  return result;
+  // The body checks the value the result is built from. A named result would cost a copy constructor
+  // and a `numerical_value_ref_in` instantiation for every result type, even where the check is empty.
+  const Rep value = static_cast<Rep>(abs(q.numerical_value_ref_in(q.unit)));
+  MP_UNITS_POST_COMPAT(detail::value_is_non_negative(value));
+  return {value, R};
 }
 
 /**
@@ -113,12 +115,10 @@ template<std::intmax_t Num, std::intmax_t Den = 1, auto R, typename Rep>
 #if MP_UNITS_HOSTED
     using std::pow;
 #endif
-    const quantity<pow<Num, Den>(R), Rep> result{
-      static_cast<Rep>(pow(q.numerical_value_ref_in(q.unit), static_cast<double>(Num) / static_cast<double>(Den))),
-      pow<Num, Den>(R)};
-    MP_UNITS_POST_COMPAT(!(Num % Den == 0 && (Num / Den) % 2 == 0) ||
-                         detail::value_is_non_negative(result.numerical_value_ref_in(result.unit)));
-    return result;
+    const Rep value =
+      static_cast<Rep>(pow(q.numerical_value_ref_in(q.unit), static_cast<double>(Num) / static_cast<double>(Den)));
+    MP_UNITS_POST_COMPAT(!(Num % Den == 0 && (Num / Den) % 2 == 0) || detail::value_is_non_negative(value));
+    return {value, pow<Num, Den>(R)};
   }
 }
 
@@ -141,9 +141,9 @@ template<auto R, typename Rep>
 #if MP_UNITS_HOSTED
   using std::sqrt;
 #endif
-  const quantity<sqrt(R), Rep> result{static_cast<Rep>(sqrt(q.numerical_value_ref_in(q.unit))), sqrt(R)};
-  MP_UNITS_POST_COMPAT(detail::value_is_non_negative(result.numerical_value_ref_in(result.unit)));
-  return result;
+  const Rep value = static_cast<Rep>(sqrt(q.numerical_value_ref_in(q.unit)));
+  MP_UNITS_POST_COMPAT(detail::value_is_non_negative(value));
+  return {value, sqrt(R)};
 }
 
 /**
@@ -644,9 +644,9 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
 #if MP_UNITS_HOSTED
   using std::hypot;
 #endif
-  const quantity result{hypot(x.numerical_value_in(unit), y.numerical_value_in(unit)), ref};
-  MP_UNITS_POST_COMPAT(detail::value_is_non_negative(result.numerical_value_ref_in(result.unit)));
-  return result;
+  const auto value = hypot(x.numerical_value_in(unit), y.numerical_value_in(unit));
+  MP_UNITS_POST_COMPAT(detail::value_is_non_negative(value));
+  return quantity{value, ref};
 }
 
 /**
@@ -671,9 +671,9 @@ template<auto R1, typename Rep1, auto R2, typename Rep2, auto R3, typename Rep3>
 #if MP_UNITS_HOSTED
   using std::hypot;
 #endif
-  const quantity result{hypot(x.numerical_value_in(unit), y.numerical_value_in(unit), z.numerical_value_in(unit)), ref};
-  MP_UNITS_POST_COMPAT(detail::value_is_non_negative(result.numerical_value_ref_in(result.unit)));
-  return result;
+  const auto value = hypot(x.numerical_value_in(unit), y.numerical_value_in(unit), z.numerical_value_in(unit));
+  MP_UNITS_POST_COMPAT(detail::value_is_non_negative(value));
+  return quantity{value, ref};
 }
 
 /**
