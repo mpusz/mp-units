@@ -13,7 +13,7 @@ tags:
 
 # Capacitor Discharge with Exponential Functions
 
-[Try it live on Compiler Explorer](https://godbolt.org/z/fMK1dah7n){ .md-button }
+[Try it live on Compiler Explorer](godbolt){ .md-button }
 
 ## Overview
 

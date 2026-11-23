@@ -10,7 +10,7 @@ tags:
 
 # Introduction to Quantities and Units
 
-[Try it live on Compiler Explorer](https://godbolt.org/z/9aoMcxb3o){ .md-button }
+[Try it live on Compiler Explorer](godbolt){ .md-button }
 
 ## Overview
 

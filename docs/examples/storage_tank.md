@@ -15,7 +15,7 @@ tags:
 
 # Storage Tank Calculations with Custom Quantity Types
 
-[Try it live on Compiler Explorer](https://godbolt.org/z/r57s5Gon1){ .md-button }
+[Try it live on Compiler Explorer](godbolt){ .md-button }
 
 ## Overview
 

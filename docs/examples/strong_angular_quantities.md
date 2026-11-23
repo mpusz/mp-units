@@ -11,7 +11,7 @@ tags:
 
 # Angular Quantities and Torque Calculations
 
-[Try it live on Compiler Explorer](https://godbolt.org/z/8G4KPsW8a){ .md-button }
+[Try it live on Compiler Explorer](godbolt){ .md-button }
 
 ## Overview
 

@@ -13,7 +13,7 @@ tags:
 
 # Relativistic Energy Calculations: SI vs Natural Units
 
-[Try it live on Compiler Explorer](https://godbolt.org/z/K18hGKWcd){ .md-button }
+[Try it live on Compiler Explorer](godbolt){ .md-button }
 
 ## Overview
 

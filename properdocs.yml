@@ -25,6 +25,9 @@ hooks:
   # Regeneration is skipped unless a header, the MrDocs configuration, a
   # template or the clang-format style changed.
   - scripts/mrdocs_xref.py
+  # Builds the "Try it live on Compiler Explorer" button of each example page from its
+  # `example/*.cpp`, so the button never runs an older copy than the page shows.
+  - scripts/examples_godbolt.py
 
 # Configuration
 theme:

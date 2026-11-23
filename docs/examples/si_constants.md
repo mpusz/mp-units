@@ -9,7 +9,7 @@ tags:
 
 # SI Defining Constants and Symbolic Values
 
-[Try it live on Compiler Explorer](https://godbolt.org/z/3v986dPKM){ .md-button }
+[Try it live on Compiler Explorer](godbolt){ .md-button }
 
 ## Overview
 

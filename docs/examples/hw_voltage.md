@@ -11,7 +11,7 @@ tags:
 
 # Hardware Register Mapping with Quantity Points
 
-[Try it live on Compiler Explorer](https://godbolt.org/z/Mzrvhz3z3){ .md-button }
+[Try it live on Compiler Explorer](godbolt){ .md-button }
 
 ## Overview
 
