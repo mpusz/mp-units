@@ -81,6 +81,9 @@ MP_UNITS_EXPORT enum class character_set {
   default_encoding [[deprecated("2.5.0: Name the character set explicitly, e.g. `unicode`")]] = unicode
 };
 
+/**
+ * The former name of @ref character_set
+ */
 using text_encoding [[deprecated("2.5.0: Use `character_set` instead")]] = character_set;
 
 MP_UNITS_EXPORT template<std::size_t N, std::size_t M>

@@ -163,15 +163,35 @@ template<typename T>
 constexpr auto reference_for = detail::reference_for_impl<T>::value;
 
 /**
- * Public alias that yields the representation type of a quantity-like type.
+ * The representation type of a quantity type, or of a type that `quantity_like_traits` or
+ * `quantity_point_like_traits` describes
  *
- * Derived from the type's own `::rep` member (for `quantity` / `quantity_point`) or from
- * `quantity_like_traits<T>::rep` / `quantity_point_like_traits<T>::rep` for external types.
+ * Generic code can branch on it, for example to round up into an integral tick count:
  *
- * This is **not** a customization point. Users teach the library about external types by
- * specializing `quantity_like_traits` / `quantity_point_like_traits`, not this helper.
+ * @code{.cpp}
+ * // snippet-template: none
+ * template<typename Duration>
+ * Duration timeout(QuantityOf<isq::duration> auto requested)
+ * {
+ *   // an integral tick count rounds up, so the wait is never shorter than requested
+ *   if constexpr (treat_as_floating_point<rep_for<Duration>>)
+ *     return Duration(value_cast<rep_for<Duration>, unit_for<Duration>>(requested));
+ *   else
+ *     return Duration(value_cast<rep_for<Duration>>(ceil<unit_for<Duration>>(requested)));
+ * }
  *
- * @tparam T a quantity-like or quantity-point-like type
+ * auto whole = timeout<std::chrono::milliseconds>(1.2345 * s);                  // 1235 ms
+ * auto exact = timeout<std::chrono::duration<double, std::milli>>(1.2345 * s);  // 1234.5 ms
+ * @endcode
+ *
+ * It isn't a customization point. A type is described by specializing `quantity_like_traits` or
+ * `quantity_point_like_traits`.
+ *
+ * @tparam T a quantity or quantity point type, or a type that either trait describes
+ *
+ * @see @ref unit_for for the unit alone
+ * @see @ref reference_for for the quantity specification together with the unit
+ * @see [Converting External Quantity Types](docs:how_to_guides/integration/converting_external_quantity_types)
  */
 template<typename T>
 using rep_for = typename detail::rep_for_impl<T>::type;

@@ -589,24 +589,43 @@ namespace mp_units {
 #define MP_UNITS_RANDOM_COMPAT(name)   \
   MP_UNITS_EXPORT template<Quantity Q> \
   using name [[deprecated("moved to mp_units::utility::" #name)]] = utility::name<Q>
+/// The former location of @ref utility::binomial_distribution
 MP_UNITS_RANDOM_COMPAT(binomial_distribution);
+/// The former location of @ref utility::cauchy_distribution
 MP_UNITS_RANDOM_COMPAT(cauchy_distribution);
+/// The former location of @ref utility::chi_squared_distribution
 MP_UNITS_RANDOM_COMPAT(chi_squared_distribution);
+/// The former location of @ref utility::discrete_distribution
 MP_UNITS_RANDOM_COMPAT(discrete_distribution);
+/// The former location of @ref utility::exponential_distribution
 MP_UNITS_RANDOM_COMPAT(exponential_distribution);
+/// The former location of @ref utility::extreme_value_distribution
 MP_UNITS_RANDOM_COMPAT(extreme_value_distribution);
+/// The former location of @ref utility::fisher_f_distribution
 MP_UNITS_RANDOM_COMPAT(fisher_f_distribution);
+/// The former location of @ref utility::gamma_distribution
 MP_UNITS_RANDOM_COMPAT(gamma_distribution);
+/// The former location of @ref utility::geometric_distribution
 MP_UNITS_RANDOM_COMPAT(geometric_distribution);
+/// The former location of @ref utility::lognormal_distribution
 MP_UNITS_RANDOM_COMPAT(lognormal_distribution);
+/// The former location of @ref utility::negative_binomial_distribution
 MP_UNITS_RANDOM_COMPAT(negative_binomial_distribution);
+/// The former location of @ref utility::normal_distribution
 MP_UNITS_RANDOM_COMPAT(normal_distribution);
+/// The former location of @ref utility::piecewise_constant_distribution
 MP_UNITS_RANDOM_COMPAT(piecewise_constant_distribution);
+/// The former location of @ref utility::piecewise_linear_distribution
 MP_UNITS_RANDOM_COMPAT(piecewise_linear_distribution);
+/// The former location of @ref utility::poisson_distribution
 MP_UNITS_RANDOM_COMPAT(poisson_distribution);
+/// The former location of @ref utility::student_t_distribution
 MP_UNITS_RANDOM_COMPAT(student_t_distribution);
+/// The former location of @ref utility::uniform_int_distribution
 MP_UNITS_RANDOM_COMPAT(uniform_int_distribution);
+/// The former location of @ref utility::uniform_real_distribution
 MP_UNITS_RANDOM_COMPAT(uniform_real_distribution);
+/// The former location of @ref utility::weibull_distribution
 MP_UNITS_RANDOM_COMPAT(weibull_distribution);
 #undef MP_UNITS_RANDOM_COMPAT
 }  // namespace mp_units

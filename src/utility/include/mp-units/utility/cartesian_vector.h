@@ -449,6 +449,9 @@ namespace mp_units {
 
 // Transition compatibility shim: `cartesian_vector` now lives in `mp_units::utility`; deprecated to
 // steer users to the new location, to be removed in a future release.
+/**
+ * The former location of @ref utility::cartesian_vector
+ */
 MP_UNITS_EXPORT template<typename T = double, std::size_t N = 3>
 using cartesian_vector [[deprecated("moved to mp_units::utility::cartesian_vector")]] = utility::cartesian_vector<T, N>;
 

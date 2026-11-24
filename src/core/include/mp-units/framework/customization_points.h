@@ -79,31 +79,32 @@ concept has_element_type_member = requires { typename T::element_type; };
 }  // namespace detail
 
 /**
- * Describes the underlying arithmetic/element type of a representation type.
+ * Customization point: names the type that a representation type wraps
  *
- * The library uses this trait to discover the "scalar element" inside a representation
- * type (e.g. `int` for `safe_int<int>`, `double` for `cartesian_vector<double>`). It is
- * used to drive classification (integer vs floating-point scaling path, default of
- * `treat_as_floating_point`, etc.) — it is **not** an indirection/dereference trait.
+ * The library reads it to tell whether the values of a representation scale like floating-point
+ * or like integral numbers, and with what precision. Without a specialization it names the
+ * `value_type` or the `element_type` member of `T`, without cv-qualifiers, and the underlying
+ * type of a scoped enumeration. It names nothing for a type that has neither member, or both
+ * with different types. Specialize it for such a type when the type can't be changed:
  *
- * The primary template is intentionally empty so that types which do not expose an
- * underlying type are cleanly recognized as "leaf" representations (the recursive
- * unwrapping in @c detail::value_type_t stops at them).
+ * @code{.cpp}
+ * class big_float;  // from another library, wraps a long double and has no value_type
  *
- * Default detection (via partial specializations below) follows the same shape as the
- * standard's `std::indirectly_readable_traits` for its `value_type` / `element_type`
- * cases (see [readable.traits]): nested `::value_type`, else nested `::element_type`;
- * a top-level `const` is passed through; the detected alias has its cv-qualification
- * removed; and if a type provides both `::value_type` and `::element_type` whose
- * underlying types differ after ignoring top-level cv-qualification, the trait is
- * empty (the user must disambiguate explicitly). Pointer and array specializations
- * from the standard are intentionally omitted — those are modeled by the standard's
- * iterator machinery, not by this trait. Additionally, scoped enumeration types are
- * supported via `std::underlying_type_t` — a representation-model extension not
- * present in the standard's iterator-oriented trait (unscoped enums are excluded
- * because they already implicitly convert to their underlying type).
+ * template<>
+ * struct mp_units::representation_underlying_type<big_float> {
+ *   using type = long double;
+ * };
+ *
+ * constexpr bool is_known = std::same_as<representation_underlying_type_t<big_float>, long double>;  // true
+ * @endcode
+ *
+ * A specialization for `T` serves `const T` as well.
  *
  * @tparam T the representation type
+ *
+ * @see @ref representation_underlying_type_t for the type it names
+ * @see [Representation Types](docs:users_guide/advanced_topics/representation_types#representation_underlying_type) in
+ * the User's Guide
  */
 MP_UNITS_EXPORT template<typename T>
 struct representation_underlying_type {};
@@ -132,27 +133,71 @@ template<detail::has_value_type_member T>
            std::same_as<std::remove_cv_t<typename T::value_type>, std::remove_cv_t<typename T::element_type>>
 struct representation_underlying_type<T> : detail::cond_underlying_type<typename T::value_type> {};
 
+/**
+ * The type a representation type wraps, such as `double` for `cartesian_vector<double>`
+ *
+ * The library reads it to tell whether the values of a representation scale like floating-point
+ * or like integral numbers, and with what precision. A type that has a `value_type` or an
+ * `element_type` member needs nothing more. For a type that has neither, or both with different
+ * types, and can't be changed, @ref representation_underlying_type is specialized:
+ *
+ * @code{.cpp}
+ * class big_float;  // from another library, wraps a long double and has no value_type
+ *
+ * template<>
+ * struct mp_units::representation_underlying_type<big_float> {
+ *   using type = long double;
+ * };
+ *
+ * constexpr bool is_known = std::same_as<representation_underlying_type_t<big_float>, long double>;  // true
+ * @endcode
+ *
+ * A type that wraps nothing has no underlying type, so `representation_underlying_type_t<double>`
+ * is ill-formed.
+ *
+ * @tparam T a representation type
+ *
+ * @see [Representation Types](docs:users_guide/advanced_topics/representation_types#representation_underlying_type) in
+ * the User's Guide
+ * @see [Using Custom Representation Types](docs:how_to_guides/integration/using_custom_representation_types)
+ */
 MP_UNITS_EXPORT template<typename T>
   requires requires { typename representation_underlying_type<T>::type; }
 using representation_underlying_type_t = typename representation_underlying_type<T>::type;
 
 /**
- * Maps a representation value type to the concrete type a quantity should store.
+ * Customization point: names the type a quantity stores for a value of type `T`
  *
- * Expression-template linear algebra libraries (e.g. Eigen, Blaze, Armadillo) return lazy proxy
- * types from their arithmetic operators. Such a proxy keeps references to its operands and must
- * be evaluated to a concrete type before being stored inside a `quantity`; otherwise the quantity
- * would retain dangling references once the operands (often temporaries) go out of scope.
+ * Without a specialization it names `T` itself. A library of expression templates needs
+ * another answer, because its operators return lazy expressions that refer to their operands,
+ * and a quantity must not store one. This is how the Eigen integration maps every Eigen
+ * expression to the matrix it evaluates to:
  *
- * The `quantity` deduction guides and the concepts that compute the representation type resulting
- * from an arithmetic operation use this trait so that the stored representation is always a
- * materialized concrete type. A `const` or a reference is forwarded to the unqualified type, which
- * the primary template maps to itself. That is correct for scalars and for vector/matrix types whose
- * operators return a concrete value (e.g. `cartesian_vector`, GLM). Specialize it for an expression-template type to
- * name its evaluated type (for example to `Eigen::Matrix`'s `PlainObject`, or Blaze's `ResultType`) — see the
- * integration guide.
+ * @code{.cpp}
+ * // snippet-template: none
+ * template<typename T>
+ *   requires requires { typename T::PlainObject; } && std::derived_from<T, Eigen::EigenBase<T>>
+ * struct mp_units::representation_canonical_type<T> {
+ *   using type = std::remove_cvref_t<typename T::PlainObject>;
+ * };
+ * @endcode
  *
- * @tparam T the representation value type (possibly an expression-template proxy)
+ * With it, arithmetic on quantities of Eigen vectors gives a quantity of a vector:
+ *
+ * @code{.cpp}
+ * // snippet-template: none
+ * quantity start = isq::displacement(Eigen::Vector3d{1., 2., 3.} * m);
+ * quantity offset = isq::displacement(Eigen::Vector3d{4., 5., 6.} * m);
+ * quantity end = start + offset;  // stores an Eigen::Vector3d, where Eigen's own sum is a lazy expression
+ * @endcode
+ *
+ * A specialization for `T` serves `const T` and a reference to `T` as well.
+ *
+ * @tparam T a value type, possibly an expression-template proxy
+ *
+ * @see @ref representation_canonical_type_t for the type it names
+ * @see [Representation Types](docs:users_guide/advanced_topics/representation_types#representation_canonical_type) in
+ * the User's Guide
  */
 MP_UNITS_EXPORT template<typename T>
 struct representation_canonical_type {
@@ -173,6 +218,37 @@ struct representation_canonical_type<T&> : representation_canonical_type<T> {};
 template<typename T>
 struct representation_canonical_type<T&&> : representation_canonical_type<T> {};
 
+/**
+ * The type a quantity stores for a value of type `T`
+ *
+ * It is `T` without `const` or a reference, unless @ref representation_canonical_type is
+ * specialized for `T`. A library of expression templates needs that, because its operators
+ * return lazy expressions that refer to their operands, and a quantity must not store one. This
+ * is how the Eigen integration maps every Eigen expression to the matrix it evaluates to:
+ *
+ * @code{.cpp}
+ * // snippet-template: none
+ * template<typename T>
+ *   requires requires { typename T::PlainObject; } && std::derived_from<T, Eigen::EigenBase<T>>
+ * struct mp_units::representation_canonical_type<T> {
+ *   using type = std::remove_cvref_t<typename T::PlainObject>;
+ * };
+ * @endcode
+ *
+ * With it, arithmetic on quantities of Eigen vectors gives a quantity of a vector:
+ *
+ * @code{.cpp}
+ * // snippet-template: none
+ * quantity start = isq::displacement(Eigen::Vector3d{1., 2., 3.} * m);
+ * quantity offset = isq::displacement(Eigen::Vector3d{4., 5., 6.} * m);
+ * quantity end = start + offset;  // stores an Eigen::Vector3d, where Eigen's own sum is a lazy expression
+ * @endcode
+ *
+ * @tparam T a value type, possibly an expression-template proxy
+ *
+ * @see [Representation Types](docs:users_guide/advanced_topics/representation_types#representation_canonical_type) in
+ * the User's Guide
+ */
 MP_UNITS_EXPORT template<typename T>
 using representation_canonical_type_t = typename representation_canonical_type<T>::type;
 
@@ -647,6 +723,9 @@ struct representation_values {
   }
 };
 
+/**
+ * The former name of @ref representation_values
+ */
 template<typename Rep>
 using quantity_values [[deprecated("2.5.0: Use `representation_values` instead")]] = representation_values<Rep>;
 

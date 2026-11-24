@@ -1025,14 +1025,32 @@ safe_int(T) -> safe_int<T>;
 // Convenience type aliases
 // ============================================================================
 
+/// A @ref safe_int of `std::int8_t`
 MP_UNITS_EXPORT using safe_i8 = safe_int<std::int8_t>;
+/**
+ * A @ref safe_int of `std::int16_t`
+ *
+ * @code{.cpp}
+ * // snippet-template: none
+ * #include <mp-units/utility/safe_int.h>
+ *
+ * quantity<m, utility::safe_i16> distance{100 * m};
+ * quantity<m, utility::safe_i16> far{distance * 1000};  // throws by default, 100 000 doesn't fit in 16 bits
+ * @endcode
+ */
 MP_UNITS_EXPORT using safe_i16 = safe_int<std::int16_t>;
+/// A @ref safe_int of `std::int32_t`
 MP_UNITS_EXPORT using safe_i32 = safe_int<std::int32_t>;
+/// A @ref safe_int of `std::int64_t`
 MP_UNITS_EXPORT using safe_i64 = safe_int<std::int64_t>;
 
+/// A @ref safe_int of `std::uint8_t`
 MP_UNITS_EXPORT using safe_u8 = safe_int<std::uint8_t>;
+/// A @ref safe_int of `std::uint16_t`
 MP_UNITS_EXPORT using safe_u16 = safe_int<std::uint16_t>;
+/// A @ref safe_int of `std::uint32_t`
 MP_UNITS_EXPORT using safe_u32 = safe_int<std::uint32_t>;
+/// A @ref safe_int of `std::uint64_t`
 MP_UNITS_EXPORT using safe_u64 = safe_int<std::uint64_t>;
 
 }  // namespace mp_units::utility
