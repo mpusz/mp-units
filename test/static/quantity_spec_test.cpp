@@ -1433,6 +1433,27 @@ static_assert(!is_non_negative(force));
 static_assert(!is_non_negative(weight));
 
 
+// Two siblings of different kind roots pair as `none`, unless a remaining factor's equation names
+// one of them: `dilation` is the bridge between `lab_time` and `rest_time`, so dividing it out
+// recovers the other operand. Only the dissolved `dilation` lowers the rank to `explicit_only`.
+QUANTITY_SPEC_(rest_time, time, subkind);
+QUANTITY_SPEC_(lab_time, time, subkind);
+QUANTITY_SPEC_(dilation, dimensionless, lab_time / rest_time, subkind);
+QUANTITY_SPEC_(unrelated_ratio, dimensionless, subkind);
+static_assert(convertible(lab_time / rest_time, dilation) == explicit_only);
+static_assert(convertible(lab_time / dilation, rest_time) == explicit_only);
+static_assert(convertible(dilation * rest_time, lab_time) == explicit_only);
+static_assert(convertible(lab_time * length / dilation, rest_time* length) == explicit_only);
+// the swapped operands are not the recipe, in either direction
+static_assert(convertible(rest_time / lab_time, dilation) == none);
+static_assert(convertible(rest_time / dilation, lab_time) == none);
+static_assert(convertible(dilation * lab_time, rest_time) == none);
+// an equation that does not name the pair does not bridge it
+static_assert(convertible(lab_time / unrelated_ratio, rest_time) == none);
+static_assert(convertible(unrelated_ratio * rest_time, lab_time) == none);
+// a mention of the tree alone does not defer a typed `none` (P1)
+static_assert(convertible(rotation * angular_measure_rate, phase_angle / time) == none);
+
 // `is_kind` remains as the deprecated name of `subkind`
 MP_UNITS_DIAGNOSTIC_PUSH
 MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
