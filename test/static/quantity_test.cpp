@@ -85,6 +85,12 @@ concept invalid_types = requires {
   requires !requires { typename Q<isq::length[m], char32_t>; };
   requires !requires { typename Q<si::metre, char>; };
   requires !requires { typename Q<isq::length[m], quantity<isq::length[m]>>; };  // quantity used as Rep
+  requires !requires { typename Q<isq::length[m], const int>; };                 // a representation is cv-unqualified
+  requires !requires { typename Q<isq::length[m], volatile int>; };
+  requires !requires { typename Q<isq::length[m], const volatile int>; };
+  requires !requires { typename Q<isq::length[m], int&>; };  // nor a reference
+  requires !requires { typename Q<isq::length[m], const int&>; };
+  requires !requires { typename Q<isq::length[m], int&&>; };
 #if MP_UNITS_HOSTED
   requires !requires {
     typename Q<isq::position_vector[si::metre], utility::cartesian_tensor<double>>;

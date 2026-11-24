@@ -444,6 +444,39 @@ quantity<si::metre, double> storage = 5.0 * m;  // OK
 
 _This entry is based on discussion [#779](https://github.com/mpusz/mp-units/discussions/779)._
 
+## Why can't a representation type be `volatile`?
+
+On an embedded target a measurement often arrives in a memory-mapped hardware register,
+declared `volatile`. You might want to use the register's type as the representation:
+
+```cpp
+quantity<si::volt, volatile std::uint16_t> reading;  // does not compile
+```
+
+A `quantity` holds its own copy of the numerical value, so `reading` would never touch
+the register. It would be a `volatile` object in ordinary memory, and the compiler would
+have to perform every access to it without combining or removing any. Placing a quantity
+at the register's address is no way out either, as no `quantity` object lives there (see
+[Why can't I convert a `double&` to a `quantity&`?](#why-cant-i-convert-a-double-to-a-quantity)).
+C++20 also deprecates `++`, `--`, and arithmetic compound assignment such as `+=` on a
+`volatile` object, and the quantity's own operators apply those to its numerical value.
+`volatile` describes how a value is accessed, and a quantity models the value itself, so a
+representation type must be cv-unqualified. The same rule rejects `const std::uint16_t`.
+To get a constant quantity, declare the quantity itself `const`.
+
+Read the register once into a plain value, then convert that value:
+
+```cpp
+volatile std::uint16_t hw_voltage_value;  // stands in for a hardware register
+
+std::uint16_t local_copy = hw_voltage_value;  // one volatile read
+quantity_point qp = point<hw_voltage_unit>(local_copy);
+```
+
+The [Hardware Voltage](../examples/hw_voltage.md) example defines `hw_voltage_unit` and
+shows the complete pattern, including a check for an error value before the quantity point
+is constructed.
+
 ## Why shouldn't I instantiate `derived_unit` (or other `derived_XXX` types) myself?
 
 Following a unit equation through the docs, you might try to spell the resulting type
