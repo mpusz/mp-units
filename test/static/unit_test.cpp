@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include "test_tools.h"
+#include <mp-units/bits/diagnostics.h>
 #include <mp-units/bits/hacks.h>
 #include <mp-units/ext/type_traits.h>
 #include <mp-units/framework.h>
@@ -546,88 +547,97 @@ static_assert(is_of_type<pow<2>(kilo<metre>), derived_unit<power<kilo_<metre_>, 
 static_assert(is_of_type<pow<2>(hour), derived_unit<power<hour_, 2>>>);
 static_assert(is_of_type<pow<2>(mag<3600>* second), derived_unit<power<scaled_unit<mag<3600>, second_>, 2>>>);
 
-// get_common_unit
-static_assert(is_of_type<get_common_unit(gram, gram), gram_>);
-static_assert(is_of_type<get_common_unit(kilogram, kilogram), kilo_<gram_>>);
-static_assert(is_of_type<get_common_unit(kilo<gram>, kilogram), kilo_<gram_>>);
-static_assert(is_of_type<get_common_unit(kilogram, kilo<gram>), kilo_<gram_>>);
-static_assert(is_of_type<get_common_unit(mag<1000>* gram, kilogram), kilo_<gram_>>);
-static_assert(is_of_type<get_common_unit(kilogram, mag<1000>* gram), kilo_<gram_>>);
-static_assert(is_of_type<get_common_unit(one / second, hertz), hertz_>);
-static_assert(is_of_type<get_common_unit(hertz, one / second), hertz_>);
-static_assert(is_of_type<get_common_unit(gram, kilogram), gram_>);
-static_assert(is_of_type<get_common_unit(kilogram, gram), gram_>);
-static_assert(is_of_type<get_common_unit(second, hour), second_>);
-static_assert(is_of_type<get_common_unit(hour, second), second_>);
-static_assert(is_of_type<get_common_unit(minute, hour), minute_>);
-static_assert(is_of_type<get_common_unit(hour, minute), minute_>);
-static_assert(is_of_type<get_common_unit(kilo<metre>, milli<metre>), milli_<metre_>>);
-static_assert(is_of_type<get_common_unit(milli<metre>, kilo<metre>), milli_<metre_>>);
-static_assert(is_of_type<get_common_unit(yard, mile), yard_>);
-static_assert(is_of_type<get_common_unit(mile, yard), yard_>);
+// get_common_reference on units
+static_assert(is_of_type<get_common_reference(gram, gram), gram_>);
+static_assert(is_of_type<get_common_reference(kilogram, kilogram), kilo_<gram_>>);
+static_assert(is_of_type<get_common_reference(kilo<gram>, kilogram), kilo_<gram_>>);
+static_assert(is_of_type<get_common_reference(kilogram, kilo<gram>), kilo_<gram_>>);
+static_assert(is_of_type<get_common_reference(mag<1000>* gram, kilogram), kilo_<gram_>>);
+static_assert(is_of_type<get_common_reference(kilogram, mag<1000>* gram), kilo_<gram_>>);
+static_assert(is_of_type<get_common_reference(one / second, hertz), hertz_>);
+static_assert(is_of_type<get_common_reference(hertz, one / second), hertz_>);
+static_assert(is_of_type<get_common_reference(gram, kilogram), gram_>);
+static_assert(is_of_type<get_common_reference(kilogram, gram), gram_>);
+static_assert(is_of_type<get_common_reference(second, hour), second_>);
+static_assert(is_of_type<get_common_reference(hour, second), second_>);
+static_assert(is_of_type<get_common_reference(minute, hour), minute_>);
+static_assert(is_of_type<get_common_reference(hour, minute), minute_>);
+static_assert(is_of_type<get_common_reference(kilo<metre>, milli<metre>), milli_<metre_>>);
+static_assert(is_of_type<get_common_reference(milli<metre>, kilo<metre>), milli_<metre_>>);
+static_assert(is_of_type<get_common_reference(yard, mile), yard_>);
+static_assert(is_of_type<get_common_reference(mile, yard), yard_>);
 static_assert(
-  is_of_type<get_common_unit(speed_of_light_in_vacuum, metre / second), derived_unit<metre_, per<second_>>>);
+  is_of_type<get_common_reference(speed_of_light_in_vacuum, metre / second), derived_unit<metre_, per<second_>>>);
 
-static_assert(is_of_type<get_common_unit(radian, revolution), radian_>);
-static_assert(is_of_type<get_common_unit(beat, one), beat_>);
+static_assert(is_of_type<get_common_reference(radian, revolution), radian_>);
+static_assert(is_of_type<get_common_reference(beat, one), beat_>);
 
 template<auto u>
-concept no_common_unit = requires { requires !requires { get_common_unit(u, one); }; };
+concept no_common_unit = requires { requires !requires { get_common_reference(u, one); }; };
 static_assert(no_common_unit<cow>);
 
 // those should return instantiations of the `common_unit` class template
+static_assert(is_of_type<get_common_reference(kilometre, mile), common_unit<kilo_<metre_>, mile_>>);
+static_assert(is_of_type<get_common_reference(mile, kilometre), common_unit<kilo_<metre_>, mile_>>);
+static_assert(is_of_type<get_common_reference(kilometre / hour, metre / second),
+                         common_unit<decltype(kilometre / hour), decltype(metre / second)>>);
+static_assert(is_of_type<get_common_reference(metre / second, kilometre / hour),
+                         common_unit<decltype(kilometre / hour), decltype(metre / second)>>);
+static_assert(is_of_type<get_common_reference(radian, degree), common_unit<degree_, radian_>>);
+static_assert(is_of_type<get_common_reference(degree_Celsius, degree_Fahrenheit),
+                         common_unit<degree_Celsius_, degree_Fahrenheit_>>);
+static_assert(is_of_type<get_common_reference(get_common_reference(degree_Celsius, degree_Fahrenheit),
+                                              get_common_reference(mag_ratio<5, 9>* degree_Celsius, si::milli<kelvin>)),
+                         decltype(get_common_reference(degree_Fahrenheit, si::milli<kelvin>))>);
+
+static_assert(is_of_type<get_common_reference(mile, kilometre) / second,
+                         derived_unit<common_unit<kilo_<metre_>, mile_>, per<second_>>>);
+
+static_assert(
+  is_of_type<get_common_reference(kilometre, mile, nautical_mile), common_unit<kilo_<metre_>, mile_, nautical_mile_>>);
+static_assert(
+  is_of_type<get_common_reference(nautical_mile, mile, kilometre), common_unit<kilo_<metre_>, mile_, nautical_mile_>>);
+static_assert(
+  is_of_type<get_common_reference(kilometre, nautical_mile, mile), common_unit<kilo_<metre_>, mile_, nautical_mile_>>);
+
+static_assert(is_of_type<get_common_reference(kilometre, get_common_reference(mile, nautical_mile)),
+                         common_unit<kilo_<metre_>, mile_, nautical_mile_>>);
+static_assert(is_of_type<get_common_reference(nautical_mile, get_common_reference(mile, kilometre)),
+                         common_unit<kilo_<metre_>, mile_, nautical_mile_>>);
+static_assert(is_of_type<get_common_reference(kilometre, get_common_reference(nautical_mile, mile)),
+                         common_unit<kilo_<metre_>, mile_, nautical_mile_>>);
+
+static_assert(is_of_type<get_common_reference(kilometre, mile, kilometre), common_unit<kilo_<metre_>, mile_>>);
+static_assert(is_of_type<get_common_reference(mile, kilometre, kilometre), common_unit<kilo_<metre_>, mile_>>);
+static_assert(is_of_type<get_common_reference(kilometre, mile, mile), common_unit<kilo_<metre_>, mile_>>);
+static_assert(is_of_type<get_common_reference(mile, kilometre, mile), common_unit<kilo_<metre_>, mile_>>);
+static_assert(
+  is_of_type<get_common_reference(mile, get_common_reference(kilometre, mile)), common_unit<kilo_<metre_>, mile_>>);
+static_assert(is_of_type<get_common_reference(kilometre, get_common_reference(kilometre, mile)),
+                         common_unit<kilo_<metre_>, mile_>>);
+
+static_assert(is_of_type<get_common_reference(kilometre, mile, metre), common_unit<metre_, mile_>>);
+
+static_assert(is_of_type<get_common_reference(kilometre, mile, milli<metre>), milli_<metre_>>);
+
+// `get_common_unit` remains as a deprecated name of `get_common_reference` on units
+MP_UNITS_DIAGNOSTIC_PUSH
+MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
+static_assert(is_of_type<get_common_unit(kilometre), kilo_<metre_>>);
 static_assert(is_of_type<get_common_unit(kilometre, mile), common_unit<kilo_<metre_>, mile_>>);
-static_assert(is_of_type<get_common_unit(mile, kilometre), common_unit<kilo_<metre_>, mile_>>);
-static_assert(is_of_type<get_common_unit(kilometre / hour, metre / second),
-                         common_unit<decltype(kilometre / hour), decltype(metre / second)>>);
-static_assert(is_of_type<get_common_unit(metre / second, kilometre / hour),
-                         common_unit<decltype(kilometre / hour), decltype(metre / second)>>);
-static_assert(is_of_type<get_common_unit(radian, degree), common_unit<degree_, radian_>>);
-static_assert(
-  is_of_type<get_common_unit(degree_Celsius, degree_Fahrenheit), common_unit<degree_Celsius_, degree_Fahrenheit_>>);
-static_assert(is_of_type<get_common_unit(get_common_unit(degree_Celsius, degree_Fahrenheit),
-                                         get_common_unit(mag_ratio<5, 9>* degree_Celsius, si::milli<kelvin>)),
-                         decltype(get_common_unit(degree_Fahrenheit, si::milli<kelvin>))>);
-
-static_assert(
-  is_of_type<get_common_unit(mile, kilometre) / second, derived_unit<common_unit<kilo_<metre_>, mile_>, per<second_>>>);
-
-static_assert(
-  is_of_type<get_common_unit(kilometre, mile, nautical_mile), common_unit<kilo_<metre_>, mile_, nautical_mile_>>);
-static_assert(
-  is_of_type<get_common_unit(nautical_mile, mile, kilometre), common_unit<kilo_<metre_>, mile_, nautical_mile_>>);
-static_assert(
-  is_of_type<get_common_unit(kilometre, nautical_mile, mile), common_unit<kilo_<metre_>, mile_, nautical_mile_>>);
-
-static_assert(is_of_type<get_common_unit(kilometre, get_common_unit(mile, nautical_mile)),
-                         common_unit<kilo_<metre_>, mile_, nautical_mile_>>);
-static_assert(is_of_type<get_common_unit(nautical_mile, get_common_unit(mile, kilometre)),
-                         common_unit<kilo_<metre_>, mile_, nautical_mile_>>);
-static_assert(is_of_type<get_common_unit(kilometre, get_common_unit(nautical_mile, mile)),
-                         common_unit<kilo_<metre_>, mile_, nautical_mile_>>);
-
-static_assert(is_of_type<get_common_unit(kilometre, mile, kilometre), common_unit<kilo_<metre_>, mile_>>);
-static_assert(is_of_type<get_common_unit(mile, kilometre, kilometre), common_unit<kilo_<metre_>, mile_>>);
-static_assert(is_of_type<get_common_unit(kilometre, mile, mile), common_unit<kilo_<metre_>, mile_>>);
-static_assert(is_of_type<get_common_unit(mile, kilometre, mile), common_unit<kilo_<metre_>, mile_>>);
-static_assert(is_of_type<get_common_unit(mile, get_common_unit(kilometre, mile)), common_unit<kilo_<metre_>, mile_>>);
-static_assert(
-  is_of_type<get_common_unit(kilometre, get_common_unit(kilometre, mile)), common_unit<kilo_<metre_>, mile_>>);
-
 static_assert(is_of_type<get_common_unit(kilometre, mile, metre), common_unit<metre_, mile_>>);
-
-static_assert(is_of_type<get_common_unit(kilometre, mile, milli<metre>), milli_<metre_>>);
+MP_UNITS_DIAGNOSTIC_POP
 
 // check underlying types
-static_assert(std::derived_from<decltype(get_common_unit(kilometre / hour, metre / second)),
+static_assert(std::derived_from<decltype(get_common_reference(kilometre / hour, metre / second)),
                                 detail::scaled_unit_impl<mag_ratio<1, 18>, derived_unit<metre_, per<second_>>>>);
-static_assert(std::derived_from<decltype(get_common_unit(metre / second, kilometre / hour)),
+static_assert(std::derived_from<decltype(get_common_reference(metre / second, kilometre / hour)),
                                 detail::scaled_unit_impl<mag_ratio<1, 18>, derived_unit<metre_, per<second_>>>>);
-static_assert(
-  std::derived_from<decltype(get_common_unit(kilometre, mile)), detail::scaled_unit_impl<mag_ratio<8, 125>, metre_>>);
-static_assert(
-  std::derived_from<decltype(get_common_unit(mile, kilometre)), detail::scaled_unit_impl<mag_ratio<8, 125>, metre_>>);
-static_assert(std::derived_from<decltype(get_common_unit(kilometre, mile, si::centi<metre>)),
+static_assert(std::derived_from<decltype(get_common_reference(kilometre, mile)),
+                                detail::scaled_unit_impl<mag_ratio<8, 125>, metre_>>);
+static_assert(std::derived_from<decltype(get_common_reference(mile, kilometre)),
+                                detail::scaled_unit_impl<mag_ratio<8, 125>, metre_>>);
+static_assert(std::derived_from<decltype(get_common_reference(kilometre, mile, si::centi<metre>)),
                                 detail::scaled_unit_impl<mag_ratio<1, 500>, metre_>>);
 
 }  // namespace

@@ -354,7 +354,7 @@ template<Unit U1, Unit U2>
 template<Unit auto From, Unit auto To>
 constexpr long double conversion_relative_uncertainty_result = conversion_relative_uncertainty(From, To);
 
-// the engine behind the binary exported `get_common_unit` overload; also used by
+// the engine behind the binary `find_common_unit` overload; also used by
 // `collapse_common_unit` below, which the `common_unit`-flattening overloads rely on
 template<Unit U1, UnitConvertibleTo<U1{}> U2>
 [[nodiscard]] consteval Unit auto get_common_unit_impl(U1 u1, U2 u2)
