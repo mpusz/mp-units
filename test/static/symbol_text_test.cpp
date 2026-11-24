@@ -38,25 +38,25 @@ static_assert(sym1 <= 'c');
 static_assert(sym1 >= 'b');
 static_assert(sym1 >= 'a');
 static_assert(sym1.utf8() == u8"b");
-static_assert(sym1.portable() == "b");
+static_assert(sym1.basic() == "b");
 
 constexpr symbol_text sym3("ab");
 static_assert(sym3.utf8() == u8"ab");
-static_assert(sym3.portable() == "ab");
+static_assert(sym3.basic() == "ab");
 
 constexpr basic_fixed_string txt1("bc");
 constexpr symbol_text sym4(txt1);
 static_assert(sym4.utf8() == u8"bc");
-static_assert(sym4.portable() == "bc");
+static_assert(sym4.basic() == "bc");
 
 constexpr symbol_text sym5(u8"bc", "de");
 static_assert(sym5.utf8() == u8"bc");
-static_assert(sym5.portable() == "de");
+static_assert(sym5.basic() == "de");
 
 constexpr basic_fixed_string txt2("de");
 constexpr symbol_text sym6(sym4.utf8(), txt2);
 static_assert(sym6.utf8() == u8"bc");
-static_assert(sym6.portable() == "de");
+static_assert(sym6.basic() == "de");
 
 static_assert(sym6 == symbol_text(u8"bc", "de"));
 static_assert(sym6 != symbol_text(u8"fg", "hi"));

@@ -138,7 +138,7 @@ struct symbol_text_iface {
   [[nodiscard]] constexpr friend symbol_text<N + N2, M + M2> operator+(const symbol_text<N, M>& lhs,
                                                                        const symbol_text<N2, M2>& rhs)
   {
-    return symbol_text<N + N2, M + M2>(lhs.utf8() + rhs.utf8(), lhs.portable() + rhs.portable());
+    return symbol_text<N + N2, M + M2>(lhs.utf8() + rhs.utf8(), lhs.basic() + rhs.basic());
   }
 
   template<std::size_t N, std::size_t M, std::size_t N2, std::size_t M2>
@@ -148,13 +148,13 @@ struct symbol_text_iface {
     MP_UNITS_DIAGNOSTIC_IGNORE_ZERO_AS_NULLPOINTER_CONSTANT
     if (const auto cmp = lhs.utf8() <=> rhs.utf8(); cmp != 0) return cmp;
     MP_UNITS_DIAGNOSTIC_POP
-    return lhs.portable() <=> rhs.portable();
+    return lhs.basic() <=> rhs.basic();
   }
 
   template<std::size_t N, std::size_t M, std::size_t N2, std::size_t M2>
   [[nodiscard]] friend constexpr bool operator==(const symbol_text<N, M>& lhs, const symbol_text<N2, M2>& rhs) noexcept
   {
-    return lhs.utf8() == rhs.utf8() && lhs.portable() == rhs.portable();
+    return lhs.utf8() == rhs.utf8() && lhs.basic() == rhs.basic();
   }
 
   // A friend declared inside the class template takes the enclosing specialization by a NON-deduced
@@ -204,10 +204,10 @@ struct symbol_text_iface {
  *
  * This class template is responsible for definition and handling of a symbol text
  * representation. In the libary it is used to define symbols of units and prefixes.
- * Each symbol can have two versions: UTF-8 and portable.
+ * Each symbol can have two versions: UTF-8 and basic.
  *
  * @tparam N The size of a UTF-8 symbol
- * @tparam M The size of the portable symbol
+ * @tparam M The size of the basic symbol
  */
 MP_UNITS_EXPORT template<std::size_t N, std::size_t M>
 class symbol_text : public detail::symbol_text_iface {
@@ -265,13 +265,14 @@ public:
   }
 
   [[nodiscard]] constexpr const auto& utf8() const { return utf8_; }
-  [[nodiscard]] constexpr const auto& portable() const { return portable_; }
+  [[nodiscard]] constexpr const auto& basic() const { return portable_; }
   [[deprecated("2.4.0: Use `utf8()` instead")]] constexpr const auto& unicode() const { return utf8(); }
-  [[deprecated("2.4.0: Use `portable()` instead")]] constexpr const auto& ascii() const { return portable(); }
+  [[deprecated("2.6.0: Use `basic()` instead")]] constexpr const auto& portable() const { return basic(); }
+  [[deprecated("2.4.0: Use `basic()` instead")]] constexpr const auto& ascii() const { return basic(); }
 
   [[nodiscard]] constexpr bool empty() const
   {
-    MP_UNITS_ASSERT_DEBUG(utf8().empty() == portable().empty());
+    MP_UNITS_ASSERT_DEBUG(utf8().empty() == basic().empty());
     return utf8().empty();
   }
 };

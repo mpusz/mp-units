@@ -304,6 +304,7 @@ This page documents the version history and changes for the **mp-units** library
       did. Only a non-const type may enter a symbolic expression, so
       `si::kilo_<const metre>` and `derived_unit<const metre, per<second>>` are still
       rejected, and dividing a `const` second by a second still gives `one`
+- (!) refactor: `symbol_text::portable()` deprecated in favor of `basic()`
 - (!) refactor: `character_set` enumerators renamed back to `unicode` and `basic`,
       following SG16 review of [P3045](https://wg21.link/p3045). The enumeration names a
       *character set*, not an encoding, so `utf8` was the wrong name: UTF-8 is one

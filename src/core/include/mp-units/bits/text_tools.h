@@ -110,7 +110,7 @@ template<typename CharT, std::size_t N, std::size_t M, std::output_iterator<Char
 #if __cpp_lib_text_encoding
       if (std::text_encoding::literal().mib() != std::text_encoding::id::UTF8)
         // fallback to portable mode
-        return ::mp_units::detail::copy(txt.portable().begin(), txt.portable().end(), out);
+        return ::mp_units::detail::copy(txt.basic().begin(), txt.basic().end(), out);
 #endif
       MP_UNITS_DIAGNOSTIC_PUSH
       // Short names like `ch` / `byte` shadow unit symbols (`imperial::ch`, `iec::byte`) when
@@ -123,7 +123,7 @@ template<typename CharT, std::size_t N, std::size_t M, std::output_iterator<Char
       MP_UNITS_THROW(std::invalid_argument("UTF-8 text can't be copied to CharT output"));
   } else {
     if constexpr (std::is_same_v<CharT, char>)
-      return ::mp_units::detail::copy(txt.portable().begin(), txt.portable().end(), out);
+      return ::mp_units::detail::copy(txt.basic().begin(), txt.basic().end(), out);
     else
       MP_UNITS_THROW(std::invalid_argument("Portable text can't be copied to CharT output"));
   }
