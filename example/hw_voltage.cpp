@@ -71,9 +71,9 @@ volatile voltage_hw_t hw_voltage_value;
 
 std::optional<hw_voltage_quantity_point> read_hw_voltage()
 {
-  voltage_hw_t local_copy = hw_voltage_value;
+  voltage_hw_t local_copy = hw_voltage_value;  // single volatile read
   if (local_copy == voltage_hw_error) return std::nullopt;
-  return point<hw_voltage_unit>(local_copy);
+  return point<hw_voltage_unit>(local_copy);  // use the non-volatile copy
 }
 
 void print(QuantityPoint auto qp)

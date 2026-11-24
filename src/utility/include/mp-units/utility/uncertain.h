@@ -117,9 +117,10 @@ concept BoundedBy = (mp_units::Quantity<Val> || mp_units::QuantityPoint<Val>) &&
  *
  * **Example:**
  * @code
- * quantity length = uncertain{10.0, 0.1} * m;  // 10.0 ± 0.1 m
- * quantity width = uncertain{5.0, 0.05} * m;   // 5.0 ± 0.05 m
- * quantity area = length * width;              // 50.0 ± 0.71 m²
+ * // snippet-template: utility
+ * quantity length = utility::uncertain{10.0, 0.1} * m;  // 10.0 ± 0.1 m
+ * quantity width = utility::uncertain{5.0, 0.05} * m;   // 5.0 ± 0.05 m
+ * quantity area = length * width;                       // 50.0 ± 0.71 m²
  * @endcode
  */
 // The element type is constrained (rather than left a bare `typename`) so that an unsupported one
@@ -755,9 +756,13 @@ private:
  * correlated one.
  *
  * @code
- * quantity G1 = measurement_of(iau::G);           // uncertain<double>{1} * G, exactly 1 G
- * quantity G2 = G1.in(m3 / kg / s2);              // 6.6743e-11 ± 1.46835e-15, u_r materialized
- * quantity G3 = measurement_of<float>(iau::G);    // uncertain<float>
+ * // snippet-template: codata
+ * // uncertain<double>{1} * G, exactly 1 G
+ * quantity G1 = utility::measurement_of(iau::newtonian_constant_of_gravitation);
+ * // 6.6743e-11 ± 1.46835e-15, u_r materialized
+ * quantity G2 = G1.in(m3 / kg / s2);
+ * // uncertain<float>
+ * quantity G3 = utility::measurement_of<float>(iau::newtonian_constant_of_gravitation);
  * @endcode
  *
  * @tparam Rep the underlying numeric type of the resulting `uncertain` representation
@@ -914,7 +919,8 @@ struct std::common_type<U, mp_units::utility::uncertain<T>> {
  * reproduces the published notation verbatim:
  *
  * @code
- * uncertain val{6.67430e-11, 1.5e-15};
+ * // snippet-template: utility
+ * utility::uncertain val{6.67430e-11, 1.5e-15};
  * std::println("{}", val);        // 6.6743e-11 ± 1.5e-15
  * std::println("{:~}", val);      // 6.67430(15)e-11
  * std::println("{:.1~}", val);    // 6.6743(2)e-11

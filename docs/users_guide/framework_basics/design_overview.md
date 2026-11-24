@@ -77,6 +77,7 @@ provided in the [quantity specification](../../reference/glossary.md#quantity_sp
 === "C++23"
 
     ```cpp
+    // snippet-template: scoped
     inline constexpr struct length : quantity_spec<dim_length, non_negative> {} length;
     inline constexpr struct time : quantity_spec<dim_time, non_negative> {} time;
     inline constexpr struct speed : quantity_spec<length / time> {} speed;
@@ -87,6 +88,8 @@ provided in the [quantity specification](../../reference/glossary.md#quantity_sp
 === "C++20"
 
     ```cpp
+    // snippet-template: scoped
+    // snippet-std: 20
     inline constexpr struct length : quantity_spec<length, dim_length, non_negative> {} length;
     inline constexpr struct time : quantity_spec<time, dim_time, non_negative> {} time;
     inline constexpr struct speed : quantity_spec<speed, length / time> {} speed;
@@ -97,6 +100,7 @@ provided in the [quantity specification](../../reference/glossary.md#quantity_sp
 === "Portable"
 
     ```cpp
+    // snippet-template: scoped
     QUANTITY_SPEC(length, dim_length, non_negative);
     QUANTITY_SPEC(time, dim_time, non_negative);
     QUANTITY_SPEC(speed, length / time);
@@ -113,6 +117,7 @@ provided in the [quantity specification](../../reference/glossary.md#quantity_sp
 The multiplication/division on quantity specifications also multiplies/divides their dimensions:
 
 ```cpp
+// snippet-continues
 static_assert(get_dimension(length / time) == dim_length / dim_time);
 ```
 
@@ -235,6 +240,7 @@ For example:
 A unit can be defined by the user in one of the following ways:
 
 ```cpp
+// snippet-template: si_excerpt
 template<PrefixableUnit U>
   requires(!std::is_const_v<U>)
 struct kilo_ : prefixed_unit<"k", mag_power<10, 3>, U{}> {};
@@ -372,13 +378,15 @@ For example:
 - the absolute point origin can be defined in the following way:
 
   ```cpp
+  // snippet-template: si_excerpt
   inline constexpr struct absolute_zero : absolute_point_origin<isq::thermodynamic_temperature> {} absolute_zero;
   ```
 
 - the relative point origin can be defined in the following way:
 
   ```cpp
-  inline constexpr struct ice_point : relative_point_origin<absolute_zero + 273'150 * milli<kelvin>> {} ice_point;
+  // snippet-continues
+  inline constexpr struct ice_point : relative_point_origin<absolute_zero + delta<milli<kelvin>>(273'150)> {} ice_point;
   ```
 
 
@@ -404,5 +412,5 @@ For example:
   the previous example:
 
   ```cpp
-  constexpr auto room_reference_temperature = ice_point + delta<deg_C>(21);
+  constexpr auto room_reference_temperature = si::ice_point + delta<deg_C>(21);
   ```

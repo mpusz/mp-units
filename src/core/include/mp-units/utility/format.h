@@ -83,7 +83,7 @@ MP_UNITS_EXPORT_BEGIN
  * formatter of `quantity` passes `right`:
  *
  * @code{.cpp}
- * // snippet-template: none
+ * // snippet-template: none (pseudo-code: a formatter member function shown outside its class)
  * constexpr auto parse(std::format_parse_context& ctx)
  * {
  *   return utility::parse_fill_align_width(ctx, ctx.begin(), ctx.end(), specs_, utility::fmt_align::right);

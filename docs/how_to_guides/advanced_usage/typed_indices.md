@@ -90,6 +90,7 @@ We define two origins: one for 0-based and one for 1-based indexing:
      For now, reuse the offset quantity spec for the point's quantity kind. -->
 
 ```cpp
+// snippet-continues
 namespace seq {
 
 inline constexpr auto index = offset;
@@ -127,6 +128,7 @@ Instead of exposing the origins directly, provide factory functions that enforce
 preconditions and hide the `quantity_point` construction details:
 
 ```cpp
+// snippet-continues
 namespace seq {
 
 template<ReferenceOf<offset> auto R>
@@ -164,6 +166,7 @@ To pass an index point to a standard container (`v[i]`), subtract `index0_origin
 obtain a 0-based offset and then extract its numeric value:
 
 ```cpp
+// snippet-continues
 template<QuantityPointOf<seq::index> QP>
 constexpr std::size_t to_size_t(QP qp)
 {
@@ -182,6 +185,7 @@ explicit conversion to its underlying type.
 ### Type-safe container access
 
 ```cpp
+// snippet-continues
 void print_idx(std::span<const int> rng, QuantityPointOf<seq::index> auto idx)
 {
   const auto i = to_size_t(idx);
@@ -203,8 +207,9 @@ int main()
 ### What doesn't compile?
 
 ```cpp
-print_idx(v, 0);                 // ERROR: raw int is not a quantity_point
-print_idx(v, idx0(0) + idx0(1)); // ERROR: cannot add two index points
+// snippet-continues
+print_idx(v, 0);                 // ❌ raw int is not a quantity_point
+print_idx(v, idx0(0) + idx0(1)); // ❌ cannot add two index points
 ```
 
 Subtracting a 0-based index from a 1-based index compiles and gives the correct
@@ -223,6 +228,7 @@ advance through them with offsets — but you cannot accidentally use a size as 
 Offsets carry units, so arithmetic across SI and IEC prefixes is exact:
 
 ```cpp
+// snippet-continues
 using namespace seq;
 
 quantity o_si  = idx0(2 * kel)  - idx0(0 * kel);   // SI kilo:  2000 el
@@ -244,6 +250,7 @@ successive elements along a given dimension. Define it as a named quantity spec 
 cannot be accidentally swapped with a plain offset or raw count:
 
 ```cpp
+// snippet-continues
 namespace seq {
 
 inline constexpr struct stride : quantity_spec<offset> {} stride;
@@ -256,6 +263,7 @@ inline constexpr struct stride : quantity_spec<offset> {} stride;
 Access the element `step` strides away from a starting index:
 
 ```cpp
+// snippet-continues
 QuantityPointOf<seq::index> auto strided_at(QuantityPointOf<seq::index> auto start,
                                             quantity<seq::stride[seq::el], int> stride,
                                             int step)
@@ -278,6 +286,7 @@ each dimension:
 <!-- TODO: In V3 these will be expressible as point_for<row_offset> / point_for<col_offset> -->
 
 ```cpp
+// snippet-continues
 namespace seq {
 
 inline constexpr struct row_offset : quantity_spec<offset> {} row_offset;
@@ -292,6 +301,7 @@ inline constexpr auto col_index = col_offset;
 column arguments is a compile error (if typed quantities are used):
 
 ```cpp
+// snippet-continues
 QuantityPointOf<seq::index> auto flat_index(QuantityPointOf<seq::row_index> auto row,
                                             QuantityPointOf<seq::col_index> auto col,
                                             quantity<seq::stride[seq::el], int> row_stride)
@@ -304,6 +314,7 @@ QuantityPointOf<seq::index> auto flat_index(QuantityPointOf<seq::row_index> auto
 ```
 
 ```cpp
+// snippet-continues
 using namespace seq;
 const quantity row_stride = stride(4 * el);  // 4 columns per row
 
@@ -311,7 +322,7 @@ const quantity row_stride = stride(4 * el);  // 4 columns per row
 quantity_point flat = flat_index(idx0(row_offset(1 * el)), idx0(col_offset(2 * el)), row_stride);
 std::cout << to_size_t(flat) << "\n";  // 1 * 4 + 2 = 6
 
-// flat_index(idx0(col_offset(2 * el)), idx0(row_offset(1 * el)), row_stride);  // ERROR: row/col swapped
+// flat_index(idx0(col_offset(2 * el)), idx0(row_offset(1 * el)), row_stride);  // ❌ row/col swapped
 ```
 
 !!! question "Why `.numerical_value_in()` for `row_n`?"
@@ -332,6 +343,7 @@ When working with raw memory, define `byte` as a primitive unit within the `seq:
 kind, then express a typed element as a multiple of bytes:
 
 ```cpp
+// snippet-continues
 namespace seq {
 
 inline constexpr struct byte : named_unit<"B", one, kind_of<offset>> {} byte;
@@ -349,6 +361,7 @@ counts, and prints meaningful output (`128 B` vs `32 float`), propagating the
 `sizeof` factor at compile time:
 
 ```cpp
+// snippet-continues
 quantity offset_el = idx0(32 * seq::fl) - idx0(0 * seq::fl);
 std::cout << offset_el.in(seq::B) << "\n";  // 128 B
 std::cout << offset_el.in(seq::fl) << "\n"; // 32 float
@@ -373,6 +386,7 @@ cross-container access bugs), define each as a plain named subtype of `seq::offs
 — without `subkind`:
 
 ```cpp
+// snippet-continues
 inline constexpr struct vertex_index : quantity_spec<seq::offset> {} vertex_index;
 inline constexpr struct texcoord_index : quantity_spec<seq::offset> {} texcoord_index;
 ```

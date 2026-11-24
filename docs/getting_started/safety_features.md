@@ -39,11 +39,11 @@ automatic dimensional analysis.
 ```cpp
 quantity<si::metre / si::second> speed = 100 * km / h;  // ✅ OK: km/h is a unit of speed (same as m/s)
 quantity<si::second> time = 2 * h;                      // ✅ OK: hour is a unit of time (same as second)
-// quantity<si::metre> distance = 2 * h;                // ❌ Compile-time error!
-// quantity<si::metre> distance = speed / time;         // ❌ Compile-time error!
+// quantity<si::metre> distance = 2 * h;                // ❌
+// quantity<si::metre> distance = speed / time;         // ❌
 quantity<si::metre> distance = speed * time;            // ✅ OK: length
 
-// auto result = distance + time;                       // ❌ Compile-time error!
+// auto result = distance + time;                       // ❌
 // Error: cannot add length and time (incompatible dimensions)
 ```
 
@@ -57,6 +57,7 @@ feature that enables dimensional analysis.
 types, and component integration.
 
 ```cpp
+// snippet-template: scoped
 // Function accepts any length and time units
 quantity<si::metre / si::second> avg_speed(quantity<si::metre> d, quantity<si::second> t)
 {
@@ -94,7 +95,7 @@ precision loss during conversions and arithmetic operations.
 ```cpp
 // Truncation prevention (inspired by std::chrono::duration)
 quantity length = 1500 * m;
-// quantity<km, int> distance = length;             // ❌ Compile-time error!
+// quantity<km, int> distance = length;             // ❌
 // Error: 1500 m → 1.5 km truncates with int
 
 // A rounding policy accepts the loss and states which value you get
@@ -107,7 +108,7 @@ quantity<mm, int> length_mm = length;                     // ✅ OK: 1'500'000 m
 
 // Scaling overflow detection
 quantity length1 = std::int8_t{2} * m;
-// quantity<mm, std::int8_t> length_mm1 = length1;  // ❌ Compile-time error!
+// quantity<mm, std::int8_t> length_mm1 = length1;  // ❌
 // Error: 2 m → 2000 mm overflows int8_t (max 127)
 
 quantity length2 = std::int16_t{2} * m;
@@ -116,7 +117,7 @@ quantity<mm, std::int16_t> length_mm2 = length2;    // ✅ OK: 2000 fits in int1
 // Unit-qualified construction: raw integers cannot construct a quantity
 // std::chrono allows: delays.emplace_back(42) — silently 1000× wrong if type changes
 std::vector<quantity<si::milli<si::second>>> delays;
-// delays.emplace_back(42);    // ❌ Compile-time error — unit required!
+// delays.emplace_back(42);    // ❌ unit required!
 delays.emplace_back(42 * ms);  // ✅ Explicit unit — safe regardless of container type
 delays.emplace_back(42, ms);   // ✅ OK
 ```
@@ -133,6 +134,9 @@ No library can prevent runtime arithmetic overflow at compile time (e.g., `quant
 ```cpp
 #include <mp-units/utility/safe_int.h>
 #include <mp-units/utility/constrained.h>
+
+// snippet-setup: inline constexpr struct geo_latitude : quantity_spec<isq::angular_measure> {} geo_latitude;
+// snippet-setup: inline constexpr struct equator : absolute_point_origin<geo_latitude, check_in_range{-90 * deg, 90 * deg}> {} equator;
 
 // Built-in safe_int detects arithmetic overflow at runtime
 quantity distance = utility::safe_int{std::int16_t{100}} * m;
@@ -169,7 +173,7 @@ static_assert(is_non_negative(isq::length));      // ✅ Tagged in ISQ definitio
 static_assert(is_non_negative(isq::mass));        // ✅ Tagged in ISQ definitions
 static_assert(is_non_negative(isq::distance));    // ✅ Named real-scalar child of length
 static_assert(is_non_negative(isq::speed));       // ✅ Derived: length / duration
-static_assert(!is_non_negative(isq::velocity));   // ❌ Vector character — excluded from inheritance
+static_assert(!is_non_negative(isq::velocity));   // Vector character: excluded from inheritance
 ```
 
 !!! question "How is non-negativity enforced?"
@@ -219,10 +223,10 @@ represent different physical concepts.
 quantity absorbed_dose = 1.5 * Gy;
 quantity dose_equivalent = 2.0 * Sv;
 
-// auto result = absorbed_dose + dose_equivalent;           // ❌ Compile-time error!
+// auto result = absorbed_dose + dose_equivalent;           // ❌
 // Error: cannot add absorbed dose and dose equivalent (both L²T⁻², but different kinds)
 
-// auto equal = (absorbed_dose == dose_equivalent);          // ❌ Compile-time error!
+// auto equal = (absorbed_dose == dose_equivalent);          // ❌
 // Error: cannot compare absorbed dose and dose equivalent
 ```
 
@@ -254,21 +258,28 @@ does not. See
 2. **Quantity Character Correctness** - Representation types and character-specific operations
 
 ```cpp
+// snippet-template: utility
+#include <mp-units/systems/codata/adopted_values.h>
+
+// snippet-setup: inline constexpr struct gravitational_potential_energy :
+    // snippet-setup: quantity_spec<isq::potential_energy, isq::mass * isq::acceleration_of_free_fall * isq::height> {} gravitational_potential_energy;
+// snippet-setup: quantity mass = isq::mass(70. * kg);
+// snippet-setup: quantity width = isq::width(2. * m);
 // Quantity Type: Hierarchy prevents mixing energy types
 void process_kinetic(quantity<isq::kinetic_energy[J]> ke) { /* ... */ }
 
 // Quantity Type: Ingredient validation requires specific quantity types
-constexpr quantity g0 = isq::acceleration_of_free_fall(1 * si::standard_gravity);
+constexpr quantity g0 = isq::acceleration_of_free_fall(1 * codata::standard_gravity);
 quantity<isq::height[m]> height = 5 * m;
 quantity<gravitational_potential_energy[J]> Ep = mass * g0 * height;  
-// quantity<gravitational_potential_energy[J]> wrong = mass * g0 * width;  // ❌ Compile-time error!
+// quantity<gravitational_potential_energy[J]> wrong = mass * g0 * width;  // ❌
 // Error: cannot form gravitational potential energy from width
 
-// process_kinetic(pe);                                                   // ❌ Compile-time error!
+// process_kinetic(Ep);                                                   // ❌
 // Error: cannot pass potential_energy where kinetic_energy is required
 
 // Quantity Character: Vector vs. scalar distinction
-quantity<isq::speed[m/s]> speed = cartesian_vector{1, 2, 3} * m / s;      // ❌ Compile-time error!
+quantity<isq::speed[m/s]> speed = utility::cartesian_vector{1, 2, 3} * m / s;      // ❌
 // Error: cannot initialize scalar quantity (speed) with vector representation
 ```
 
@@ -296,7 +307,7 @@ quantity_point room_temp = point<deg_C>(20.);
 quantity_point outside_temp = point<deg_C>(5.);
 
 quantity temp_diff = room_temp - outside_temp;      // ✅ OK: 15 K (delta)
-// auto temp_sum = room_temp + outside_temp;        // ❌ Compile-time error!
+// auto temp_sum = room_temp + outside_temp;        // ❌
 // Error: cannot add points (meaningless: what is 20 °C + 5 °C?)
 
 // Deltas: Differences between values
@@ -304,7 +315,7 @@ quantity temp_change = delta<K>(10);
 quantity_point new_temp = room_temp + temp_change;  // ✅ OK: point + delta = 30 °C
 quantity total_change = temp_change + temp_change;  // ✅ OK: delta + delta = 20 K
 
-// auto wrong = temp_change - room_temp;            // ❌ Compile-time error!
+// auto wrong = temp_change - room_temp;            // ❌
 // Error: cannot subtract point from delta (meaningless: what is 10 K - 20 °C?)
 ```
 

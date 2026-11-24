@@ -58,7 +58,12 @@ echo ""
 
 if [[ $1 != "install" ]]; then
   echo "🧹 Running pre-commit checks..."
-  pre-commit run --all-files
+  # SKIP leaves out the hook that compiles the documentation samples. The step below runs
+  # that check over every page itself, so its summary is printed on its own.
+  SKIP=doc-snippets pre-commit run --all-files
+  echo ""
+  echo "📚 Compiling every C++ sample in the documentation..."
+  python3 scripts/check_doc_snippets.py
   echo ""
 fi
 

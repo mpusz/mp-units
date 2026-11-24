@@ -159,6 +159,8 @@ that when divided by _duration_ can serve really well to calculate _speed_.
     define it as:
 
     ```cpp
+    // snippet-template: isq_excerpt
+    // snippet-std: 20
     inline constexpr struct speed : quantity_spec<speed, length / time> {} speed;
     ```
 
@@ -319,6 +321,7 @@ quantity q = isq::mechanical_power(42 * W) + isq::electromagnetism_power(60 * W)
     generic definition of:
 
     ```cpp
+    // snippet-template: isq_excerpt
     inline constexpr struct power : quantity_spec<mass* pow<2>(length) / pow<3>(time)> {} power;
     ```
 
@@ -377,8 +380,8 @@ Not being exact means that every vendor may implement it differently. This will 
 - different convertibility rules among quantities:
 
     ```cpp
-    static_assert(implicitly_convertible(isq::potential_energy, isq::mechanical_energy));
-    static_assert(explicitly_convertible(isq::mechanical_energy, isq::potential_energy));
+    static_assert(utility::implicitly_convertible(isq::potential_energy, isq::mechanical_energy));
+    static_assert(utility::explicitly_convertible(isq::mechanical_energy, isq::potential_energy));
     ```
 
 - different common quantities resulting from the arithmetics on various quantities of the
@@ -421,7 +424,7 @@ flowchart TD
     power --- electromagnetism_power["<b>electromagnetism_power</b> | <b>instantaneous_power</b><br><i>(instantaneous_voltage * instantaneous_electric_current)</i>"]
     power --- active_power["<b>active_power</b><br><i>(1 / period * instantaneous_power * time)<br>(re(complex_power))</i>"]
 
-    nonactive_power["<b>nonactive_power</b><br><i>(mass * length<sup>2</sup> / time<sup>3</sup>)</i><br>[VA]"]
+    nonactive_power["<b>non_active_power</b><br><i>(mass * length<sup>2</sup> / time<sup>3</sup>)</i><br>[VA]"]
     nonactive_power --- reactive_power["<b>reactive_power</b><br><i>(im(complex_power))</i><br>[var]"]
 
     complex_power["<b>complex_power</b><br>{complex}<br><i>(voltage_phasor * electric_current_phasor)<br>(active_power + j * reactive_power)</i><br>[VA]"]
@@ -433,17 +436,21 @@ _reactive power_, and _apparent power_, which probably makes a lot of sense.
 However, it also means that the following will fail to compile:
 
 ```cpp
+// snippet-setup: constexpr auto VA = V * A;
 quantity apparent = isq::apparent_power(100 * VA);
 quantity active = isq::active_power(60 * W);
-quantity<isq::nonactive_power[VA]> q = sqrt(pow<2>(apparent) - pow<2>(active)); // Compile-time error
+quantity<isq::non_active_power[VA]> q = sqrt(pow<2>(apparent) - pow<2>(active)); // ❌
 ```
 
 Also the following will not work:
 
 ```cpp
+// snippet-template: systems
+using namespace mp_units::iec::unit_symbols;
+// snippet-setup: constexpr auto VA = V * A;
 quantity active = isq::active_power(60 * W);
 quantity reactive = isq::reactive_power(40 * var);
-quantity<isq::apparent_power[VA]> q = sqrt(pow<2>(active) + pow<2>(reactive)); // Compile-time error
+quantity<isq::apparent_power[VA]> q = sqrt(pow<2>(active) + pow<2>(reactive)); // ❌
 ```
 
 If we want the above to work maybe we need to implement the tree as follows?
@@ -455,7 +462,7 @@ flowchart TD
     power --- electromagnetism_power["<b>electromagnetism_power</b> | <b>instantaneous_power</b><br><i>(instantaneous_voltage * instantaneous_electric_current)</i>"]
     power --- apparent_power["<b>apparent_power</b><br><i>(voltage * electric_current)<br>(mod(complex_power))</i><br>[VA]"]
     apparent_power --- active_power["<b>active_power</b><br><i>(1 / period * instantaneous_power * time)<br>(re(complex_power))</i>"]
-    apparent_power --- nonactive_power["<b>nonactive_power</b><br><i>(sqrt(apparent_power<sup>2</sup> - active_power<sup>2</sup>))</i><br>"]
+    apparent_power --- nonactive_power["<b>non_active_power</b><br><i>(sqrt(apparent_power<sup>2</sup> - active_power<sup>2</sup>))</i><br>"]
     nonactive_power --- reactive_power["<b>reactive_power</b><br><i>(im(complex_power))</i><br>[var]"]
     apparent_power --- complex_power["<b>complex_power</b><br>{complex}<br><i>(voltage_phasor * electric_current_phasor)<br>(active_power + j * reactive_power)</i>"]
 ```

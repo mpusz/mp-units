@@ -138,6 +138,8 @@ Key relationships between SI and natural units ($c = \hbar = 1$):
 The system uses electronvolt as the base unit:
 
 ```cpp
+// snippet-template: natural_excerpt
+// snippet-id: natural-units
 namespace mp_units::natural {
 
 // Base unit for energy
@@ -152,6 +154,8 @@ inline constexpr auto gigaelectronvolt = si::giga<electronvolt>;
 ### Constants
 
 ```cpp
+// snippet-template: natural_excerpt
+// snippet-id: natural-constants
 namespace mp_units::natural {
 
 // Speed of light is dimensionless 1 in natural units (c = 1)
@@ -163,6 +167,7 @@ inline constexpr struct speed_of_light_in_vacuum : named_constant<"c", one> {} s
 ### Unit Symbols
 
 ```cpp
+// snippet-after: natural-units, natural-constants
 namespace mp_units::natural::unit_symbols {
 
 inline constexpr auto GeV  = gigaelectronvolt;
@@ -177,6 +182,7 @@ inline constexpr auto c    = speed_of_light_in_vacuum;
 ### Basic Quantities
 
 ```cpp
+// snippet-template: systems
 using namespace mp_units::natural;
 using namespace mp_units::natural::unit_symbols;
 
@@ -202,6 +208,7 @@ quantity beta = velocity(0.99);
 The energy-momentum relation simplifies dramatically:
 
 ```cpp
+// snippet-continues
 // Calculate total energy from momentum and mass
 QuantityOf<natural::energy> auto calc_energy(QuantityOf<natural::momentum> auto p,
                                              QuantityOf<natural::mass> auto m)
@@ -220,6 +227,7 @@ quantity E = calc_energy(p, m);  // = 5 GeV
 Decay widths (Γ) and lifetimes (τ) are simply related by τ = 1/Γ:
 
 ```cpp
+// snippet-continues
 // Top quark (very short-lived, Γ = 1.42 GeV)
 quantity top_width = energy(1.42 * GeV);
 quantity top_lifetime = duration(1. / top_width);  // ~5×10⁻²⁵ s
@@ -236,6 +244,7 @@ The quantity hierarchy prevents common errors. There are two ways to constrain f
 **Non-template** — fixes the unit and representation; the quantity-spec form adds a kind constraint:
 
 ```cpp
+// snippet-continues
 void process(quantity<GeV, double> e)                    { /* accepts any quantity of energy kind */ }
 void process(quantity<energy[GeV], double> e)            { /* energy, mass, momentum, acceleration */ }
 void process(quantity<mass[GeV], double> m)              { /* only mass */ }
@@ -250,6 +259,7 @@ void process(quantity<speed[one], double> v)             { /* speed and velocity
 **Template** — accepts any unit and representation of the right kind:
 
 ```cpp
+// snippet-continues
 void process(QuantityOf<energy> auto e)         { /* energy, mass, momentum, acceleration */ }
 void process(QuantityOf<mass> auto m)           { /* only mass */ }
 void process(QuantityOf<inverse_energy> auto x) { /* duration, length */ }
@@ -260,6 +270,7 @@ void process(QuantityOf<speed> auto v)          { /* accepts speed, velocity (no
 For example:
 
 ```cpp
+// snippet-continues
 void compute_rest_energy(QuantityOf<mass> auto m)
 {
   quantity E0 = m;
@@ -270,7 +281,7 @@ quantity m = mass(0.938 * GeV);
 quantity p = momentum(3. * GeV);
 
 compute_rest_energy(m);      // ✓ OK
-// compute_rest_energy(p);   // ✗ Compile-time error: momentum is not mass
+// compute_rest_energy(p);   // ❌ momentum is not mass
 
 // But you can explicitly convert if you know what you're doing
 compute_rest_energy(quantity_cast<mass>(p));  // ✓ Explicit cast OK
@@ -286,6 +297,7 @@ selects the output unit (defaulting to the SI base unit); the `UnitOf<isq::...>`
 rejects incompatible units at compile time:
 
 ```cpp
+// snippet-continues
 template<UnitOf<isq::duration> auto To = si::second>
 quantity<To> to_isq(QuantityOf<natural::duration> auto t)
 {
@@ -329,6 +341,7 @@ The same energy-momentum calculation in both systems:
 === "Natural Units"
 
     ```cpp
+    // snippet-template: systems
     using namespace mp_units;
     using namespace mp_units::natural::unit_symbols;
 

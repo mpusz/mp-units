@@ -214,11 +214,13 @@ throughout.
 The library ensures dimensional correctness at compile time:
 
 ```cpp
+// snippet-after: example/capacitor_time_curve.cpp
+// snippet-setup: quantity tt = 0 * ms;
 // ✓ Correct: time/time is dimensionless
 QuantityOf<dimensionless> auto dimensionless_arg = -tt / (RR * CC);
 
 // ✗ Won't compile: can't take exp of a dimensional quantity
-// auto wrong = exp(-tt);  // Error: exp requires dimensionless!
+// auto wrong = exp(-tt);  // ❌ exp requires dimensionless!
 ```
 
 This prevents common physics/engineering errors where equations are dimensionally invalid.

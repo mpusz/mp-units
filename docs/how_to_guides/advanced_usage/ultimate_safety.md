@@ -54,6 +54,7 @@ The library ships two error policies in `<mp-units/constrained.h>`:
 You can also write your own:
 
 ```cpp
+// snippet-template: none (third-party: needs spdlog, which the checker does not provide)
 struct log_and_continue_policy {
   static void on_constraint_violation(std::string_view msg) {
     spdlog::error("Constraint violation: {}", msg);
@@ -83,6 +84,8 @@ Pass a bounds policy as a template parameter to your origin.
 For guaranteed enforcement, use `check_in_range`:
 
 ```cpp
+// snippet-continues
+// snippet-id: latitude
 #include <mp-units/overflow_policies.h>
 #include <mp-units/framework.h>
 #include <mp-units/systems/si.h>
@@ -102,6 +105,7 @@ Use `constrained<T>` as the representation type in your quantity point, and vali
 reading with `try_make` before the point exists:
 
 ```cpp
+// snippet-continues
 using latitude = quantity_point<geo_latitude[deg], equator, safe_double>;
 
 std::expected<latitude, bounds_violation> read_latitude(double raw_lat)
@@ -126,6 +130,7 @@ to the representation. Before C++23, where `try_make` isn't available, `is_withi
 applies the same test:
 
 ```cpp
+// snippet-after: latitude
 using checked_double = constrained<double, terminate_policy>;
 using checked_latitude = quantity_point<geo_latitude[deg], equator, checked_double>;
 
@@ -195,14 +200,15 @@ which detects arithmetic overflow. You can use both together:
 ```cpp
 #include <mp-units/utility/safe_int.h>
 
+// snippet-setup: inline constexpr struct msl_origin : absolute_point_origin<isq::altitude> {} msl_origin;
 // Overflow-detecting integer for arithmetic operations
-quantity distance = safe_int{42} * m;  // arithmetic overflow detected at runtime
+quantity distance = utility::safe_int{42} * m;  // arithmetic overflow detected at runtime
 
 // Bounded quantity point with overflow-detecting rep
-using altitude = quantity_point<isq::height[m], msl_origin, safe_int<int>>;
+using altitude = quantity_point<isq::height[m], msl_origin, utility::safe_int<int>>;
 
 // Convenience aliases are available for common integer types
-quantity speed = safe_i32{100} * (m / s);
+quantity speed = utility::safe_i32{100} * (m / s);
 ```
 
 `safe_int` also specializes `constraint_violation_handler`, so a `check_in_range`

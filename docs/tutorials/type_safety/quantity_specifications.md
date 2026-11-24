@@ -201,7 +201,7 @@ int main()
 
   // These DON'T compile - wrong specifications
   // auto bad1 = circle_area(rect_width);                                      // ❌ width is not a radius!
-  // auto bad2 = rectangle_area(circle_radius, rect_height);                   // ❌ radius is not a width!
+  // auto bad2 = rectangle_area(rect_height, rect_width);                      // ❌ height is not a width!
   // quantity<isq::length[m]> bad3 = circle_area(circle_radius);               // ❌ m² is not a unit of length!
   // quantity<isq::length[m]> bad4 =  rectangle_area(rect_width, rect_height); // ❌ area is not a length!
 }

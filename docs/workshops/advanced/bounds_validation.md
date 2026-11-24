@@ -45,6 +45,7 @@ Create an error policy that:
 
 ```cpp
 // ce-embed height=1400 compiler=clang2310 flags="-std=c++23 -O0" mp-units=trunk
+// snippet-template: none (exercise skeleton: TODOs leave weather_policy, safe_double, qnh_zero, calm_air, mean_sea_level for the reader; the Solution fence compiles)
 #include <mp-units/core.h>
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>

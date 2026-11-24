@@ -70,6 +70,7 @@ Please see the below example for a quick preview of basic library features:
 === "C++ modules"
 
     ```cpp
+    // snippet-template: systems
     #include <format>
     #include <iomanip>
     #include <iostream>

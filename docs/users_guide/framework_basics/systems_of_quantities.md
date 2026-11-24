@@ -18,6 +18,7 @@ Most libraries understand dimensions, yet a dimension alone does not fully descr
 quantity. Consider:
 
 ```cpp
+// snippet-template: none (not this library: a hypothetical dimension-only interface where `area` and `length` are types)
 class Box {
   area base_;
   length height_;
@@ -37,7 +38,7 @@ yet differ semantically.
 A similar issue is related to figuring out what should be the result of:
 
 ```cpp
-auto res = 1 * Hz + 1 * Bq + 1 * Bd;
+auto res = 1 * Hz + 1 * Bq + 1 * Bd;  // ❌
 ```
 
 where:
@@ -156,6 +157,7 @@ For example, here is how the above quantity kind tree can be modeled in the libr
 === "C++23"
 
     ```cpp
+    // snippet-template: scoped
     inline constexpr struct length : quantity_spec<dim_length, non_negative> {} length;
     inline constexpr struct width : quantity_spec<length> {} width;
     inline constexpr auto breadth = width;
@@ -179,6 +181,8 @@ For example, here is how the above quantity kind tree can be modeled in the libr
 === "C++20"
 
     ```cpp
+    // snippet-template: scoped
+    // snippet-std: 20
     inline constexpr struct length : quantity_spec<length, dim_length, non_negative> {} length;
     inline constexpr struct width : quantity_spec<width, length> {} width;
     inline constexpr auto breadth = width;
@@ -202,6 +206,7 @@ For example, here is how the above quantity kind tree can be modeled in the libr
 === "Portable"
 
     ```cpp
+    // snippet-template: scoped
     QUANTITY_SPEC(length, dim_length, non_negative);
     QUANTITY_SPEC(width, length);
     inline constexpr auto breadth = width;
@@ -276,6 +281,7 @@ rules.
     ```
 
     ```cpp
+    // snippet-continues
     quantity<isq::width[m]> q1 = 42 * m;
     quantity<isq::length[m]> q2 = q1;  // implicit quantity conversion
     foo(q1);                           // implicit quantity conversion
@@ -303,6 +309,7 @@ rules.
     ```
 
     ```cpp
+    // snippet-continues
     quantity<isq::length[m]> q1 = 42 * m;
     quantity<isq::height[m]> q2 = isq::height(q1);  // explicit quantity conversion
     quantity<isq::height[m]> q3(q1);                // direct initialization
@@ -327,6 +334,7 @@ rules.
     ```
 
     ```cpp
+    // snippet-continues
     quantity<isq::width[m]> q1 = 42 * m;
     quantity<isq::height[m]> q2 = quantity_cast<isq::height>(q1);  // explicit quantity cast
     foo(quantity_cast<isq::height>(q1));                           // explicit quantity cast
@@ -349,8 +357,9 @@ rules.
     ```
 
     ```cpp
-    quantity<isq::length[m]> q1 = 42 * s;    // Compile-time error
-    foo(quantity_cast<isq::length>(42 * s)); // Compile-time error
+    // snippet-continues
+    quantity<isq::length[m]> q1 = 42 * s;    // ❌
+    foo(quantity_cast<isq::length>(42 * s)); // ❌
     ```
 
 
@@ -420,6 +429,8 @@ that can be used to create them implicitly:
   `mass * acceleration_of_free_fall * height` is.
 
     ```cpp
+    // snippet-setup: inline constexpr struct gravitational_potential_energy :
+        // snippet-setup: quantity_spec<isq::potential_energy, isq::mass * isq::acceleration_of_free_fall * isq::height> {} gravitational_potential_energy;
     static_assert(!utility::implicitly_convertible(isq::energy, gravitational_potential_energy));
     static_assert(utility::explicitly_convertible(isq::energy, gravitational_potential_energy));
     static_assert(!utility::implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration),
@@ -456,15 +467,15 @@ static_assert(utility::implicitly_convertible(kind_of<isq::length>, isq::height)
 Additionally, the result of operations on quantity kinds is also a quantity kind:
 
 ```cpp
-static_assert(same_type<kind_of<isq::length> / kind_of<isq::duration>, kind_of<isq::length / isq::duration>>);
+static_assert(kind_of<isq::length> / kind_of<isq::duration> == kind_of<isq::length / isq::duration>);
 ```
 
 When a kind meets a typed quantity in one equation, the typed factor stays typed, and the
 kind factor stays a kind, spelled `kind_of_<...>` inside the derived quantity:
 
 ```cpp
-static_assert(!same_type<kind_of<isq::length> / isq::duration, kind_of<isq::length / isq::duration>>);
-static_assert(!same_type<kind_of<isq::length> / isq::duration, isq::length / isq::duration>);
+static_assert(kind_of<isq::length> / isq::duration != kind_of<isq::length / isq::duration>);
+static_assert(kind_of<isq::length> / isq::duration != isq::length / isq::duration);
 // the type of `kind_of<isq::length> / isq::duration` is
 // `derived_quantity_spec<kind_of_<isq::length>, per<isq::duration>>`
 ```
@@ -560,6 +571,8 @@ To create a distinct quantity kind as a subkind, add the `subkind` specifier to 
 === "C++20"
 
     ```cpp
+    // snippet-template: scoped
+    // snippet-std: 20
     inline constexpr struct fluid_head : quantity_spec<fluid_head, isq::height, subkind> {} fluid_head;
     inline constexpr struct water_head : quantity_spec<water_head, isq::height, subkind> {} water_head;
     // Both inherit metre as unit and length as dimension from isq::height
@@ -585,6 +598,7 @@ Quantities marked with `subkind` behave differently from regular hierarchy membe
 1. **Cannot be implicitly converted to each other**:
 
     ```cpp
+    // snippet-continues
     static_assert(!utility::implicitly_convertible(fluid_head, water_head));
     static_assert(!utility::explicitly_convertible(fluid_head, water_head));
     static_assert(!utility::castable(fluid_head, water_head));
@@ -593,11 +607,12 @@ Quantities marked with `subkind` behave differently from regular hierarchy membe
 2. **Cannot be added or compared directly**:
 
     ```cpp
+    // snippet-continues
     quantity h_fluid = fluid_head(2 * m);
     quantity h_water = water_head(10 * m);
 
-    // auto sum = h_fluid + h_water;  // Compile-time error!
-    // bool cmp = h_fluid < h_water;  // Compile-time error!
+    // auto sum = h_fluid + h_water;  // ❌
+    // bool cmp = h_fluid < h_water;  // ❌
     ```
 
 3. **Require explicit conversion to base quantity**:
@@ -606,6 +621,7 @@ Quantities marked with `subkind` behave differently from regular hierarchy membe
     base quantity is required:
 
     ```cpp
+    // snippet-continues
     // Convert to base quantity explicitly
     quantity h1 = isq::height(h_fluid);  // explicit conversion required
     quantity h2 = isq::height(h_water);  // explicit conversion required
@@ -619,7 +635,8 @@ Quantities marked with `subkind` behave differently from regular hierarchy membe
         Implicit conversion from `subkind` quantities to their base is **not allowed**:
 
         ```cpp
-        quantity<isq::height[m]> h = h_fluid;  // Compile-time error!
+        // snippet-continues
+        quantity<isq::height[m]> h = h_fluid;  // ❌
         ```
 
 4. **Can be used with `kind_of`**:
@@ -627,10 +644,11 @@ Quantities marked with `subkind` behave differently from regular hierarchy membe
     Unlike regular hierarchy members, `subkind` quantities can be used with `kind_of`:
 
     ```cpp
+    // snippet-continues
     static_assert(get_kind(fluid_head) == kind_of<fluid_head>);
     static_assert(get_kind(water_head) == kind_of<water_head>);
     static_assert(get_kind(isq::height) == kind_of<isq::length>);
-    // static_assert(get_kind(isq::height) == kind_of<isq::height>);  // Compile-time error!
+    // static_assert(get_kind(isq::height) == kind_of<isq::height>);  // ❌
 
     // Both are kinds of height, but different kinds
     static_assert(get_kind(fluid_head) != get_kind(water_head));
@@ -644,6 +662,7 @@ When quantities are distinct kinds, domain-specific conversion functions should 
 to perform the correct physics-based transformations (if applicable):
 
 ```cpp
+// snippet-continues
 // Define specific gravity as dimensionless
 inline constexpr struct specific_gravity : quantity_spec<dimensionless> {} specific_gravity;
 
@@ -709,6 +728,7 @@ models this with the `non_negative` property tag:
 === "C++23"
 
     ```cpp
+    // snippet-template: scoped
     inline constexpr struct length : quantity_spec<dim_length, non_negative> {} length;
     inline constexpr struct mass : quantity_spec<dim_mass, non_negative> {} mass;
     inline constexpr struct duration : quantity_spec<dim_time, non_negative> {} duration;
@@ -719,6 +739,8 @@ models this with the `non_negative` property tag:
 === "C++20"
 
     ```cpp
+    // snippet-template: scoped
+    // snippet-std: 20
     inline constexpr struct length : quantity_spec<length, dim_length, non_negative> {} length;
     inline constexpr struct mass : quantity_spec<mass, dim_mass, non_negative> {} mass;
     inline constexpr struct duration : quantity_spec<duration, dim_time, non_negative> {} duration;
@@ -729,6 +751,7 @@ models this with the `non_negative` property tag:
 === "Portable"
 
     ```cpp
+    // snippet-template: scoped
     QUANTITY_SPEC(length, dim_length, non_negative);
     QUANTITY_SPEC(mass, dim_mass, non_negative);
     QUANTITY_SPEC(duration, dim_time, non_negative);
@@ -767,13 +790,14 @@ non-negative states the tag explicitly in its definition, even when all factors 
 defining equation already carry it:
 
 ```cpp
+// snippet-template: isq_excerpt
 QUANTITY_SPEC(area, pow<2>(length), non_negative);
 QUANTITY_SPEC(speed, length / time, non_negative);
-QUANTITY_SPEC(energy, mass * pow<2>(length) / pow<2>(time), non_negative);
+QUANTITY_SPEC(volume, pow<3>(length), non_negative);
 
 static_assert(is_non_negative(isq::area));
 static_assert(is_non_negative(isq::speed));
-static_assert(is_non_negative(isq::energy));
+static_assert(is_non_negative(isq::volume));
 ```
 
 A named quantity that may be negative simply omits the tag. For example,
@@ -794,6 +818,7 @@ a `length`, so if `length` is non-negative then every specific type of _length_ 
 === "C++23"
 
     ```cpp
+    // snippet-template: scoped
     inline constexpr struct width : quantity_spec<length> {} width;
     inline constexpr struct height : quantity_spec<length> {} height;
     inline constexpr struct radius : quantity_spec<width> {} radius;
@@ -805,6 +830,8 @@ a `length`, so if `length` is non-negative then every specific type of _length_ 
 === "C++20"
 
     ```cpp
+    // snippet-template: scoped
+    // snippet-std: 20
     inline constexpr struct width : quantity_spec<width, length> {} width;
     inline constexpr struct height : quantity_spec<height, length> {} height;
     inline constexpr struct radius : quantity_spec<radius, width> {} radius;
@@ -816,6 +843,7 @@ a `length`, so if `length` is non-negative then every specific type of _length_ 
 === "Portable"
 
     ```cpp
+    // snippet-template: scoped
     QUANTITY_SPEC(width,  length);  // inherits non_negative from length
     QUANTITY_SPEC(height, length);  // inherits non_negative from length
     QUANTITY_SPEC(radius, width);   // inherits non_negative from width → from length
@@ -840,33 +868,37 @@ a quantity produces a **compile-time error**:
 === "C++23"
 
     ```cpp
+    // snippet-template: scoped
     // displacement is a child of length with vector character — correctly NOT non_negative
     inline constexpr struct displacement : quantity_spec<length, quantity_tensor_order::vector> {} displacement;
     static_assert(!is_non_negative(displacement));
 
-    // compile-time error — non_negative is incompatible with vector character:
+    // ❌ non_negative is incompatible with vector character
     // inline constexpr struct bad : quantity_spec<length, quantity_tensor_order::vector, non_negative> {} bad;  // ← error
     ```
 
 === "C++20"
 
     ```cpp
+    // snippet-template: scoped
+    // snippet-std: 20
     // displacement is a child of length with vector character — correctly NOT non_negative
     inline constexpr struct displacement : quantity_spec<displacement, length, quantity_tensor_order::vector> {} displacement;
     static_assert(!is_non_negative(displacement));
 
-    // compile-time error — non_negative is incompatible with vector character:
+    // ❌ non_negative is incompatible with vector character
     // inline constexpr struct bad : quantity_spec<bad, length, quantity_tensor_order::vector, non_negative> {} bad;  // ← error
     ```
 
 === "Portable"
 
     ```cpp
+    // snippet-template: scoped
     // displacement is a child of length with vector character — correctly NOT non_negative
     QUANTITY_SPEC(displacement, length, quantity_tensor_order::vector);
     static_assert(!is_non_negative(displacement));
 
-    // compile-time error — non_negative is incompatible with vector character:
+    // ❌ non_negative is incompatible with vector character
     // QUANTITY_SPEC(bad, length, quantity_tensor_order::vector, non_negative);  // ← error
     ```
 

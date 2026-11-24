@@ -26,6 +26,7 @@ and shipping capacity based on production rate, operating hours, and packing rat
 Traditional code using raw integers and constants faces several problems:
 
 ```cpp
+// snippet-template: none (pseudo-code: int weekly_units = /* some calculation */; placeholder)
 // Traditional approach - no type safety
 const int UNITS_PER_CARTON = 12;
 
@@ -146,8 +147,8 @@ int main()
       quantity trucks_needed = ceil<truck>(weekly_production / truck_capacity);
       std::cout << "Trucks needed for shipment: " << trucks_needed << "\n";
 
-      // quantity bad1 = 1 * unit + 1;          // does not compile
-      // quantity bad2 = 1 * unit + 1 * truck;  // does not compile
+      // quantity bad1 = 1 * unit + 1;          // ❌
+      // quantity bad2 = 1 * unit + 1 * truck;  // ❌
     }
     ```
 
@@ -159,7 +160,7 @@ int main()
     Raw integers and constants lead to easy-to-make mistakes:
 
     ```cpp
-    // ❌ Traditional approach - no type safety
+    // Traditional approach - no type safety
     const int UNITS_PER_CARTON = 12;
     int weekly_units = 25200;
     int weekly_cartons = weekly_units / UNITS_PER_CARTON;  // Easy to forget!
@@ -178,7 +179,7 @@ int main()
     quantity weekly_production = 3 * unit / min * 14 * h * 5;
     quantity in_cartons = weekly_production.in(carton);  // Automatic conversion!
 
-    // quantity bad = 1 * unit + 1 * carton;  // Does not compile!
+    quantity sum = 1 * unit + 1 * carton;     // OK: 13 unit, the carton is converted
     ```
 
     The `mag<12>` magnitude specifies the exact scaling relationship at compile time.
@@ -188,6 +189,7 @@ int main()
     Once you define the unit relationships, conversions happen automatically:
 
     ```cpp
+    // snippet-continues
     quantity production = 25200 * unit;  // Integer quantity (counting discrete items)
 
     // Automatic conversion when no precision loss:
@@ -212,6 +214,13 @@ int main()
     When dealing with discrete units (cartons, trucks), rounding is common:
 
     ```cpp
+    // snippet-setup: inline constexpr struct unit : named_unit<"unit", kind_of<dimensionless>> {} unit;
+    // snippet-setup: inline constexpr struct carton : named_unit<"carton", mag<12> * unit> {} carton;
+    // snippet-setup: inline constexpr struct truck : named_unit<"truck", kind_of<dimensionless>> {} truck;
+    // snippet-setup: quantity production_rate = 3 * unit / min;
+    // snippet-setup: quantity hours_per_day = 14 * h;
+    // snippet-setup: quantity days_per_week = 5;
+    // snippet-setup: quantity truck_capacity = 60 * carton / truck;
     quantity weekly_production = production_rate * hours_per_day * days_per_week;
 
     // Must ship in full cartons only:
@@ -240,6 +249,7 @@ int main()
 
     ```cpp
     // Inventory management:
+    // snippet-setup: inline constexpr struct bottle : named_unit<"bottle", kind_of<dimensionless>> {} bottle;
     inline constexpr struct crate : named_unit<"crate", mag<24> * bottle> {} crate;
     inline constexpr struct pallet : named_unit<"pallet", mag<50> * crate> {} pallet;
 

@@ -5,10 +5,12 @@ fundamental physical constants, expressed in SI units.
 
 ```cpp
 #include <mp-units/systems/codata.h>
+#include <mp-units/utility/uncertain.h>
+#include <iostream>
 
 using namespace mp_units;
 
-quantity mu = measurement_of(codata::magnetic_constant).in(si::henry / si::metre);
+quantity mu = utility::measurement_of(codata::magnetic_constant).in(si::henry / si::metre);
 std::cout << mu << "\n";  // 1.25664e-06 ± 2e-16 H/m
 ```
 
@@ -87,8 +89,9 @@ Each CODATA adjustment gets its own namespace, because a measured constant has n
 correct value:
 
 ```cpp
-quantity now = measurement_of(codata::magnetic_constant);                  // current
-quantity pinned = measurement_of(codata::codata2018::magnetic_constant);   // a specific one
+// snippet-template: codata
+quantity now = utility::measurement_of(codata::magnetic_constant);                 // current
+quantity pinned = utility::measurement_of(codata::codata2018::magnetic_constant);  // a specific one
 ```
 
 The most recent adjustment is `inline`, so the unqualified name always refers to it while
@@ -100,6 +103,7 @@ Constants that are exact under a given adjustment carry no uncertainty at all, w
 the exact-versus-measured distinction visible to the type system:
 
 ```cpp
+// snippet-template: codata
 static_assert(MeasuredConstant<decltype(codata::codata2022::magnetic_constant)>);
 static_assert(!MeasuredConstant<decltype(codata::codata2014::magnetic_constant)>);
 ```

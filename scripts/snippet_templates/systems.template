@@ -1,0 +1,18 @@
+// SI unit symbols plus every other system of units, for samples that mix systems. A
+// sample using another system's symbols adds its own `using namespace`.
+#include "prelude.h"
+#include <mp-units/systems/angular.h>
+#include <mp-units/systems/astronomy.h>
+#include <mp-units/systems/cgs.h>
+#include <mp-units/systems/iau.h>
+#include <mp-units/systems/iec.h>
+#include <mp-units/systems/imperial.h>
+#include <mp-units/systems/isq_angle.h>
+#include <mp-units/systems/iupac.h>
+#include <mp-units/systems/natural.h>
+#include <mp-units/systems/typographic.h>
+#include <mp-units/systems/usc.h>
+#include <mp-units/systems/yard_pound.h>
+using namespace mp_units;
+using namespace mp_units::si::unit_symbols;
+{{BODY}}

@@ -17,10 +17,10 @@ using namespace mp_units;
 using namespace mp_units::si::unit_symbols;
 using mp_units::utility::uncertain;
 
-quantity length = uncertain{10.0, 0.1} * m;   // 10.0 ± 0.1 m
-quantity width = uncertain{5.0, 0.05} * m;    // 5.0 ± 0.05 m
-quantity area = length * width;               // 50.0 ± 0.71 m²
-quantity in_mm = length.in(mm);               // 10 000 ± 100 mm
+quantity length = utility::uncertain{10.0, 0.1} * m;  // 10.0 ± 0.1 m
+quantity width = utility::uncertain{5.0, 0.05} * m;   // 5.0 ± 0.05 m
+quantity area = length * width;                       // 50.0 ± 0.71 m²
+quantity in_mm = length.in(mm);                       // 10 000 ± 100 mm
 ```
 
 ## The `uncertain<T>` class
@@ -92,8 +92,9 @@ difference, `√(σ_x² + σ_y²)` (VIM 2.47). An exact value has a zero uncerta
 same function checks a measurement against a reference value:
 
 ```cpp
-metrologically_compatible(uncertain{10.0, 0.3}, uncertain{10.9, 0.4});  // true: 0.9 ≤ 2 × 0.5
-metrologically_compatible(uncertain{10.0, 0.1}, 10.3);                  // false: 0.3 > 2 × 0.1
+// snippet-template: utility
+metrologically_compatible(utility::uncertain{10.0, 0.3}, utility::uncertain{10.9, 0.4});  // true: 0.9 ≤ 2 × 0.5
+metrologically_compatible(utility::uncertain{10.0, 0.1}, 10.3);                  // false: 0.3 > 2 × 0.1
 ```
 
 Unlike equality, the relation is not transitive. `a` may agree with `b`, and `b` with `c`,
@@ -105,7 +106,8 @@ the whole interval `value ± k·uncertainty` lies within the limits. The second 
 the interval overlaps them, so the measurement can't rule out that the true value conforms:
 
 ```cpp
-const uncertain reading{10.0, 0.5};
+// snippet-template: utility
+const utility::uncertain reading{10.0, 0.5};
 certainly_within(reading, 9.0, 11.0);  // true: [9, 11] fits
 certainly_within(reading, 9.0, 10.5);  // false: 11 > 10.5
 possibly_within(reading, 10.5, 12.0);  // true: [9, 11] overlaps
@@ -116,11 +118,12 @@ Each of them also takes quantities or quantity points whose representation is
 points across their origins. One operand of `metrologically_compatible` may be exact:
 
 ```cpp
-const quantity length = uncertain{10.0, 0.3} * m;
-metrologically_compatible(length, uncertain{1090.0, 40.0} * cm);  // true: 90 cm ≤ 2 × 50 cm
+// snippet-template: utility
+const quantity length = utility::uncertain{10.0, 0.3} * m;
+metrologically_compatible(length, utility::uncertain{1090.0, 40.0} * cm);  // true: 90 cm ≤ 2 × 50 cm
 certainly_within(length, 900.0 * cm, 11.0 * m);                   // true
 
-const quantity_point temp = point<deg_C>(uncertain{20.0, 0.1});
+const quantity_point temp = point<deg_C>(utility::uncertain{20.0, 0.1});
 metrologically_compatible(temp, point<K>(293.3));                 // true: 0.15 K ≤ 2 × 0.1 K
 ```
 
@@ -243,12 +246,13 @@ quadrature. For every other representation type the conversion stays exact, so n
 changes for regular code:
 
 ```cpp
+// snippet-template: codata
 const quantity two_suns = 2.0 * iau::unit_symbols::M_SUN;
 
-std::cout << two_suns << "\n";                                     // 2 M_☉
-std::cout << two_suns.in(kg) << "\n";                              // 3.97682e+30 kg
-std::cout << two_suns.in<uncertain<double>>(kg) << "\n";           // 3.97682e+30 ± 8.93761e+25 kg
-std::cout << value_cast<kg, uncertain<double>>(two_suns) << "\n";  // 3.97682e+30 ± 8.93761e+25 kg
+std::cout << two_suns << "\n";                                              // 2 M_☉
+std::cout << two_suns.in(kg) << "\n";                                       // 3.97682e+30 kg
+std::cout << two_suns.in<utility::uncertain<double>>(kg) << "\n";           // 3.97682e+30 ± 8.93761e+25 kg
+std::cout << value_cast<kg, utility::uncertain<double>>(two_suns) << "\n";  // 3.97682e+30 ± 8.93761e+25 kg
 ```
 
 The first two lines are exact: `two_suns` in its own unit, and the sanctioned central
@@ -263,7 +267,8 @@ ratio is exact by definition. Here are the same two suns again, with the
 uncertainty-capable representation as the only difference:
 
 ```cpp
-const quantity two_suns = uncertain<double>{2.0} * iau::unit_symbols::M_SUN;
+// snippet-template: codata
+const quantity two_suns = utility::uncertain<double>{2.0} * iau::unit_symbols::M_SUN;
 
 std::cout << two_suns << "\n";                                 // 2 ± 0 M_☉
 std::cout << two_suns.in(iau::unit_symbols::M_EARTH) << "\n";  // 665892 ± 0 M_⊕
@@ -300,9 +305,9 @@ appears the moment the quantity leaves units in which the constant cancels:
 
 using mp_units::utility::measurement_of;
 
-quantity G1 = measurement_of(iau::newtonian_constant_of_gravitation);  // exactly 1 G
-quantity G2 = G1.in(m3 / kg / s2);              // 6.6743e-11 ± 1.5e-15 m³ kg⁻¹ s⁻²
-quantity G3 = measurement_of<float>(iau::newtonian_constant_of_gravitation);  // uncertain<float>
+quantity G1 = utility::measurement_of(iau::newtonian_constant_of_gravitation);         // exactly 1 G
+quantity G2 = G1.in(m3 / kg / s2);                                                     // 6.6743e-11 ± 1.5e-15 m³ kg⁻¹ s⁻²
+quantity G3 = utility::measurement_of<float>(iau::newtonian_constant_of_gravitation);  // uncertain<float>
 ```
 
 Seeding the value with `1 ± u_r` up front would be wrong: a later conversion would fold the
@@ -311,7 +316,8 @@ The relational model avoids this by construction, and derived values compose cor
 the quantity level:
 
 ```cpp
-const quantity G_measured = measurement_of(iau::newtonian_constant_of_gravitation);
+// snippet-template: codata
+const quantity G_measured = utility::measurement_of(iau::newtonian_constant_of_gravitation);
 const quantity solar_mass = (1. * iau::nominal_solar_mass_parameter) / G_measured;
 std::cout << solar_mass.in(kg) << "\n";  // 1.98841e+30 ± 4.46881e+25 kg
 ```
@@ -330,7 +336,8 @@ Both stream insertion and `std::format` print the `value ± σ` form, and a quan
 its unit symbol:
 
 ```cpp
-std::cout << std::format("{}", uncertain{2.5, 0.25} * m) << "\n";  // 2.5 ± 0.25 m
+// snippet-template: utility
+std::cout << std::format("{}", utility::uncertain{2.5, 0.25} * m) << "\n";  // 2.5 ± 0.25 m
 ```
 
 ### The concise ISO 80000 notation
@@ -350,14 +357,16 @@ the precision the uncertainty justifies (the reporting view of GUM 7.2.6). For a
 transcribed from a metrology table the output reproduces the published notation verbatim.
 
 ```cpp
-std::cout << std::format("{:~}", uncertain{23.4782, 0.0032}) << "\n";  // 23.4782(32)
+// snippet-template: utility
+std::cout << std::format("{:~}", utility::uncertain{23.4782, 0.0032}) << "\n";  // 23.4782(32)
 ```
 
 This is the notation CODATA and the SI Brochure use to publish measured constants, so the
 output reproduces the source that the definitions were transcribed from:
 
 ```cpp
-quantity G = measurement_of(iau::newtonian_constant_of_gravitation).in(m3 / kg / s2);
+// snippet-template: codata
+quantity G = utility::measurement_of(iau::newtonian_constant_of_gravitation).in(m3 / kg / s2);
 std::cout << std::format("{::N[~]}", G) << "\n";  // 6.67430(15)e-11 m³ kg⁻¹ s⁻²
 ```
 
@@ -366,15 +375,17 @@ rather than a digit count for the value. It defaults to two, which is what CODAT
 and what GUM 7.2.6 recommends:
 
 ```cpp
-std::cout << std::format("{:.1~}", uncertain{6.67430e-11, 1.8e-15}) << "\n";  // 6.6743(2)e-11
+// snippet-template: utility
+std::cout << std::format("{:.1~}", utility::uncertain{6.67430e-11, 1.8e-15}) << "\n";  // 6.6743(2)e-11
 ```
 
 `type` selects between the scientific (`e`) and the fixed (`f`) form. Left out, the library
 picks the one that leaves no shown digit of the value ambiguous:
 
 ```cpp
-std::cout << std::format("{:~}", uncertain{1234., 15.}) << "\n";   // 1234(15)
-std::cout << std::format("{:~}", uncertain{1234., 150.}) << "\n";  // 1.23(15)e+03
+// snippet-template: utility
+std::cout << std::format("{:~}", utility::uncertain{1234., 15.}) << "\n";   // 1234(15)
+std::cout << std::format("{:~}", utility::uncertain{1234., 150.}) << "\n";  // 1.23(15)e+03
 ```
 
 The second case shows why. The uncertainty reaches the tens digit, so a fixed `1230(15)`

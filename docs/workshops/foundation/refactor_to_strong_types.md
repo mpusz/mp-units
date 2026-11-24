@@ -102,6 +102,7 @@ int main()
     The library automatically computes result dimensions from operands:
 
     ```cpp
+    // snippet-continues
     quantity energy = 0.5 * mass * pow<2>(speed);  // Automatically: kg·m²/s²
     ```
 
@@ -115,6 +116,7 @@ int main()
     The `.in()` method converts quantities to different units of the same dimension:
 
     ```cpp
+    // snippet-template: none (pseudo-code: a bare expression without a semicolon, energy undeclared)
     energy.in(kJ)  // Convert joules to kilojoules
     ```
 

@@ -82,7 +82,7 @@ int main()
   constexpr quantity R = 8.314 * J / (mol * K);  // gas constant
   quantity n = 1.0 * mol;                        // amount of substance
   quantity V = 0.024 * m3;                       // volume
-  quantity_point T_point{27 * deg_C};            // 27°C
+  quantity_point T_point = point<deg_C>(27.);    // 27°C
 
   // Temperature MUST be absolute (Kelvin)
   quantity T = T_point.in(K).delta_from_zero();

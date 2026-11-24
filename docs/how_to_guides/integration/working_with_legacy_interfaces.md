@@ -35,6 +35,7 @@ The primary way to extract a numerical value is using `.numerical_value_in(Unit)
 function requires you to explicitly specify the expected unit:
 
 ```cpp
+// snippet-id: legacy
 void legacy_check_speed_limit(double speed_in_km_per_h);
 
 quantity speed = 180 * km / (2 * h);  // 90 km/h
@@ -52,12 +53,11 @@ legacy_check_speed_limit(speed.numerical_value_in(km / h));  // ✅ Passes 90
 **Example of compile-time protection:**
 
 ```cpp
-// ❌ Compile error: dimensionally incompatible
-legacy_check_speed_limit(speed.numerical_value_in(m));
+// snippet-continues
+legacy_check_speed_limit(speed.numerical_value_in(m));  // ❌ dimensionally incompatible
 
-// ❌ Compile error: wrong dimensions
 quantity distance = 100 * m;
-legacy_check_speed_limit(distance.numerical_value_in(km / h));
+legacy_check_speed_limit(distance.numerical_value_in(km / h));  // ❌ wrong dimensions
 ```
 
 ### Handling Value Truncation
@@ -67,9 +67,9 @@ quantity's representation type is not value preserving and the unit conversion m
 truncate the value, you'll get a compile error:
 
 ```cpp
-// ❌ Compile error: value truncation
+// snippet-after: legacy:decls
 quantity speed = 30 * m / s;
-legacy_check_speed_limit(speed.numerical_value_in(km / h));
+legacy_check_speed_limit(speed.numerical_value_in(km / h));  // ❌ value truncation
 ```
 
 !!! warning "Assignment/Construction Truncation Not Detected"
@@ -94,6 +94,7 @@ You have two options to resolve this:
 **Option 1: Use a value-preserving representation type**
 
 ```cpp
+// snippet-after: legacy:decls
 // ✅ Automatic conversion (floating-point types are value preserving)
 quantity speed = 33. * m / s;   // 118.8 km/h
 legacy_check_speed_limit(speed.numerical_value_in(km / h));
@@ -105,6 +106,7 @@ When you're certain that truncation is acceptable, pass a rounding policy (e.g. 
 to `.numerical_value_in()`:
 
 ```cpp
+// snippet-after: legacy:decls
 quantity speed = 33 * m / s;   // 118.8 km/h
 legacy_check_speed_limit(speed.numerical_value_in(km / h, truncated));  // ✅ Truncates to 118
 ```
@@ -115,6 +117,7 @@ extracted value feeds an enforcement decision, `rounded` or `rounded_up` is the 
 choice:
 
 ```cpp
+// snippet-continues
 legacy_check_speed_limit(speed.numerical_value_in(km / h, rounded_up));  // ✅ Reports 119
 ```
 
@@ -154,8 +157,7 @@ legacy_set_speed_limit(&speed_limit.numerical_value_ref_in(km / h));  // ✅ Dir
 
 ```cpp
 quantity<m / s, int> speed;
-// ❌ Compile error: requires conversion from m/s to km/h
-int& value = speed.numerical_value_ref_in(km / h);
+int& value = speed.numerical_value_ref_in(km / h);  // ❌ requires conversion from m/s to km/h
 ```
 
 ## Practical Examples
@@ -179,6 +181,9 @@ legacy_log_measurement(distance.numerical_value_in(km), UNIT_KILOMETERS);
 ### Example 2: Filling Legacy Data Structures
 
 ```cpp
+// snippet-template: systems
+using namespace mp_units::yard_pound::unit_symbols;
+
 struct LegacyMeasurement {
   double value_in_meters;
   double value_in_feet;

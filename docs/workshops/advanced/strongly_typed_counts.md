@@ -22,6 +22,7 @@ All are just integers, but mixing them causes subtle bugs:
 === "Without strong types"
 
     ```cpp
+    // snippet-setup: void draw_at(int x, int y, int count);
     void render(int x, int y, int sprite_count)
     {
       // Easy to accidentally swap x and y
@@ -37,6 +38,7 @@ All are just integers, but mixing them causes subtle bugs:
 === "With type aliases (no safety)"
 
     ```cpp
+    // snippet-setup: void draw_at(int x, int y, int count);
     using PixelX = int;
     using PixelY = int;
     using SpriteCount = int;
@@ -85,6 +87,7 @@ quantities. The system should:
 
 ```cpp
 // ce-embed height=850 compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0" mp-units=trunk
+// snippet-template: none (exercise skeleton: TODO quantity specs and function bodies for the reader; the Solution fence compiles)
 #include <mp-units/systems/si.h>
 #include <iostream>
 
@@ -176,15 +179,16 @@ int main()
   std::cout << "Render rate: " << rate.in(one / s) << "\n";
 
   // Try these intentional errors (uncomment to test):
-  // auto bad_sum = pos_x + pos_y;  // ERROR: Cannot mix X and Y coordinates
-  // auto bad_cmp = (rendered < pos_x);  // ERROR: Cannot compare count with coordinate
-  // auto bad_bounds = is_within_bounds(pos_y, pos_x, screen_width, screen_height);  // ERROR: Swapped X/Y
+  // auto bad_sum = pos_x + pos_y;  // ❌ Cannot mix X and Y coordinates
+  // auto bad_cmp = (rendered < pos_x);  // ❌ Cannot compare count with coordinate
+  // auto bad_bounds = is_within_bounds(pos_y, pos_x, screen_width, screen_height);  // ❌ Swapped X/Y
 }
 ```
 
 ??? tip "Solution"
 
     ```cpp
+    // snippet-id: solution
     #include <mp-units/systems/si.h>
     #include <iostream>
 
@@ -212,7 +216,7 @@ int main()
                                                   QuantityOf<resolution_width> auto width,
                                                   QuantityOf<resolution_height> auto height)
     {
-      return is_gteq_zero(x) && x < width && is_gteq_zero(y) && y < height;
+      return x >= 0 && x < width && y >= 0 && y < height;
     }
 
     [[nodiscard]] constexpr QuantityOf<render_rate> auto render_rate_calc(QuantityOf<sprite_count> auto count,
@@ -314,6 +318,8 @@ int main()
     You can create derived quantities from your custom types:
 
     ```cpp
+    // snippet-setup: inline constexpr struct sprite_count : quantity_spec<dimensionless, subkind> {} sprite_count;
+    // snippet-setup: inline constexpr struct frame_count : quantity_spec<dimensionless, subkind> {} frame_count;
     inline constexpr struct render_rate : quantity_spec<sprite_count / isq::time> {} render_rate;
     inline constexpr struct frame_rate : quantity_spec<frame_count / isq::time> {} frame_rate;
     ```
@@ -321,6 +327,7 @@ int main()
     This automatically works with dimensional analysis:
 
     ```cpp
+    // snippet-after: solution:decls
     // Frame rate: frames per time, and inverse gives time per frame
     quantity target_fps = 60.0 / s;
     quantity frame_time = 1.0 / target_fps;  // Dimensional analysis!
@@ -360,6 +367,7 @@ int main()
     define units with `kind_of`:
 
     ```cpp
+    // snippet-after: solution
     inline constexpr struct pixel_x_unit : named_unit<"px_x", one, kind_of<pixel_x>> {} pixel_x_unit;
     inline constexpr auto px_x = pixel_x_unit;
     inline constexpr struct pixel_y_unit : named_unit<"px_y", one, kind_of<pixel_y>> {} pixel_y_unit;

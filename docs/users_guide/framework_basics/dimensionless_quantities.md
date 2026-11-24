@@ -44,6 +44,7 @@ constexpr QuantityOf<dimensionless> auto q = isq::height(200 * m) / isq::height(
 In such a case, we end up with a dimensionless quantity that has the following properties:
 
 ```cpp
+// snippet-continues
 static_assert(q.quantity_spec == dimensionless);
 static_assert(q.dimension == dimension_one);
 static_assert(q.unit == one);
@@ -65,6 +66,7 @@ constexpr QuantityOf<dimensionless> auto q = isq::work(200 * J) / isq::heat(50 *
 Again we end up with `dimension_one` and `one`, but this time:
 
 ```cpp
+// snippet-continues
 static_assert(q.quantity_spec == isq::work / isq::heat);
 ```
 
@@ -74,6 +76,7 @@ According to the [ISQ](../../reference/glossary.md#isq), _work_ divided by _heat
 for the _thermodynamic efficiency_ quantity, thus:
 
 ```cpp
+// snippet-continues
 static_assert(utility::implicitly_convertible(q.quantity_spec, isq::thermodynamic_efficiency));
 ```
 
@@ -95,7 +98,8 @@ This time, we still get a quantity of the `dimensionless` type with a `dimension
 dimension. However, the resulting unit is not `one` anymore:
 
 ```cpp
-static_assert(q.unit == mag_power<10, 3> * one);
+// snippet-continues
+static_assert(q.unit == km / m);
 ```
 
 In case we would print the text output of this quantity, we would not see a raw value of `2000`,
@@ -113,8 +117,9 @@ that uses a unit that is proportional to the ratio of kilometers per megaparsecs
 both units of _length_:
 
 ```cpp
+// snippet-template: systems
 inline constexpr struct hubble_constant :
-    named_constant<{u8"H₀", "H_0"}, mag_ratio<701, 10> * si::kilo<si::metre> / si::second / si::mega<parsec>> {} hubble_constant;
+    named_constant<{u8"H₀", "H_0"}, mag_ratio<701, 10> * si::kilo<si::metre> / si::second / si::mega<iau::parsec>> {} hubble_constant;
 ```
 
 
@@ -158,6 +163,7 @@ Besides the unit `one`, there are a few other scaled units predefined in the lib
 with dimensionless quantities:
 
 ```cpp
+// snippet-template: scoped
 inline constexpr struct percent : named_unit<"%", mag_ratio<1, 100> * one> {} percent;
 inline constexpr struct per_mille : named_unit<{u8"‰", "%o"}, mag_ratio<1, 1000> * one> {} per_mille;
 inline constexpr struct parts_per_million : named_unit<"ppm", mag_ratio<1, 1'000'000> * one> {} parts_per_million;
@@ -226,6 +232,7 @@ conversions between radians and degrees. The library also provides common trigon
 for angular quantities:
 
 ```cpp
+// snippet-template: systems
 using namespace mp_units::si::unit_symbols;
 using mp_units::angular::unit_symbols::rad;
 using mp_units::angular::unit_symbols::deg;
@@ -309,6 +316,8 @@ For dimensionless quantities specifically, the `subkind` specifier is applied as
 === "C++20"
 
     ```cpp
+    // snippet-template: scoped
+    // snippet-std: 20
     inline constexpr struct angular_measure : quantity_spec<angular_measure, dimensionless, arc_length / radius, subkind> {} angular_measure;
     inline constexpr struct solid_angular_measure : quantity_spec<solid_angular_measure, dimensionless, area / pow<2>(radius), subkind> {} solid_angular_measure;
     inline constexpr struct storage_capacity : quantity_spec<storage_capacity, dimensionless, subkind> {} storage_capacity;
@@ -326,9 +335,10 @@ With the above, we can constrain `radian`, `steradian`, and `bit` to be allowed 
 with specific quantity kinds only:
 
 ```cpp
+// snippet-template: si_excerpt
 inline constexpr struct radian : named_unit<"rad", metre / metre, kind_of<isq::angular_measure>> {} radian;
 inline constexpr struct steradian : named_unit<"sr", square(metre) / square(metre), kind_of<isq::solid_angular_measure>> {} steradian;
-inline constexpr struct bit : named_unit<"bit", one, kind_of<storage_capacity>> {} bit;
+inline constexpr struct bit : named_unit<"bit", one, kind_of<isq::storage_capacity>> {} bit;
 ```
 
 but still allow the usage of `one` and its scaled versions for such quantities.
@@ -395,6 +405,7 @@ values when it comes to type safety**.
 Consider the following example:
 
 ```cpp
+// snippet-id: item-count
 inline constexpr struct item_count : quantity_spec<dimensionless> {} item_count;
 inline constexpr struct widget_count : quantity_spec<dimensionless> {} widget_count;
 
@@ -410,7 +421,7 @@ process(10 * one, 20 * one);           // Which is items? Which is widgets? Uncl
 quantity items = item_count(10);
 quantity widgets = widget_count(20);
 process(items, widgets);    // OK
-// process(widgets, items); // Compile-time error!
+// process(widgets, items); // ❌
 ```
 
 When you already have typed quantities, the compiler **does** enforce the correct order—swapping
@@ -423,6 +434,7 @@ Another drawback of such a hierarchy is that these types model `dimensionless` t
 numbers which means they can be mixed in arithmetic operations and comparisons:
 
 ```cpp
+// snippet-after: item-count:decls
 quantity items = item_count(10);
 quantity widgets = widget_count(20);
 
@@ -466,7 +478,7 @@ This however, creates an important trade-off:
     quantity items = item_count(10);
     quantity widgets = widget_count(20);
     process(items, widgets);     // ✅ OK - correct order
-    process(widgets, items);     // ❌ Compile error! Good.
+    process(widgets, items);     // ❌
 
     // Another problem: can mix semantically different types in arithmetic
     auto mixed = items + widgets;  // ⚠️ Compiles! Both convert to dimensionless
@@ -478,6 +490,8 @@ This however, creates an important trade-off:
     **Pros**: Convenient—works with raw values, typed quantities enforce correct parameter order
 
     ```cpp
+    // snippet-setup: inline constexpr struct pixel_x : quantity_spec<dimensionless> {} pixel_x;
+    // snippet-setup: inline constexpr struct pixel_y : quantity_spec<dimensionless> {} pixel_y;
     void draw_rect(quantity<pixel_x[one]> x, quantity<pixel_y[one]> y,
                    quantity<pixel_x[one]> width, quantity<pixel_y[one]> height)
     {
@@ -503,17 +517,17 @@ This however, creates an important trade-off:
     }
 
     // Cannot call with raw values - must be explicit
-    process(10, 20);             // ❌ Compile error! Good.
+    process(10, 20);             // ❌
 
     // Must use typed quantities, and order is enforced
     quantity items = item_count(10);
     quantity widgets = widget_count(20);
     process(items, widgets);     // ✅ OK - correct order
-    process(widgets, items);     // ❌ Compile error! Good.
+    process(widgets, items);     // ❌
 
     // Arithmetic operations also enforce type safety
-    auto mixed = items + widgets;  // ❌ Compile error! Good.
-    if (items < widgets) {         // ❌ Compile error! Good.
+    auto mixed = items + widgets;  // ❌
+    if (items < widgets) {         // ❌
       // ...
     }
     ```
@@ -524,6 +538,7 @@ This however, creates an important trade-off:
     for functions with multiple parameters:
 
     ```cpp
+    // snippet-after: pixels
     void draw_rect(quantity<pixel_x[one]> x, quantity<pixel_y[one]> y,
                    quantity<pixel_x[one]> width, quantity<pixel_y[one]> height)
     {
@@ -600,12 +615,12 @@ Traditional approaches to creating strong numeric types each face different trad
     PixelX x{100};
     PixelY y{200};
     draw_point(x, y);   // ✅ Good!
-    draw_point(y, x);   // ❌ Compile error! Good.
+    draw_point(y, x);   // ❌
 
     PixelX width{1920};
     PixelY height{1080};
     PixelArea area = calculate_area(width, height);      // ✅ Good!
-    PixelArea bad_area = calculate_area(height, width);  // ❌ Compile error! Good.
+    PixelArea bad_area = calculate_area(height, width);  // ❌
     // But: no help with derived quantities - must manually manage relationships
     // Need PixelArea / PixelX = PixelY? Define more operators manually!
 
@@ -617,6 +632,7 @@ Traditional approaches to creating strong numeric types each face different trad
 === "Generic libraries (NamedType, type_safe, PSsst)"
 
     ```cpp
+    // snippet-template: none (third-party: fluent::NamedType from the NamedType library is not available)
     using PixelX = fluent::NamedType<int, struct PixelXTag, fluent::Addable>;
     using PixelY = fluent::NamedType<int, struct PixelYTag, fluent::Addable>;
     using PixelArea = fluent::NamedType<int, struct PixelAreaTag, fluent::Addable>;
@@ -631,12 +647,12 @@ Traditional approaches to creating strong numeric types each face different trad
     PixelX x{100};
     PixelY y{200};
     draw_point(x, y);   // ✅ Good!
-    draw_point(y, x);   // ❌ Compile error! Good.
+    draw_point(y, x);   // ❌
 
     PixelX width{1920};
     PixelY height{1080};
     PixelArea area = calculate_area(width, height);      // ✅ Good!
-    PixelArea bad_area = calculate_area(height, width);  // ❌ Compile error! Good.
+    PixelArea bad_area = calculate_area(height, width);  // ❌
     // But: no automatic understanding that PixelX × PixelY → PixelArea
 
     std::cout << "Area: " << area.get() << " = " << area.get() / 2073600.0 << " FHD = " << area.get() / 8294400.0 << " 4K\n";
@@ -651,6 +667,7 @@ Traditional approaches to creating strong numeric types each face different trad
 === "mp-units (specialized for numeric types)"
 
     ```cpp
+    // snippet-id: pixels
     inline constexpr struct pixel_x : quantity_spec<dimensionless, subkind> {} pixel_x;
     inline constexpr struct pixel_y : quantity_spec<dimensionless, subkind> {} pixel_y;
     inline constexpr struct pixel_area : quantity_spec<dimensionless, pixel_x * pixel_y, subkind> {} pixel_area;
@@ -669,12 +686,12 @@ Traditional approaches to creating strong numeric types each face different trad
     quantity x = pixel_x(100);
     quantity y = pixel_y(200);
     draw_point(x, y);   // ✅ Good!
-    draw_point(y, x);   // ❌ Compile error! Good.
+    draw_point(y, x);   // ❌
 
     quantity width = pixel_x(1920);
     quantity height = pixel_y(1080);
     quantity area = calculate_area(width, height);      // ✅ Good!
-    quantity bad_area = calculate_area(height, width);  // ❌ Compile error! Good.
+    quantity bad_area = calculate_area(height, width);  // ❌
 
     std::cout << "Area: " << area << " = " << area.in<double>(fhd) << " = " << area.in<double>(uhd_4k) << '\n';
     ```

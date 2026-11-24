@@ -354,12 +354,13 @@ constexpr bool is_specialization_of_scaled_unit<scaled_unit<M, U>> = true;
  * For example:
  *
  * @code{.cpp}
- * inline constexpr struct second : named_unit<"s", kind_of<time>> {} second;
- * inline constexpr struct metre : named_unit<"m", kind_of<length> {} metre;
- * inline constexpr struct hertz : named_unit<"Hz", inverse(second), kind_of<frequency>> {} hertz;
+ * // snippet-template: si_excerpt
+ * inline constexpr struct second : named_unit<"s", kind_of<isq::duration>> {} second;
+ * inline constexpr struct metre : named_unit<"m", kind_of<isq::length>> {} metre;
+ * inline constexpr struct hertz : named_unit<"Hz", one / second, kind_of<isq::frequency>> {} hertz;
  * inline constexpr struct newton : named_unit<"N", kilogram * metre / square(second)> {} newton;
- * inline constexpr struct degree_Celsius : named_unit<{u8"°C", "`C"}, kelvin, ice_point> {}
- * degree_Celsius; inline constexpr struct minute : named_unit<"min", mag<60> * second> {} minute;
+ * inline constexpr struct degree_Celsius : named_unit<{u8"°C", "`C"}, kelvin, ice_point> {} degree_Celsius;
+ * inline constexpr struct minute : named_unit<"min", mag<60> * second> {} minute;
  * @endcode
  *
  * @note A common convention in this library is to assign the same name for a type and an object of this type.
@@ -679,13 +680,15 @@ MP_UNITS_EXPORT template<MeasuredConstant U>
  * For example:
  *
  * @code{.cpp}
- * template<PrefixableUnit auto U>
- * struct kilo_ : prefixed_unit<"k", mag_power<10, 3>, U> {};
+ * // snippet-template: si_excerpt
+ * template<PrefixableUnit U>
+ *   requires(!std::is_const_v<U>)
+ * struct kilo_ : prefixed_unit<"k", mag_power<10, 3>, U{}> {};
  *
  * template<PrefixableUnit auto U>
- * constexpr kilo_<U> kilo;
+ * constexpr kilo_<decltype(U)> kilo;
  *
- * inline constexpr auto kilogram = si::kilo<gram>;
+ * inline constexpr auto kilogram = kilo<gram>;
  * @endcode
  *
  * @tparam Symbol a prefix text to prepend to a unit symbol
@@ -779,14 +782,15 @@ struct derived_unit_impl : detail::unit_interface, detail::expr_fractions<one, E
  * For example:
  *
  * @code{.cpp}
- * static_assert(is_of_type<inverse(second), derived_unit<one, per<second>>>);
- * static_assert(is_of_type<one / inverse(second), second>);
- * static_assert(is_of_type<one * second, second>);
- * static_assert(is_of_type<metre * metre, derived_unit<power<metre, 2>>>);
- * static_assert(is_of_type<metre * second, derived_unit<metre, second>>);
- * static_assert(is_of_type<metre / second, derived_unit<metre, per<second>>>);
- * static_assert(is_of_type<metre / square(second), derived_unit<metre, per<power<second, 2>>>>);
- * static_assert(is_of_type<watt / joule, derived_unit<watt, per<joule>>>);
+ * // snippet-template: si_excerpt
+ * static_assert(inverse(second) == derived_unit<struct one, per<struct second>>{});
+ * static_assert(one / inverse(second) == second);
+ * static_assert(one * second == second);
+ * static_assert(metre * metre == derived_unit<power<struct metre, 2>>{});
+ * static_assert(metre * second == derived_unit<struct metre, struct second>{});
+ * static_assert(metre / second == derived_unit<struct metre, per<struct second>>{});
+ * static_assert(metre / square(second) == derived_unit<struct metre, per<power<struct second, 2>>>{});
+ * static_assert(watt / joule == derived_unit<struct watt, per<struct joule>>{});
  * @endcode
  *
  * Every unit in the library has its internal canonical representation being the list of exponents of named base units

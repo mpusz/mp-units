@@ -89,9 +89,9 @@ using namespace mp_units;
 using namespace mp_units::si::unit_symbols;
 using mp_units::utility::uncertain;
 
-quantity length = uncertain{10.0, 0.1} * m;   // 10.0 ± 0.1 m
-quantity width = uncertain{5.0, 0.05} * m;    // 5.0 ± 0.05 m
-quantity area = length * width;               // 50.0 ± 0.71 m²
+quantity length = utility::uncertain{10.0, 0.1} * m;  // 10.0 ± 0.1 m
+quantity width = utility::uncertain{5.0, 0.05} * m;   // 5.0 ± 0.05 m
+quantity area = length * width;                       // 50.0 ± 0.71 m²
 ```
 
 No customization is needed. `uncertain<T>` simply satisfies the `RepresentationOf` concept,
@@ -175,12 +175,13 @@ uncertainty is folded into the result in quadrature. For every other representat
 nothing changes:
 
 ```cpp
+// snippet-template: codata
 const quantity two_suns = 2.0 * iau::unit_symbols::M_SUN;
 
-std::cout << two_suns << "\n";                                     // 2 M_☉
-std::cout << two_suns.in(kg) << "\n";                              // 3.97682e+30 kg
-std::cout << two_suns.in<uncertain<double>>(kg) << "\n";           // 3.97682e+30 ± 8.93761e+25 kg
-std::cout << value_cast<kg, uncertain<double>>(two_suns) << "\n";  // 3.97682e+30 ± 8.93761e+25 kg
+std::cout << two_suns << "\n";                                              // 2 M_☉
+std::cout << two_suns.in(kg) << "\n";                                       // 3.97682e+30 kg
+std::cout << two_suns.in<utility::uncertain<double>>(kg) << "\n";           // 3.97682e+30 ± 8.93761e+25 kg
+std::cout << value_cast<kg, utility::uncertain<double>>(two_suns) << "\n";  // 3.97682e+30 ± 8.93761e+25 kg
 ```
 
 The first two lines are exact: `two_suns` in its own unit, and the sanctioned central
@@ -193,7 +194,8 @@ as its central value cancels in the magnitude ratio. Here are the same two suns 
 with the uncertainty-capable representation as the only difference:
 
 ```cpp
-const quantity two_suns = uncertain<double>{2.0} * iau::unit_symbols::M_SUN;
+// snippet-template: codata
+const quantity two_suns = utility::uncertain<double>{2.0} * iau::unit_symbols::M_SUN;
 
 std::cout << two_suns << "\n";                                 // 2 ± 0 M_☉
 std::cout << two_suns.in(iau::unit_symbols::M_EARTH) << "\n";  // 665892 ± 0 M_⊕
@@ -221,10 +223,11 @@ library, and any other supported one can be selected explicitly, so a `float` co
 never touches a `double`:
 
 ```cpp
-const quantity G_measured = measurement_of(iau::newtonian_constant_of_gravitation);
-const quantity G_single = measurement_of<float>(iau::newtonian_constant_of_gravitation);
-static_assert(std::is_same_v<decltype(G_measured)::rep, uncertain<double>>);
-static_assert(std::is_same_v<decltype(G_single)::rep, uncertain<float>>);
+// snippet-template: codata
+const quantity G_measured = utility::measurement_of(iau::newtonian_constant_of_gravitation);
+const quantity G_single = utility::measurement_of<float>(iau::newtonian_constant_of_gravitation);
+static_assert(std::is_same_v<decltype(G_measured)::rep, utility::uncertain<double>>);
+static_assert(std::is_same_v<decltype(G_single)::rep, utility::uncertain<float>>);
 
 std::cout << "G = " << G_measured.in(m3 / kg / s2) << "\n";
 
@@ -246,7 +249,8 @@ This is what the `MeasuredConstant` constraint is for. Asking for the measuremen
 of a constant that is exact by definition does not compile:
 
 ```cpp
-quantity c = measurement_of(si::si2019::speed_of_light_in_vacuum);  // constraint not satisfied
+// snippet-template: codata
+quantity c = utility::measurement_of(si::si2019::speed_of_light_in_vacuum);  // ❌ constraint not satisfied
 ```
 
 The rationale behind this is that:
@@ -286,6 +290,8 @@ which is what makes the distinction visible to the type system in the first plac
 The default text output is the `value ± σ` form, the notation engineers read every day:
 
 ```cpp
+// snippet-template: codata
+// snippet-setup: quantity G = utility::measurement_of(iau::newtonian_constant_of_gravitation);
 std::cout << G.in(m3 / kg / s2) << "\n";  // 6.6743e-11 ± 1.5e-15 m³ kg⁻¹ s⁻²
 ```
 
@@ -296,6 +302,8 @@ what the object holds. This one quotes the value to the precision the uncertaint
 which is how measurement results are reported:
 
 ```cpp
+// snippet-template: codata
+// snippet-setup: quantity G = utility::measurement_of(iau::newtonian_constant_of_gravitation);
 std::println("{::N[~]}", G.in(m3 / kg / s2));  // 6.67430(15)e-11 m³ kg⁻¹ s⁻²
 ```
 

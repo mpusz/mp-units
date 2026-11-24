@@ -92,12 +92,14 @@ Enhance the calculator:
    with `{::N[.2f]}` to show only 2 decimal places for the average _speeds_:
 
     ```cpp
+    // snippet-continues
     std::println("Average: {::N[.2f]}", overall_avg);
     ```
 
 3. **Add fuel consumption**:
 
     ```cpp
+    // snippet-continues
     quantity fuel_used = 8.0 * L;
     quantity efficiency = total_distance / fuel_used;
     std::println("Fuel efficiency: {}", efficiency);

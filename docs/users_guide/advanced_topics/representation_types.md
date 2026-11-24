@@ -140,7 +140,7 @@ the rare case a type misreports its element's field, override it by specializing
 
     ```cpp
     // All valid uses of double:
-    quantity m = isq::mass(5.0 * kg);           // Scalar
+    quantity mass = isq::mass(5.0 * kg);        // Scalar
     quantity v = isq::velocity(10.0 * m/s);     // 1D vector
     quantity sigma = isq::stress(100.0 * Pa);   // Scalar tensor measure
     ```
@@ -274,6 +274,7 @@ A specializable variable template to opt a type out of being a quantity represen
 of character:
 
 ```cpp
+// snippet-template: none (pseudo-code: synopsis of the library's primary template, value elided in a comment)
 template<typename T>
 constexpr bool mp_units::disable_representation = /* true if T is, or its elements are, a quantity or quantity-like type */;
 ```
@@ -295,6 +296,7 @@ and `unsigned char` stay representations, as `std::int8_t` and `std::uint8_t` na
 never store a quantity:
 
 ```cpp
+// snippet-template: none (pseudo-code: specialization for the placeholder type `my_type`, never declared)
 template<>
 inline constexpr bool mp_units::disable_representation<my_type> = true;
 ```
@@ -307,6 +309,7 @@ A specializable variable template that reports the **field** of a representation
 real or complex. It is the single source of truth for the field axis:
 
 ```cpp
+// snippet-template: none (pseudo-code: synopsis of the library's primary template, value elided in a comment)
 template<typename T>
 constexpr quantity_field mp_units::numeric_field =
   /* field of a scalar element of T: complex if that element satisfies the
@@ -346,6 +349,7 @@ API or specializes `numeric_field`.
   is nonetheless usable as complex. Specialize to `quantity_field::complex`.
 
 ```cpp
+// snippet-template: none (pseudo-code: specialization for the placeholder type `my_real`, never declared)
 template<>
 inline constexpr quantity_field mp_units::numeric_field<my_real> = quantity_field::real;
 ```
@@ -365,6 +369,7 @@ is left *undefined*. A specialization detects the order for a type that exposes 
 indexing shape:
 
 ```cpp
+// snippet-template: none (pseudo-code: synopsis, constraint and value elided in comments)
 template<typename T>
   requires /* T exposes exactly one indexing shape */
 constexpr std::size_t mp_units::tensor_order<T> = /* t(i, j) -> 2, t[i] -> 1, otherwise 0 */;
@@ -383,6 +388,7 @@ prominent example is Eigen: its column vector is an `N×1` matrix exposing both 
 `t(i, j)`, so its adapter declares the order from Eigen's compile-time shape:
 
 ```cpp
+// snippet-template: none (pseudo-code: synopsis of the Eigen adapter, constraint elided in a comment)
 template<typename T>
   requires /* T is an Eigen type */
 constexpr std::size_t mp_units::tensor_order<T> =
@@ -414,6 +420,7 @@ the library, and is used for:
 - Checking if the type should be treated as floating-point
 
 ```cpp
+// snippet-template: none (pseudo-code: synopsis of the library's declarations)
 template<typename T>
 struct mp_units::representation_underlying_type;  // primary — empty
 
@@ -452,6 +459,7 @@ public:
 **For third-party types** you cannot modify, specialize the trait directly:
 
 ```cpp
+// snippet-template: none (pseudo-code: specialization for the placeholder type `MyFloat`, never declared)
 // Third-party type MyFloat wraps long double internally
 template<>
 struct mp_units::representation_underlying_type<MyFloat> {
@@ -494,6 +502,7 @@ A specializable class template that maps a representation **value type** to the
 concrete type a `quantity` should *store*. The primary template simply decays the type:
 
 ```cpp
+// snippet-template: none (pseudo-code: synopsis of the library's primary template, alias elided in a comment)
 template<typename T>
 struct mp_units::representation_canonical_type {
   using type = std::remove_cvref_t<T>;
@@ -558,6 +567,7 @@ public:
 as the type so that ADL finds them:
 
 ```cpp
+// snippet-template: none (pseudo-code: operators for the placeholder type `ThirdPartyVec`, never declared)
 namespace third_party {
 
 // Non-member scaling operators for a type you do not own.
@@ -579,6 +589,7 @@ A specializable variable template that tells the library whether a type should b
 as floating-point for the purpose of allowing implicit conversions:
 
 ```cpp
+// snippet-template: none (pseudo-code: synopsis of the library's primary template, value elided in a comment)
 template<typename Rep>
 constexpr bool mp_units::treat_as_floating_point = /* implementation-defined */;
 ```
@@ -594,6 +605,7 @@ constexpr bool mp_units::treat_as_floating_point = /* implementation-defined */;
 automatic detection doesn't work correctly:
 
 ```cpp
+// snippet-template: none (pseudo-code: specialization for the placeholder type `my_fixed_point_type`, never declared)
 template<>
 inline constexpr bool mp_units::treat_as_floating_point<my_fixed_point_type> = true;
 ```
@@ -621,6 +633,7 @@ implicit-conversion decision from it, and a specialization overrides that decisi
 types where the derived rule is incorrect:
 
 ```cpp
+// snippet-template: none (pseudo-code: synopsis of the library's primary template)
 template<auto FromUnit, typename FromRep, auto ToUnit, typename ToRep>
 constexpr bool mp_units::implicitly_scalable =
   treat_as_floating_point<ToRep> ||
@@ -649,6 +662,7 @@ implicitly because the ratio is fractional and `safe_decimal` is not a floating-
 You can opt in:
 
 ```cpp
+// snippet-template: none (pseudo-code: specialization for the placeholder type `safe_decimal`, never declared)
 // safe_decimal handles fractional ratios exactly — allow all unit conversions implicitly.
 template<auto FromUnit, auto ToUnit>
 constexpr bool mp_units::implicitly_scalable<FromUnit, safe_decimal, ToUnit, safe_decimal> =
@@ -656,7 +670,7 @@ constexpr bool mp_units::implicitly_scalable<FromUnit, safe_decimal, ToUnit, saf
 
 // Before specialization:
 quantity<si::millimetre, safe_decimal> a = safe_decimal{500} * mm;
-// quantity<si::metre, safe_decimal> b = a;  // ❌ Error without specialization
+// quantity<si::metre, safe_decimal> b = a;  // ❌ without specialization
 quantity<si::metre, safe_decimal> b = a;     // ✅ Implicit after specialization
 ```
 
@@ -666,6 +680,7 @@ Suppose `my_decimal` has higher precision than `double`, so a `double` value can
 represented in `my_decimal` without loss, but not vice versa:
 
 ```cpp
+// snippet-template: none (pseudo-code: specialization for the placeholder type `my_decimal`, never declared)
 // double → my_decimal is always lossless: allow it implicitly.
 template<auto FromUnit, auto ToUnit>
 constexpr bool mp_units::implicitly_scalable<FromUnit, double, ToUnit, my_decimal> = true;
@@ -680,13 +695,14 @@ quantity<si::metre, double>     qd  = 1.5 * m;
 quantity<si::metre, my_decimal> qdm = qd;       // ✅ Implicit (double fits in my_decimal)
 
 quantity<si::metre, my_decimal> qm  = my_decimal{1.5} * m;
-// quantity<si::metre, double> qdb = qm;        // ❌ Error — requires value_cast
+// quantity<si::metre, double> qdb = qm;        // ❌ requires value_cast
 quantity<si::metre, double>     qdb = value_cast<double>(qm);  // ✅ Explicit
 ```
 
 You can also reuse the library's own predicate in your specialization:
 
 ```cpp
+// snippet-template: none (pseudo-code: specialization for the placeholder type `my_special_int`, never declared)
 // Permit implicit conversion only when the unit ratio is an integer multiplier.
 // This mirrors the default for integer types but opts my_special_int in explicitly.
 template<auto FromUnit, auto ToUnit>
@@ -705,6 +721,7 @@ for the full picture.
 A specializable class template that provides special values for a representation type:
 
 ```cpp
+// snippet-template: none (pseudo-code: synopsis, member functions declared without bodies)
 template<typename Rep>
 struct mp_units::representation_values {
   static constexpr Rep zero() noexcept;  // Required for quantity::zero()
@@ -725,6 +742,7 @@ struct mp_units::representation_values {
 **When to specialize:** If your type needs custom special values:
 
 ```cpp
+// snippet-template: none (pseudo-code: specialization for the placeholder template `my_custom_type`, never declared)
 template<typename T>
 struct mp_units::representation_values<my_custom_type<T>> {
   static constexpr my_custom_type<T> zero() noexcept
@@ -777,6 +795,7 @@ An ADL-found function letting a representation absorb the uncertainty of a *unit
 factor*:
 
 ```cpp
+// snippet-template: none (pseudo-code: signature of a hidden friend, outside its class)
 friend constexpr Rep fold_conversion_uncertainty(const Rep& value, long double relative_uncertainty);
 ```
 
@@ -808,6 +827,7 @@ carries rather than replacing it. Taking the two as independent, that is
 does:
 
 ```cpp
+// snippet-template: none (pseudo-code: excerpt of a hidden friend of `utility::uncertain`, outside its class)
 [[nodiscard]] friend constexpr uncertain fold_conversion_uncertainty(const uncertain& val,
                                                                      long double relative_uncertainty)
 {
@@ -826,9 +846,10 @@ uncertainty, so the hook belongs to the conversion rather than to the value. See
 
 ## Character-Specific Operations
 
-The library enforces character at compile-time: vector quantities require
-`scalar_product()` or `vector_product()` instead of `*`; complex quantities restrict
-`real()`, `imag()`, and `modulus()` to quantities of the correct character. See
+A vector quantity can be multiplied with `*` only by a scalar. V2 has no quantity-level dot
+or cross product. Compute them on the representation (`scalar_product()` and
+`vector_product()` for `cartesian_vector`) and re-attach the reference. Complex quantities
+restrict `real()`, `imag()`, and `modulus()` to quantities of the correct character. See
 [Character of a Quantity](../framework_basics/character_of_a_quantity.md)
 for full details and examples.
 
@@ -860,6 +881,7 @@ to apply a unit magnitude ratio to it internally. This is captured by the `UnitM
 concept, which directly names the three built-in scaling paths:
 
 ```cpp
+// snippet-template: none (pseudo-code: synopsis of a concept, template head omitted)
 concept UnitMagnitudeScalable =
   WeaklyRegular<T> && (UsesUnitMagnitudeAwareScaling<T> || UsesFloatingPointScaling<T> || UsesIntegerScaling<T>);
 ```
@@ -879,6 +901,7 @@ precision at which magnitude constants are evaluated), and supports `operator*` 
 `operator/` with that underlying type, returning a weakly-regular result:
 
 ```cpp
+// snippet-template: none (pseudo-code: synopsis of a concept, template head omitted)
 concept UsesFloatingPointScaling =
   (treat_as_floating_point<T> || treat_as_floating_point<representation_underlying_type_t<T>>) &&
   std::constructible_from<representation_underlying_type_t<T>, long double> &&
@@ -898,6 +921,7 @@ check for overflow and containers can scale element-wise. The factor type is
 rational-magnitude conversions:
 
 ```cpp
+// snippet-template: none (pseudo-code: synopsis of a concept, template head omitted)
 concept UsesIntegerScaling =
   detail::integral<representation_underlying_type_t<T>> &&
   requires(T value, wider_int_for<representation_underlying_type_t<T>> wf) {
@@ -917,6 +941,7 @@ concept UsesIntegerScaling =
     `detail::integral` patches both gaps:
 
     ```cpp
+    // snippet-template: none (pseudo-code: synopsis of `detail::integral`, a qualified concept name cannot be declared)
     template<typename T>
     concept detail::integral =
       std::integral<T> ||
@@ -1040,6 +1065,7 @@ exact compile-time unit magnitude and can return a **different type** (e.g. the 
 template with different bounds):
 
 ```cpp
+// snippet-template: none (pseudo-code: sketch of a hypothetical type, base class elided as `/* ... */`)
 // Example custom type (not provided by the library)
 template<mp_units::treat_as_floating_point T, auto Min, auto Max, typename Policy>
 class bounded_value : /* ... */ {
@@ -1117,8 +1143,8 @@ Both types live in the `mp_units::utility` namespace. The snippets below assume 
 ```cpp
 #include <mp-units/utility/cartesian_tensor.h>  // also pulls in cartesian_vector.h
 
-quantity v = cartesian_vector{1., 2., 3.} * isq::velocity[m / s];
-quantity sigma = cartesian_tensor{1., 0., 0., 0., 1., 0., 0., 0., 1.} * isq::stress[Pa];
+quantity v = utility::cartesian_vector{1., 2., 3.} * isq::velocity[m / s];
+quantity sigma = utility::cartesian_tensor{1., 0., 0., 0., 1., 0., 0., 0., 1.} * isq::stress[Pa];
 ```
 
 The dimension is deduced from the number of components, and operations close only at a
@@ -1126,11 +1152,12 @@ matching `N`. `embed` and `project` convert explicitly between the plane and spa
 zero-filling or dropping the last coordinate:
 
 ```cpp
-cartesian_vector v2{1., 2.};                       // a 2-D vector, N deduced as 2
+// snippet-template: utility
+utility::cartesian_vector v2{1., 2.};              // a 2-D vector, N deduced as 2
 quantity planar = isq::velocity(v2 * m / s);       // usable as a 2-D vector quantity
-cartesian_vector v3 = embed(v2);                   // lift to 3-D: (x, y) -> (x, y, 0)
+utility::cartesian_vector v3 = embed(v2);          // lift to 3-D: (x, y) -> (x, y, 0)
 quantity spatial = isq::velocity(v3 * m / s);      // a 3-D velocity quantity
-cartesian_vector back = project(v3);               // drop to 2-D: (x, y, z) -> (x, y); back == v2
+utility::cartesian_vector back = project(v3);      // drop to 2-D: (x, y, z) -> (x, y); back == v2
 ```
 
 Beyond these built-in types, **any custom type** works as a representation as long as it

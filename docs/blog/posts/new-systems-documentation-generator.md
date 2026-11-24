@@ -79,6 +79,7 @@ non-type template parameters (NTTPs), the library's definitions are remarkably t
 and parse-friendly. Most entities are defined in single, declarative lines:
 
 ```cpp
+// snippet-template: isq_excerpt
 inline constexpr struct metre : named_unit<"m", kind_of<isq::length>> {} metre;
 inline constexpr struct second : named_unit<"s", kind_of<isq::duration>> {} second;
 
@@ -90,6 +91,7 @@ For units with special symbols, the library separates the unit definition from i
 object:
 
 ```cpp
+// snippet-template: si_excerpt
 // Unit definition
 inline constexpr struct ohm : named_unit<{u8"Ω", "ohm"}, volt / ampere> {} ohm;
 

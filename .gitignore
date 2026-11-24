@@ -65,4 +65,6 @@ site/
 # AI coding assistant context files
 # CLAUDE.md and AGENTS.md are shared (committed); personal overlays are not
 /CLAUDE.local.md
-/.claude
+/.claude/*
+!/.claude/settings.json
+!/.claude/hooks/

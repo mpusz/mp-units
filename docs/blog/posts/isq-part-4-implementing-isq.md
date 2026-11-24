@@ -144,8 +144,8 @@ implicitly:
   from any quantity of _mass_, _length_, and _time_:
 
     ```cpp
-    static_assert(implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration), isq::energy));
-    static_assert(implicitly_convertible(isq::mass * pow<2>(isq::height) / pow<2>(isq::duration), isq::energy));
+    static_assert(utility::implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration), isq::energy));
+    static_assert(utility::implicitly_convertible(isq::mass * pow<2>(isq::height) / pow<2>(isq::duration), isq::energy));
     ```
 
 - _mechanical energy_ is a more "specialized" quantity than _energy_ (not every
@@ -154,11 +154,12 @@ implicitly:
   [quantity equation](../../reference/glossary.md#quantity-equation):
 
     ```cpp
-    static_assert(!implicitly_convertible(isq::energy, isq::mechanical_energy));
-    static_assert(explicitly_convertible(isq::energy, isq::mechanical_energy));
-    static_assert(!implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration),
+    // snippet-template: none (historical: the 2024 hierarchy, before ea117e3a09 gave mechanical_energy an equation)
+    static_assert(!utility::implicitly_convertible(isq::energy, isq::mechanical_energy));
+    static_assert(utility::explicitly_convertible(isq::energy, isq::mechanical_energy));
+    static_assert(!utility::implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration),
                                           isq::mechanical_energy));
-    static_assert(explicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration),
+    static_assert(utility::explicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration),
                                          isq::mechanical_energy));
     ```
 
@@ -169,25 +170,27 @@ implicitly:
   energy_, but every `mass * acceleration_of_free_fall * height` is.
 
     ```cpp
-    static_assert(!implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration),
+    // snippet-template: none (historical: the post's 2024 model of the energy hierarchy, listed below)
+    static_assert(!utility::implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration),
                                           gravitational_potential_energy));
-    static_assert(explicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration),
+    static_assert(utility::explicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration),
                                          gravitational_potential_energy));
-    static_assert(implicitly_convertible(isq::mass * isq::acceleration_of_free_fall * isq::height,
+    static_assert(utility::implicitly_convertible(isq::mass * isq::acceleration_of_free_fall * isq::height,
                                          gravitational_potential_energy));
     ```
 
 And here is the C++ code for it:
 
 ```cpp
+// snippet-template: none (historical: the post's 2024 model of the energy hierarchy)
 inline constexpr struct energy final                         : quantity_spec<mass* pow<2>(length) / pow<2>(time)> {} energy;
-inline constexpr struct mechanical_energy final              : quantity_spec<energy> {} mechanical_energy;                                                            // differs from ISO 80000
-inline constexpr struct potential_energy final               : quantity_spec<mechanical_energy> {} potential_energy;                                                  // differs from ISO 80000
-inline constexpr struct gravitational_potential_energy : quantity_spec<potential_energy, mass * acceleration_of_free_fall * height> {} potential_energy;        // not in ISO 80000
-inline constexpr struct elastic_potential_energy final       : quantity_spec<potential_energy, spring_constant * pow<2>(amount_of_compression)> {} potential_energy;  // not in ISO 80000
-inline constexpr struct kinetic_energy final                 : quantity_spec<mechanical_energy, mass* pow<2>(speed)> {} kinetic_energy;                               // differs from ISO 80000
-inline constexpr struct enthalpy final                       : quantity_spec<energy> {} enthalpy;                                                                     // differs from ISO 80000
-inline constexpr struct internal_energy final                : quantity_spec<enthalpy> {} internal_energy;                                                            // differs from ISO 80000
+inline constexpr struct mechanical_energy final              : quantity_spec<energy> {} mechanical_energy;                                                                    // differs from ISO 80000
+inline constexpr struct potential_energy final               : quantity_spec<mechanical_energy> {} potential_energy;                                                          // differs from ISO 80000
+inline constexpr struct gravitational_potential_energy : quantity_spec<potential_energy, mass * acceleration_of_free_fall * height> {} gravitational_potential_energy;        // not in ISO 80000
+inline constexpr struct elastic_potential_energy final       : quantity_spec<potential_energy, spring_constant * pow<2>(amount_of_compression)> {} elastic_potential_energy;  // not in ISO 80000
+inline constexpr struct kinetic_energy final                 : quantity_spec<mechanical_energy, mass* pow<2>(speed)> {} kinetic_energy;                                       // differs from ISO 80000
+inline constexpr struct enthalpy final                       : quantity_spec<energy> {} enthalpy;                                                                             // differs from ISO 80000
+inline constexpr struct internal_energy final                : quantity_spec<enthalpy> {} internal_energy;                                                                    // differs from ISO 80000
 inline constexpr auto thermodynamic_energy = internal_energy;
 inline constexpr struct Helmholtz_energy final               : quantity_spec<internal_energy> {} Helmholtz_energy;
 inline constexpr auto Helmholtz_function = Helmholtz_energy;
@@ -230,9 +233,10 @@ To enable such support in the library, we provided a `subkind` specifier that
 can be appended to the quantity specification:
 
 ```cpp
-inline constexpr struct dimensionless final            : quantity_spec<detail::derived_quantity_spec<>{}> {} dimensionless;
+// snippet-template: scoped
+inline constexpr struct dimensionless final            : quantity_spec<derived_quantity_spec<>{}> {} dimensionless;
 inline constexpr struct rotation final                 : quantity_spec<dimensionless> {} rotation;
-inline constexpr struct thermodynamic_efficiency : quantity_spec<dimensionless, work / heat> {} efficiency;
+inline constexpr struct thermodynamic_efficiency : quantity_spec<dimensionless, work / heat> {} thermodynamic_efficiency;
 inline constexpr struct angular_measure final          : quantity_spec<dimensionless, arc_length / radius, subkind> {} angular_measure;
 inline constexpr struct rotational_displacement final  : quantity_spec<angular_measure, path_length / radius> {} rotational_displacement;
 inline constexpr struct phase_angle final              : quantity_spec<angular_measure> {} phase_angle;
@@ -245,9 +249,10 @@ With the above, we can constrain `radian`, `steradian`, and `bit` to be allowed 
 with specific quantity kinds only:
 
 ```cpp
+// snippet-template: si_excerpt
 inline constexpr struct radian final    : named_unit<"rad", metre / metre, kind_of<isq::angular_measure>> {} radian;
 inline constexpr struct steradian : named_unit<"sr", square(metre) / square(metre), kind_of<isq::solid_angular_measure>> {} steradian;
-inline constexpr struct bit final       : named_unit<"bit", one, kind_of<storage_capacity>> {} bit;
+inline constexpr struct bit final       : named_unit<"bit", one, kind_of<isq::storage_capacity>> {} bit;
 ```
 
 but still allow the usage of `one` and its scaled versions for such quantities.

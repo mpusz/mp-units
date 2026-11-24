@@ -1,0 +1,16 @@
+// SI unit symbols plus the representation types of `mp_units::utility`, for samples that
+// need a vector, a tensor, a value with an uncertainty, or a random distribution. Samples
+// qualify them as `utility::`. Under `using namespace mp_units;` a bare `cartesian_vector`
+// finds the deprecated alias that `mp_units` keeps for code written against 2.5. With
+// `using namespace mp_units::utility;` added as well, the bare name is ambiguous.
+#include "prelude.h"
+#include <mp-units/systems/angular.h>
+#include <mp-units/utility/cartesian_tensor.h>
+#include <mp-units/utility/cartesian_vector.h>
+#include <mp-units/utility/polar_vector.h>
+#include <mp-units/utility/random.h>
+#include <mp-units/utility/spherical_vector.h>
+#include <mp-units/utility/uncertain.h>
+using namespace mp_units;
+using namespace mp_units::si::unit_symbols;
+{{BODY}}

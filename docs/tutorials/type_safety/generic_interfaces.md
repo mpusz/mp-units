@@ -46,7 +46,7 @@ QuantityOf<isq::length> auto avg_length(QuantityOf<isq::length> auto l1,
   // Returning a length is correct: (length + length) / 2 → length
   return (l1 + l2) / 2;
 
-  // ❌ Wrong: (length * length) / 2 returns area, not length
+  // Wrong: (length * length) / 2 returns area, not length
   // return (l1 * l2) / 2;
 }
 
@@ -57,7 +57,7 @@ QuantityOf<isq::time> auto time_to_destination(QuantityOf<isq::length> auto dist
   // Returning time is correct: distance / speed → time
   return distance / speed;
 
-  // ❌ Wrong: distance * speed → area/time, not time
+  // Wrong: distance * speed → area/time, not time
   // return distance * speed;
 }
 
@@ -92,7 +92,7 @@ int main()
   std::cout << "Time at " << speed2 << ": " << eta2 << " = " << eta2.in(h) << "\n";
 
   // These DON'T compile - wrong dimensions
-  // quantity mass = 50 * kg;
+  quantity mass = 50 * kg;
   // auto bad1 = avg_length(width, mass);                       // ❌ mass is not a length!
   // auto bad2 = time_to_destination(mass, speed1);             // ❌ mass is not a distance!
   // quantity<isq::mass[kg]> bad3 = avg_length(width, height);  // ❌ length is not mass!

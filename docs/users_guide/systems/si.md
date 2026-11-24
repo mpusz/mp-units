@@ -42,6 +42,7 @@ The SI defines seven base units, one for each ISQ base quantity. The SI Brochure
 The seven base units are defined in **mp-units** as:
 
 ```cpp
+// snippet-template: scoped
 namespace mp_units::si {
 
 inline constexpr struct second : named_unit<"s", kind_of<isq::duration>> {} second;
@@ -87,6 +88,7 @@ The SI Brochure defines:
 The SI provides special names for 22 coherent derived units. Here are some examples:
 
 ```cpp
+// snippet-continues
 namespace mp_units::si {
 
 // Geometry
@@ -103,7 +105,7 @@ inline constexpr struct watt : named_unit<"W", joule / second> {} watt;
 inline constexpr struct coulomb : named_unit<"C", ampere * second> {} coulomb;
 inline constexpr struct volt : named_unit<"V", watt / ampere> {} volt;
 inline constexpr struct farad : named_unit<"F", coulomb / volt> {} farad;
-inline constexpr struct ohm : named_unit<symbol_text{u8"Ω", "ohm"}, volt / ampere> {} ohm;
+inline constexpr struct ohm : named_unit<{u8"Ω", "ohm"}, volt / ampere> {} ohm;
 inline constexpr struct siemens : named_unit<"S", one / ohm> {} siemens;
 inline constexpr struct weber : named_unit<"Wb", volt * second> {} weber;
 inline constexpr struct tesla : named_unit<"T", weber / square(metre)> {} tesla;
@@ -162,6 +164,7 @@ The SI defines prefixes that can be applied to any unit (except kilogram, where 
 to gram) to create scaled versions:
 
 ```cpp
+// snippet-template: scoped
 namespace mp_units::si {
 
 template<PrefixableUnit U> requires(!std::is_const_v<U>) struct quecto_ : prefixed_unit<"q", mag_power<10, -30>, U{}> {};
@@ -172,7 +175,7 @@ template<PrefixableUnit U> requires(!std::is_const_v<U>) struct atto_   : prefix
 template<PrefixableUnit U> requires(!std::is_const_v<U>) struct femto_  : prefixed_unit<"f", mag_power<10, -15>, U{}> {};
 template<PrefixableUnit U> requires(!std::is_const_v<U>) struct pico_   : prefixed_unit<"p", mag_power<10, -12>, U{}> {};
 template<PrefixableUnit U> requires(!std::is_const_v<U>) struct nano_   : prefixed_unit<"n", mag_power<10, -9>, U{}> {};
-template<PrefixableUnit U> requires(!std::is_const_v<U>) struct micro_  : prefixed_unit<symbol_text{u8"µ", "u"}, mag_power<10, -6>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct micro_  : prefixed_unit<{u8"µ", "u"}, mag_power<10, -6>, U{}> {};
 template<PrefixableUnit U> requires(!std::is_const_v<U>) struct milli_  : prefixed_unit<"m", mag_power<10, -3>, U{}> {};
 template<PrefixableUnit U> requires(!std::is_const_v<U>) struct centi_  : prefixed_unit<"c", mag_power<10, -2>, U{}> {};
 template<PrefixableUnit U> requires(!std::is_const_v<U>) struct deci_   : prefixed_unit<"d", mag_power<10, -1>, U{}> {};
@@ -215,7 +218,7 @@ using namespace mp_units::si::unit_symbols;
 
 quantity length = 5 * km;  // 5 km
 quantity mass = 500 * mg;  // 500 mg
-quantity time = 3 * μs;    // 3 μs
+quantity time = 3 * µs;    // 3 μs
 ```
 
 
@@ -226,12 +229,13 @@ their values in SI units. **mp-units** provides all of them except the logarithm
 bel, and decibel in the `non_si` namespace, grouped as the Brochure groups them:
 
 ```cpp
+// snippet-template: si_excerpt
 namespace mp_units::non_si {
 
 // long-standing units of time and angle
 inline constexpr struct minute : named_unit<"min", mag<60> * si::second> {} minute;
 inline constexpr struct hour : named_unit<"h", mag<60> * minute> {} hour;
-inline constexpr struct degree : named_unit<symbol_text{u8"°", "deg"}, mag_ratio<1, 180> * π * si::radian> {} degree;
+inline constexpr struct degree : named_unit<{u8"°", "deg"}, mag_ratio<1, 180> * π * si::radian> {} degree;
 // ...
 
 // historical names for decimal multiples and submultiples of SI units
@@ -269,10 +273,11 @@ Since the 2019 redefinition, the SI is defined in terms of exact values for seve
 constants. These are provided in **mp-units**:
 
 ```cpp
+// snippet-template: si_excerpt
 namespace mp_units::si::inline si2019 {
 
 inline constexpr struct hyperfine_structure_transition_frequency_of_cs :
-  named_constant<symbol_text{u8"Δν_Cs", "dv_Cs"}, mag<9'192'631'770> * hertz> {}
+  named_constant<{u8"Δν_Cs", "dv_Cs"}, mag<9'192'631'770> * hertz> {}
   hyperfine_structure_transition_frequency_of_cs;
 
 inline constexpr struct speed_of_light_in_vacuum :
@@ -292,11 +297,11 @@ inline constexpr struct boltzmann_constant :
   boltzmann_constant;
 
 inline constexpr struct avogadro_constant :
-  named_constant<symbol_text{u8"N_A", "N_A"}, mag_ratio<602'214'076, 100'000'000> * mag_power<10, 23> / mole> {}
+  named_constant<{u8"N_A", "N_A"}, mag_ratio<602'214'076, 100'000'000> * mag_power<10, 23> / mole> {}
   avogadro_constant;
 
 inline constexpr struct luminous_efficacy :
-  named_constant<symbol_text{u8"K_cd", "K_cd"}, mag<683> * lumen / watt> {}
+  named_constant<{u8"K_cd", "K_cd"}, mag<683> * lumen / watt> {}
   luminous_efficacy;
 
 }
@@ -470,7 +475,7 @@ Use these when you need only a specific slice of the SI system.
     #include <mp-units/systems/si/math.h>
 
     quantity angle = 30 * deg;
-    auto s = sin(angle);  // converts to radians internally
+    auto sine = si::sin(angle);  // converts to radians internally
     ```
 
 - `<mp-units/systems/si/prefix_utils.h>` *(hosted only)*

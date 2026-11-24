@@ -107,7 +107,6 @@ MP_UNITS_EXPORT_BEGIN
  * mp-units:
  *
  * @code{.cpp}
- * // snippet-template: none
  * template<typename Duration>
  * Duration eta(QuantityOf<isq::distance> auto remaining, QuantityOf<isq::speed> auto speed)
  * {
@@ -138,7 +137,6 @@ constexpr auto unit_for = detail::unit_for_impl<T>::value;
  * caller's quantity specification, such as `isq::height`, and not only its unit:
  *
  * @code{.cpp}
- * // snippet-template: none
  * // a sensor reading, delivered as a raw number in the units the caller's type uses
  * template<typename Q>
  * Q from_register(std::int32_t raw)
@@ -169,7 +167,6 @@ constexpr auto reference_for = detail::reference_for_impl<T>::value;
  * Generic code can branch on it, for example to round up into an integral tick count:
  *
  * @code{.cpp}
- * // snippet-template: none
  * template<typename Duration>
  * Duration timeout(QuantityOf<isq::duration> auto requested)
  * {

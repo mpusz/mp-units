@@ -75,7 +75,7 @@ quantity<si::metre / si::second, decltype(Rep1{} / Rep2{})> avg_speed(quantity<s
   return distance / time;
 }
 
-avg_speed(120 * km, 2 * h).in(km / h);
+avg_speed(120 * km, 2 * h).in(km / h);  // ❌
 ```
 
 Despite being safer, the above code decreased the performance because we always
@@ -118,6 +118,7 @@ To resolve the above issues, most of the libraries on the market introduce dimen
 Thanks to that, we could solve the first issue of the previous chapter with:
 
 ```cpp
+// snippet-template: none (not this library: a dimension-only library with dim_speed)
 QuantityOf<dim_speed> auto avg_speed(QuantityOf<dim_length> auto distance,
                                      QuantityOf<dim_time> auto time)
 {
@@ -214,6 +215,7 @@ position cargo in the container. In majority of the products on the market we
 will end up with something like:
 
 ```cpp
+// snippet-template: none (not this library: typical library with plain length/area types)
 class Box {
   length length_;
   length width_;
@@ -226,6 +228,7 @@ public:
 ```
 
 ```cpp
+// snippet-template: none (not this library: the Box of the previous sample)
 Box my_box(2 * m, 3 * m, 1 * m);
 ```
 
@@ -252,6 +255,7 @@ quantity of _kinetic energy_. However, both of them (possibly accumulated with
 each other) should be convertible to a _mechanical energy_ quantity.
 
 ```cpp
+// snippet-template: none (not this library: hypothetical typed-quantity requirements)
 mass m = 1 * kg;
 length l = 1 * m;
 time t = 1 * s;
@@ -259,11 +263,11 @@ acceleration_of_free_fall g = 9.81 * m / s2;
 height h = 1 * m;
 speed v = 1 * m / s;
 energy e = m * pow<2>(l) / pow<2>(t);                     // OK
-potential_energy ep1 = e;                                 // should not compile
+potential_energy ep1 = e;                                 // ❌
 potential_energy ep2 = static_cast<potential_energy>(e);  // OK
 potential_energy ep3 = m * g * h;                         // OK
 kinetic_energy ek1 = m * pow<2>(v) / 2;                   // OK
-kinetic_energy ek2 = ep3 + ek1;                           // should not compile
+kinetic_energy ek2 = ep3 + ek1;                           // ❌
 mechanical_energy me = ep3 + ek1;                         // OK
 ```
 

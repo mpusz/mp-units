@@ -126,6 +126,7 @@ int main()
     The key insight: absolute and relative _temperatures_ convert differently:
 
     ```cpp
+    // snippet-template: none (pseudo-code: conversions written with → arrows)
     // Converting a point: 0°C = 32°F  (different zeros!)
     point<deg_C>(0.) → point<deg_F>(32.)
 
@@ -142,6 +143,7 @@ int main()
     The type system prevents common errors:
 
     ```cpp
+    // snippet-template: none (pseudo-code: operation table written with → arrows)
     quantity_point - quantity_point → quantity     // ✅ Difference between temps
     quantity_point + quantity → quantity_point     // ✅ Adding a delta to a point
     quantity_point + quantity_point → ERROR        // ❌ Can't add two absolute temps
@@ -152,6 +154,8 @@ int main()
     Temperature points at their unit's default origin can be printed directly:
 
     ```cpp
+    // snippet-template: systems
+    using namespace mp_units::usc::unit_symbols;
     quantity_point temp = point<deg_C>(20.);
     std::cout << temp;           // "20 °C"
     std::cout << temp.in(K);     // "293.15 K"

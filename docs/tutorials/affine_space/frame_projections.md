@@ -89,6 +89,7 @@ relative-origin chain automatically:
 
 ```cpp
 // ce-embed height=800 compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0" mp-units=trunk
+// snippet-id: projections
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
 #include <iostream>
@@ -182,6 +183,7 @@ When the destination type is spelled out explicitly and no runtime arguments are
 the `quantity_point` explicit constructor is a compact alternative to `.point_for()`:
 
 ```cpp
+// snippet-after: projections
 // Requires frame_projection<sea_level, ocean_surface> to be defined
 quantity_point<isq::altitude[si::metre], ocean_surface> depth{altitude};
 // identical to: altitude.point_for(ocean_surface)

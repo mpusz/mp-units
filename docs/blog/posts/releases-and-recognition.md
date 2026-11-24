@@ -49,7 +49,7 @@ the migration path straight into the compiler warning:
 
 ```cpp
 [[deprecated("2.3.0: Use `mag<pi>` instead")]]
-inline constexpr UnitMagnitude auto mag_pi = mag<pi_c>;
+inline constexpr UnitMagnitude auto mag_pi = mag<detail::pi_c>;
 ```
 
 The version in the message tells the user how long the name has been on notice, the

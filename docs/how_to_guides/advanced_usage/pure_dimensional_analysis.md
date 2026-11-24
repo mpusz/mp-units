@@ -73,7 +73,7 @@ static_assert(isq::width != isq::radius);
 
 // Quantity specs also support arithmetic operations
 constexpr auto area_spec = isq::width * isq::height;
-constexpr auto volume_spec = area_spec * isq::depth;
+constexpr auto volume_spec = area_spec * isq::thickness;
 
 // The derived specs use more specialized quantities than the library's canonical definitions,
 // but they are implicitly convertible to them
@@ -124,9 +124,9 @@ auto operator/(const symbolic_expression<QS1>& lhs, const symbolic_expression<QS
 
 template<QuantitySpec auto QS1, QuantitySpec auto QS2>
 auto operator+(const symbolic_expression<QS1>& lhs, const symbolic_expression<QS2>& rhs)
-  requires requires { QS1 + QS2; }  // Enforce dimensional compatibility for addition
+  requires requires { get_common_quantity_spec(QS1, QS2); }  // Enforce dimensional compatibility for addition
 {
-  constexpr auto result_qs = QS1 + QS2;
+  constexpr auto result_qs = get_common_quantity_spec(QS1, QS2);
   return symbolic_expression<result_qs>(std::format("({} + {})", lhs.expression(), rhs.expression()));
 }
 
@@ -146,7 +146,7 @@ void example()
   static_assert(force.dimension() == get_dimension(isq::force));
 
   // This would fail to compile due to dimensional mismatch:
-  // auto invalid = distance + duration;  // Error: cannot add length and time
+  // auto invalid = distance + duration;  // ❌ cannot add length and time
 }
 ```
 
@@ -249,12 +249,18 @@ demonstrating pure dimensional analysis in a practical application. The implemen
 uses dimensions to enforce compile-time constraints on state variables:
 
 ```cpp
+// snippet-template: scoped
+// snippet-id: time-derivatives
+namespace detail {
+
 template<mp_units::Dimension auto... Ds>
 constexpr bool are_time_derivatives = true;
 
 template<mp_units::Dimension auto D1, mp_units::Dimension auto D2, mp_units::Dimension auto... Ds>
 constexpr bool are_time_derivatives<D1, D2, Ds...> =
   (D1 / D2 == mp_units::isq::dim_time) && are_time_derivatives<D2, Ds...>;
+
+}  // namespace detail
 ```
 
 This metafunction validates that a sequence of dimensions represents successive _time_
@@ -263,6 +269,7 @@ by the next equals _time_. The constraint ensures the Kalman filter state can on
 instantiated with physically meaningful derivative chains:
 
 ```cpp
+// snippet-after: time-derivatives
 template<mp_units::QuantityPoint... QPs>
   requires(sizeof...(QPs) > 0) && (sizeof...(QPs) <= 3) && detail::are_time_derivatives<QPs::dimension...>
 class system_state {

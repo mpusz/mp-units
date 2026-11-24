@@ -93,6 +93,7 @@ specifications so the type system enforces semantic correctness.
 
 ```cpp
 // ce-embed height=650 compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0" mp-units=trunk
+// snippet-template: none (exercise skeleton: TODO quantity specs in namespace qs for the reader; the Solution fence compiles)
 #include <mp-units/core.h>
 #include <mp-units/systems/codata/adopted_values.h>
 #include <mp-units/systems/isq.h>
@@ -195,6 +196,7 @@ int main()
 ??? tip "Solution"
 
     ```cpp
+    // snippet-id: solution
     #include <mp-units/systems/codata/adopted_values.h>
     #include <mp-units/core.h>
     #include <mp-units/systems/isq.h>
@@ -323,6 +325,9 @@ int main()
     Some quantities are defined by their physical relationships:
 
     ```cpp
+    // snippet-template: codata
+    // snippet-setup: inline constexpr struct total_mass : quantity_spec<isq::mass> {} total_mass;
+    // snippet-setup: inline constexpr struct travel_height : quantity_spec<isq::height> {} travel_height;
     // Gravitational potential energy: E_p = m * g * h
     inline constexpr struct gravitational_potential_energy :
       quantity_spec<isq::mass * isq::acceleration_of_free_fall * isq::height> {} gravitational_potential_energy;
@@ -343,6 +348,7 @@ int main()
     Different `quantity_spec` types have controlled conversion rules:
 
     ```cpp
+    // snippet-template: none (pseudo-code: gravitational_potential_energy(/* ... */) placeholders)
     // ✅ Allowed: Adding subtypes yields common parent
     quantity ep = gravitational_potential_energy(/* ... */);
     quantity ek = isq::kinetic_energy(/* ... */);
@@ -351,9 +357,9 @@ int main()
     // ✅ Allowed: Derived specifications from equations
     quantity motor_input = qs::motor_energy(e_mech / efficiency);
 
-    // ❌ Prevented: Wrong quantity type at compile time
+    // Prevented: Wrong quantity type at compile time
     void process_kinetic(QuantityOf<isq::kinetic_energy> auto ek);
-    process_kinetic(ep);  // Does not compile! Gravitational ≠ kinetic
+    process_kinetic(ep);  // ❌ Gravitational ≠ kinetic
     ```
 
     **Hierarchy rules:**
@@ -368,6 +374,9 @@ int main()
     When you need to explicitly combine different subtypes:
 
     ```cpp
+    // snippet-setup: namespace qs { inline constexpr struct cabin_mass : quantity_spec<isq::mass> {} cabin_mass; }
+    // snippet-setup: namespace qs { inline constexpr struct passenger_mass : quantity_spec<isq::mass> {} passenger_mass; }
+    // snippet-setup: namespace qs { inline constexpr struct total_mass : quantity_spec<isq::mass> {} total_mass; }
     constexpr quantity<qs::total_mass[kg]> total_mass(quantity<qs::cabin_mass[kg]> cabin,
                                                       quantity<qs::passenger_mass[kg]> passengers)
     {
@@ -388,6 +397,7 @@ int main()
     **Self-documenting APIs:**
 
     ```cpp
+    // snippet-after: solution
     // Clear what each parameter represents:
     constexpr quantity<qs::gravitational_potential_energy[J]> lifting_energy(quantity<qs::total_mass[kg]> mass,
                                                                              quantity<qs::travel_height[m]> height);
@@ -399,9 +409,11 @@ int main()
     **Compile-time error prevention:**
 
     ```cpp
-    // ❌ Prevented at compile time:
-    auto wrong = lifting_energy(passengers, cabin);        // Wrong mass type!
-    auto bad = required_input_energy(E_lift, trip.speed);  // Wrong energy type!
+    // snippet-after: solution
+    // snippet-setup: quantity cabin = qs::cabin_mass(800.0 * kg);
+    // snippet-setup: quantity passengers = qs::passenger_mass(400.0 * kg);
+    auto wrong = lifting_energy(passengers, cabin);        // ❌ wrong mass type
+    auto bad = required_input_energy(E_lift, trip.speed);  // ❌ wrong energy type
 
     // ✅ Correct code is enforced:
     auto correct = lifting_energy(m_total, trip.height);   // Types match!

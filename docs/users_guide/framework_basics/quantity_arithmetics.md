@@ -14,6 +14,7 @@ For example, in the following code, `-a` will compile only if `MyInt` exposes su
 as well:
 
 ```cpp
+// snippet-template: none (pseudo-code: `MyInt` stands for a user-provided representation type)
 quantity a = MyInt{42} * m;
 quantity b = -a;
 ```
@@ -106,13 +107,13 @@ static_assert(isq::radius(1 * m) - 0.5 * m == isq::radius(0.5 * m));
 
     ```cpp
     quantity q4 = 1 * m;
-    q4 -= 0.5 * m;                    // Compile-time error(1)
+    q4 -= 0.5 * m;                    // ❌ (1)
 
     quantity q5 = 1 * km;
-    q5 += 1 * m;                      // Compile-time error(2)
+    q5 += 1 * m;                      // ❌ (2)
 
     quantity q6 = isq::height(1 * m);
-    q6 += isq::length(1 * m);         // Compile-time error(3)
+    q6 += isq::length(1 * m);         // ❌ (3)
     ```
 
     1. Conversion of the floating-point to integral representation type is
@@ -139,7 +140,7 @@ static_assert(isq::height(3 * m) * 0.5 == isq::height(1.5 * m));
     tries to prevent truncation of a quantity value means, that the following does not compile:
 
     ```cpp
-    quantity q = isq::height(3 * m) *= 0.5; // Compile-time error
+    quantity q = isq::height(3 * m) *= 0.5; // ❌
     ```
 
 However, suppose we multiply or divide quantities of the same or different types or we
@@ -298,6 +299,7 @@ we do it every time we want to ensure that we deal with a non-zero or positive v
 We could implement such checks in the following way:
 
 ```cpp
+// snippet-template: none (pseudo-code: `q1`, `q2` are placeholders and the `if` has no body)
 if (q1 / q2 != 0 * m / s)
   // ...
 ```
@@ -309,6 +311,7 @@ need to rescale the arguments to the common unit before comparing if the value i
 To eliminate the need for conversion, we need to write:
 
 ```cpp
+// snippet-template: none (pseudo-code: `q1`, `q2` are placeholders and the `if` has no body)
 if (auto q = q1 / q2; q != q.zero())
   // ...
 ```
@@ -324,6 +327,7 @@ Thanks to that, to save typing and not pay for unneeded conversions, our check c
 implemented as follows:
 
 ```cpp
+// snippet-template: none (pseudo-code: `q1`, `q2` are placeholders and the `if` has no body)
 if (q1 / q2 != 0)
   // ...
 ```
@@ -331,6 +335,7 @@ if (q1 / q2 != 0)
 This works for all six comparison operators (`==`, `!=`, `<`, `>`, `<=`, `>=`):
 
 ```cpp
+// snippet-template: none (pseudo-code: `q` is a placeholder and the `if`s have no body)
 if (q > 0)
   // ...
 if (q <= 0)

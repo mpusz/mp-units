@@ -73,7 +73,6 @@ namespace mp_units::utility {
  * specialization, keyed on its kind:
  *
  * @code{.cpp}
- * // snippet-template: none
  * namespace my {
  * inline constexpr struct dim_angle : base_dimension<"A"> {} dim_angle;
  * inline constexpr struct angle : quantity_spec<dim_angle> {} angle;

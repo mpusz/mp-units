@@ -366,6 +366,7 @@ template<Quantity V>
  * @code{cpp}
  * // With constrained<double, throw_policy> rep → throws std::domain_error on violation
  * // With plain double rep → a value outside [-90°, 90°] violates a precondition
+ * inline constexpr struct geo_latitude : quantity_spec<isq::angular_measure> {} geo_latitude;
  * inline constexpr struct equator :
  *     absolute_point_origin<geo_latitude, check_in_range{-90 * deg, 90 * deg}> {} equator;
  * @endcode

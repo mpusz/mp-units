@@ -29,8 +29,8 @@ In case a user would like to perform an opposite transformation:
 
 ```cpp
 quantity q1 = 5 * m;
-std::cout << q1.in(km) << '\n';
-quantity<si::kilo<si::metre>, int> q2 = q1;
+std::cout << q1.in(km) << '\n';               // ❌
+quantity<si::kilo<si::metre>, int> q2 = q1;   // ❌
 ```
 
 Both conversions will fail to compile because they try to truncate the quantity value.
@@ -103,12 +103,14 @@ The library provides four rounding policies:
     as the destination can hold the exact value:
 
     ```cpp
+    // snippet-template: systems
+    using namespace mp_units::yard_pound::unit_symbols;
     quantity q = 1. * in;
 
     quantity a = q.in(cm);                   // 2.54 cm, exact, so no policy is needed
     quantity b = ceil<cm>(q);                // 3.0 cm, a whole number of centimetres
     quantity c = q.in<int>(cm, rounded_up);  // 3 cm, `int` cannot hold 2.54
-    quantity d = q.in(cm, rounded_up);       // Compile-time error
+    quantity d = q.in(cm, rounded_up);       // ❌
     ```
 
     The last line is rejected rather than silently yielding `2.54 cm`. A `double`
@@ -196,6 +198,7 @@ result:
 === "C++20"
 
     ```cpp
+    // snippet-std: 20
     inline constexpr struct dim_currency : base_dimension<"$"> {} dim_currency;
     inline constexpr struct currency : quantity_spec<currency, dim_currency> {} currency;
 
@@ -234,6 +237,7 @@ result:
     ```
 
 ```cpp
+// snippet-continues
 using namespace unit_symbols;
 Price price{12.95 * USD};
 Scaled spx1 = value_cast<USD_s, std::int64_t>(price);
@@ -254,6 +258,7 @@ the cast changes how the "offset" from the origin is represented. Specifically, 
 `quantity_point` instance `qp`, all of the following equivalences hold:
 
 ```cpp
+// snippet-template: none (pseudo-code: `qp`, `Rep`, `U` and `Q` stand for any quantity point, representation, unit and quantity type)
 static_assert(value_cast<Rep>(qp) == quantity_point{value_cast<Rep>(qp.delta_from(qp.point_origin)), qp.point_origin});
 static_assert(value_cast<U>(qp) == quantity_point{value_cast<U>(qp.delta_from(qp.point_origin)), qp.point_origin});
 static_assert(value_cast<U, Rep>(qp) == quantity_point{value_cast<U, Rep>(qp.delta_from(qp.point_origin)), qp.point_origin});
@@ -282,6 +287,8 @@ that a naive implementation cannot handle correctly:
   silently wrong results:
 
     ```cpp
+    // snippet-template: angular
+    using namespace mp_units::angular::unit_symbols;
     // deg -> grad: factor 10/9
     // A naive implementation multiplies first: 1e18 * 10 overflows int64_t (max ≈ 9.22e18):
     quantity q = (std::int64_t{1'000'000'000'000'000'000} * deg).in(grad, truncated);
@@ -356,8 +363,8 @@ conversions:
 
 ```cpp
 quantity q1 = std::int8_t(1) * km;
-quantity q2 = q1.in(m, truncated);  // Compile-time error (1)
-if(q1 != 1 * m) { /* ... */ }       // Compile-time error (2)
+quantity q2 = q1.in(m, truncated);          // ❌ (1)
+if(q1 != std::int8_t(1) * m) { /* ... */ }  // ❌ (2)
 ```
 
 1. Forced conversion would overflow on scaling.

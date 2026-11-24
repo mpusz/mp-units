@@ -1,0 +1,18 @@
+// Every system of units and no unit symbols, for a sample that brings in another
+// system's symbols itself. Some of them collide with the SI's (CGS `K` is the kayser, SI `K`
+// the kelvin).
+#include "prelude.h"
+#include <mp-units/systems/angular.h>
+#include <mp-units/systems/astronomy.h>
+#include <mp-units/systems/cgs.h>
+#include <mp-units/systems/iau.h>
+#include <mp-units/systems/iec.h>
+#include <mp-units/systems/imperial.h>
+#include <mp-units/systems/isq_angle.h>
+#include <mp-units/systems/iupac.h>
+#include <mp-units/systems/natural.h>
+#include <mp-units/systems/typographic.h>
+#include <mp-units/systems/usc.h>
+#include <mp-units/systems/yard_pound.h>
+using namespace mp_units;
+{{BODY}}

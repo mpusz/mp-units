@@ -28,6 +28,7 @@ The key idea is that a 3D vector — `Eigen::Vector3d`, `glm::dvec3`,
 representation, so the _quantity_ carries **both** a unit and a direction:
 
 ```cpp
+// snippet-template: none (third-party: la::make_vec3 stands for the Eigen/GLM/Blaze backend shim)
 quantity velocity = isq::velocity(la::make_vec3(30, 40, 0) * km / h);
 ```
 
@@ -56,6 +57,7 @@ all four backends, in both header and module modes.
 Converting the unit scales every component at once:
 
 ```cpp
+// snippet-template: none (third-party: the la:: vector velocity and the example's print helper)
 print("velocity [m/s]   ", velocity.in(m / s));   // [8.33333, 11.1111, 0] m/s
 ```
 
@@ -65,6 +67,7 @@ Multiplying a _velocity_ vector by a _duration_ produces a _displacement_ vector
 units combined automatically:
 
 ```cpp
+// snippet-template: none (third-party: the la:: vector velocity)
 quantity displacement = velocity * (2. * h);   // [60, 80, 0] km
 ```
 
@@ -79,6 +82,7 @@ linear algebra libraries provide. A vector _quantity_ supports `magnitude()` dir
 the Euclidean magnitude as a scalar _quantity_ in the same unit:
 
 ```cpp
+// snippet-template: none (third-party: the la:: vector velocity)
 quantity speed = magnitude(velocity);   // 50 km/h
 ```
 
@@ -103,6 +107,7 @@ The `velocity`, now a `flight_velocity`, decomposes into 1D-vector _quantities_,
 structured bindings or by axis spec:
 
 ```cpp
+// snippet-template: none (third-party: la::make_vec3 stands for the Eigen/GLM/Blaze backend shim)
 const quantity velocity = flight_velocity(la::make_vec3(30, 40, 0) * km / h);
 const auto [forward, lateral, vertical] = velocity;   // forward 30, lateral 40, vertical 0 (km/h)
 quantity climb = get<vertical_velocity>(velocity);    // or pull one axis out by its spec

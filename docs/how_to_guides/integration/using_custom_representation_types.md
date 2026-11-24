@@ -13,6 +13,7 @@ section in the User's Guide.
 Creating a quantity with a custom representation type is straightforward:
 
 ```cpp
+// snippet-template: none (pseudo-code: my_custom_type stands for the reader's own type and is never declared)
 #include <mp-units/systems/si.h>
 
 using namespace mp_units;
@@ -37,6 +38,7 @@ Create a class with value semantics and the operations your character needs. Her
 for a **real scalar** type:
 
 ```cpp
+// snippet-id: scalar
 template<typename T>
 class my_scalar_type {
   T value_;
@@ -121,6 +123,7 @@ public:
 Or via free functions found through ADL:
 
 ```cpp
+// snippet-continues
 template<typename T>
 [[nodiscard]] constexpr T real(const my_complex_type<T>& c) { return c.get_real(); }
 
@@ -149,6 +152,7 @@ public:
 Or via a free function found by ADL:
 
 ```cpp
+// snippet-continues
 template<typename T>
 [[nodiscard]] constexpr auto magnitude(const my_vector_type<T>& v) { return v.compute_norm(); }
 ```
@@ -182,6 +186,7 @@ the magnitude as a scalar quantity (Euclidean for a real vector, Frobenius for a
 Hermitian for a complex one):
 
 ```cpp
+// snippet-template: none (pseudo-code: my_vector_type is the skeleton above, its implementation elided by '// ... implementation')
 quantity v = my_vector_type<double>{3, 4, 0} * isq::velocity[m / s];
 quantity speed = magnitude(v);  // 5 m/s
 ```
@@ -217,6 +222,7 @@ quantity speed = magnitude(v);  // 5 m/s
 Enable formatting with `std::format`:
 
 ```cpp
+// snippet-after: scalar
 template<typename T, typename Char>
 struct std::formatter<my_scalar_type<T>, Char> : std::formatter<T, Char> {
   template<typename FormatContext>
@@ -245,6 +251,7 @@ If your type needs custom special values (see the
 documentation):
 
 ```cpp
+// snippet-after: scalar
 template<typename T>
 struct mp_units::representation_values<my_scalar_type<T>> {
   [[nodiscard]] static constexpr my_scalar_type<T> zero() noexcept { return my_scalar_type<T>{T{0}}; }
@@ -264,6 +271,7 @@ If your type will be used with bounds checking or other constraint enforcement m
 you may also want to specialize `constraint_violation_handler` to control error reporting:
 
 ```cpp
+// snippet-after: scalar
 template<typename T>
 struct mp_units::constraint_violation_handler<my_scalar_type<T>> {
   static void on_violation(std::string_view msg) {
@@ -305,7 +313,8 @@ This is checked **before** the built-in paths and may return a different type.
 A typical use case is a range-validated representation whose bounds are unit-specific:
 
 ```cpp
-#include <mp-units/framework/unit_magnitude.h>
+// snippet-template: none (pseudo-code: bounded_value's members are elided by '// ...', so val.value() does not exist)
+#include <mp-units/framework/scaling.h>
 
 // Example custom type (not provided by the library)
 template<std::movable T, auto Min, auto Max, typename Policy>
@@ -363,6 +372,7 @@ in the User's Guide for the complete pattern and design rationale.
     One specialization fixes this:
 
     ```cpp
+    // snippet-continues
     // Expose the underlying type so representation_underlying_type_t<MyFloat> == long double.
     // treat_as_floating_point<MyFloat> then defaults to
     // std::is_floating_point_v<long double> == true, so no further
@@ -377,7 +387,7 @@ in the User's Guide for the complete pattern and design rationale.
     integrates with the library without any further changes:
 
     ```cpp
-    static_assert(mp_units::UnitMagnitudeScalable<MyFloat>);
+    // snippet-continues
     static_assert(mp_units::RepresentationOf<MyFloat, mp_units::quantity_tensor_order::scalar>);
     static_assert(mp_units::RepresentationOf<MyFloat, mp_units::quantity_field::real>);
 
@@ -397,6 +407,7 @@ If your type has different implicit-conversion semantics, specialize
 [`mp_units::implicitly_scalable`](../../users_guide/advanced_topics/representation_types.md#implicitly_scalable):
 
 ```cpp
+// snippet-template: none (pseudo-code: my_safe_decimal stands for the reader's own type and is never declared)
 // Allow implicit narrowing from double to my_safe_decimal (it can represent any double value)
 template<auto FromUnit, auto ToUnit>
 constexpr bool mp_units::implicitly_scalable<FromUnit, double, ToUnit, my_safe_decimal> = true;
@@ -419,6 +430,7 @@ to kilograms goes through the CODATA value of `G`, so the factor is known only a
 as a hidden friend to receive that figure during a conversion:
 
 ```cpp
+// snippet-template: none (pseudo-code: my_uncertain's members are elided by '// ...', so central() and sigma() do not exist)
 class my_uncertain {
   // ...
   [[nodiscard]] friend constexpr my_uncertain fold_conversion_uncertainty(
@@ -439,6 +451,7 @@ compiles away.
 ### Step 8: Use It with Quantities
 
 ```cpp
+// snippet-after: scalar
 my_scalar_type value{42.0};
 auto length = value * m;  // quantity<si::metre, my_scalar_type<double>>
 
@@ -450,6 +463,7 @@ auto area = length * length;  // Quantities compose naturally
     Verify your type satisfies the expected concepts:
 
     ```cpp
+    // snippet-after: scalar
     static_assert(RepresentationOf<my_scalar_type<double>, quantity_tensor_order::scalar>);
     static_assert(RepresentationOf<my_scalar_type<double>, quantity_field::real>);
     static_assert(treat_as_floating_point<my_scalar_type<double>>);
@@ -476,8 +490,8 @@ using namespace mp_units::si::unit_symbols;
 void example()
 {
   // Create 3D vector quantities
-  quantity_point pos1{cartesian_vector{1., 2., 3.} * m};
-  quantity_point pos2{cartesian_vector{4., 5., 6.} * m};
+  quantity_point pos1{utility::cartesian_vector{1., 2., 3.} * m};
+  quantity_point pos2{utility::cartesian_vector{4., 5., 6.} * m};
 
   // Vector subtraction
   quantity delta = pos2 - pos1;  // {3, 3, 3} m
@@ -489,11 +503,11 @@ void example()
   quantity distance = pos1.delta_from_zero();
   quantity mag = magnitude(distance);  // sqrt(1² + 2² + 3²) m
 
-  // Scalar product (dot product)
-  auto dot = scalar_product(pos1, pos2);  // Returns quantity with dimension m²
-
-  // Vector product (cross product)
-  auto cross = vector_product(pos1, pos2);  // Returns vector quantity with dimension m²
+  // Scalar and vector products are computed on the representation (see the warning above)
+  quantity d1 = pos1.delta_from_zero();
+  quantity d2 = pos2.delta_from_zero();
+  quantity dot = scalar_product(d1.numerical_value_in(m), d2.numerical_value_in(m)) * m2;    // 32 m²
+  quantity cross = vector_product(d1.numerical_value_in(m), d2.numerical_value_in(m)) * m2;  // {-3, 6, -3} m²
 }
 ```
 
@@ -537,10 +551,10 @@ void example()
   auto scaled = 2.0 * t;    // scalar multiplication
 
   // dyadic (tensor) product of two vectors -> tensor (ISO 80000-2, 2-18.21)
-  auto outer = tensor_product(cartesian_vector{1., 2., 3.}, cartesian_vector{4., 5., 6.});
+  auto outer = tensor_product(utility::cartesian_vector{1., 2., 3.}, utility::cartesian_vector{4., 5., 6.});
 
   auto product = inner_product(t, t);                            // tensor ⋅ tensor -> tensor (2-18.23)
-  auto mapped = inner_product(t, cartesian_vector{1., 2., 3.});  // tensor ⋅ vector -> vector (2-18.24)
+  auto mapped = inner_product(t, utility::cartesian_vector{1., 2., 3.});  // tensor ⋅ vector -> vector (2-18.24)
   auto contraction = scalar_product(t, t);                       // double-dot t : t -> scalar (2-18.25)
   auto frobenius = t.magnitude();                                // Frobenius norm -> scalar
 }
@@ -605,7 +619,7 @@ expect implicit conversion between, say, `mm` and `m` with an integer representa
 get a compilation error:
 
 ```cpp
-quantity<si::millimetre, int> a = 1000 * mm;
+quantity<si::milli<si::metre>, int> a = 1000 * mm;
 quantity<si::metre, int> b = a;        // ❌ explicit conversion required (truncating: 1000 → 1)
 quantity<si::metre, int> c = value_cast<si::metre>(a);  // ✅ OK
 ```

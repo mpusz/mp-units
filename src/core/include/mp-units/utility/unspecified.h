@@ -48,7 +48,8 @@ MP_UNITS_EXPORT struct unspecified_t {};
  * then accepts only the types it was specialized for:
  *
  * @code{.cpp}
- * // snippet-template: none
+ * struct lidar {};
+ *
  * // the unit a sensor reports in, known only for the sensors registered for it
  * template<typename Sensor>
  * constexpr auto native_unit = utility::unspecified;

@@ -1,0 +1,10 @@
+// For an excerpt of the library's own `mp_units::natural` definitions. The body goes in a
+// namespace nested inside `mp_units::natural`, so an unqualified `energy` is
+// `natural::energy`, as in the library. The excerpt's own declarations stay apart from the
+// real ones.
+#include "prelude.h"
+#include <mp-units/systems/natural.h>
+namespace mp_units::natural::sample {
+using namespace mp_units::non_si;
+{{BODY}}
+}  // namespace mp_units::natural::sample

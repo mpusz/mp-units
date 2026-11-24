@@ -68,10 +68,11 @@ Two base quantities differ from ISQ, making the two systems dimensionally
 incompatible — the compiler rejects any attempt to mix quantities from both:
 
 ```cpp
+// snippet-template: hep
 quantity<isq::length[si::metre]>  L_isq = 1. * si::metre;
-quantity<hep::length[hep::metre]> L_hep = 1. * hep::metre;
+quantity<hep::length[hep::meter]> L_hep = 1. * hep::meter;
 
-// auto bad = L_isq + L_hep;  // Compile error — different dimensional systems ✓
+// auto bad = L_isq + L_hep;  // ❌ different dimensional systems
 ```
 
 **_Energy_ instead of _Mass_:**
@@ -83,15 +84,16 @@ referring to rest energy. In the HEP system, _energy_ is the base quantity while
 _mass_ is derived.
 
 ```cpp
+// snippet-template: hep
 using namespace mp_units::hep::unit_symbols;
 
 // Access mass constants (dimension: M = E/L²T⁻²)
-quantity electron_m = m_e;  // ≈ 0.511 MeV/c²
-quantity proton_m = m_p;    // ≈ 938.3 MeV/c²
+quantity electron_m = 1. * m_e;  // ≈ 0.511 MeV/c²
+quantity proton_m = 1. * m_p;    // ≈ 938.3 MeV/c²
 
 // Calculate rest energies from mass (dimension: E)
-quantity electron_rest_energy = m_e * c2;  // E = mc² ≈ 0.511 MeV
-quantity proton_rest_energy = m_p * c2;    // E = mc² ≈ 938.3 MeV
+quantity electron_rest_energy = 1. * m_e * c2;  // E = mc² ≈ 0.511 MeV
+quantity proton_rest_energy = 1. * m_p * c2;    // E = mc² ≈ 938.3 MeV
 ```
 
 **_Electric Charge_ instead of _Electric Current_:**
@@ -101,10 +103,11 @@ This reflects the discrete nature of _charge_ in particle physics (multiples of
 elementary _charge_) and makes _charge_ conservation explicit.
 
 ```cpp
+// snippet-template: hep
 // In HEP: electric charge is a base quantity
-quantity proton_charge = 1. * eplus;
-quantity electron_charge = -1. * eplus;
-quantity up_quark_charge = 2. / 3. * eplus;
+quantity proton_charge = 1. * hep::eplus;
+quantity electron_charge = -1. * hep::eplus;
+quantity up_quark_charge = 2. / 3. * hep::eplus;
 
 // Current is derived: I = Q/T
 quantity current = proton_charge / (1. * ns);
@@ -143,8 +146,8 @@ listed below simply reflect common HEP conventions for numerical convenience:
 | **_Luminosity_**      | candela           |   cd   | Same as SI (for detector calibration)                                             |
 | **_Angle_**           | radian            |  rad   | Same as SI (for angular measurements)                                             |
 
-You're free to use any units you prefer — for example, `quantity<hep::length[hep::metre]>`
-and `quantity<hep::length[hep::millimetre]>` are both valid, and conversions happen
+You're free to use any units you prefer — for example, `quantity<hep::length[hep::meter]>`
+and `quantity<hep::length[si::milli<hep::meter>]>` are both valid, and conversions happen
 automatically when needed without forcing storage in a particular unit.
 
 ## Specialized Quantities of the Same Kind
@@ -160,6 +163,7 @@ Consider the Geant4 `G4Trap` constructor, which takes 11 `G4double` parameters �
 some _lengths_, some _angles_:
 
 ```cpp
+// snippet-template: none (not this library: the Geant4 `G4Trap` constructor signature)
 G4Trap(const G4String& name,
        G4double pDz, G4double pTheta, G4double pPhi,
        G4double pDy1, G4double pDx1, G4double pDx2, G4double pAlp1,
@@ -187,7 +191,7 @@ The HEP system provides specialized quantities for:
 - **Mass**: `rest_mass`, `invariant_mass`, `effective_mass`, `reduced_mass`
 - **Momentum**: `momentum`, `transverse_momentum`
 - **Angle**: `scattering_angle`, `opening_angle`, `azimuthal_angle`, `polar_angle`
-- **Dimensionless (special)**: `lorentz_factor` (γ = E/E₀), `relativistic_beta` (β = v/c)
+- **Dimensionless (special)**: `lorentz_factor` (γ = t/τ), `relativistic_beta` (β = v/c)
 - **Interaction**: `cross_section` (σ), `number_density` (n), `decay_constant` (λ)
 
 For complete hierarchy trees and all available specialized quantities, see the
@@ -213,19 +217,21 @@ Adding a _proper time_ to a _coordinate time_ is a classic special-relativity mi
 one is Lorentz-invariant, the other is frame-dependent:
 
 ```cpp
+// snippet-template: hep
 using namespace mp_units::hep::unit_symbols;
 
 quantity tau   = hep::proper_time(0.385 * ns);    // B⁰ meson rest-frame lifetime
 quantity t_lab = hep::coordinate_time(4.2 * ns);  // observed lab time of flight
 
-// auto wrong = tau + t_lab;  // Compile error — different kinds ✓
+// auto wrong = tau + t_lab;  // ❌ different kinds
 ```
 
 To convert between them, the Lorentz factor must be applied explicitly:
 
 ```cpp
-quantity gamma = hep::lorentz_factor(t_lab / tau);  // γ ≈ 10.9
-quantity tau_from_t = proper_time(t_lab / gamma);   // explicit physics conversion
+// snippet-continues
+quantity gamma = hep::lorentz_factor(t_lab / tau);      // γ ≈ 10.9
+quantity tau_from_t = hep::proper_time(t_lab / gamma);  // explicit physics conversion
 ```
 
 ### Material Characteristic Lengths: `radiation_length` and `interaction_length`
@@ -244,14 +250,15 @@ as **denominators** in physics expressions (number of radiation lengths traverse
 All three are distinct from each other and from geometric _lengths_:
 
 ```cpp
+// snippet-template: hep
 using namespace mp_units::hep::unit_symbols;
 
 quantity X0       = hep::radiation_length(88.97 * mm);  // lead X₀
 quantity lambda_I = hep::interaction_length(194.4 * mm);  // lead λ_I  
 quantity path     = hep::path_length(50. * mm);
 
-// auto bad1 = X0 + lambda_I;  // Compile error — different kinds ✓
-// auto bad2 = X0 + path;      // Compile error — different kinds ✓
+// auto bad1 = X0 + lambda_I;  // ❌ different kinds
+// auto bad2 = X0 + path;      // ❌ different kinds
 
 // Correct usage: use as a denominator
 quantity n_X0 = path / X0;  // dimensionless: number of radiation lengths traversed ✓
@@ -263,24 +270,27 @@ quantity n_X0 = path / X0;  // dimensionless: number of radiation lengths traver
 specific physical meaning that must not be mixed with generic dimensionless values or
 with each other:
 
-- **`lorentz_factor` (γ = E/E₀)**: characterizes _relativistic time dilation_ and
+- **`lorentz_factor` (γ = t/τ)**: characterizes _relativistic time dilation_ and
   _length contraction_; ranges from 1 (at rest) to ∞.
 - **`relativistic_beta` (β = v/c)**: _velocity_ expressed as a fraction of the
-  _speed of light_; ranges from 0 to 1. Related to γ by $\beta = \sqrt{1 - 1/\gamma^2}$.
+  _speed of light_; ranges from 0 to 1. Related to γ by $\beta = \sqrt{1 - 1/\gamma^2}$,
+  which `hep::beta_from_gamma()` and `hep::gamma_from_beta()` compute.
 - **`phase`**: quantum mechanical _phase angle_ — a cyclic, dimensionless quantity
   incompatible with both γ and β and with the angular `angle` kind.
 
 ```cpp
+// snippet-template: hep
 quantity gamma = hep::lorentz_factor(10. * one);
 quantity beta  = hep::relativistic_beta(0.995 * one);
 quantity phi   = hep::phase(1.57 * one);
 
-// auto bad1 = gamma + beta;  // Compile error — different kinds ✓
-// auto bad2 = gamma + phi;   // Compile error — different kinds ✓  
-// auto bad3 = gamma + 1.;    // Compile error — not a plain dimensionless ✓
+// auto bad1 = gamma + beta;  // ❌ different kinds
+// auto bad2 = gamma + phi;   // ❌ different kinds
+// auto bad3 = gamma + 1.;    // ❌ not a plain dimensionless
 
 // Physics: convert between gamma and beta
-quantity beta_from_gamma = hep::relativistic_beta(sqrt(1. - 1. / pow<2>(gamma / hep::lorentz_factor)));
+quantity beta_of_gamma = hep::beta_from_gamma(gamma);  // 0.995
+quantity gamma_of_beta = hep::gamma_from_beta(beta);   // 10.01
 ```
 
 
@@ -320,23 +330,23 @@ using namespace mp_units::hep::unit_symbols;
 
 // Default: CODATA 2018 (inline namespace - matches CLHEP, Gaudi, Geant4)
 quantity kinetic_energy = 10. * MeV;
-quantity beta_2018 = kinetic_energy / (hep::electron_mass * c2);  // Uses CODATA 2018
+quantity energy_ratio_2018 = kinetic_energy / (hep::electron_mass * c2);  // KE / (mₑc²), uses CODATA 2018
 
 // Interface with ROOT analysis using CODATA 2022
-quantity analyze_with_root()
+QuantityOf<hep::energy> auto analyze_with_root()
 {
   // All constants now use CODATA 2022 values to match ROOT
-  quantity rest_energy = hep::codata2022::electron_mass * c2;  // 0.51099895069 MeV
+  quantity rest_energy = 1. * hep::codata2022::electron_mass * c2;  // 0.51099895069 MeV
   quantity momentum = sqrt(pow<2>(kinetic_energy + rest_energy) - pow<2>(rest_energy));
   return momentum;
 }
 
 // Reproduce legacy results with CODATA 2014
-quantity validate_legacy_analysis(quantity<MeV> E_gamma)
+QuantityOf<hep::energy> auto validate_legacy_analysis(quantity<MeV> E_gamma)
 {
   // Use older constants for exact reproducibility
   quantity threshold = 2. * hep::codata2014::electron_mass * c2;  // Pair production
-  return (E_gamma > threshold) ? E_gamma - threshold : 0. * MeV;
+  return (E_gamma > threshold) ? (E_gamma - threshold).in(MeV) : 0. * MeV;
 }
 ```
 
@@ -399,15 +409,16 @@ The uncertainty is metadata on the definition and costs nothing until asked for.
 representation, the same constant reports the precision of the release it comes from:
 
 ```cpp
+// snippet-template: hep
 using mp_units::utility::measurement_of;
 using mp_units::utility::uncertain;
 
-quantity m_e_2018 = measurement_of(codata2018::electron_mass);
-quantity m_e_2022 = measurement_of(codata2022::electron_mass);
+quantity m_e_2018 = utility::measurement_of(hep::codata2018::electron_mass);
+quantity m_e_2022 = utility::measurement_of(hep::codata2022::electron_mass);
 
 // enough digits to see the difference: the releases agree to nine significant figures
-std::println("CODATA 2018: {::N[.11f]}", m_e_2018.in(MeV / pow<2>(speed_of_light_in_vacuum)));
-std::println("CODATA 2022: {::N[.11f]}", m_e_2022.in(MeV / pow<2>(speed_of_light_in_vacuum)));
+std::println("CODATA 2018: {::N[.11f]}", m_e_2018.in(MeV / pow<2>(hep::speed_of_light_in_vacuum)));
+std::println("CODATA 2022: {::N[.11f]}", m_e_2022.in(MeV / pow<2>(hep::speed_of_light_in_vacuum)));
 ```
 
 ```text

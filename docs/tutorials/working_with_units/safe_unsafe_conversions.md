@@ -69,7 +69,7 @@ int main()
 
   // Floating-point → integer: NOT safe (truncation risk)
   quantity<si::kilo<si::metre>, double> km_double = 2.7 * km;
-  // quantity<si::metre, int> meters_int = km_double;        // ❌ Won't compile!
+  // quantity<si::metre, int> meters_int = km_double;        // ❌
   // quantity<si::kilo<si::metre>, int> km_int = km_double;  // ❌ Also won't compile!
 
   std::cout << "\nDouble to int: blocked by compiler (even without unit change!)\n";

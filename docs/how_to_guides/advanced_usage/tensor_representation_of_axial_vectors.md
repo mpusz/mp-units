@@ -32,6 +32,7 @@ rotation carrying the axis direction. So in **mp-units** it has vector character
 three-component representation fits:
 
 ```cpp
+// snippet-template: none (third-party: needs Eigen, which the checker does not provide)
 quantity w = Eigen::Vector3d{0.0, 0.0, 2.5} * isq::angular_velocity[rad / s];  // OK
 ```
 
@@ -41,10 +42,11 @@ matrix for which `Ω r` equals `ω x r`. That matrix is an order-2 object, and i
 **not** fit the vector slot:
 
 ```cpp
+// snippet-template: none (third-party: needs Eigen, which the checker does not provide)
 Eigen::Matrix3d Omega{{ 0.0, -2.5, 0.0},
                       { 2.5,  0.0, 0.0},
                       { 0.0,  0.0, 0.0}};
-quantity bad = Omega * isq::angular_velocity[rad / s];   // error: order 2 does not fit a vector
+quantity bad = Omega * isq::angular_velocity[rad / s];   // ❌ order 2 does not fit a vector
 ```
 
 The rank-ordering that lets a scalar stand in for a vector does not run the other way, so
@@ -107,6 +109,7 @@ slot. The restriction runs only the other way, which is exactly why the vector
 components:
 
 ```cpp
+// snippet-template: none (third-party: needs Eigen, which the checker does not provide)
 inline constexpr auto rad_per_s = si::radian / si::second;
 
 [[nodiscard]] auto hat(const quantity<isq::angular_velocity[rad_per_s], Eigen::Vector3d>& w)
@@ -128,6 +131,7 @@ vector it came from.
 `vee` (written `∨`) is the inverse, reading the three independent components back out:
 
 ```cpp
+// snippet-template: none (third-party: needs Eigen, which the checker does not provide)
 [[nodiscard]] auto vee(const quantity<angular_velocity_tensor[rad_per_s], Eigen::Matrix3d>& w)
 {
   const auto& m = w.numerical_value_ref_in(rad_per_s);
@@ -147,6 +151,7 @@ matrix, and call `vee` before handing the value to code (or to ISQ equations) wr
 the vector _angular velocity_:
 
 ```cpp
+// snippet-template: none (third-party: needs Eigen, which the checker does not provide)
 quantity w = Eigen::Vector3d{1.0, 2.0, 3.0} * isq::angular_velocity[rad_per_s];
 
 quantity Omega = hat(w);        // angular_velocity_tensor, backed by a 3x3 matrix

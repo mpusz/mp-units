@@ -195,7 +195,7 @@ using namespace mp_units::yard_pound::unit_symbols;
 
 quantity m = 10 * lb;         // mass: 10 pounds
 quantity f = 10 * lbf;        // force: 10 pounds-force
-// quantity bad = m + f;      // error: mass and force have different dimensions
+// quantity bad = m + f;      // ❌ mass and force have different dimensions
 ```
 
 For code that prefers to spell the distinction out, `pound_mass` is a clarifying alias of
@@ -203,6 +203,7 @@ For code that prefers to spell the distinction out, `pound_mass` is a clarifying
 `unit_symbols`):
 
 ```cpp
+// snippet-template: systems
 quantity payload = 10 * yard_pound::pound_mass;   // exactly the same unit as `10 * lb`
 ```
 
@@ -242,6 +243,7 @@ quantity total_volume = uk_tank + us_tank;   // Correctly converts and adds both
     **In mp-units:** Each system defines `ton` as its regional default:
 
     ```cpp
+    // snippet-template: systems
     using namespace mp_units;
 
     // UK usage - "ton" means long ton (2240 lb)
@@ -313,6 +315,7 @@ over large distances. A 10-mile survey using the wrong foot would be off by abou
 **Code Example:**
 
 ```cpp
+// snippet-template: systems
 using namespace mp_units;
 
 // Modern international units (recommended)
@@ -357,7 +360,7 @@ quantity volume = 2 * imperial::gallon;
 #include <mp-units/systems/usc.h>
 using namespace mp_units;
 quantity tank_size = 15 * usc::gallon;
-quantity temperature = point<usc::degree_Fahrenheit>(72);
+quantity_point temperature = point<usc::degree_Fahrenheit>(72);
 ```
 
 ### Avoiding Name Conflicts
@@ -368,20 +371,25 @@ quantity temperature = point<usc::degree_Fahrenheit>(72);
     to ambiguity:
 
     ```cpp
-    // ❌ BAD: Ambiguous which gallon!
+    // snippet-template: systems
+    // BAD: Ambiguous which gallon!
     using namespace mp_units::imperial::unit_symbols;
     using namespace mp_units::usc::unit_symbols;
-    quantity volume = 5 * gal;  // Compile error: ambiguous!
+    quantity volume = 5 * gal;  // ❌ ambiguous!
     ```
 
     **Solution:** Use explicit qualification:
 
     ```cpp
+    // snippet-template: systems
     // ✅ GOOD: Explicit qualification
     using namespace mp_units;
     quantity uk_volume = 5 * imperial::gallon;
     quantity us_volume = 5 * usc::gallon;
+    ```
 
+    ```cpp
+    // snippet-template: systems
     // ✅ GOOD: With namespace aliases for brevity
     using namespace mp_units;
     namespace imp = imperial;

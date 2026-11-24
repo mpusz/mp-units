@@ -1,0 +1,10 @@
+// For an excerpt of the library's own `mp_units::isq` definitions. The body goes in a
+// namespace nested inside `mp_units::isq`, so an unqualified `time` finds `isq::time`, as in
+// the library, before the C library's `::time`. The excerpt's own declarations stay apart
+// from the real ones.
+#include "prelude.h"
+#include <mp-units/systems/natural.h>
+namespace mp_units::isq::sample {
+using namespace mp_units::non_si;
+{{BODY}}
+}  // namespace mp_units::isq::sample

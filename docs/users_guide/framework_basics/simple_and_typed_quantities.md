@@ -148,7 +148,7 @@ For example, in case we will make the following error:
 constexpr quantity<si::metre / si::second> avg_speed(quantity<si::metre> dist,
                                                      quantity<si::second> time)
 {
-  return dist * time;  // (1)!
+  return dist * time;  // ❌ (1)!
 }
 ```
 
@@ -486,9 +486,10 @@ compile fine but not work as expected.
 Let's see what will happen if we reorder the arguments in the case of typed quantities:
 
 ```cpp hl_lines="2 3"
+// snippet-continues
 auto tank = RectangularStorageTank(horizontal_length(1'000 * mm),
                                    isq::height(200 * mm),
-                                   isq::width(500 * mm));
+                                   isq::width(500 * mm));  // ❌
 ```
 
 This time, a compiler provides the following compilation error:
@@ -522,7 +523,12 @@ implicitly constructible to the quantity of `isq::width`. This property is trans
 passed to derived quantities using them. If by accident, we will try to create a `StorageTank`
 base class in the following way:
 
-```cpp hl_lines="6"
+```cpp hl_lines="7"
+// snippet-template: isq
+// snippet-setup: inline constexpr struct horizontal_length : quantity_spec<isq::length> {} horizontal_length;
+// snippet-setup: inline constexpr struct horizontal_area : quantity_spec<isq::area, horizontal_length * isq::width> {} horizontal_area;
+// snippet-setup: class StorageTank { public: constexpr StorageTank(const quantity<horizontal_area[square(si::metre)]>& base, const quantity<isq::height[si::metre]>& height); };
+// ❌ a height is not a width, so the base is no `horizontal_area`
 class RectangularStorageTank : public StorageTank {
 public:
   constexpr RectangularStorageTank(const quantity<horizontal_length[m]>& length,
@@ -559,6 +565,10 @@ error: no matching constructor for initialization of 'StorageTank'
 Did you notice the `quantity_cast()` usage in the other child class?
 
 ```cpp hl_lines="5"
+// snippet-template: isq
+// snippet-setup: inline constexpr struct horizontal_length : quantity_spec<isq::length> {} horizontal_length;
+// snippet-setup: inline constexpr struct horizontal_area : quantity_spec<isq::area, horizontal_length * isq::width> {} horizontal_area;
+// snippet-setup: class StorageTank { public: constexpr StorageTank(const quantity<horizontal_area[square(si::metre)]>& base, const quantity<isq::height[si::metre]>& height); };
 class CylindricalStorageTank : public StorageTank {
 public:
   constexpr CylindricalStorageTank(const quantity<isq::radius[m]>& radius,

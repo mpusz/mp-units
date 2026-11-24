@@ -81,11 +81,15 @@ The example uses both types deliberately:
   rejects both forms:
 
   ```cpp
+  // snippet-after: example/currency.cpp:decls
+  // snippet-setup: const std::chrono::sys_seconds timestamp{};
+  using namespace unit_symbols;
+
   const quantity_point price_usd{100 * USD};
   const quantity_point price_eur = exchange_to<euro>(price_usd, timestamp);
-  // price_usd + price_eur                          // does not compile — points can't be added
-  // price_usd.delta_from_zero()
-  //   + price_eur.delta_from_zero()        // does not compile — different units (USD ≠ EUR)
+  // auto sum = price_usd + price_eur;              // ❌ points can't be added
+  // auto total = price_usd.delta_from_zero()
+  //              + price_eur.delta_from_zero();    // ❌ different units (USD ≠ EUR)
   ```
 
 - **`quantity`** for _holdings_ — a portfolio position is a displacement from zero; amounts
@@ -93,9 +97,13 @@ The example uses both types deliberately:
   an explicit FX conversion is applied:
 
   ```cpp
+  // snippet-after: example/currency.cpp:decls
+  // snippet-setup: const std::chrono::sys_seconds timestamp{};
+  using namespace unit_symbols;
+
   const quantity pos_usd = 14'230 * USD;
   const quantity pos_eur =  4'902 * EUR;
-  // pos_usd + pos_eur                              // does not compile — must convert first
+  // auto sum = pos_usd + pos_eur;                  // ❌ must convert first
   const quantity pos_eur_usd = round<USD>(exchange_to<us_dollar>(pos_eur, timestamp)).in<int>(rounded);
   const quantity total_usd = pos_usd + pos_eur_usd; // ok — same unit
   ```

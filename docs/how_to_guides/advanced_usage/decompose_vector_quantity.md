@@ -33,13 +33,16 @@ Consider a drone's body-frame _velocity_, modeled as a named `flight_velocity` q
 (defined in full below) stored as a vector _quantity_:
 
 ```cpp
-const quantity v = flight_velocity(cartesian_vector{30.0, 10.0, -2.0} * km / h);
+// snippet-after: decomp
+// snippet-id: drone
+const quantity v = flight_velocity(utility::cartesian_vector{30.0, 10.0, -2.0} * km / h);
 ```
 
 The whole is type-safe. Suppose you want its third axis. The representation is indexable,
 so you can reach through to it:
 
 ```cpp
+// snippet-continues
 const auto vertical = v.numerical_value_in(km / h)[2];   // a bare double: no unit, no axis
 ```
 
@@ -63,6 +66,7 @@ decomposes into them. Access then returns a **1D-vector component quantity** of 
 axis type, in the whole's unit, with no manual indexing:
 
 ```cpp
+// snippet-after: drone
 const auto [forward, lateral, vertical] = v;   // three typed component quantities
 ```
 
@@ -71,9 +75,10 @@ distinct kind, the type system now rejects the combinations that never made phys
 while same-axis arithmetic still works:
 
 ```cpp
+// snippet-continues
 const quantity total = forward + forward;    // OK: two forward velocities are the same kind
-const quantity wrong = forward + vertical;   // error: a forward velocity is not a rate of climb
-const bool aligned = forward == vertical;    // error: distinct kinds are not even comparable
+const quantity wrong = forward + vertical;   // ❌ a forward velocity is not a rate of climb
+const bool aligned = forward == vertical;    // ❌ distinct kinds are not even comparable
 ```
 
 
@@ -97,6 +102,8 @@ satisfy a small set of rules, all checked at compile time:
 Applied to the drone:
 
 ```cpp
+// snippet-template: utility
+// snippet-id: axes
 // the whole: a plain child of isq::velocity (vector character, same kind as velocity)
 inline constexpr struct flight_velocity : quantity_spec<isq::velocity> {} flight_velocity;
 
@@ -150,6 +157,8 @@ Opt the whole into decomposition by specializing the `component_vectors` customi
 and inheriting from `vector_axes`, listing the axes in **coordinate order** (axis 0 first):
 
 ```cpp
+// snippet-continues
+// snippet-id: decomp
 template<>
 struct mp_units::component_vectors<flight_velocity> :
     mp_units::vector_axes<forward_velocity, lateral_velocity, vertical_velocity> {};
@@ -170,6 +179,7 @@ decompose a `quantity`.
 axis's spec:
 
 ```cpp
+// snippet-after: drone
 const quantity forward = get<0>(v);   // quantity<forward_velocity[km/h], double>
 ```
 
@@ -193,6 +203,7 @@ When you know the axis but not its position, index by the spec instead. This is
 order-independent and reads better at the call site:
 
 ```cpp
+// snippet-after: drone
 const quantity climb = get<vertical_velocity>(v);   // same as get<2>(v) here
 ```
 
@@ -205,6 +216,7 @@ Because a decomposable _quantity_ models the tuple protocol, structured bindings
 directly and are usually the most readable option:
 
 ```cpp
+// snippet-after: drone
 const auto [forward, lateral, vertical] = v;
 ```
 
@@ -219,6 +231,7 @@ vector's element type (such as `double`) as its representation. It holds a singl
 read it with `numerical_value_in(unit)`:
 
 ```cpp
+// snippet-after: drone
 const double climb_rate = get<vertical_velocity>(v).numerical_value_in(km / h);
 ```
 
@@ -229,7 +242,8 @@ Decomposition has an inverse: the whole can be built from its component _quantit
 checked against the axis declared for its position.
 
 ```cpp
-const quantity<flight_velocity[km / h], cartesian_vector<double>> v = {forward_velocity(30 * km / h),
+// snippet-after: decomp
+const quantity<flight_velocity[km / h], utility::cartesian_vector<double>> v = {forward_velocity(30 * km / h),
                                                                        lateral_velocity(10 * km / h),
                                                                        vertical_velocity(-2 * km / h)};
 ```
@@ -237,13 +251,13 @@ const quantity<flight_velocity[km / h], cartesian_vector<double>> v = {forward_v
 **Getting the order wrong does not compile.** Compare that with the alternative:
 
 ```cpp
-// error: position 1 wants a lateral velocity, and a vertical velocity is a different kind
-// auto swapped = quantity<flight_velocity[km / h], cartesian_vector<double>>{forward_velocity(30 * km / h),
+// snippet-after: decomp
+// auto swapped = quantity<flight_velocity[km / h], utility::cartesian_vector<double>>{forward_velocity(30 * km / h),  // error: position 1 wants a lateral velocity, and a vertical velocity is a different kind
 //                                                                            vertical_velocity(-2 * km / h),
 //                                                                            lateral_velocity(10 * km / h)};
 
 // compiles, and silently means something else: the drone now climbs at 10 km/h and drifts by -2
-const quantity oops = flight_velocity(cartesian_vector{30.0, -2.0, 10.0} * km / h);
+const quantity oops = flight_velocity(utility::cartesian_vector{30.0, -2.0, 10.0} * km / h);
 ```
 
 The second line is the spelling you are stuck with when the components are bare numbers
@@ -255,9 +269,9 @@ position. A plain number is not, and neither is a quantity of the whole's own sp
 `isq::velocity` converts to an axis only explicitly:
 
 ```cpp
-// error: neither names an axis of this decomposition
-// auto by_number = quantity<flight_velocity[km / h], cartesian_vector<double>>{30.0, 10.0, -2.0};
-// auto by_whole = quantity<flight_velocity[km / h], cartesian_vector<double>>{isq::velocity(30 * km / h),
+// snippet-after: decomp
+// auto by_number = quantity<flight_velocity[km / h], utility::cartesian_vector<double>>{30.0, 10.0, -2.0};          // ❌ neither names an axis of this decomposition
+// auto by_whole = quantity<flight_velocity[km / h], utility::cartesian_vector<double>>{isq::velocity(30 * km / h),  // error: neither names an axis of this decomposition
 //                                                                             isq::velocity(10 * km / h),
 //                                                                             isq::velocity(-2 * km / h)};
 ```
@@ -269,8 +283,9 @@ position. A plain number is not, and neither is a quantity of the whole's own sp
     order of such arguments compiles:
 
     ```cpp
+    // snippet-after: decomp
     // compiles: a kind quantity names no position
-    const quantity<flight_velocity[km / h], cartesian_vector<double>> unchecked = {30 * km / h,
+    const quantity<flight_velocity[km / h], utility::cartesian_vector<double>> unchecked = {30 * km / h,
                                                                                    10 * km / h,
                                                                                    -2 * km / h};
     ```
@@ -284,8 +299,9 @@ The type being constructed pins the unit, so each argument is converted into it 
 a truncating argument is caught the same way it would be anywhere else:
 
 ```cpp
+// snippet-after: decomp
 // 10 m/s is converted into the km/h this type stores
-const quantity<flight_velocity[km / h], cartesian_vector<double>> mixed = {forward_velocity(30 * km / h),
+const quantity<flight_velocity[km / h], utility::cartesian_vector<double>> mixed = {forward_velocity(30 * km / h),
                                                                            lateral_velocity(10 * m / s),
                                                                            vertical_velocity(-2 * km / h)};
 ```
@@ -301,7 +317,8 @@ When the components already travel together, in a `std::tuple`, a `std::array`,
 or equivalent containers, pass that one value instead of unpacking it by hand:
 
 ```cpp
-using velocity = quantity<flight_velocity[km / h], cartesian_vector<double>>;
+// snippet-after: decomp
+using velocity = quantity<flight_velocity[km / h], utility::cartesian_vector<double>>;
 
 const velocity from_tuple = std::tuple{forward_velocity(30 * km / h),
                                        lateral_velocity(10 * km / h),
@@ -339,12 +356,13 @@ specialization still takes apart and goes back together, and each component then
 **the whole's kind**:
 
 ```cpp
-const quantity v = isq::velocity(cartesian_vector{30.0, 10.0, -2.0} * km / h);
+// snippet-template: utility
+const quantity v = isq::velocity(utility::cartesian_vector{30.0, 10.0, -2.0} * km / h);
 
 const quantity forward = get<0>(v);           // a 1D-vector quantity of the isq::speed kind
 const auto [x, y, z] = v;                     // three components of that same kind
 
-const quantity<isq::velocity[km / h], cartesian_vector<double>> back = {x, y, z};   // and back again
+const quantity<isq::velocity[km / h], utility::cartesian_vector<double>> back = {x, y, z};   // and back again
 ```
 
 Both directions stay available, and both check less. Everything that needs an axis to
@@ -358,16 +376,18 @@ share one kind, so what a declared decomposition rejects is accepted here in bot
 directions:
 
 ```cpp
+// snippet-continues
 const quantity nonsense = get<0>(v) + get<1>(v);   // compiles, and means nothing physically
 
 // compiles: with one kind for every position, no order is more correct than another
-const quantity<isq::velocity[km / h], cartesian_vector<double>> reordered = {z, x, y};
+const quantity<isq::velocity[km / h], utility::cartesian_vector<double>> reordered = {z, x, y};
 ```
 
 It is still a strict improvement on the alternative it replaces, which is reaching into the
 representation by hand:
 
 ```cpp
+// snippet-after: drone
 const double forward = v.numerical_value_in(km / h)[0];   // no unit, no quantity, no bound
 ```
 
@@ -447,6 +467,7 @@ bindings. `std::tuple_size_v` gives the axis count and `std::tuple_element_t` gi
 component's type:
 
 ```cpp
+// snippet-after: drone
 static_assert(std::tuple_size_v<decltype(v)> == 3);
 
 using climb_t = std::tuple_element_t<2, decltype(v)>;
@@ -464,8 +485,9 @@ access itself is constrained. An out-of-range index and a spec that is not one o
 declared axes are both rejected at compile time:
 
 ```cpp
-get<3>(v);                  // error: only three axes exist
-get<isq::acceleration>(v);  // error: not one of the declared axes
+// snippet-after: drone
+get<3>(v);                  // ❌ only three axes exist
+get<isq::acceleration>(v);  // ❌ not one of the declared axes
 ```
 
 

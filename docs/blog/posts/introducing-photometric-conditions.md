@@ -68,6 +68,7 @@ Every luminous quantity is defined once, and the photometric condition is a temp
 argument that propagates through the whole derived tree:
 
 ```cpp
+// snippet-template: scoped
 inline constexpr struct photopic_vision final : photometric_condition_base {} photopic_vision;
 inline constexpr struct scotopic_vision final : photometric_condition_base {} scotopic_vision;
 template<auto AdaptationLevel> struct mesopic_vision_ final : photometric_condition_base {};
@@ -82,9 +83,9 @@ unchanged, and the other conditions are spelled with `_of`:
 quantity daylight = 1000. * si::lumen;
 quantity night = 250. * si::lumen_of<isq::scotopic_vision>;
 
-// auto total = daylight + night;                             // Compile-time error
-// if (daylight > night) { /* ... */ }                        // Compile-time error
-// auto x = daylight.in(si::lumen_of<isq::scotopic_vision>);  // Compile-time error
+// auto total = daylight + night;                             // ❌
+// if (daylight > night) { /* ... */ }                        // ❌
+// auto x = daylight.in(si::lumen_of<isq::scotopic_vision>);  // ❌
 quantity sp_ratio = night / daylight;                         // OK, 0.25 lm/lm
 ```
 
@@ -151,12 +152,13 @@ number, but it makes the multiplication produce `lm²/lm` of the wrong kinds ins
 scotopic flux, so any constrained destination rejects it:
 
 ```cpp
+// snippet-continues
 void take_scotopic_flux(QuantityOf<isq::luminous_flux_of<isq::scotopic_vision>> auto flux);
 
 quantity inverted = 2.0 * si::lumen_of<isq::photopic_vision> /
                     si::lumen_of<isq::scotopic_vision>;  // wrong order
 take_scotopic_flux(sp_ratio * led);     // OK
-// take_scotopic_flux(inverted * led);  // Compile-time error
+// take_scotopic_flux(inverted * led);  // ❌
 ```
 
 The same applies to a typed variable or a function return type. None of this needs a
