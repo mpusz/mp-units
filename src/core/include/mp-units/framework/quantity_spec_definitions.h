@@ -963,8 +963,13 @@ struct kind_of_<Q> : quantity_spec<kind_of_<Q>, Q{}>::_base_type_ {
  * @see [Systems of Quantities](docs:users_guide/framework_basics/systems_of_quantities#modeling-a-quantity-kind)
  * in the User's Guide
  */
+#if MP_UNITS_CONSTRAINED_AUTO_NTTP_HACK
+MP_UNITS_EXPORT template<auto Q>
+  requires QuantitySpec<decltype(Q)> && requires { typename kind_of_<decltype(Q)>; }
+#else
 MP_UNITS_EXPORT template<QuantitySpec auto Q>
   requires requires { typename kind_of_<decltype(Q)>; }
+#endif
 constexpr kind_of_<MP_UNITS_NTTP_HACK(decltype(Q))> kind_of;
 
 namespace detail {
