@@ -265,7 +265,8 @@ inline constexpr auto kilogram = si::kilo<gram>;
 inline constexpr struct newton : named_unit<"N", kilogram * metre / square(second)> {} newton;
 inline constexpr struct bar : named_unit<"bar", mag<100> * kPa> {} bar;
 inline constexpr struct yard : named_unit<"yd", mag_ratio<9'144, 10'000> * si::metre> {} yard;
-inline constexpr struct dalton : named_unit<"Da", codata::atomic_mass_constant> {} dalton;
+inline constexpr struct electronvolt :
+    named_unit<"eV", mag_ratio<1'602'176'634, 1'000'000'000> * mag_power<10, -19> * J> {} electronvolt;
 ```
 
 ### Working with Units
