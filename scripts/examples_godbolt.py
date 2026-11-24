@@ -20,7 +20,9 @@ from pathlib import Path
 from urllib.parse import quote_plus
 
 ROOT = Path(__file__).resolve().parent.parent
-BUTTON = re.compile(r"^\[Try it live on Compiler Explorer\]\(godbolt\)(\{ \.md-button \})$", re.M)
+BUTTON = re.compile(
+    r"^\[Try it live on Compiler Explorer\]\(godbolt\)(\{ \.md-button \})$", re.M
+)
 LEADING_COMMENT = re.compile(r"\A\s*(?://[^\n]*\n\s*|/\*.*?\*/\s*)+", re.S)
 
 # Toolchain of the button. Rules (the maintainer's):
@@ -62,14 +64,23 @@ def godbolt_url(source: str) -> str:
     return (
         "https://godbolt.org/#g:!((g:!((g:!((h:codeEditor,i:(filename:'1',fontScale:15,fontUsePx:!t,j:1,"
         f"lang:c%2B%2B,source:'{code}'),l:'5',n:'0',o:'C%2B%2B+source+%231',t:'0')),k:50,l:'4',n:'0',o:'',"
-        "s:0,t:'0'),(g:!((g:!((h:compiler,i:(compiler:" + COMPILER + ",filters:(" + filters + "),"
+        "s:0,t:'0'),(g:!((g:!((h:compiler,i:(compiler:"
+        + COMPILER
+        + ",filters:("
+        + filters
+        + "),"
         "flagsViewOpen:!f,fontScale:14,fontUsePx:!t,j:1,lang:c%2B%2B,libs:!((name:mp-units,ver:trunk)),"
         f"options:'{flags}',overrides:!(),selection:(endColumn:1,endLineNumber:1,positionColumn:1,"
         "positionLineNumber:1,selectionStartColumn:1,selectionStartLineNumber:1,startColumn:1,"
-        "startLineNumber:1),source:1),l:'5',n:'0',o:'" + quote_plus(COMPILER_NAME, safe=_SAFE) + "+(Editor+%231)',"
+        "startLineNumber:1),source:1),l:'5',n:'0',o:'"
+        + quote_plus(COMPILER_NAME, safe=_SAFE)
+        + "+(Editor+%231)',"
         "t:'0')),header:(),k:50,l:'4',m:50,n:'0',o:'',s:0,t:'0'),(g:!((h:output,i:(compilerName:'"
-        + quote_plus(COMPILER_NAME, safe=_SAFE) + "',editorid:1,fontScale:14,fontUsePx:!t,j:1,wrap:!t),"
-        "l:'5',n:'0',o:'Output+of+" + quote_plus(COMPILER_NAME, safe=_SAFE) + "+(Compiler+%231)',t:'0')),"
+        + quote_plus(COMPILER_NAME, safe=_SAFE)
+        + "',editorid:1,fontScale:14,fontUsePx:!t,j:1,wrap:!t),"
+        "l:'5',n:'0',o:'Output+of+"
+        + quote_plus(COMPILER_NAME, safe=_SAFE)
+        + "+(Compiler+%231)',t:'0')),"
         "header:(),l:'4',m:50,n:'0',o:'',s:0,t:'0')),k:50,l:'3',n:'0',o:'',t:'0')),l:'2',n:'0',o:'',t:'0')),"
         "version:4"
     )
@@ -82,6 +93,13 @@ def on_page_markdown(markdown, page, config, files):
         return markdown
     example = ROOT / "example" / f"{Path(page.file.src_uri).stem}.cpp"
     if not example.is_file():
-        raise FileNotFoundError(f"{page.file.src_uri} has a Compiler Explorer button but {example} does not exist")
-    source = LEADING_COMMENT.sub("", example.read_text(encoding="utf-8").replace("\r\n", "\n"), count=1)
-    return BUTTON.sub(lambda m: f"[Try it live on Compiler Explorer]({godbolt_url(source)}){m.group(1)}", markdown)
+        raise FileNotFoundError(
+            f"{page.file.src_uri} has a Compiler Explorer button but {example} does not exist"
+        )
+    source = LEADING_COMMENT.sub(
+        "", example.read_text(encoding="utf-8").replace("\r\n", "\n"), count=1
+    )
+    return BUTTON.sub(
+        lambda m: f"[Try it live on Compiler Explorer]({godbolt_url(source)}){m.group(1)}",
+        markdown,
+    )
