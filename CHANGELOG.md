@@ -8,6 +8,10 @@ This page documents the version history and changes for the **mp-units** library
 
 ### 2.6.0 <small>TBD</small> { id="2.6.0" }
 
+- feat: `hep::beta_from_gamma()` and `hep::gamma_from_beta()` convert between the Lorentz
+      factor and the relativistic β, a relation that no quantity equation can state
+- feat: `hep::lorentz_factor` is defined as `hep::coordinate_time / hep::proper_time`, so
+      the ratio of the two times converts to it explicitly
 - (!) fix: `RepresentationOf` rejects a cv-qualified type and a reference. A `const`
       type already failed it, but a `volatile` one was accepted, and every arithmetic
       operation of the quantity then accessed a volatile object. Read a hardware register

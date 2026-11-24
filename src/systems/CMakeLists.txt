@@ -94,6 +94,7 @@ if(NOT MP_UNITS_API_FREESTANDING)
                 BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include
                 FILES
                     include/mp-units/systems/angular/math.h
+                    include/mp-units/systems/hep/math.h
                     include/mp-units/systems/si/math.h
                     include/mp-units/systems/si/chrono.h
                     include/mp-units/systems/si/prefix_utils.h

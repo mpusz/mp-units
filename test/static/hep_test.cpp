@@ -209,7 +209,7 @@ static_assert(verify(hep::decay_constant, scalar, one / s));
 static_assert(verify(hep::proper_velocity, vector, m / s));
 
 // Specialized dimensionless derived quantities with physical meaning
-static_assert(verify(hep::lorentz_factor, scalar, one));     // γ = E/E₀
+static_assert(verify(hep::lorentz_factor, scalar, one));     // γ = t/τ
 static_assert(verify(hep::relativistic_beta, scalar, one));  // β = v/c
 
 // Interaction and scattering quantities
@@ -228,6 +228,20 @@ static_assert(utility::implicitly_convertible(hep::displacement / hep::duration,
 static_assert(!utility::implicitly_convertible(hep::decay_constant, hep::frequency));
 static_assert(!utility::implicitly_convertible(hep::frequency, hep::decay_constant));
 static_assert(utility::implicitly_convertible(inverse(hep::mean_lifetime), hep::frequency));
+
+// lorentz_factor is defined by time dilation: coordinate time per unit of proper time
+static_assert(utility::explicitly_convertible(hep::coordinate_time / hep::proper_time, hep::lorentz_factor));
+static_assert(!utility::explicitly_convertible(hep::proper_time / hep::coordinate_time, hep::lorentz_factor));
+// ... and dividing it out recovers the other time: t / γ is a proper time, γ τ a coordinate time
+static_assert(utility::explicitly_convertible(hep::coordinate_time / hep::lorentz_factor, hep::proper_time));
+static_assert(!utility::implicitly_convertible(hep::coordinate_time / hep::lorentz_factor, hep::proper_time));
+static_assert(utility::explicitly_convertible(hep::lorentz_factor * hep::proper_time, hep::coordinate_time));
+static_assert(!utility::implicitly_convertible(hep::lorentz_factor * hep::proper_time, hep::coordinate_time));
+// with the times swapped it is not time dilation
+static_assert(!utility::castable(hep::proper_time / hep::lorentz_factor, hep::coordinate_time));
+static_assert(!utility::castable(hep::lorentz_factor * hep::coordinate_time, hep::proper_time));
+// another dimensionless kind is no bridge between the two times
+static_assert(!utility::castable(hep::coordinate_time / hep::relativistic_beta, hep::proper_time));
 
 // lorentz_factor and relativistic_beta are distinct dimensionless kinds
 // They cannot be created from arbitrary dimensionless values (marked with subkind)

@@ -145,7 +145,7 @@ flowchart LR
     natural_velocity["<b><a href="../../systems/natural/#velocity" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">natural::velocity</a></b>"]
     natural_speed --- natural_velocity
     subgraph kind_hep_lorentz_factor[" "]
-        hep_lorentz_factor["<b><a href="../../systems/hep/#lorentz_factor" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">hep::lorentz_factor</a></b>"]
+        hep_lorentz_factor["<b><a href="../../systems/hep/#lorentz_factor" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">hep::lorentz_factor</a></b><br><i>(<a href="../../systems/hep/#coordinate_time" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">coordinate_time</a> / <a href="../../systems/hep/#proper_time" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">proper_time</a>)</i>"]
     end
     subgraph kind_hep_phase[" "]
         hep_phase["<b><a href="../../systems/hep/#phase" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">hep::phase</a></b>"]
