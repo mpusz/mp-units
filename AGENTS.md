@@ -66,6 +66,16 @@ pre-commit run --files <the files you changed>
 # pre-commit run --all-files      # only when you really need a full sweep
 ```
 
+Before the first commit in a clone, check that the git hook is installed. Without it
+nothing stops a commit that fails the hooks, and CI is the first to notice:
+
+```bash
+test -x "$(git rev-parse --git-path hooks/pre-commit)" || echo "hook missing"
+```
+
+If it is missing, say so and ask before running `pre-commit install`, which writes a hook
+into the clone.
+
 ## Understanding the design
 
 Read these before changing core behavior:
