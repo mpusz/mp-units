@@ -10,7 +10,7 @@ Learn about truncation, forcing conversions, and system-specific units.
 **mp-units** allows implicit conversions when safe (no truncation), but blocks dangerous ones:
 
 ```cpp
-// ce-embed height=500 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
+// ce-embed height=500 compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0" mp-units=trunk
 #include <mp-units/systems/si.h>
 #include <iostream>
 
@@ -52,7 +52,7 @@ value-preserving:
     representation type is deduced from the expression.
 
 ```cpp
-// ce-embed height=550 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
+// ce-embed height=550 compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0" mp-units=trunk
 #include <mp-units/systems/si.h>
 #include <iostream>
 
@@ -95,7 +95,7 @@ When a conversion cannot keep the value, you have to say what should happen to t
 that does not fit:
 
 ```cpp
-// ce-embed height=550 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
+// ce-embed height=550 compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0" mp-units=trunk
 #include <mp-units/systems/si.h>
 #include <iostream>
 

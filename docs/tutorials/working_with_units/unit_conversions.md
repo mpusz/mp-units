@@ -10,7 +10,7 @@ Learn to convert quantities between different units safely and explicitly.
 To express a quantity in different units, use `.in()`:
 
 ```cpp
-// ce-embed height=600 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
+// ce-embed height=600 compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0" mp-units=trunk
 #include <mp-units/systems/si.h>
 #include <mp-units/systems/yard_pound.h>
 #include <iostream>
@@ -50,7 +50,7 @@ int main()
 You can convert at any point:
 
 ```cpp
-// ce-embed height=550 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
+// ce-embed height=550 compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0" mp-units=trunk
 #include <mp-units/systems/si.h>
 #include <mp-units/systems/yard_pound.h>
 #include <iostream>
@@ -85,7 +85,7 @@ choose your preferred output unit, or late to work in input units.
 ## Common Conversions
 
 ```cpp
-// ce-embed height=650 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
+// ce-embed height=650 compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0" mp-units=trunk
 #include <mp-units/systems/si.h>
 #include <mp-units/systems/yard_pound.h>
 #include <iostream>
@@ -130,7 +130,7 @@ When you specify exact units in function parameters, the library automatically c
 compatible units at the call site (if conversion is safe):
 
 ```cpp
-// ce-embed height=700 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
+// ce-embed height=700 compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0" mp-units=trunk
 #include <mp-units/systems/si.h>
 #include <iostream>
 

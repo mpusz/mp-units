@@ -21,7 +21,7 @@ A **quantity** combines a numerical value with its unit. For example:
 The code below creates quantities. It compiles and runs automatically as you modify it!
 
 ```cpp
-// ce-embed height=500 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
+// ce-embed height=500 compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0" mp-units=trunk
 #include <mp-units/systems/si.h>
 #include <iostream>
 
@@ -84,7 +84,7 @@ So far we've used unit **symbols** like `km`, `h`, `kg`. But you can also use fu
 **names** with prefixes:
 
 ```cpp
-// ce-embed height=550 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
+// ce-embed height=550 compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0" mp-units=trunk
 #include <mp-units/systems/si.h>
 #include <iostream>
 

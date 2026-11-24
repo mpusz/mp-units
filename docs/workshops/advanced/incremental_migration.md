@@ -127,7 +127,7 @@ functions to work with legacy speed types.
 - Don't modify the legacy struct definitions
 
 ```cpp
-// ce-embed height=800 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
+// ce-embed height=800 compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0" mp-units=trunk
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
 #include <mp-units/math.h>

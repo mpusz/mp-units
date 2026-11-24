@@ -331,8 +331,10 @@ The all-in-one header. It pulls in everything the SI system offers:
 - SI `math.h` overloads of `<cmath>` functions for quantities (hosted only)
 - `invoke_with_prefixed` and `prefix_range` utilities (hosted only)
 
-**When to use:** application code where SI breadth is more important than
-individual include cost — the typical choice for `.cpp` files.
+**When to use:** when SI breadth matters more than compile time: a prototype, a short
+example, or a translation unit that really uses most of what is listed above. It is the
+convenient choice, not the cheapest one; every translation unit that includes it pays for
+all of it.
 
 ### Lean umbrella — `<mp-units/systems/si/core.h>`
 
@@ -344,10 +346,11 @@ A lighter umbrella that includes units, prefixes, and the essential unit symbols
 deliberately omits the full `unit_symbols.h`, `constants.h`, `chrono.h`, `math.h`, and
 `prefix_utils.h`.
 
-**When to use:** library headers (`.h`/`.hpp`) that use SI units internally but
-should not force the full prefix matrix, `<chrono>`, or `<cmath>` on their users. Also
-the recommended include for other system headers that build on top of SI (e.g. CGS,
-imperial).
+**When to use:** by default, in any code that cares about compile time, and add the
+specific headers below (`si/constants.h`, `si/math.h`, ...) only when you use what they
+provide. It matters most in headers, because everyone who includes your header pays for
+what you include, but a `.cpp` file gains from it just as much. Also the recommended
+include for other system headers that build on top of SI (e.g. CGS, imperial).
 
 ### Individual headers
 

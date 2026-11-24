@@ -67,7 +67,7 @@ offered for an excluded end, such as the max of `wrap_to_range`.
 ## Try It: Drone Altitude Zones
 
 ```cpp
-// ce-embed height=880 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
+// ce-embed height=880 compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0" mp-units=trunk
 #include <mp-units/core.h>
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
@@ -147,7 +147,7 @@ the library **automatically attaches `check_non_negative`** — no explicit boun
 definition is required:
 
 ```cpp
-// ce-embed compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
+// ce-embed compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0" mp-units=trunk
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
 #include <iostream>

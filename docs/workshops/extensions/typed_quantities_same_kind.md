@@ -35,7 +35,7 @@ All three are _lengths_, but their roles are distinct and must not be confused.
    Analyze the difference and propose a solution to prevent this issue.
 
 ```cpp
-// ce-embed height=650 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
+// ce-embed height=650 compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0" mp-units=trunk
 #include <mp-units/systems/si.h>
 #include <iostream>
 #include <optional>

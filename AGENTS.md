@@ -47,6 +47,10 @@ Tests live in two places, and a change usually belongs in one of them:
 - `test/runtime/` — [Catch2](https://github.com/catchorg/Catch2) tests in the
   `unit_tests_runtime` executable, for behavior that only shows up when the code executes.
 
+Compiler Explorer links in the docs are built by `scripts/examples_godbolt.py`, not pasted by hand.
+Use a concrete, newest compiler release there and never `trunk`: a trunk compiler is slower on
+Compiler Explorer, which already times out on some examples. The reasons are in that script.
+
 Whenever you touch a public header, verify it is still self-contained:
 
 ```bash

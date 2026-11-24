@@ -16,7 +16,7 @@ kind _length_:
     see the [`isq::length` hierarchy tree](../../reference/systems_reference/hierarchies/length_isq.md).
 
 ```cpp
-// ce-embed height=850 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
+// ce-embed height=850 compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0" mp-units=trunk
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
 #include <iostream>
@@ -73,7 +73,7 @@ between siblings only when you're certain the semantic conversion is valid!
 You can add, subtract, and compare different quantities from the same hierarchy:
 
 ```cpp
-// ce-embed height=850 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
+// ce-embed height=850 compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0" mp-units=trunk
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
 #include <iostream>
@@ -122,7 +122,7 @@ between the quantities!
 When you write `40 * m`, you create a quantity of kind _length_, not a specific quantity:
 
 ```cpp
-// ce-embed height=750 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
+// ce-embed height=750 compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0" mp-units=trunk
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
 #include <iostream>
@@ -163,7 +163,7 @@ meaning and stricter type checking!
 Use specifications to make function signatures more precise:
 
 ```cpp
-// ce-embed height=750 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
+// ce-embed height=750 compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0" mp-units=trunk
 #include <mp-units/core.h>
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>

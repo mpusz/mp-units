@@ -76,7 +76,7 @@ Build a stock portfolio tracking system:
       portfolio_value(QuantityOf<shares> auto num_shares, ...)`
 
 ```cpp
-// ce-embed height=900 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
+// ce-embed height=900 compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0" mp-units=trunk
 #include <mp-units/core.h>
 #include <mp-units/systems/si.h>
 #include <iostream>

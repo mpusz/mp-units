@@ -36,7 +36,7 @@ Register a `frame_projection` by specializing a variable template in `namespace 
 with a callable for each conversion direction:
 
 ```cpp
-// ce-embed height=880 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
+// ce-embed height=880 compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0" mp-units=trunk
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
 #include <iostream>
@@ -88,7 +88,7 @@ If the target is a `relative_point_origin` whose absolute root is reachable via 
 relative-origin chain automatically:
 
 ```cpp
-// ce-embed height=800 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
+// ce-embed height=800 compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0" mp-units=trunk
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
 #include <iostream>
@@ -131,7 +131,7 @@ This lets the projection depend on data that varies at the call site — no glob
 required:
 
 ```cpp
-// ce-embed height=880 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
+// ce-embed height=880 compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0" mp-units=trunk
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
 #include <iostream>

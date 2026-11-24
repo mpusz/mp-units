@@ -26,7 +26,7 @@ efficient processing, trading type safety for computational speed.
 ## The `.numerical_value_in()` Method
 
 ```cpp
-// ce-embed height=600 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
+// ce-embed height=600 compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0" mp-units=trunk
 #include <mp-units/systems/si.h>
 #include <mp-units/systems/yard_pound.h>
 #include <iostream>
@@ -62,7 +62,7 @@ against unit errors.
 ## Difference: `.in()` vs `.numerical_value_in()`
 
 ```cpp
-// ce-embed height=550 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
+// ce-embed height=550 compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0" mp-units=trunk
 #include <mp-units/systems/si.h>
 #include <iostream>
 
@@ -109,7 +109,7 @@ can stay type-safe; use `.numerical_value_in()` only when necessary.
 ## Common Use Case: Legacy APIs
 
 ```cpp
-// ce-embed height=650 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
+// ce-embed height=650 compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0" mp-units=trunk
 #include <mp-units/systems/si.h>
 #include <iostream>
 
@@ -151,7 +151,7 @@ the surface area where unit errors can occur.
 ## Custom Text Output
 
 ```cpp
-// ce-embed height=650 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
+// ce-embed height=650 compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0" mp-units=trunk
 #include <mp-units/systems/si.h>
 #include <mp-units/systems/yard_pound.h>
 #include <iostream>

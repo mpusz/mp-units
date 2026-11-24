@@ -24,15 +24,17 @@
 // Usage in Markdown: place a directive as the FIRST non-empty line inside a fenced code block.
 //
 // ```cpp
-// // ce-embed height=650 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3"
+// // ce-embed height=650 compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0"
 // #include <mp-units/systems/si.h>
 // ...
 // ```
 //
 // Optional parameters on the directive:
 //  - height: number (default 650)
-//  - compiler: string (default clang2110)
-//  - flags: string (default "-std=c++23 -stdlib=libc++ -O3")
+//  - compiler: string (default clang2310). Always a concrete release, never `trunk`: a trunk compiler is
+//    slower on Compiler Explorer, which already times out on some examples.
+//  - flags: string (default "-std=c++23 -stdlib=libc++ -O0"). No optimization, because the embeds show
+//    program output and never generated assembly.
 (function (root, factory) {
   const api = factory();
   if (typeof module === 'object' && module.exports) {
@@ -70,6 +72,12 @@
     return out;
   }
 
+  function compilerName(id) {
+    // Compiler Explorer ids a Clang release as clang<major><minor><patch>, e.g. clang2310 is 23.1.0.
+    const m = /^clang(\d\d)(\d)(\d)$/.exec(id);
+    return m ? `x86-64+clang+${m[1]}.${m[2]}.${m[3]}` : id;
+  }
+
   function buildSrc(code, compiler, flags, mpUnits) {
     // Normalize line endings and trim one trailing newline to match CE share output
     let norm = code.replace(/\r\n/g, '\n');
@@ -82,14 +90,14 @@
     const FLAGS = encodeURIComponent(flags).replace(/%20/g, '+');
     return (
       "https://godbolt.org/e?hideEditorToolbars=true#g:!((g:!((g:!((h:codeEditor,i:(" +
-      "filename:'1',fontScale:15,fontUsePx:'0',j:1,lang:c%2B%2B,selection:(endColumn:1,endLineNumber:1,positionColumn:1,positionLineNumber:1,selectionStartColumn:1,selectionStartLineNumber:1,startColumn:1,startLineNumber:1),source:'" + CODE + "'),l:'5',n:'0',o:'C%2B%2B+source+%231',t:'0')),k:100,l:'4',m:65.44554455445545,n:'0',o:'',s:0,t:'0'),(g:!((h:executor,i:(argsPanelShown:'1',compilationPanelShown:'1',compiler:" + compiler + ",compilerName:'',compilerOutShown:'0',execArgs:'',execStdin:'',fontScale:16,fontUsePx:'0',j:1,lang:c%2B%2B,libs:!((name:mp-units,ver:" + mpUnits + ")),options:'" + FLAGS + "',overrides:!(),runtimeTools:!(),source:1,stdinPanelShown:'1',wrap:'0'),l:'5',n:'0',o:'Executor+x86-64+clang+21.1.0+(C%2B%2B,+Editor+%231)',t:'0')),header:(),l:'4',m:34.554455445544555,n:'0',o:'',s:0,t:'0')),l:'3',n:'0',o:'',t:'0')),version:4"
+      "filename:'1',fontScale:15,fontUsePx:'0',j:1,lang:c%2B%2B,selection:(endColumn:1,endLineNumber:1,positionColumn:1,positionLineNumber:1,selectionStartColumn:1,selectionStartLineNumber:1,startColumn:1,startLineNumber:1),source:'" + CODE + "'),l:'5',n:'0',o:'C%2B%2B+source+%231',t:'0')),k:100,l:'4',m:65.44554455445545,n:'0',o:'',s:0,t:'0'),(g:!((h:executor,i:(argsPanelShown:'1',compilationPanelShown:'1',compiler:" + compiler + ",compilerName:'',compilerOutShown:'0',execArgs:'',execStdin:'',fontScale:16,fontUsePx:'0',j:1,lang:c%2B%2B,libs:!((name:mp-units,ver:" + mpUnits + ")),options:'" + FLAGS + "',overrides:!(),runtimeTools:!(),source:1,stdinPanelShown:'1',wrap:'0'),l:'5',n:'0',o:'Executor+" + compilerName(compiler) + "+(C%2B%2B,+Editor+%231)',t:'0')),header:(),l:'4',m:34.554455445544555,n:'0',o:'',s:0,t:'0')),l:'3',n:'0',o:'',t:'0')),version:4"
     );
   }
 
   function parseInfo(info) {
     // Parse key=value pairs where value may be quoted and contain spaces.
     // Supports: key=value | key="value with spaces" | key='value with spaces'
-  const meta = { height: 650, compiler: 'clang2110', flags: '-std=c++23 -stdlib=libc++ -O3', mpUnits: 'trunk' };
+  const meta = { height: 650, compiler: 'clang2310', flags: '-std=c++23 -stdlib=libc++ -O0', mpUnits: 'trunk' };
     const regex = /(\w+)=((?:"[^"]*")|(?:'[^']*')|[^\s]+)/g;
     let match;
     while ((match = regex.exec(info)) !== null) {

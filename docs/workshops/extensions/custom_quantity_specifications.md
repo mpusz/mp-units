@@ -92,7 +92,7 @@ The rest of the code is provided—your task is to properly define these quantit
 specifications so the type system enforces semantic correctness.
 
 ```cpp
-// ce-embed height=650 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
+// ce-embed height=650 compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0" mp-units=trunk
 #include <mp-units/core.h>
 #include <mp-units/systems/codata/adopted_values.h>
 #include <mp-units/systems/isq.h>
