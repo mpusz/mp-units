@@ -109,9 +109,10 @@
   box-shadow: none;
 }
 
-/* Links inside a signature read as part of the code, not as prose. */
+/* Links inside a signature read as part of the code, not as prose. Material's link colour
+ * follows the colour scheme, where the primary colour is too dark on the slate background. */
 .md-typeset pre.mrdocs-synopsis a {
-  color: var(--md-primary-fg-color);
+  color: var(--md-typeset-a-color);
   text-decoration: none;
 }
 
@@ -138,6 +139,12 @@
 .md-typeset pre.mrdocs-synopsis .mrdocs-c {
   color: var(--md-code-hl-comment-color);
   font-style: italic;
+}
+
+/* A preprocessor line marks a part of the declaration that depends on the
+ * configuration, so it is set apart from the code around it. */
+.md-typeset pre.mrdocs-synopsis .mrdocs-p {
+  color: color-mix(in srgb, var(--md-code-hl-special-color) 55%, var(--md-code-fg-color));
 }
 
 /* Page title.

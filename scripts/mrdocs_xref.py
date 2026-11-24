@@ -551,12 +551,61 @@ def _leaked(markup: str, src_uri: str) -> None:
             )
 
 
-def _highlight(markup: str) -> str:
-    """Colour keywords and comments in a synopsis, leaving links untouched."""
+_DIRECTIVE = re.compile(
+    r"(?m)^[ \t]*#[ \t]*(?:if|ifdef|ifndef|elif|else|endif)\b[^\n]*"
+)
+_OPENING = re.compile(r"[ \t]*#[ \t]*if")
+_CLOSING = re.compile(r"[ \t]*#[ \t]*endif\b")
 
-    def wrap(text: str) -> str:
+
+def _balanced(markup: str) -> str:
+    """Close a conditional that a synopsis opens and never ends.
+
+    MrDocs copies a requires-clause from the source up to its last token. When
+    the clause ends inside a conditional, as an alternative guarded by
+    `#if MP_UNITS_HOSTED` does, the `#endif` after that token is left behind
+    and the page shows a block that never closes. The lines of the guarded
+    alternative are indented and the declaration after the clause is not, so
+    the `#endif` goes before the first line that starts in the first column.
+    Remove when cppalliance/mrdocs#1386 is fixed.
+    """
+
+    def one(match: re.Match) -> str:
+        opening, body, closing = match.groups()
+        out: list[str] = []
+        depth = 0
+        for line in body.split("\n"):
+            if _OPENING.match(line):
+                depth += 1
+            elif _CLOSING.match(line):
+                depth = max(depth - 1, 0)
+            elif depth and line[:1] not in ("", " ", "\t", "#"):
+                out.extend(["#endif"] * depth)
+                depth = 0
+            out.append(line)
+        out.extend(["#endif"] * depth)
+        return opening + "\n".join(out) + closing
+
+    return _SYNOPSIS.sub(one, markup)
+
+
+def _highlight(markup: str) -> str:
+    """Colour keywords, comments and preprocessor lines in a synopsis, leaving links untouched."""
+
+    def tokens(text: str) -> str:
         text = _KEYWORD.sub(r'<span class="mrdocs-k">\g<0></span>', text)
         return _COMMENT.sub(r'<span class="mrdocs-c">\g<0></span>', text)
+
+    def wrap(text: str) -> str:
+        # a directive is coloured as one line, so the `if` in `#if` is not taken for a keyword
+        parts = []
+        last = 0
+        for directive in _DIRECTIVE.finditer(text):
+            parts.append(tokens(text[last : directive.start()]))
+            parts.append(f'<span class="mrdocs-p">{directive.group(0)}</span>')
+            last = directive.end()
+        parts.append(tokens(text[last:]))
+        return "".join(parts)
 
     def one(match: re.Match) -> str:
         opening, body, closing = match.groups()
@@ -872,6 +921,7 @@ def on_page_markdown(markdown: str, page, config, files, **kwargs):
     if src_uri.startswith(f"{API_DIR}/"):
         markdown = _conforming(markdown)
         _leaked(markdown, src_uri)
+        markdown = _balanced(markdown)
         markdown = _highlight(markdown)
         markdown = _heading(markdown, page)
         markdown = _fence(markdown)
