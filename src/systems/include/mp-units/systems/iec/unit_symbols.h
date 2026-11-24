@@ -25,13 +25,14 @@
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/systems/iec/binary_prefixes.h>
 #include <mp-units/systems/iec/units.h>
+#include <mp-units/systems/si/non_si.h>
 #include <mp-units/systems/si/prefixes.h>
 
 MP_UNITS_EXPORT
 namespace mp_units::iec::unit_symbols {
 
 // Electromagnetism
-inline constexpr auto var = volt_ampere_reactive_power;
+using non_si::unit_symbols::var;
 
 // Information science and technology
 // bit

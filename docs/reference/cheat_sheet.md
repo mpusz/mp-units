@@ -265,8 +265,7 @@ inline constexpr auto kilogram = si::kilo<gram>;
 inline constexpr struct newton : named_unit<"N", kilogram * metre / square(second)> {} newton;
 inline constexpr struct bar : named_unit<"bar", mag<100> * kPa> {} bar;
 inline constexpr struct yard : named_unit<"yd", mag_ratio<9'144, 10'000> * si::metre> {} yard;
-inline constexpr struct dalton :
-    named_unit<"Da", mag_ratio<16'605'390'666'050, 10'000'000'000'000> * mag_power<10, -27> * kg> {} dalton;
+inline constexpr struct dalton : named_unit<"Da", codata::atomic_mass_constant> {} dalton;
 ```
 
 ### Working with Units
@@ -289,7 +288,7 @@ constexpr Unit auto mps = m / s;
 constexpr Unit auto two_pi = mag<2> * π;
 ```
 
-1. Non-SI unit accepted for use with SI
+1. Non-SI unit listed in the SI Brochure (Table 8)
 
 ### Unit Conversions
 

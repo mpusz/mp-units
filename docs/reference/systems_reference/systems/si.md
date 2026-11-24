@@ -15,6 +15,7 @@
 - `<mp-units/systems/si/constants.h>`
 - `<mp-units/systems/si/core.h>`
 - `<mp-units/systems/si/math.h>`
+- `<mp-units/systems/si/non_si.h>`
 - `<mp-units/systems/si/prefix_utils.h>`
 - `<mp-units/systems/si/prefixes.h>`
 - `<mp-units/systems/si/unit_symbols.h>`
@@ -85,28 +86,34 @@
 | <span id="watt"></span><code>watt</code> | W | `W` | <code>[joule](#joule) / <wbr>[second](#second)</code> |
 | <span id="weber"></span><code>weber</code> | Wb | `Wb` | <code>[volt](#volt) * <wbr>[second](#second)</code> |
 
-## Non-SI units accepted for use with the SI
+## Non-SI units (SI Brochure, Table 8)
 
 | Unit Name | Symbol | unit_symbol | Definition |
 |-----------|:------:|:-----------:|------------|
+| <span id="angstrom"></span><code>angstrom</code> | Å (angstrom) | `Å`, `angstrom` | <code>mag_power<10, -10> * <wbr>[metre](#metre)</code> |
 | <span id="arcminute"></span><code>arcminute</code> | ′ (') | `arcmin` | <code>mag_ratio<1, 60> * <wbr>[degree](#degree)</code> |
 | <span id="arcsecond"></span><code>arcsecond</code> | ″ ('') | `arcsec` | <code>mag_ratio<1, 60> * <wbr>[arcminute](#arcminute)</code> |
 | <span id="are"></span><code>are</code> | a | `a` | <code>square([deca](#deca)<[metre](#metre)>)</code> |
 | <span id="astronomical_unit"></span><code>astronomical_<wbr>unit</code> | au | `au` | <code>mag<149'597'870'700> * <wbr>[metre](#metre)</code> |
 | <span id="bar"></span><code>bar</code> | bar | `bar` | <code>mag_power<10, 5> * <wbr>[pascal](#pascal)</code> |
-| <span id="dalton"></span><code>dalton</code> | Da | `Da` | <code>mag_ratio<16'605'390'666'050, 10'000'000'000'000> * <wbr>mag_power<10, -27> * <wbr>[kilogram](#kilogram)</code> |
+| <span id="barn"></span><code>barn</code> | b | `b` | <code>mag_power<10, -28> * <wbr>square([metre](#metre))</code> |
+| <span id="dalton"></span><code>dalton</code> | Da | `Da` | alias to [codata::dalton](codata.md#codata2022-dalton) |
 | <span id="day"></span><code>day</code> | d | `d` | <code>mag<24> * <wbr>[hour](#hour)</code> |
 | <span id="degree"></span><code>degree</code> | ° (deg) | `deg` | <code>mag_ratio<1, 180> * <wbr>[π](core.md#π) * <wbr>[radian](#radian)</code> |
 | <span id="electronvolt"></span><code>electronvolt</code> | eV | `eV` | <code>mag_ratio<1'602'176'634, 1'000'000'000> * <wbr>mag_power<10, -19> * <wbr>[joule](#joule)</code> |
+| <span id="gal"></span><code>gal</code> | Gal | `Gal` | <code>[centi](#centi)<[metre](#metre)> / <wbr>square([second](#second))</code> |
 | <span id="hectare"></span><code>hectare</code> | — | `ha` | <code>[hecto](#hecto)<[are](#are)></code> |
 | <span id="hour"></span><code>hour</code> | h | `h` | <code>mag<60> * <wbr>[minute](#minute)</code> |
+| <span id="knot"></span><code>knot</code> | kn | `kn`, `kt` | <code>[nautical_<wbr>mile](#nautical_mile) / <wbr>[hour](#hour)</code> |
 | <span id="litre"></span><code>litre</code> | L | `l`, `L` | <code>cubic([deci](#deci)<[metre](#metre)>)</code> |
 | <span id="minute"></span><code>minute</code> | min | `min` | <code>mag<60> * <wbr>[second](#second)</code> |
+| <span id="nautical_mile"></span><code>nautical_<wbr>mile</code> | nmi | `nmi`, `NM` | <code>mag<1852> * <wbr>[metre](#metre)</code> |
 | <span id="tonne"></span><code>tonne</code> | t | `t` | <code>mag<1000> * <wbr>[kilogram](#kilogram)</code> |
+| <span id="var"></span><code>var</code> | var | `var` | <code>[volt](#volt) * <wbr>[ampere](#ampere)<br>kind: [isq::reactive_<wbr>power](isq.md#reactive_power)</code> |
 
 !!! note "Namespace"
 
-    These units are defined in the `mp_units::non_si` namespace and are made available in the `mp_units::si` namespace through a using-directive.
+    These units are defined in the `mp_units::non_si` namespace. The ones in general use with the SI are also available in the `mp_units::si` namespace: `arcminute`, `arcsecond`, `are`, `astronomical_unit`, `bar`, `day`, `degree`, `electronvolt`, `hectare`, `hour`, `litre`, `minute`, `tonne`.
 
 ## Prefixed unit symbols
 

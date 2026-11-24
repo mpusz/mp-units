@@ -144,8 +144,8 @@ QUANTITY_SPEC(active_power, isq::power, inverse(period) * (instantaneous_power *
 QUANTITY_SPEC(complex_power, voltage_phasor* electric_current_phasor);  // complex // separate kind
 QUANTITY_SPEC(apparent_power, complex_power, quantity_field::real);
 QUANTITY_SPEC(power_factor, dimensionless, active_power / apparent_power);
-QUANTITY_SPEC(reactive_power, isq::mass* pow<2>(isq::length) / pow<3>(isq::duration));  // separate kind; signed
-QUANTITY_SPEC(non_active_power, pow<1, 2>(pow<2>(apparent_power)));                     // separate kind
+// reactive_power is in si_quantities.h: the var of the SI Brochure (Table 8) is its unit
+QUANTITY_SPEC(non_active_power, pow<1, 2>(pow<2>(apparent_power)));  // separate kind
 QUANTITY_SPEC(active_energy, energy, instantaneous_power* time);
 
 }  // namespace mp_units::isq

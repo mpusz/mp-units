@@ -35,6 +35,7 @@
 
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/systems/codata/adopted_values.h>
+#include <mp-units/systems/codata/codata2022_dalton.h>
 #include <mp-units/systems/si/constants.h>
 #include <mp-units/systems/si/units.h>
 
@@ -54,10 +55,6 @@ namespace mp_units::codata {
 inline namespace codata2022 {
 
 // clang-format off
-
-// atomic mass constant: 1.660 539 068 92 e-27 kg, u = 0.000 000 000 52 e-27 kg
-inline constexpr struct atomic_mass_constant final :
-    named_constant<"m_u", mag_ratio<166'053'906'892, 100'000'000'000> * mag_power<10, -27> * si::kilogram, standard_uncertainty{mag_ratio<52, 10> * mag_power<10, -37> * si::kilogram}> {} atomic_mass_constant;
 
 // Avogadro constant: 6.022 140 76 e23 mol^-1 (exact)
 using si::si2019::avogadro_constant;

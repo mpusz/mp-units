@@ -23,6 +23,7 @@
 #pragma once
 
 #include <mp-units/bits/module_macros.h>
+#include <mp-units/systems/si/non_si.h>
 #include <mp-units/systems/si/unit_symbols.h>
 #include <mp-units/systems/si/units.h>
 
@@ -55,7 +56,7 @@ namespace mp_units::cgs {
 inline constexpr auto centimetre = si::centi<si::metre>;
 using si::gram;
 using si::second;
-inline constexpr struct gal final : named_unit<"Gal", centimetre / square(second)> {} gal;
+using non_si::gal;
 inline constexpr struct dyne final : named_unit<"dyn", gram * centimetre / square(second)> {} dyne;
 inline constexpr struct erg final : named_unit<"erg", dyne * centimetre> {} erg;
 inline constexpr struct barye final : named_unit<"Ba", gram / (centimetre * square(second))> {} barye;
@@ -66,10 +67,10 @@ inline constexpr struct kayser final : named_unit<"K", one / centimetre> {} kays
 
 namespace unit_symbols {
 
+using non_si::unit_symbols::Gal;
 using si::unit_symbols::cm;
 using si::unit_symbols::g;
 using si::unit_symbols::s;
-inline constexpr auto Gal = gal;
 inline constexpr auto dyn = dyne;
 using cgs::erg;
 inline constexpr auto Ba = barye;

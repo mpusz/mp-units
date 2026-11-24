@@ -36,6 +36,7 @@
 
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/systems/codata/adopted_values.h>
+#include <mp-units/systems/codata/codata2014_dalton.h>
 #include <mp-units/systems/si/constants.h>
 #include <mp-units/systems/si/units.h>
 
@@ -55,10 +56,6 @@ namespace mp_units::codata {
 namespace codata2014 {
 
 // clang-format off
-
-// atomic mass constant: 1.660 539 040 e-27 kg, u = 0.000 000 020 e-27 kg
-inline constexpr struct atomic_mass_constant final :
-    named_constant<"m_u", mag_ratio<1'660'539'040, 1'000'000'000> * mag_power<10, -27> * si::kilogram, standard_uncertainty{mag_ratio<20, 10> * mag_power<10, -35> * si::kilogram}> {} atomic_mass_constant;
 
 // Avogadro constant: 6.022 140 857 e23 mol^-1, u = 0.000 000 074 e23 mol^-1
 inline constexpr struct avogadro_constant final :

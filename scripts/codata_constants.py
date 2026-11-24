@@ -231,9 +231,9 @@ UNIT_TOKENS: dict[str, tuple[str, Fraction]] = {
     "H": ("si::henry", Fraction(1)),
     "lm": ("si::lumen", Fraction(1)),
     "sr": ("si::steradian", Fraction(1)),
-    "eV": ("si::electronvolt", Fraction(1_602_176_634, 10**28)),
-    "GeV": ("si::giga<si::electronvolt>", Fraction(1_602_176_634, 10**19)),
-    "u": ("si::dalton", Fraction(166_053_906_892, 10**38)),
+    "eV": ("non_si::electronvolt", Fraction(1_602_176_634, 10**28)),
+    "GeV": ("si::giga<non_si::electronvolt>", Fraction(1_602_176_634, 10**19)),
+    "u": ("dalton", Fraction(166_053_906_892, 10**38)),
 }
 
 
@@ -345,6 +345,18 @@ ESSENTIAL_ROWS = {
     "von Klitzing constant",
 }
 
+# The rows of the `codataYYYY_dalton.h` tier, below the essential one: the atomic mass
+# constant and the dalton defined through it. The SI Brochure takes the value of the dalton
+# from the current adjustment (Table 8, note (i)), so `si/non_si.h` includes this header.
+# It is kept apart from the essential tier because every `si.h` user pays for what
+# `si/non_si.h` includes, and the dalton costs nothing measurable while the essential tier
+# does.
+DALTON_ROWS = {"atomic mass constant"}
+DALTON_DEFINITION = (
+    "// dalton (SI Brochure, Table 8): 1 Da = m_u, the atomic mass constant\n"
+    'inline constexpr struct dalton final : named_unit<"Da", atomic_mass_constant> {} dalton;'
+)
+
 # Rows deliberately not represented in one specific adjustment only (currently none).
 YEAR_SKIPS: dict[tuple[str, str], str] = {}
 
@@ -356,7 +368,7 @@ CURATED_SKIPS = {
     "Faraday constant for conventional electric current": (
         "expressed in the conventional coulomb C_90, a unit this library does not define"
     ),
-    "electron volt": "provided as the unit si::electronvolt",
+    "electron volt": "provided as the unit non_si::electronvolt",
 }
 
 # Rows from NIST's "adopted values" category that are identical in every adjustment
@@ -782,8 +794,12 @@ class Emitted:
     lines: list[str] = field(default_factory=list)
 
     @property
-    def essential(self) -> bool:
-        return self.row is not None and self.row.name in ESSENTIAL_ROWS
+    def tier(self) -> str:
+        if self.row is not None and self.row.name in DALTON_ROWS:
+            return "dalton"
+        if self.row is not None and self.row.name in ESSENTIAL_ROWS:
+            return "essential"
+        return "full"
 
 
 @dataclass
@@ -1122,24 +1138,40 @@ ESSENTIAL_DOC = (
 )
 
 
+DALTON_DOC = (
+    "// This is the `dalton` tier: the atomic mass constant and the dalton defined through"
+    " it. The\n// SI Brochure takes the value of the dalton from the current adjustment, so"
+    " the `non_si`\n// units in <mp-units/systems/si/non_si.h> include the tier of the"
+    " current adjustment.\n// Every <mp-units/systems/si.h> user pays for that one, hence"
+    " the separate header. The\n// essential tier includes this one, so both spell the"
+    " very same types."
+)
+
+
 def adjustment_header(adjustment: str, body: str, uses_wien: bool, tier: str) -> str:
     includes = ["#include <mp-units/bits/module_macros.h>"]
     if tier == "essential":
         includes.append("#include <mp-units/systems/codata/adopted_values.h>")
+        includes.append(
+            f"#include <mp-units/systems/codata/codata{adjustment}_dalton.h>"
+        )
     if tier == "full":
         includes.append(
             f"#include <mp-units/systems/codata/codata{adjustment}_essential.h>"
         )
     if uses_wien:
         includes.append("#include <mp-units/systems/codata/math_constants.h>")
-    includes += [
-        "#include <mp-units/systems/si/constants.h>",
-        "#include <mp-units/systems/si/units.h>",
-    ]
+    if tier != "dalton":
+        includes.append("#include <mp-units/systems/si/constants.h>")
+    if tier == "full":
+        includes.append("#include <mp-units/systems/si/non_si.h>")
+    includes.append("#include <mp-units/systems/si/units.h>")
     inline = "inline " if adjustment == INLINE_ADJUSTMENT else ""
     doc = ADJUSTMENT_DOC[adjustment]
     if tier == "essential":
         doc += "\n//\n" + ESSENTIAL_DOC
+    if tier == "dalton":
+        doc += "\n//\n" + DALTON_DOC
     return (
         LICENSE
         + "//\n"
@@ -1224,13 +1256,13 @@ def generate() -> tuple[dict[str, str], dict[str, Disposition]]:
         rows = parse_table(adjustment)
         emitted, disposition = emit_adjustment(rows, adjustment)
         dispositions[adjustment] = disposition
-        for tier, entries in (
-            ("essential", [e for e in emitted if e.essential]),
-            ("full", [e for e in emitted if not e.essential]),
-        ):
+        for tier in ("dalton", "essential", "full"):
+            entries = [e for e in emitted if e.tier == tier]
             body = "".join("\n\n" + "\n".join(entry.lines) for entry in entries)
+            if tier == "dalton":
+                body += "\n\n" + DALTON_DEFINITION
             uses_wien = "wien_x_" in body
-            suffix = "_essential" if tier == "essential" else ""
+            suffix = "" if tier == "full" else f"_{tier}"
             files[f"codata/codata{adjustment}{suffix}.h"] = adjustment_header(
                 adjustment, body, uses_wien, tier
             )
@@ -1365,9 +1397,10 @@ def verify(files: dict[str, str]) -> list[str]:
         adopted_values[ident] = value
         adopted_units[ident] = row.unit
 
-    # the essential tier precedes the full one, exactly as the full header includes it
+    # the tiers in the order the full header includes them
     header = "".join(
-        files[f"codata/codata{adjustment}_essential.h"]
+        files[f"codata/codata{adjustment}_dalton.h"]
+        + files[f"codata/codata{adjustment}_essential.h"]
         + files[f"codata/codata{adjustment}.h"]
         for adjustment in ADJUSTMENTS
     )

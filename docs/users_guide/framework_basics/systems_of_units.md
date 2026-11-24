@@ -325,10 +325,11 @@ auto str = si::invoke_with_prefixed([](auto q) { return std::format("{}", q); },
 In the [SI](../../reference/glossary.md#si), all units are either base or derived units or
 prefixed versions of those. However, those are only some of the options possible.
 
-For example, there is a list of [off-system units](../../reference/glossary.md#off-system-unit)
-accepted for use with SI. Those are scaled versions of the SI units with ratios that can't
-be explicitly expressed with predefined SI prefixes. Those include units like minute, hour,
-or electronvolt:
+For example, the SI Brochure lists
+[off-system units](../../reference/glossary.md#off-system-unit) that remain in wide use
+with the SI. Many of those are scaled versions of the SI units with ratios that can't be
+expressed with predefined SI prefixes. Those include units like minute, hour, or
+electronvolt:
 
 ```cpp
 inline constexpr struct minute : named_unit<"min", mag<60> * si::second> {} minute;
