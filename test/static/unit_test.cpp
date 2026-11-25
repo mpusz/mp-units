@@ -709,6 +709,9 @@ concept named_unit_args_accepted = requires { typename named_unit<"x", Args...>;
 static_assert(named_unit_args_accepted<kind_of<isq::length>, no_space_before_unit_symbol>);
 static_assert(!named_unit_args_accepted<kind_of<isq::thermodynamic_temperature>, origin_a, origin_b>);
 static_assert(!named_unit_args_accepted<kelvin, origin_a, no_space_before_unit_symbol, origin_b>);
+static_assert(
+  !named_unit_args_accepted<kind_of<isq::length>, no_space_before_unit_symbol, no_space_before_unit_symbol>);
+static_assert(!named_unit_args_accepted<kelvin, no_space_before_unit_symbol, origin_a, no_space_before_unit_symbol>);
 static_assert(!named_unit_args_accepted<kind_of<isq::length>, 42>);
 static_assert(!named_unit_args_accepted<metre / metre, no_space_before_unit_symbol, kind_of<isq::angular_measure>>);
 static_assert(!named_unit_args_accepted<kelvin, origin_a, kind_of<isq::thermodynamic_temperature>>);

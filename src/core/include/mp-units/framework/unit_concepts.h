@@ -101,6 +101,12 @@ concept AtMostOnePointOrigin =
   unsatisfied<"A unit takes at most one point origin">();
 
 template<auto... Args>
+concept AtMostOneNoSpaceTag = (std::size_t{0} + ... +
+                               std::size_t{std::is_same_v<std::remove_const_t<MP_UNITS_NTTP_HACK(decltype(Args))>,
+                                                          struct mp_units::no_space_before_unit_symbol>}) <= 1 ||
+                              unsatisfied<"'no_space_before_unit_symbol' is given more than once">();
+
+template<auto... Args>
 [[nodiscard]] consteval bool properties_come_last()
 {
   bool property_seen = false;
@@ -122,8 +128,9 @@ concept PropertiesComeLast =
 // A single argument is the unit's definition, so most units skip the checks on the properties.
 template<auto... Args>
 concept NamedUnitArguments =
-  (... && NamedUnitArgument<Args>) && ((std::size_t{0} + ... + ((void)Args, std::size_t{1})) == 1 ||
-                                       (AtMostOnePointOrigin<Args...> && PropertiesComeLast<Args...>));
+  (... && NamedUnitArgument<Args>) &&
+  ((std::size_t{0} + ... + ((void)Args, std::size_t{1})) == 1 ||
+   (AtMostOnePointOrigin<Args...> && AtMostOneNoSpaceTag<Args...> && PropertiesComeLast<Args...>));
 
 }  // namespace detail
 
