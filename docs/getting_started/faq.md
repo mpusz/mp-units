@@ -114,6 +114,27 @@ in order to form a quantity.
     to use as a reference point.
 
 
+## Why doesn't `q > 0` compile for a quantity with a unit?
+
+Code written for `double` compares against `0`, and the same spelling would read like the
+formula it implements. However, it puts a number without a unit next to a quantity that has
+one, which the library otherwise allows only for a dimensionless quantity in `one`. It also
+can't be made reliable in generic code:
+
+- A literal `0` stops being a literal once it is passed to a function, so
+  `std::ranges::find(v, 0)` and `std::less<>{}(q, 0)` can't accept it.
+- Every way of accepting only a literal `0` has a cost. A `consteval` check is invisible
+  to a requires-expression, so a constrained template that probes `q == 1` takes the wrong
+  overload. A null pointer constant makes the probe agree, but triggers
+  `-Wzero-as-null-pointer-constant` in user code and rejects `0.0`.
+
+Compare against `zero` instead. It is a tag type, and overload resolution sees it like any
+other argument. It is spelled out, so a reader sees that the unit is omitted on purpose. It
+doesn't convert to an arithmetic type either. When an expression's result isn't a quantity,
+a comparison against `zero` can't end up calling another library's comparison against
+`int`.
+
+
 ## Why can I add newton metres to joules?
 
 Because `40 * N * m` and `40 * J` never claimed to be a _moment of force_ or an _energy_.

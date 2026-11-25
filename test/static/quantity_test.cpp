@@ -1663,38 +1663,80 @@ static_assert(v{1., 2., 3.} * one == v{1., 2., 3.});
 static_assert(v{1., 2., 3.} != v{3., 2., 1.} * one);
 #endif
 
-static_assert(0 * m == 0);
-static_assert(0. * m == 0);
-static_assert(0 * m == 0.);
-static_assert(0. * m == 0.);
-static_assert(42 * m != 0);
-static_assert(42. * m != 0);
-static_assert(42 * m != 0.);
-static_assert(42. * m != 0.);
+static_assert(0 * m == zero);
+static_assert(0. * m == zero);
+static_assert(0 * km == zero);
+static_assert(42 * m != zero);
+static_assert(42. * m != zero);
+static_assert(zero == 0 * m);
+static_assert(zero != 42. * m);
+static_assert(!(42 * m == zero));
+static_assert(!(0. * m != zero));
 
-static_assert(!(42 * m == 0));
-static_assert(!(42. * m == 0));
-static_assert(!(42 * m == 0.));
-static_assert(!(42. * m == 0.));
-static_assert(!(0 * m != 0));
-static_assert(!(0. * m != 0));
-static_assert(!(0 * m != 0.));
-static_assert(!(0. * m != 0.));
+// a number keeps comparing against a dimensionless quantity in `one`
+static_assert(0 * one == zero);
+static_assert(0 * one == 0);
 
-// Only a literal zero of a representation type compares against a quantity: neither `false` nor a
-// character such as `'\0'`.
+// `zero` compares against quantities, not against a plain number or vector
 template<typename T>
-concept zero_comparable = requires(T val) { 0 * m == val; };
-static_assert(zero_comparable<int> && zero_comparable<double>);
-static_assert(zero_comparable<signed char> && zero_comparable<unsigned char>);
+concept zero_comparable = requires(T val) { val == zero; };
+static_assert(!zero_comparable<int>);
+static_assert(!zero_comparable<double>);
 static_assert(!zero_comparable<bool>);
-static_assert(!zero_comparable<char>);
-static_assert(!zero_comparable<wchar_t>);
-static_assert(!zero_comparable<char16_t>);
-static_assert(!zero_comparable<char32_t>);
-#ifdef __cpp_char8_t
-static_assert(!zero_comparable<char8_t>);
+static_assert(!zero_comparable<v>);
+#if MP_UNITS_HOSTED
+static_assert(!zero_comparable<std::complex<double>>);
 #endif
+
+// a quantity of a vector or of a complex number compares against `zero` with `==`, but only a
+// quantity of a real scalar is ordered against it
+template<typename T>
+concept zero_orderable = requires(T val) { val < zero; };
+static_assert(v{} * isq::displacement[m] == zero);
+static_assert(v{1., 0., 0.} * isq::displacement[m] != zero);
+static_assert(zero_orderable<quantity<isq::length[m]>>);
+static_assert(!zero_orderable<quantity<isq::displacement[m], v>>);
+#if MP_UNITS_HOSTED
+static_assert(cvel_1d::zero() == zero);
+static_assert(!zero_orderable<cvel_1d>);
+#endif
+
+// `zero` converts to no representation type: it would then reach a function that takes a number
+static_assert(!std::convertible_to<zero_t, v>);
+#if MP_UNITS_HOSTED
+static_assert(!std::convertible_to<zero_t, std::complex<double>>);
+#endif
+
+// `zero` is a tag, not a number: it converts to no arithmetic type, and a number doesn't stand in
+// for it. A requires-expression sees every rejection, so a probe agrees with a direct use.
+static_assert(!std::convertible_to<zero_t, int>);
+static_assert(!std::convertible_to<zero_t, double>);
+static_assert(!std::convertible_to<int, zero_t>);
+template<template<auto, typename> typename Q>
+concept invalid_zero_comparison = requires {
+  requires !requires(Q<isq::length[m], int> lhs) { lhs == 0; };              // a number without a unit
+  requires !requires(Q<isq::length[m], int> lhs) { lhs < 0; };               // a number without a unit
+  requires !requires(Q<isq::length[m], int> lhs) { lhs == 1; };              // non-zero literal
+  requires !requires(Q<isq::length[m], double> lhs) { lhs > 1.5; };          // non-zero literal
+  requires !requires(Q<isq::length[m], int> lhs, int rhs) { lhs == rhs; };   // runtime value
+  requires !requires(Q<isq::length[m], int> lhs, int rhs) { lhs <=> rhs; };  // runtime value
+};
+static_assert(invalid_zero_comparison<quantity>);
+
+// the standard comparison concepts hold, because `zero` converts to every quantity
+static_assert(std::equality_comparable_with<quantity<isq::length[m], int>, zero_t>);
+static_assert(std::totally_ordered_with<quantity<isq::length[m], double>, zero_t>);
+static_assert(std::totally_ordered<zero_t>);
+static_assert(zero == zero);
+
+// `zero` initializes and assigns a quantity of any unit and representation
+static_assert(quantity<isq::length[m], int>{zero} == 0 * m);
+static_assert(std::is_convertible_v<zero_t, quantity<isq::length[km], double>>);
+static_assert([] {
+  quantity<isq::speed[km / h]> airspeed = 42. * km / h;
+  airspeed = zero;
+  return airspeed;
+}() == 0. * km / h);
 
 ///////////////////////
 // ordering operators
@@ -1753,37 +1795,28 @@ static_assert(!(123 * km >= 321'000 * m));
 static_assert(1 * one < 2);
 static_assert(1 < 2 * one);
 
-static_assert(42 * m > 0);
-static_assert(42. * m > 0);
-static_assert(42 * m > 0.);
-static_assert(42. * m > 0.);
-static_assert(-42 * m < 0);
-static_assert(-42. * m < 0);
-static_assert(-42 * m < 0.);
-static_assert(-42. * m < 0.);
+static_assert(42 * m > zero);
+static_assert(42. * m > zero);
+static_assert(-42 * m < zero);
+static_assert(-42. * m < zero);
+static_assert(zero < 42 * m);
+static_assert(zero > -42. * m);
+static_assert(!(-42 * m > zero));
+static_assert(!(42. * m < zero));
 
-static_assert(!(-42 * m > 0));
-static_assert(!(-42. * m > 0));
-static_assert(!(-42 * m > 0.));
-static_assert(!(-42. * m > 0.));
-static_assert(!(42 * m < 0));
-static_assert(!(42. * m < 0));
-static_assert(!(42 * m < 0.));
-static_assert(!(42. * m < 0.));
+static_assert(42 * m >= zero);
+static_assert(0 * m >= zero);
+static_assert(-42. * m <= zero);
+static_assert(0. * m <= zero);
+static_assert(!(-42 * m >= zero));
+static_assert(!(42. * m <= zero));
 
-static_assert(42 * m >= 0);
-static_assert(42. * m >= 0);
-static_assert(42 * m >= 0.);
-static_assert(42. * m >= 0.);
-static_assert(0 * m >= 0);
-static_assert(-42 * m <= 0);
-static_assert(-42. * m <= 0);
-static_assert(-42 * m <= 0.);
-static_assert(-42. * m <= 0.);
-static_assert(0 * m <= 0);
+static_assert((-42 * m <=> zero) == std::strong_ordering::less);
+static_assert((0. * m <=> zero) == std::partial_ordering::equivalent);
 
-static_assert(!(-42 * m >= 0));
-static_assert(!(42 * m <= 0));
+// `std::numeric_limits<double>::quiet_NaN()` is unordered against `zero`, as against `0.`
+static_assert(!(std::numeric_limits<double>::quiet_NaN() * m < zero));
+static_assert(!(std::numeric_limits<double>::quiet_NaN() * m >= zero));
 
 // Mixed-signedness comparison must reflect the true mathematical value, not the wrapped
 // unsigned result of reducing both operands to their common representation type (GH #703).

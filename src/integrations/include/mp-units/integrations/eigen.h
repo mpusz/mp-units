@@ -79,6 +79,16 @@ template<typename T>
   requires requires { typename T::PlainObject; } && std::derived_from<T, Eigen::EigenBase<T>>
 constexpr std::size_t tensor_order<T> = (T::RowsAtCompileTime == 1 || T::ColsAtCompileTime == 1) ? 1 : 2;
 
+// A fixed-size Eigen vector or matrix has a zero of a known shape. A dynamic-size one has none,
+// because its size is known only at run time, so a quantity of it has no `zero()` and doesn't
+// compare against `zero`.
+template<typename T>
+  requires requires { typename T::PlainObject; } && std::derived_from<T, Eigen::EigenBase<T>> &&
+           (T::SizeAtCompileTime != Eigen::Dynamic) && requires { T::Zero(); }
+struct representation_values<T> {
+  [[nodiscard]] static T zero() { return T::Zero(); }
+};
+
 namespace detail {
 
 // A fixed-size Eigen vector (a row or column whose length is known at compile time). This is the

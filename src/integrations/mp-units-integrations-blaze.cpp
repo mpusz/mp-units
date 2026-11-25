@@ -28,6 +28,7 @@ module;
 #include <blaze/math/StaticVector.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsScalar.h>
+#include <blaze/math/typetraits/IsStatic.h>
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/util/IntegralConstant.h>
 #include <mp-units/bits/core_gmf.h>

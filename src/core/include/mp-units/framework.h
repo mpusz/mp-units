@@ -51,4 +51,5 @@
 #include <mp-units/framework/unit_symbol_formatting.h>
 #include <mp-units/framework/value_cast.h>
 #include <mp-units/framework/vector_components.h>
+#include <mp-units/framework/zero.h>
 // IWYU pragma: end_exports

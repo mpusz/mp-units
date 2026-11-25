@@ -165,6 +165,29 @@ static_assert(std::same_as<std::tuple_element_t<0, velocity_vec3>::rep, double>)
 static_assert(std::constructible_from<velocity_vec3, std::tuple_element_t<0, velocity_vec3>,
                                       std::tuple_element_t<1, velocity_vec3>, std::tuple_element_t<2, velocity_vec3>>);
 
+// A vector quantity compares against `zero` through the zero vector, which the backend provides
+// through `representation_values`. A vector has no ordering, so `zero` doesn't order it either,
+// and a raw vector doesn't compare against `zero` at all.
+template<typename T>
+concept zero_comparable = requires(const T& t) { t == zero; };
+template<typename T>
+concept zero_orderable = requires(const T& t) { t < zero; };
+static_assert(zero_comparable<velocity_vec3> && !zero_comparable<vec3>);
+static_assert(!zero_orderable<velocity_vec3>);
+
+// A dynamic-size vector has no zero, because its size is known only at run time.
+#if defined(MP_UNITS_LA_EIGEN)
+template<typename T>
+concept has_representation_zero = requires { representation_values<T>::zero(); };
+static_assert(!has_representation_zero<Eigen::VectorXd>);
+static_assert(!zero_comparable<Eigen::VectorXd>);
+#elif defined(MP_UNITS_LA_BLAZE)
+template<typename T>
+concept has_representation_zero = requires { representation_values<T>::zero(); };
+static_assert(!has_representation_zero<blaze::DynamicVector<double>>);
+static_assert(!zero_comparable<blaze::DynamicVector<double>>);
+#endif
+
 }  // namespace
 
 TEST_CASE("linear algebra type as a quantity representation")
@@ -395,3 +418,18 @@ static_assert(cross(make_vec3i(3, 0, 0) * isq::position_vector[m], make_vec3i(0,
                 .numerical_value_in(N * m) == vec3i{0, 0, 30});
 
 #endif  // MP_UNITS_LA_CARTESIAN
+
+TEST_CASE("vector quantity compared against zero")
+{
+  INFO("backend: " << backend);
+
+  CHECK(representation_values<vec3>::zero() == make_vec3(0, 0, 0));
+
+  const quantity at_rest = make_vec3(0, 0, 0) * isq::velocity[m / s];
+  CHECK(at_rest == zero);
+  CHECK(make_vec3(1, 0, 0) * isq::velocity[m / s] != zero);
+
+  const velocity_vec3 initialized = zero;
+  CHECK(initialized.numerical_value_in(m / s) == make_vec3(0, 0, 0));
+  CHECK(velocity_vec3::zero() == zero);
+}
