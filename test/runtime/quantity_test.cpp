@@ -28,6 +28,7 @@ import std;
 #include <atomic>
 #include <chrono>
 #include <functional>
+#include <limits>
 #include <numbers>
 #include <vector>
 #endif
@@ -107,6 +108,17 @@ TEST_CASE("zero survives being passed to a function", "[quantity][zero]")
   q = 5 * m;
   q = zero;
   CHECK(q == 0 * m);
+}
+
+TEST_CASE("a NaN is unordered against zero", "[zero][nan]")
+{
+  // as against `0.`: every ordering of a NaN is false, including the ones that would be the
+  // negation of each other
+  const quantity not_a_number = std::numeric_limits<double>::quiet_NaN() * m;
+  CHECK_FALSE(not_a_number < zero);
+  CHECK_FALSE(not_a_number >= zero);
+  CHECK_FALSE(std::is_eq(not_a_number <=> zero));
+  CHECK(not_a_number != zero);
 }
 
 TEST_CASE("zero survives being passed to a function for durations", "[zero]")
