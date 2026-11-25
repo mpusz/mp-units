@@ -142,9 +142,9 @@ performance and costs. The free tier provides **120 core-hours per month** for p
 
 | Machine Type | vCPUs | RAM   | Free Hours/Month* | Best For                                          |
 |--------------|-------|-------|-------------------|---------------------------------------------------|
-| **2-core**   | 2     | 8GB   | 60 hours          | Single-profile development, light testing         |
-| **4-core**   | 4     | 16GB  | 30 hours          | `check_all.sh` usage, parallel builds             |
-| **8-core**   | 8     | 32GB  | 15 hours          | Intensive multi-profile development               |
+| **2-core**   | 2     | 8GB   | 60 hours          | Documentation and small changes                   |
+| **4-core**   | 4     | 16GB  | 30 hours          | Single-profile development and testing            |
+| **8-core**   | 8     | 32GB  | 15 hours          | Most mp-units development, `check_all.sh` usage   |
 | **16-core**  | 16    | 64GB  | 7.5 hours         | Large-scale development, heavy parallel workloads |
 | **32-core**  | 32    | 128GB | 3.75 hours        | Maximum performance for complex builds            |
 
@@ -155,10 +155,10 @@ For current machine specifications and pricing, see:
 - [GitHub Pricing Calculator](https://github.com/pricing/calculator?feature=codespaces)
 
 **Usage Recommendations:**
-- **2-core**: Suitable for documentation, small changes, and single-profile testing
-- **4-core**: **Recommended** for most mp-units development — good balance of performance
-   and free usage
-- **8-core+**: Best for intensive development sessions or when you need maximum build speed
+- **2-core**: Enough for documentation and other small changes
+- **4-core**: Enough to build and test with one compiler profile
+- **8-core**: **Recommended** for most mp-units development
+- **16-core+**: Best for intensive development sessions or when you need maximum build speed
 
 
 ### Development Workflow

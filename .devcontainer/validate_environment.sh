@@ -54,7 +54,7 @@ for version in "${expected_gcc[@]}"; do
 done
 
 # clang-19 cannot compile mp-units (https://github.com/llvm/llvm-project/pull/118288)
-expected_clang=(16 17 18 20 21 22 23)
+expected_clang=(16 17 18 20 21 23)
 for version in "${expected_clang[@]}"; do
   if command -v "clang-$version" >/dev/null 2>&1 && command -v "clang++-$version" >/dev/null 2>&1; then
     echo "  ✅ Clang-$version"
@@ -68,7 +68,7 @@ echo ""
 echo "📦 Verifying Conan profiles exist in image:"
 
 # Verify expected Conan profiles exist in the Docker image
-expected_profiles=(gcc12 gcc13 gcc14 gcc15 gcc16 clang16 clang17 clang18 clang20 clang21 clang22 clang23)
+expected_profiles=(gcc12 gcc13 gcc14 gcc15 gcc16 clang16 clang17 clang18 clang20 clang21 clang23)
 for profile in "${expected_profiles[@]}"; do
   if conan profile show -pr "$profile" >/dev/null 2>&1; then
     echo "  ✅ Profile $profile"
