@@ -1044,13 +1044,51 @@ def repro(r, args):
     return f"python3 scripts/check_doc_snippets.py --cxx {args.cxx} --std {args.std} {shlex.quote(r.origin)}"
 
 
+# CI pins the compiler (.github/workflows/documentation.yml), because whether a line marked
+# `❌` is rejected, and on which line, depends on it. The precompiled headers are GCC's too.
+REQUIRED_GCC = 15
+
+
+def resolve_compiler(cxx):
+    """The compiler to check with: `cxx`, or the first GCC 15 found. Exits if there is none."""
+    found = []
+    for name in [cxx] if cxx else [f"g++-{REQUIRED_GCC}", "g++"]:
+        if not shutil.which(name):
+            continue
+        try:
+            macros = subprocess.run(
+                [name, "-dM", "-E", "-x", "c++", os.devnull],
+                capture_output=True,
+                text=True,
+                timeout=60,
+            ).stdout
+        except (OSError, subprocess.TimeoutExpired):
+            continue
+        major = re.search(r"^#define __GNUC__ (\d+)$", macros, re.M)
+        if "__clang__" in macros or not major:
+            found.append(f"{name} (not GCC)")
+        elif int(major.group(1)) != REQUIRED_GCC:
+            found.append(f"{name} (GCC {major.group(1)})")
+        else:
+            return name
+    sys.exit(
+        f"error: the documentation samples are checked with GCC {REQUIRED_GCC}, which CI pins,\n"
+        f"because whether a line marked `❌` fails, and where, depends on the compiler.\n"
+        f"Found: {', '.join(found) or (f'no {cxx}' if cxx else f'neither g++-{REQUIRED_GCC} nor g++')}.\n"
+        f"Install g++-{REQUIRED_GCC} and pass it with --cxx if it is not on PATH as g++-{REQUIRED_GCC},\n"
+        f"or use the dev container. To commit without the check: SKIP=doc-snippets git commit ..."
+    )
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument(
         "files", nargs="*", help="check only the samples in these files (default: all)"
     )
-    # the compiler CI pins (.github/workflows/documentation.yml), where it is installed
-    ap.add_argument("--cxx", default=shutil.which("g++-15") and "g++-15" or "g++")
+    ap.add_argument(
+        "--cxx",
+        help=f"GCC {REQUIRED_GCC} (default: g++-{REQUIRED_GCC}, or g++ if that is GCC {REQUIRED_GCC})",
+    )
     ap.add_argument("--std", default="23")
     ap.add_argument("--jobs", type=int, default=os.cpu_count())
     ap.add_argument(
@@ -1081,6 +1119,7 @@ def main():
         "--summary", help="append the failures, as GitHub Markdown, to this file"
     )
     args = ap.parse_args()
+    args.cxx = resolve_compiler(args.cxx)
 
     selected = None
     if args.files:

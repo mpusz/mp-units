@@ -406,8 +406,9 @@ produce worse output here:
 
 Every ` ```cpp ` fence under _docs/_ and every `@code` block in a header is compiled by
 _scripts/check_doc_snippets.py_. The pre-commit hook runs it on the files a commit
-changes, and CI runs it on all of them before the documentation is published. To run it
-yourself:
+changes, and CI runs it on all of them before the documentation is published. It needs
+GCC 15, which CI pins because whether a marked line is rejected, and where, depends on the
+compiler. The dev container has it. To run it yourself:
 
 ```bash
 python3 scripts/check_doc_snippets.py docs/users_guide/framework_basics/the_affine_space.md
