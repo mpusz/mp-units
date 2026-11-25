@@ -1076,7 +1076,7 @@ static_assert([] {
 // Quantity-level common_type and implicit conversion with safe_int reps
 //
 // The framework's quantity common_type is:
-//   quantity<get_common_reference(R1,R2), common_type_t<Rep1,Rep2>>
+//   quantity<detail::find_common_reference(R1,R2), common_type_t<Rep1,Rep2>>
 // It uses common_type_t<Rep1,Rep2> directly (not the ternary trick on quantities).
 // This means bidirectional quantity-level implicit constructors (implicitly_scalable
 // is true for same-unit non-FP) do NOT cause ambiguous ternaries — the raw

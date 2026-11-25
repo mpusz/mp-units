@@ -108,7 +108,7 @@ All operations preserve dimensional correctness:
 
     ```cpp
     template<Quantity Q1, Quantity Q2>
-      requires requires { get_common_reference(Q1::reference, Q2::reference); }
+      requires requires(Q1 lhs, Q2 rhs) { lhs + rhs; }
     [[nodiscard]] constexpr quantity<dimensionless[one]> kalman_gain(Q1 variance_in_estimate,
                                                                      Q2 variance_in_measurement)
     {
@@ -175,7 +175,7 @@ All operations preserve dimensional correctness:
 
     ```cpp
     template<Quantity Q1, Quantity Q2>
-      requires requires { get_common_reference(Q1::reference, Q2::reference); }
+      requires requires(Q1 lhs, Q2 rhs) { lhs + rhs; }
     [[nodiscard]] constexpr Quantity auto covariance_extrapolation(Q1 uncertainty, Q2 process_noise_variance)
     {
       return uncertainty + process_noise_variance;

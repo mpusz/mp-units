@@ -107,7 +107,7 @@ MP_UNITS_EXPORT_END
 
 namespace detail {
 
-// The common unit of a set of units. Users reach it through `get_common_reference`.
+// The common unit of a set of units. Users reach it through `std::common_type_t` on two quantities.
 // The name differs from the deprecated `mp_units::get_common_unit` because every unit
 // derives from `detail::unit_interface`, so `detail` is an associated namespace. A same-named
 // overload here would be a better match for an unqualified call, which would then never warn.
@@ -157,8 +157,11 @@ template<Unit Front, Unit... Rest, Unit... Us>
 
 MP_UNITS_EXPORT_BEGIN
 
-[[deprecated("2.6.0: Use `get_common_reference` instead")]] [[nodiscard]] consteval Unit auto get_common_unit(
-  Unit auto u, Unit auto... rest)
+/**
+ * The common unit of the arguments. Use `std::common_type_t` on two quantities instead.
+ */
+[[deprecated("2.6.0: Use `std::common_type_t` on two quantities instead")]] [[nodiscard]] consteval Unit auto
+get_common_unit(Unit auto u, Unit auto... rest)
   requires requires { mp_units::detail::find_common_unit(u, rest...); }
 {
   return mp_units::detail::find_common_unit(u, rest...);

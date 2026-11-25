@@ -215,7 +215,7 @@ template<Reference auto R, typename Res>
 
 // Quantities whose specifications have a common one, which is what adding, subtracting and comparing
 // them needs. Asked before the common reference is formed, so that `length + time` is reported in these
-// words rather than as an invalid call to `get_common_reference`. Only the two-quantity overloads of
+// words rather than as an invalid call to `find_common_reference`. Only the two-quantity overloads of
 // the operators and `hypot` evaluate it, and only with operands that are the mistake, so the sentence
 // is not gated.
 template<auto QS1, auto QS2>
@@ -229,11 +229,11 @@ concept QuantitiesOfTheSameKind =
   Quantity<Q1> && Quantity<Q2> && QuantitySpecsOfTheSameKind<Q1::quantity_spec, Q2::quantity_spec>;
 
 template<auto R1, auto R2>
-concept HaveCommonReference = requires { mp_units::get_common_reference(R1, R2); };
+concept HaveCommonReference = requires { mp_units::detail::find_common_reference(R1, R2); };
 
 template<typename Func, Quantity Q1, Quantity Q2>
 using common_quantity_for =
-  quantity<mp_units::get_common_reference(Q1::reference, Q2::reference),
+  quantity<mp_units::detail::find_common_reference(Q1::reference, Q2::reference),
            representation_canonical_type_t<std::invoke_result_t<Func, typename Q1::rep, typename Q2::rep>>>;
 
 // Brings an operand of a binary operation to the operation's common quantity type `Common`. An operand
@@ -264,7 +264,8 @@ template<typename Rep, Unit U1, Unit U2>
 template<typename Func, typename Q1, typename Q2>
 concept CommonlyInvocableQuantities =
   QuantitiesOfTheSameKind<Q1, Q2> && HaveCommonReference<Q1::reference, Q2::reference> &&
-  InvocableQuantities<Func, Q1, Q2, mp_units::get_common_quantity_spec(Q1::quantity_spec, Q2::quantity_spec)> &&
+  InvocableQuantities<Func, Q1, Q2,
+                      mp_units::detail::find_common_quantity_spec(Q1::quantity_spec, Q2::quantity_spec)> &&
   std::convertible_to<Q1, common_quantity_for<Func, Q1, Q2>> &&
   std::convertible_to<Q2, common_quantity_for<Func, Q1, Q2>> &&
   !overflows_non_zero_common_values<
@@ -1303,15 +1304,16 @@ struct std::tuple_element<Idx, mp_units::quantity<R, Rep>> {
 
 template<auto R1, typename Rep1, auto R2, typename Rep2>
   requires requires {
-    { mp_units::get_common_reference(R1, R2) } -> mp_units::Reference;
+    { mp_units::detail::find_common_reference(R1, R2) } -> mp_units::Reference;
     typename std::common_type_t<Rep1, Rep2>;
     requires(
       !mp_units::detail::overflows_non_zero_common_values<std::common_type_t<Rep1, Rep2>>(get_unit(R1), get_unit(R2)));
-    requires mp_units::RepresentationOf<
-      std::common_type_t<Rep1, Rep2>, mp_units::get_common_quantity_spec(get_quantity_spec(R1), get_quantity_spec(R2))>;
+    requires mp_units::RepresentationOf<std::common_type_t<Rep1, Rep2>,
+                                        mp_units::detail::find_common_quantity_spec(get_quantity_spec(R1),
+                                                                                    get_quantity_spec(R2))>;
   }
 struct std::common_type<mp_units::quantity<R1, Rep1>, mp_units::quantity<R2, Rep2>> :
-    mp_units::detail::common_quantity_type<mp_units::get_common_reference(R1, R2), Rep1, Rep2> {};
+    mp_units::detail::common_quantity_type<mp_units::detail::find_common_reference(R1, R2), Rep1, Rep2> {};
 
 template<auto R, typename Rep, mp_units::RepresentationOf<get_quantity_spec(R)> Value>
   requires(get_unit(R) == mp_units::one) && requires { typename mp_units::quantity<R, std::common_type_t<Rep, Value>>; }

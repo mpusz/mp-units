@@ -74,6 +74,7 @@ static_assert(compare(fma(2.0 * s, 3.0 * Hz, 1.0 * one), 7.0 * one));
 static_assert(compare(fma(2.0 * one, 3.0 * m, 1.0 * m), 7.0 * m));
 static_assert(compare(fma(2.0 * m, 3.0 * one, 1.0 * m), 7.0 * m));
 static_assert(compare(fma(2 * m, 3.0f * m, 1.0 * m2), 7.0 * m2));
+static_assert(compare(fma(2.0f * m, 3.0f * m, 1 * m2), 7.0 * m2));
 static_assert(compare(fma(isq::width(2.0 * m), 2.0 * one, isq::height(3.0 * m)), isq::length(7.0 * m)));
 static_assert(compare(fmod(4.0 * km, 3.0 * km), 1.0 * km));
 static_assert(compare(fmod(-4.0 * km, 3.0 * km), -1.0 * km));
