@@ -45,6 +45,8 @@ template<PrefixableUnit U> requires(!std::is_const_v<U>) struct pebi_ final : pr
 template<PrefixableUnit U> requires(!std::is_const_v<U>) struct exbi_ final : prefixed_unit<"Ei", mag_power<2, 60>, U{}> {};
 template<PrefixableUnit U> requires(!std::is_const_v<U>) struct zebi_ final : prefixed_unit<"Zi", mag_power<2, 70>, U{}> {};
 template<PrefixableUnit U> requires(!std::is_const_v<U>) struct yobi_ final : prefixed_unit<"Yi", mag_power<2, 80>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct robi_ final : prefixed_unit<"Ri", mag_power<2, 90>, U{}> {};
+template<PrefixableUnit U> requires(!std::is_const_v<U>) struct quebi_ final : prefixed_unit<"Qi", mag_power<2, 100>, U{}> {};
 
 MP_UNITS_EXPORT_BEGIN
 
@@ -56,6 +58,8 @@ template<PrefixableUnit auto U> constexpr pebi_<MP_UNITS_NTTP_HACK(decltype(U))>
 template<PrefixableUnit auto U> constexpr exbi_<MP_UNITS_NTTP_HACK(decltype(U))> exbi;
 template<PrefixableUnit auto U> constexpr zebi_<MP_UNITS_NTTP_HACK(decltype(U))> zebi;
 template<PrefixableUnit auto U> constexpr yobi_<MP_UNITS_NTTP_HACK(decltype(U))> yobi;
+template<PrefixableUnit auto U> constexpr robi_<MP_UNITS_NTTP_HACK(decltype(U))> robi;
+template<PrefixableUnit auto U> constexpr quebi_<MP_UNITS_NTTP_HACK(decltype(U))> quebi;
 // clang-format on
 
 MP_UNITS_EXPORT_END

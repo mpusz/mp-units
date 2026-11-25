@@ -32,6 +32,7 @@
 #include <mp-units/systems/codata/codata2022_essential.h>
 #include <mp-units/systems/codata/math_constants.h>
 #include <mp-units/systems/si/constants.h>
+#include <mp-units/systems/si/non_si.h>
 #include <mp-units/systems/si/units.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
@@ -303,7 +304,7 @@ inline constexpr struct electron_triton_mass_ratio final :
 
 // Fermi coupling constant: 1.166 3787 e-5 GeV^-2, u = 0.000 0006 e-5 GeV^-2
 inline constexpr struct fermi_coupling_constant final :
-    named_constant<"fermi_coupling_constant", mag_ratio<11'663'787, 10'000'000> * mag_power<10, -5> * one / square(si::giga<si::electronvolt>), standard_uncertainty{mag<6> * mag_power<10, -12> * one / square(si::giga<si::electronvolt>)}> {} fermi_coupling_constant;
+    named_constant<"fermi_coupling_constant", mag_ratio<11'663'787, 10'000'000> * mag_power<10, -5> * one / square(si::giga<non_si::electronvolt>), standard_uncertainty{mag<6> * mag_power<10, -12> * one / square(si::giga<non_si::electronvolt>)}> {} fermi_coupling_constant;
 
 // helion-electron mass ratio: 5495.885 279 84, u = 0.000 000 16
 inline constexpr struct helion_electron_mass_ratio final :

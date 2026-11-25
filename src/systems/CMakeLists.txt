@@ -28,10 +28,13 @@ add_mp_units_module(
         include/mp-units/systems/angular/units.h
         include/mp-units/systems/codata/adopted_values.h
         include/mp-units/systems/codata/codata2014.h
+        include/mp-units/systems/codata/codata2014_dalton.h
         include/mp-units/systems/codata/codata2014_essential.h
         include/mp-units/systems/codata/codata2018.h
+        include/mp-units/systems/codata/codata2018_dalton.h
         include/mp-units/systems/codata/codata2018_essential.h
         include/mp-units/systems/codata/codata2022.h
+        include/mp-units/systems/codata/codata2022_dalton.h
         include/mp-units/systems/codata/codata2022_essential.h
         include/mp-units/systems/codata/math_constants.h
         include/mp-units/systems/hep/constants.h
@@ -54,6 +57,7 @@ add_mp_units_module(
         include/mp-units/systems/isq/thermodynamics.h
         include/mp-units/systems/si/constants.h
         include/mp-units/systems/si/core.h
+        include/mp-units/systems/si/non_si.h
         include/mp-units/systems/si/prefixes.h
         include/mp-units/systems/si/unit_symbols.h
         include/mp-units/systems/si/unit_symbols_essential.h

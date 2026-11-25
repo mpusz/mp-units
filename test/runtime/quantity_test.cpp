@@ -71,7 +71,8 @@ TEST_CASE("quantity operations", "[quantity]")
   // Reproducing issue #474 exactly:
   SECTION("Issue 474 is fixed")
   {
-    constexpr auto val_issue_474 = 8.0 * si::si2019::boltzmann_constant * 1000.0 * K / (std::numbers::pi * 10 * Da);
+    constexpr auto val_issue_474 =
+      8.0 * si::si2019::boltzmann_constant * 1000.0 * K / (std::numbers::pi * 10 * non_si::unit_symbols::Da);
     REQUIRE(within_4_ulps(sqrt(val_issue_474).numerical_value_in(m / s),
                           std::sqrt(val_issue_474.numerical_value_in(m * m / s / s))));
   }

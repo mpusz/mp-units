@@ -24,6 +24,7 @@
 
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/systems/codata/adopted_values.h>
+#include <mp-units/systems/si/non_si.h>
 #include <mp-units/systems/si/units.h>
 
 // IWYU pragma: begin_exports
@@ -79,11 +80,11 @@ inline constexpr struct twip final : named_unit<"twip", mag_ratio<1, 20> * point
 inline constexpr struct mile final : named_unit<"mi", mag<1760> * yard> {} mile;
 inline constexpr struct league final : named_unit<"lea", mag<3> * mile> {} league;
 
-inline constexpr struct nautical_mile final : named_unit<"nmi", mag<1852> * si::metre> {} nautical_mile;
+using non_si::nautical_mile;
 inline constexpr struct fathom final : named_unit<"ftm", mag<6> * foot> {} fathom;
 
 // speed
-inline constexpr struct knot final : named_unit<"kn", nautical_mile / si::hour> {} knot;
+using non_si::knot;
 
 // force
 // https://en.wikipedia.org/wiki/Poundal
@@ -131,11 +132,11 @@ using yard_pound::twip;
 inline constexpr auto mi = mile;
 inline constexpr auto lea = league;
 
-inline constexpr auto nmi = nautical_mile;
+using non_si::unit_symbols::nmi;
 inline constexpr auto ftm = fathom;
 
-inline constexpr auto kn = knot;
-inline constexpr auto kt = knot;
+using non_si::unit_symbols::kn;
+using non_si::unit_symbols::kt;
 inline constexpr auto mph = mile / si::hour;
 
 inline constexpr auto pdl = poundal;

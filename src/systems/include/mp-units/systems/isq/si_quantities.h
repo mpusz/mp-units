@@ -61,6 +61,7 @@ QUANTITY_SPEC(capacitance, electric_current* time / electric_potential, non_nega
 QUANTITY_SPEC(impedance, electric_potential / electric_current, quantity_field::complex);  // complex
 QUANTITY_SPEC(admittance, inverse(impedance), quantity_field::complex);                    // complex
 QUANTITY_SPEC(magnetic_flux_density, mass / (electric_current * pow<2>(time)), quantity_tensor_order::vector);
+QUANTITY_SPEC(reactive_power, mass* pow<2>(length) / pow<3>(duration));  // separate kind; signed
 
 // light_and_radiation
 MP_UNITS_PHOTOMETRIC_QSPEC(luminous_flux, luminous_intensity_of<Condition>* solid_angular_measure, non_negative);

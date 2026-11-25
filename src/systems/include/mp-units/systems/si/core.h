@@ -24,6 +24,7 @@
 
 
 // IWYU pragma: begin_exports
+#include <mp-units/systems/si/non_si.h>
 #include <mp-units/systems/si/prefixes.h>
 #include <mp-units/systems/si/unit_symbols_essential.h>
 #include <mp-units/systems/si/units.h>

@@ -47,9 +47,13 @@ generating rather than transcribing is that:
 
 ## Header layout
 
-Each adjustment ships in two headers spelling the very same constant types:
+Each adjustment ships in three headers spelling the very same constant types:
 
-- `<mp-units/systems/codata/codataYYYY_essential.h>` provides the
+- `<mp-units/systems/codata/codataYYYY_dalton.h>` provides the atomic mass constant and the
+  `dalton` defined through it. The SI Brochure takes the value of the dalton from the
+  current adjustment, so `non_si::dalton` is the `dalton` of that adjustment, and its
+  header is the only CODATA one that `<mp-units/systems/si.h>` includes,
+- `<mp-units/systems/codata/codataYYYY_essential.h>` includes the dalton header and adds the
   [NIST "Frequently used constants"](https://physics.nist.gov/cgi-bin/cuu/Category?view=html&Frequently+used+constants.x=87&Frequently+used+constants.y=18)
   selection (the Newtonian constant of gravitation, the fine-structure constant, particle
   masses, and friends),
