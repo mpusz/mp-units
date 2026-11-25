@@ -354,6 +354,23 @@ concept valid_measured_constant = requires { named_constant<"test", U, standard_
 static_assert(valid_measured_constant<mag<2> * si::metre, mag_ratio<1, 1000> * si::metre>);
 static_assert(!valid_measured_constant<mag<2> * si::metre, mag_ratio<1, 1000> * si::second>);
 static_assert(!valid_measured_constant<mag<2> * si::metre, -mag_ratio<1, 1000> * si::metre>);
+static_assert(valid_measured_constant<mag<2> * si::kilogram / si::mole, mag_ratio<1, 1000> * si::kilogram / si::mole>);
+static_assert(
+  !valid_measured_constant<mag<2> * si::kilogram / si::mole, mag_ratio<1, 1000> * si::kilogram / si::second>);
+static_assert(valid_measured_constant<mag<2> * cubic(si::metre) / si::kilogram / square(si::second),
+                                      mag_ratio<1, 1000> * cubic(si::metre) / si::kilogram / square(si::second)>);
+// an uncertainty spelled in another unit of the same dimension is valid too
+static_assert(valid_measured_constant<mag<2> * si::kilogram, mag_ratio<1, 1000> * si::gram>);
+static_assert(valid_measured_constant<mag<2> * si::joule, mag_ratio<1, 1000> * si::newton * si::metre>);
+
+// a CODATA table writes the value and its uncertainty in the same unit, which the definition
+// recognizes without computing either canonical unit
+static_assert(detail::same_unscaled_unit<decltype(mag<2> * si::kilogram / si::mole),
+                                         decltype(mag_ratio<1, 1000> * si::kilogram / si::mole)>);
+static_assert(
+  detail::same_unscaled_unit<decltype(mag<2> * cubic(si::metre) / si::kilogram / square(si::second)),
+                             decltype(mag_ratio<1, 1000> * cubic(si::metre) / si::kilogram / square(si::second))>);
+static_assert(!detail::same_unscaled_unit<decltype(mag<2> * si::kilogram), decltype(mag_ratio<1, 1000> * si::gram)>);
 
 }  // namespace uncertainty_wrappers
 

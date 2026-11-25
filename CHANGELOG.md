@@ -101,6 +101,11 @@ This page documents the version history and changes for the **mp-units** library
       underlying type, as P3045 specifies them. The standard makes `std::int8_t` and
       `std::uint8_t` optional, so a standard enumeration can't be built on them. Each now
       has the size of an `int`
+- perf: a measured constant defined with `standard_uncertainty` checks the unit of its
+      uncertainty without computing any canonical unit when the uncertainty is written in
+      the same unit as the value, as every constant in the CODATA headers is. `codata.h`
+      drops 17% of its template instantiations, `codata2022.h` 16%, and
+      `codata2022_essential.h` 10%
 - perf: `+`, `-`, `%`, and the comparisons read an operand that already has the common
       representation type and an equivalent unit by reference rather than copying it. A
       copy isn't free for a vector or a matrix representation (#837)
