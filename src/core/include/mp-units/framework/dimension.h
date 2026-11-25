@@ -169,20 +169,19 @@ struct base_dimension : detail::dimension_interface {
  * For example:
  *
  * @code{.cpp}
- * using frequency = decltype(inverse(dim_time));
- * using speed = decltype(dim_length / dim_time);
- * using acceleration = decltype(dim_speed / dim_time);
- * using force = decltype(dim_mass * dim_acceleration);
- * using energy = decltype(dim_force * dim_length);
- * using moment_of_force = decltype(dim_length * dim_force);
- * using torque = decltype(dim_moment_of_force);
+ * // snippet-template: isq
+ * inline constexpr auto dim_frequency = inverse(dim_time);
+ * inline constexpr auto dim_speed = dim_length / dim_time;
+ * inline constexpr auto dim_acceleration = dim_speed / dim_time;
+ * inline constexpr auto dim_force = dim_mass * dim_acceleration;
+ * inline constexpr auto dim_energy = dim_force * dim_length;
  * @endcode
  *
- * - `frequency` will be derived from type `derived_dimension<dimension_one, per<dim_time>>`
- * - `speed` will be derived from type `derived_dimension<dim_length, per<dim_time>>`
- * - `acceleration` will be derived from type `derived_dimension<dim_length, per<power<dim_time, 2>>>`
- * - `force` will be derived from type `derived_dimension<dim_length, dim_mass, per<power<dim_time, 2>>>`
- * - `energy` will be derived from type `derived_dimension<power<dim_length, 2>, dim_mass, per<power<dim_time, 2>>>`
+ * - `dim_frequency` is of type `derived_dimension<dimension_one, per<dim_time>>`
+ * - `dim_speed` is of type `derived_dimension<dim_length, per<dim_time>>`
+ * - `dim_acceleration` is of type `derived_dimension<dim_length, per<power<dim_time, 2>>>`
+ * - `dim_force` is of type `derived_dimension<dim_length, dim_mass, per<power<dim_time, 2>>>`
+ * - `dim_energy` is of type `derived_dimension<power<dim_length, 2>, dim_mass, per<power<dim_time, 2>>>`
  *
  * @note A common convention in this library is to assign the same name for a type and an object of this type.
  *       Besides defining them user never works with the dimension types in the source code. All operations

@@ -28,6 +28,7 @@ This is a **vector quantity**: a single quantity whose representation type happe
 the new integrations this is a one-liner against any supported backend:
 
 ```cpp
+// snippet-template: none (third-party: Eigen)
 #include <Eigen/Core>
 #include <mp-units/integrations/eigen.h>   // or .../glm.h, or .../blaze.h
 // module mode: keep the <Eigen/Core> include and `import mp_units.integrations.eigen;`
@@ -38,6 +39,7 @@ quantity velocity = isq::velocity(Eigen::Vector3d{30, 40, 0} * km / h);
 From there the framework treats the vector exactly like any other representation:
 
 ```cpp
+// snippet-template: none (third-party: operates on the Eigen-backed velocity above)
 quantity velocity_mps = velocity.in(m / s);   // unit conversion scales every component
 quantity displacement = velocity * (2 * h);   // vector quantity × scalar quantity
 quantity speed = magnitude(velocity);         // Euclidean magnitude → scalar quantity
@@ -89,6 +91,7 @@ The components then come out as _quantities_, by index, by axis spec, or through
 bindings:
 
 ```cpp
+// snippet-template: none (third-party: Eigen)
 quantity velocity = flight_velocity(Eigen::Vector3d{30, 10, -2} * km / h);
 
 const auto [forward, lateral, vertical] = velocity;   // three typed component quantities
@@ -110,6 +113,7 @@ can attach a unit to a vector representation, but the V2 type system cannot alwa
 Take `magnitude()`. It works on a vector _quantity_ directly:
 
 ```cpp
+// snippet-template: none (third-party: magnitude of the Eigen-backed velocity above)
 quantity speed = magnitude(velocity);   // 50 km/h
 ```
 
@@ -187,6 +191,7 @@ fame). It wraps a backend such as Eigen, tags it with row/column index types, an
 type-safe access:
 
 ```cpp
+// snippet-template: none (not this library: TypedLinearAlgebra)
 // element (0,1) has a type derived from row-0 and column-1 index types
 auto value = m.at<0, 1>();
 ```

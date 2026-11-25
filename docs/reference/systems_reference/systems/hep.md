@@ -12,6 +12,7 @@
 **Secondary Headers:**
 
 - `<mp-units/systems/hep/constants.h>`
+- `<mp-units/systems/hep/math.h>`
 - `<mp-units/systems/hep/quantities.h>`
 - `<mp-units/systems/hep/units.h>`
 
@@ -69,7 +70,7 @@
 | <span id="kinetic_energy"></span><code>kinetic_<wbr>energy</code> | scalar | E | [≥ 0](../../../users_guide/framework_basics/systems_of_quantities.md#non-negative-quantities) | <code>[energy](#energy)</code> | <code>[total_<wbr>energy](#total_energy)</code> | — | [view](../hierarchies/energy_hep.md) |
 | <span id="length"></span><code>length</code> | scalar | L | [kind](../../../users_guide/framework_basics/systems_of_quantities.md#modeling-a-quantity-kind)<br>[≥ 0](../../../users_guide/framework_basics/systems_of_quantities.md#non-negative-quantities) | <code>[length](#length)</code> | — | — | [view](../hierarchies/length_hep.md) |
 | <span id="lifetime"></span><code>lifetime</code> | scalar | T | [≥ 0](../../../users_guide/framework_basics/systems_of_quantities.md#non-negative-quantities) | <code>[duration](#duration)</code> | <code>[duration](#duration)</code> | — | [view](../hierarchies/duration_hep.md) |
-| <span id="lorentz_factor"></span><code>lorentz_<wbr>factor</code> | scalar | — | [kind](../../../users_guide/framework_basics/systems_of_quantities.md#modeling-a-quantity-kind)<br>[≥ 0](../../../users_guide/framework_basics/systems_of_quantities.md#non-negative-quantities) | <code>[lorentz_<wbr>factor](#lorentz_factor)</code> | <code>[dimensionless](core.md#dimensionless)</code> | — | [view](../hierarchies/dimensionless.md) |
+| <span id="lorentz_factor"></span><code>lorentz_<wbr>factor</code> | scalar | — | [kind](../../../users_guide/framework_basics/systems_of_quantities.md#modeling-a-quantity-kind)<br>[≥ 0](../../../users_guide/framework_basics/systems_of_quantities.md#non-negative-quantities) | <code>[lorentz_<wbr>factor](#lorentz_factor)</code> | <code>[dimensionless](core.md#dimensionless)</code> | <code>[coordinate_<wbr>time](#coordinate_time) / <wbr>[proper_<wbr>time](#proper_time)</code> | [view](../hierarchies/dimensionless.md) |
 | <span id="luminous_flux"></span><code>luminous_<wbr>flux</code> | scalar | α²I | [kind](../../../users_guide/framework_basics/systems_of_quantities.md#modeling-a-quantity-kind) | <code>[luminous_<wbr>flux](#luminous_flux)</code> | — | <code>[luminous_<wbr>intensity](#luminous_intensity) * <wbr>[solid_<wbr>angle](angular.md#solid_angle)</code> | [view](../hierarchies/luminous_flux_hep.md) |
 | <span id="luminous_intensity"></span><code>luminous_<wbr>intensity</code> | scalar | I | [kind](../../../users_guide/framework_basics/systems_of_quantities.md#modeling-a-quantity-kind)<br>[≥ 0](../../../users_guide/framework_basics/systems_of_quantities.md#non-negative-quantities) | <code>[luminous_<wbr>intensity](#luminous_intensity)</code> | — | — | [view](../hierarchies/luminous_intensity_hep.md) |
 | <span id="magnetic_field"></span><code>magnetic_<wbr>field</code> | scalar | ETQ⁻¹L⁻² | [kind](../../../users_guide/framework_basics/systems_of_quantities.md#modeling-a-quantity-kind) | <code>[magnetic_<wbr>field](#magnetic_field)</code> | — | <code>[duration](#duration) * <wbr>[energy](#energy) / <wbr>[electric_<wbr>charge](#electric_charge) / <wbr>pow<2>([length](#length))</code> | [view](../hierarchies/magnetic_field.md) |

@@ -50,7 +50,6 @@ namespace mp_units {
  * Every quantity specification has one, and a constraint can require, say, any vector quantity:
  *
  * @code{.cpp}
- * // snippet-template: none
  * #include <mp-units/utility/cartesian_vector.h>
  *
  * // an arrow on a 2D plot can show any vector
@@ -82,7 +81,6 @@ MP_UNITS_EXPORT enum class quantity_tensor_order {
  * Every quantity specification has one, and a constraint can require any complex quantity:
  *
  * @code{.cpp}
- * // snippet-template: none
  * #include <complex>
  *
  * // a phasor diagram shows only complex quantities

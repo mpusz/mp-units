@@ -1031,7 +1031,7 @@ MP_UNITS_EXPORT using safe_i8 = safe_int<std::int8_t>;
  * A @ref safe_int of `std::int16_t`
  *
  * @code{.cpp}
- * // snippet-template: none
+ * // snippet-template: utility
  * #include <mp-units/utility/safe_int.h>
  *
  * quantity<m, utility::safe_i16> distance{100 * m};

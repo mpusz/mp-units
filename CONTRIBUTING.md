@@ -399,7 +399,99 @@ produce worse output here:
   adds nothing. Say what a parameter means when that cannot be read off the declaration, and
   say nothing when it can.
 - **Code examples have to compile.** An example that was never built goes stale silently,
-  and a wrong example in the reference is worse than none.
+  and a wrong example in the reference is worse than none. See
+  [Code samples in the documentation](#code-samples-in-the-documentation).
+
+### Code samples in the documentation
+
+Every ` ```cpp ` fence under _docs/_ and every `@code` block in a header is compiled by
+_scripts/check_doc_snippets.py_. The pre-commit hook runs it on the files a commit
+changes, and CI runs it on all of them before the documentation is published. It needs
+GCC 15, which CI pins because whether a marked line is rejected, and where, depends on the
+compiler. The dev container has it. To run it yourself:
+
+```bash
+python3 scripts/check_doc_snippets.py docs/users_guide/framework_basics/the_affine_space.md
+python3 scripts/check_doc_snippets.py      # every sample
+```
+
+The check wraps each sample in a template from _scripts/snippet_templates/_, which
+supplies the includes and the usual using-directives. An unmarked sample tries the `si`
+template, then `isq`. The sample goes into the body of `main`, at namespace scope, or is
+cut in two, with the declarations above the cut at namespace scope and the statements
+below it in `main`. A sample needing more says so with a marker line, which the site build
+removes from the published page:
+
+| Marker                                   | Use it when the sample                                                                |
+|------------------------------------------|---------------------------------------------------------------------------------------|
+| `// snippet-template: systems`           | needs a template other than `si` and `isq`. The first lines of each template say what it is for |
+| `// snippet-continues`                   | uses what the previous sample on the page declared                                    |
+| `// snippet-id: defs`                    | is used by another sample, which names it with `snippet-after`                       |
+| `// snippet-after: defs`                 | uses what another sample declared, above or below it on the page. `docs/path/page.md#defs` names one on another page or in a header, and `example/file.cpp` a whole example program. Add `:decls` to take only its declarations, without its statements in `main` |
+| `// snippet-setup: void draw_at(int x, int y);` | calls or uses something the page leaves to the reader, like a function of their own API. The line is compiled and not shown, so it may only declare. `--list-setup` prints them after the check |
+| `// snippet-std: 20`                     | is written for another C++ standard than C++23, like a CRTP definition, which the library accepts only without deducing `this` |
+| `// snippet-template: none (category: why)` | can't compile. The reason starts with one of the categories below                  |
+
+A sample can show code that must not compile. Mark it with `❌` at the start of a comment,
+and nothing else counts:
+
+- A comment at the end of a line marks that line, as in
+  `// auto q = a + b;  // ❌ different kinds`. The line may be commented out, so that a
+  reader who copies the sample can still compile it.
+- A comment line with no code on it, such as `// ❌ different kinds`, marks the statement
+  under it.
+
+A statement that spans several lines counts as one. Use `❌` for nothing else in a sample.
+Code that compiles but teaches a mistake, or fails at runtime, says so in words.
+
+The check compiles the sample without those lines first. Then it adds each of them back
+on its own, uncommented. The compiler has to report an error on that line, or a
+`required from here` pointing at it. The first such error must not be about an undeclared
+name, because a misspelled name would make any line fail. A compile that reports a
+deprecation fails too, because a sample must not teach a deprecated spelling.
+
+Opting out is for a sample that can't compile by its nature. The reason goes on the marker
+line and starts with one of these categories, followed by a colon:
+
+- `historical`: an earlier version's API or design, shown as such;
+- `not this library`: another library, a proposal, or a planned design;
+- `third-party`: needs a library the check doesn't have, like Eigen;
+- `pseudo-code`: a synopsis, `...` placeholders, or a name standing for the reader's type;
+- `exercise skeleton`: a workshop exercise the reader completes (its solution compiles).
+
+`--list-opt-outs` prints them all. A sample that is only hard to make compile isn't one of
+these. Fix it instead.
+
+The templates a marker can name:
+
+- `si` (the default) and `isq`: the core library, the ISQ and the SI, with the SI unit
+  symbols, and `isq` also with the ISQ quantity names;
+- `plain`: the same library, with no unit symbols;
+- `scoped`: `isq` with the sample in a namespace of its own, for a sample that defines its
+  own `length` or `time`;
+- `utility`: the `mp_units::utility` representation types (vectors, tensors, `uncertain`,
+  the random distributions);
+- `codata`: the measured constants;
+- `systems` and `systems_plain`: the other systems, with or without the SI unit symbols;
+- `hep` and `angular`: the HEP and angular systems with their own unit symbols;
+- `excerpt`, `si_excerpt`, `isq_excerpt`, `natural_excerpt`, `hep_excerpt`: for a sample
+  that quotes the library's own definitions, placed where the names resolve as they do in
+  the library.
+
+When you write or change a sample:
+
+- Show what a reader needs to compile it. A sample that uses another system's unit
+  symbols shows its `using namespace mp_units::yard_pound::unit_symbols;`. A name the
+  sample invents is declared in it, or in a sample it continues or comes after. Only what
+  the page leaves to the reader, like a stand-in for their own API or an input value,
+  goes in a hidden `snippet-setup` declaration.
+- Never change what a sample teaches to make it compile. A sample that fails often shows
+  that the documentation fell behind the library. Fix the documentation.
+- Prefer the commented-out form for code that must not compile, with a short reason after
+  the cross: `// auto q = a + b;  // ❌ no common kind`. A longer reason goes on a marked
+  comment line above.
+- Align the trailing comments of a block to one column.
+- The hook runs the check on commit. Run it earlier to see failures while you edit.
 
 ### Unified code formatting
 
@@ -419,6 +511,8 @@ This will run:
   has to be wrapped),
 - `shellcheck` for the shell scripts and `actionlint` for the GitHub Actions workflows,
 - `black`, `isort`, and `flake8` for the Python scripts,
+- the [check of the documentation samples](#code-samples-in-the-documentation), which needs
+  GCC 15 (`SKIP=doc-snippets pre-commit run --all-files` leaves it out),
 - some other checks (e.g., trailing whitespace, YAML and JSON validity, etc.).
 
 The script will run on all the files in the repo and will apply the changes in place when

@@ -178,7 +178,9 @@ For current machine specifications and pricing, see:
    conan create . -pr clang16 -c user.mp-units.build:all=True -b missing
    ```
 
-3. **Code quality**: Run pre-commit checks (automatically included in check_all.sh)
+3. **Code quality**: The container installs the pre-commit git hook when it is created, so
+   every `git commit` runs the checks on the files it changes. `check_all.sh` runs them on
+   every file. To run them by hand:
 
    ```bash
    pre-commit run --all-files

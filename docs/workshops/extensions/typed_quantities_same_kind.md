@@ -80,6 +80,8 @@ int main()
 ??? tip "Solution"
 
     ```cpp
+    // snippet-id: solution
+    #include <mp-units/systems/isq.h>
     #include <mp-units/systems/si.h>
     #include <iostream>
     #include <optional>
@@ -130,7 +132,8 @@ int main()
     swaps compile successfully but produce wrong results:
 
     ```cpp
-    // ❌ Untyped: All are just "meters"
+    // snippet-after: solution
+    // Untyped: All are just "meters"
     std::optional<std::pair<quantity<km>, quantity<min>>> find_route(quantity<m> height,
                                                                      quantity<m> width,
                                                                      quantity<m> turn_radius);
@@ -141,12 +144,13 @@ int main()
     Typed quantities make each parameter semantically distinct:
 
     ```cpp
+    // snippet-after: solution
     // ✅ Typed: Each has specific meaning
     std::optional<std::pair<quantity<isq::distance[km]>, quantity<min>>> find_route(quantity<isq::height[m]> height,
                                                                                     quantity<isq::width[m]> width,
                                                                                     quantity<isq::radius[m]> turn_radius);
 
-    auto result = find_route(width, height, turn_radius);  // Does not compile!
+    auto result = find_route(width, height, turn_radius);  // ❌
     ```
 
     The type system now distinguishes between different kinds of lengths based on their
@@ -186,6 +190,7 @@ int main()
     - Only one quantity of a given dimension is used
 
         ```cpp
+        // snippet-template: none (pseudo-code: plan_route(...) signature placeholder)
         // Good: Only one duration, no confusion possible
         void plan_route(...) -> std::pair<quantity<isq::distance[km]>, quantity<min>>;
         ```

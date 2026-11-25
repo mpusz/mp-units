@@ -140,8 +140,37 @@ jobs:
         run: |
           properdocs build --strict
 
+  # Compiles every C++ sample in the documentation (scripts/check_doc_snippets.py). Like
+  # `link-check`, it gates `deploy`. It lives in this workflow because `needs` can't reach a job
+  # in another one.
+  snippets:
+    name: Compile documentation samples
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: 3.x
+      - name: Install GCC 15
+        # Pinned, because whether a marked line is rejected, and on which line, depends on the
+        # compiler. The checker refuses any other one (`REQUIRED_GCC` in the script). It is the
+        # same PPA the Conan workflow uses.
+        run: |
+          echo 'Acquire::Retries "10";' | sudo tee /etc/apt/apt.conf.d/80-retries  # the toolchain PPA returns 503s at times
+          sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+          sudo apt update
+          sudo apt install -y g++-15
+      - name: Compile every C++ sample in the documentation
+        # On failure the script appends each failing sample, its diagnostic and a local repro
+        # command to the job summary.
+        run: |
+          python3 scripts/check_doc_snippets.py --cxx g++-15 --jobs "$(nproc)" --summary "$GITHUB_STEP_SUMMARY"
+
   deploy:
-    needs: link-check
+    needs: [link-check, snippets]
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 45

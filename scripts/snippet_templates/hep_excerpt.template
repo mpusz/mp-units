@@ -1,0 +1,9 @@
+// For an excerpt of the library's own `mp_units::hep` definitions. The body goes in a
+// namespace nested inside `mp_units::hep`, so an unqualified `length` or `energy` is the HEP
+// quantity, as in the library. The excerpt's own declarations stay apart from the real ones.
+#include "prelude.h"
+#include <mp-units/systems/hep.h>
+namespace mp_units::hep::sample {
+using namespace mp_units::non_si;
+{{BODY}}
+}  // namespace mp_units::hep::sample

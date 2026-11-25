@@ -510,7 +510,6 @@ inline constexpr struct non_negative {
  * It is for a quantity that shares its parent's kind, and so its units, but not its domain:
  *
  * @code{.cpp}
- * // snippet-template: none
  * // a signed vertical coordinate: negative below sea level, yet a length in metres
  * inline constexpr struct altitude : quantity_spec<length, possibly_negative> {} altitude;
  * @endcode
@@ -564,6 +563,7 @@ MP_UNITS_EXPORT_END
  * For example:
  *
  * @code{.cpp}
+ * // snippet-template: scoped
  * inline constexpr struct dim_length : base_dimension<"L"> {} dim_length;
  * inline constexpr struct dim_mass : base_dimension<"M"> {} dim_mass;
  * inline constexpr struct dim_time : base_dimension<"T"> {} dim_time;
@@ -688,6 +688,7 @@ struct propagate_equation<Q, true> {
  * For example:
  *
  * @code{.cpp}
+ * // snippet-template: scoped
  * inline constexpr struct width : quantity_spec<length> {} width;
  * inline constexpr struct height : quantity_spec<length> {} height;
  * inline constexpr struct diameter : quantity_spec<width> {} diameter;
@@ -952,7 +953,6 @@ struct kind_of_<Q> : quantity_spec<kind_of_<Q>, Q{}>::_base_type_ {
  * implicitly to every quantity of the kind:
  *
  * @code{.cpp}
- * // snippet-template: none
  * inline constexpr struct metre final : named_unit<"m", kind_of<isq::length>> {} metre;
  *
  * quantity<isq::height[m]> height = 42 * m;  // `42 * m` may be any length, so it may be a height

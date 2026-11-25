@@ -48,7 +48,6 @@ MP_UNITS_EXPORT_BEGIN
  * Which SI prefixes @ref invoke_with_prefixed may choose
  *
  * @code{.cpp}
- * // snippet-template: none
  * #include <mp-units/systems/si/prefix_utils.h>
  *
  * auto print = [](auto q) { std::cout << q << '\n'; };

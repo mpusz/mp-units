@@ -25,7 +25,7 @@ inline constexpr struct sensor_scale_origin :
     relative_point_origin<si::ice_point + delta<deg_C>(0),
                           check_in_range{delta<deg_C>(-40), delta<deg_C>(85)}> {} sensor_scale_origin;
 
-quantity_point temp = sensor_scale_origin + 150 * deg_C;  // Out of range! (150°C > 85°C)
+quantity_point temp = sensor_scale_origin + delta<deg_C>(150);  // Out of range! (150°C > 85°C)
 ```
 
 The construction violates its
@@ -106,12 +106,13 @@ using namespace mp_units::utility;
 using safe_double = constrained<double, throw_policy>;
 
 // Option 2: Terminate immediately (all environments)
-using safe_double = constrained<double, terminate_policy>;
+using terminating_double = constrained<double, terminate_policy>;
 ```
 
 You can also define custom policies:
 
 ```cpp
+// snippet-template: none (third-party: spdlog)
 struct log_and_throw_policy {
   static void on_constraint_violation(std::string_view msg) {
     spdlog::error("Bounds violation: {}", msg);
@@ -148,6 +149,7 @@ using safe_temp = quantity_point<deg_C, sensor_scale_origin, safe_double>;
 Now violations throw exceptions **in all build modes**:
 
 ```cpp
+// snippet-continues
 try {
   safe_temp temp{delta<deg_C>(150.0), sensor_scale_origin};  // Always throws! (150°C > 85°C)
 } catch (const std::domain_error& e) {
@@ -234,6 +236,7 @@ You can create custom error policies for domain-specific needs:
 For monitoring and diagnostics with exceptions:
 
 ```cpp
+// snippet-template: none (third-party: spdlog)
 #include <spdlog/spdlog.h>
 #include <stdexcept>
 
@@ -261,7 +264,7 @@ struct audit_terminate_policy {
   }
 };
 
-using audited_double = constrained<double, audit_terminate_policy>;
+using audited_double = utility::constrained<double, audit_terminate_policy>;
 ```
 
 

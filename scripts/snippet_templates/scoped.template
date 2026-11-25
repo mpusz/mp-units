@@ -1,0 +1,10 @@
+// The `isq` template with the sample in a namespace of its own, for samples that define
+// their own `length`, `width` or `time`. In that namespace, a name the sample declares hides
+// the one a using-directive brings in, and the C library's `::time`.
+#include "prelude.h"
+using namespace mp_units;
+using namespace mp_units::isq;
+using namespace mp_units::si::unit_symbols;
+namespace sample {
+{{BODY}}
+}  // namespace sample

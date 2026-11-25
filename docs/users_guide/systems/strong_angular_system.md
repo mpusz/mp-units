@@ -152,14 +152,22 @@ while _angular velocity_ carries one, so the rotational formulas lose an angle o
 and need an explicit conversion:
 
 ```cpp
-const quantity power = isq::power(torque * omega);                        // P = τω
-const quantity energy = isq::kinetic_energy(inertia * pow<2>(omega));     // E = ½Iω²
+// snippet-setup: quantity torque = isq::torque(10.0 * N * m);
+// snippet-setup: quantity omega = isq::angular_velocity(2.0 * rad / s);
+// snippet-setup: quantity inertia = isq::moment_of_inertia(3.0 * kg * m2);
+const quantity power = isq::power((torque * omega).in(W));                                // P = τω
+const quantity energy = isq::kinetic_energy((inertia * pow<2>(magnitude(omega))).in(J));  // E = ½Iω²
 ```
 
 In `isq_angle`, _torque_ and _angular momentum_ carry the angle as the physics requires,
 so both formulas convert implicitly:
 
 ```cpp
+// snippet-template: systems
+using mp_units::angular::unit_symbols::rad;
+
+// snippet-setup: const quantity torque = isq_angle::torque(10.0 * N * m / rad);
+// snippet-setup: const quantity omega = isq_angle::angular_velocity(2.0 * rad / s);
 const quantity<si::watt> power = torque * omega;
 ```
 
@@ -170,6 +178,7 @@ This is why `isq_angle` is the system to use for rotational mechanics.
 Here's an example using `isq_angle` to calculate _torque_ with proper dimensional analysis:
 
 ```cpp
+// snippet-template: systems
 using namespace mp_units;
 using namespace mp_units::si::unit_symbols;
 using mp_units::angular::unit_symbols::deg;

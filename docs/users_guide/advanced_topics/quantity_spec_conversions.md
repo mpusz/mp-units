@@ -70,6 +70,7 @@ The rules refer to a few facts about a named quantity:
 For the definitions below, where `dimensionless` is the library's own:
 
 ```cpp
+// snippet-template: scoped
 inline constexpr struct length : quantity_spec<dim_length> {} length;
 inline constexpr struct width : quantity_spec<length> {} width;
 inline constexpr struct radius : quantity_spec<width> {} radius;
@@ -211,6 +212,7 @@ Identical quantity specifications convert with `implicit`. Quantity specificatio
 dimensions never convert, and `quantity_cast` won't force them either:
 
 ```cpp
+// snippet-continues
 static_assert(!utility::castable(isq::time, isq::length));
 ```
 
@@ -232,6 +234,7 @@ reached only explicitly. If the target is above `K`, the kind has to leave its d
 kind and the rank is `explicit`. Anything else is `none`:
 
 ```cpp
+// snippet-continues
 static_assert(utility::implicitly_convertible(kind_of<isq::length>, isq::width));
 static_assert(utility::implicitly_convertible(kind_of<dimensionless>, isq::angular_measure));
 static_assert(!utility::implicitly_convertible(kind_of<isq::angular_measure>, dimensionless));
@@ -252,6 +255,7 @@ downcast. Any other source, from another branch of the same tree or from a diffe
 tree, is `none`:
 
 ```cpp
+// snippet-continues
 static_assert(utility::implicitly_convertible(isq::width, kind_of<isq::length>));
 static_assert(utility::explicitly_convertible(isq::angular_measure, kind_of<dimensionless>));
 static_assert(!utility::implicitly_convertible(isq::angular_measure, kind_of<dimensionless>));
@@ -266,6 +270,7 @@ kind. Every downcast step from a source kind ranks `implicit`, while dropping a 
 kind stays `explicit`:
 
 ```cpp
+// snippet-continues
 static_assert(utility::implicitly_convertible(kind_of<inverse(isq::time)>, isq::frequency));
 static_assert(utility::explicitly_convertible(inverse(isq::time), kind_of<isq::frequency>));
 static_assert(!utility::implicitly_convertible(inverse(isq::time), kind_of<isq::frequency>));
@@ -283,6 +288,7 @@ factor and a typed factor of one tree are different factors, like `isq::width` a
 `isq::length`:
 
 ```cpp
+// snippet-continues
 inline constexpr struct rate_of_climb : quantity_spec<isq::speed, isq::height / isq::duration> {} rate_of_climb;
 
 static_assert(utility::implicitly_convertible(kind_of<isq::length> / isq::duration, rate_of_climb));
@@ -317,6 +323,7 @@ to an _energy_. That the joule is not written for a _moment of force_ is a conve
 quantity stays so alone and inside a product:
 
 ```cpp
+// snippet-continues
 static_assert(UnitOf<decltype(J), isq::torque>);
 static_assert(!UnitOf<decltype(Hz), isq::activity>);
 static_assert(!UnitOf<decltype(Bq / m), isq::frequency / isq::length>);
@@ -343,6 +350,7 @@ declared kind is lost or gained.
    that each carry a declared kind the other lacks are `none` as well.
 
 ```cpp
+// snippet-continues
 static_assert(!utility::castable(isq::frequency, isq::activity));                     // 1
 static_assert(utility::implicitly_convertible(isq::width, isq::length));              // 2
 static_assert(utility::explicitly_convertible(isq::angular_measure, dimensionless));  // 2, kind loss
@@ -401,6 +409,7 @@ the second cap. The comparison lowers the final rank, and the result doesn't dep
 which operations are taken:
 
 ```cpp
+// snippet-continues
 static_assert(!utility::implicitly_convertible(isq::arc_length / isq::radius, isq::angular_measure));
 static_assert(utility::explicitly_convertible(isq::arc_length / isq::radius, isq::angular_measure));
 static_assert(!utility::implicitly_convertible(isq::angular_measure * isq::radius, isq::arc_length));
@@ -502,6 +511,7 @@ lower the result.
     ```
 
     ```cpp
+    // snippet-continues
     static_assert(utility::implicitly_convertible(isq::width * isq::height, isq::area));
     ```
 
@@ -519,6 +529,7 @@ lower the result.
     ```
 
     ```cpp
+    // snippet-continues
     static_assert(!utility::implicitly_convertible(isq::area, isq::width * isq::height));
     static_assert(utility::explicitly_convertible(isq::area, isq::width * isq::height));
     ```
@@ -537,6 +548,7 @@ lower the result.
     ```
 
     ```cpp
+    // snippet-continues
     static_assert(!utility::implicitly_convertible(inverse(isq::time), isq::frequency));
     static_assert(utility::explicitly_convertible(inverse(isq::time), isq::frequency));
     ```
@@ -553,6 +565,7 @@ lower the result.
     ```
 
     ```cpp
+    // snippet-continues
     static_assert(utility::implicitly_convertible(isq::frequency, inverse(isq::time)));
     ```
 
@@ -579,6 +592,7 @@ lower the result.
     The same conversion to `speed` is `implicit`, because _speed_ defines its equation:
 
     ```cpp
+    // snippet-continues
     static_assert(!utility::implicitly_convertible(width / duration, special_speed));
     static_assert(utility::explicitly_convertible(width / duration, special_speed));
     static_assert(utility::implicitly_convertible(width / duration, speed));
@@ -686,6 +700,9 @@ lower the result.
     and `rad / s` carries the angle:
 
     ```cpp
+    // snippet-setup: quantity torque = isq::torque(10.0 * N * m);
+    // snippet-setup: quantity omega = isq::angular_velocity(2.0 * rad / s);
+    // snippet-setup: quantity inertia = isq::moment_of_inertia(3.0 * kg * m2);
     quantity power = quantity<isq::power[W]>(torque * omega);
     quantity energy = quantity<isq::kinetic_energy[J]>(inertia * pow<2>(omega));
     ```

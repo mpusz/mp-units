@@ -69,7 +69,7 @@ Without dimension safety:
 ```cpp
 auto speed = 100;              // 100 what? No dimension information
 auto time = 2;                 // 2 what? No dimension information  
-auto wrong = speed + time      // Wrong logic, but compiles!  
+auto wrong = speed + time;     // Wrong logic, but compiles!  
 auto distance = speed / time;  // Wrong logic! Should be speed * time, but compiles
 ```
 
@@ -95,11 +95,11 @@ Dimension safety provides:
 ```cpp
 quantity speed = 100 * km / h;
 quantity time = 2 * h;
-// quantity<si::kilo<si::metre>> distance = 2 * h;          // ❌ Compile-time error!
-// quantity<si::kilo<si::metre>> distance = speed / time;   // ❌ Compile-time error!
+// quantity<si::kilo<si::metre>> distance = 2 * h;          // ❌
+// quantity<si::kilo<si::metre>> distance = speed / time;   // ❌
 quantity<si::kilo<si::metre>> distance = speed * time;      // ✅ OK
 
-// quantity result = distance + time;                       // ❌ Compile-time error!
+// quantity result = distance + time;                       // ❌
 // Error: cannot add length and time (incompatible dimensions)
 ```
 
@@ -156,6 +156,7 @@ Common scenarios where unit safety matters:
     One missing `/ CLHEP::cm` makes a detector geometry **10× smaller**, silently, at runtime:
 
     ```cpp
+    // snippet-template: none (not this library: ROOT and Geant4 code)
     double radius = rootVolume->GetRmax();  // Returns 10.0 — meaning 10 cm in ROOT
     G4Tubs g4Tube("Tube", 0, radius, ...);  // Geant4 reads it as 10 mm!
     ```
@@ -184,6 +185,7 @@ Unit errors arise at construction, assignment, and interface boundaries:
 === "With mp-units: Automatic & Safe"
 
     ```cpp
+    // snippet-template: scoped
     // Interface: units are enforced at every call site
     quantity<m / s> avg_speed(quantity<m> d, quantity<s> t) { return d / t; }
 
@@ -225,7 +227,7 @@ For a complete guide on safely extracting values for legacy interfaces, see
 
 ```cpp
 quantity distance = 1500. * m;
-// auto value = distance.count();  // Error: no count() method!
+// auto value = distance.count();  // ❌ no count() method!
 
 auto value = distance.numerical_value_in(km);  // Must specify unit explicitly
 // Forces users to think about and document the unit being used
@@ -259,6 +261,7 @@ Many libraries carry unit types but do not validate the representation type on c
 Truncation and overflow happen silently:
 
 ```cpp
+// snippet-template: none (not this library: Boost.Units)
 namespace bu = boost::units;
 using kilometer_unit = bu::make_scaled_unit<bu::si::length, bu::scale<10, bu::static_rational<3>>>::type;
 
@@ -275,12 +278,12 @@ bu::quantity<bu::si::length, std::int8_t> back_to_m(distance_km);   // Unit conv
 
 ```cpp
 quantity length = 1500 * m;
-quantity<km, int> distance = length;         // ❌ Compile-time error!
+quantity<km, int> distance = length;         // ❌
 // Error: 1500 m → 1.5 km truncates with int
 
 // Must be explicit about potentially lossy conversions
-quantity distance2 = length.force_in(km);                  // ✅ OK: explicit truncation
-auto km_count = length.force_numerical_value_in(km);       // ✅ OK: returns raw int (1)
+quantity distance2 = length.in(km, truncated);             // ✅ OK: explicit truncation
+auto km_count = length.numerical_value_in(km, truncated);  // ✅ OK: returns raw int (1)
 quantity distance3 = length.in<double>(km);                // ✅ OK: floating point avoids loss
 
 // Value-preserving conversions work implicitly
@@ -293,7 +296,7 @@ quantity<mm, int> length_mm = length;        // ✅ OK: 1'500'000 mm (no truncat
 
 ```cpp
 quantity length1 = std::int8_t{2} * m;
-quantity<mm, std::int8_t> length_mm1 = length1;   // ❌ Compile-time error!
+quantity<mm, std::int8_t> length_mm1 = length1;   // ❌
 // Error: 2 m → 2000 mm overflows int8_t (max 127)
 
 quantity length2 = std::int16_t{2} * m;
@@ -333,8 +336,9 @@ quantity<mm, std::int16_t> length_mm2 = length2;  // ✅ OK: 2000 fits in int16_
     #include <mp-units/utility/safe_int.h>
     #include <mp-units/utility/constrained.h>
 
+    // snippet-setup: inline constexpr struct geo_longitude : quantity_spec<isq::angular_measure> {} geo_longitude;
     // Built-in safe_int detects arithmetic overflow at runtime
-    quantity distance = safe_int{std::int16_t{100}} * m;
+    quantity distance = utility::safe_int{std::int16_t{100}} * m;
     // quantity overflow = distance * std::int16_t{1'000};  // throws std::overflow_error at runtime
 
     // Cyclic longitude points that wrap at the anti-meridian
@@ -420,7 +424,9 @@ prevents implicit conversions but does **not** protect against in-place construc
 ```cpp
 std::vector<std::chrono::milliseconds> delays;
 delays.emplace_back(42);  // ✅ Compiles — stores 42ms
+```
 
+```cpp
 // Refactor: switch to microseconds for higher precision
 std::vector<std::chrono::microseconds> delays;
 delays.emplace_back(42);  // ✅ Still compiles — but now stores 42µs!
@@ -437,13 +443,15 @@ initialization, assignment, or `emplace_back`:
 
 ```cpp
 std::vector<quantity<si::milli<si::second>>> delays;
-// delays.emplace_back(42);    // ❌ Compile-time error — unit required!
+// delays.emplace_back(42);    // ❌ unit required!
 delays.emplace_back(42 * ms);  // ✅ Unit is explicit — intent is unambiguous
 delays.emplace_back(42, ms);   // ✅ OK
+```
 
+```cpp
 // Refactor: switch to microseconds
 std::vector<quantity<si::micro<si::second>>> delays;
-// delays.emplace_back(42);    // ❌ Compile-time error — still requires a unit!
+// delays.emplace_back(42);    // ❌ still requires a unit!
 delays.emplace_back(42 * ms);  // ✅ 42ms → 42000µs: explicit, value-preserving conversion
 delays.emplace_back(42, ms);   // ✅ OK
 delays.emplace_back(42 * us);  // ✅ Or 42µs if that was the actual intent
@@ -497,7 +505,7 @@ static_assert(!is_non_negative(isq::Massieu_function)); // signed: J = −A/T
 
     ```cpp
     quantity_point generic{5.0 * m};                  // origin uses kind_of<isq::length> — NOT auto-bounded
-    quantity_point dist{distance_traveled(5.0 * m)};  // uses isq::distance — auto-bounded
+    quantity_point dist{isq::distance(5.0 * m)};      // uses isq::distance — auto-bounded
     ```
 
 This metadata is automatically enforced at runtime for `quantity_point` types: when a
@@ -528,7 +536,7 @@ inline constexpr struct prime_meridian :
   absolute_point_origin<geo_longitude, wrap_to_range{-180 * deg, 180 * deg}> {} prime_meridian;
 
 using longitude = quantity_point<geo_longitude[deg], prime_meridian>;
-longitude lon{190.0 * deg};  // wraps to -170°
+longitude lon{190.0 * deg, prime_meridian};  // wraps to -170°
 ```
 
 The library ships six overflow policies (`check_in_range`, `clamp_to_range`,
@@ -591,6 +599,7 @@ kind safety, any library will silently allow assigning one to the other.
 === "Without quantity kind safety: Kinds can be freely mixed up"
 
     ```cpp
+    // snippet-template: none (not this library: Boost.Units)
     namespace bu = boost::units;
 
     bu::quantity<bu::si::absorbed_dose> absorbed_dose = 2.5 * bu::si::gray;
@@ -605,10 +614,10 @@ kind safety, any library will silently allow assigning one to the other.
     quantity absorbed_dose = 1.5 * Gy;
     quantity dose_equivalent = 2.0 * Sv;
 
-    // auto result = absorbed_dose + dose_equivalent;           // ❌ Compile-time error!
+    // auto result = absorbed_dose + dose_equivalent;           // ❌
     // Error: cannot add absorbed dose and dose equivalent
 
-    // auto equal = (absorbed_dose == dose_equivalent);         // ❌ Compile-time error!
+    // auto equal = (absorbed_dose == dose_equivalent);         // ❌
     // Error: cannot compare absorbed dose and dose equivalent (no interop between different quantity kinds)
     ```
 
@@ -637,6 +646,7 @@ explicitly, so the type system enforces that the conversion is intentional.
 === "Without quantity kind safety: Kinds can be freely mixed up"
 
     ```cpp
+    // snippet-template: none (not this library: Boost.Units)
     namespace bu = boost::units;
 
     // Both are just 'length' in Boost.Units — it cannot distinguish fluid from water head:
@@ -658,6 +668,10 @@ explicitly, so the type system enforces that the conversion is intentional.
     inline constexpr struct water_head : quantity_spec<isq::height, subkind> {} water_head;
     inline constexpr struct specific_gravity : quantity_spec<dimensionless> {} specific_gravity;
 
+    // snippet-setup: void use_water_head(QuantityOf<water_head> auto head);
+    // snippet-setup: void use_fluid_head(QuantityOf<fluid_head> auto head);
+    // snippet-setup: void use_height(QuantityOf<isq::height> auto height);
+
     constexpr QuantityOf<water_head> auto to_water_head(QuantityOf<fluid_head> auto h_fluid,
                                                         QuantityOf<specific_gravity> auto sg)
     {
@@ -669,10 +683,10 @@ explicitly, so the type system enforces that the conversion is intentional.
     quantity water = water_head(4 * m);
     use_water_head(water);           // ✅ OK
 
-    // use_fluid_head(water);        // ❌ Compile-time error!
-    // use_water_head(fluid);        // ❌ Compile-time error!
-    // quantity q = fluid + water;   // ❌ Compile-time error!
-    // if (fluid == water) {}        // ❌ Compile-time error!
+    // use_fluid_head(water);        // ❌
+    // use_water_head(fluid);        // ❌
+    // quantity q = fluid + water;   // ❌
+    // if (fluid == water) {}        // ❌
 
     use_height(isq::height(fluid));  // ✅ OK: explicit upcast to generic length
     use_height(isq::height(water));  // ✅ OK: explicit upcast to generic length
@@ -691,6 +705,7 @@ other numeric values that shouldn't be mixed:
 === "Without quantity kind safety: Kinds can be freely mixed up"
 
     ```cpp
+    // snippet-template: none (not this library: Boost.Units)
     namespace bu = boost::units;
 
     // Both are just 'dimensionless' in Boost.Units — it cannot distinguish different counts:
@@ -710,10 +725,10 @@ other numeric values that shouldn't be mixed:
     quantity items = item_count(10);
     quantity widgets = widget_count(20);
 
-    // auto mixed = items + widgets;  // ❌ Compile-time error!
+    // auto mixed = items + widgets;  // ❌
     // Error: cannot mix different quantity kinds (even though both dimensionless)
 
-    // quantity<widget_count[one]> bad = item_count(10);  // ❌ Compile-time error!
+    // quantity<widget_count[one]> bad = item_count(10);  // ❌
     // Error: cannot initialize with a different kind (even though both dimensionless)
     ```
 
@@ -768,6 +783,7 @@ Quantity hierarchies allow distinguishing specialized quantities within the same
 === "Without quantity safety: All energies look the same"
 
     ```cpp
+    // snippet-template: none (not this library: Boost.Units)
     namespace bu = boost::units;
 
     // No way to require a specific kind of energy in a function signature:
@@ -803,15 +819,15 @@ Quantity hierarchies allow distinguishing specialized quantities within the same
     quantity<isq::energy[J]> e1 = Ep;                // ✅ OK: upcast to grandparent
 
     // Explicit conversion needed from parent to child
-    // quantity<isq::potential_energy[J]> wrong = total;  // ❌ Error: downcast not allowed
+    // quantity<isq::potential_energy[J]> wrong = total;  // ❌ downcast not allowed
     quantity<isq::potential_energy[J]> pe = isq::potential_energy(total);  // ✅ OK: explicit
 
     // Siblings cannot be directly converted
-    // quantity<isq::kinetic_energy[J]> bad = Ep;  // ❌ Error: cannot convert between siblings
+    // quantity<isq::kinetic_energy[J]> bad = Ep;  // ❌ cannot convert between siblings
     quantity<isq::kinetic_energy[J]> ke = quantity_cast<isq::kinetic_energy>(Ep);  // ✅ OK: forced cast
 
     process_potential_energy(Ep);     // ✅ OK: exact match
-    // process_potential_energy(Ek);  // ❌ Error: kinetic_energy is not potential_energy
+    // process_potential_energy(Ek);  // ❌ kinetic_energy is not potential_energy
     process_potential_energy(isq::potential_energy(total));  // ✅ OK: explicit conversion
     ```
 
@@ -822,6 +838,7 @@ Some quantities require specific inputs, not just dimensionally correct ones:
 === "Without quantity safety: Any length is accepted"
 
     ```cpp
+    // snippet-template: none (not this library: Boost.Units)
     namespace bu = boost::units;
 
     // Boost.Units has no concept of 'height' vs generic 'length':
@@ -839,11 +856,12 @@ Some quantities require specific inputs, not just dimensionally correct ones:
 === "With mp-units: Specific ingredient required"
 
     ```cpp
+    // snippet-template: codata
     inline constexpr struct gravitational_potential_energy :
         quantity_spec<isq::potential_energy,
                       isq::mass * isq::acceleration_of_free_fall * isq::height> {} gravitational_potential_energy;
 
-    constexpr quantity g0 = isq::acceleration_of_free_fall(1 * si::standard_gravity);
+    constexpr quantity g0 = isq::acceleration_of_free_fall(1 * codata::standard_gravity);
     quantity<isq::mass[kg]> mass = 10 * kg;
     quantity<isq::height[m]> height = 5 * m;
 
@@ -852,7 +870,7 @@ Some quantities require specific inputs, not just dimensionally correct ones:
 
     // Cannot substitute generic length for height
     quantity<isq::length[m]> width = 2 * m;
-    // quantity<gravitational_potential_energy[J]> wrong = mass * g0 * width;  // ❌ Error: generic length
+    // quantity<gravitational_potential_energy[J]> wrong = mass * g0 * width;  // ❌ generic length
     ```
 
 ### Quantity Character Correctness
@@ -884,8 +902,9 @@ a vector is required, or a real type where a complex one is required, and vice v
 === "Without quantity character safety: Any representation is accepted"
 
     ```cpp
+    // snippet-template: none (not this library: Boost.Units)
     namespace bu = boost::units;
-    using vec3 = cartesian_vector<double>;
+    using vec3 = utility::cartesian_vector<double>;
 
     // Boost.Units has no quantity character concept — any Rep is accepted for any quantity:
     auto m = bu::quantity<bu::si::mass, vec3>::from_value(vec3{10., 0., 0.});  // Oops! Vector mass — compiles!
@@ -900,13 +919,14 @@ a vector is required, or a real type where a complex one is required, and vice v
 === "With mp-units: Representation type must match quantity character"
 
     ```cpp
-    using vec3 = cartesian_vector<double>;
+    // snippet-template: utility
+    using vec3 = utility::cartesian_vector<double>;
 
-    // quantity<isq::mass[kg], vec3> m = /* ... */;           // ❌ Compile-time error!
-    // quantity<isq::duration[s], vec3> t = /* ... */;        // ❌ Compile-time error!
+    // quantity<isq::mass[kg], vec3> m = /* ... */;           // ❌
+    // quantity<isq::duration[s], vec3> t = /* ... */;        // ❌
 
     quantity q1 = isq::speed(60 * km / h);                    // ✅ OK: scalar speed
-    // quantity q2 = isq::speed(vec3{0, 0, -60} * km / h);    // ❌ Compile-time error!
+    // quantity q2 = isq::speed(vec3{0, 0, -60} * km / h);    // ❌
     // Error: speed is a scalar quantity; vector representation not allowed
 
     quantity q3 = isq::velocity(vec3{0, 0, -60} * km / h);    // ✅ OK: vector velocity
@@ -948,6 +968,7 @@ mismatches even before any equations are evaluated.
 === "Without quantity character safety: Any representation is accepted"
 
     ```cpp
+    // snippet-template: none (not this library: Boost.Units)
     namespace bu = boost::units;
 
     // Boost.Units has no concept of complex quantity character
@@ -967,6 +988,9 @@ mismatches even before any equations are evaluated.
 === "With mp-units: Representation type must match quantity character"
 
     ```cpp
+    // snippet-template: systems
+    using namespace mp_units::iec::unit_symbols;
+    using namespace std::complex_literals;
     constexpr auto VA = V * A;
 
     quantity P = isq::active_power(800. * W);                     // ✅ OK: real scalar and correct unit
@@ -977,12 +1001,12 @@ mismatches even before any equations are evaluated.
     quantity complex = isq::complex_power((800. +  600.i) * VA);  // ✅ OK: complex scalar and correct unit
 
     // Cannot use complex representation for real power quantities:
-    // quantity<isq::active_power[W], std::complex<double>> wrong1 = /* ... */;     // ❌ Compile-time error!
-    // quantity<isq::reactive_power[var], std::complex<double>> wrong2 = /* ... */; // ❌ Compile-time error!
-    // quantity<isq::apparent_power[VA], std::complex<double>> wrong3 = /* ... */;  // ❌ Compile-time error!
+    // quantity<isq::active_power[W], std::complex<double>> wrong1 = /* ... */;     // ❌
+    // quantity<isq::reactive_power[var], std::complex<double>> wrong2 = /* ... */; // ❌
+    // quantity<isq::apparent_power[VA], std::complex<double>> wrong3 = /* ... */;  // ❌
 
     // Cannot use real representation for complex power:
-    // quantity<isq::complex_power[VA]> wrong4 = /* ... */;                         // ❌ Compile-time error!
+    // quantity<isq::complex_power[VA]> wrong4 = /* ... */;                         // ❌
     ```
 
 
@@ -999,6 +1023,7 @@ and calling `magnitude()` on an already-scalar _speed_ is physically meaningless
 character enforcement, both mistakes compile unnoticed.
 
 ```cpp
+// snippet-template: none (not this library: V3 character-specific operations, section "V3 Planned")
 // Velocity is a vector quantity
 quantity velocity = isq::velocity(vec3{3, 4, 0} * m / s);
 
@@ -1006,13 +1031,13 @@ quantity velocity = isq::velocity(vec3{3, 4, 0} * m / s);
 quantity<isq::speed[m/s]> speed = magnitude(velocity);             // ✅ 5 m/s
 
 // Cannot accidentally mix them
-// quantity<isq::speed[m/s]> s = velocity;                         // ❌ Compile-time error!
-// quantity<isq::velocity[m/s]> v1 = speed;                        // ❌ Compile-time error!
-// quantity<isq::velocity[m/s]> v2 = magnitude(velocity);          // ❌ Compile-time error!
+// quantity<isq::speed[m/s]> s = velocity;                         // ❌
+// quantity<isq::velocity[m/s]> v1 = speed;                        // ❌
+// quantity<isq::velocity[m/s]> v2 = magnitude(velocity);          // ❌
 
 // Cannot call magnitude() twice — speed is already a scalar, not a vector:
-// quantity<isq::speed[m/s]> s2 = magnitude(magnitude(velocity));  // ❌ Compile-time error!
-// quantity<isq::speed[m/s]> s3 = magnitude(speed);                // ❌ Compile-time error!
+// quantity<isq::speed[m/s]> s2 = magnitude(magnitude(velocity));  // ❌
+// quantity<isq::speed[m/s]> s3 = magnitude(speed);                // ❌
 ```
 
 #### No vector multiplication
@@ -1039,6 +1064,7 @@ and the distinction between $\vec{d}$ and $\vec{r}$ are both lost. The result is
 product of magnitudes that is dimensionally valid for every one of these quantities:
 
 ```cpp
+// snippet-template: none (not this library: Boost.Units)
 namespace bu = boost::units;
 
 // Scalar case — all libraries accept this, but it is fundamentally ambiguous:
@@ -1054,8 +1080,9 @@ meaningful, and then `operator*` is no longer sufficient, because `vec3 * vec3` 
 undefined:
 
 ```cpp
+// snippet-template: none (not this library: Boost.Units)
 namespace bu = boost::units;
-using vec3 = cartesian_vector<double>;
+using vec3 = utility::cartesian_vector<double>;
 
 // Vector case — fails to compile in every library:
 auto force_3d = bu::quantity<bu::si::force,  vec3>::from_value(vec3{10., 0., 0.});
@@ -1091,11 +1118,12 @@ auto disp_3d  = bu::quantity<bu::si::length, vec3>::from_value(vec3{ 5., 0., 0.}
 are `scalar_product` and `vector_product`, which produce the correct result type:
 
 ```cpp
+// snippet-template: none (not this library: V3 scalar_product and vector_product on quantities)
 quantity force = isq::force(vec3{10., 0., 0.} * N);
 quantity displacement = isq::displacement(vec3{5., 0., 0.} * m);
 quantity position = isq::position_vector(vec3{1., 2., 0.} * m);
 
-// quantity wrong = force * displacement;                                             // ❌ Compile-time error!
+// quantity wrong = force * displacement;                                             // ❌
 
 // Work is scalar product → scalar result
 quantity<isq::work[J]> work = scalar_product(force, displacement);                    // Returns scalar
@@ -1103,19 +1131,18 @@ quantity<isq::work[J]> work = scalar_product(force, displacement);              
 // Moment of force is vector product → vector result
 quantity<isq::moment_of_force[N * m], vec3> moment = vector_product(position, force); // Returns vector
 
-// ❌ Compile-time errors!
-// quantity<isq::work[J]> work = vector_product(force, displacement);
-// quantity<isq::work[J]> work = magnitude(vector_product(force, displacement));
-// quantity<isq::moment_of_force[N * m], vec3> moment = vector_product(force, position);
+// quantity<isq::work[J]> work = vector_product(force, displacement);                   // ❌
+// quantity<isq::work[J]> work = magnitude(vector_product(force, displacement));        // ❌
+// quantity<isq::moment_of_force[N * m], vec3> moment = vector_product(force, position);  // ❌
 
 // Torque is the scalar magnitude of moment of force
 quantity<isq::torque[N * m]> torque = magnitude(moment);                              // Returns scalar
 
 // Even though work and torque are both scalars with the same dimension (N·m = J),
 // they are distinct quantity kinds — assigning one to the other is an error:
-// quantity<isq::torque[N * m]> wrong = work;                                         // ❌ Compile-time error!
-// quantity<isq::work[J]> wrong = torque;                                             // ❌ Compile-time error!
-// quantity<isq::work[J]> wrong = magnitude(moment);                                  // ❌ Compile-time error!
+// quantity<isq::torque[N * m]> wrong = work;                                         // ❌
+// quantity<isq::work[J]> wrong = torque;                                             // ❌
+// quantity<isq::work[J]> wrong = magnitude(moment);                                  // ❌
 ```
 
 #### AC Power Relationships
@@ -1137,6 +1164,7 @@ _complex power_ requires a specific argument order. Without quantity safety, all
 collapse to a single "watts" type and every mistake silently compiles:
 
 ```cpp
+// snippet-template: none (not this library: Boost.Units)
 namespace bu = boost::units;
 
 // All four power quantities collapse to the same type — no distinction is possible:
@@ -1164,29 +1192,30 @@ auto complex2 = std::complex{Q.value(), P.value()} * bu::si::watts;  // Oops! Re
 mp-units V3 addresses all of the above concerns directly:
 
 ```cpp
+// snippet-template: none (not this library: V3 power API, make_complex_quantity and hypot<VA>)
 quantity P = isq::active_power(800. * W);
-// quantity Q = isq::reactive_power(600 * W);             // ❌ Error: wrong unit
+// quantity Q = isq::reactive_power(600 * W);             // ❌ wrong unit
 quantity Q = isq::reactive_power(600. * var);             // ✅ OK
 
 // Apparent power computed from proper equation
 quantity<isq::apparent_power[VA]> S = hypot<VA>(P, Q);    // ✅ OK
-// quantity wrong = S.in(W);                              // ❌ Error: wrong unit
+// quantity wrong = S.in(W);                              // ❌ wrong unit
 
 // Cannot mix them directly
-// auto sum = P + Q;                                      // ❌ Error: invalid operation
+// auto sum = P + Q;                                      // ❌ invalid operation
 
 // Need to use make_complex_quantity<Rep, Unit>() factory function
 quantity<isq::complex_power[VA], std::complex<double>> complex =
     make_complex_quantity(P, Q);                          // ✅ OK
 // quantity<isq::complex_power[VA], std::complex<double>> complex =
-    make_complex_quantity(Q, P);                          // ❌ Error: wrong order
+    make_complex_quantity(Q, P);                          // ❌ wrong order
 
-// quantity<isq::apparent_power[VA]> S2 = imag(complex);  // ❌ Error: wrong quantity kind
+// quantity<isq::apparent_power[VA]> S2 = imag(complex);  // ❌ wrong quantity kind
 quantity<isq::apparent_power[VA]> S2 = modulus(complex);  // ✅ OK
 
 // Can extract active power from real part
-// quantity<isq::active_power[W]> P2 = imag(complex);     // ❌ Error: wrong quantity kind
-// quantity<isq::reactive_power[var]> Q2 = real(complex); // ❌ Error: wrong quantity kind
+// quantity<isq::active_power[W]> P2 = imag(complex);     // ❌ wrong quantity kind
+// quantity<isq::reactive_power[var]> Q2 = real(complex); // ❌ wrong quantity kind
 quantity<isq::active_power[W]> P2 = real(complex);        // ✅ OK: 800 W
 quantity<isq::reactive_power[var]> Q2 = imag(complex);    // ✅ OK: 600 var
 ```
@@ -1243,6 +1272,7 @@ units libraries, has no point/delta distinction: temperature points and deltas s
 same type and every nonsensical operation compiles silently:
 
 ```cpp
+// snippet-template: none (not this library: nholthaus units)
 // nholthaus/units — no affine space support; points and deltas share the same type:
 units::temperature::celsius_t room_temp{20.};    //  20°C — a temperature point
 units::temperature::celsius_t outside_temp{5.};  //   5°C — another temperature point
@@ -1266,7 +1296,7 @@ In **mp-units** V3, points and deltas are separate types:
 quantity_point room_temp    = point<deg_C>(20.);        // quantity<point<deg_C>>
 quantity_point outside_temp = point<deg_C>(5.);         // quantity<point<deg_C>>
 
-// auto sum = room_temp + outside_temp;                 // ❌ Compile-time error!
+// auto sum = room_temp + outside_temp;                 // ❌
 // Error: cannot add two points
 
 quantity temp_diff = room_temp - outside_temp;          // ✅ OK: quantity<delta<K>> — 15 K
@@ -1342,6 +1372,7 @@ safety alone cannot catch. Consider these examples:
 === "V2 (Current)"
 
     ```cpp
+    // snippet-template: none (pseudo-code: { ... } bodies and std::reduce(...) placeholders)
     // Both 'water_lost' and 'total_initial' have the same type quantity<kg>.
     // Nothing prevents passing them in the wrong order:
     quantity<percent> moisture_content_change(quantity<kg> water_lost,
@@ -1369,6 +1400,7 @@ safety alone cannot catch. Consider these examples:
 === "V3 (Planned)"
 
     ```cpp
+    // snippet-template: none (pseudo-code: { ... } bodies and std::reduce(...) placeholders)
     // Function signature now expresses distinct roles — types are incompatible:
     quantity<percent> moisture_content_change(quantity<delta<kg>> water_lost,
                                               quantity<kg>        total) { ... };
@@ -1380,7 +1412,7 @@ safety alone cannot catch. Consider these examples:
     quantity<kg>        total_dried   = std::reduce(...);
     quantity<delta<kg>> water_lost    = total_initial - total_dried; // delta (explicit)
 
-    // moisture_change(total_initial, water_lost);  // ❌ Compile-time error! Types don't match
+    // moisture_change(total_initial, water_lost);  // ❌ Types don't match
     moisture_change(water_lost, total_initial);      // ✅ OK
     ```
 
@@ -1407,6 +1439,7 @@ When an absolute result is needed from an operation that conservatively yields a
 call `.absolute()` explicitly. This checks the non-negativity precondition at runtime:
 
 ```cpp
+// snippet-template: none (not this library: V3 absolute quantities, .absolute())
 quantity<kg> remaining = (total - used).absolute();  // explicit, runtime-checked
 ```
 

@@ -31,6 +31,7 @@ Include the plugin header next to the library's own headers and the library type
 usable as representations immediately:
 
 ```cpp
+// snippet-template: none (third-party: needs Eigen, which the checker does not provide)
 #include <Eigen/Core>
 #include <mp-units/integrations/eigen.h>  // header mode; or: import mp_units.integrations.eigen;
 #include <mp-units/systems/si.h>
@@ -158,6 +159,7 @@ Six things vary between libraries:
   eagerly, so it needs no such specialization.
 
     ```cpp
+    // snippet-template: none (pseudo-code: the constraint is a comment placeholder, 'requires /* ... */')
     // materialize an expression-template proxy before a quantity stores it
     template<typename T>
       requires /* T is one of your library's lazy expression types */
@@ -196,9 +198,10 @@ templates it generically.
     `cartesian_vector` shows the guard:
 
     ```cpp
+    // snippet-template: none (pseudo-code: synopsis of a hidden friend declared inside utility::cartesian_vector, not valid outside the class)
     template<typename T, std::size_t N, typename U>
       requires(!Reference<U>) && (!Quantity<U>) && requires(const T& t, const U& u) { t * u; }
-    [[nodiscard]] friend constexpr auto operator*(const cartesian_vector<T, N>& lhs, const U& rhs);
+    [[nodiscard]] friend constexpr auto operator*(const utility::cartesian_vector<T, N>& lhs, const U& rhs);
     ```
 
 - **`magnitude()` must state its requirements as constraints, never as an internal
@@ -209,6 +212,7 @@ templates it generically.
   applies (a rank or shape requirement, for instance) belongs in the signature:
 
     ```cpp
+    // snippet-template: none (pseudo-code: the constraint is a comment placeholder, 'requires /* ... */')
     // not: auto magnitude(const your_matrix auto& m) { static_assert(is_vector(m)); ... }
     template<typename T>
       requires /* T is a vector-shaped matrix of yours */

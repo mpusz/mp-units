@@ -26,6 +26,7 @@ Pass a **bounds policy** as a template parameter to your origin
 to attach range validation:
 
 ```cpp
+// snippet-template: none (pseudo-code: your_quantity_spec, min_val, max_val placeholders)
 #include <mp-units/core.h>
 
 inline constexpr struct your_origin :
@@ -104,6 +105,7 @@ When bounds are defined the `quantity_point` type exposes static `min()` and `ma
 functions and a matching `std::numeric_limits` specialization:
 
 ```cpp
+// snippet-continues
 using msl = quantity_point<si::metre, sea_level, double>;
 
 static_assert(msl::min().delta_from(sea_level) == -500.0    * m);
@@ -120,6 +122,7 @@ enforcement of its nearest bounded ancestor. When own bounds are provided they a
 at compile time to nest inside that ancestor's range:
 
 ```cpp
+// snippet-continues
 // Relative origin — no own bounds; inherits clamping from sea_level.
 inline constexpr struct airport_elevation : relative_point_origin<sea_level + 200 * m> {} airport_elevation;
 
@@ -139,7 +142,7 @@ are all tagged `non_negative` in the library. The library tracks this through th
 static_assert(is_non_negative(isq::length));         // ✅ tagged in ISQ
 static_assert(is_non_negative(isq::mass));           // ✅ tagged in ISQ
 static_assert(is_non_negative(isq::speed));          // ✅ derived: length / duration
-static_assert(!is_non_negative(isq::displacement));  // ❌ vector character — excluded
+static_assert(!is_non_negative(isq::displacement));  // vector character: excluded
 ```
 
 When a `quantity_point` uses a `natural_point_origin` whose quantity spec is non-negative,
@@ -167,7 +170,7 @@ int main()
   std::cout << "Start:  " << start << "\n";
   std::cout << "Finish: " << finish << "\n";
 
-  // quantity_point bad(distance_traveled(-1.0 * cm));  // ❌ precondition violation
+  // quantity_point bad(distance_traveled(-1.0 * cm));  // precondition violation at runtime
   // std::cout << "Bad:    " << bad << "\n";
 }
 ```
@@ -176,6 +179,7 @@ You can override the default by defining a custom origin with different bounds. 
 to silently clamp rounding-noise negatives in a computed result rather than failing:
 
 ```cpp
+// snippet-continues
 inline constexpr struct clamped_distance_origin :
     absolute_point_origin<distance_traveled, clamp_non_negative{}> {} clamped_distance_origin;
 ```
@@ -187,6 +191,7 @@ The same inheritance applies when the parent bounds come from the automatic
 floor may hold negative values — as long as the absolute position stays ≥ 0:
 
 ```cpp
+// snippet-continues
 // inherits non_negative from ISQ
 inline constexpr struct height_spec : quantity_spec<isq::height> {} height_spec;
 
@@ -202,7 +207,7 @@ quantity_point low    = average_height_origin - 1500.0 * m;
 quantity_point ground = average_height_origin - 1700.0 * m;
 
 // −1701 m relative = −1 m absolute → check_non_negative fires.
-// quantity_point bad = average_height_origin - 1701.0 * m;  // ❌
+// quantity_point bad = average_height_origin - 1701.0 * m;  // fails at runtime
 ```
 
 The enforcement is a single flat translation: the library converts the relative value
@@ -220,12 +225,14 @@ quantities and signed coordinates. It is therefore never `non_negative`, even wh
 itself is:
 
 ```cpp
+// snippet-continues
 static_assert(!is_non_negative(kind_of<isq::length>));  // kind encompasses signed subtypes
 ```
 
 This matters in practice because **CTAD from a bare SI unit** deduces `kind_of`:
 
 ```cpp
+// snippet-continues
 // quantity_point{5.0 * m} has origin = natural_point_origin<kind_of<isq::length>>.
 // isq::length is tagged non_negative, but that origin is NOT auto-bounded because
 // kind_of<isq::length> includes displacement and other signed/vector subtypes.

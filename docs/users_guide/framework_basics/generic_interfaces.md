@@ -7,6 +7,9 @@ unit anyway.
 For example, let's consider a simple storage tank:
 
 ```cpp
+// snippet-setup: inline constexpr struct horizontal_length : quantity_spec<isq::length> {} horizontal_length;
+// snippet-setup: inline constexpr struct horizontal_area : quantity_spec<isq::area, horizontal_length * isq::width> {} horizontal_area;
+// snippet-setup: inline constexpr auto air_density = isq::mass_density(1.225 * kg / m3);
 class StorageTank {
   quantity<horizontal_area[m2]> base_;
   quantity<isq::height[m]> height_;
@@ -31,6 +34,8 @@ However, in many cases, using a specific unit in the interface is counterproduct
 consider the following function:
 
 ```cpp
+// snippet-template: systems
+// snippet-id: avg-speed-km
 quantity<km / h> avg_speed(quantity<km> distance, quantity<h> duration)
 {
   return distance / duration;
@@ -40,12 +45,15 @@ quantity<km / h> avg_speed(quantity<km> distance, quantity<h> duration)
 Everything seems fine for now. It also works great if we call it with:
 
 ```cpp
+// snippet-continues
 quantity<km / h> s1 = avg_speed(220 * km, 2 * h);
 ```
 
 However, if the user starts doing the following:
 
 ```cpp
+// snippet-continues
+using namespace mp_units::yard_pound::unit_symbols;
 quantity<mi / h> s2 = avg_speed(140 * mi, 2 * h);
 quantity<m / s> s3 = avg_speed(20 * m, 2 * s);
 ```
@@ -70,6 +78,8 @@ some issues start to be clearly visible:
    like this:
 
     ```cpp
+    // snippet-after: avg-speed-km
+    using namespace mp_units::yard_pound::unit_symbols;
     quantity<isq::speed[mi / h]> s2 = avg_speed(value_cast<km>(140 * mi), 2 * h);
     quantity<isq::speed[m / s]> s3 = avg_speed((20 * m).in(km, truncated), (2 * s).in(h, truncated));
     ```
@@ -164,6 +174,8 @@ The above function template resolves all of the [issues described before](#the-i
 However, we can do even better here by additionally constraining the return type:
 
 ```cpp
+// snippet-template: systems
+// snippet-id: avg-speed
 QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::length> auto distance,
                                       QuantityOf<isq::duration> auto duration)
 {
@@ -195,6 +207,8 @@ if we know it today, it might change a week from now due to some code refactorin
 In such cases, we can again use `auto` to denote the type:
 
 ```cpp
+// snippet-continues
+using namespace mp_units::yard_pound::unit_symbols;
 auto s1 = avg_speed(220 * km, 2 * h);
 auto s2 = avg_speed(140 * mi, 2 * h);
 auto s3 = avg_speed(20 * m, 2 * s);
@@ -203,6 +217,8 @@ auto s3 = avg_speed(20 * m, 2 * s);
 or benefit from CTAD:
 
 ```cpp
+// snippet-after: avg-speed
+using namespace mp_units::yard_pound::unit_symbols;
 quantity s1 = avg_speed(220 * km, 2 * h);
 quantity s2 = avg_speed(140 * mi, 2 * h);
 quantity s3 = avg_speed(20 * m, 2 * s);
@@ -217,6 +233,8 @@ In other scenarios where the returned quantity type is not so obvious, it is aga
 helpful to constrain the type with a concept like so:
 
 ```cpp
+// snippet-after: avg-speed
+using namespace mp_units::yard_pound::unit_symbols;
 QuantityOf<isq::speed> auto s1 = avg_speed(220 * km, 2 * h);
 QuantityOf<isq::speed> auto s2 = avg_speed(140 * mi, 2 * h);
 QuantityOf<isq::speed> auto s3 = avg_speed(20 * m, 2 * s);

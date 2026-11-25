@@ -59,6 +59,7 @@ is handed a _speed_ instead:
 === "Plain `double`"
 
     ```cpp
+    // snippet-template: none (pseudo-code: car a = ... placeholders)
     // one axis along the road lane, both readings backed by double
     double car_velocity(car id);                                     // signed, +/- along the lane
     double car_speed(car id) { return std::abs(car_velocity(id)); }  // speedometer: |velocity|
@@ -79,6 +80,7 @@ is handed a _speed_ instead:
 === "Strong quantities with loose template parameters"
 
     ```cpp
+    // snippet-template: none (pseudo-code: car a = ... placeholders)
     // one axis along the road lane, both readings backed by double
     auto car_velocity(car id);                                      // signed, +/- along the lane
     auto car_speed(car id) { return magnitude(car_velocity(id)); }  // speedometer: |velocity|
@@ -92,13 +94,14 @@ is handed a _speed_ instead:
     car a = ...;     // car A reverses at 12
     car b = ...;     // car B approaching at 30
     closing_speed(car_velocity(a), car_velocity(b));  // ok: the magnitude of a velocity difference is a speed
-    closing_speed(car_speed(a),    car_velocity(b));  // error: can't subtract different characters (V3)
-    closing_speed(car_speed(a),    car_speed(b));     // error: can't take a magnitude of a scalar quantity
+    closing_speed(car_speed(a),    car_velocity(b));  // ❌ can't subtract different characters (V3)
+    closing_speed(car_speed(a),    car_speed(b));     // ❌ can't take a magnitude of a scalar quantity
     ```
 
 === "Strong quantities with proper constraints"
 
     ```cpp
+    // snippet-template: none (pseudo-code: car a = ... placeholders)
     // one axis along the road lane, both readings backed by double
     QuantityOf<isq::velocity> auto car_velocity(car id);                                   // +/- along the lane
     QuantityOf<isq::speed> auto car_speed(car id) { return magnitude(car_velocity(id)); }  // speedometer: |velocity|
@@ -113,8 +116,8 @@ is handed a _speed_ instead:
     car a = ...;     // car A reverses at 12
     car b = ...;     // car B approaching at 30
     closing_speed(car_velocity(a), car_velocity(b));  // ok: the magnitude of a velocity difference is a speed
-    closing_speed(car_speed(a),    car_velocity(b));  // error: a speed is not a velocity
-    closing_speed(car_speed(a),    car_speed(b));     // error: a speed is not a velocity
+    closing_speed(car_speed(a),    car_velocity(b));  // ❌ a speed is not a velocity
+    closing_speed(car_speed(a),    car_speed(b));     // ❌ a speed is not a velocity
     ```
 
 In the plain-`double` world all three calls compile, and two are silently wrong: the moment
@@ -189,6 +192,7 @@ The answer took us several years and a few wrong turns to work out.
 In **mp-units** v0.8.0 a quantity was defined like this:
 
 ```cpp
+// snippet-template: none (not this library: the v0.8.0 quantity class template)
 template<Dimension D, UnitOf<D> U, Representation Rep = double>
 class quantity {
   Rep number_;
@@ -236,6 +240,7 @@ in volt-amperes, so in a units library that keys on the unit alone, this compile
 you almost nothing:
 
 ```cpp
+// snippet-template: none (not this library: a units library keyed on the unit alone)
 auto p = value * VA;   // apparent power? complex power? VA is the unit of both
 ```
 
@@ -248,12 +253,16 @@ cannot see.
 In **mp-units** you name the quantity, and character checks the representation against it:
 
 ```cpp
+double read_meter();
+std::complex<double> read_phasor();
+constexpr auto VA = V * A;
+
 auto reading = read_meter();      // returns a double, today
 auto phasor  = read_phasor();     // returns a std::complex<double>
 
 quantity ap = reading * isq::apparent_power[VA];    // real scalar: a double satisfies it
 quantity cp = phasor  * isq::complex_power[VA];     // complex scalar: a std::complex satisfies it
-// quantity bad = reading * isq::complex_power[VA]; // error: reading is real, not complex
+// quantity bad = reading * isq::complex_power[VA]; // ❌ reading is real, not complex
 ```
 
 A `std::complex<double>` satisfies only `isq::complex_power`, and a `double` only
@@ -270,6 +279,7 @@ _apparent power_ is, by definition, the modulus of _complex power_, and in V3 th
 how its specification will read:
 
 ```cpp
+// snippet-template: none (not this library: V3 quantity_spec<modulus(complex_power)>)
 inline constexpr struct apparent_power : quantity_spec<modulus(complex_power)> {} apparent_power;
 ```
 
@@ -352,7 +362,7 @@ vector or a tensor at all is ISO 80000-2's own ordering:
     A vector is a tensor of the first order and a scalar is a tensor of order zero.
 
 ```cpp
-quantity m  = isq::mass(5.0 * kg);                 // real scalar
+quantity mass = isq::mass(5.0 * kg);               // real scalar
 quantity v  = isq::velocity(-3.0 * m / s);         // 1-D vector: sign is direction
 quantity sp = isq::speed(3.0 * m / s);             // real scalar, non-negative by meaning
 quantity st = isq::stress(100.0 * Pa);             // degenerate tensor: a scalar stress measure
@@ -468,6 +478,7 @@ already lives. It is declared once, with the quantity, and inherited through the
 that derive other quantities:
 
 ```cpp
+// snippet-template: scoped
 inline constexpr struct displacement : quantity_spec<length, quantity_tensor_order::vector> {} displacement;
 inline constexpr struct velocity : quantity_spec<displacement / duration> {} velocity;  // vector, inherited
 inline constexpr struct moment_of_inertia
@@ -498,6 +509,7 @@ The one override that remains is genuinely small. The entire Eigen adapter for t
 axes is a single line:
 
 ```cpp
+// snippet-template: none (pseudo-code: requires /* T is an Eigen type */)
 template<typename T>
   requires /* T is an Eigen type */
 constexpr std::size_t tensor_order<T> = (T::RowsAtCompileTime == 1 || T::ColsAtCompileTime == 1) ? 1 : 2;

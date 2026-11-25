@@ -67,7 +67,7 @@ constexpr bool is_mag_constant = is_derived_from_specialization_of_v<T, mag_cons
  * return a different type, as one tracking its own precision does.
  *
  * @code{.cpp}
- * // snippet-template: none
+ * // snippet-template: none (pseudo-code: the representation type elides its operators with `...`)
  * // the power of ten at or below a magnitude
  * template<UnitMagnitude auto M>
  * consteval int decimal_shift();

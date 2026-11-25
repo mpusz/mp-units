@@ -174,7 +174,7 @@ using representation_underlying_type_t = typename representation_underlying_type
  * expression to the matrix it evaluates to:
  *
  * @code{.cpp}
- * // snippet-template: none
+ * // snippet-template: none (third-party: specializes for Eigen types, which the check does not have)
  * template<typename T>
  *   requires requires { typename T::PlainObject; } && std::derived_from<T, Eigen::EigenBase<T>>
  * struct mp_units::representation_canonical_type<T> {
@@ -185,7 +185,7 @@ using representation_underlying_type_t = typename representation_underlying_type
  * With it, arithmetic on quantities of Eigen vectors gives a quantity of a vector:
  *
  * @code{.cpp}
- * // snippet-template: none
+ * // snippet-template: none (third-party: needs Eigen, which the check does not have)
  * quantity start = isq::displacement(Eigen::Vector3d{1., 2., 3.} * m);
  * quantity offset = isq::displacement(Eigen::Vector3d{4., 5., 6.} * m);
  * quantity end = start + offset;  // stores an Eigen::Vector3d, where Eigen's own sum is a lazy expression
@@ -227,7 +227,7 @@ struct representation_canonical_type<T&&> : representation_canonical_type<T> {};
  * is how the Eigen integration maps every Eigen expression to the matrix it evaluates to:
  *
  * @code{.cpp}
- * // snippet-template: none
+ * // snippet-template: none (third-party: specializes for Eigen types, which the check does not have)
  * template<typename T>
  *   requires requires { typename T::PlainObject; } && std::derived_from<T, Eigen::EigenBase<T>>
  * struct mp_units::representation_canonical_type<T> {
@@ -238,7 +238,7 @@ struct representation_canonical_type<T&&> : representation_canonical_type<T> {};
  * With it, arithmetic on quantities of Eigen vectors gives a quantity of a vector:
  *
  * @code{.cpp}
- * // snippet-template: none
+ * // snippet-template: none (third-party: needs Eigen, which the check does not have)
  * quantity start = isq::displacement(Eigen::Vector3d{1., 2., 3.} * m);
  * quantity offset = isq::displacement(Eigen::Vector3d{4., 5., 6.} * m);
  * quantity end = start + offset;  // stores an Eigen::Vector3d, where Eigen's own sum is a lazy expression
@@ -338,7 +338,7 @@ concept has_ambiguous_order = has_vector_indexing<T> && has_matrix_indexing<T>;
  * tell a vector from a matrix, so a specialization for such a type reads them:
  *
  * @code{.cpp}
- * // snippet-template: none
+ * // snippet-template: none (third-party: specializes for Eigen types, which the check does not have)
  * // an Eigen column vector is an N×1 matrix, which provides both `v[i]` and `v(i, j)`
  * template<typename T>
  *   requires requires { typename T::PlainObject; } && std::derived_from<T, Eigen::EigenBase<T>>
@@ -800,9 +800,10 @@ struct quantity_point_like_traits;
  * quantity specs in coordinate order (see @c mp-units/framework/vector_components.h):
  *
  * @code
+ * // snippet-after: docs/how_to_guides/advanced_usage/decompose_vector_quantity.md#axes
  * template<>
  * struct mp_units::component_vectors<flight_velocity> :
- *     mp_units::vector_axes<forward_velocity, wind_drift, sink_rate> {};
+ *     mp_units::vector_axes<forward_velocity, lateral_velocity, vertical_velocity> {};
  * @endcode
  *
  * The name follows ISO 80000-2, which calls the vectors a1e1, a2e2, and a3e3 the component vectors

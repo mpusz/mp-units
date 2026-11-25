@@ -28,11 +28,15 @@
 
 #pragma once
 
+#include <mp-units/bits/config.h>
 #include <mp-units/systems/hep/constants.h>
 #include <mp-units/systems/hep/quantities.h>
 #include <mp-units/systems/hep/units.h>
 
 // IWYU pragma: begin_exports
+#if MP_UNITS_HOSTED
+#include <mp-units/systems/hep/math.h>
+#endif
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/framework.h>
 #endif

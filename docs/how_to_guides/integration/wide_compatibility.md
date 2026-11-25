@@ -41,6 +41,7 @@ compatible:
 === "C++23 with Modules"
 
     ```cpp
+    // snippet-template: none (pseudo-code: file skeleton whose '// ...' elides the using-directives that make m visible)
     import mp_units;
     import std;
 
@@ -59,6 +60,7 @@ compatible:
 === "C++20 with Modules"
 
     ```cpp
+    // snippet-template: none (pseudo-code: file skeleton whose '// ...' elides the using-directives that make m visible)
     #include <format>
     #include <iostream>
     import mp_units;
@@ -78,6 +80,7 @@ compatible:
 === "C++20 with Headers"
 
     ```cpp
+    // snippet-template: none (pseudo-code: file skeleton whose '// ...' elides the using-directives that make m visible)
     #include <mp-units/systems/isq.h>
     #include <mp-units/systems/si.h>
     #include <format>
@@ -98,6 +101,7 @@ compatible:
 === "C++20 with fmtlib"
 
     ```cpp
+    // snippet-template: none (pseudo-code: file skeleton whose '// ...' elides the using-directives that make m visible)
     #include <mp-units/systems/isq.h>
     #include <mp-units/systems/si.h>
     #include <fmt/format.h>
@@ -112,12 +116,13 @@ compatible:
     // ...
 
     quantity q = horizontal_length(42 * m);
-    std::cout << fmt::format("length: {}\n");
+    std::cout << fmt::format("length: {}\n", q);
     ```
 
 === "Wide Compatibility"
 
     ```cpp
+    // snippet-template: none (pseudo-code: file skeleton whose '// ...' elides the using-directives that make m visible)
     #include <iostream>
     #include <mp-units/ext/format.h>
     #ifdef MP_UNITS_MODULES
@@ -137,7 +142,7 @@ compatible:
 
     // Works with both std::format and {fmt}
     quantity q = horizontal_length(42 * m);
-    std::cout << MP_UNITS_STD_FMT::format("length: {}\n");
+    std::cout << MP_UNITS_STD_FMT::format("length: {}\n", q);
     ```
 
 !!! note "Formatting Library Choice"
@@ -204,6 +209,7 @@ even when `std::format` is available.
 configuration:
 
 ```cpp
+// snippet-after: flight
 #include <mp-units/ext/format.h>  // Includes the right formatting header
 
 // Use the macro instead of hardcoding std or fmt
@@ -225,6 +231,7 @@ or [ms-gsl](https://github.com/microsoft/GSL).
 **Solution:** Use these macros for portable contract checks:
 
 ```cpp
+// snippet-template: none (pseudo-code: result comes from the body elided by '// ...')
 #include <mp-units/ext/contracts.h>
 
 // preferred: precondition declared on the function itself (C++26 `pre`),
@@ -282,6 +289,7 @@ statements followed by a semicolon.
 Here's a complete example using all compatibility features:
 
 ```cpp
+// snippet-id: flight
 #include <iostream>
 #include <mp-units/ext/format.h>
 #include <mp-units/ext/contracts.h>

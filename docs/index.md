@@ -18,6 +18,7 @@ permissive [MIT license](https://github.com/mpusz/mp-units/blob/master/LICENSE.m
 === "C++ modules"
 
     ```cpp
+    // snippet-template: systems
     #include <iostream>
     #include <print>
     import mp_units;

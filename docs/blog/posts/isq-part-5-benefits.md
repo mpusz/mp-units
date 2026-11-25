@@ -90,6 +90,7 @@ Next, we can provide a custom currency exchange facility that accounts for a
 specific point in time:
 
 ```cpp
+// snippet-continues
 template<Unit auto From, Unit auto To>
 [[nodiscard]] double exchange_rate(std::chrono::sys_seconds timestamp)
 {
@@ -108,6 +109,7 @@ QuantityOf<currency> auto exchange_to(From q, std::chrono::sys_seconds timestamp
 Finally, we can use our simple model in the following way:
 
 ```cpp
+// snippet-continues
 using namespace unit_symbols;
 using namespace std::chrono;
 
@@ -116,7 +118,7 @@ const quantity price_usd = 100 * USD;
 const quantity price_euro = exchange_to<euro>(price_usd, yesterday);
 
 std::cout << price_usd << " -> " << price_euro << "\n";
-// std::cout << price_usd + price_euro << "\n";  // does not compile
+// std::cout << price_usd + price_euro << "\n";  // ❌
 ```
 
 !!! note
@@ -153,14 +155,15 @@ Next, we define two quantities. The first one is based only on a derived unit
 of `L/[100 km]`, while the second uses a strongly typed quantity type:
 
 ```cpp
+// snippet-continues
 quantity q1 = 5.8 * L_per_100km;
 quantity q2 = fuel_consumption(6.7 * L_per_100km);
 std::println("Fuel consumptions: {}, {}", q1, q2);
 
-static_assert(implicitly_convertible(q1.quantity_spec, isq::area));
-static_assert(!implicitly_convertible(q2.quantity_spec, isq::area));
-static_assert(!explicitly_convertible(q2.quantity_spec, isq::area));
-static_assert(!castable(q2.quantity_spec, isq::area));
+static_assert(utility::implicitly_convertible(q1.quantity_spec, isq::area));
+static_assert(!utility::implicitly_convertible(q2.quantity_spec, isq::area));
+static_assert(!utility::explicitly_convertible(q2.quantity_spec, isq::area));
+static_assert(!utility::castable(q2.quantity_spec, isq::area));
 ```
 
 As we can see, with just units (especially derived ones) and dimensions, we
@@ -191,17 +194,18 @@ inline constexpr struct horizontal_area : quantity_spec<isq::area, horizontal_le
     `isq::length` denotes any quantity of _length_ (not only the horizontal one).
 
 ```cpp
-static_assert(implicitly_convertible(horizontal_length, isq::length));
-static_assert(!implicitly_convertible(isq::length, horizontal_length));
+// snippet-continues
+static_assert(utility::implicitly_convertible(horizontal_length, isq::length));
+static_assert(!utility::implicitly_convertible(isq::length, horizontal_length));
 
-static_assert(implicitly_convertible(horizontal_area, isq::area));
-static_assert(!implicitly_convertible(isq::area, horizontal_area));
+static_assert(utility::implicitly_convertible(horizontal_area, isq::area));
+static_assert(!utility::implicitly_convertible(isq::area, horizontal_area));
 
-static_assert(implicitly_convertible(isq::length * isq::length, isq::area));
-static_assert(!implicitly_convertible(isq::length * isq::length, horizontal_area));
+static_assert(utility::implicitly_convertible(isq::length * isq::length, isq::area));
+static_assert(!utility::implicitly_convertible(isq::length * isq::length, horizontal_area));
 
-static_assert(implicitly_convertible(horizontal_length * isq::width, isq::area));
-static_assert(implicitly_convertible(horizontal_length * isq::width, horizontal_area));
+static_assert(utility::implicitly_convertible(horizontal_length * isq::width, isq::area));
+static_assert(utility::implicitly_convertible(horizontal_length * isq::width, horizontal_area));
 ```
 
 With simple two lines of definition, we made the above logic automatically work
@@ -215,6 +219,7 @@ properties.
 Now we can refactor our `Box` to benefit from the introduced safe abstractions:
 
 ```cpp
+// snippet-continues
 class Box {
   quantity<horizontal_length[m]> length_;
   quantity<isq::width[m]> width_;
@@ -233,6 +238,7 @@ It is important to note that the safety can be enforced only when a user
 provides typed quantities as arguments to the functions:
 
 ```cpp
+// snippet-continues
 Box my_box1(2 * m, 3 * m, 1 * m);
 Box my_box2(2 * horizontal_length[m], 3 * isq::width[m], 1 * isq::height[m]);
 Box my_box3(horizontal_length(2 * m), isq::width(3 * m), isq::height(1 * m));
@@ -276,6 +282,8 @@ inline constexpr struct SampleCount : quantity_spec<dimensionless, subkind> {} S
 inline constexpr struct UnitSampleAmount : quantity_spec<dimensionless, subkind> {} UnitSampleAmount;
 inline constexpr struct MIDIClock : quantity_spec<dimensionless, subkind> {} MIDIClock;
 inline constexpr struct BeatCount : quantity_spec<dimensionless, subkind> {} BeatCount;
+
+}  // namespace ni
 ```
 
 We should also be able to create derived quantities from those. For example,
@@ -284,6 +292,9 @@ that can be measured in both a dedicated unit (e.g., `Smpl/s` for _sample
 rate_) and hertz:
 
 ```cpp
+// snippet-continues
+namespace ni {
+
 inline constexpr struct SampleDuration : quantity_spec<isq::period_duration> {} SampleDuration;
 inline constexpr struct SamplingRate : quantity_spec<isq::frequency, SampleCount / SampleDuration> {} SamplingRate;
 
@@ -293,12 +304,17 @@ inline constexpr struct Power : quantity_spec<Level * Level> {} Power;
 
 inline constexpr struct BeatDuration : quantity_spec<isq::period_duration> {} BeatDuration;
 inline constexpr struct Tempo : quantity_spec<isq::frequency, BeatCount / BeatDuration> {} Tempo;
+
+}  // namespace ni
 ```
 
 We can also define a collection of units associated with specific quantity kinds
 and their symbols:
 
 ```cpp
+// snippet-continues
+namespace ni {
+
 inline constexpr struct Sample : named_unit<"Smpl", one, kind_of<SampleCount>> {} Sample;
 inline constexpr struct SampleValue : named_unit<"PCM", one, kind_of<UnitSampleAmount>> {} SampleValue;
 inline constexpr struct MIDIPulse : named_unit<"p", one, kind_of<MIDIClock>> {} MIDIPulse;
@@ -344,6 +360,8 @@ With the above, we can safely work with each quantity and use SI or domain-speci
 as needed:
 
 ```cpp
+// snippet-continues
+// snippet-setup: namespace ni { quantity<SamplingRate[si::hertz], float> GetSampleRate(); }
 using namespace ni::unit_symbols;
 using namespace mp_units::si::unit_symbols;
 
@@ -359,8 +377,8 @@ const auto sampleDuration1 = (1 / sr1).in(ms);
 const auto sampleDuration2 = (1 / sr2).in(ms);
 
 const auto rampTime = 35.f * ms;
-const auto rampSamples1 = (rampTime * sr1).force_in<int>(Smpl);
-const auto rampSamples2 = (rampTime * sr2).force_in<int>(Smpl);
+const auto rampSamples1 = (rampTime * sr1).in<int>(Smpl, truncated);
+const auto rampSamples2 = (rampTime * sr2).in<int>(Smpl, truncated);
 
 std::println("Sample rate 1 is: {}", sr1);
 std::println("Sample rate 2 is: {}", sr2);
@@ -391,6 +409,10 @@ One sample @ 48000 Smpl/s is 0.02083 ms
 We can also do a bit more advanced computations to get the following:
 
 ```cpp
+// snippet-continues
+// snippet-setup: namespace ni { quantity<Tempo[BeatsPerMinute], float> GetTempo(); }
+// snippet-setup: namespace ni { quantity<MIDIPulsePerQuarter, int> GetPPQN(); }
+// snippet-setup: namespace ni { quantity<MIDIPulse, int> GetTransportPos(); }
 auto sampleValue = -0.4f * pcm;
 auto power1 = sampleValue * sampleValue;
 auto power2 = -0.2 * pow<2>(pcm);

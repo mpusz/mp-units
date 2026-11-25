@@ -56,6 +56,7 @@ Given:
 
 ```cpp
 // ce-embed height=650 compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0" mp-units=trunk
+// snippet-template: none (exercise skeleton: TODO origins and empty initializers for the reader; the Solution fence compiles)
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
 #include <iostream>
@@ -104,6 +105,9 @@ int main()
     Affine spaces separate **points** (absolute positions) from **vectors** (displacements):
 
     ```cpp
+    // snippet-setup: inline constexpr struct nhn_sea_level : absolute_point_origin<isq::altitude> {} nhn_sea_level;
+    // snippet-setup: inline constexpr struct swiss_sea_level : relative_point_origin<nhn_sea_level - 27*cm> {} swiss_sea_level;
+    // snippet-setup: quantity_point alt_river = swiss_sea_level + 278. * m;
     quantity_point alt_bridge = nhn_sea_level + 285. * m;  // Point: absolute altitude
     quantity clearance = alt_bridge - alt_river;           // Vector: height difference
     ```
@@ -132,6 +136,7 @@ int main()
     When subtracting points with different origins, the library converts automatically:
 
     ```cpp
+    // snippet-continues
     quantity_point alt_bridge = nhn_sea_level + 285. * m;
     quantity_point alt_river = swiss_sea_level + 278. * m;
     quantity clearance = alt_bridge - alt_river;  // Automatic conversion!

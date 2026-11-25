@@ -60,6 +60,7 @@ inline constexpr struct velocity : quantity_spec<displacement / duration> {} vel
 Similarly, the below will yield a _speed_ quantity of a scalar character:
 
 ```cpp
+// snippet-template: none (not this library: V3 magnitude() on a quantity_spec)
 inline constexpr struct speed : quantity_spec<magnitude(velocity)> {} speed;
 ```
 
@@ -78,9 +79,10 @@ For example, this allows us to check that vector representation type is used to
 construct a _velocity_ quantity and to ensure that _speed_ gets a scalar:
 
 ```cpp
-quantity q = vector{1, 2, 3} * m / s;
+// snippet-template: utility
+quantity q = utility::cartesian_vector{1, 2, 3} * m / s;
 quantity velocity = isq::velocity(q);
-// quantity speed = isq::speed(q);     // Compile-time error
+// quantity speed = isq::speed(q);     // ❌
 ```
 
 Another example here may be a _complex power_ quantity that should use a representation type
@@ -128,6 +130,7 @@ For example, let's look closer into vector quantities. Most of the libraries on 
 will happily accept the following or similar code:
 
 ```cpp
+// snippet-template: none (not this library: other libraries' code, get_force() and get_length() placeholders)
 auto force = get_force();
 auto length = get_length();
 auto work = force * length;
@@ -181,6 +184,7 @@ dimension-safe, is also quantity-safe. Let's see what it means.
 First, we repeat what other libraries did:
 
 ```cpp
+// snippet-template: none (not this library: V3 character-specific operations, the post says not on master)
 quantity force = get_force();
 quantity length = get_length();
 quantity q1 = force * length;
@@ -193,14 +197,16 @@ However, things stop compiling when we want to convert the obtained result to a 
 type:
 
 ```cpp
-// quantity moment_of_force = isq::moment_of_force(q1);  // Compile-time error
-// quantity work = isq::work(q1);                        // Compile-time error
+// snippet-template: none (not this library: V3 conversions of q1, a product of the V3 section's placeholders)
+// quantity moment_of_force = isq::moment_of_force(q1);  // ❌
+// quantity work = isq::work(q1);                        // ❌
 ```
 
 Neither _moment of force_ nor _work_ quantity can be created from a scalar
 _length_. We need very specific vector quantities of kind _length_ to do that:
 
 ```cpp
+// snippet-template: none (not this library: V3 character-specific operations, the post says not on master)
 quantity displacement = get_displacement();
 quantity position_vector = get_position_vector();
 ```
@@ -208,13 +214,15 @@ quantity position_vector = get_position_vector();
 Now, if we try to multiply the variables as before, we will end up with a compilation error:
 
 ```cpp
-// quantity q2 = force * displacement;                   // Compile-time error
-// quantity q3 = force * position_vector;                // Compile-time error
+// snippet-template: none (not this library: V3 rejection of force * displacement for vector quantities)
+// quantity q2 = force * displacement;                   // ❌
+// quantity q3 = force * position_vector;                // ❌
 ```
 
 Multiplication on vectors is mathematically not defined. We have to use proper operations:
 
 ```cpp
+// snippet-template: none (not this library: V3 scalar_product and vector_product on quantities)
 quantity q2 = scalar_product(force, displacement);
 quantity q3 = scalar_product(force, position_vector);
 quantity q4 = vector_product(force, displacement);
@@ -225,10 +233,11 @@ All of the above compile and result in some quantities. After that, we can try t
 those results to our required quantities:
 
 ```cpp
+// snippet-template: none (not this library: V3 scalar_product results converted to work)
 quantity work = isq::work(q2).in[J];
-// quantity work = isq::work(q3);                        // Compile-time error
-// quantity work = isq::work(q4);                        // Compile-time error
-// quantity work = isq::work(q5);                        // Compile-time error
+// quantity work = isq::work(q3);                        // ❌
+// quantity work = isq::work(q4);                        // ❌
+// quantity work = isq::work(q5);                        // ❌
 ```
 
 !!! important
@@ -242,10 +251,11 @@ So we are done with _work_. Let's create a _moment of force_ quantity as well.
 It might be surprising to many that none of the following code compiles:
 
 ```cpp
-// quantity moment_of_force = isq::moment_of_force(q2);  // Compile-time error
-// quantity moment_of_force = isq::moment_of_force(q3);  // Compile-time error
-// quantity moment_of_force = isq::moment_of_force(q4);  // Compile-time error
-// quantity moment_of_force = isq::moment_of_force(q5);  // Compile-time error
+// snippet-template: none (not this library: V3 moment_of_force from scalar_product and vector_product results)
+// quantity moment_of_force = isq::moment_of_force(q2);  // ❌
+// quantity moment_of_force = isq::moment_of_force(q3);  // ❌
+// quantity moment_of_force = isq::moment_of_force(q4);  // ❌
+// quantity moment_of_force = isq::moment_of_force(q5);  // ❌
 ```
 
 Do you know why it does not compile? Please try to think about it for a minute
@@ -260,6 +270,7 @@ and figure out what is the problem before checking the answer below.
     To make it compile, we need to reverse the arguments of a `vector_product()` operation:
 
     ```cpp
+    // snippet-template: none (not this library: V3 vector_product on quantities)
     quantity q6 = vector_product(position_vector, force);
     quantity moment_of_force = isq::moment_of_force(q6);
     ```
@@ -284,13 +295,14 @@ parameters. This will be enough to guarantee quantity-safety.
 For example:
 
 ```cpp
+// snippet-template: none (not this library: V3 scalar_product and vector_product results passed to functions)
 void func1(quantity<isq::work[J]> w);
 void func2(QuantityOf<isq::moment_of_force> auto mof);
 
 func1(q2);
 func2(q6);
-// func1(q6);  // Compile-time error
-// func2(q2);  // Compile-time error
+// func1(q6);  // ❌
+// func2(q2);  // ❌
 ```
 
 *[CTAD]: Class Template Argument Deduction
@@ -301,6 +313,7 @@ Let's look at the definitions of _work_ and _moment of force_ quantities to
 understand how and why the above works:
 
 ```cpp
+// snippet-template: none (not this library: V3 scalar_product and vector_product in a quantity_spec)
 inline constexpr struct work : quantity_spec<scalar_product(force, displacement)> {} work;
 inline constexpr struct moment_of_force : quantity_spec<vector_product(position_vector, force)> {} moment_of_force;
 ```
@@ -340,6 +353,7 @@ Let's compare those approaches:
 === "Quantity-Safe"
 
     ```cpp
+    // snippet-template: none (not this library: hypothetical la::vector plus V3 scalar_product)
     quantity displacement_1 = isq::displacement(la::vector{1, 2, 3} * m);
     quantity displacement_2 = isq::displacement(la::vector{2, 1, 0} * m);
     quantity displacement = displacement_1 + displacement_2;
@@ -350,6 +364,7 @@ Let's compare those approaches:
 === "Also Quantity-Safe"
 
     ```cpp
+    // snippet-template: none (not this library: hypothetical la::vector plus V3 scalar_product)
     quantity displacement_1 = la::vector{1, 2, 3} * m;
     quantity displacement_2 = la::vector{2, 1, 0} * m;
     quantity displacement = displacement_1 + displacement_2;
@@ -360,6 +375,7 @@ Let's compare those approaches:
 === "Other units libraries"
 
     ```cpp
+    // snippet-template: none (not this library: hypothetical la linear algebra library)
     la::vector<quantity<si::metre>> displacement_1 = la::vector{1 * m, 2 * m, 3 * m};
     la::vector<quantity<si::metre>> displacement_2 = la::vector{2 * m, 1 * m, 0 * m};
     la::vector<quantity<si::metre>> displacement = displacement_1 + displacement_2;
@@ -438,6 +454,7 @@ Change of a _position vector_ is nothing else than a _displacement_. This means 
 and _speed_ can be defined as follows:
 
 ```cpp
+// snippet-template: none (not this library: V3 magnitude() on a quantity_spec)
 inline constexpr struct velocity : quantity_spec<displacement / duration> {} velocity;
 inline constexpr struct speed : quantity_spec<magnitude(velocity)> {} speed;
 ```
@@ -448,9 +465,10 @@ a _distance_ traveled and _duration_, without using any vector quantities like _
 or _velocity_:
 
 ```cpp
+// snippet-template: none (not this library: V3 distance not convertible to magnitude(displacement))
 quantity<isq::distance[m]> distance = 42 * m;
 quantity<isq::duration[s]> duration = 2 * s;
-// quantity<isq::speed[m / s]> speed = distance / duration;  // Compile-time error
+// quantity<isq::speed[m / s]> speed = distance / duration;  // ❌
 ```
 
 The above does not compile because _distance_ quantity is not implicitly convertible to
@@ -458,6 +476,7 @@ _magnitude(displacement)_. This is the same case as stating that not every _leng
 a _distance_. We need to cast here explicitly. To fix it, we can do any of the below:
 
 ```cpp
+// snippet-template: none (not this library: V3 magnitude() on a quantity_spec)
 quantity<isq::speed[m / s]> speed1 = isq::speed(distance / duration);
 quantity<isq::speed[m / s]> speed2 = magnitude(isq::displacement)(distance) / duration;
 ```
@@ -465,6 +484,7 @@ quantity<isq::speed[m / s]> speed2 = magnitude(isq::displacement)(distance) / du
 Also, the following will work:
 
 ```cpp
+// snippet-template: none (not this library: V3 speed defined as magnitude(velocity))
 quantity length_kind = 42 * m;
 quantity<isq::speed[m / s]> speed3 = length_kind / duration;
 ```
@@ -484,11 +504,12 @@ As we've stated above, a change of _position vector_ is a _displacement_. Let's 
 it here:
 
 ```cpp
+// snippet-template: none (not this library: V3 position_vector and displacement design, vector placeholder)
 quantity pos1 = isq::position_vector(vector{1, 2} * m);
 quantity pos2 = isq::position_vector(vector{2, 3} * m);
 quantity q7 = pos2 - pos1;
-// quantity<isq::displacement[m], vector> displacement = q7;  // Compile-time error
-// quantity displacement = isq::displacement(q7);             // Compile-time error
+// quantity<isq::displacement[m], vector> displacement = q7;  // ❌
+// quantity displacement = isq::displacement(q7);             // ❌
 quantity displacement = quantity_cast<isq::displacement>(q7);
 ```
 
@@ -525,6 +546,7 @@ hidden within the quantities hierarchy tree. This also means that adding a _posi
 vector_ and a _displacement_ should result in a _position vector_. Let's try to do it:
 
 ```cpp
+// snippet-template: none (not this library: V3 affine space within a quantity tree)
 quantity q8 = pos1 + displacement;                       // Often a compile-time error
 ```
 
@@ -540,7 +562,8 @@ quantity (e.g., `int` or `double` may be used as a vector representation type fo
 axis). In this case, we will end up with:
 
 ```cpp
-// quantity<isq::position_vector[m], vector> pos3 = q8;       // Compile-time error
+// snippet-template: none (not this library: V3 affine space within a quantity tree)
+// quantity<isq::position_vector[m], vector> pos3 = q8;       // ❌
 quantity<isq::position_vector[m], vector> pos3 = isq::position_vector(q8);
 ```
 
@@ -562,6 +585,7 @@ for addition and subtraction, which may yield different results.
 For example:
 
 ```cpp
+// snippet-template: none (not this library: V3 addition and subtraction of quantity_spec)
 static_assert(isq::length + isq::length == isq::length);
 static_assert(isq::height + isq::width == isq::length);
 static_assert(isq::altitude + isq::height == isq::altitude);
@@ -576,8 +600,9 @@ static_assert(isq::altitude - isq::altitude == isq::height);
 Also, some operations should not compile. For example:
 
 ```cpp
-// auto qs1 = isq::altitude + isq::altitude;  // Compile-time error
-// auto qs2 = isq::height - isq::altitude;    // Compile-time error
+// snippet-template: none (not this library: V3 addition and subtraction of quantity_spec)
+// auto qs1 = isq::altitude + isq::altitude;  // ❌
+// auto qs2 = isq::height - isq::altitude;    // ❌
 ```
 
 ### Defining affine space abstractions in a `quantity_spec`
@@ -586,6 +611,7 @@ We can add support for the above by adding `point_for<QuantitySpec>` attribute t
 `quantity_spec` definition:
 
 ```cpp
+// snippet-template: none (not this library: V3 point_for in a quantity_spec)
 inline constexpr struct height : quantity_spec<length> {} height;
 inline constexpr struct altitude : quantity_spec<length, point_for<height>> {} altitude;
 inline constexpr struct displacement : quantity_spec<distance, quantity_tensor_order::vector> {} displacement;

@@ -16,6 +16,7 @@ When tracking a stock portfolio, we work with two fundamentally different quanti
 These are **completely different types** that should never be mixed:
 
 ```cpp
+// snippet-template: none (pseudo-code: bare expressions without semicolons naming undeclared shares and currency)
 // These operations should not compile:
 shares + currency           // ❌ Can't add shares to dollars
 currency - shares           // ❌ Can't subtract shares from dollars
@@ -25,6 +26,7 @@ if (shares > currency) {}   // ❌ Can't compare shares with dollars
 However, they **combine through multiplication** to create meaningful derived quantities:
 
 ```cpp
+// snippet-template: none (pseudo-code: dimensional equations in math notation)
 shares × (currency/share) = currency    // ✅ Portfolio valuation
 currency / shares = (currency/share)    // ✅ Average share price
 ```
@@ -77,6 +79,7 @@ Build a stock portfolio tracking system:
 
 ```cpp
 // ce-embed height=900 compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0" mp-units=trunk
+// snippet-template: none (exercise skeleton: TODO dimensions, units and constraints for the reader; the Solution fence compiles)
 #include <mp-units/core.h>
 #include <mp-units/systems/si.h>
 #include <iostream>
@@ -175,15 +178,16 @@ int main()
   std::cout << "  Total cost: " << purchase_cost << "\n";
 
   // These should NOT compile (uncomment to verify):
-  // auto bad1 = total_shares + total_spent;     // ERROR: Can't add shares + currency
-  // auto bad2 = current_value - total_shares;   // ERROR: Can't subtract shares from currency
-  // if (total_shares > current_value) {}        // ERROR: Can't compare shares with currency
+  // auto bad1 = total_shares + total_spent;     // ❌ Can't add shares + currency
+  // auto bad2 = current_value - total_shares;   // ❌ Can't subtract shares from currency
+  // if (total_shares > current_value) {}        // ❌ Can't compare shares with currency
 }
 ```
 
 ??? tip "Solution"
 
     ```cpp
+    // snippet-id: solution
     #include <mp-units/core.h>
     #include <mp-units/systems/si.h>
     #include <iostream>
@@ -309,6 +313,13 @@ int main()
     Just like physical dimensions, custom dimensions can create derived quantities:
 
     ```cpp
+    // snippet-setup: inline constexpr struct dim_shares : base_dimension<"N"> {} dim_shares;
+    // snippet-setup: inline constexpr struct dim_currency : base_dimension<"$"> {} dim_currency;
+    // snippet-setup: inline constexpr struct shares : quantity_spec<dim_shares> {} shares;
+    // snippet-setup: inline constexpr struct currency : quantity_spec<dim_currency> {} currency;
+    // snippet-setup: inline constexpr struct dividend : quantity_spec<currency> {} dividend;
+    // snippet-setup: inline constexpr struct share : named_unit<"share", kind_of<shares>> {} share;
+    // snippet-setup: inline constexpr struct USD : named_unit<"USD", kind_of<currency>> {} USD;
     // Named derived quantity spec (like ISQ speed, force, etc.)
     inline constexpr struct share_price : quantity_spec<currency / shares> {} share_price;
     inline constexpr struct dividend_per_share : quantity_spec<dividend / shares> {} dividend_per_share;
@@ -324,6 +335,12 @@ int main()
     For example, an order book system could refine share prices:
 
     ```cpp
+    // snippet-setup: inline constexpr struct dim_shares : base_dimension<"N"> {} dim_shares;
+    // snippet-setup: inline constexpr struct dim_currency : base_dimension<"$"> {} dim_currency;
+    // snippet-setup: inline constexpr struct shares : quantity_spec<dim_shares> {} shares;
+    // snippet-setup: inline constexpr struct currency : quantity_spec<dim_currency> {} currency;
+    // snippet-setup: inline constexpr struct share : named_unit<"share", kind_of<shares>> {} share;
+    // snippet-setup: inline constexpr struct USD : named_unit<"USD", kind_of<currency>> {} USD;
     // Named derived quantity allows refinement
     inline constexpr struct share_price : quantity_spec<currency / shares> {} share_price;
 
@@ -343,6 +360,7 @@ int main()
     **When multiplying values with units:**
 
     ```cpp
+    // snippet-after: solution
     quantity amount = 100.0 * USD;  // Creates a quantity *kind* - matches any currency refinement
     ```
 
@@ -352,14 +370,21 @@ int main()
     **When you need to be specific:**
 
     ```cpp
+    // snippet-after: solution
     // Explicit type specification (kind is implicitly converted)
     quantity<capital[USD]> invested = 100.0 * USD;     // Kind → capital
     quantity<dividend[USD]> income = 50.0 * USD;       // Kind → dividend
+    ```
 
+    ```cpp
+    // snippet-after: solution
     // Quantity spec conversion (explicitly converts kind)
     quantity invested = capital(100.0 * USD);          // Kind → capital via conversion
     quantity income = dividend(50.0 * USD);            // Kind → dividend via conversion
+    ```
 
+    ```cpp
+    // snippet-after: solution
     // Direct construction (not a kind conversion)
     quantity invested = 100.0 * capital[USD];          // Directly creates capital
     quantity income = 50.0 * dividend[USD];            // Directly creates dividend

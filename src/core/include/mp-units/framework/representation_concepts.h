@@ -459,7 +459,6 @@ inline namespace cpo {
  * and one call covers every representation of a vector quantity:
  *
  * @code{.cpp}
- * // snippet-template: none
  * #include <mp-units/utility/cartesian_vector.h>
  *
  * double from_vector = mp_units::magnitude(utility::cartesian_vector{3., 4., 0.});  // 5

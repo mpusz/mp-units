@@ -19,6 +19,7 @@ The **mp-units** IAU system implements:
     jansky, sidereal days, Julian years, etc.), see the `astronomy` utility system:
 
     ```cpp
+    // snippet-template: systems_plain
     #include <mp-units/systems/astronomy.h>
 
     using namespace mp_units::astronomy::unit_symbols;
@@ -91,6 +92,7 @@ Solar GM: 1 (GM)_☉ᴺ = 1.3271244e+20 m³/s²
 The IAU also defines nominal values for Earth and Jupiter:
 
 ```cpp
+// snippet-continues
 // Earth equatorial radius: R⊕ₑᴺ = 6.3781 × 10⁶ m
 quantity earth_eq_radius = 1. * R_EARTH_E_N;
 std::println("Earth equatorial radius: {} = {::N[.4e]}", earth_eq_radius, earth_eq_radius.in(m));
@@ -135,6 +137,7 @@ Jupiter GM: 1.2668653e+17 m³/s²
 The astronomical unit (au) is defined by IAU Resolution B2 (2012) as:
 
 ```cpp
+// snippet-continues
 // astronomical_unit = 149,597,870,700 m (exact)
 quantity distance_to_neptune = 30.1 * iau::astronomical_unit;
 std::println("Neptune distance: {} = {::N[.3e]}", distance_to_neptune, distance_to_neptune.in(km));
@@ -147,6 +150,7 @@ Neptune distance: 30.1 au = 4.503e+09 km
 The parsec is derived from the astronomical unit:
 
 ```cpp
+// snippet-continues
 // parsec ≈ 648000/π au (by definition)
 quantity<iau::parsec> distance = 1. * iau::parsec;
 std::println("1 parsec = {::N[.4e]}", distance.in(km));
@@ -173,6 +177,7 @@ adjustment is current there:
 ### Newtonian Constant of Gravitation
 
 ```cpp
+// snippet-continues
 using namespace mp_units::iau;
 
 // Newtonian constant of gravitation: G = 6.67430(15) × 10⁻¹¹ m³/(kg·s²)
@@ -190,9 +195,12 @@ Using an [`uncertain`](../../how_to_guides/advanced_usage/working_with_measureme
 representation makes that uncertainty part of the result:
 
 ```cpp
+// snippet-continues
+#include <mp-units/utility/uncertain.h>
+
 using mp_units::utility::measurement_of;
 
-quantity G_measured = measurement_of(newtonian_constant_of_gravitation);
+quantity G_measured = utility::measurement_of(newtonian_constant_of_gravitation);
 std::println("G = {}", G_measured.in(m3 / (kg * s2)));
 ```
 
@@ -210,6 +218,7 @@ The solar, terrestrial, and jovian masses are derived from the nominal GM values
 CODATA G:
 
 ```cpp
+// snippet-continues
 // M☉ = (GM)☉ᴺ / G
 quantity M_sun = 1. * solar_mass;
 std::println("Solar mass: {::N[.4e]}", M_sun.in(kg));
@@ -234,7 +243,8 @@ uncertainty. An `uncertain` representation reports it, and, since the nominal `G
 are exact, a conversion between two of these masses cancels `G` and stays exact:
 
 ```cpp
-quantity M_sun = uncertain<double>{1.} * solar_mass;
+// snippet-continues
+quantity M_sun = utility::uncertain<double>{1.} * solar_mass;
 
 std::println("In kilograms:   {}", M_sun.in(kg));
 std::println("In Earth masses: {}", M_sun.in(terrestrial_mass));
@@ -306,6 +316,7 @@ Earth orbital period: 2 au^(3/2) π/(GM)_☉ᴺ^(1/2) = 365.26 d
 ### Stellar Luminosity Comparison
 
 ```cpp
+// snippet-continues
 // A star twice as luminous as the Sun
 quantity star_luminosity = 2. * L_SUN_N;
 
@@ -324,6 +335,7 @@ Luminosity: 2.0 L_☉ᴺ
 ### Exoplanet Mass Calculation
 
 ```cpp
+// snippet-continues
 // Measured GM for an exoplanet system
 quantity mu_exoplanet = 5.0e13 * m3 / s2;
 

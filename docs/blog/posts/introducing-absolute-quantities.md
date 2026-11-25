@@ -80,7 +80,7 @@ Below is a summary table comparing the three main quantity abstractions:
 
 1. **Limited arithmetic for points** – Points can’t be multiplied, divided, or accumulated.
    This often forces the users to convert the quantity point to a delta with either
-   `qp.quantity_from_zero()` or `qp.quantity_from(some_origin)` member functions,
+   `qp.delta_from_zero()` or `qp.delta_from(some_origin)` member functions,
    which is at least cumbersome.
 2. **No text output for points** – A point's textual representation depends on its origin,
    which is often implicit or user-defined. As of today, we do not have the means to
@@ -107,10 +107,11 @@ Below is a summary table comparing the three main quantity abstractions:
     === "Simple but error-prone"
 
         ```cpp
+        // snippet-template: none (third-party: gsl-lite's gsl_Expects)
         quantity<percent> moisture_content_change(quantity<kg> water_lost, // delta
                                                   quantity<kg> total)      // absolute
         {
-          gsl_Expects(is_gt_zero(total));
+          gsl_Expects(total > 0);
           return water_lost / total;
         }
 
@@ -128,17 +129,18 @@ Below is a summary table comparing the three main quantity abstractions:
     === "Safer but cumbersome"
 
         ```cpp
+        // snippet-template: none (third-party: gsl-lite's gsl_Expects)
         quantity<percent> moisture_content_change(quantity<kg> water_lost,
                                                   quantity_point<kg> total)
         {
-          gsl_Expects(is_gt_zero(total));
-          return water_lost / total.quantity_from_zero();
+          gsl_Expects(total.delta_from_zero() > 0);
+          return water_lost / total.delta_from_zero();
         }
 
         quantity_point<kg> initial[] = { point<kg>(2.34), point<kg>(1.93), point<kg>(2.43) };
         quantity_point<kg> dried[] = { point<kg>(1.89), point<kg>(1.52), point<kg>(1.92) };
 
-        auto point_plus = [](QuantityPoint auto a, QuantityPoint auto b){ return a + b.quantity_from_zero(); };
+        auto point_plus = [](QuantityPoint auto a, QuantityPoint auto b){ return a + b.delta_from_zero(); };
         quantity_point total_initial = std::reduce(std::cbegin(initial), std::cend(initial), point<kg>(0.), point_plus);
         quantity_point total_dried = std::reduce(std::cbegin(dried), std::cend(dried), point<kg>(0.), point_plus);
 
@@ -204,6 +206,7 @@ physical equations. This is why we will not need any specifier to denote them in
 Here are some simple examples:
 
 ```cpp
+// snippet-template: none (not this library: V3 proposal, a quantity holding point<kg>(20))
 quantity q1 = 20 * kg;        // absolute quantity (measured from true zero)
 quantity q2 = delta<kg>(20);  // delta quantity (difference)
 quantity q3 = point<kg>(20);  // point quantity (relative to an origin)
@@ -212,6 +215,7 @@ quantity q3 = point<kg>(20);  // point quantity (relative to an origin)
 The above will produce the following types:
 
 ```cpp
+// snippet-template: none (not this library: V3 proposal, quantity<delta<kg>> and quantity<point<kg>> types)
 static_assert(std::is_same_v<decltype(q1), quantity<kg>>);
 static_assert(std::is_same_v<decltype(q2), quantity<delta<kg>>>);
 static_assert(std::is_same_v<decltype(q3), quantity<point<kg>>>);
@@ -256,6 +260,7 @@ their physical nature, so the `delta<>` wrapper is neither needed nor used for t
 To obtain a scalar absolute from a vector delta, take its norm:
 
 ```cpp
+// snippet-template: none (not this library: V3 proposal, vector delta and scalar absolute, with a ... placeholder)
 quantity<displacement[m]> v = ...;     // vector delta
 quantity<distance[m]>     d = norm(v); // scalar absolute
 ```
@@ -264,6 +269,7 @@ For signed scalar deltas, `abs()` (or equivalently `.absolute()`) converts a del
 to an absolute:
 
 ```cpp
+// snippet-template: isq
 quantity d1 = delta<height[m]>(-3);  // signed scalar delta
 quantity d2 = abs(d1);               // scalar absolute — same as d1.absolute()
 ```
@@ -275,6 +281,7 @@ As absolute quantities share properties of both deltas and points with implicit 
 origins, they should be explicitly convertible to those:
 
 ```cpp
+// snippet-template: none (not this library: V3 proposal, quantity<delta<kg>> and quantity<point<kg>> types)
 quantity<delta<kg>> q1(20 * kg);
 quantity<point<kg>> q2(20 * kg);
 ```
@@ -282,6 +289,7 @@ quantity<point<kg>> q2(20 * kg);
 or
 
 ```cpp
+// snippet-template: none (not this library: V3 proposal, .delta() and .point() members)
 quantity<delta<kg>> q1 = (20 * kg).delta();
 quantity<point<kg>> q2 = (20 * kg).point();
 ```
@@ -295,6 +303,7 @@ This is why it is better only to expose named functions to convert points and de
 to absolute quantities:
 
 ```cpp
+// snippet-template: none (not this library: V3 proposal, .absolute() member)
 quantity<kg> q3 = q1.absolute();  // may fail the pre-condition check if negative
 quantity<kg> q4 = q2.absolute();  // may fail the pre-condition check if negative
 ```
@@ -306,11 +315,12 @@ an implicit point origin rather than an explicit one).
 If the user provided an explicit origin, then such a quantity can only be used as a delta:
 
 ```cpp
+// snippet-template: none (not this library: V3 proposal, quantity<point<m>> and .delta())
 inline constexpr struct nhn_sea_level : absolute_point_origin<isq::altitude> {} nhn_sea_level;
 
 quantity<m> alt1 = 42 * m;
 quantity<point<m>> alt2(alt1);                     // OK
-// quantity<point<m, nhn_sea_level>> alt3(alt1);   // Compile-time error
+// quantity<point<m, nhn_sea_level>> alt3(alt1);   // ❌
 quantity<point<m, nhn_sea_level>> alt4 = nhn_sea_level + alt1.delta();
 ```
 
@@ -318,6 +328,7 @@ If the user used an offset unit, then a conversion should work fine as long as t
 origin of the offset unit is defined in terms of the implicit point origin:
 
 ```cpp
+// snippet-template: none (not this library: V3 proposal, quantity<point<K>> and quantity<point<C>>)
 quantity<K> temp1 = 300 * K;
 quantity<point<K>> temp2(temp1);                   // OK
 quantity<point<C>> temp3(temp1);                   // OK
@@ -368,6 +379,7 @@ Here is the summary of all the addition operations:
     results:
 
     ```cpp
+    // snippet-template: none (not this library: V3 proposal, point and delta abstractions held in quantity)
     quantity abs = isq::height(42 * m);
     quantity pt = point<isq::altitude[m]>(10);
     quantity d = delta<isq::height[m]>(2);
@@ -389,6 +401,7 @@ If an absolute result is needed (e.g., remaining _mass_), it should be obtained
 via an explicit conversion:
 
 ```cpp
+// snippet-template: none (not this library: V3 proposal, .absolute() member)
 quantity<kg> remaining = (total - used).absolute();
 ```
 
@@ -423,11 +436,12 @@ Here is a summary of all of the subtraction operations
     results:
 
     ```cpp
+    // snippet-template: none (not this library: V3 proposal, point, absolute and delta subtraction rules)
     quantity abs = isq::height(42 * m);
     quantity pt = point<isq::altitude[m]>(10);
     quantity d = delta<isq::height[m]>(2);
     quantity res1 = pt - abs;                  // Point
-    // quantity res2 = abs - pt;               // Compile-time error
+    // quantity res2 = abs - pt;               // ❌
     quantity res3 = abs - pt.absolute();       // Delta or quantity_difference
     quantity res4 = abs - d;                   // Absolute
     quantity res5 = d - abs;                   // Delta
@@ -605,6 +619,7 @@ be converted to use Kelvin as its unit and then we need to create an absolute
 quantity from it:
 
 ```cpp
+// snippet-template: none (not this library: V3 proposal, a quantity holding a point, .absolute())
 quantity temp = point<deg_C>(21);
 quantity kinetic_energy = 3 / 2 * si::boltzmann_constant * temp.in(K).absolute();
 ```
@@ -664,6 +679,7 @@ quantities usage:
     change in moisture content (on a wet basis) during the drying process.
 
     ```cpp
+    // snippet-template: none (not this library: V3 proposal, quantity<delta<percent>> and quantity<delta<kg>>)
     quantity<delta<percent>> // (1)!
     moisture_content_change(quantity<delta<kg>> water_lost, // (2)!
                             quantity<kg> total) // (3)!
@@ -715,6 +731,7 @@ quantity.
 === "Before"
 
     ```cpp
+    // snippet-template: none (not this library: V3 proposal, V3 point subtraction, with ... placeholders)
     quantity<km / h> avg_speed(quantity<km> distance, quantity<h> duration)
     {
       return distance / duration;
@@ -724,12 +741,13 @@ quantity.
     quantity_point<s> ts1 = ...;
     quantity_point<km> odo2 = ...;
     quantity_point<s> ts2 = ...;
-    // quantity res = avg_speed(odo2 - odo1, ts2 - ts1);  // Compile-time error
+    // quantity res = avg_speed(odo2 - odo1, ts2 - ts1);  // ❌
     ```
 
 === "After"
 
     ```cpp
+    // snippet-template: none (not this library: V3 proposal, .absolute(), with ... placeholders)
     quantity<km / h> avg_speed(quantity<km> distance, quantity<h> duration)
     {
       return distance / duration;
@@ -754,6 +772,7 @@ constructor. To fix that, the user will need to use explicit `delta` specifiers 
 construction helpers in such cases:
 
 ```cpp
+// snippet-template: none (not this library: V3 proposal, quantity<delta<m>> and the non-negative precondition of quantity<m>)
 quantity<m> d1 = -2 * m;       // Precondition check failure at runtime
 quantity<delta<m>> d2(-2 * m); // Precondition check failure at runtime
 quantity d3 = delta<m>(-2);    // OK
@@ -827,6 +846,7 @@ deltas as arguments, users might inadvertently pass negative values, leading to
 nonsensical results or subtle bugs:
 
 ```cpp
+// snippet-template: none (not this library: V3 proposal, quantity<delta<m>> parameters)
 // Problematic: allows negative duration
 quantity<m/s> avg_speed(quantity<delta<m>> distance, quantity<delta<s>> duration)
 {
@@ -871,6 +891,7 @@ For example, we can now correctly calculate _Carnot engine efficiency_ with any 
 following:
 
 ```cpp
+// snippet-template: none (not this library: V3 proposal, `300. * K` as an absolute temperature)
 quantity temp_cold = 300. * K;
 quantity temp_hot = 500. * K;
 quantity carnot_eff_1 = 1. - temp_cold / temp_hot;
@@ -882,10 +903,11 @@ arithmetic on them. Previously, we had to create deltas from both points artific
 with:
 
 ```cpp
+// snippet-template: none (not this library: V3 proposal, a quantity holding point<K>(300.))
 quantity temp_cold = point<K>(300.);
 quantity temp_hot = point<K>(500.);
-quantity carnot_eff_1 = 1. - temp_cold.quantity_from_zero() / temp_hot.quantity_from_zero();
-quantity carnot_eff_2 = (temp_hot - temp_cold) / temp_hot.quantity_from_zero();
+quantity carnot_eff_1 = 1. - temp_cold.delta_from_zero() / temp_hot.delta_from_zero();
+quantity carnot_eff_2 = (temp_hot - temp_cold) / temp_hot.delta_from_zero();
 ```
 
 It worked, but was far from being physically pure and pretty.
@@ -895,21 +917,21 @@ It worked, but was far from being physically pure and pretty.
 
 Two workaround approaches exist, each with its own caveat.
 
-#### Approach 1: `quantity_from_zero()`
+#### Approach 1: `delta_from_zero()`
 
-`quantity_from_zero()` returns the displacement of a quantity point from its unit's
+`delta_from_zero()` returns the displacement of a quantity point from its unit's
 origin. For Kelvin this is `si::absolute_zero`, so the result is exactly the
 thermodynamic temperature:
 
 ```cpp
-point<K>(294.15).quantity_from_zero();  // 294.15 K ✓
+point<K>(294.15).delta_from_zero();  // 294.15 K ✓
 ```
 
 For Celsius, however, the unit's origin is `si::ice_point`. The function therefore
 returns the displacement from the ice point, not from absolute zero:
 
 ```cpp
-point<deg_C>(21).quantity_from_zero();  // 21 ℃ — displacement from ice point, not 294.15 K!
+point<deg_C>(21).delta_from_zero();  // 21 ℃ — displacement from ice point, not 294.15 K!
 ```
 
 This is a silent pitfall: the call compiles and returns a plausible-looking value for any
@@ -917,7 +939,7 @@ temperature unit, but is only thermodynamically meaningful when the point is alr
 Kelvin. Explicit conversion before the call fixes it:
 
 ```cpp
-point<deg_C>(21).in(K).quantity_from_zero();  // 294.15 K ✓
+point<deg_C>(21.).in(K).delta_from_zero();  // 294.15 K ✓
 ```
 
 #### Approach 2: Subtract `si::absolute_zero`
@@ -945,11 +967,11 @@ it will convert automatically on the first assignment to a typed quantity such a
 
 #### Comparing the two approaches
 
-Both approaches work correctly when used with care. `quantity_from_zero()` is concise but
+Both approaches work correctly when used with care. `delta_from_zero()` is concise but
 requires the point to already be in Kelvin. Subtraction from `si::absolute_zero` is
 always safe but carries the common unit of both operands (`1/20 K` in the example above) until
 rescaled. In either case, the right idiom,
-`.in(K).quantity_from_zero()`, must be remembered and applied at every call site, and
+`.in(K).delta_from_zero()`, must be remembered and applied at every call site, and
 there is no way to enforce it through the type system.
 
 V3 Absolute Quantities address this: `300 * K` is already an Absolute Quantity, directly
@@ -1110,6 +1132,7 @@ result would go below zero. Two escape hatches exist:
 `delta` with no invariant, so the deficit is representable without a contract violation:
 
 ```cpp
+// snippet-template: none (not this library: V3 proposal, .delta() member)
 quantity fuel        = isq::mass(500 * kg);        // non_negative absolute
 quantity consumption = delta<isq::mass[kg]>(600);  // signed delta
 

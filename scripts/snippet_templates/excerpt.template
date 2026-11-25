@@ -1,0 +1,13 @@
+// For an excerpt that opens the library's own namespaces itself (`namespace si { ... }`,
+// `namespace usc { ... }`). The body goes in `mp_units::sample`, whose `si`, `usc` and `isq`
+// see the real ones. The excerpt's own declarations hide the library's, and everything else
+// it names resolves as it does inside the library. This checks the excerpt against the API
+// it quotes.
+#include "prelude.h"
+#include <mp-units/systems/usc.h>
+namespace mp_units::sample {
+namespace isq { using namespace ::mp_units::isq; }
+namespace si { using namespace ::mp_units::si; }
+namespace usc { using namespace ::mp_units::usc; }
+{{BODY}}
+}  // namespace mp_units::sample

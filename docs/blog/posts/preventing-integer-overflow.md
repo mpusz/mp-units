@@ -45,7 +45,7 @@ the representation type:
 
 ```cpp
 quantity length = std::int8_t{2} * m;
-quantity<mm, std::int8_t> length_mm = length;    // ❌ Compile-time error!
+quantity<mm, std::int8_t> length_mm = length;    // ❌
 // 2 m → 2000 mm; ×1000 is guaranteed to overflow int8_t (max 127)
 ```
 
@@ -162,10 +162,13 @@ final result would fit perfectly in the representation type.
 Consider this example with `int16_t` (max value: 32,767):
 
 ```cpp
+// snippet-id: meters-feet
+// snippet-template: systems
+using namespace mp_units::yard_pound::unit_symbols;
 quantity<m, std::int16_t> meters = std::int16_t{20'000} * m;
 quantity<ft, std::int16_t> feet = std::int16_t{10'000} * ft;  // 1 ft = 381/1250 m
 quantity total = meters + feet;
-std::cout << "Result: " << total.force_in(m) << '\n';
+std::cout << "Result: " << total.in(m, truncated) << '\n';
 
 // Common unit is m/1250 (or equivalently ft/381) — GCD of the unit representations
 // Scaling to common unit:
@@ -202,6 +205,7 @@ and use [`std::common_type`](https://en.cppreference.com/w/cpp/chrono/duration/c
 to determine both the intermediate and result types for arithmetic:
 
 ```cpp
+// snippet-template: none (not this library: the std::common_type approach of other libraries)
 // std::common_type<int16_t, int16_t> = int16_t
 // No integral promotion, no widening for intermediate calculations
 auto total = meters + feet;  // decltype(total) has rep type int16_t
@@ -221,9 +225,10 @@ In our example, what would actually happen if a units library followed
 conversion would produce garbage:
 
 ```cpp
+// snippet-template: none (not this library: a hypothetical std::common_type-based library)
 // Hypothetical std::common_type-based library behavior:
 auto total = meters + feet;      // decltype(total)::rep = int16_t (not int!)
-std::cout << "Result: " << total.force_in(m) << '\n';
+std::cout << "Result: " << total.in(m, truncated) << '\n';
 // Output: Result: -20 m ❌ (or anything — it's UB!)
 ```
 
@@ -251,6 +256,7 @@ These improvements are independent and address different aspects of overflow saf
 for the *result type* of arithmetic operations:
 
 ```cpp
+// snippet-after: meters-feet
 static_assert(std::is_same_v<decltype(total)::rep, int>);
 // Result type is int, not int16_t — consistent with C++!
 ```
@@ -346,8 +352,10 @@ Consider converting a large volume from liters to US gallons (1 L = 1000000/3785
 exactly):
 
 ```cpp
+// snippet-template: systems
+using namespace mp_units::usc::unit_symbols;
 quantity<L, std::int64_t> volume = 3'689'348'814'741LL * L;  // 3.7×10¹² L
-quantity in_gal = volume.in(gal);
+quantity in_gal = volume.in(gal, truncated);
 // Scaling: value × 1000000 / 3785411784
 // Intermediate: 3.7×10¹² × 10⁶ = 3.7×10¹⁸ (within int64_t range)
 // Result: 3.7×10¹⁸ / 3.79×10⁹ ≈ 974'667'730'000 gal (fits in int64_t) ✓
@@ -362,6 +370,8 @@ widening provides no protection, resulting in a nonsensical `0 gal` output.
 library must scale to a common unit internally:
 
 ```cpp
+// snippet-template: systems
+using namespace mp_units::usc::unit_symbols;
 quantity<L, std::int64_t> vol1 = 5'000'000'000'000LL * L;  // 5 trillion liters
 quantity<gal, std::int64_t> vol2 = 3'000'000'000LL * gal;  // 3 billion gal ≈ 11.4B L  
 bool greater = (vol1 > vol2);  // Should be true (5T L >> 11.4B L)
@@ -468,8 +478,10 @@ Recall the liters-to-gallons conversion that failed in 2.5.0:
 === "mp-units (current)"
 
     ```cpp
+    // snippet-template: systems
+    using namespace mp_units::usc::unit_symbols;
     quantity<L, std::int64_t> volume = 3'689'348'814'741LL * L;  // ~3.7×10¹² L
-    quantity in_gal = volume.in(gal);
+    quantity in_gal = volume.in(gal, truncated);
     // Intermediate: 3.69×10¹² × 10⁶ = 3.69×10¹⁸
     // Result: 3.69×10¹⁸ / 3.79×10⁹ ≈ 974'667'730'000 gal (fits in int64_t) ✓
     // Output: 974'667'730'000 gal ✓ (intermediate computed in 128-bit type)
@@ -478,8 +490,10 @@ Recall the liters-to-gallons conversion that failed in 2.5.0:
 === "mp-units 2.5.0"
 
     ```cpp
+    // snippet-template: systems
+    using namespace mp_units::usc::unit_symbols;
     quantity<L, std::int64_t> volume = 3'689'348'814'741LL * L;  // ~3.7×10¹² L
-    quantity in_gal = volume.in(gal);
+    quantity in_gal = volume.in(gal, truncated);
     // Intermediate: 3.69×10¹² × 10⁶ = 3.69×10¹⁸ (overflows int64_t!)
     // Result: 3.69×10¹⁸ / 3.79×10⁹ ≈ 974'667'730'000 gal (fits in int64_t) ✓
     // Output: 0 gal ❌ (intermediate overflow produces wrong result)
@@ -492,8 +506,10 @@ the API:
 === "mp-units (current)"
 
     ```cpp
+    // snippet-template: systems
+    using namespace mp_units::usc::unit_symbols;
     quantity<L, std::int64_t> vol1 = 5'000'000'000'000LL * L;  // 5 trillion liters
-    quantity<US::gal, std::int64_t> vol2 = 3'000'000'000LL * US::gal;  // 3B gal ≈ 11.4B L
+    quantity<gal, std::int64_t> vol2 = 3'000'000'000LL * gal;  // 3B gal ≈ 11.4B L
     bool greater = (vol1 > vol2);  // Should be true (5T L >> 11.4B L)
     // Common unit: L (vol1's unit)
     // Intermediate for vol2: 3×10⁹ × 3'785'411'784 / 10⁶ (overflows int64_t)
@@ -503,8 +519,10 @@ the API:
 === "mp-units 2.5.0"
 
     ```cpp
+    // snippet-template: systems
+    using namespace mp_units::usc::unit_symbols;
     quantity<L, std::int64_t> vol1 = 5'000'000'000'000LL * L;  // 5 trillion liters
-    quantity<US::gal, std::int64_t> vol2 = 3'000'000'000LL * US::gal;  // 3B gal ≈ 11.4B L
+    quantity<gal, std::int64_t> vol2 = 3'000'000'000LL * gal;  // 3B gal ≈ 11.4B L
     bool greater = (vol1 > vol2);  // Should be true (5T L >> 11.4B L)
     // Common unit: L (vol1's unit)
     // Intermediate for vol2: 3×10⁹ × 3'785'411'784 / 10⁶ (overflows int64_t)
@@ -518,6 +536,8 @@ are so large that the intermediate results would overflow `int64_t` without 128-
 arithmetic:
 
 ```cpp
+// snippet-template: systems
+using namespace mp_units::yard_pound::unit_symbols;
 // lb vs kg: common unit is their GCD (≈ 1.7×10⁻⁷ g), producing huge scale factors.
 //   47 ×  45'359'237 = 2'131'884'139 (0x7F11'F86B) — largest value that fits int32
 //   47 × 100'000'000 = 4'700'000'000 (0x1'1824'4F00) — truncated to 0x1824'4F00 in int32
@@ -566,6 +586,8 @@ that plain arithmetic overflow is fundamentally unavoidable at compile time. Thi
 equally to the results of common-unit conversions:
 
 ```cpp
+// snippet-template: systems
+using namespace mp_units::yard_pound::unit_symbols;
 // Large volumes in different units
 quantity<m3, std::int64_t> vol_m3 = 4'800'000'000'000LL * m3;  // 4.8 trillion m³
 quantity<pow<3>(ft), std::int64_t> vol_ft3 = 169'000'000'000'000LL * pow<3>(ft);
@@ -668,6 +690,7 @@ you whether a specific runtime value would overflow or truncate on a given conve
 Users can write their own wrapper combining runtime checks with opt-outs:
 
 ```cpp
+// snippet-template: none (not this library: Au's will_conversion_truncate and ignore(TRUNCATION_RISK))
 template<typename Target, typename U, typename R>
 std::optional<Quantity<TargetUnit, R>> checked_conversion(Quantity<U, R> q, Target u)
 {
@@ -770,6 +793,7 @@ All standard fixed-width integer aliases are available: `safe_i8`, `safe_i16`, `
     ```cpp
     #include <mp-units/utility/safe_int.h>
 
+    // snippet-setup: void log_critical_error(std::string_view category, std::string_view msg);
     struct logging_policy {
       [[noreturn]] static void on_overflow(std::string_view msg)
       {
@@ -808,10 +832,10 @@ matching what happens with the underlying types:
 static_assert(std::is_same_v<decltype(std::int16_t{1} + std::int16_t{1}), int>);
 
 // safe_int preserves this: safe_int<int16_t> + safe_int<int16_t> → safe_int<int>
-static_assert(std::is_same_v<decltype(safe_i16{1} + safe_i16{1}), mp_units::utility::safe_int<int>>);
+static_assert(std::is_same_v<decltype(utility::safe_i16{1} + utility::safe_i16{1}), mp_units::utility::safe_int<int>>);
 
 // This propagates through quantity arithmetic:
-static_assert(std::is_same_v<decltype(safe_i16{1} * m + safe_i16{1} * m), quantity<m, mp_units::utility::safe_int<int>>>);
+static_assert(std::is_same_v<decltype(utility::safe_i16{1} * m + utility::safe_i16{1} * m), quantity<m, mp_units::utility::safe_int<int>>>);
 ```
 
 This design ensures that `safe_int` acts as a **transparent wrapper**. It adds overflow
@@ -833,8 +857,8 @@ drop-in replacement. Only the representation type changes, everything else stays
 === "safe_int<T>"
 
     ```cpp
-    quantity<m, safe_i16> q{30'000 * m};
-    quantity<m, safe_i16> doubled{q + q};  // throws std::overflow_error ✓
+    quantity<m, utility::safe_i16> q{30'000 * m};
+    quantity<m, utility::safe_i16> doubled{q + q};  // throws std::overflow_error ✓
     ```
 
 The overflow is caught because `q + q` promotes to `safe_int<int>` via integral promotion
@@ -859,7 +883,7 @@ arithmetic operators, every operation is checked, regardless of context:
     int value = 40'000;
 
     // Constructing a safe_int quantity from a plain integer that doesn't fit the rep type
-    quantity<m, safe_i16> q{value * m};  // throws — 40,000 > INT16_MAX (32,767)
+    quantity<m, utility::safe_i16> q{value * m};  // throws — 40,000 > INT16_MAX (32,767)
     ```
 
 === "Conversion"
@@ -868,19 +892,19 @@ arithmetic operators, every operation is checked, regardless of context:
     quantity q = 40'000 * m;
 
     // Converting from a quantity with too large numerical value for the rep type
-    quantity<m, safe_i16> q_safe{q};  // throws — 40,000 > INT16_MAX (32,767)
+    quantity<m, utility::safe_i16> q_safe{q};  // throws — 40,000 > INT16_MAX (32,767)
     ```
 
 === "Arithmetic"
 
     ```cpp
     // Same-unit addition — no unit conversion at all, plain safe_int arithmetic
-    quantity dist = safe_i32{2'000'000'000} * m;
+    quantity dist = utility::safe_i32{2'000'000'000} * m;
     quantity total = dist + dist;         // throws — 4×10⁹ overflows int32_t
 
     // Cross-quantity multiplication: speed × time
-    quantity speed = safe_i32{50'000} * m / s;
-    quantity time  = safe_i32{50'000} * s;
+    quantity speed = utility::safe_i32{50'000} * m / s;
+    quantity time  = utility::safe_i32{50'000} * s;
     quantity distance = speed * time;     // throws — 2.5×10⁹ overflows int32_t
     ```
 
@@ -888,7 +912,7 @@ arithmetic operators, every operation is checked, regardless of context:
 
     ```cpp
     // Explicit unit conversion — also covered by conversion-level checkers
-    quantity dist = safe_i32{2'200'000} * m;
+    quantity dist = utility::safe_i32{2'200'000} * m;
     quantity huge = dist.in(um);         // throws — ×1,000,000 factor overflows int32_t
     ```
 
@@ -896,8 +920,8 @@ arithmetic operators, every operation is checked, regardless of context:
 
     ```cpp
     // Automatic common-unit scaling — outside conversion-level checkers' scope
-    quantity dist_m  = safe_i32{1'500'000'000} * m;
-    quantity dist_km = safe_i32{1'000'000} * km;
+    quantity dist_m  = utility::safe_i32{1'500'000'000} * m;
+    quantity dist_km = utility::safe_i32{1'000'000} * km;
     quantity total = dist_m + dist_km;    // throws — scaling 10⁶ km → m overflows int32_t
     ```
 
@@ -955,6 +979,7 @@ One further integer-specific hazard deserves mention:
 [**divide-before-convert**](understanding-safety-levels.md#level-3-representation-safety).
 
 ```cpp
+// snippet-template: none (not this library: Au/chrono-style hours(8) / minutes(40) expression)
 // Apparent time ratio — how many 40-minute intervals in 8 hours?
 hours(8) / minutes(40)   // Expected: 12. Actual with integer division:
                          // 8 / 40 = 0, then unit factor applied → wrong!

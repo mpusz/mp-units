@@ -118,11 +118,12 @@ quantity xyz = displacement.to_cartesian();  // convert only when you need x/y/z
     lets you name the concrete vector quantity on assignment:
 
     ```cpp
+    // snippet-template: utility
     quantity speed = isq::speed(20.0 * m / s);
-    spherical_vector v{speed, 50.0 * deg, 30.0 * deg};
+    utility::spherical_vector v{speed, 50.0 * deg, 30.0 * deg};
 
     // the result kind matches any length/time vector; you pin it to isq::velocity yourself
-    quantity<isq::velocity[m / s], cartesian_vector<double, 3>> velocity = v.to_cartesian();
+    quantity<isq::velocity[m / s], utility::cartesian_vector<double, 3>> velocity = v.to_cartesian();
     ```
 
     The reverse direction is better off, because it *is* a magnitude. When a facade is deduced from
@@ -141,15 +142,16 @@ the _radius_, and its factor may be a plain number or a quantity. A dimensioned 
 changes the _radius_ unit (see the velocity-times-duration case above):
 
 ```cpp
-polar_vector p{2.0 * m, 30.0 * deg};
-polar_vector turned = p.rotated_by(90.0 * deg);  // theta += 90° (wrapped), exact
-polar_vector longer = 2.0 * p;                   // scales the radius to 4 m
-polar_vector shorter = p / 2.0;                  // radius 1 m
-polar_vector rate = p / (4.0 * s);               // dimensioned: radius m -> m/s, angle kept
+// snippet-template: utility
+utility::polar_vector p{2.0 * m, 30.0 * deg};
+utility::polar_vector turned = p.rotated_by(90.0 * deg);  // theta += 90° (wrapped), exact
+utility::polar_vector longer = 2.0 * p;                   // scales the radius to 4 m
+utility::polar_vector shorter = p / 2.0;                  // radius 1 m
+utility::polar_vector rate = p / (4.0 * s);               // dimensioned: radius m -> m/s, angle kept
 
-spherical_vector s{2.0 * m, 30.0 * deg, 30.0 * deg};
-spherical_vector spun = s.rotated_about_z(90.0 * deg);  // azimuth += 90° (wrapped)
-spherical_vector tilted = s.tilted_by(30.0 * deg);      // inclination += 30° (meridian plane)
+utility::spherical_vector s{2.0 * m, 30.0 * deg, 30.0 * deg};
+utility::spherical_vector spun = s.rotated_about_z(90.0 * deg);  // azimuth += 90° (wrapped)
+utility::spherical_vector tilted = s.tilted_by(30.0 * deg);      // inclination += 30° (meridian plane)
 ```
 
 `rotated_about_z` turns the _azimuth_, and `tilted_by` changes the _inclination_. When
@@ -168,10 +170,13 @@ you construct with. Any SI _angle_ unit works out of the box, and the strong `an
 is accepted as an opt-in:
 
 ```cpp
-polar_vector a{2.0 * m, 90.0 * deg};               // polar_vector<si::metre, si::degree, double>
-polar_vector b{2.0 * m, half_pi * rad};            // ... si::radian
-polar_vector c{2.0 * m, 30.0 * arcmin};            // ... si::arcminute
-polar_vector d{2.0 * m, 90.0 * angular::degree};   // opt-in strong angular system
+// snippet-template: utility
+constexpr double half_pi = std::numbers::pi / 2;
+
+utility::polar_vector a{2.0 * m, 90.0 * deg};               // polar_vector<si::metre, si::degree, double>
+utility::polar_vector b{2.0 * m, half_pi * rad};            // ... si::radian
+utility::polar_vector c{2.0 * m, 30.0 * arcmin};            // ... si::arcminute
+utility::polar_vector d{2.0 * m, 90.0 * angular::degree};   // opt-in strong angular system
 ```
 
 `radius()` (also `magnitude()`) returns the radius `quantity`, and `theta()` / `phi()` return
@@ -193,6 +198,7 @@ If you define an angle system of your own, register its radian with a single spe
 keyed on its kind. The facades then work with it just like the built-in ones:
 
 ```cpp
+// snippet-template: utility
 namespace my {
 inline constexpr struct dim_angle : base_dimension<"A"> {} dim_angle;
 inline constexpr struct angle : quantity_spec<dim_angle> {} angle;
@@ -204,7 +210,7 @@ inline constexpr struct degree : named_unit<"deg", mag_ratio<1, 180> * π * radi
 template<>
 inline constexpr auto mp_units::utility::radian_of<kind_of<my::angle>> = my::radian;
 
-polar_vector p{2.0 * m, 90.0 * my::degree};  // converts through my::radian
+utility::polar_vector p{2.0 * m, 90.0 * my::degree};  // converts through my::radian
 ```
 
 This is the only extension point the facades expose, and it lives with them rather than in
@@ -219,6 +225,7 @@ they work with any linear algebra backend whose vector is tuple-like and provide
 `magnitude` customization point, on both sides of the conversion:
 
 ```cpp
+// snippet-template: none (third-party: needs Eigen, which the checker does not provide)
 #include <mp-units/integrations/eigen.h>
 #include <mp-units/utility/spherical_vector.h>
 #include <mp-units/systems/si.h>

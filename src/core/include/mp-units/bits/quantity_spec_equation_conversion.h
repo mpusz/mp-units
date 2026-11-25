@@ -631,14 +631,47 @@ template<typename Root, bool Transitive, typename... Ts>
             (!std::is_same_v<hierarchy_root<expr_type<Ts>>, Root> && detail::equation_mentions<Root, expr_type<Ts>>()));
 }
 
+template<typename E, typename List>
+constexpr bool names_base = false;
+
+template<typename E, typename... Fs>
+constexpr bool names_base<E, type_list<Fs...>> = (... || std::is_same_v<expr_type<Fs>, expr_type<E>>);
+
+// Whether the equation of `Q` names one of `Factors` itself, not only a quantity of its tree.
+template<typename Factors, typename Q>
+[[nodiscard]] consteval bool equation_names_any()
+{
+  if constexpr (!HasEquation<Q>)
+    return false;
+  else
+    return []<typename... Ts>(type_list<Ts...>) {
+      return (... || names_base<Ts, Factors>);
+    }(type_list_join<typename equation_of<Q>::_num_, typename equation_of<Q>::_den_>{});
+}
+
+// Whether a factor outside the tree `Root` has an equation that names one of the tree's `Factors`
+// (source or target) itself. Two named siblings of different kind roots pair as `none`, and for a
+// typed source that refusal is final unless such an equation is the bridge between them:
+// `coordinate_time / lorentz_factor -> proper_time`, where `lorentz_factor` is defined as
+// `coordinate_time / proper_time`. A mention of the tree alone is not enough, so that
+// `rotation * angular_velocity -> angular_measure / time` stays refused (see P1).
+template<typename Root, typename Factors, typename... Ts>
+[[nodiscard]] consteval bool any_remaining_equation_names(type_list<Ts...>)
+{
+  return (... || (!std::is_same_v<hierarchy_root<expr_type<Ts>>, Root> &&
+                  detail::equation_names_any<Factors, expr_type<Ts>>()));
+}
+
 // Pairing: one merge walk over two lists of the same sign pairs every tree that appears on both
 // sides. Both lists are sorted by the root name first, so the factors of one tree are adjacent and
 // aligned across the lists. `All` holds every factor of both sides: a tree that would rank `cast`, or
 // `none` from a kind source, is deferred while a remaining factor (one of another tree) has an
 // equation that mentions this tree, so that the decision between siblings is made with every factor
-// of the tree present. A kind pairs with a sibling branch as `none` (its named root would), which is
-// why only a kind source needs the `none` deferral: the angle of `rad/s` must not die against a
-// `rotation` before the `angular_displacement` inside `angular_velocity` is on the table.
+// of the tree present. A kind pairs with a sibling branch as `none` (its named root would), so a
+// kind source defers a `none` on the same mention: the angle of `rad/s` must not die against a
+// `rotation` before the `angular_displacement` inside `angular_velocity` is on the table. Two named
+// siblings of different kind roots also pair as `none`, and they are deferred only while a remaining
+// equation names one of them itself (see `any_remaining_equation_names`).
 template<typename From, typename To, typename All, bool SourceIsKind>
 [[nodiscard]] consteval auto pair_lists()
 {
@@ -655,14 +688,21 @@ template<typename From, typename To, typename All, bool SourceIsKind>
         decltype(detail::pair_tree_factors<typename from_split::factors, typename to_split::factors, SourceIsKind>());
       using tail =
         decltype(detail::pair_lists<typename from_split::rest, typename to_split::rest, All, SourceIsKind>());
-      constexpr bool deferrable = matched::rank == cast || (SourceIsKind && matched::rank == none);
+      constexpr bool deferrable = matched::rank == cast || matched::rank == none;
       using paired = pairing_result<detail::weaker(matched::rank, tail::rank),
                                     type_list_join<typename matched::from_rest, typename tail::from_rest>,
                                     type_list_join<typename matched::to_rest, typename tail::to_rest>, true,
                                     deferrable || tail::has_deferrable>;
       // nested so that the scan of `All` is instantiated only for a tree that may actually be deferred
       if constexpr (deferrable) {
-        if constexpr (detail::any_remaining_equation_mentions<from_root, matched::rank == none>(All{}))
+        constexpr bool defers = [] {
+          if constexpr (matched::rank == cast || SourceIsKind)
+            return detail::any_remaining_equation_mentions<from_root, matched::rank == none>(All{});
+          else
+            return detail::any_remaining_equation_names<
+              from_root, type_list_join<typename from_split::factors, typename to_split::factors>>(All{});
+        }();
+        if constexpr (defers)
           return pairing_result<tail::rank, type_list_join<typename from_split::factors, typename tail::from_rest>,
                                 type_list_join<typename to_split::factors, typename tail::to_rest>, tail::paired,
                                 true>{};

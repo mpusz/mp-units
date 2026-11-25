@@ -126,11 +126,11 @@ Quantity points with default point origins may be constructed with the `point` c
 helper or forcing an explicit conversion from the `quantity`:
 
 ```cpp
-// quantity_point qp1 = 42 * m;           // Compile-time error
-// quantity_point qp2 = 42 * K;           // Compile-time error
-// quantity_point qp3 = delta<deg_C>(42); // Compile-time error
+// quantity_point qp1 = 42 * m;           // ❌
+// quantity_point qp2 = 42 * K;           // ❌
+// quantity_point qp3 = delta<deg_C>(42); // ❌
 quantity_point qp4(42 * m);
-quantity_point qp5(42 * K);
+quantity_point qp5(delta<K>(42));
 quantity_point qp6(delta<deg_C>(42));
 quantity_point qp7 = point<m>(42);
 quantity_point qp8 = point<K>(42);
@@ -163,7 +163,7 @@ assert(qp1.delta_from(qp2) == -20 * m);
 assert(qp2 - qp1 == 20 * m);
 assert(qp1 - qp2 == -20 * m);
 
-// auto res = qp1 + qp2;   // Compile-time error
+// auto res = qp1 + qp2;   // ❌
 ```
 
 In the above code `100 * m` and `120 * m` still create two quantities that serve as
@@ -219,8 +219,8 @@ quantity_point h = point<isq::height[m]>(100);
 quantity_point h1 = h + isq::height(2 * m);  // quantity_point<isq::height[m]>
 quantity_point h2 = h + 2 * m;               // quantity_point<isq::height[m]>
 
-// quantity_point bad1 = h + isq::width(2 * m);   // Compile-time error
-// quantity_point bad2 = h + isq::length(2 * m);  // Compile-time error
+// quantity_point bad1 = h + isq::width(2 * m);   // ❌
+// quantity_point bad2 = h + isq::length(2 * m);  // ❌
 ```
 
 The raw `2 * m` works because it is a quantity of _kind_ `kind_of<isq::length>` ("any
@@ -242,8 +242,8 @@ quantity_point height = point<isq::height[m]>(1);
 quantity_point width  = point<isq::width[m]>(1);
 quantity_point length = point<isq::length[m]>(1);
 
-// quantity d1 = height - width;   // Compile-time error: distinct natural axes
-// quantity d2 = height - length;  // Compile-time error: distinct natural axes
+// quantity d1 = height - width;   // ❌ distinct natural axes
+// quantity d2 = height - length;  // ❌ distinct natural axes
 ```
 
 ### Absolute _point_ origin
@@ -257,13 +257,13 @@ an absolute point origin.
 ```cpp
 inline constexpr struct origin : absolute_point_origin<isq::distance> {} origin;
 
-// quantity_point<si::metre, origin> qp1{100 * m};        // Compile-time error
-// quantity_point<si::metre, origin> qp2{delta<m>(120)};  // Compile-time error
+// quantity_point<si::metre, origin> qp1{100 * m};        // ❌
+// quantity_point<si::metre, origin> qp2{delta<m>(120)};  // ❌
 quantity_point<si::metre, origin> qp1 = origin + 100 * m;
 quantity_point<si::metre, origin> qp2 = 120 * m + origin;
 
-// assert(qp1.delta_from_zero() == 100 * m);   // Compile-time error
-// assert(qp2.delta_from_zero() == 120 * m);   // Compile-time error
+// assert(qp1.delta_from_zero() == 100 * m);   // ❌
+// assert(qp2.delta_from_zero() == 120 * m);   // ❌
 assert(qp1.delta_from(origin) == 100 * m);
 assert(qp2.delta_from(origin) == 120 * m);
 assert(qp2.delta_from(qp1) == 20 * m);
@@ -277,7 +277,7 @@ assert(qp1 - qp2 == -20 * m);
 assert(origin - qp1 == -100 * m);
 assert(origin - qp2 == -120 * m);
 
-// assert(origin - origin == 0 * m);   // Compile-time error
+// assert(origin - origin == 0 * m);   // ❌
 ```
 
 We can't construct a quantity point directly from the quantity anymore when a custom,
@@ -299,6 +299,7 @@ someone does not like the operator-based syntax to create a `quantity_point`, th
 results can be achieved with a two-parameter constructor:
 
 ```cpp
+// snippet-continues
 quantity_point qp1{100 * m, origin};
 ```
 
@@ -338,12 +339,12 @@ assert(qp2 - origin2 == 120 * m);
 assert(origin1 - qp1 == -100 * m);
 assert(origin2 - qp2 == -120 * m);
 
-// assert(qp2 - qp1 == 20 * m);                    // Compile-time error
-// assert(qp1 - origin2 == 100 * m);               // Compile-time error
-// assert(qp2 - origin1 == 120 * m);               // Compile-time error
-// assert(qp2.delta_from(qp1) == 20 * m);       // Compile-time error
-// assert(qp1.delta_from(origin2) == 100 * m);  // Compile-time error
-// assert(qp2.delta_from(origin1) == 120 * m);  // Compile-time error
+// assert(qp2 - qp1 == 20 * m);                    // ❌
+// assert(qp1 - origin2 == 100 * m);               // ❌
+// assert(qp2 - origin1 == 120 * m);               // ❌
+// assert(qp2.delta_from(qp1) == 20 * m);       // ❌
+// assert(qp1.delta_from(origin2) == 100 * m);  // ❌
+// assert(qp2.delta_from(origin1) == 120 * m);  // ❌
 ```
 
 
@@ -359,6 +360,7 @@ For such cases, relative point origins should be used:
 ![affine_space_4](affine_space_4.svg){style="width:80%;display: block;margin: 0 auto;"}
 
 ```cpp
+// snippet-template: scoped
 inline constexpr struct A : absolute_point_origin<isq::distance> {} A;
 inline constexpr struct B : relative_point_origin<A + 10 * m> {} B;
 inline constexpr struct C : relative_point_origin<B + 10 * m> {} C;
@@ -399,7 +401,7 @@ assert(D - A == 30 * m);
 assert(D - C == 10 * m);
 
 assert(B - B == 0 * m);
-// assert(A - A == 0 * m);  // Compile-time error
+// assert(A - A == 0 * m);  // ❌
 ```
 
 !!! note
@@ -421,6 +423,7 @@ For this purpose, we can use either:
 - A converting constructor:
 
     ```cpp
+    // snippet-continues
     quantity_point<si::metre, C> qp2C = qp2;  // implicit — safe conversion within the same root
     assert(qp2C.quantity_ref_from(qp2C.point_origin) == 130 * m);
     ```
@@ -428,6 +431,7 @@ For this purpose, we can use either:
 - A dedicated conversion interface:
 
     ```cpp
+    // snippet-continues
     quantity_point qp2B = qp2.point_for(B);
     quantity_point qp2A = qp2.point_for(A);
 
@@ -439,6 +443,7 @@ It is important to understand that all such translations still describe exactly 
 (e.g., all of them compare equal):
 
 ```cpp
+// snippet-continues
 assert(qp2 == qp2C);
 assert(qp2 == qp2B);
 assert(qp2 == qp2A);
@@ -453,6 +458,8 @@ assert(qp2 == qp2A);
     (no runtime arguments; use `.point_for(origin, args...)` when extra data is needed):
 
     ```cpp
+    // snippet-after: altitude-below:decls
+    // snippet-setup: quantity_point altitude = sea_level + (-100. * m);
     // Requires mp_units::frame_projection<sea_level, ocean_surface> to be defined:
     quantity_point<si::metre, ocean_surface> depth{altitude};  // always explicit
     ```
@@ -489,6 +496,7 @@ Specialize `frame_projection` for each `(From, To)` pair. The specialization mus
 callable invocable as:
 
 ```cpp
+// snippet-template: none (pseudo-code: signature sketch with `From`, `To` and `extra_args...` placeholders)
 frame_projection<From, To>(quantity_point_at_From, extra_args...) -> quantity_point_at_To
 ```
 
@@ -515,6 +523,8 @@ inline constexpr auto mp_units::frame_projection<ocean_surface, sea_level> =
 Call `point_for` exactly as you would for same-origin conversions:
 
 ```cpp
+// snippet-continues
+// snippet-id: altitude-below
 quantity_point altitude = sea_level + (-100. * m);            // 100 m below sea level
 quantity_point depth    = altitude.point_for(ocean_surface);  // depth = 100 m (positive downward)
 quantity_point alt2     = depth.point_for(sea_level);         // altitude = −100 m
@@ -525,6 +535,7 @@ a `frame_projection`, the library first projects to that absolute root and then 
 the origin tree automatically:
 
 ```cpp
+// snippet-continues
 // shallow_water is defined 10 m "below" ocean_surface in the depth frame
 inline constexpr struct shallow_water :
     relative_point_origin<ocean_surface + 10. * isq::height[m]> {} shallow_water;
@@ -539,6 +550,8 @@ When no runtime arguments are needed, the explicit `quantity_point` constructor 
 alternative to `point_for` — useful when you are already spelling out the destination type:
 
 ```cpp
+// snippet-after: altitude-below:decls
+// snippet-setup: quantity_point altitude = sea_level + (-100. * m);
 quantity_point<isq::altitude[m], ocean_surface> depth{altitude};
 // equivalent to: altitude.point_for(ocean_surface)
 ```
@@ -555,6 +568,7 @@ Any extra arguments passed to `point_for` are forwarded to the projection functo
 runtime-parameter-dependent transformations:
 
 ```cpp
+// snippet-template: none (pseudo-code: `world_frame`, `camera_frame`, `world_pt`, `forward_transform` and `load_calibration` are placeholders declared nowhere)
 struct CameraCalibration { double R[3][3]; double t[3]; };
 
 template<>
@@ -629,9 +643,11 @@ arithmetic operations.
     This requires explicit conversion when using trigonometric functions:
 
     ```cpp
+    // snippet-after: example/include/geographic.h
+    // snippet-setup: const geographic::latitude<double> lat = geographic::equator + 45. * geographic::geo_latitude[si::degree];
     // Convert to plain angular_measure for trig functions
-    const quantity<angular_measure> lat_angle = isq::angular_measure(lat.delta_from(geographic::equator));
-    const quantity result = sin(lat_angle);  // Works with angular_measure
+    const quantity<isq::angular_measure[si::degree]> lat_angle = isq::angular_measure(lat.delta_from(geographic::equator));
+    const quantity result = si::sin(lat_angle);  // Works with angular_measure
     ```
 
     The current framework handles all wrapping schemes and coordinate transformations expressible
@@ -664,6 +680,7 @@ A plain quantity given as `min` or `max` is included in the range. `exclusive_bo
 an end as excluded:
 
 ```cpp
+// snippet-template: none (pseudo-code: bare initializer expressions, not statements)
 check_in_range{0 * deg, exclusive_bound{360 * deg}}  // [0°, 360°)
 check_in_range{exclusive_bound{0 * m}, 100 * m}      // (0 m, 100 m]
 ```
@@ -725,6 +742,7 @@ an infinite or NaN input.
 ### Example Usage
 
 ```cpp
+// snippet-id: geo
 // Define quantity specifications and origins
 inline constexpr struct geo_latitude : quantity_spec<isq::angular_measure> {} geo_latitude;
 inline constexpr struct geo_longitude : quantity_spec<isq::angular_measure> {} geo_longitude;
@@ -740,11 +758,11 @@ template<typename T = double> using longitude = quantity_point<si::degree, prime
 
 void example()
 {
-  latitude lat = equator + 45.0 * deg;           // Valid: within [-90, 90]
-  lat = equator + 95.0 * deg;                    // Reflects to 85° (reflect_in_range mirrors at boundary)
+  latitude<> lat = equator + 45.0 * deg;           // Valid: within [-90, 90]
+  lat = equator + 95.0 * deg;                      // Reflects to 85° (reflect_in_range mirrors at boundary)
 
-  longitude lon = prime_meridian + 270.0 * deg;  // Wraps to -90° (wrap_to_range treats range as circular)
-  lon += 200.0 * deg;                            // Result wraps: -90 + 200 = 110°
+  longitude<> lon = prime_meridian + 270.0 * deg;  // Wraps to -90° (wrap_to_range treats range as circular)
+  lon += 200.0 * deg;                              // Result wraps: -90 + 200 = 110°
 }
 ```
 
@@ -788,7 +806,7 @@ inline constexpr struct tape_start :
 inline constexpr struct tape_start_f :
     absolute_point_origin<isq::length, check_in_range{0.1f * m, 10.f * m}> {} tape_start_f;
 
-quantity_point<isq::length[m], tape_start> p1{0.5 * m, tape_start};             // OK
+quantity_point<isq::length[m], tape_start> p1{0.5 * m, tape_start};              // OK
 quantity_point<isq::length[m], tape_start_f, float> p2{0.5f * m, tape_start_f};  // OK
 // quantity_point<isq::length[m], tape_start, float> p3{0.5f * m, tape_start};   // ❌
 ```
@@ -837,7 +855,7 @@ inline constexpr struct average_height_origin :
 quantity_point low = average_height_origin - 1500.0 * m;
 
 // −1701 m relative = −1 m absolute → check_non_negative fires.
-// quantity_point bad = average_height_origin - 1701.0 * m;  // ❌
+// quantity_point bad = average_height_origin - 1701.0 * m;  // fails at runtime
 ```
 
 A point is translated into the frame of its bounded ancestor by the offset to that
@@ -858,6 +876,7 @@ _Hierarchical bounds validation_ note in the
     `std::numeric_limits` specialization automatically reflects the constrained bounds:
 
     ```cpp
+    // snippet-after: geo:decls
     // prime_meridian defined with wrap_to_range{-180 * deg, 180 * deg}
     using longitude = quantity_point<geo_longitude[deg], prime_meridian>;
 
@@ -916,6 +935,7 @@ Where `<expected>` is available (C++23), the static member function `try_make` d
 in one call and returns a rejection as an error value:
 
 ```cpp
+// snippet-continues
 std::expected<trim_angle, bounds_violation> try_make_trim(quantity<si::degree> raw)
 {
   return trim_angle::try_make(raw, trim_zero);
@@ -933,6 +953,7 @@ origin through a [frame projection](#frame-proj). Here a `trim_angle` is convert
 point measured from a narrower origin:
 
 ```cpp
+// snippet-continues
 inline constexpr struct takeoff_trim :
     relative_point_origin<trim_zero + 0. * deg, check_in_range{-5. * deg, 5. * deg}> {} takeoff_trim;
 
@@ -1094,18 +1115,19 @@ The [SI](../../reference/bibliography.md#SIBrochure) definition in the library p
 few predefined point origins for this purpose:
 
 ```cpp
+// snippet-template: excerpt
 namespace si {
 
 inline constexpr struct absolute_zero : absolute_point_origin<isq::thermodynamic_temperature> {} absolute_zero;
 
-inline constexpr struct ice_point : relative_point_origin<point<milli<kelvin>>(273'150)}> {} ice_point;
+inline constexpr struct ice_point : relative_point_origin<::mp_units::point<milli<kelvin>>(273'150)> {} ice_point;
 
 }
 
 namespace usc {
 
 inline constexpr struct fahrenheit_zero :
-  relative_point_origin<point<mag_ratio<5, 9> * si::degree_Celsius>(-32)> {} fahrenheit_zero;
+  relative_point_origin<::mp_units::point<mag_ratio<5, 9> * si::degree_Celsius>(-32)> {} fahrenheit_zero;
 
 }
 ```
@@ -1126,6 +1148,7 @@ The temperature point origins defined above are provided explicitly in the respe
 definitions:
 
 ```cpp
+// snippet-continues
 namespace si {
 
 inline constexpr struct kelvin :
@@ -1189,6 +1212,7 @@ Now that the `Range-Validated Quantity Points` infrastructure is available, we c
 a `clamp_to_range` policy so the controller silently enforces the comfort band:
 
 ```cpp
+// snippet-template: systems
 constexpr struct room_reference_temp :
     relative_point_origin<point<deg_C>(21), clamp_to_range{delta<deg_C>(-3), delta<deg_C>(3)}> {} room_reference_temp;
 using room_temp = quantity_point<deg_C, room_reference_temp>;
@@ -1204,9 +1228,9 @@ room_temp room_high = room_ref + number_of_steps * step_delta;  // +3 °C: exact
 room_temp clamped = room_ref + delta<deg_C>(10.0);              // → auto-clamped to +3 °C from reference
 
 std::println("Room reference temperature: {} ({}, {::N[.2f]})\n",
-             room_ref,
-             room_ref.in(usc::degree_Fahrenheit),
-             room_ref.in(si::kelvin));
+             room_ref.point_for(si::ice_point).in(deg_C),
+             room_ref.point_for(usc::fahrenheit_zero).in(usc::degree_Fahrenheit),
+             room_ref.point_for(si::absolute_zero).in(si::kelvin));
 
 std::println("| {:<18} | {:^18} | {:^18} | {:^18} |",
              "Temperature delta", "Room reference", "Ice point", "Absolute zero");
@@ -1263,6 +1287,7 @@ Text output is supported for `quantity_point` when its point origin equals
 Text output is **not** provided when a non-default origin is used, for example:
 
 ```cpp
+// snippet-id: altitude-amsl
 inline constexpr struct sea_level : absolute_point_origin<isq::altitude> {} sea_level;
 quantity_point<isq::altitude[m], sea_level> altitude = sea_level + 42 * m;
 std::cout << altitude;  // ❌ — does not compile
@@ -1279,6 +1304,7 @@ To print such a point, extract the displacement from a known origin explicitly a
 the appropriate label so the value is unambiguous:
 
 ```cpp
+// snippet-continues
 std::cout << altitude.quantity_ref_from(sea_level) << " AMSL";  // "42 m AMSL"
 ```
 
@@ -1308,6 +1334,7 @@ A _point_ with a custom origin has no unique numerical representation, so its va
 requested from an explicit origin instead:
 
 ```cpp
+// snippet-after: altitude-amsl
 double above_sea_level = altitude.delta_from(sea_level).numerical_value_in(m);
 ```
 

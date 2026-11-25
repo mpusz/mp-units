@@ -63,8 +63,8 @@ MP_UNITS_EXPORT_BEGIN
  * specification with a compatible unit.
  *
  * @code{.cpp}
- * Reference auto kmph = isq::speed[km / h];
- * QuantityOf<isq::speed[km / h]> auto speed = 90 * kmph;
+ * constexpr Reference auto kmph = isq::speed[km / h];
+ * QuantityOf<isq::speed> auto speed = 90 * kmph;
  * @endcode
  *
  * The following syntaxes are not allowed:

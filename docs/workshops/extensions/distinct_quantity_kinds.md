@@ -71,6 +71,7 @@ Here's how different approaches handle (or fail to handle) this scenario:
 === "Boost.Units (C++)"
 
     ```cpp
+    // snippet-template: none (not this library: Boost.Units)
     #include <boost/units/systems/si.hpp>
 
     using namespace boost::units;
@@ -176,6 +177,7 @@ The solution should:
 
 ```cpp
 // ce-embed height=800 compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0" mp-units=trunk
+// snippet-template: none (exercise skeleton: TODO quantity specs and conversion functions for the reader; the Solution fence compiles)
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
 #include <iostream>
@@ -212,7 +214,7 @@ int main()
   std::cout << "Pump rating (water head): " << h_pump_rating << "\n\n";
 
   // Safety check: This should NOT compile!
-  // quantity wrong = h_mercury + h_pump_rating;  // Error: cannot mix kinds
+  // quantity wrong = h_mercury + h_pump_rating;  // ❌ cannot mix kinds
 
   // Convert mercury fluid head to equivalent water head
   quantity h_mercury_as_water = to_water_head(h_mercury, sg_mercury);
@@ -240,6 +242,7 @@ int main()
 ??? tip "Solution"
 
     ```cpp
+    // snippet-id: solution
     #include <mp-units/systems/isq.h>
     #include <mp-units/systems/si.h>
     #include <iostream>
@@ -288,7 +291,7 @@ int main()
       std::cout << "Pump rating (water head): " << h_pump_rating << "\n\n";
 
       // Safety check: This would NOT compile!
-      // quantity wrong = h_mercury + h_pump_rating;  // Error: cannot mix kinds
+      // quantity wrong = h_mercury + h_pump_rating;  // ❌ cannot mix kinds
 
       // Convert mercury fluid head to equivalent water head
       quantity h_mercury_as_water = to_water_head(h_mercury, sg_mercury);
@@ -345,6 +348,7 @@ int main()
     parent, `subkind` creates **incompatible types** even when they share the same dimension:
 
     ```cpp
+    // snippet-template: scoped
     // Regular inheritance - implicit conversions allowed:
     inline constexpr struct length_a : quantity_spec<isq::length> {} length_a;
     inline constexpr struct length_b : quantity_spec<isq::length> {} length_b;
@@ -359,7 +363,7 @@ int main()
 
     quantity h_fluid = fluid_head(2 * m);
     quantity h_water = water_head(10 * m);
-    // quantity bad = h_fluid + h_water;  // ❌ Does not compile!
+    // quantity bad = h_fluid + h_water;  // ❌
     ```
 
     This absolute separation is crucial when quantities have the same dimension but represent
@@ -370,6 +374,9 @@ int main()
     _Energy_ conservation with different _density_ normalizations:
 
     ```cpp
+    // snippet-setup: inline constexpr struct fluid_head : quantity_spec<isq::height, subkind> {} fluid_head;
+    // snippet-setup: inline constexpr struct water_head : quantity_spec<isq::height, subkind> {} water_head;
+    // snippet-setup: inline constexpr struct specific_gravity : quantity_spec<dimensionless> {} specific_gravity;
     // H_water = H_fluid × SG (lighter reference needs larger height for same energy)
     constexpr QuantityOf<water_head> auto to_water_head(QuantityOf<fluid_head> auto h_fluid,
                                                         QuantityOf<specific_gravity> auto sg)
@@ -397,11 +404,13 @@ int main()
     When you need to work with the underlying dimension:
 
     ```cpp
+    // snippet-after: solution
+    // snippet-setup: void process_length(QuantityOf<isq::length> auto len);
     quantity h_fluid = fluid_head(2 * m);
 
-    // ❌ Cannot pass directly to generic length function:
+    // Cannot pass directly to generic length function:
     // void process_length(QuantityOf<isq::length> auto len);
-    // process_length(h_fluid);  // Does not compile!
+    // process_length(h_fluid);  // ❌
 
     // ✅ Explicit conversion to base quantity:
     process_length(isq::height(h_fluid));  // Now compiles!
@@ -419,13 +428,17 @@ int main()
     **mp-units** uses `subkind` internally for dimensionless angle types:
 
     ```cpp
-    // Built-in to mp-units:
-    inline constexpr struct angular_measure : quantity_spec<dimensionless, subkind> {} angular_measure;
-    inline constexpr struct solid_angular_measure : quantity_spec<dimensionless, subkind> {} solid_angular_measure;
+    // snippet-template: isq_excerpt
+    // Built-in to mp-units (namespace isq):
+    inline constexpr struct angular_measure : quantity_spec<dimensionless, arc_length / radius, subkind> {} angular_measure;
+    inline constexpr struct solid_angular_measure :
+        quantity_spec<dimensionless, area / pow<2>(radius), subkind, non_negative> {} solid_angular_measure;
+    ```
 
-    quantity angle = angular_measure(π * rad);
-    quantity solid = solid_angular_measure(4*π * sr);
-    // quantity bad = angle + solid;  // ❌ Does not compile!
+    ```cpp
+    quantity angle = isq::angular_measure(1 * π * rad);
+    quantity solid = isq::solid_angular_measure(4 * π * sr);
+    // quantity bad = angle + solid;  // ❌
     ```
 
     Your domain can have the same protection:

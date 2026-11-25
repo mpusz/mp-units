@@ -67,6 +67,7 @@ of a specific predefined [unit equation](../../reference/glossary.md#unit-equati
 For example, a unit of _power_ quantity is defined in the library as:
 
 ```cpp
+// snippet-template: si_excerpt
 inline constexpr struct watt : named_unit<"W", joule / second> {} watt;
 ```
 
@@ -122,6 +123,7 @@ The library allows constraining such units to work only with quantities of a spe
 in the following way:
 
 ```cpp
+// snippet-template: si_excerpt
 inline constexpr struct hertz : named_unit<"Hz", one / second, kind_of<isq::frequency>> {} hertz;
 inline constexpr struct becquerel : named_unit<"Bq", one / second, kind_of<isq::activity>> {} becquerel;
 ```
@@ -130,7 +132,7 @@ With the above, `hertz` can only be used with _frequencies_, while `becquerel` s
 be used with quantities of _activity_. This means that the following equation will not compile:
 
 ```cpp
-auto q = 1 * Hz + 1 * Bq;   // Fails to compile
+auto q = 1 * Hz + 1 * Bq;   // ❌
 ```
 
 This is exactly what we wanted to achieve to improve the type-safety of the library.
@@ -139,6 +141,7 @@ The same technique is also useful for user-defined units. Consider a quantity of
 _fuel consumption_ expressed in litres per 100 kilometres:
 
 ```cpp
+// snippet-id: fuel-consumption
 inline constexpr struct fuel_consumption : quantity_spec<isq::volume / isq::length> {} fuel_consumption;
 inline constexpr auto l_per_100km = si::litre / (mag<100> * si::kilo<si::metre>);
 ```
@@ -148,6 +151,7 @@ dynamically in a unit equation has no associated quantity kind. This is why noth
 prevents the following from compiling:
 
 ```cpp
+// snippet-continues
 quantity fuel = 5.8 * l_per_100km;
 quantity<isq::area[m2]> area = fuel;   // Compiles, but it should not!
 ```
@@ -155,6 +159,8 @@ quantity<isq::area[m2]> area = fuel;   // Compiles, but it should not!
 Giving this unit a name allows us to bind it to a quantity kind:
 
 ```cpp
+// snippet-after: fuel-consumption
+// snippet-id: l-per-100km
 inline constexpr struct litre_per_100_kilometre :
     named_unit<"l/100km", si::litre / (mag<100> * si::kilo<si::metre>),
                kind_of<fuel_consumption>> {} litre_per_100_kilometre;
@@ -164,8 +170,9 @@ With the above, every quantity created with this unit is a _fuel consumption_, a
 the compiler will reject any attempt to use it as an _area_:
 
 ```cpp
+// snippet-after: l-per-100km
 quantity fuel = 5.8 * litre_per_100_kilometre;
-quantity<isq::area[m2]> area = fuel;   // Fails to compile
+quantity<isq::area[m2]> area = fuel;   // ❌
 ```
 
 !!! note "Named units do not simplify in unit equations"
@@ -175,6 +182,7 @@ quantity<isq::area[m2]> area = fuel;   // Fails to compile
     with `km`:
 
     ```cpp
+    // snippet-after: l-per-100km
     quantity fuel = 5.8 * litre_per_100_kilometre;
     quantity dist = 250. * km;
     quantity vol = fuel * dist;       // 1450 l/100km km
@@ -184,6 +192,7 @@ quantity<isq::area[m2]> area = fuel;   // Fails to compile
     itself remains convertible to any unit of _volume_ the user wants:
 
     ```cpp
+    // snippet-continues
     std::cout << vol.in(l) << "\n";   // 14.5 L
     ```
 
@@ -213,6 +222,7 @@ unit magnitude in a more flexible way.
 Each prefix is implemented similarly to the following:
 
 ```cpp
+// snippet-template: si_excerpt
 template<PrefixableUnit U>
     requires(!std::is_const_v<U>)
 struct quecto_ : prefixed_unit<"q", mag_power<10, -30>, U{}> {};
@@ -226,6 +236,7 @@ Then a [PrefixableUnit](../advanced_topics/concepts.md#PrefixableUnit) can be pr
 the following way:
 
 ```cpp
+// snippet-continues
 inline constexpr auto qm = quecto<metre>;
 ```
 
@@ -254,6 +265,7 @@ then invokes the callable with the quantity converted to the most appropriate pr
 of that unit:
 
 ```cpp
+// snippet-id: voltage
 quantity voltage = 0.001'234 * V;
 si::invoke_with_prefixed([](auto q) { std::cout << q << '\n'; }, voltage, V);
 // Prints: 1.234 mV
@@ -272,7 +284,7 @@ The function supports two prefix selection modes via the `prefix_range` paramete
   (deca, hecto, deci, centi), often resulting in values in the range [1.0, 10.0)
 
 ```cpp
-quantity length = 456 * m;
+quantity length = 456. * m;
 si::invoke_with_prefixed([](auto q) { std::cout << q << '\n'; }, length, m, si::prefix_range::engineering);
 // Prints: 456 m
 
@@ -286,6 +298,7 @@ A real-world example from [capacitor_time_curve.cpp](../../examples/capacitor_ti
 demonstrates automatic prefix selection for displaying voltage values that decay exponentially:
 
 ```cpp
+// snippet-after: example/capacitor_time_curve.cpp
 for (auto tt = 0 * ms; tt <= 50 * ms; ++tt) {
   const QuantityOf<isq::voltage> auto Vt = V0 * exp(-tt / (RR * CC));
   std::cout << "- at " << tt << " voltage is ";
@@ -312,6 +325,7 @@ values like `0.000000000739358 V`, which are harder to read and interpret.
 The function returns whatever the callable returns, allowing flexible usage:
 
 ```cpp
+// snippet-after: voltage
 // Use it just for output
 si::invoke_with_prefixed([](auto q) { std::cout << q << '\n'; }, voltage, V);
 
@@ -349,10 +363,11 @@ For some units, a magnitude might also be irrational. The best example here is a
 which is defined using a floating-point magnitude having a factor of the number π (Pi):
 
 ```cpp
+// snippet-template: scoped
 namespace detail {
-inline constexpr struct pi_c : mag_constant<symbol_text{u8"π", "pi"}, std::numbers::pi_v<long double>> {} pi_c;
+inline constexpr struct pi_c : mag_constant<{u8"π", "pi"}, std::numbers::pi_v<long double>> {} pi_c;
 }
-inline constexpr struct pi : named_constant<symbol_text{u8"π", "pi"}, mag<detail::pi_c> * one> {} pi;
+inline constexpr struct pi : named_constant<{u8"π", "pi"}, mag<detail::pi_c> * one> {} pi;
 inline constexpr auto π = pi;
 ```
 
@@ -375,6 +390,7 @@ To simplify how we spell it a short, user-friendly symbols are provided in a ded
 subnamespace in systems definitions:
 
 ```cpp
+// snippet-template: excerpt
 namespace si::unit_symbols {
 
 constexpr auto m = si::metre;
@@ -437,6 +453,8 @@ one of the units is an integral multiple of the another, the resulting quantity 
 a "smaller" one in its result. For example:
 
 ```cpp
+// snippet-template: systems
+using namespace mp_units::yard_pound::unit_symbols;
 static_assert((1 * kg + 1 * g).unit == g);
 static_assert((1 * km + 1 * mm).unit == mm);
 static_assert((1 * yd + 1 * mi).unit == yd);
@@ -448,6 +466,8 @@ multiple of another. In such cases, the library returns a special type that deno
 we are dealing with a common unit of such an equation:
 
 ```cpp
+// snippet-template: systems
+using namespace mp_units::yard_pound::unit_symbols;
 quantity q1 = 1 * km + 1 * mi;     // quantity<common_unit<yard_pound::mile, si::kilo_<si::metre>>{}, int>
 quantity q2 = 1. * rad + 1. * deg; // quantity<common_unit<si::degree, si::radian>{}, double>
 ```

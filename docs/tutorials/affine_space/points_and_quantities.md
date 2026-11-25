@@ -127,6 +127,7 @@ double wrong_f = (temp1_f + temp2_f) / 2;  // 77 °F = 25 °C ✓
 With affine space:
 
 ```cpp
+// snippet-template: none (pseudo-code: quantity_point temp1 = ...; placeholders)
 // Points can't be averaged directly - must subtract first!
 quantity_point temp1 = ...;
 quantity_point temp2 = ...;

@@ -83,6 +83,7 @@ eliminate or reorder hardware reads:
 
 
 ```cpp
+// snippet-after: example/hw_voltage.cpp
 volatile voltage_hw_t hw_voltage_value;  // Declare as volatile
 ```
 
@@ -98,9 +99,7 @@ The pattern used here:
 This is the standard embedded practice for working with hardware registers:
 
 ```cpp
-voltage_hw_t local_copy = hw_voltage_value;  // Single volatile read
-if (local_copy == voltage_hw_error) return std::nullopt;
-return point<hw_voltage_unit>(local_copy);   // Use non-volatile copy
+--8<-- "example/hw_voltage.cpp:72:77"
 ```
 
 **Key Benefits:**

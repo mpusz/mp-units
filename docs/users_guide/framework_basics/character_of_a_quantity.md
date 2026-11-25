@@ -139,6 +139,7 @@ the quantity type:
 === "C++23"
 
     ```cpp
+    // snippet-template: scoped
     inline constexpr struct displacement : quantity_spec<length, quantity_tensor_order::vector> {} displacement;
     inline constexpr struct position_vector : quantity_spec<displacement> {} position_vector;
     inline constexpr struct moment_of_inertia
@@ -148,6 +149,8 @@ the quantity type:
 === "C++20"
 
     ```cpp
+    // snippet-template: scoped
+    // snippet-std: 20
     inline constexpr struct displacement : quantity_spec<displacement, length, quantity_tensor_order::vector> {} displacement;
     inline constexpr struct position_vector : quantity_spec<position_vector, displacement> {} position_vector;
     inline constexpr struct moment_of_inertia
@@ -157,6 +160,7 @@ the quantity type:
 === "Portable"
 
     ```cpp
+    // snippet-template: scoped
     QUANTITY_SPEC(displacement, length, quantity_tensor_order::vector);
     QUANTITY_SPEC(position_vector, displacement);
     QUANTITY_SPEC(moment_of_inertia, angular_momentum / angular_velocity, quantity_tensor_order::tensor);
@@ -179,6 +183,8 @@ No explicit character override is needed:
 === "C++20"
 
     ```cpp
+    // snippet-template: scoped
+    // snippet-std: 20
     inline constexpr struct velocity : quantity_spec<velocity, speed, displacement / duration> {} velocity;
     ```
 
@@ -200,6 +206,8 @@ _voltage phasor_ shares everything with _voltage_ but is complex rather than rea
 === "C++20"
 
     ```cpp
+    // snippet-template: scoped
+    // snippet-std: 20
     inline constexpr struct voltage_phasor : quantity_spec<voltage_phasor, voltage, quantity_field::complex> {} voltage_phasor;
     ```
 
@@ -226,9 +234,10 @@ A [simple quantity](simple_and_typed_quantities.md) is of a kind as well, since 
 its unit yields is a `kind_of<…>`:
 
 ```cpp
-const quantity a = 30.0 * km / h;                               // a scalar representation
-const quantity b = cartesian_vector{30.0, 40.0, 0.0} * km / h;  // a vector representation
-const quantity c = cartesian_tensor<double>{} * km / h;         // a tensor representation
+// snippet-template: utility
+const quantity a = 30.0 * km / h;                                        // a scalar representation
+const quantity b = utility::cartesian_vector{30.0, 40.0, 0.0} * km / h;  // a vector representation
+const quantity c = utility::cartesian_tensor<double>{} * km / h;         // a tensor representation
 ```
 
 All three are quantities of the same kind, and only the representation can restrict the
@@ -242,17 +251,18 @@ To find out whether a quantity is a scalar, a vector, or a tensor, ask
 specification. The answer weighs the spec together with the representation:
 
 ```cpp
+// snippet-template: utility
 using enum quantity_tensor_order;
 
 static_assert(QuantityOf<quantity<isq::speed[m / s], double>, scalar>);
 static_assert(!QuantityOf<quantity<isq::speed[m / s], double>, vector>);   // a speed is never a vector
 
 static_assert(QuantityOf<quantity<isq::velocity[m / s], double>, vector>);  // a 1D velocity
-static_assert(QuantityOf<quantity<isq::velocity[m / s], cartesian_vector<double>>, vector>);
-static_assert(QuantityOf<quantity<isq::stress[Pa], cartesian_tensor<double>>, tensor>);
+static_assert(QuantityOf<quantity<isq::velocity[m / s], utility::cartesian_vector<double>>, vector>);
+static_assert(QuantityOf<quantity<isq::stress[Pa], utility::cartesian_tensor<double>>, tensor>);
 
-static_assert(QuantityOf<quantity<km / h, cartesian_vector<double>>, vector>);   // a kind: the rep restricts it
-static_assert(QuantityOf<quantity<km / h, cartesian_tensor<double>>, tensor>);
+static_assert(QuantityOf<quantity<km / h, utility::cartesian_vector<double>>, vector>);   // a kind: the rep restricts it
+static_assert(QuantityOf<quantity<km / h, utility::cartesian_tensor<double>>, tensor>);
 
 static_assert(QuantityOf<quantity<isq::speed[m / s], double>, quantity_field::real>);
 static_assert(QuantityOf<quantity<V, std::complex<double>>, quantity_field::complex>);
@@ -272,11 +282,12 @@ compiles. It never exists on a quantity whose spec is a concrete scalar such as
 `isq::speed`:
 
 ```cpp
-const quantity v = isq::velocity(cartesian_vector{3.0, 4.0, 0.0} * m / s);
+// snippet-template: utility
+const quantity v = isq::velocity(utility::cartesian_vector{3.0, 4.0, 0.0} * m / s);
 const quantity speed = v.magnitude();               // 5 m/s
 
-const quantity s = 30.0 * isq::speed[m / s];
-// auto nonsense = s.magnitude();                   // error: a speed is a concrete scalar
+const quantity scalar_speed = 30.0 * isq::speed[m / s];
+// auto nonsense = scalar_speed.magnitude();        // ❌ a speed is a concrete scalar
 ```
 
 ## Representation types for vector and tensor quantities
@@ -305,7 +316,7 @@ For example, using the built-in `cartesian_vector`:
 ```cpp
 #include <mp-units/utility/cartesian_vector.h>
 
-Quantity auto q = cartesian_vector{1., 2., 3.} * isq::velocity[m / s];
+Quantity auto q = utility::cartesian_vector{1., 2., 3.} * isq::velocity[m / s];
 ```
 
 A _tensor quantity_ works the same way through the built-in `cartesian_tensor`, an
@@ -314,7 +325,7 @@ A _tensor quantity_ works the same way through the built-in `cartesian_tensor`, 
 ```cpp
 #include <mp-units/utility/cartesian_tensor.h>
 
-Quantity auto stress = cartesian_tensor{1., 0., 0., 0., 1., 0., 0., 0., 1.} * isq::stress[Pa];
+Quantity auto stress = utility::cartesian_tensor{1., 0., 0., 0., 1., 0., 0., 0., 1.} * isq::stress[Pa];
 ```
 
 `cartesian_tensor` satisfies the tensor character and provides the ISO 80000-2 second-order

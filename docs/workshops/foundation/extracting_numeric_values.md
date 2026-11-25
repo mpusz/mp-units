@@ -81,6 +81,7 @@ int main()
 ??? tip "Solution"
 
     ```cpp
+    // snippet-id: solution
     #include <mp-units/systems/si.h>
     #include <mp-units/systems/yard_pound.h>
     #include <iostream>
@@ -126,6 +127,7 @@ int main()
     To pass values to legacy APIs, extract the numeric value in a specific unit:
 
     ```cpp
+    // snippet-template: none (pseudo-code: a bare expression without a declared speed or a semicolon)
     speed.numerical_value_in(km / h)  // Returns double with the value in km/h
     ```
 
@@ -138,6 +140,7 @@ int main()
     For legacy APIs that modify values through references:
 
     ```cpp
+    // snippet-after: solution
     quantity<km / h> new_speed;
     legacy_set_cruise_control_speed(new_speed.numerical_value_ref_in(km / h));
     ```

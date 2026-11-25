@@ -178,6 +178,7 @@ using optional unit symbols:
         Specify a custom not conflicting unit identifier for a unit:
 
         ```cpp
+        // snippet-template: none (pseudo-code: auto m = ...; placeholders)
         using namespace mp_units;
 
         void foo(double speed_m_s)
@@ -257,6 +258,7 @@ quantities. This introduces an additional type-safety.
 === "C++ modules"
 
     ```cpp
+    // snippet-template: systems
     #include <print>
     import mp_units;
 

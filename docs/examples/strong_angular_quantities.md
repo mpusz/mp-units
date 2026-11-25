@@ -56,7 +56,7 @@ Unlike treating _angles_ as dimensionless (radians as pure numbers), this approa
 _angles_ first-class quantities:
 
 ```cpp
-const quantity angle = isq_angle::angular_measure(90. * deg);
+--8<-- "example/strong_angular_quantities.cpp:49:49"
 ```
 
 This enables:

@@ -41,12 +41,13 @@ place of a specification:
 !!! example
 
     ```cpp
+    // snippet-template: utility
     using enum quantity_tensor_order;
 
     static_assert(QuantityOf<quantity<isq::speed[m / s], double>, scalar>);
     static_assert(QuantityOf<quantity<isq::velocity[m / s], double>, vector>);   // a 1D velocity
-    static_assert(QuantityOf<quantity<isq::velocity[m / s], cartesian_vector<double>>, vector>);
-    static_assert(QuantityOf<quantity<isq::stress[Pa], cartesian_tensor<double>>, tensor>);
+    static_assert(QuantityOf<quantity<isq::velocity[m / s], utility::cartesian_vector<double>>, vector>);
+    static_assert(QuantityOf<quantity<isq::stress[Pa], utility::cartesian_tensor<double>>, tensor>);
     static_assert(QuantityOf<quantity<V, std::complex<double>>, quantity_field::complex>);
     ```
 
@@ -57,8 +58,9 @@ quantity](../framework_basics/simple_and_typed_quantities.md) is of a kind too, 
 spec is the `kind_of<…>` its unit yields. Both quantities below are of the kind of `m / s`:
 
 ```cpp
-const quantity a = cartesian_vector{3.0, 4.0, 0.0} * m / s;   // a vector representation
-const quantity b = cartesian_tensor<double>{} * m / s;        // a tensor representation
+// snippet-template: utility
+const quantity a = utility::cartesian_vector{3.0, 4.0, 0.0} * m / s;   // a vector representation
+const quantity b = utility::cartesian_tensor<double>{} * m / s;        // a tensor representation
 ```
 
 See [`QuantityOf`](concepts.md#QuantityOf) for how the spec and the representation

@@ -53,6 +53,7 @@ _pressure_ gain. In digital audio, where you apply a gain to a sample stream, th
 common case, and the bug is invisible:
 
 ```cpp
+// snippet-template: none (not this library: proposed logarithmic-quantities design, not implemented)
 auto my_power   = (0.5 * W) * (6.0 * dB).linear();  // 0.5 W * 3.98 ≈ 1.99 W, RIGHT
 auto my_voltage = (0.5 * V) * (6.0 * dB).linear();  // 0.5 V * 3.98 ≈ 1.99 V, WRONG
                                                     // "+6 dB on a voltage" means *2 -> 1.0 V
@@ -179,6 +180,7 @@ test suite (`UnitContainer.dBAddition` in
 [`unitTests/main.cpp`](https://github.com/nholthaus/units/blob/578ac4ff8b0e96af8d87dd6b20357522038ccbb3/unitTests/main.cpp#L1538-L1540)):
 
 ```cpp
+// snippet-template: none (not this library: nholthaus units test code)
 // adding dBW to dBW is something you probably shouldn't do, but let's see if it works...
 auto result_dBW2 = dBW_t(10.0) + dBm_t(40.0);
 EXPECT_NEAR(20.0, result_dBW2(), 5.0e-5);
@@ -249,6 +251,7 @@ before we build ours.
 A single new quantity-spec wrapper carries the design:
 
 ```cpp
+// snippet-template: none (not this library: proposed logarithmic-quantities design, not implemented)
 template<QuantitySpec QS>
   requires (!is_log_spec<QS>)        // no log<log<...>>
         && (!is_point_spec<QS>)      // no log<point<...>>
@@ -305,6 +308,7 @@ explains `log_coefficient_of` and how a kind declares its coefficient (pH and st
 magnitude use other values).
 
 ```cpp
+// snippet-template: none (not this library: proposed logarithmic-quantities design, not implemented)
 // log_coefficient_of<QS> reads the log coefficient of QS's kind (see the next section)
 template<QuantitySpec auto QS>
 struct decibel_ : named_unit<"dB", log<get_kind(QS)>, /*base*/ mag<10>, 10 * log_coefficient_of<QS>> {};
@@ -329,6 +333,7 @@ decibel's factor of ten, and the neper switches to the natural-log base `e` and 
 its own half-factor:
 
 ```cpp
+// snippet-template: none (not this library: proposed logarithmic-quantities design, not implemented)
 template<QuantitySpec auto QS>
 struct bel_ : named_unit<"B", log<get_kind(QS)>, /*base*/ mag<10>, log_coefficient_of<QS>> {};
 template<QuantitySpec auto QS>
@@ -364,6 +369,7 @@ A ratio unit has no reference, so it is the natural delta type and the multiply 
 produces a gain directly:
 
 ```cpp
+// snippet-template: none (not this library: proposed logarithmic-quantities design, not implemented)
 quantity g = 3.0 * dB<isq::power>; // a 3 dB power gain
 quantity i = 7.0 * cent;           // a 7 cent frequency interval
 ```
@@ -396,6 +402,7 @@ kind cannot mix coefficients. Power is the default `1` and is never written. Eve
 kind states its coefficient with `log_coefficient<N>`:
 
 ```cpp
+// snippet-template: none (not this library: proposed logarithmic-quantities design, not implemented)
 // log_coefficient<2> = root-power. electric_potential is the kind root of voltage,
 // electric_potential_difference, ..., so all of them inherit coefficient 2:
 inline constexpr struct electric_potential :
@@ -439,6 +446,7 @@ so a unit can never contradict it. A quantity whose coefficient is neither 1 nor
 own kind carrying that value: pH uses `-1`, stellar magnitude `-5/2`.
 
 ```cpp
+// snippet-template: none (not this library: proposed logarithmic-quantities design, not implemented)
 // pH is its own kind (a subkind of concentration) with coefficient -1; the pH unit just reads it
 inline constexpr struct hydrogen_ion_concentration :
     quantity_spec<isq::concentration, subkind, log_coefficient<-1>> {} hydrogen_ion_concentration;
@@ -468,6 +476,7 @@ the spec `log<isq::voltage>`, so the result is a **voltage-domain gain**, not a
 domain-less dimensionless decibel:
 
 ```cpp
+// snippet-template: none (not this library: proposed logarithmic-quantities design, not implemented)
 quantity g = point<dBV>(0.0) - point<dBV>(-6.0);  // log<isq::voltage> gain, value 6
 g.linear();                                       // *2.0, a VOLTAGE ratio, correct by construction
 ```
@@ -479,6 +488,7 @@ its multiplier is 20, so it linearizes to the _voltage_ ratio every time. That i
 fixes the two lines we opened with, with no round trip through the log domain:
 
 ```cpp
+// snippet-template: none (not this library: proposed logarithmic-quantities design, not implemented)
 quantity my_power   = (0.5 * W) * (6.0 * dB<isq::power>).linear();    // 0.5 W * 3.98 ≈ 1.99 W
 quantity my_voltage = (0.5 * V) * (6.0 * dB<isq::voltage>).linear();  // 0.5 V * 2.0 = 1.0 V
 ```
@@ -509,6 +519,7 @@ level. To move a _voltage_ level you need a `+3 dB` _voltage_ gain, and the type
 enforces the match:
 
 ```cpp
+// snippet-template: none (not this library: proposed logarithmic-quantities design, not implemented)
 quantity power_gain = 3.0 * dB<isq::power>;
 quantity rf_level   = point<dBm>(10.0);
 quantity ok         = rf_level + power_gain;                 // 13 dBm
@@ -567,6 +578,7 @@ irrational, so they have no representable common unit. The rule we adopt:
     evaluated at runtime.
 
 ```cpp
+// snippet-template: none (not this library: proposed logarithmic-quantities design, not implemented)
 quantity ok    = 2 * oct + 600 * cent;             // OK: oct and cent share a unit (1 oct = 1200 cent)
 // auto wrong  = 2.0 * oct + 0.5 * dec;            // ill-formed: log10(2) is irrational, no common unit
 quantity fixed = 2.0 * oct + (0.5 * dec).in(oct);  // OK once you pick the base explicitly
@@ -591,6 +603,7 @@ level's quantity spec from the reference (`mW` gives `kind_of<isq::power>`, `V` 
 `kind_of<isq::voltage>`), and the reference becomes the unit's origin.
 
 ```cpp
+// snippet-template: none (not this library: proposed logarithmic-quantities design, not implemented)
 inline constexpr struct dBm : named_unit<"dBm", dB<isq::power>, mW> {} dBm;
 inline constexpr struct dBW : named_unit<"dBW", dB<isq::power>, W>  {} dBW;
 inline constexpr struct dBu : named_unit<"dBu", dB<isq::voltage>, mag_power<3,1,2> * mag_power<5,-1,2> * V> {} dBu;
@@ -624,6 +637,7 @@ exactly as it is for `degree_Celsius`, because `N * unit` never yields a point a
 built with `point<dBm>(...)`:
 
 ```cpp
+// snippet-template: none (not this library: proposed logarithmic-quantities design, not implemented)
 // auto wrong = 3.0 * dBm;         // ill-formed, just like 3.0 * deg_C
 quantity p = point<dBm>(3.0);      // a power level, 3 dBm
 ```
@@ -645,6 +659,7 @@ unit captures, the same way `sea_level` names an _altitude_ origin that is not t
 physical zero:
 
 ```cpp
+// snippet-template: none (not this library: proposed logarithmic-quantities design, not implemented)
 inline constexpr struct midi_zero : absolute_point_origin<log<isq::frequency>> {} midi_zero;
 // MIDI note 0 = C-1 ≈ 8.175 Hz
 
@@ -655,6 +670,7 @@ quantity<point<log<isq::frequency>[semitone], midi_zero>, int> note = midi_zero 
 radio system expressing _power_ relative to its nominal transmit level:
 
 ```cpp
+// snippet-template: none (not this library: proposed logarithmic-quantities design, not implemented)
 inline constexpr struct nominal_tx : relative_point_origin<point<dBm>(43.0)> {} nominal_tx;  // 43 dBm = 20 W
 
 quantity backoff = nominal_tx + (-6.0) * dB<isq::power>;  // 37 dBm = 5 W, rooted at nominal_tx
@@ -675,6 +691,7 @@ The correct API is `.in(unit)`, which changes the unit and its embedded origin t
 exactly as `.in(deg_F)` does for a Celsius point:
 
 ```cpp
+// snippet-template: none (not this library: proposed logarithmic-quantities design, not implemented)
 quantity p_dBW = point<dBW>(0.0);  // 0 dBW = 1 W
 quantity p_dBm = p_dBW.in(dBm);    // 30 dBm, unit and origin changed together
 ```
@@ -714,6 +731,7 @@ fully-typed return keeps call sites CTAD-friendly, so
 Log to linear uses `.linear()` (and `.absolute()` to drop a point's origin):
 
 ```cpp
+// snippet-template: none (not this library: proposed logarithmic-quantities design, not implemented)
 quantity p     = point<dBm>(10.0);
 quantity p_lin = p.linear();          // a linear point, 10 mW
 quantity p_abs = p_lin.absolute();    // 10 mW as an absolute quantity
@@ -725,6 +743,7 @@ its spec: a ratio unit like `dB` gives a gain (`log<QS>`), a level unit like `dB
 level (`point<log<QS>>`), mirroring `3 * dB` versus `point<dBm>(...)`:
 
 ```cpp
+// snippet-template: none (not this library: proposed logarithmic-quantities design, not implemented)
 quantity gain = (2.0 * one).log_in(dB);         // linear ratio       -> gain:  10*log10(2) ≈ 3.01 dB
 quantity lvl  = (10.0 * mW).log_in(dBm);        // absolute power     -> level: 10 dBm
 quantity lvl2 = point<mW>(10.0).log_in(dBm);    // natural-origin pt  -> level: 10 dBm (same result)
@@ -750,6 +769,7 @@ than from the unit's zero, and silently using it would give a wrong result. In t
 the user computes the absolute value explicitly with domain knowledge.
 
 ```cpp
+// snippet-template: none (not this library: proposed logarithmic-quantities design, not implemented)
 inline constexpr struct noise_floor : absolute_point_origin<isq::power> {} noise_floor;
 
 quantity above = noise_floor + delta<mW>(3.0);  // a point 3 mW above the noise floor
@@ -786,6 +806,7 @@ Five more operations are worth spelling out.
     explicitly:
 
     ```cpp
+    // snippet-template: none (not this library: proposed logarithmic-quantities design, not implemented)
     quantity total = (a.absolute() + b.absolute()).log_in(dBm);   // 20 mW ≈ 13 dBm
     ```
 
@@ -803,6 +824,7 @@ one of the operations in
 [Open Question 7](#7-chaining-transfer-functions-in-the-log-domain).
 
 ```cpp
+// snippet-template: none (not this library: proposed logarithmic-quantities design, not implemented)
 quantity attenuation = -(3.0 * dB<isq::power>);   // a 3 dB attenuation
 quantity low_power   = point<dBm>(-10.0);         // -10 dBm, 0.1 mW
 // auto bad          = -point<dBm>(10.0);         // ill-formed: the result depends on the origin
@@ -819,6 +841,7 @@ of quantities. `g / 2` says the same thing without the ambiguity. We can add the
 later if users need them, which costs far less than removing them after a release.
 
 ```cpp
+// snippet-template: none (not this library: proposed logarithmic-quantities design, not implemented)
 quantity g       = 6.0 * dB<isq::power>;  // linear ratio 10^0.6 ≈ 3.98
 quantity half_g  = g / 2;                 // 3 dB, linear ratio ≈ 2.00
 quantity twice_g = 2 * g;                 // 12 dB, linear ratio ≈ 15.8
@@ -863,6 +886,7 @@ and its dB level is the magnitude, so the phase rides along on the value while t
 stays real:
 
 ```cpp
+// snippet-template: none (not this library: proposed logarithmic-quantities design, not implemented)
 quantity Vc    = std::complex{3.0, 4.0} * V;   // a voltage phasor: |Vc| = 5 V, phase ≈ 53°
 quantity level = abs(Vc).log_in(dBV);          // ≈ 14 dBV from |Vc|; the phase stays in Vc
 ```
@@ -974,6 +998,7 @@ The reference belongs to the unit, and the statistic has to be a *kind*, so the 
 come out as three units over two kinds:
 
 ```cpp
+// snippet-template: none (not this library: proposed logarithmic-quantities design, not implemented)
 // a digital sample level is a root-power quantity of its own dimensionless kind
 inline constexpr struct digital_level : quantity_spec<dimensionless, subkind, log_coefficient<2>> {} digital_level;
 // the statistic is its own kind (the coefficient comes from the parent), because the peak
@@ -1023,6 +1048,7 @@ between them like `dBm`↔`dBW`. In a link budget the gain enters as its displac
 isotropic (a `point<dBi>` minus the isotropic `0 dBi`), which moves the `dBm` level:
 
 ```cpp
+// snippet-template: none (not this library: proposed logarithmic-quantities design, not implemented)
 // antenna gain vs a reference radiator: dBi (isotropic, gain 1), dBd (half-wave dipole)
 inline constexpr struct dBi : named_unit<"dBi", dB<dimensionless>, one> {} dBi;
 inline constexpr struct dBd : named_unit<"dBd", dBi, mag_power<10, 43, 200>> {} dBd;  // 0 dBd = 2.15 dBi
@@ -1043,6 +1069,7 @@ classified quantity, it is named as **its own kind** carrying the coefficient, a
 reads it, with no override:
 
 ```cpp
+// snippet-template: none (not this library: proposed logarithmic-quantities design, not implemented)
 // the transfer function is its own root-power kind (coefficient 2); dB reads it
 inline constexpr struct sensitivity :
     quantity_spec<isq::voltage / isq::sound_pressure, subkind, log_coefficient<2>> {} sensitivity;
@@ -1056,6 +1083,7 @@ Defining the units is only half of the work. Applying one is a multiplication in
 linear domain, and the design gives you the crossing for it:
 
 ```cpp
+// snippet-template: none (not this library: proposed logarithmic-quantities design, not implemented)
 quantity spl  = point<dB_SPL>(94.0);   // 1 Pa
 quantity sens = point<dB_VPa>(-40.0);  // 10 mV/Pa
 quantity out  = (spl.linear().absolute() * sens.linear().absolute()).log_in(dBV);  // -40 dBV
@@ -1083,6 +1111,7 @@ The shannon, nat, and hartley are gains with a dimensionless (probability-derive
 sharing `log<kind_of<isq::information_content>>` and differing only in base (2, e, 10):
 
 ```cpp
+// snippet-template: none (not this library: proposed logarithmic-quantities design, not implemented)
 inline constexpr struct shannon : named_unit<"Sh",   log<kind_of<isq::information_content>>, mag<2>,  1> {} shannon;
 inline constexpr struct nat     : named_unit<"nat",  log<kind_of<isq::information_content>>, mag_e,   1> {} nat;
 inline constexpr struct hartley : named_unit<"Hart", log<kind_of<isq::information_content>>, mag<10>, 1> {} hartley;
@@ -1103,6 +1132,7 @@ like any other, with no override. Subtracting two pH points yields a gain. Addin
 meaningless. Both follow from the point/delta rules.
 
 ```cpp
+// snippet-template: none (not this library: proposed logarithmic-quantities design, not implemented)
 // the kind carries the -1 coefficient; the ratio unit (factor 1) reads it, then the level adds 1 mol/L
 inline constexpr struct pH_interval : named_unit<"pH", log<hydrogen_ion_concentration>, /*base*/ mag<10>, log_coefficient_of<hydrogen_ion_concentration>> {} pH_interval;
 inline constexpr struct pH_unit     : named_unit<"pH", pH_interval, mol / L> {} pH_unit;
@@ -1176,6 +1206,7 @@ top of* them.
   the type and the brace-init reads cleanly:
 
     ```cpp
+    // snippet-template: none (not this library: proposed logarithmic-quantities design, not implemented)
     using rf_power = quantity<point<dBm>>;
     rf_power level{10 * mW};            // explicit, and the alias carries the name
     ```
@@ -1322,6 +1353,7 @@ a smart amplifier driving a loudspeaker, where what you want is the level in the
 given distance:
 
 ```cpp
+// snippet-template: none (not this library: proposed logarithmic-quantities design, not implemented)
 quantity digital = point<dBFS_peak>(-20.0);           // -20 dBFS
 quantity amp     = point<dB_VFS>(20.0);               // 10 V out at full scale
 quantity spk     = point<dB_PaV>(86.0);               // 86 dB SPL at 1 m for 1 V in
@@ -1459,6 +1491,7 @@ over a root-power quantity and `4.343 dB` over a _power_ quantity. So an unclass
 cannot be converted at all, and there is no unit to hang the missing information on:
 
 ```cpp
+// snippet-template: none (not this library: proposed logarithmic-quantities design, not implemented)
 quantity gain = 6.0 * dB;      // unclassified under Option B
 // auto np    = gain.in(Np);   // ill-formed: 8.686 or 4.343? nothing in the expression says
 ```

@@ -81,6 +81,7 @@ Provide a partial specialization of `quantity_like_traits<T>` with these members
 - `from_numerical_value(rep)` - static function constructing `T` from a raw value
 
 ```cpp
+// snippet-continues
 template<>
 struct mp_units::quantity_like_traits<Meter> {
   static constexpr auto reference = si::metre;
@@ -98,6 +99,7 @@ struct mp_units::quantity_like_traits<Meter> {
 Check that the conversions exist in the directions the trait asks for:
 
 ```cpp
+// snippet-continues
 static_assert(std::convertible_to<Meter, quantity<si::metre, int>>);   // implicit import
 static_assert(std::constructible_from<Meter, quantity<si::metre, int>>);  // explicit export
 static_assert(!std::convertible_to<quantity<si::metre, int>, Meter>);
@@ -106,6 +108,8 @@ static_assert(!std::convertible_to<quantity<si::metre, int>, Meter>);
 ### Step 3: Use the Conversions
 
 ```cpp
+// snippet-continues
+// snippet-id: meter
 void print(Meter m) { std::cout << m.value << " m\n"; }
 
 int main()
@@ -145,24 +149,23 @@ no value truncation would occur:
 Examples of compile-time safety checks:
 
 ```cpp
+// snippet-after: meter:decls
 Meter height{42};
 
 quantity<isq::height[m]> h3 = height;        // ✅ OK
 quantity<isq::height[mm], int> h4 = height;  // ✅ OK
 
-// ❌ Compile error: truncation while converting from meters to kilometers
-quantity<isq::height[km], int> h5 = height;
+quantity<isq::height[km], int> h5 = height;  // ❌ truncation while converting from meters to kilometers
 
-// ❌ Compile error: conversion of double to int not value-preserving
-print(Meter(h3));
+print(Meter(h3));  // ❌ conversion of double to int not value-preserving
 
-// ❌ Compile error: truncation while converting from millimeters to meters
-print(Meter(h4));
+print(Meter(h4));  // ❌ truncation while converting from millimeters to meters
 ```
 
 **To fix these issues:**
 
 ```cpp
+// snippet-continues
 // State how the leftover meters should round (42 m is 0 km either way)
 quantity<isq::height[km], int> h5 = quantity{height}.in(km, truncated);
 
@@ -191,6 +194,7 @@ accessors that automatically use the underlying `quantity_like_traits` or
 ### Basic Usage
 
 ```cpp
+#include <mp-units/framework.h>
 #include <mp-units/systems/si/chrono.h>
 #include <chrono>
 
@@ -260,6 +264,8 @@ Provide a partial specialization of `quantity_point_like_traits<T>` with these m
 - `from_numerical_value(rep)` - static function constructing `T` from a raw value
 
 ```cpp
+// snippet-continues
+// snippet-id: tstraits
 template<>
 struct mp_units::quantity_point_like_traits<Timestamp> {
   static constexpr auto reference = si::second;
@@ -279,6 +285,7 @@ struct mp_units::quantity_point_like_traits<Timestamp> {
 Check that the conversions exist in the directions the trait asks for:
 
 ```cpp
+// snippet-continues
 using timestamp_point = quantity_point<si::second, default_point_origin(si::second), int>;
 
 static_assert(std::convertible_to<Timestamp, timestamp_point>);      // implicit import
@@ -290,6 +297,7 @@ static_assert(!std::convertible_to<timestamp_point, Timestamp>);
 ### Step 3: Use the Conversions
 
 ```cpp
+// snippet-after: tstraits
 void print(Timestamp ts) { std::cout << ts.seconds << " s\n"; }
 
 int main()
@@ -364,13 +372,11 @@ auto tp2 = to_chrono_time_point(qp2);
 quantity_point qp3 = ts_origin + 1 * s;
 auto tp3 = to_chrono_time_point(qp3);
 
-// ❌ Compile error: origin not related to chrono_point_origin
 quantity_point qp4 = my_origin + 1 * s;
-auto tp4 = to_chrono_time_point(qp4);
+auto tp4 = to_chrono_time_point(qp4);  // ❌ origin not related to chrono_point_origin
 
-// ❌ Compile error: natural_point_origin not related to chrono_point_origin
 quantity_point qp5{1 * s};
-auto tp5 = to_chrono_time_point(qp5);
+auto tp5 = to_chrono_time_point(qp5);  // ❌ natural_point_origin not related to chrono_point_origin
 ```
 
 ### Practical Example: Flight Time Calculator

@@ -128,6 +128,7 @@ functions to work with legacy speed types.
 
 ```cpp
 // ce-embed height=800 compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0" mp-units=trunk
+// snippet-template: none (exercise skeleton: TODOs and legacy_is_safe_velocity(...) / quantity energy = ...; for the reader; the Solution fence follows)
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
 #include <mp-units/math.h>
@@ -204,6 +205,7 @@ int main()
 ??? tip "Solution"
 
     ```cpp
+    // snippet-id: solution
     #include <mp-units/systems/isq.h>
     #include <mp-units/systems/si.h>
     #include <mp-units/math.h>
@@ -237,17 +239,17 @@ int main()
 
     // Specialize quantity_like_traits for legacy types
     template<typename T>
-    constexpr auto reference_for = std::ignore;
+    constexpr auto legacy_reference_for = std::ignore;
 
-    template<> constexpr auto reference_for<Meter> = si::metre;
-    template<> constexpr auto reference_for<Second> = si::second;
-    template<> constexpr auto reference_for<MeterPerSecond> = si::metre / si::second;
+    template<> constexpr auto legacy_reference_for<Meter> = si::metre;
+    template<> constexpr auto legacy_reference_for<Second> = si::second;
+    template<> constexpr auto legacy_reference_for<MeterPerSecond> = si::metre / si::second;
 
     template<typename T>
-      requires (!std::same_as<decltype(reference_for<T>), decltype(std::ignore)>)
+      requires (!std::same_as<decltype(legacy_reference_for<T>), decltype(std::ignore)>)
     struct  mp_units::quantity_like_traits<T> {
       using rep = double;
-      static constexpr auto reference = reference_for<T>;
+      static constexpr auto reference = legacy_reference_for<T>;
 
       // Allow implicit T → quantity (safe direction: legacy → modern)
       static constexpr bool explicit_import = false;
@@ -311,6 +313,7 @@ int main()
     Interoperability layer specializes `quantity_like_traits`:
 
     ```cpp
+    // snippet-continues
     template<>
     struct mp_units::quantity_like_traits<Meter> {
       using rep = double;
@@ -336,14 +339,15 @@ int main()
     `explicit_import` and `explicit_export` flags control conversion direction:
 
     ```cpp
+    // snippet-after: solution:decls
     // explicit_import = false: Legacy → mp-units is implicit
     MeterPerSecond legacy_speed{25.0};
-    quantity speed = compute_energy(70 * kg, legacy_speed);  // ✅ Just works!
+    quantity speed = compute_kinetic_energy(70 * kg, legacy_speed);  // ✅ Just works!
 
     // explicit_export = true: mp-units → Legacy requires explicit syntax
     quantity<si::metre / si::second> speed_new = 30 * m / s;
     bool safe = legacy_is_safe_velocity(MeterPerSecond(speed_new));  // ✅ Explicit conversion
-    // bool wrong = legacy_is_safe_velocity(speed_new);  // ❌ Does not compile!
+    // bool wrong = legacy_is_safe_velocity(speed_new);  // ❌
     ```
 
     This asymmetry:
@@ -358,6 +362,7 @@ int main()
     Critical API design choice affecting interoperability:
 
     ```cpp
+    // snippet-after: solution
     // Concrete type: Fixed units, allows implicit conversion from quantity_like
     quantity<si::joule> compute_energy_concrete(quantity<si::kilo<si::gram>> mass,
                                                 quantity<si::metre / si::second> speed)
@@ -396,6 +401,7 @@ int main()
     Phase 1 - Enable interoperability:
 
     ```cpp
+    // snippet-template: none (pseudo-code: specializations with /* ... */ bodies)
     // Define traits for legacy types
     template<> struct quantity_like_traits<Meter> { /* ... */ };
     template<> struct quantity_like_traits<Second> { /* ... */ };
@@ -416,6 +422,7 @@ int main()
     Phase 3 - Migrate modules incrementally:
 
     ```cpp
+    // snippet-after: solution
     // Old module stays unchanged - uses legacy types
     MeterPerSecond legacy_speed{30.0};
     Second legacy_time{5.0};

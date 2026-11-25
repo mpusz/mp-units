@@ -115,6 +115,7 @@ int main()
     The `QuantityOf` concept allows functions to accept any compatible quantity type:
 
     ```cpp
+    // snippet-template: none (pseudo-code: parameter-list fragments, not declarations)
     constexpr QuantityOf<isq::mass> auto mass       // Accepts kg, g, ton, etc.
     constexpr QuantityOf<isq::area> auto area       // Accepts m², cm², km², etc.
     ```
@@ -129,6 +130,7 @@ int main()
     The return type constraint documents expectations and verifies correctness:
 
     ```cpp
+    // snippet-template: none (pseudo-code: surface_mass_density(...) signature)
     constexpr QuantityOf<isq::surface_mass_density> auto surface_mass_density(...)
     ```
 

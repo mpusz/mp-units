@@ -101,8 +101,8 @@ The library automatically recognizes when derived dimensions match named units
     precedence and are evaluated left-to-right:
 
     ```cpp
-    // ❌ WRONG - This does NOT create km/h!
-    quantity<km/h> q = 10 * km / 2 * h;  // Won't compile!
+    // WRONG - This does NOT create km/h!
+    quantity<km/h> q = 10 * km / 2 * h;  // ❌
     // Evaluates as: ((10 * km) / 2) * h = km·h (distance-time, not speed!)
 
     // ✅ CORRECT - Use parentheses
@@ -112,7 +112,7 @@ The library automatically recognizes when derived dimensions match named units
     **With CTAD, it's even more dangerous:**
 
     ```cpp
-    // ❌ WRONG - Compiles but creates the wrong type!
+    // WRONG - Compiles but creates the wrong type!
     quantity q = 10 * km / 2 * h;  // Type is km·h, not km/h!
     // Later code expecting speed will fail or produce wrong results
     ```

@@ -14,6 +14,7 @@ An unspecified condition means photopic vision, so the plain units work as they 
 For any other condition, spell it with `_of` on the unit:
 
 ```cpp
+// snippet-id: flux
 using namespace mp_units;
 
 quantity daylight = 1000. * si::lumen;
@@ -49,7 +50,7 @@ void take_maximum_efficacy(QuantityOf<isq::maximum_luminous_efficacy> auto);
 quantity k_m = isq::maximum_luminous_efficacy(683. * si::lumen / si::watt);
 quantity k_lambda = isq::spectral_luminous_efficacy(500. * si::lumen / si::watt);
 take_maximum_efficacy(k_m);                          // OK
-// take_maximum_efficacy(k_lambda);                  // Compile-time error
+// take_maximum_efficacy(k_lambda);                  // ❌
 take_maximum_efficacy(683. * si::lumen / si::watt);  // OK, a simple quantity fits any quantity of its kind
 ```
 
@@ -66,6 +67,7 @@ quantity illum = (flux / area).in(si::lux_of<isq::scotopic_vision>);   // scotop
 Quotients across conditions are well-formed:
 
 ```cpp
+// snippet-after: flux
 quantity sp_ratio = night / daylight;  // 0.25 lm/lm
 ```
 
@@ -75,6 +77,7 @@ it early. Convert to a bare figure only where a unit one is wanted, typically in
 output:
 
 ```cpp
+// snippet-continues
 std::cout << sp_ratio.in(one) << "\n";  // 0.25
 ```
 
@@ -102,11 +105,12 @@ inverted S/P value cannot pass, because the multiplication yields `lm²/lm` of t
 kinds rather than a scotopic flux:
 
 ```cpp
+// snippet-continues
 void take_scotopic_flux(QuantityOf<isq::luminous_flux_of<isq::scotopic_vision>> auto flux);
 
 quantity inverted = 2.0 * si::lumen_of<isq::photopic_vision> / si::lumen_of<isq::scotopic_vision>;  // wrong order
 take_scotopic_flux(sp_ratio * led);     // OK
-// take_scotopic_flux(inverted * led);  // Compile-time error
+// take_scotopic_flux(inverted * led);  // ❌
 ```
 
 The same pattern applies to the CIE mesopic system, which combines photopic and scotopic
@@ -136,7 +140,7 @@ constexpr QuantityOf<isq::luminous_efficacy_of_source> auto to_source_efficacy(
 quantity k = isq::luminous_efficacy_of_radiation(400. * si::lumen / si::watt);
 quantity eta_v = to_source_efficacy(k, 0.3 * one);  // 120 lm/W
 
-// auto sum = k + eta_v;  // Compile-time error: distinct subkinds
+// auto sum = k + eta_v;  // ❌ distinct subkinds
 ```
 
 Note the explicit `isq::luminous_efficacy(k)` step. A subkind never converts to its parent
@@ -160,6 +164,7 @@ in circadian lighting design, derive a tag from `isq::photometric_condition_base
 tree of quantities and units becomes available for it, with the same safety guarantees:
 
 ```cpp
+// snippet-id: mel
 inline constexpr struct melanopic final : mp_units::isq::photometric_condition_base {} melanopic;
 
 quantity mel_edi = 250. * si::lux_of<melanopic>;
@@ -168,9 +173,10 @@ quantity mel_edi = 250. * si::lux_of<melanopic>;
 ## What does not compile
 
 ```cpp
-// auto total = daylight + night;                                             // different quantity kinds
-// if (daylight > night) { /* ... */ }                                        // different quantity kinds
-// auto oops = daylight.in(si::lumen_of<isq::scotopic_vision>);               // no conversion exists
-// auto bad = isq::luminous_flux(250. * si::lumen_of<isq::scotopic_vision>);  // wrong kind unit
-// auto worse = mel_edi + 250. * si::lux;                                     // custom kinds do not mix either
+// snippet-after: flux, mel
+// auto total = daylight + night;                                             // ❌ different quantity kinds
+// if (daylight > night) { /* ... */ }                                        // ❌ different quantity kinds
+// auto oops = daylight.in(si::lumen_of<isq::scotopic_vision>);               // ❌ no conversion exists
+// auto bad = isq::luminous_flux(250. * si::lumen_of<isq::scotopic_vision>);  // ❌ wrong kind unit
+// auto worse = mel_edi + 250. * si::lux;                                     // ❌ custom kinds do not mix either
 ```

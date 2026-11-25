@@ -80,8 +80,10 @@ formatting that appends "AMSL" (Above Mean Sea Level) to clearly identify the re
     For trigonometric functions, explicit conversion to `angular_measure` is required:
 
     ```cpp
+    // snippet-after: example/unmanned_aerial_vehicle.cpp
+    // snippet-setup: const geographic::latitude<double> lat = 54.24772_N;
     const quantity lat_angle = isq::angular_measure(lat.delta_from(geographic::equator));
-    sin(lat_angle);  // OK - explicitly converted
+    si::sin(lat_angle);  // OK - explicitly converted
     ```
 
     See [`geographic.h`](https://github.com/mpusz/mp-units/blob/master/example/include/geographic.h)
@@ -184,12 +186,13 @@ In actual UAV operations, _altitude_ confusion can cause:
 **mp-units** makes these errors **impossible at compile-time**:
 
 ```cpp
+// snippet-after: example/unmanned_aerial_vehicle.cpp
 msl_altitude msl = mean_sea_level + 1000 * m;
 hal_altitude hal = height_above_launch + 500 * m;
 
-// auto sum = msl + hal;              // ✗ Compile error!
-// auto diff = msl - hal;             // ✗ Compile error!
-// if (msl < hal) { /* ... */ }       // ✗ Compile error!
+// auto sum = msl + hal;              // ❌
+// auto diff = msl - hal;             // ❌
+// if (msl < hal) { /* ... */ }       // ❌
 ```
 
 The compiler prevents all accidental mixing of _altitude_ references.
@@ -207,10 +210,7 @@ Different origins create incompatible types, preventing dangerous mistakes:
 ### 2. Template Parameters for Configuration
 
 ```cpp
-template<earth_gravity_model M>
-struct height_above_ellipsoid_t : absolute_point_origin<isq::altitude> {
-  static constexpr earth_gravity_model egm = M;
-};
+--8<-- "example/unmanned_aerial_vehicle.cpp:48:51"
 ```
 
 The Earth model becomes part of the type, ensuring that HAE _altitudes_ using different models
@@ -219,6 +219,9 @@ cannot be confused.
 ### 3. Safe Relative Calculations
 
 ```cpp
+// snippet-after: example/unmanned_aerial_vehicle.cpp:decls
+// snippet-setup: msl_altitude current_ = mean_sea_level + 120 * si::metre;
+// snippet-setup: msl_altitude launch_ = mean_sea_level + 100 * si::metre;
 quantity<isq::altitude[m]> hal = current_.delta_from(launch_);
 ```
 

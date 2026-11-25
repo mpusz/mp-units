@@ -42,6 +42,7 @@ The root cause is that most HEP code passes physical values around as raw
 Geant4 `G4Trap` constructor:
 
 ```cpp
+// snippet-template: none (not this library: Geant4's G4Trap constructor signature)
 G4Trap(const G4String& name,
        G4double pDz, G4double pTheta, G4double pPhi,
        G4double pDy1, G4double pDx1, G4double pDx2, G4double pAlp1,
@@ -54,6 +55,7 @@ Eleven `G4double` parameters, some lengths, some angles. Swapping `pDx2` and
 The ROOT `TGeoMedium` constructor is equally problematic:
 
 ```cpp
+// snippet-template: none (not this library: ROOT's TGeoMedium constructor signature)
 TGeoMedium(const char *name, Int_t numed, TGeoMaterial *mat,
            Double_t fieldm, Double_t tmaxfd, Double_t stemax,
            Double_t deemax, Double_t epsil, Double_t stmin);
@@ -76,6 +78,7 @@ The Geant4 particle definition takes 21 parameters, including `mass`, `width`,
 The real-world consequence:
 
 ```cpp
+// snippet-template: none (not this library: CLHEP double units passed to Geant4's G4ParticleDefinition)
 using namespace CLHEP;  // MeV, GeV are just 'constexpr double' scale factors
 
 double mass  = 3.872 * GeV;  // rest energy
@@ -102,6 +105,7 @@ Bridge code between frameworks requires manual scaling factors. One missing
 `/ CLHEP::cm` makes your detector geometry 10× smaller, at runtime, silently:
 
 ```cpp
+// snippet-template: none (not this library: ROOT's GetRmax passed to Geant4's G4Tubs, with a ... placeholder)
 double radius = rootVolume->GetRmax();  // Returns 10.0, meaning 10 cm
 G4Tubs g4Tube("Tube", 0, radius, ...);  // Geant4 interprets as 10 mm!
 ```
@@ -179,15 +183,17 @@ The two systems are **mutually incompatible by design**, mixing ISQ and HEP
 quantities is a compile error:
 
 ```cpp
+// snippet-template: hep
 quantity<isq::length[si::metre]>  L_isq = 1. * si::metre;
-quantity<hep::length[hep::metre]> L_hep = 1. * hep::metre;
+quantity<hep::length[hep::meter]> L_hep = 1. * hep::meter;
 
-// auto bad = L_isq + L_hep;  // Compile error: different dimensional systems ✓
+// auto bad = L_isq + L_hep;  // ❌ different dimensional systems
 ```
 
 The HEP system is implemented using **mp-units**' core abstractions:
 
 ```cpp
+// snippet-template: angular
 namespace mp_units::hep {
 using namespace ::mp_units::angular;
 
@@ -196,7 +202,7 @@ inline constexpr struct dim_length : base_dimension<"L"> {} dim_length;
 inline constexpr struct dim_time : base_dimension<"T"> {} dim_time;
 inline constexpr struct dim_electric_charge : base_dimension<"Q"> {} dim_electric_charge;
 inline constexpr struct dim_energy : base_dimension<"E"> {} dim_energy;
-inline constexpr struct dim_temperature : base_dimension<symbol_text{u8"Θ", "O"}> {} dim_temperature;
+inline constexpr struct dim_temperature : base_dimension<{u8"Θ", "O"}> {} dim_temperature;
 inline constexpr struct dim_amount_of_substance : base_dimension<"N"> {} dim_amount_of_substance;
 inline constexpr struct dim_luminous_intensity : base_dimension<"I"> {} dim_luminous_intensity;
 
@@ -235,9 +241,10 @@ when needed.
 The unit definitions:
 
 ```cpp
+// snippet-template: hep_excerpt
 inline constexpr struct meter : named_unit<"m", kind_of<length>> {} meter;
 inline constexpr struct second : named_unit<"s", kind_of<duration>> {} second;
-inline constexpr struct eplus : named_unit<symbol_text{u8"e⁺", "e+"}, kind_of<electric_charge>> {} eplus;
+inline constexpr struct eplus : named_unit<{u8"e⁺", "e+"}, kind_of<electric_charge>> {} eplus;
 inline constexpr struct electronvolt : named_unit<"eV", kind_of<energy>> {} electronvolt;
 
 // SI units
@@ -273,6 +280,7 @@ value. It stays symbolic in expressions and cancels in the type system, giving
 natural-unit semantics with full dimensional safety:
 
 ```cpp
+// snippet-template: hep
 using namespace mp_units::hep::unit_symbols;
 
 quantity p    = 4. * GeV / c;    // type: quantity<GeV/c>   (c stays symbolic)
@@ -309,6 +317,7 @@ _kinetic energy_ and _rest-mass energy_ yields their common parent,
 _total energy_:
 
 ```cpp
+// snippet-template: hep
 using namespace mp_units::hep::unit_symbols;
 
 quantity KE = hep::kinetic_energy(100. * GeV);
@@ -317,8 +326,8 @@ quantity E0 = hep::rest_mass_energy(938.27 * MeV);  // proton
 quantity E_total = KE + E0;  // quantity<hep::total_energy[...]>
 
 // The result cannot be silently narrowed back to a child type:
-// quantity<hep::kinetic_energy[MeV]>   bad1 = E_total;  // Compile error!
-// quantity<hep::rest_mass_energy[MeV]> bad2 = E_total;  // Compile error!
+// quantity<hep::kinetic_energy[MeV]>   bad1 = E_total;  // ❌
+// quantity<hep::rest_mass_energy[MeV]> bad2 = E_total;  // ❌
 ```
 
 ### Distinct Quantity Subkinds
@@ -332,10 +341,11 @@ specifier to make mixing them a compile error.
 by addition:
 
 ```cpp
+// snippet-template: hep
 quantity tau   = hep::proper_time(0.385 * ns);    // B⁰ meson rest-frame lifetime
 quantity t_lab = hep::coordinate_time(4.2 * ns);  // observed lab time of flight
 
-// auto wrong = tau + t_lab;  // Compile error: different kinds ✓
+// auto wrong = tau + t_lab;  // ❌ different kinds
 
 quantity gamma = hep::lorentz_factor(t_lab / tau);  // γ ≈ 10.9 ✓
 ```
@@ -345,12 +355,13 @@ are material properties that appear as denominators, never as addends with
 geometric _lengths_:
 
 ```cpp
+// snippet-template: hep
 quantity X0       = hep::radiation_length(88.97 * mm);   // lead X₀
 quantity lambda_I = hep::interaction_length(194.4 * mm); // lead λ_I
 quantity path     = hep::path_length(50. * mm);
 
-// auto bad1 = X0 + lambda_I;  // Compile error ✓
-// auto bad2 = X0 + path;      // Compile error ✓
+// auto bad1 = X0 + lambda_I;  // ❌
+// auto bad2 = X0 + path;      // ❌
 
 quantity n_X0 = path / X0;  // number of radiation lengths traversed ✓
 ```
@@ -360,12 +371,13 @@ quantity n_X0 = path / X0;  // number of radiation lengths traversed ✓
 incompatible:
 
 ```cpp
+// snippet-template: hep
 quantity gamma = hep::lorentz_factor(10. * one);
 quantity beta  = hep::relativistic_beta(0.995 * one);
 quantity phi   = hep::phase(1.57 * one);
 
-// auto bad1 = gamma + beta;  // Compile error ✓
-// auto bad2 = gamma + 1.;    // Compile error: not a plain dimensionless ✓
+// auto bad1 = gamma + beta;  // ❌
+// auto bad2 = gamma + 1.;    // ❌ not a plain dimensionless
 ```
 
 ---
@@ -386,6 +398,7 @@ catching a distinct class of bug.
 Prevents mixing incompatible physical dimensions:
 
 ```cpp
+// snippet-template: hep
 using namespace mp_units::hep::unit_symbols;
 
 quantity<mm / ns> average_speed(quantity<mm> distance, quantity<ns> time);
@@ -422,6 +435,8 @@ entirely.
 Prevents truncation and precision loss:
 
 ```cpp
+// snippet-template: hep
+using namespace mp_units::si::unit_symbols;
 quantity<one, std::uint16_t> raw_adc = 3500;             // 12-bit ADC
 
 constexpr quantity adc_to_voltage = 2500.0 * mV / 4096;
@@ -429,8 +444,8 @@ constexpr quantity energy_scale   = 45.0 * MeV / V;
 quantity voltage = raw_adc * adc_to_voltage;             // auto-upgrades to double
 quantity energy  = voltage * energy_scale;               // ~96 MeV
 
-// quantity<mV, std::uint16_t> v_int = voltage;          // ❌ Compile error: narrowing
-quantity<mV, std::uint16_t> v_int = voltage.force_in<std::uint16_t>(mV);  // ✅ explicit
+// quantity<mV, std::uint16_t> v_int = voltage;          // ❌ narrowing
+quantity<mV, std::uint16_t> v_int = voltage.in<std::uint16_t>(mV, truncated);  // ✅ explicit
 ```
 
 !!! tip "Runtime overflow protection with `safe_int`"
@@ -439,10 +454,10 @@ quantity<mV, std::uint16_t> v_int = voltage.force_in<std::uint16_t>(mV);  // ✅
     wrapper that can be used as the representation type:
 
     ```cpp
-    #include <mp-units/safe_int.h>
+    #include <mp-units/utility/safe_int.h>
 
-    quantity<m, safe_i16> distance = 100 * m;
-    quantity<m, safe_i16> overflow = distance * 1'000;  // throws std::overflow_error
+    quantity<m, utility::safe_i16> distance{100 * m};
+    quantity<m, utility::safe_i16> overflow{distance * 1'000};  // throws std::overflow_error
     ```
 
     See [Ensure Ultimate Safety](../../how_to_guides/advanced_usage/ultimate_safety.md)
@@ -454,6 +469,7 @@ Prevents arithmetic on quantities that share a dimension but have different
 physical meanings:
 
 ```cpp
+// snippet-template: hep
 quantity<hep::lorentz_factor[one]>
 calculate_lorentz_factor(quantity<hep::coordinate_time[ns]> t_lab,
                          quantity<hep::proper_time[ns]>     tau);
@@ -476,6 +492,8 @@ Consider the `G4Trap` constructor again. With mp-units, each geometric axis and
 angle role gets its own sub-quantity:
 
 ```cpp
+// snippet-template: hep
+// snippet-id: trap-specs
 inline constexpr struct trap_half_z      : quantity_spec<hep::length> {} trap_half_z;
 inline constexpr struct trap_half_y      : quantity_spec<hep::length> {} trap_half_y;
 inline constexpr struct trap_half_x      : quantity_spec<hep::length> {} trap_half_x;
@@ -486,6 +504,7 @@ inline constexpr struct trap_shear_angle : quantity_spec<hep::angle>  {} trap_sh
 The function signature becomes self-documenting:
 
 ```cpp
+// snippet-template: none (pseudo-code: MakeG4Trap declaration with a /* ... */ parameter placeholder)
 void MakeG4Trap(quantity<trap_half_z[mm]>       pDz,
                 quantity<trap_tilt_angle[rad]>  pTheta,
                 quantity<trap_half_y[mm]>       pDy1,
@@ -497,6 +516,7 @@ void MakeG4Trap(quantity<trap_half_z[mm]>       pDz,
 Now the compiler prevents argument confusion:
 
 ```cpp
+// snippet-after: trap-specs
 quantity pDz   = trap_half_z(150. * mm);
 quantity pDy1  = trap_half_y(25. * mm);
 quantity theta = trap_tilt_angle(0. * rad);
@@ -514,6 +534,9 @@ static_assert(half_diag.quantity_spec == hep::length);
 Distinguishes absolute positions from displacements:
 
 ```cpp
+// snippet-template: hep
+inline constexpr struct z_vertex_zero final : absolute_point_origin<hep::length> {} z_vertex_zero;
+
 quantity_point z_vertex = z_vertex_zero + 15.0 * mm;
 quantity_point z_decay  = z_vertex_zero + 20.2 * mm;
 
@@ -533,6 +556,7 @@ quantity_point z_next = z_vertex + decay_length;        // Point + delta = Point
 enabling natural interop between frameworks:
 
 ```cpp
+// snippet-template: hep
 using namespace mp_units::hep::unit_symbols;
 
 // Algorithm accepts any position unit (mm, cm, m, etc.)
@@ -576,7 +600,7 @@ quantity BR_Hgg = branching_ratio(2.27e-3);
 
 // ✅ Function enforces kind at call site
 quantity res = compute_yield(trigger_eff, event_count(1'000'000));
-// compute_yield(BR_Hgg, event_count(1'000'000));  // ❌ Compile error!
+// compute_yield(BR_Hgg, event_count(1'000'000));  // ❌
 ```
 
 The same approach works for purity, asymmetries, χ²/ndf, ratios, and
@@ -589,6 +613,7 @@ symbolic and multiplies at runtime only when an explicit conversion is performed
 by the user:
 
 ```cpp
+// snippet-template: hep
 using namespace mp_units::hep::unit_symbols;
 
 quantity p = 4. * GeV / c;      // type: quantity<GeV/c>   (c stays symbolic)
@@ -623,6 +648,9 @@ signature and its type-safe counterpart:
 === "Type-safe API"
 
     ```cpp
+    // snippet-template: hep
+    // snippet-id: hep-api
+    // snippet-setup: namespace mp { using namespace mp_units::hep; using namespace mp_units::hep::unit_symbols; }
     void setParticleProperties(quantity<mp::rest_mass[mp::MeV / mp::c2]> mass,
                                quantity<mp::energy[mp::MeV]>             width,
                                quantity<mp::electric_charge[mp::eplus]>  charge);
@@ -631,7 +659,7 @@ signature and its type-safe counterpart:
 !!! info "What is `mp`?"
 
     The code above uses an `mp::` prefix for HEP quantities, units, and constants.
-    `mp` is a short namespace alias you introduce yourself for `mp_units::hep` and
+    `mp` is a short namespace you introduce yourself, bringing in `mp_units::hep` and
     `mp_units::hep::unit_symbols`. [Phase 1](#phase-1-integrate-mp-units) of the
     migration shows the setup, and you are free to pick any name that suits your
     project.
@@ -641,6 +669,7 @@ signature and its type-safe counterpart:
 === "Legacy"
 
     ```cpp
+    // snippet-template: none (not this library: CLHEP double units, GeV and MeV are doubles)
     double higgs_mass  = 125.0 * GeV;  // actually stores 125'000 MeV, not mass!
     double higgs_width = 4.0 * MeV;
     setParticleProperties(higgs_mass, higgs_width, 0.0);
@@ -650,9 +679,11 @@ signature and its type-safe counterpart:
 === "mp-units"
 
     ```cpp
+    // snippet-id: hep-calls
+    // snippet-after: hep-api
     quantity higgs_mass  = 125.0 * mp::GeV;  // compiler knows this is energy
     quantity higgs_width = 4.0 * mp::MeV;
-    // setParticleProperties(higgs_mass, higgs_width, 0.0 * mp::eplus);        // ❌ Compile error: cannot convert energy to rest_mass
+    // setParticleProperties(higgs_mass, higgs_width, 0.0 * mp::eplus);        // ❌ cannot convert energy to rest_mass
     setParticleProperties(higgs_mass / mp::c2, higgs_width, 0.0 * mp::eplus);  // ✅
     ```
 
@@ -661,6 +692,7 @@ signature and its type-safe counterpart:
 === "Legacy"
 
     ```cpp
+    // snippet-template: none (not this library: legacy double interface with CLHEP double units)
     setParticleProperties(higgs_width, higgs_mass, 0.0);  // silently swapped
     // mass = 4 MeV/c² (off by 31'000×), width = 125'000 MeV  ✓ Compiles  ☠️  ❌
     ```
@@ -668,7 +700,8 @@ signature and its type-safe counterpart:
 === "mp-units"
 
     ```cpp
-    // setParticleProperties(higgs_width, higgs_mass, 0.0 * mp::eplus);        // ❌ Compile error: arguments in wrong order (type mismatch)
+    // snippet-after: hep-calls
+    // setParticleProperties(higgs_width, higgs_mass, 0.0 * mp::eplus);        // ❌ arguments in wrong order (type mismatch)
     setParticleProperties(higgs_mass / mp::c2, higgs_width, 0.0 * mp::eplus);  // ✅
     ```
 
@@ -677,6 +710,7 @@ signature and its type-safe counterpart:
 === "Legacy"
 
     ```cpp
+    // snippet-template: none (not this library: ROOT accessor get_from_ROOT and the legacy double interface)
     double root_width = get_from_ROOT();  // Returns 0.004 (ROOT uses GeV=1)
     setParticleProperties(higgs_mass, root_width, 0.0);
     // API expects MeV, receives 0.004 → width = 0.004 MeV (off by 1000×)  ✓ Compiles  ☠️  ❌
@@ -685,9 +719,11 @@ signature and its type-safe counterpart:
 === "mp-units"
 
     ```cpp
+    // snippet-after: hep-calls
+    // snippet-setup: double get_from_ROOT();
     double root_width = get_from_ROOT();   // 0.004, bare double, no unit info
-    // setParticleProperties(higgs_mass, root_width, 0.0 * mp::eplus);        // ❌ Compile error: cannot convert double to quantity, forces explicit unit attachment
-    setParticleProperties(higgs_mass, root_width * mp::GeV, 0.0 * mp::eplus); // ✅  0.004 * GeV = 4 MeV, automatic conversion
+    // setParticleProperties(higgs_mass / mp::c2, root_width, 0.0 * mp::eplus);           // ❌ cannot convert double to quantity, forces explicit unit attachment
+    setParticleProperties(higgs_mass / mp::c2, root_width * mp::GeV, 0.0 * mp::eplus);  // ✅  0.004 * GeV = 4 MeV, automatic conversion
     ```
 
 ### Wrong Quantity of the Same Kind
@@ -695,6 +731,7 @@ signature and its type-safe counterpart:
 === "Legacy"
 
     ```cpp
+    // snippet-template: none (not this library: CLHEP double MeV and the legacy double interface)
     double m_inv = compute_invariant_mass();  // event-by-event reconstruction
     setParticleProperties(m_inv, 4.0 * MeV, 0.0);
     // invariant_mass ≠ rest_mass, but both are MeV/c²  ✓ Compiles  ☠️ Wrong physics  ❌
@@ -703,10 +740,11 @@ signature and its type-safe counterpart:
 === "mp-units"
 
     ```cpp
+    // snippet-after: hep-api
     quantity<hep::invariant_mass[mp::GeV / mp::c2]> compute_invariant_mass();
 
     quantity m_inv = compute_invariant_mass();
-    // setParticleProperties(m_inv, 4.0 * mp::MeV, 0.0 * mp::eplus);  // ❌ Compile error: no conversion from invariant_mass to rest_mass
+    // setParticleProperties(m_inv, 4.0 * mp::MeV, 0.0 * mp::eplus);  // ❌ no conversion from invariant_mass to rest_mass
     ```
 
 ---
@@ -727,7 +765,7 @@ using namespace mp_units::hep::unit_symbols;
 quantity beta = 10. * MeV / (hep::electron_mass * c2);
 
 // Matching ROOT (CODATA 2022)
-quantity rest_energy_22 = hep::codata2022::electron_mass * c2;  // 0.51099895069 MeV/c²
+quantity rest_energy_22 = 1. * hep::codata2022::electron_mass * c2;  // 0.51099895069 MeV/c²
 
 // Reproducing legacy results (CODATA 2014)
 quantity threshold = 2. * hep::codata2014::electron_mass * c2;  // pair production threshold
@@ -782,6 +820,7 @@ All major HEP frameworks store units as `constexpr double` scaling factors:
 The "multiply to set, divide to get" idiom is ubiquitous:
 
 ```cpp
+// snippet-template: none (not this library: CLHEP double units GeV, meter, cm)
 double particle_energy = 50.0 * GeV;   // stores 50000.0 (base: MeV)
 double track_length    = 2.5 * meter;  // stores 2500.0  (base: mm)
 
@@ -803,6 +842,7 @@ detect any of it.
 Set up the namespace without touching any existing code:
 
 ```cpp
+// snippet-id: clhep-mp
 #include <mp-units/math.h>
 #include <mp-units/systems/hep.h>
 
@@ -839,6 +879,7 @@ numerical results**: no other changes are needed at this stage.
 === "After"
 
     ```cpp
+    // snippet-after: clhep-mp
     namespace CLHEP {
       constexpr double mm  = (1. * mp::mm).numerical_value_in(mp::mm);    // = 1.0
       constexpr double cm  = (1. * mp::cm).numerical_value_in(mp::mm);    // = 10.0
@@ -855,6 +896,8 @@ All newly written functions and classes use `quantity<...>` types directly.
 Legacy code is untouched. New call sites get full type safety:
 
 ```cpp
+// snippet-template: hep
+// snippet-setup: namespace mp { using namespace mp_units::hep; using namespace mp_units::hep::unit_symbols; }
 quantity<mp::GeV / mp::c> calculate_momentum(quantity<mp::GeV> energy,
                                              quantity<mp::GeV / mp::c2> mass)
 {
@@ -875,6 +918,7 @@ boundary is exactly what eliminates the ROOT / Geant4 bridge bugs described
 earlier, no manual scaling factors, no multiply-vs-divide guesswork:
 
 ```cpp
+// snippet-template: none (third-party: ROOT TGeoVolume.h and Geant4 G4Tubs.hh)
 #include <TGeoVolume.h>  // ROOT geometry
 #include <G4Tubs.hh>     // Geant4 geometry
 
@@ -907,6 +951,8 @@ overloads convert at the public boundary and delegate to the existing
     unchanged. Only setters, which differ by parameter type, can be overloaded.
 
 ```cpp
+// snippet-template: hep
+// snippet-setup: namespace mp { using namespace mp_units::hep; using namespace mp_units::hep::unit_symbols; }
 class Particle {
   double m_mass{};    // Still raw double, internals untouched
   double m_width{};
@@ -934,6 +980,8 @@ Store typed quantities as data members. Add typed getters with a `_qty` suffix
 alongside the existing `double` getters, and deprecate the old `double` API:
 
 ```cpp
+// snippet-template: hep
+// snippet-setup: namespace mp { using namespace mp_units::hep; using namespace mp_units::hep::unit_symbols; }
 class Particle {
   quantity<mp::rest_mass[mp::MeV / mp::c2]>  m_mass{};
   quantity<mp::energy[mp::MeV]>              m_width{};
@@ -971,6 +1019,8 @@ Once all call sites use the typed API, remove the deprecated overloads and
 rename the typed getters to their final names:
 
 ```cpp
+// snippet-template: hep
+// snippet-setup: namespace mp { using namespace mp_units::hep; using namespace mp_units::hep::unit_symbols; }
 class Particle {
   quantity<mp::rest_mass[mp::MeV / mp::c2]> m_mass{};
   quantity<mp::energy[mp::MeV]>             m_width{};

@@ -1,0 +1,9 @@
+// For an excerpt of the library's own `mp_units::si` definitions. The body goes in a
+// namespace nested inside `mp_units::si`, so the units it names unqualified, like `metre` and
+// `second`, are the SI ones. The excerpt's own declarations stay apart from the real ones.
+#include "prelude.h"
+#include <mp-units/systems/natural.h>
+namespace mp_units::si::sample {
+using namespace mp_units::non_si;
+{{BODY}}
+}  // namespace mp_units::si::sample

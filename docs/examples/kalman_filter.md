@@ -64,13 +64,7 @@ header provides generic, type-safe abstractions for Kalman filtering:
 ### System State Representation
 
 ```cpp
-template<mp_units::QuantityPoint... QPs>
-  requires(sizeof...(QPs) > 0) && (sizeof...(QPs) <= 3) &&
-          detail::are_time_derivatives<QPs::dimension...>
-class system_state {
-  std::tuple<QPs...> variables_;
-  // ...
-};
+--8<-- "example/kalman_filter/kalman.h:58:76"
 ```
 
 The `system_state` class template:
@@ -84,14 +78,7 @@ The `system_state` class template:
 ### State Estimation with Uncertainty
 
 ```cpp
-template<mp_units::QuantityPoint QP, mp_units::QuantityPoint... Rest>
-class system_state_estimate {
-  state_type state_;
-  variance_type variance_;  // Type computed as pow<2>(standard_deviation_type)
-
-  [[nodiscard]] constexpr standard_deviation_type standard_deviation() const
-  { return sqrt(variance_); }
-};
+--8<-- "example/kalman_filter/kalman.h:83:103"
 ```
 
 The `system_state_estimate` combines:
@@ -125,12 +112,7 @@ All operations preserve dimensional correctness:
 === "State Update"
 
     ```cpp
-    template<typename QP, QuantityPointOf<QP::quantity_spec> QM, QuantityOf<dimensionless> K>
-    [[nodiscard]] constexpr system_state<QP> state_update(const system_state<QP>& predicted,
-                                                          QM measured, K gain)
-    {
-      return system_state<QP>{get<0>(predicted) + gain * (measured - get<0>(predicted))};
-    }
+    --8<-- "example/kalman_filter/kalman.h:115:119"
     ```
 
     State update computes: **state_new = state_pred + K × (measurement − state_pred)**
@@ -142,15 +124,7 @@ All operations preserve dimensional correctness:
 === "State Extrapolation"
 
     ```cpp
-    template<typename QP1, typename QP2, QuantityOf<isq::duration> T>
-    [[nodiscard]] constexpr system_state<QP1, QP2> state_extrapolation(const system_state<QP1, QP2>& estimated,
-                                                                       T interval)
-    {
-      auto to_quantity = [](const auto& qp) { return qp.quantity_ref_from(qp.point_origin); };
-      const auto qp1 = fma(to_quantity(get<1>(estimated)), interval, get<0>(estimated));
-      const auto qp2 = get<1>(estimated);
-      return system_state<QP1, QP2>{qp1, qp2};
-    }
+    --8<-- "example/kalman_filter/kalman.h:158:165"
     ```
 
     Projects state forward in time using physics:
@@ -211,6 +185,7 @@ Simple fixed-gain filters with manually tuned gains:
 === "Example 1: Simple α Filter"
 
     ```cpp
+    // snippet-after: example/kalman_filter/kalman_filter-example_1.cpp
     using qp = quantity_point<isq::mass[g]>;
     using state = kalman::system_state<
       qp
@@ -233,6 +208,7 @@ Simple fixed-gain filters with manually tuned gains:
 === "Example 2: α-β Filter"
 
     ```cpp
+    // snippet-after: example/kalman_filter/kalman_filter-example_2.cpp
     using qp = quantity_point<isq::displacement[m]>;
     using state = kalman::system_state<
       qp,
@@ -259,6 +235,7 @@ Simple fixed-gain filters with manually tuned gains:
 === "Example 4: α-β-γ Filter"
 
     ```cpp
+    // snippet-after: example/kalman_filter/kalman_filter-example_3.cpp
     using qp = quantity_point<isq::displacement[m]>;
     using state = kalman::system_state<
       qp,
@@ -305,8 +282,11 @@ Where:
 === "Example 5: Static System"
 
     ```cpp
+    // snippet-after: example/kalman_filter/kalman_filter-example_5.cpp:decls
     using qp = quantity_point<isq::height[m]>;
     using estimate = kalman::system_state_estimate<qp>;
+    // snippet-setup: using state = estimate::state_type;
+    // snippet-setup: const std::array measurements = {qp{49.03 * m}, qp{48.44 * m}};
 
     const estimate initial{state{qp{60. * m}}, 15. * m};              // 60m ± 15m
     const quantity measurement_error = isq::height(5. * m);
@@ -334,8 +314,11 @@ Where:
 === "Example 8: Dynamic System"
 
     ```cpp
+    // snippet-after: example/kalman_filter/kalman_filter-example_8.cpp:decls
     using qp = quantity_point<deg_C>;
     using estimate = kalman::system_state_estimate<qp>;
+    // snippet-setup: using state = estimate::state_type;
+    // snippet-setup: const std::array measurements = {qp{delta<deg_C>(50.486)}, qp{delta<deg_C>(50.963)}};
 
     const quantity process_noise_variance = delta<pow<2>(deg_C)>(0.15);
     const estimate initial{state{qp{delta<deg_C>(10.)}}, delta<deg_C>(100.)}; // 10°C ± 100°C
@@ -345,7 +328,7 @@ Where:
     auto predict = [=](const estimate& current) {
       return estimate{
         current.state(),
-        covariance_extrapolation(current.variance(), process_noise_variance)
+        kalman::covariance_extrapolation(current.variance(), process_noise_variance)
       };
     };
 
@@ -369,6 +352,7 @@ Where:
 ### 1. Quantity Point Semantics
 
 ```cpp
+// snippet-template: none (pseudo-code: illustrates point vs delta with never-declared names (measured_position, predicted_position, old_position))
 quantity_point<isq::displacement[m]> position;  // Absolute position
 quantity<isq::displacement[m]> distance;        // Relative distance
 
@@ -382,6 +366,12 @@ are relative (differences or deltas). The type system prevents mixing them incor
 ### 2. Dimensional Analysis in Filtering
 
 ```cpp
+// snippet-after: example/kalman_filter/kalman.h
+// snippet-setup: auto to_quantity = [](const auto& qp) { return qp.quantity_ref_from(qp.point_origin); };
+// snippet-setup: const quantity_point position_qp = point<m>(30'000.);
+// snippet-setup: const quantity_point velocity_qp = point<m / s>(40.);
+// snippet-setup: const quantity acceleration_qp = 2. * m / s2;
+// snippet-setup: const quantity time_interval = 5. * s;
 // State extrapolation: position_new = position + velocity × time
 auto qp1 = fma(to_quantity(velocity_qp), time_interval, position_qp);
 //         ↑                 ↑             ↑              ↑
@@ -402,6 +392,7 @@ Every operation preserves physical dimensions, caught at **compile time**.
 ### 3. Variance and Standard Deviation
 
 ```cpp
+// snippet-template: none (pseudo-code: class skeleton with a ... placeholder in the variance_type spelling)
 class system_state_estimate {
   using standard_deviation_type = QP::quantity_type;  // e.g., quantity<isq::height[m]>
   using variance_type = quantity<pow<2>(standard_deviation_type::reference), ...>;
@@ -423,6 +414,7 @@ preventing errors like adding standard deviations instead of variances in covari
 The framework handles 1, 2, or 3 state variables:
 
 ```cpp
+// snippet-template: none (pseudo-code: a bare list of system_state<...> type spellings, not declarations)
 // 1-state (position only)
 system_state<quantity_point<isq::mass[g]>>
 
@@ -442,6 +434,8 @@ have the correct dimensional relationships (each is the time derivative of the p
 ### 5. Measurement Unit Flexibility
 
 ```cpp
+// snippet-after: example/kalman_filter/kalman_filter-example_2.cpp:decls
+// snippet-setup: using qp = quantity_point<isq::displacement[m]>;
 // Distance measurements in different units
 const std::array measurements = {
   qp{30'171 * m}, qp{30'353 * m}, qp{30'756 * m}  // meters
@@ -452,8 +446,8 @@ const qp initial_position{30 * km};  // Automatically converts to base unit
 
 // Temperature measurements
 const std::array temps = {
-  qp{delta<deg_C>(50.486)},  // Celsius
-  qp{delta<deg_C>(50.963)}
+  point<deg_C>(50.486),  // Celsius
+  point<deg_C>(50.963)
 };
 ```
 
@@ -463,6 +457,13 @@ while preserving dimensional correctness.
 ### 6. Custom Formatting for System States
 
 ```cpp
+// snippet-after: example/kalman_filter/kalman_filter-example_2.cpp:decls
+// snippet-setup: using qp = quantity_point<isq::displacement[m]>;
+// snippet-setup: using state = kalman::system_state<qp, quantity_point<isq::velocity[m / s]>>;
+// snippet-setup: const int iteration = 1;
+// snippet-setup: const qp measured{30'221 * m};
+// snippet-setup: const state current_state{qp{30'244.2 * m}, quantity_point{49.42 * m / s}};
+// snippet-setup: const state next_state{qp{30'491.3 * m}, quantity_point{49.42 * m / s}};
 std::cout << MP_UNITS_STD_FMT::format(
   "{:2} | {:8} | {:23:0[:N[.2f]]1[:N[.2f]]} | {:23:0[:N[.2f]]1[:N[.2f]]}\n",
   iteration, measured, current_state, next_state

@@ -119,6 +119,7 @@ that.
 Concretely, bounds are passed as a **template parameter** to the origin:
 
 ```cpp
+// snippet-setup: inline constexpr struct geo_elevation : quantity_spec<isq::angular_measure> {} geo_elevation;
 inline constexpr struct horizon :
     absolute_point_origin<geo_elevation, reflect_in_range{-90 * deg, 90 * deg}> {} horizon;
 ```
@@ -133,7 +134,7 @@ as `quantity` values (displacements). They are displacements, for two
 architectural reasons:
 
 - The bounds enforcement machinery operates on a `quantity<R, Rep>` (the displacement
-  `quantity_from(origin)`) and returns a corrected one. Using point values would
+  `delta_from(origin)`) and returns a corrected one. Using point values would
   require embedding a reference origin in the bounds object, entangling the policy
   with the origin hierarchy it is being applied to.
 - Relative origins whose bounds are expressed relative to the offset also use
@@ -249,6 +250,7 @@ A `relative_point_origin` that defines **no own bounds** automatically inherits
 the enforcement from its nearest ancestor that has bounds:
 
 ```cpp
+// snippet-setup: inline constexpr struct geo_longitude : quantity_spec<isq::angular_measure> {} geo_longitude;
 // Absolute origin with physical bounds:
 inline constexpr struct prime_meridian :
     absolute_point_origin<geo_longitude, wrap_to_range{-180.0 * deg, 180.0 * deg}> {} prime_meridian;
@@ -260,7 +262,7 @@ inline constexpr struct warsaw_meridian : mp_units::relative_point_origin<prime_
 
 // A value of +200° east of Warsaw = +221° from prime → wraps to -139° from prime → -160° from Warsaw.
 quantity_point qp = warsaw_meridian + 200.0 * deg;
-assert(qp.quantity_from(warsaw_meridian) == -160.0 * deg);
+assert(qp.delta_from(warsaw_meridian) == -160.0 * deg);
 ```
 
 When a `relative_point_origin` defines **its own** bounds, those bounds are
@@ -269,11 +271,12 @@ enforced directly (the tighter constraint wins). A compile-time
 parent's bounds:
 
 ```cpp
+// snippet-setup: inline constexpr struct reference_temp : relative_point_origin<point<deg_C>(21.)> {} reference_temp;
 // static_assert fires at compile time if relative bounds exceed parent bounds
 inline constexpr struct ac_setpoint :
-    relative_point_origin<reference_temp + 0 * deg_C,
+    relative_point_origin<reference_temp + delta<deg_C>(0),
                           clamp_to_range{delta<deg_C>(-3), delta<deg_C>(+3)}> {} ac_setpoint;
-    // ❌ compile error if this would violate the parent origin's physical bounds
+    // ❌ if this would violate the parent origin's physical bounds
 ```
 
 ### The `static_assert` at definition time
@@ -292,6 +295,7 @@ origin definition regardless of how many `quantity_point` variables are construc
 ### Full example: geodetic coordinate types
 
 ```cpp
+// snippet-id: geo
 #include <mp-units/core.h>
 #include <mp-units/systems/si.h>
 
@@ -301,21 +305,11 @@ using namespace mp_units::si::unit_symbols;
 inline constexpr struct geo_latitude : quantity_spec<isq::angular_measure> {} geo_latitude;
 inline constexpr struct geo_longitude : quantity_spec<isq::angular_measure> {} geo_longitude;
 
-// Absolute origins
-inline constexpr struct equator : absolute_point_origin<geo_latitude>  {} equator;
-inline constexpr struct prime_meridian : absolute_point_origin<geo_longitude> {} prime_meridian;
-```
-
-Outside the anonymous namespace (so the specializations have external linkage):
-
-```cpp
-template<>
-inline constexpr auto mp_units::quantity_bounds<equator> =
-    mp_units::reflect_in_range{-90.0 * deg, 90.0 * deg};   // simplified — see note below
-
-template<>
-inline constexpr auto mp_units::quantity_bounds<prime_meridian> =
-    mp_units::wrap_to_range{-180.0 * deg, 180.0 * deg};    // longitude wraps cyclically
+// Absolute origins with their bounds
+inline constexpr struct equator :
+    absolute_point_origin<geo_latitude, reflect_in_range{-90.0 * deg, 90.0 * deg}> {} equator;       // simplified — see note below
+inline constexpr struct prime_meridian :
+    absolute_point_origin<geo_longitude, wrap_to_range{-180.0 * deg, 180.0 * deg}> {} prime_meridian;  // longitude wraps cyclically
 ```
 
 !!! warning "Simplification"
@@ -328,6 +322,8 @@ inline constexpr auto mp_units::quantity_bounds<prime_meridian> =
     for discussion.
 
 ```cpp
+// snippet-id: geo-types
+// snippet-continues
 // Usage — bounds enforced transparently on construction and assignment.
 using latitude  = quantity_point<si::degree, equator,        double>;
 using longitude = quantity_point<si::degree, prime_meridian, double>;
@@ -335,13 +331,14 @@ using longitude = quantity_point<si::degree, prime_meridian, double>;
 constexpr latitude lat  = equator + 91.0 * deg;          // reflects → 89°
 constexpr longitude lon = prime_meridian + 200.0 * deg;  // wraps   → -160°
 
-static_assert(lat.quantity_from(equator)        == 89.0  * deg);
-static_assert(lon.quantity_from(prime_meridian) == -160.0 * deg);
+static_assert(lat.delta_from(equator)        == 89.0  * deg);
+static_assert(lon.delta_from(prime_meridian) == -160.0 * deg);
 ```
 
 ### Full example: bounded-altitude drone types
 
 ```cpp
+// snippet-template: isq
 // MSL: physical world — flight level corridor.
 inline constexpr struct sea_level :
     absolute_point_origin<isq::altitude, clamp_to_range{-500 * m, 12'000 * m}> {} sea_level;
@@ -352,6 +349,7 @@ inline constexpr struct ground_level :
 ```
 
 ```cpp
+// snippet-continues
 using msl_altitude = quantity_point<altitude[m], sea_level,    double>;
 using agl_altitude = quantity_point<altitude[m], ground_level, double>;
 
@@ -366,9 +364,10 @@ When bounds are defined on the origin, the `quantity_point` static member
 functions and the `std::numeric_limits` specialization reflect those bounds:
 
 ```cpp
-static_assert(longitude::min().quantity_from(prime_meridian) == -180.0 * deg);
-static_assert(longitude::max().quantity_from(prime_meridian) ==  180.0 * deg);
-static_assert(std::numeric_limits<longitude>::lowest().quantity_from(prime_meridian) == -180.0 * deg);
+// snippet-after: geo-types
+static_assert(longitude::min().delta_from(prime_meridian) == -180.0 * deg);
+// static_assert(longitude::max().delta_from(prime_meridian) == 180.0 * deg);  // ❌ 180° is excluded
+static_assert(std::numeric_limits<longitude>::lowest().delta_from(prime_meridian) == -180.0 * deg);
 ```
 
 For unbounded `quantity_point` types the functions are conditionally present:
@@ -417,10 +416,7 @@ would fire a contract violation it instead calls the EP, regardless of
 
 ```cpp
 // constraint_violation_handler<constrained<T, EP>> ships in constrained.h
-template<typename T, typename ErrorPolicy>
-struct constraint_violation_handler<constrained<T, ErrorPolicy>> {
-  static constexpr void on_violation(std::string_view msg) { ErrorPolicy::on_constraint_violation(msg); }
-};
+--8<-- "src/core/include/mp-units/utility/constrained.h:323:326"
 ```
 
 Here is a concrete usage example: a body-temperature sensor that must always
@@ -452,13 +448,13 @@ inline constexpr struct clinical_zero :
                                   check_in_range{delta<deg_C>(35.), delta<deg_C>(42.0)}> {} clinical_zero;
 
 // Rep is constrained<double> — violations always throw std::domain_error.
-using safe_temp = quantity_point<deg_C, clinical_zero, constrained<double>>;
+using safe_temp = quantity_point<deg_C, clinical_zero, utility::constrained<double>>;
 
 safe_temp reading = clinical_zero + delta<deg_C>(36.6);  // fine
 safe_temp fever   = clinical_zero + delta<deg_C>(44.0);  // throws std::domain_error
 ```
 
-Because `clinical_zero` is rooted in `ice_point`, `reading.quantity_from_zero()`
+Because `clinical_zero` is rooted in `ice_point`, `reading.delta_from_zero()`
 and `reading.in(deg_F)` both work, because the conversion offsets are known. The bounds,
 however, only guard `safe_temp`. A plain `quantity_point<deg_C, si::ice_point>` used
 elsewhere in the codebase is unconstrained.
@@ -485,7 +481,7 @@ inherit it transitively from their parent:
 static_assert(is_non_negative(isq::length));     // ✅ explicit tag in ISQ definition
 static_assert(is_non_negative(isq::mass));       // ✅ explicit tag in ISQ definition
 static_assert(is_non_negative(isq::speed));      // ✅ explicit tag in ISQ definition
-static_assert(!is_non_negative(isq::velocity));  // ❌ vector character — excluded
+static_assert(!is_non_negative(isq::velocity));  // vector character: excluded
 ```
 
 The flag is **never inferred automatically** from equation factors. Even when all
@@ -507,8 +503,8 @@ static_assert(!is_non_negative(isq::Massieu_function)); // signed: J = −A/T
     and signed coordinates. This matters when using CTAD with bare SI units:
 
     ```cpp
-    quantity_point generic{5.0 * m};  // origin uses kind_of<isq::length> — NOT auto-bounded
-    quantity_point dist{distance_traveled(5.0 * m)};  // uses isq::distance — auto-bounded
+    quantity_point generic{5.0 * m};              // origin uses kind_of<isq::length> — NOT auto-bounded
+    quantity_point dist{isq::distance(5.0 * m)};  // uses isq::distance — auto-bounded
     ```
 
 When a `quantity_point` uses a `natural_point_origin` whose quantity spec is
@@ -573,6 +569,7 @@ by a **composite type** whose constructor enforces the coupled invariant, much
 like `std::complex` enforces its own invariants across two components:
 
 ```cpp
+// snippet-after: geo
 class position {
 public:
   quantity_point<si::degree, equator, double> lat;
@@ -582,7 +579,7 @@ public:
                      quantity_point<si::degree, prime_meridian, double> lon_in) noexcept :
       lon(lon_in)
   {
-    quantity lat_q = lat_in.quantity_from(equator);
+    quantity lat_q = lat_in.delta_from(equator);
     // fold lat_q into [-180°, 180°] using fmod, then reflect at the poles
     // (|lat_q| > 90° → lat_q := ±180° - lat_q; lon += 180°).
     // wrap_to_range on prime_meridian normalizes the longitude back into (-180°, 180°].

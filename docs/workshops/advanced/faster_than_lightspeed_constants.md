@@ -102,6 +102,7 @@ With these definitions in place, observe how:
 
 ```cpp
 // ce-embed height=900 compiler=clang2310 flags="-std=c++23 -stdlib=libc++ -O0" mp-units=trunk
+// snippet-template: none (exercise skeleton: TODOs leave standard_gravity and kilogram_force for the reader; the Solution fence compiles)
 #include <mp-units/systems/si.h>
 #include <mp-units/systems/isq.h>
 #include <iostream>
@@ -192,6 +193,7 @@ int main()
 ??? tip "Solution"
 
     ```cpp
+    // snippet-id: solution
     #include <mp-units/systems/si.h>
     #include <mp-units/systems/isq.h>
     #include <iostream>
@@ -202,7 +204,7 @@ int main()
         quantity_spec<isq::duration, isq::force / (isq::mass_flow_rate * isq::acceleration)> {} specific_impulse;
 
     inline constexpr struct standard_gravity :
-        named_constant<symbol_text{u8"g₀", "g_0"}, mag_ratio<980'665, 100'000> * si::metre / square(si::second)> {} standard_gravity;
+        named_constant<{u8"g₀", "g_0"}, mag_ratio<980'665, 100'000> * si::metre / square(si::second)> {} standard_gravity;
     inline constexpr struct kilogram_force :
         named_unit<"kgf", si::kilogram * standard_gravity> {} kilogram_force;
 
@@ -301,7 +303,10 @@ int main()
     Traditional approach treats constants as runtime values:
 
     ```cpp
-    // ❌ Traditional: g₀ as runtime constant
+    // snippet-setup: double mass_kg = 15000.0;
+    // snippet-setup: double thrust_N = 3'824'593.5;
+    // snippet-setup: double isp_s = 311.0;
+    // Traditional: g₀ as runtime constant
     const double g0 = 9.80665;
     double force_N = mass_kg * g0;
     double flow_rate = thrust_N / (isp_s * g0);  // Runtime arithmetic!
@@ -310,6 +315,7 @@ int main()
     **mp-units** makes constants part of the type system:
 
     ```cpp
+    // snippet-id: g0-unit
     // ✅ mp-units: g₀ as compile-time unit
     inline constexpr struct standard_gravity :
       named_constant<"g₀", mag_ratio<980'665, 100'000> * si::metre / square(si::second)> {} standard_gravity;
@@ -328,6 +334,9 @@ int main()
     The burn time formula contains g₀ in both places:
 
     ```cpp
+    // snippet-setup: inline constexpr struct specific_impulse : quantity_spec<isq::duration, isq::force / (isq::mass_flow_rate * isq::acceleration)> {} specific_impulse;
+    // snippet-setup: inline constexpr struct standard_gravity : named_constant<{u8"g₀", "g_0"}, mag_ratio<980'665, 100'000> * si::metre / square(si::second)> {} standard_gravity;
+    // snippet-setup: inline constexpr Unit auto g0 = standard_gravity;
     // Formula: t_burn = (m_prop × Isp × g₀) / F
     // When F is in kgf = kg × g₀, the formula becomes:
     // t_burn = (m_prop × Isp × g₀) / (F_kgf × g₀) = (m_prop × Isp) / F_kgf
@@ -357,6 +366,7 @@ int main()
     kilogram-force embeds g₀ in its definition:
 
     ```cpp
+    // snippet-after: g0-unit
     inline constexpr struct kilogram_force : named_unit<"kgf", si::kilogram * standard_gravity> {} kilogram_force;
     ```
 
@@ -370,6 +380,8 @@ int main()
     Usage with different thrust specifications:
 
     ```cpp
+    // snippet-after: solution
+    // snippet-setup: quantity isp = 311. * s;
     quantity thrust_legacy = 390'000 * kgf;  // Legacy Russian engines
     quantity thrust_modern = 500 * kN;        // Modern engines
 
@@ -383,6 +395,7 @@ int main()
     Real-world scenario with mixed specifications:
 
     ```cpp
+    // snippet-after: solution
     // Engine datasheet uses kgf (legacy)
     quantity engine_thrust = 390'000 * kgf;
 
@@ -416,6 +429,9 @@ int main()
     **mp-units** prevents this:
 
     ```cpp
+    // snippet-template: systems
+    using namespace mp_units::yard_pound::unit_symbols;
+
     void set_thrust(QuantityOf<isq::force> auto F);
 
     quantity thrust_lbf = 1000 * lbf;   // Legacy Imperial
@@ -423,7 +439,7 @@ int main()
 
     set_thrust(thrust_lbf);  // ✅ Works - automatic conversion
     set_thrust(thrust_N);    // ✅ Works - no conversion needed
-    set_thrust(1000);        // ❌ Does not compile - prevents raw numbers
+    set_thrust(1000);        // ❌ prevents raw numbers
     ```
 
     Type safety ensures:

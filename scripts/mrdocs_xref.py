@@ -82,9 +82,13 @@ _MEMBER_LINK = re.compile(r'href="([^":#?]+/)"')
 # by the Compiler Explorer transform in `docs/javascripts/ce_embed.js`.
 _DOC_CODE = re.compile(r'(?s)<pre><code class="language-([\w+-]+)">(.*?)</code></pre>')
 
-# The line in an example that tells `scripts/check_doc_snippets.py` how to compile
-# it. The reader has no use for it, so `_fence` drops it.
-_SNIPPET_MARKER = re.compile(r"^[ \t]*//[ \t]*snippet-template:.*\n?", re.M)
+# A line in an example that tells `scripts/check_doc_snippets.py` how to compile
+# it. The reader has no use for it, so it is dropped from every page, by `_fence`
+# in the API reference and by `on_page_markdown` everywhere else.
+_SNIPPET_MARKER = re.compile(
+    r"^[ \t]*//[ \t]*snippet-(?:(?:template|std|id|after|setup):.*|continues[ \t]*)\n?",
+    re.M,
+)
 
 # A link from a doc comment into the hand-written documentation, written as
 # `[text](docs:users_guide/framework_basics/systems_of_units)`. The target is a
@@ -926,6 +930,8 @@ def on_page_markdown(markdown: str, page, config, files, **kwargs):
         markdown = _heading(markdown, page)
         markdown = _fence(markdown)
         markdown = _doc_links(markdown, page, Path(config["docs_dir"]))
+    else:
+        markdown = _SNIPPET_MARKER.sub("", markdown)
 
     definitions = _definitions(markdown, src_uri)
     return f"{markdown}\n\n{definitions}\n" if definitions else markdown

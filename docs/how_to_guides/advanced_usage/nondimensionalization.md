@@ -163,6 +163,7 @@ multiplies results back.
 #include <mp-units/math.h>
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
+#include <print>
 
 using namespace mp_units;
 using namespace mp_units::si::unit_symbols;
@@ -193,6 +194,7 @@ The library verifies dimensional consistency of the scale definitions at compile
     try to pass or store the result.
 
 ```cpp
+// snippet-continues
 const QuantityOf<isq::position_vector> auto X = R;                         // characteristic position scale
 const QuantityOf<isq::duration>        auto T = sqrt(pow<3>(X) / (G * M)); // ≈ 806 s
 const QuantityOf<isq::velocity>        auto V = X / T;                     // ≈ 7909 m/s
@@ -207,6 +209,8 @@ wrong scale.
 Divide each input by its characteristic scale to obtain dimensionless numbers:
 
 ```cpp
+// snippet-continues
+// snippet-id: nd1
 double x0 = (r_initial / X).numerical_value_in(one);  // 1.5 R⊕ / R⊕ = 1.5
 double v0 = (v_initial / V).numerical_value_in(one);  // 0 / 7909 = 0.0
 ```
@@ -217,6 +221,8 @@ _velocity ratio_, not the dimensionless position intended.
 #### Step 4: Dimensionless Solver
 
 ```cpp
+// snippet-after: nd1
+// snippet-setup: auto integrate(std::pair<double, double> (*rhs)(double, double), double x0, double v0, int max_steps) -> std::tuple<double, double, double>;
 // Dimensionless RHS: dx*/dt* = v*,  dv*/dt* = -1/x*²
 auto rhs = [](double x_nd, double v_nd) { return std::pair{ v_nd, -1.0 / (x_nd * x_nd) }; };
 
@@ -234,6 +240,7 @@ described below.
 Multiply each dimensionless result back by its typed characteristic scale:
 
 ```cpp
+// snippet-continues
 QuantityOf<isq::position_vector> auto x_phys = X * x_result;  // R⊕ × 1.0
 QuantityOf<isq::duration>        auto t_phys = T * t_result;  // 806 s × 1414
 QuantityOf<isq::velocity>        auto v_phys = V * v_result;  // 7909 m/s × (−0.817)
@@ -279,6 +286,7 @@ boundary steps then simplify:
 #include <mp-units/systems/iau.h>
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
+#include <print>
 
 using namespace mp_units;
 using namespace mp_units::iau::unit_symbols;
@@ -302,6 +310,7 @@ the IAU unit choice directly.  They are pure units; the characteristic scale is 
 in their type:
 
 ```cpp
+// snippet-continues
 constexpr Unit auto X = R;                    // characteristic position unit
 constexpr Unit auto T = sqrt(pow<3>(X) / GM); // unit R_⊕ᵉᴺ^(3/2)/(GM)_⊕ᴺ^(1/2)
 constexpr Unit auto V = X / T;                // unit (GM)_⊕ᴺ^(1/2)/R_⊕ᵉᴺ^(1/2)
@@ -314,6 +323,8 @@ already stored in that unit, no runtime division occurs; otherwise the library c
 automatically:
 
 ```cpp
+// snippet-continues
+// snippet-id: nd2
 double x0 = r_initial.numerical_value_in(X);  // = 1.5, no runtime division
 double v0 = v_initial.numerical_value_in(V);  // = 0.0
 ```
@@ -330,6 +341,8 @@ explicit nondimensionalization algebra is that `GM` has numerical value 1.0 in I
 so the coefficient in the original equation $\dot{v} = -GM/x^2$ is already 1:
 
 ```cpp
+// snippet-after: nd2
+// snippet-setup: auto integrate(std::pair<double, double> (*rhs)(double, double), double x0, double v0, int max_steps) -> std::tuple<double, double, double>;
 // Original physical RHS: dv/dt = -GM/x²
 // GM = 1.0 in IAU units — the coefficient is 1 automatically
 auto rhs = [](double x_nd, double v_nd) { return std::pair{ v_nd, -1.0 / (x_nd * x_nd) }; };
@@ -342,6 +355,7 @@ Multiply each plain `double` result by its characteristic unit to obtain quantit
 mirror of the entry step, with no runtime multiplication:
 
 ```cpp
+// snippet-continues
 QuantityOf<isq::position_vector> auto x_phys = x_result * X;  // ≡ x_result × R_⊕ₑᴺ
 QuantityOf<isq::duration>        auto t_phys = t_result * T;  // value stored in T's IAU unit
 QuantityOf<isq::velocity>        auto v_phys = v_result * V;  // value stored in V's IAU unit
@@ -357,6 +371,7 @@ std::println("t = {::N[.1f]}, x = {::N[.0f]}, v = {::N[.2f]}", t_phys.in(s), x_p
     of `X`, `T`, and `V`, printing without `.in(...)`:
 
     ```cpp
+    // snippet-continues
     std::println("t = {}, x = {}, v = {}", t_phys, x_phys, v_phys);
     ```
 
@@ -417,6 +432,7 @@ the numerator spec is exact at the entry boundary:
 #include <mp-units/systems/iau.h>
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
+#include <print>
 
 using namespace mp_units;
 using namespace mp_units::iau::unit_symbols;
@@ -447,6 +463,7 @@ quantities — each carrying its `characteristic_*` spec — built from the same
 constants.  The library verifies dimensional consistency at compile time:
 
 ```cpp
+// snippet-continues
 const quantity X = characteristic_position(1 * R_EARTH_E_N);
 const quantity T = characteristic_duration(sqrt(pow<3>(X) / (1 * GM_EARTH_N)));
 const quantity V = characteristic_velocity(X / T);
@@ -458,9 +475,10 @@ Divide each typed input by its typed characteristic scale.  The ISQ algebra reso
 quotient spec automatically — no cast, and the wrong pairing is a compile error:
 
 ```cpp
+// snippet-continues
 QuantityOf<nd_position> auto x0_nd = r_initial / X;   // position_vector / characteristic_position → nd_position ✓
 QuantityOf<nd_velocity> auto v0_nd = v_initial / V;   // velocity / characteristic_velocity         → nd_velocity ✓
-// QuantityOf<nd_position> auto bad = r_initial / V;  // ❌ compile error — position_vector / characteristic_velocity ≠ nd_position
+// QuantityOf<nd_position> auto bad = r_initial / V;  // ❌ position_vector / characteristic_velocity ≠ nd_position
 ```
 
 #### Step 4: Dimensionless Solver
@@ -472,6 +490,8 @@ back into `nd_*` quantities on return.  The wrapper's typed signature is what en
 argument order at every call site:
 
 ```cpp
+// snippet-continues
+// snippet-id: engine
 // Generic engine — operates on plain doubles, independent of nondimensionalization
 std::tuple<double, double, double>
 integrate(auto rhs, double x0, double v0, int max_steps = 10'000);
@@ -488,11 +508,12 @@ The RHS lambda uses plain `double`s — it is passed unchanged to the raw engine
 wrapper:
 
 ```cpp
+// snippet-continues
 auto rhs = [](double x_nd, double v_nd) { return std::pair{ v_nd, -1.0 / (x_nd * x_nd) }; };
 
 // Compiler enforces argument order — swapping x0_nd and v0_nd is a compile error
 auto [t_nd, x_nd, v_nd] = integrate(rhs, x0_nd, v0_nd);
-// integrate(rhs, v0_nd, x0_nd);  // ❌ compile error — position and velocity swapped
+// integrate(rhs, v0_nd, x0_nd);  // ❌ position and velocity swapped
 ```
 
 #### Step 5: Exit Boundary
@@ -501,10 +522,11 @@ Multiplying `nd_position × characteristic_position` recovers `isq::position_vec
 through ISQ algebra.  The `QuantityOf` constraints verify the result spec at compile time:
 
 ```cpp
+// snippet-continues
 QuantityOf<isq::position_vector> auto x_phys = x_nd * X;  // nd_position × characteristic_position
 QuantityOf<isq::duration>        auto t_phys = t_nd * T;  // nd_time     × characteristic_duration
 QuantityOf<isq::velocity>        auto v_phys = v_nd * V;  // nd_velocity × characteristic_velocity
-// QuantityOf<isq::position_vector> auto bad = x_nd * V;  // ❌ compile error — nd_position × characteristic_velocity ≠ position_vector
+// QuantityOf<isq::position_vector> auto bad = x_nd * V;  // ❌ nd_position × characteristic_velocity ≠ position_vector
 
 // Conversion to conventional SI only happens here, on explicit request
 std::println("t = {::N[.1f]}, x = {::N[.0f]}, v = {::N[.2f]}", t_phys.in(s), x_phys.in(km), v_phys.in(km / s));

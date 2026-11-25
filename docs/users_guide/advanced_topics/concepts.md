@@ -234,11 +234,12 @@ The specification half stays exact, so an `isq::speed` quantity is never a vecto
 whatever its representation.
 
 ```cpp
+// snippet-template: utility
 static_assert(QuantityOf<quantity<isq::speed[m / s], double>, quantity_tensor_order::scalar>);
 static_assert(!QuantityOf<quantity<isq::speed[m / s], double>, quantity_tensor_order::vector>);
 static_assert(QuantityOf<quantity<isq::velocity[m / s], double>, quantity_tensor_order::vector>);
-static_assert(QuantityOf<quantity<isq::stress[Pa], cartesian_tensor<double>>, quantity_tensor_order::tensor>);
-static_assert(QuantityOf<quantity<km / h, cartesian_vector<double>>, quantity_tensor_order::vector>);  // a kind
+static_assert(QuantityOf<quantity<isq::stress[Pa], utility::cartesian_tensor<double>>, quantity_tensor_order::tensor>);
+static_assert(QuantityOf<quantity<km / h, utility::cartesian_vector<double>>, quantity_tensor_order::vector>);  // a kind
 ```
 
 A _quantity_ of a kind admits every order its representation fills, so it can satisfy

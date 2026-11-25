@@ -121,7 +121,7 @@ int main()
   std::cout << "In Kelvins: " << fever.in(K) << "\n";
 
   // You CANNOT add two absolute temperatures (doesn't make sense!)
-  // auto bad = room_temp + body_temp;  // ❌ Won't compile
+  // auto bad = room_temp + body_temp;  // ❌
 
   // You CAN add a difference to an absolute temperature
   quantity_point fever_temp = body_temp + delta<deg_C>(2);

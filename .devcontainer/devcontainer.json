@@ -71,7 +71,7 @@
   "runArgs": [
     "--init"
   ],
-  "postCreateCommand": "bash -c 'pipx upgrade-all && .devcontainer/validate_environment.sh && .devcontainer/check_all.sh -d ${CI_NEVER_BUILD:+-n} install'",
+  "postCreateCommand": "bash -c 'pre-commit install && pipx upgrade-all && .devcontainer/validate_environment.sh && .devcontainer/check_all.sh -d ${CI_NEVER_BUILD:+-n} install'",
   "postStartCommand": "echo '🚀 mp-units development environment ready!' && echo '🧪 Use `.devcontainer/check_all.sh [-d] build` to test all compiler configurations.' && echo '📖 Use `python scripts/mrdocs/run.py` to generate the API reference, then `properdocs serve`.'",
   "forwardPorts": [
     8000

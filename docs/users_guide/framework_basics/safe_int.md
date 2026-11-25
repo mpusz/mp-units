@@ -9,8 +9,11 @@ type](../advanced_topics/representation_types.md) — making it a true drop-in r
 for plain integers.
 
 ```cpp
+// snippet-id: safe-int-intro
+#include <mp-units/systems/si.h>
 #include <mp-units/utility/safe_int.h>
 using namespace mp_units;
+using namespace mp_units::si::unit_symbols;
 using namespace mp_units::utility;
 
 // Just change the representation type — everything else stays the same
@@ -55,6 +58,7 @@ is checked — regardless of context:
 === "Construction"
 
     ```cpp
+    // snippet-after: safe-int-intro
     int value = 40'000;
 
     // Constructing a safe_int quantity from a plain integer that doesn't fit the rep type
@@ -64,6 +68,7 @@ is checked — regardless of context:
 === "Conversion"
 
     ```cpp
+    // snippet-after: safe-int-intro
     quantity q = 40'000 * si::metre;
 
     // Converting from a quantity with too large numerical value for the rep type
@@ -73,6 +78,7 @@ is checked — regardless of context:
 === "Arithmetic"
 
     ```cpp
+    // snippet-after: safe-int-intro:decls
     // Same-unit addition — no unit conversion, plain safe_int arithmetic
     quantity<mm, safe_i32> dist{1'500 * km};
     quantity<mm, safe_i32> total = dist + dist;  // throws — 3×10⁹ > INT32_MAX
@@ -86,6 +92,7 @@ is checked — regardless of context:
 === "Explicit unit conversion"
 
     ```cpp
+    // snippet-after: safe-int-intro
     quantity dist = safe_i32{2'200'000} * si::metre;
     quantity huge = dist.in(si::micro<si::metre>);  // throws — ×1,000,000 factor overflows int32_t
     ```
@@ -93,6 +100,7 @@ is checked — regardless of context:
 === "Automatic common-unit scaling"
 
     ```cpp
+    // snippet-after: safe-int-intro
     quantity dist_m  = safe_i32{1'500'000'000} * si::metre;
     quantity dist_km = safe_i32{1'000'000} * si::kilo<si::metre>;
     quantity total = dist_m + dist_km;    // throws — scaling 10⁶ km → m overflows int32_t
@@ -105,6 +113,7 @@ What happens when overflow is detected is controlled by the `ErrorPolicy` templa
 parameter:
 
 ```cpp
+// snippet-template: none (pseudo-code: synopsis with a `/* see below */` default argument)
 template<std::integral T, typename ErrorPolicy = /* see below */>
 class safe_int;
 ```
@@ -138,6 +147,7 @@ using safe_u64 = mp_units::utility::safe_int<std::uint64_t>;
 For explicit policy control, use the full template:
 
 ```cpp
+// snippet-after: safe-int-intro
 safe_int<std::int32_t, safe_int_throw_policy> explicit_throw;
 safe_int<std::int32_t, safe_int_terminate_policy> explicit_terminate;
 ```
@@ -148,6 +158,7 @@ You can define your own error policy to integrate with custom logging or diagnos
 systems:
 
 ```cpp
+// snippet-template: none (pseudo-code: `log_critical_error` stands for the user's own logging facility)
 #include <mp-units/utility/safe_int.h>
 
 struct logging_policy {
@@ -190,6 +201,7 @@ as `T`. Only the representation type changes — everything else stays identical
 === "safe_int<T>"
 
     ```cpp
+    // snippet-after: safe-int-intro:decls
     quantity<si::metre, safe_i16> q{30'000 * si::metre};
     quantity<si::metre, safe_i16> doubled{q + q};  // throws std::overflow_error ✓
     ```
@@ -221,6 +233,7 @@ homogeneous case (two `safe_int<T>` operands) and the scalar case (one `safe_int
 one plain integral):
 
 ```cpp
+// snippet-after: safe-int-intro
 // Underlying types: int16_t + int16_t → int (integral promotion)
 static_assert(std::is_same_v<decltype(std::int16_t{1} + std::int16_t{1}), int>);
 
@@ -292,13 +305,14 @@ comparison operators use `std::cmp_equal` / `std::cmp_less` etc., which correctl
 mixed-signedness without reinterpretation.
 
 ```cpp
+// snippet-after: safe-int-intro
 safe_int<int>      si{1};
 safe_int<unsigned> su{2u};
 
-// Compile-time error — two safe_int of opposite signedness:
+// ❌ two safe_int of opposite signedness
 // auto x = si + su;
 
-// Compile-time error — safe_int<signed> × unsigned scalar:
+// ❌ safe_int<signed> × unsigned scalar
 // auto y = si * 2u;
 
 // Explicit mixed-signedness arithmetic — use .value() and cast deliberately:
@@ -381,6 +395,7 @@ checking that was already in place — the `on_constraint_violation` handler is 
 still fires when a domain bound is violated.
 
 ```cpp
+// snippet-after: safe-int-intro, docs/users_guide/framework_basics/the_affine_space.md#geo
 // A bounded, overflow-safe latitude representation
 using safe_double   = constrained<double, throw_policy>;
 using safe_latitude = quantity_point<geo_latitude[deg], equator, safe_double>;

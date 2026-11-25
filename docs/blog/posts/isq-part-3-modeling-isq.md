@@ -39,6 +39,7 @@ the problems described in more detail
 in the previous article. For example, let's see the following implementation:
 
 ```cpp
+// snippet-template: none (not this library: the type-per-dimension `Box` of "most existing strongly-typed libraries")
 class Box {
   area base_;
   length height_;
@@ -59,7 +60,7 @@ Both of those have the same dimension but are distinct quantities.
 A similar issue is related to figuring out what should be the result of:
 
 ```cpp
-auto res = 1 * Hz + 1 * Bq + 1 * Bd;
+auto res = 1 * Hz + 1 * Bq + 1 * Bd;  // ❌
 ```
 
 where:
@@ -183,9 +184,9 @@ rules:
     - Every _radius_ is a _width_.
 
     ```cpp
-    static_assert(implicitly_convertible(isq::width, isq::length));
-    static_assert(implicitly_convertible(isq::radius, isq::length));
-    static_assert(implicitly_convertible(isq::radius, isq::width));
+    static_assert(utility::implicitly_convertible(isq::width, isq::length));
+    static_assert(utility::implicitly_convertible(isq::radius, isq::length));
+    static_assert(utility::implicitly_convertible(isq::radius, isq::width));
     ```
 
     Implicit conversions are allowed on copy-initialization:
@@ -195,6 +196,7 @@ rules:
     ```
 
     ```cpp
+    // snippet-continues
     quantity<isq::width[m]> q1 = 42 * m;
     quantity<isq::length[m]> q2 = q1;  // implicit quantity conversion
     foo(q1);                           // implicit quantity conversion
@@ -206,12 +208,12 @@ rules:
     - Not every _width_ is a _radius_.
 
     ```cpp
-    static_assert(!implicitly_convertible(isq::length, isq::width));
-    static_assert(!implicitly_convertible(isq::length, isq::radius));
-    static_assert(!implicitly_convertible(isq::width, isq::radius));
-    static_assert(explicitly_convertible(isq::length, isq::width));
-    static_assert(explicitly_convertible(isq::length, isq::radius));
-    static_assert(explicitly_convertible(isq::width, isq::radius));
+    static_assert(!utility::implicitly_convertible(isq::length, isq::width));
+    static_assert(!utility::implicitly_convertible(isq::length, isq::radius));
+    static_assert(!utility::implicitly_convertible(isq::width, isq::radius));
+    static_assert(utility::explicitly_convertible(isq::length, isq::width));
+    static_assert(utility::explicitly_convertible(isq::length, isq::radius));
+    static_assert(utility::explicitly_convertible(isq::width, isq::radius));
     ```
 
     Explicit conversions are forced by passing the quantity to a call operator
@@ -222,6 +224,7 @@ rules:
     ```
 
     ```cpp
+    // snippet-continues
     quantity<isq::length[m]> q1 = 42 * m;
     quantity<isq::height[m]> q2 = isq::height(q1);  // explicit quantity conversion
     quantity<isq::height[m]> q3(q1);                // direct initialization
@@ -234,9 +237,9 @@ rules:
     - Both _height_ and _width_ are quantities of kind _length_.
 
     ```cpp
-    static_assert(!implicitly_convertible(isq::height, isq::width));
-    static_assert(!explicitly_convertible(isq::height, isq::width));
-    static_assert(castable(isq::height, isq::width));
+    static_assert(!utility::implicitly_convertible(isq::height, isq::width));
+    static_assert(!utility::explicitly_convertible(isq::height, isq::width));
+    static_assert(utility::castable(isq::height, isq::width));
     ```
 
     Explicit casts are forced with a dedicated `quantity_cast` function:
@@ -246,6 +249,7 @@ rules:
     ```
 
     ```cpp
+    // snippet-continues
     quantity<isq::width[m]> q1 = 42 * m;
     quantity<isq::height[m]> q2 = quantity_cast<isq::height>(q1);  // explicit quantity cast
     foo(quantity_cast<isq::height>(q1));                           // explicit quantity cast
@@ -256,9 +260,9 @@ rules:
     - _time_ has nothing in common with _length_.
 
     ```cpp
-    static_assert(!implicitly_convertible(isq::duration, isq::length));
-    static_assert(!explicitly_convertible(isq::duration, isq::length));
-    static_assert(!castable(isq::duration, isq::length));
+    static_assert(!utility::implicitly_convertible(isq::duration, isq::length));
+    static_assert(!utility::explicitly_convertible(isq::duration, isq::length));
+    static_assert(!utility::castable(isq::duration, isq::length));
     ```
 
     Even the explicit casts will not force such a conversion:
@@ -268,8 +272,9 @@ rules:
     ```
 
     ```cpp
-    quantity<isq::length[m]> q1 = 42 * s;    // Compile-time error
-    foo(quantity_cast<isq::length>(42 * s)); // Compile-time error
+    // snippet-continues
+    quantity<isq::length[m]> q1 = 42 * s;    // ❌
+    foo(quantity_cast<isq::length>(42 * s)); // ❌
     ```
 
 
@@ -318,24 +323,24 @@ Such an entity behaves as any quantity of its kind. This means that it is implic
 convertible to any quantity in a tree.
 
 ```cpp
-static_assert(!implicitly_convertible(isq::length, isq::height));
-static_assert(implicitly_convertible(kind_of<isq::length>, isq::height));
+static_assert(!utility::implicitly_convertible(isq::length, isq::height));
+static_assert(utility::implicitly_convertible(kind_of<isq::length>, isq::height));
 ```
 
 Additionally, the result of operations on quantity kinds is also a quantity
 kind:
 
 ```cpp
-static_assert(same_type<kind_of<isq::length> / kind_of<isq::duration>, kind_of<isq::length / isq::duration>>);
+static_assert(kind_of<isq::length> / kind_of<isq::duration> == kind_of<isq::length / isq::duration>);
 ```
 
 However, if at least one equation's operand is not a quantity kind, the result
-becomes a "strong" quantity where all the kinds are converted to the hierarchy
-tree's root quantities:
+is usually not a quantity kind either, and the kind operands that remain stay kinds
+instead of being converted to the hierarchy tree's root quantities:
 
 ```cpp
-static_assert(!same_type<kind_of<isq::length> / isq::duration, kind_of<isq::length / isq::duration>>);
-static_assert(same_type<kind_of<isq::length> / isq::duration, isq::length / isq::duration>);
+static_assert(kind_of<isq::length> / isq::duration != kind_of<isq::length / isq::duration>);
+static_assert(kind_of<isq::length> / isq::duration != isq::length / isq::duration);
 ```
 
 !!! info
@@ -396,6 +401,7 @@ This is why it is important for the library to allow constraining such units to
 be used only with a specific quantity kind:
 
 ```cpp
+// snippet-template: si_excerpt
 inline constexpr struct hertz : named_unit<"Hz", one / second, kind_of<isq::frequency>> {} hertz;
 inline constexpr struct becquerel : named_unit<"Bq", one / second, kind_of<isq::activity>> {} becquerel;
 ```
@@ -404,10 +410,10 @@ With the above, `hertz` can only be used for _frequencies_, while `becquerel`
 should only be used for quantities of _activity_:
 
 ```cpp
-quantity<isq::frequency[Hz]> q1 = 60 * Bq;   // Compile-time error
-quantity<isq::activity[Hz]> q2;              // Compile-time error
+quantity<isq::frequency[Hz]> q1 = 60 * Bq;   // ❌
+quantity<isq::activity[Hz]> q2;              // ❌
 quantity<isq::frequency[Hz]> q3 = 60 * Hz;   // OK
-std::cout << q3.in(Bq) << "\n";              // Compile-time error
+std::cout << q3.in(Bq) << "\n";              // ❌
 ```
 
 We know already that quantities of different kinds can't be compared, added, and
@@ -415,7 +421,7 @@ subtracted. The following equation will not compile thanks to constraining
 derived units to be valid for specific kinds only:
 
 ```cpp
-auto q = 1 * Hz + 1 * Bq;   // Fails to compile
+auto q = 1 * Hz + 1 * Bq;   // ❌
 ```
 
 All of the above features improve the safety of our library and the products

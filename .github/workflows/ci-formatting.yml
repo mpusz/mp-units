@@ -53,6 +53,10 @@ jobs:
           python3 --version
           pre-commit --version
       - name: Check
+        # The documentation samples need GCC 15, which this runner lacks. The `snippets` job in
+        # `documentation.yml` compiles them.
+        env:
+          SKIP: doc-snippets
         run: |
           pre-commit run --all-files
 

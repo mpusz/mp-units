@@ -80,7 +80,6 @@ constexpr std::optional<std::intmax_t>
  * unit, it defines a unit by an exact factor:
  *
  * @code{.cpp}
- * // snippet-template: none
  * inline constexpr struct nautical_mile final :
  *   named_unit<"nmi", mag<1852> * si::metre> {} nautical_mile;
  * @endcode
@@ -100,7 +99,7 @@ constexpr UnitMagnitude auto mag = detail::make_magnitude<V>();
  * It defines a unit as an exact fraction of another:
  *
  * @code{.cpp}
- * // snippet-template: none
+ * // snippet-template: si_excerpt
  * inline constexpr struct arcminute final :
  *   named_unit<symbol_text{u8"′", "'"}, mag_ratio<1, 60> * degree> {} arcminute;
  * @endcode
@@ -130,7 +129,7 @@ constexpr UnitMagnitude auto mag_ratio = []() consteval {
  * It defines a unit as an exact fraction of another:
  *
  * @code{.cpp}
- * // snippet-template: none
+ * // snippet-template: si_excerpt
  * inline constexpr struct arcminute final :
  *   named_unit<symbol_text{u8"′", "'"}, mag_ratio<1, 60> * degree> {} arcminute;
  * @endcode
@@ -151,7 +150,6 @@ constexpr UnitMagnitude auto mag_ratio = detail::make_magnitude<detail::ratio{N,
  * A prefix is defined with it, and so is a unit whose factor reads better as a power of ten:
  *
  * @code{.cpp}
- * // snippet-template: none
  * template<PrefixableUnit U>
  * struct kilo_ final : prefixed_unit<"k", mag_power<10, 3>, U{}> {};
  *

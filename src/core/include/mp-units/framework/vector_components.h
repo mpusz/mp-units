@@ -137,9 +137,10 @@ concept ValidVectorAxes =
  * per-axis quantity specs in coordinate order:
  *
  * @code
+ * // snippet-after: docs/how_to_guides/advanced_usage/decompose_vector_quantity.md#axes
  * template<>
  * struct mp_units::component_vectors<flight_velocity> :
- *     mp_units::vector_axes<forward_velocity, wind_drift, sink_rate> {};
+ *     mp_units::vector_axes<forward_velocity, lateral_velocity, vertical_velocity> {};
  * @endcode
  *
  * The axis-intrinsic preconditions are enforced here: every axis must be a vector quantity, the

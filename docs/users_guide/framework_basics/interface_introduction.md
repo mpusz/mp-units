@@ -57,8 +57,9 @@ or choose any shorter identifier of our choice.
 For angular momentum, composability lets a user write:
 
 ```cpp
+// snippet-template: utility
 using namespace mp_units::si::unit_symbols;
-auto q = cartesian_vector{1., 2., 3.} * isq::angular_momentum[kg * m2 / s];
+auto q = utility::cartesian_vector{1., 2., 3.} * isq::angular_momentum[kg * m2 / s];
 ```
 
 This is terse, clear, and scales: `mg * square(mm) / min` needs no extra predefined types.
@@ -80,6 +81,7 @@ the value-based [unit equation](../../reference/glossary.md#unit-equation) to a 
 definition:
 
 ```cpp
+// snippet-template: si_excerpt
 inline constexpr struct newton : named_unit<"N", kilogram * metre / square(second)> {} newton;
 inline constexpr struct pascal : named_unit<"Pa", newton / square(metre)> {} pascal;
 inline constexpr struct joule  : named_unit<"J", newton * metre> {} joule;
@@ -106,6 +108,8 @@ of:
 For example, dividing base units inside a quantity definition:
 
 ```cpp
+// snippet-continues
+// snippet-id: metre-per-second
 quantity<metre / second> q;
 ```
 
@@ -137,6 +141,7 @@ Equations on dimensions, quantities, and units require an identity object for ea
 You can explicitly refer to an identity object:
 
 ```cpp
+// snippet-continues
 constexpr auto my_unit = one / second;
 ```
 
@@ -145,6 +150,7 @@ constexpr auto my_unit = one / second;
     Another way to achieve the same result is to call an `inverse()` function:
 
     ```cpp
+    // snippet-after: metre-per-second
     constexpr auto my_unit = inverse(second);
     ```
 
@@ -183,6 +189,7 @@ To keep generated types short and readable, the library applies several simplifi
     to a specific predicate. This is why:
 
     ```cpp
+    // snippet-template: none (pseudo-code: `A` and `B` stand for arbitrary entities of one domain)
     static_assert(A * B == B * A);
     static_assert(std::is_same_v<decltype(A * B), decltype(B * A)>);
     ```
@@ -228,6 +235,7 @@ To keep generated types short and readable, the library applies several simplifi
     For example, assuming:
 
     ```cpp
+    // snippet-template: none (pseudo-code: `A` and `B` stand for arbitrary entities of one domain)
     constexpr auto X = A / B;
     ```
 

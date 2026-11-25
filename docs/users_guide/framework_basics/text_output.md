@@ -24,6 +24,7 @@ composes to express dimensions and units of derived quantities.
 === "Units"
 
     ```cpp
+    // snippet-template: si_excerpt
     inline constexpr struct second : named_unit<"s", kind_of<isq::duration>> {} second;
     inline constexpr struct metre : named_unit<"m", kind_of<isq::length>> {} metre;
     inline constexpr struct gram : named_unit<"g", kind_of<isq::mass>> {} gram;
@@ -54,6 +55,7 @@ composes to express dimensions and units of derived quantities.
 === "Constants"
 
     ```cpp
+    // snippet-template: si_excerpt
     inline constexpr struct hyperfine_structure_transition_frequency_of_cs : named_constant<{u8"Δν_Cs", "dv_Cs"}, mag<9'192'631'770> * hertz> {} hyperfine_structure_transition_frequency_of_cs;
     inline constexpr struct speed_of_light_in_vacuum : named_constant<"c", mag<299'792'458> * metre / second> {} speed_of_light_in_vacuum;
     inline constexpr struct planck_constant : named_constant<"h", mag_ratio<662'607'015, 100'000'000> * mag_power<10, -34> * joule * second> {} planck_constant;
@@ -84,6 +86,7 @@ composes to express dimensions and units of derived quantities.
     template name to initialize it with two symbols:
 
     ```cpp
+    // snippet-template: si_excerpt
     inline constexpr struct ohm : named_unit<symbol_text{u8"Ω", "ohm"}, volt / ampere> {} ohm;
     ```
 
@@ -255,6 +258,7 @@ see a scaled unit has a magnitude and a reference unit. To denote the scope of s
 a unit, we enclose it in `[...]`. For example, the following:
 
 ```cpp
+// snippet-continues
 std::cout << 6.7 * L_per_100km << "\n";
 ```
 
@@ -274,6 +278,8 @@ quantities, we print all of them as a scaled version of the source unit. For exa
 the following:
 
 ```cpp
+// snippet-template: systems
+using namespace mp_units::yard_pound::unit_symbols;
 std::cout << 1 * km + 1 * mi << "\n";
 std::cout << 1 * nmi + 1 * mi << "\n";
 std::cout << 1 * km / h + 1 * m / s << "\n";
@@ -299,6 +305,8 @@ resulting unit and its impact on the value stored in the quantity.
     conversion can be made to achieve that. For example:
 
     ```cpp
+    // snippet-template: systems
+    using namespace mp_units::yard_pound::unit_symbols;
     std::cout << (1 * km + 1 * mi).in<double>(km) << "\n";
     ```
 
@@ -325,11 +333,16 @@ To support the above and other similar cases, the library exposes `space_before_
 customization point. By default, its value is `true` for all the units, so the space
 between a number and a unit will be inserted in the output text. To change this
 behavior, we have to
-provide a partial specialization for a specific unit:
+provide an explicit specialization for a specific unit. The library does it for
+`non_si::degree`, and a unit of our own does it the same way:
 
 ```cpp
+// right ascension in astronomy is written as 5ʰ 35ᵐ, with no space
+inline constexpr struct hour_angle final :
+    named_unit<{u8"ʰ", "h"}, mag<15> * non_si::degree> {} hour_angle;
+
 template<>
-inline constexpr bool space_before_unit_symbol<non_si::degree> = false;
+inline constexpr bool mp_units::space_before_unit_symbol<hour_angle> = false;
 ```
 
 !!! note
@@ -355,6 +368,8 @@ The easiest way to print a dimension, unit, or quantity is to provide its object
 output stream:
 
 ```cpp
+// snippet-after: docs/users_guide/framework_basics/generic_interfaces.md#avg-speed
+using namespace mp_units::yard_pound::unit_symbols;
 const QuantityOf<isq::speed> auto v1 = avg_speed(220. * km, 2 * h);
 const QuantityOf<isq::speed> auto v2 = avg_speed(140. * mi, 2 * h);
 std::cout << v1 << '\n';            // 110 km/h
@@ -372,6 +387,7 @@ The text output will always print the value using the default formatting for thi
     before passing it to the text output:
 
     ```cpp
+    // snippet-continues
     std::cout << v1.in(km / h) << '\n';       // 110 km/h
     std::cout << v1.in(m / s) << '\n';        // 30.5556 m/s
     ```
@@ -436,6 +452,7 @@ dimensions behave as text and, thus, are aligned to the left by default.
     do not have access to C++23, we can obtain the same output with:
 
     ```cpp
+    // snippet-template: none (pseudo-code: `<format-string>` and `<format-args>` are placeholders)
     std::cout << std::format("<format-string>\n", <format-args>);
     ```
 
@@ -842,5 +859,6 @@ To print such a point, extract the displacement from a known origin explicitly a
 the appropriate label so the value is unambiguous:
 
 ```cpp
+// snippet-after: docs/users_guide/framework_basics/the_affine_space.md#altitude-amsl
 std::cout << altitude.quantity_ref_from(sea_level) << " AMSL";  // "42 m AMSL"
 ```

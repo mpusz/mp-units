@@ -156,11 +156,11 @@ quantity<isq::length[m]> len2 = h;                           // ✓ height is a 
 
 // Explicit conversions DOWN the hierarchy (general → specific)
 quantity<isq::width[m]> w2 = isq::width(l);                  // ✓ Explicit conversion
-// quantity<isq::width[m]> w3 = l;                           // ✗ Error: no implicit conversion
+// quantity<isq::width[m]> w3 = l;                           // ❌ no implicit conversion
 
 // Explicit casts for sibling quantities (same level)
-quantity<isq::height[m]> h2 = quantity_cast<isq::height>(w); // ✓ Forces conversion
-// quantity<isq::height[m]> h3 = isq::height(w);             // ✗ Error: can't convert siblings
+quantity<isq::height[m]> h2 = quantity_cast<isq::height>(w);  // ✓ Forces conversion
+// quantity<isq::height[m]> h3 = isq::height(w);              // ❌ can't convert siblings
 
 // Operations result in common quantity type
 quantity sum = w + h;                                        // Result: isq::length (common parent)
@@ -171,9 +171,12 @@ quantity sum = w + h;                                        // Result: isq::len
     ISQ prevents operations that don't make physical sense:
 
     ```cpp
+    // snippet-setup: inline constexpr struct fuel_consumption_spec : quantity_spec<isq::volume / isq::length> {} fuel_consumption_spec;
+    // snippet-setup: quantity area = isq::area(42. * m2);
+    // snippet-setup: quantity fuel_consumption = fuel_consumption_spec(6.7 * L / (100. * km));
     // ✗ Can't add quantities of different kinds (even if same dimension)
-    // auto invalid = 1 * Hz + 1 * Bq;               // Error: frequency ≠ activity
-    // auto wrong = area + fuel_consumption;         // Error: different kinds
+    // auto invalid = 1 * Hz + 1 * Bq;               // ❌ frequency ≠ activity
+    // auto wrong = area + fuel_consumption;         // ❌ different kinds
     ```
 
 ### ISQ: Generic Interfaces with `QuantityOf`
@@ -182,6 +185,8 @@ Use `QuantityOf` concepts to create safe, generic functions that accept any quan
 is convertible to a provided type:
 
 ```cpp
+// snippet-template: systems
+using namespace mp_units::yard_pound::unit_symbols;
 // Generic function accepting any speed quantity in any unit
 constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::length> auto distance, // (1)!
                                                 QuantityOf<isq::duration> auto time)
@@ -192,7 +197,7 @@ constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::length> auto dis
 quantity v1 = avg_speed(220 * km, 2 * h);                    // 110 km/h
 quantity v2 = avg_speed(isq::length(100 * mi), 2 * h);       // 50 mi/h
 quantity v3 = avg_speed(isq::distance(1500 * m), 50 * s);    // 30 m/s
-// quantity v4 = avg_speed(50 * s, 1500 * m);                // ✗ Error
+// quantity v4 = avg_speed(50 * s, 1500 * m);                // ❌
 ```
 
 1. `QuantityOf<isq::speed>` not only documents what the function returns, but also serves
@@ -217,7 +222,7 @@ inline constexpr struct horizontal_area :
 quantity base_length = horizontal_length(100 * m);
 quantity base_width = isq::width(50 * m);
 quantity<horizontal_area[m2]> base_area = base_length * base_width;        // ✓ OK
-// quantity<horizontal_area[m2]> wrong = isq::height(3 * m) * base_width;  // ✗ Error
+// quantity<horizontal_area[m2]> wrong = isq::height(3 * m) * base_width;  // ❌
 ```
 
 ### Quantity Points
@@ -229,7 +234,7 @@ quantity_point later = epoch + 3600 * s;                 // 1 hour later
 quantity duration = later - epoch;                       // 3600 s
 
 // Temperature points (absolute temperatures)
-quantity_point temp_point = point<deg_C>(20);            // Absolute temperature
+quantity_point temp_point = point<deg_C>(20.);           // Absolute temperature
 quantity_point temp_kelvin = temp_point.in(K);           // 293.15 K
 
 // Temperature differences (relative quantities)
@@ -294,6 +299,8 @@ constexpr Unit auto two_pi = mag<2> * π;
 ### Unit Conversions
 
 ```cpp
+// snippet-template: systems
+using namespace mp_units::usc::unit_symbols;
 // Value-preserving conversions
 quantity distance = (5 * km).in(m);                            // 5000 m
 quantity temp = delta<deg_C>(3).in<double>(deg_F);             // 5.4 °F
@@ -379,10 +386,10 @@ quantity d6 = value_cast<km>(1567 * m, rounded);               // 2 km (generic 
     quantity duration = (90 * min).in(h, truncated);          // ✓ 1 h (towards zero)
     quantity duration2 = (90 * min).in(h, rounded);           // ✓ 2 h (nearest, ties to even)
 
-    // quantity wrong = (42 * m).in(km);                      // ✗ Error: truncating int conversion
-    // quantity overflow = (std::int8_t{1} * m).in(mm);       // ✗ Error: only 0 preserves the value
-    // quantity bad = (1.5 * m).in<int>();                    // ✗ Error: double → int needs explicit cast
-    // quantity<si::metre, int> invalid = 1.5 * m;            // ✗ Error: double → int needs explicit cast
+    // quantity wrong = (42 * m).in(km);                      // ❌ truncating int conversion
+    // quantity overflow = (std::int8_t{1} * m).in(mm);       // ❌ only 0 preserves the value
+    // quantity bad = (1.5 * m).in<int>();                    // ❌ double → int needs explicit cast
+    // quantity<si::metre, int> invalid = 1.5 * m;            // ❌ double → int needs explicit cast
     ```
 
 === "Mathematical Space Safety"
@@ -394,8 +401,8 @@ quantity d6 = value_cast<km>(1567 * m, rounded);               // 2 km (generic 
     quantity_point temp = point<deg_C>(20) + delta<deg_C>(3); // ✓ 23 °C (point + diff = point)
     quantity diff = point<deg_C>(25) - point<deg_C>(20);      // ✓ 5 °C (point - point = diff)
 
-    // auto illegal = point<deg_C>(18) + point<deg_C>(10);    // ✗ Error: can't add two points
-    // auto wrong = delta<deg_C>(5) - point<deg_C>(20);       // ✗ Error: can't subtract point from diff
+    // auto illegal = point<deg_C>(18) + point<deg_C>(10);    // ❌ can't add two points
+    // auto wrong = delta<deg_C>(5) - point<deg_C>(20);       // ❌ can't subtract point from diff
     ```
 
 === "Dimension Safety"
@@ -403,13 +410,16 @@ quantity d6 = value_cast<km>(1567 * m, rounded);               // 2 km (generic 
     Ensures operations are dimensionally consistent:
 
     ```cpp
+    // snippet-template: codata
+    // snippet-setup: quantity mass = 2. * kg;
+    // snippet-setup: quantity speed = 3. * m / s;
     quantity energy = 0.5 * mass * pow<2>(speed);          // ✓ kg⋅m²/s² (energy dimension)
-    quantity force = mass * si::standard_gravity;          // ✓ kg⋅m/s² (force dimension)
+    quantity force = mass * codata::standard_gravity;      // ✓ kg⋅m/s² (force dimension)
     quantity sum = 100 * m + 50 * m;                       // ✓ 150 m (same dimension)
 
-    // quantity<si::metre> invalid = 2 * kg;               // ✗ Error: mass ≠ length
-    // quantity wrong = 10 * m + 5 * s;                    // ✗ Error: length + time
-    // quantity bad = si::sin(42 * m);                     // ✗ Error: sin requires dimensionless angular quantity
+    // quantity<si::metre> invalid = 2 * kg;               // ❌ mass ≠ length
+    // quantity wrong = 10 * m + 5 * s;                    // ❌ length + time
+    // quantity bad = si::sin(42 * m);                     // ❌ sin requires dimensionless angular quantity
     ```
 
 === "Quantity Kind Safety"
@@ -422,8 +432,8 @@ quantity d6 = value_cast<km>(1567 * m, rounded);               // 2 km (generic 
     quantity freq = 50 * Hz + 10 * Hz;                     // ✓ 60 Hz (frequency)
     quantity activity = 100 * Bq + 50 * Bq;                // ✓ 150 Bq (radioactive activity)
 
-    // quantity wrong1 = 1 * rad + 1 * sr;                 // ✗ Error: plane angle ≠ solid angle
-    // quantity wrong2 = 1 * Hz + 1 * Bq;                  // ✗ Error: frequency ≠ activity
+    // quantity wrong1 = 1 * rad + 1 * sr;                 // ❌ plane angle ≠ solid angle
+    // quantity wrong2 = 1 * Hz + 1 * Bq;                  // ❌ frequency ≠ activity
     ```
 
 === "Quantity Type Safety"
@@ -449,9 +459,9 @@ quantity d6 = value_cast<km>(1567 * m, rounded);               // 2 km (generic 
     quantity<isq::mechanical_energy[J]> Em = Ek + Ep;         // ✓ Result: mechanical energy
 
     // ✗ No implicit conversions between siblings or downward
-    // quantity<isq::width[m]> width2 = height;               // ✗ Error: height → width (siblings)
-    // quantity<isq::height[m]> height2 = length;             // ✗ Error: length → height (general → specific)
-    // quantity<isq::kinetic_energy[J]> Ek2 = Ep;             // ✗ Error: potential → kinetic (siblings)
+    // quantity<isq::width[m]> width2 = height;               // ❌ height → width (siblings)
+    // quantity<isq::height[m]> height2 = length;             // ❌ length → height (general → specific)
+    // quantity<isq::kinetic_energy[J]> Ek2 = Ep;             // ❌ potential → kinetic (siblings)
 
     // Use explicit conversion when you know it's safe
     quantity q = quantity_cast<isq::height>(width);           // ✓ Explicit cast

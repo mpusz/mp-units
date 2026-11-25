@@ -1,12 +1,5 @@
 // No unit symbols: for samples that qualify everything or define their own.
-#ifdef MP_UNITS_MODULES
-import mp_units;
-#else
-#include <mp-units/math.h>
-#include <mp-units/systems/isq.h>
-#include <mp-units/systems/si.h>
-#include <iostream>
-#endif
+#include "prelude.h"
 using namespace mp_units;
 
 {{BODY}}

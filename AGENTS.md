@@ -58,8 +58,11 @@ Whenever you touch a public header, verify it is still self-contained:
 cmake --build --preset <preset> --target all_verify_interface_header_sets
 ```
 
-Run the hooks on the files you changed, not the whole repository, before committing. You know
-your own diff, so name the files explicitly rather than sweeping the repository:
+The pre-commit git hook runs the checks on the files a commit changes (the dev container
+installs it). Don't skip it with `git commit --no-verify`. Claude Code refuses that here,
+through a hook in `.claude/settings.json`. When a hook fails, fix what it reports and
+commit again. To run the checks before that, name the files you changed rather than
+sweeping the repository:
 
 ```bash
 pre-commit run --files <the files you changed>
@@ -75,6 +78,23 @@ test -x "$(git rev-parse --git-path hooks/pre-commit)" || echo "hook missing"
 
 If it is missing, say so and ask before running `pre-commit install`, which writes a hook
 into the clone.
+
+One of the hooks compiles the C++ samples in the documentation pages and doc comments you
+changed. A sample you add or edit has to compile, or carry a marker saying why not. The
+rules are in
+[Code samples in the documentation](CONTRIBUTING.md#code-samples-in-the-documentation),
+and these are the ones easy to get wrong:
+
+- Fix a failing sample. Opt out only for one of the five categories listed there, with the
+  reason on the marker line.
+- Never weaken a sample to make it compile, and never change the prose around it without
+  saying so in the change.
+- A sample shows the using-directives and declarations a reader needs. Context from
+  another sample comes only through `snippet-continues` or `snippet-after`. A hidden
+  `snippet-setup` line is only for a declaration the page leaves to the reader, such as a
+  stand-in for their own API.
+- Code that must not compile is commented out with a short trailing `// ❌ why`,
+  and the check verifies that it fails on that line. `❌` means only that in a sample.
 
 ## Understanding the design
 

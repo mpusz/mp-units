@@ -79,6 +79,7 @@ int main()
 ??? tip "Solution"
 
     ```cpp
+    // snippet-id: solution
     #include <mp-units/systems/isq.h>
     #include <mp-units/systems/si.h>
     #include <chrono>
@@ -133,6 +134,7 @@ int main()
     **mp-units** and `std::chrono` are complementary libraries with different strengths:
 
     ```cpp
+    // snippet-setup: quantity distance = 33.3 * km;
     using car_clock = std::chrono::system_clock;
 
     auto tp1 = car_clock::now();                                // std::chrono for system time
@@ -150,6 +152,7 @@ int main()
     Converting between `std::chrono` and **mp-units** is seamless with CTAD:
 
     ```cpp
+    // snippet-after: solution:decls
     auto tp2 = car_clock::now();
     auto tp1 = tp2 - std::chrono::minutes{20};
 
@@ -172,11 +175,15 @@ int main()
     When truncation or overflow is possible, use explicit conversion:
 
     ```cpp
+    // snippet-after: solution:decls
+    // snippet-setup: auto tp2 = car_clock::now();
+    // snippet-setup: quantity distance = 33.3 * km;
+    // snippet-setup: quantity duration = 20. * min;
     quantity avg_speed = distance / duration;  // mp-units calculation
 
     // Truncating conversion requires explicit cast:
     car_clock::duration dur = (5 * km / avg_speed).in<car_clock::rep>(unit_for<car_clock::duration>, truncated);
-    schedule_alert(tp2 + dur);  // Use result with std::chrono
+    schedule_driver_alert(tp2 + dur);  // Use result with std::chrono
     ```
 
     The `.in<Rep>(Unit, policy)` method:
@@ -201,6 +208,7 @@ int main()
     arrival than the computation supports:
 
     ```cpp
+    // snippet-after: solution
     quantity time_to_arrival = (5 * km / avg_speed).in<int>(min, rounded_up);
     ```
 
@@ -209,6 +217,11 @@ int main()
     **Use each library for its strengths:**
 
     ```cpp
+    // snippet-after: solution:decls
+    // snippet-setup: quantity_point odo1{12345.6 * km};
+    // snippet-setup: quantity_point odo2{12378.9 * km};
+    // snippet-setup: auto tp2 = car_clock::now();
+    // snippet-setup: auto tp1 = tp2 - std::chrono::minutes{20};
     // ✅ Good: Use std::chrono for timestamps and clocks
     auto checkpoint_time = car_clock::now();
 
@@ -218,7 +231,7 @@ int main()
     quantity avg_speed = distance / duration;  // Dimensional analysis!
 
     // ✅ Good: Convert units/representation as needed
-    print_stats(duration.in<double>(min), distance, avg_speed.in(km / h));
+    print_trip_stats(duration.in<double>(min), distance, avg_speed.in(km / h));
     ```
 
     **Keep conversions at boundaries:**

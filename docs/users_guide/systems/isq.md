@@ -30,13 +30,14 @@ The ISQ defines seven base quantities, each with its own dimension. According to
 The **mp-units** library defines these base dimensions as follows:
 
 ```cpp
+// snippet-template: scoped
 namespace mp_units::isq {
 
 inline constexpr struct dim_length : base_dimension<"L"> {} dim_length;
 inline constexpr struct dim_mass : base_dimension<"M"> {} dim_mass;
 inline constexpr struct dim_time : base_dimension<"T"> {} dim_time;
 inline constexpr struct dim_electric_current : base_dimension<"I"> {} dim_electric_current;
-inline constexpr struct dim_thermodynamic_temperature : base_dimension<symbol_text{u8"Θ", "O"}> {} dim_thermodynamic_temperature;
+inline constexpr struct dim_thermodynamic_temperature : base_dimension<{u8"Θ", "O"}> {} dim_thermodynamic_temperature;
 inline constexpr struct dim_amount_of_substance : base_dimension<"N"> {} dim_amount_of_substance;
 inline constexpr struct dim_luminous_intensity : base_dimension<"J"> {} dim_luminous_intensity;
 
@@ -61,6 +62,7 @@ These dimension symbols are consistently defined by both the SI Brochure and ISO
 For each base dimension, the ISQ defines corresponding base quantities:
 
 ```cpp
+// snippet-continues
 namespace mp_units::isq {
 
 inline constexpr struct length : quantity_spec<dim_length, non_negative> {} length;
@@ -105,6 +107,7 @@ the ISO/IEC 80000 series, organized by part:
 ### Example: Derived Quantities in Mechanics
 
 ```cpp
+// snippet-template: isq_excerpt
 namespace mp_units::isq {
 
 // Kinematics
@@ -150,6 +153,7 @@ flowchart TD
 In code:
 
 ```cpp
+// snippet-template: scoped
 inline constexpr struct length : quantity_spec<dim_length, non_negative> {} length;
 inline constexpr struct width : quantity_spec<length> {} width;
 inline constexpr auto breadth = width;
@@ -177,7 +181,7 @@ using namespace mp_units::si::unit_symbols;
 quantity<isq::height[m]> tower_height = 42 * m;
 quantity<isq::distance[m]> walking_distance = 500 * m;
 
-// quantity<isq::width[m]> w = tower_height;  // Compile-time error!
+// quantity<isq::width[m]> w = tower_height;  // ❌
 quantity<isq::length[m]> some_length = tower_height;  // OK: height is-a length
 ```
 
@@ -237,11 +241,11 @@ process_length(road);    // OK: distance is-a length
 process_length(river);   // OK: width is-a length
 
 set_height(tower);       // OK: height matches exactly
-// set_height(road);     // Compile-time error: distance is not a height
-// set_height(river);    // Compile-time error: width is not a height
+// set_height(road);     // ❌ distance is not a height
+// set_height(river);    // ❌ width is not a height
 
 double time = unsafe_travel_time_in_s(road, 50. * km / h);  // OK
-// unsafe_travel_time_in_s(river, 50. * km / h);  // Compile-time error: width is not a distance
+// unsafe_travel_time_in_s(river, 50. * km / h);  // ❌ width is not a distance
 ```
 
 This provides powerful compile-time checking that enforces the semantic meaning of quantities,
@@ -268,7 +272,7 @@ an unspecified condition means photopic vision, so the plain names (`isq::lumino
 quantity daylight = 1000. * si::lumen;
 quantity night = 250. * si::lumen_of<isq::scotopic_vision>;
 
-// auto sum = daylight + night;        // Compile-time error: different quantity kinds
+// auto sum = daylight + night;        // ❌ different quantity kinds
 quantity sp_ratio = night / daylight;  // OK: the S/P ratio, 0.25 lm/lm
 ```
 
