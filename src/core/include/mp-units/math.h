@@ -39,6 +39,8 @@ import std;
 #include <cstdint>
 #include <cstdlib>
 #include <limits>
+#include <type_traits>
+#include <utility>
 #include <version>
 #if MP_UNITS_HOSTED
 #include <cmath>
@@ -307,8 +309,10 @@ template<auto R, auto S, auto T, typename Rep1, typename Rep2, typename Rep3>
 #endif
                         ;
            }
-[[nodiscard]] constexpr QuantityOf<get_common_quantity_spec(get_quantity_spec(R) * get_quantity_spec(S),
-                                                            get_quantity_spec(T))> auto
+[[nodiscard]] constexpr QuantityOf<
+  decltype(std::declval<quantity<R, std::common_type_t<Rep1, Rep2, Rep3>>>() *
+             std::declval<quantity<S, std::common_type_t<Rep1, Rep2, Rep3>>>() +
+           std::declval<quantity<T, std::common_type_t<Rep1, Rep2, Rep3>>>())::quantity_spec> auto
 fma(const quantity<R, Rep1>& a, const quantity<S, Rep2>& x, const quantity<T, Rep3>& b) noexcept
 {
 #if MP_UNITS_HOSTED
@@ -316,7 +320,9 @@ fma(const quantity<R, Rep1>& a, const quantity<S, Rep2>& x, const quantity<T, Re
 #endif
   return quantity{
     fma(a.numerical_value_ref_in(a.unit), x.numerical_value_ref_in(x.unit), b.numerical_value_ref_in(b.unit)),
-    get_common_reference(R * S, T)};
+    decltype(std::declval<quantity<R, std::common_type_t<Rep1, Rep2, Rep3>>>() *
+               std::declval<quantity<S, std::common_type_t<Rep1, Rep2, Rep3>>>() +
+             std::declval<quantity<T, std::common_type_t<Rep1, Rep2, Rep3>>>())::reference};
 }
 
 /**
@@ -336,16 +342,21 @@ template<auto R, auto S, auto T, auto Origin, typename Rep1, typename Rep2, type
 #endif
                         ;
            }
-[[nodiscard]] constexpr QuantityPointOf<get_common_quantity_spec(get_quantity_spec(R) * get_quantity_spec(S),
-                                                                 get_quantity_spec(T))> auto
+[[nodiscard]] constexpr QuantityPointOf<
+  decltype(std::declval<quantity<R, std::common_type_t<Rep1, Rep2, Rep3>>>() *
+             std::declval<quantity<S, std::common_type_t<Rep1, Rep2, Rep3>>>() +
+           std::declval<quantity_point<T, Origin, std::common_type_t<Rep1, Rep2, Rep3>>>())::quantity_spec> auto
 fma(const quantity<R, Rep1>& a, const quantity<S, Rep2>& x, const quantity_point<T, Origin, Rep3>& b) noexcept
 {
 #if MP_UNITS_HOSTED
   using std::fma;
 #endif
-  return Origin + quantity{fma(a.numerical_value_ref_in(a.unit), x.numerical_value_ref_in(x.unit),
-                               b.quantity_ref_from(b.point_origin).numerical_value_ref_in(b.unit)),
-                           get_common_reference(R * S, T)};
+  return Origin +
+         quantity{fma(a.numerical_value_ref_in(a.unit), x.numerical_value_ref_in(x.unit),
+                      b.quantity_ref_from(b.point_origin).numerical_value_ref_in(b.unit)),
+                  decltype(std::declval<quantity<R, std::common_type_t<Rep1, Rep2, Rep3>>>() *
+                             std::declval<quantity<S, std::common_type_t<Rep1, Rep2, Rep3>>>() +
+                           std::declval<quantity_point<T, Origin, std::common_type_t<Rep1, Rep2, Rep3>>>())::reference};
 }
 
 /**
@@ -353,7 +364,7 @@ fma(const quantity<R, Rep1>& a, const quantity<S, Rep2>& x, const quantity_point
  */
 template<auto R1, typename Rep1, auto R2, typename Rep2>
   requires detail::QuantitiesOfTheSameKind<quantity<R1, Rep1>, quantity<R2, Rep2>> && requires(Rep1 v1, Rep2 v2) {
-    get_common_reference(R1, R2);
+    mp_units::detail::find_common_reference(R1, R2);
     requires requires { fmod(v1, v2); }
 #if MP_UNITS_HOSTED
                || requires { std::fmod(v1, v2); }
@@ -363,7 +374,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
 [[nodiscard]] constexpr QuantityOf<get_quantity_spec(R1)> auto fmod(const quantity<R1, Rep1>& x,
                                                                     const quantity<R2, Rep2>& y) noexcept
 {
-  constexpr auto ref = get_common_reference(R1, R2);
+  constexpr auto ref = mp_units::detail::find_common_reference(R1, R2);
   constexpr auto unit = get_unit(ref);
 #if MP_UNITS_HOSTED
   using std::fmod;
@@ -376,7 +387,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
  */
 template<auto R1, typename Rep1, auto R2, typename Rep2>
   requires detail::QuantitiesOfTheSameKind<quantity<R1, Rep1>, quantity<R2, Rep2>> && requires(Rep1 v1, Rep2 v2) {
-    get_common_reference(R1, R2);
+    mp_units::detail::find_common_reference(R1, R2);
     requires requires { remainder(v1, v2); }
 #if MP_UNITS_HOSTED
                || requires { std::remainder(v1, v2); }
@@ -386,7 +397,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
 [[nodiscard]] constexpr QuantityOf<get_quantity_spec(R1)> auto remainder(const quantity<R1, Rep1>& x,
                                                                          const quantity<R2, Rep2>& y) noexcept
 {
-  constexpr auto ref = get_common_reference(R1, R2);
+  constexpr auto ref = mp_units::detail::find_common_reference(R1, R2);
   constexpr auto unit = get_unit(ref);
 #if MP_UNITS_HOSTED
   using std::remainder;
@@ -628,18 +639,19 @@ template<Unit auto To, auto R, typename Rep>
  */
 template<auto R1, typename Rep1, auto R2, typename Rep2>
   requires detail::QuantitiesOfTheSameKind<quantity<R1, Rep1>, quantity<R2, Rep2>> && requires(Rep1 v1, Rep2 v2) {
-    get_common_reference(R1, R2);
+    mp_units::detail::find_common_reference(R1, R2);
     requires requires { hypot(v1, v2); }
 #if MP_UNITS_HOSTED
                || requires { std::hypot(v1, v2); }
 #endif
                ;
   }
-[[nodiscard]] constexpr QuantityOf<get_quantity_spec(get_common_reference(R1, R2))> auto hypot(
-  const quantity<R1, Rep1>& x, const quantity<R2, Rep2>& y) noexcept
+[[nodiscard]] constexpr QuantityOf<decltype(std::declval<quantity<R1, Rep1>>() +
+                                            std::declval<quantity<R2, Rep2>>())::quantity_spec> auto
+hypot(const quantity<R1, Rep1>& x, const quantity<R2, Rep2>& y) noexcept
   MP_UNITS_POST(r : detail::value_is_non_negative(r.numerical_value_ref_in(r.unit)))
 {
-  constexpr auto ref = get_common_reference(R1, R2);
+  constexpr auto ref = decltype(std::declval<quantity<R1, Rep1>>() + std::declval<quantity<R2, Rep2>>())::reference;
   constexpr auto unit = get_unit(ref);
 #if MP_UNITS_HOSTED
   using std::hypot;
@@ -655,18 +667,20 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
  */
 template<auto R1, typename Rep1, auto R2, typename Rep2, auto R3, typename Rep3>
   requires requires(Rep1 v1, Rep2 v2, Rep3 v3) {
-    get_common_reference(R1, R2, R3);
+    mp_units::detail::find_common_reference(R1, R2, R3);
     requires requires { hypot(v1, v2, v3); }
 #if MP_UNITS_HOSTED
                || requires { std::hypot(v1, v2, v3); }
 #endif
                ;
   }
-[[nodiscard]] constexpr QuantityOf<get_quantity_spec(get_common_reference(R1, R2, R3))> auto hypot(
-  const quantity<R1, Rep1>& x, const quantity<R2, Rep2>& y, const quantity<R3, Rep3>& z) noexcept
+[[nodiscard]] constexpr QuantityOf<decltype(std::declval<quantity<R1, Rep1>>() + std::declval<quantity<R2, Rep2>>() +
+                                            std::declval<quantity<R3, Rep3>>())::quantity_spec> auto
+hypot(const quantity<R1, Rep1>& x, const quantity<R2, Rep2>& y, const quantity<R3, Rep3>& z) noexcept
   MP_UNITS_POST(r : detail::value_is_non_negative(r.numerical_value_ref_in(r.unit)))
 {
-  constexpr auto ref = get_common_reference(R1, R2, R3);
+  constexpr auto ref = decltype(std::declval<quantity<R1, Rep1>>() + std::declval<quantity<R2, Rep2>>() +
+                                std::declval<quantity<R3, Rep3>>())::reference;
   constexpr auto unit = get_unit(ref);
 #if MP_UNITS_HOSTED
   using std::hypot;
@@ -685,17 +699,20 @@ template<auto R1, typename Rep1, auto R2, typename Rep2, auto R3, typename Rep3>
  */
 template<auto R1, auto Origin, typename Rep1, auto R2, typename Rep2, typename Factor>
   requires requires(Rep1 a, Rep2 b, Factor t) {
-    get_common_reference(R1, R2);
+    mp_units::detail::find_common_reference(R1, R2);
     requires requires { lerp(a, b, t); }
 #if MP_UNITS_HOSTED
                || requires { std::lerp(a, b, t); }
 #endif
                ;
   }
-[[nodiscard]] constexpr QuantityPointOf<get_quantity_spec(get_common_reference(R1, R2))> auto lerp(
-  const quantity_point<R1, Origin, Rep1>& a, const quantity_point<R2, Origin, Rep2>& b, const Factor& t) noexcept
+// `decltype(a - b)` on the parameters crashes GCC 12 once `midpoint` spells its result the same way
+[[nodiscard]] constexpr QuantityPointOf<decltype(std::declval<quantity_point<R1, Origin, Rep1>>() -
+                                                 std::declval<quantity_point<R2, Origin, Rep2>>())::quantity_spec> auto
+lerp(const quantity_point<R1, Origin, Rep1>& a, const quantity_point<R2, Origin, Rep2>& b, const Factor& t) noexcept
 {
-  constexpr auto ref = get_common_reference(R1, R2);
+  constexpr auto ref = decltype(std::declval<quantity_point<R1, Origin, Rep1>>() -
+                                std::declval<quantity_point<R2, Origin, Rep2>>())::reference;
   constexpr auto unit = get_unit(ref);
 #if MP_UNITS_HOSTED
   using std::lerp;
@@ -710,17 +727,19 @@ template<auto R1, auto Origin, typename Rep1, auto R2, typename Rep2, typename F
  */
 template<auto R1, auto Origin, typename Rep1, auto R2, typename Rep2>
   requires requires(Rep1 a, Rep2 b) {
-    get_common_reference(R1, R2);
+    mp_units::detail::find_common_reference(R1, R2);
     requires requires { midpoint(a, b); }
 #if MP_UNITS_HOSTED || __cpp_lib_freestanding_numeric >= 202502L
                || requires { std::midpoint(a, b); }
 #endif
                ;
   }
-[[nodiscard]] constexpr QuantityPointOf<get_quantity_spec(get_common_reference(R1, R2))> auto midpoint(
-  const quantity_point<R1, Origin, Rep1>& a, const quantity_point<R2, Origin, Rep2>& b) noexcept
+[[nodiscard]] constexpr QuantityPointOf<decltype(std::declval<quantity_point<R1, Origin, Rep1>>() -
+                                                 std::declval<quantity_point<R2, Origin, Rep2>>())::quantity_spec> auto
+midpoint(const quantity_point<R1, Origin, Rep1>& a, const quantity_point<R2, Origin, Rep2>& b) noexcept
 {
-  constexpr auto ref = get_common_reference(R1, R2);
+  constexpr auto ref = decltype(std::declval<quantity_point<R1, Origin, Rep1>>() -
+                                std::declval<quantity_point<R2, Origin, Rep2>>())::reference;
   constexpr auto unit = get_unit(ref);
 #if MP_UNITS_HOSTED || __cpp_lib_freestanding_numeric >= 202502L
   using std::midpoint;

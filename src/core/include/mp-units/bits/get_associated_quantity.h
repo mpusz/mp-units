@@ -41,7 +41,7 @@ template<Unit U>
 template<typename... Us>
 [[nodiscard]] consteval auto get_associated_quantity_impl(common_unit<Us...>)
 {
-  return mp_units::get_common_quantity_spec(get_associated_quantity(Us{})...);
+  return mp_units::detail::find_common_quantity_spec(get_associated_quantity(Us{})...);
 }
 
 template<Unit U>

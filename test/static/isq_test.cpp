@@ -581,7 +581,7 @@ static_assert(utility::explicitly_convertible(isq::photon_number, isq::number_of
 // the energy densities of ISO 80000 parts 6, 7, and 8 share a common root
 static_assert(utility::implicitly_convertible(isq::radiant_energy_density, isq::energy_density));
 static_assert(utility::implicitly_convertible(isq::electromagnetic_energy_density, isq::energy_density));
-static_assert(get_common_quantity_spec(isq::radiant_energy_density, isq::electromagnetic_energy_density) ==
+static_assert(detail::find_common_quantity_spec(isq::radiant_energy_density, isq::electromagnetic_energy_density) ==
               isq::energy_density);
 
 // condensed matter physics hierarchy relations
@@ -594,7 +594,7 @@ static_assert(!utility::implicitly_convertible(isq::Fermi_angular_wavenumber, is
 
 // the carrier densities of item 12-29 share one kind, because `n * p == pow<2>(n_i)` relates them
 // across species (ISO 80000-12 item 12-29.3)
-static_assert(get_common_quantity_spec(isq::electron_density, isq::hole_density) == isq::number_density);
+static_assert(detail::find_common_quantity_spec(isq::electron_density, isq::hole_density) == isq::number_density);
 static_assert(utility::implicitly_convertible(isq::electron_density * isq::hole_density, pow<2>(isq::number_density)));
 static_assert(utility::explicitly_convertible(pow<1, 2>(isq::electron_density * isq::hole_density),
                                               isq::intrinsic_carrier_density));
@@ -611,10 +611,10 @@ static_assert(!utility::implicitly_convertible(dimensionless, isq::atomic_scatte
 static_assert(utility::implicitly_convertible(isq::structure_factor, isq::atomic_scattering_factor));
 
 // the transition temperatures and critical flux densities compare through their shared parents
-static_assert(get_common_quantity_spec(isq::Curie_temperature, isq::Neel_temperature) ==
+static_assert(detail::find_common_quantity_spec(isq::Curie_temperature, isq::Neel_temperature) ==
               isq::critical_thermodynamic_temperature);
-static_assert(get_common_quantity_spec(isq::lower_critical_magnetic_flux_density,
-                                       isq::upper_critical_magnetic_flux_density) ==
+static_assert(detail::find_common_quantity_spec(isq::lower_critical_magnetic_flux_density,
+                                                isq::upper_critical_magnetic_flux_density) ==
               isq::critical_magnetic_flux_density);
 
 

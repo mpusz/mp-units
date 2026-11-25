@@ -96,20 +96,45 @@ template<QuantitySpec Q>
   return Q::_is_non_negative_;
 }
 
-[[nodiscard]] consteval QuantitySpec auto get_common_quantity_spec(QuantitySpec auto q) { return q; }
+MP_UNITS_EXPORT_END
+
+namespace detail {
+
+// The common quantity specification of a set of quantity specifications. Users reach it through
+// `std::common_type_t` on two quantities. The name differs from the deprecated
+// `mp_units::get_common_quantity_spec` because every quantity specification derives from
+// `detail::quantity_spec_interface_base`, so `detail` is an associated namespace. A same-named
+// overload here would be a better match for an unqualified call, which would then never warn.
+[[nodiscard]] consteval QuantitySpec auto find_common_quantity_spec(QuantitySpec auto q) { return q; }
 
 template<QuantitySpec Q1, QuantitySpec Q2>
-  requires(detail::have_common_quantity_spec(Q1{}, Q2{}))
-[[nodiscard]] consteval QuantitySpec auto get_common_quantity_spec(Q1, Q2)
+  requires(have_common_quantity_spec(Q1{}, Q2{}))
+[[nodiscard]] consteval QuantitySpec auto find_common_quantity_spec(Q1, Q2)
 {
-  return detail::get_common_quantity_spec_result<Q1, Q2>;
+  return get_common_quantity_spec_result<Q1, Q2>;
 }
 
-[[nodiscard]] consteval QuantitySpec auto get_common_quantity_spec(QuantitySpec auto q1, QuantitySpec auto q2,
-                                                                   QuantitySpec auto q3, QuantitySpec auto... rest)
-  requires requires { mp_units::get_common_quantity_spec(mp_units::get_common_quantity_spec(q1, q2), q3, rest...); }
+[[nodiscard]] consteval QuantitySpec auto find_common_quantity_spec(QuantitySpec auto q1, QuantitySpec auto q2,
+                                                                    QuantitySpec auto q3, QuantitySpec auto... rest)
+  requires requires {
+    mp_units::detail::find_common_quantity_spec(mp_units::detail::find_common_quantity_spec(q1, q2), q3, rest...);
+  }
 {
-  return mp_units::get_common_quantity_spec(mp_units::get_common_quantity_spec(q1, q2), q3, rest...);
+  return mp_units::detail::find_common_quantity_spec(mp_units::detail::find_common_quantity_spec(q1, q2), q3, rest...);
+}
+
+}  // namespace detail
+
+MP_UNITS_EXPORT_BEGIN
+
+/**
+ * The common quantity specification of the arguments. Use `std::common_type_t` on two quantities instead.
+ */
+[[deprecated("2.6.0: Use `std::common_type_t` on two quantities instead")]] [[nodiscard]] consteval QuantitySpec auto
+get_common_quantity_spec(QuantitySpec auto q, QuantitySpec auto... rest)
+  requires requires { mp_units::detail::find_common_quantity_spec(q, rest...); }
+{
+  return mp_units::detail::find_common_quantity_spec(q, rest...);
 }
 
 MP_UNITS_EXPORT_END

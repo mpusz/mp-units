@@ -256,16 +256,28 @@ static_assert(invalid_unit<solid_angular_measure, bit>);
 static_assert(invalid_unit<storage_capacity, radian>);
 static_assert(invalid_unit<storage_capacity, steradian>);
 
-static_assert(is_of_type<get_common_reference(dimensionless[one], one), reference<dimensionless_, one_>>);
-static_assert(is_of_type<get_common_reference(radian, one), radian_>);
-static_assert(is_of_type<get_common_reference(one, radian), radian_>);
-static_assert(is_of_type<get_common_reference(angular_measure[radian], one), reference<angular_measure_, radian_>>);
-static_assert(is_of_type<get_common_reference(one, angular_measure[radian]), reference<angular_measure_, radian_>>);
+static_assert(is_of_type<detail::find_common_reference(dimensionless[one], one), reference<dimensionless_, one_>>);
+static_assert(is_of_type<detail::find_common_reference(radian, one), radian_>);
+static_assert(is_of_type<detail::find_common_reference(one, radian), radian_>);
+static_assert(
+  is_of_type<detail::find_common_reference(angular_measure[radian], one), reference<angular_measure_, radian_>>);
+static_assert(
+  is_of_type<detail::find_common_reference(one, angular_measure[radian]), reference<angular_measure_, radian_>>);
+
+// the deprecated public name still forwards to the common reference
+MP_UNITS_DIAGNOSTIC_PUSH
+MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
+static_assert(
+  is_of_type<get_common_reference(angular_measure[radian], one, radian), reference<angular_measure_, radian_>>);
+template<auto R1, auto R2>
+concept no_deprecated_common_reference = !requires { get_common_reference(R1, R2); };
+static_assert(no_deprecated_common_reference<hertz, becquerel>);
+MP_UNITS_DIAGNOSTIC_POP
 
 template<auto R1, auto R2>
 concept no_common_reference = requires {
-  requires !requires { get_common_reference(R1, R2); };
-  requires !requires { get_common_reference(R2, R1); };
+  requires !requires { detail::find_common_reference(R1, R2); };
+  requires !requires { detail::find_common_reference(R2, R1); };
 };
 
 static_assert(no_common_reference<hertz, becquerel>);

@@ -241,9 +241,9 @@ A result of such an equation is always the first common node in a hierarchy tree
 kind. For example:
 
 ```cpp
-static_assert(get_common_quantity_spec(isq::width, isq::height) == isq::length);
-static_assert(get_common_quantity_spec(isq::thickness, isq::radius) == isq::width);
-static_assert(get_common_quantity_spec(isq::distance, isq::path_length) == isq::path_length);
+static_assert((isq::width(1 * m) + isq::height(1 * m)).quantity_spec == isq::length);
+static_assert((isq::thickness(1 * m) + isq::radius(1 * m)).quantity_spec == isq::width);
+static_assert((isq::distance(1 * m) + isq::path_length(1 * m)).quantity_spec == isq::path_length);
 ```
 
 

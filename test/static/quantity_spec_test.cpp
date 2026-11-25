@@ -1203,53 +1203,65 @@ static_assert(convertible(kind_of<dimensionless / time>, solid_angular_measure_r
 static_assert(convertible(kind_of<dimensionless / time>, kind_of<angular_measure_rate>) == implicit);
 static_assert(convertible(kind_of<dimensionless / time>, kind_of<solid_angular_measure_rate>) == implicit);
 
-// get_common_quantity_spec
-static_assert(get_common_quantity_spec(length, length) == length);
-static_assert(get_common_quantity_spec(kind_of<length>, kind_of<length>) == kind_of<length>);
-static_assert(get_common_quantity_spec(kind_of<length>, length) == length);
-static_assert(get_common_quantity_spec(length, kind_of<length>) == length);
-static_assert(get_common_quantity_spec(width, kind_of<length>) == width);
-static_assert(get_common_quantity_spec(kind_of<length>, width) == width);
-static_assert(get_common_quantity_spec(kind_of<dimensionless>, kind_of<angular_measure>) == kind_of<angular_measure>);
-static_assert(get_common_quantity_spec(kind_of<dimensionless>, angular_measure) == angular_measure);
+// detail::find_common_quantity_spec
+static_assert(detail::find_common_quantity_spec(length, length) == length);
+static_assert(detail::find_common_quantity_spec(kind_of<length>, kind_of<length>) == kind_of<length>);
+static_assert(detail::find_common_quantity_spec(kind_of<length>, length) == length);
+static_assert(detail::find_common_quantity_spec(length, kind_of<length>) == length);
+static_assert(detail::find_common_quantity_spec(width, kind_of<length>) == width);
+static_assert(detail::find_common_quantity_spec(kind_of<length>, width) == width);
+static_assert(detail::find_common_quantity_spec(kind_of<dimensionless>, kind_of<angular_measure>) ==
+              kind_of<angular_measure>);
+static_assert(detail::find_common_quantity_spec(kind_of<dimensionless>, angular_measure) == angular_measure);
 
-static_assert(get_common_quantity_spec(width, height) == length);
-static_assert(get_common_quantity_spec(distance, path_length) == path_length);
-static_assert(get_common_quantity_spec(potential_energy, kinetic_energy) == mechanical_energy);
+static_assert(detail::find_common_quantity_spec(width, height) == length);
+static_assert(detail::find_common_quantity_spec(distance, path_length) == path_length);
+static_assert(detail::find_common_quantity_spec(potential_energy, kinetic_energy) == mechanical_energy);
 
-static_assert(get_common_quantity_spec(length / time, length / time) == length / time);
-static_assert(get_common_quantity_spec(length / time, inverse(time / length)) == length / time);
+static_assert(detail::find_common_quantity_spec(length / time, length / time) == length / time);
+static_assert(detail::find_common_quantity_spec(length / time, inverse(time / length)) == length / time);
 
-static_assert(get_common_quantity_spec(speed, length / time) == speed);
-static_assert(get_common_quantity_spec(length / time, speed) == speed);
-static_assert(get_common_quantity_spec(area, length* length) == area);
-static_assert(get_common_quantity_spec(length * length, area) == area);
-static_assert(get_common_quantity_spec(frequency, inverse(time)) == inverse(time));
-static_assert(get_common_quantity_spec(inverse(time), frequency) == inverse(time));
-static_assert(get_common_quantity_spec(frequency, inverse(period_duration)) == frequency);
-static_assert(get_common_quantity_spec(inverse(period_duration), frequency) == frequency);
-static_assert(get_common_quantity_spec(kinetic_energy, mass* pow<2>(length) / pow<2>(time)) == kinetic_energy);
-static_assert(get_common_quantity_spec(mass * pow<2>(length) / pow<2>(time), kinetic_energy) == kinetic_energy);
-static_assert(get_common_quantity_spec(gravitational_potential_energy, mass * acceleration_of_free_fall * height) ==
+static_assert(detail::find_common_quantity_spec(speed, length / time) == speed);
+static_assert(detail::find_common_quantity_spec(length / time, speed) == speed);
+static_assert(detail::find_common_quantity_spec(area, length* length) == area);
+static_assert(detail::find_common_quantity_spec(length * length, area) == area);
+static_assert(detail::find_common_quantity_spec(frequency, inverse(time)) == inverse(time));
+static_assert(detail::find_common_quantity_spec(inverse(time), frequency) == inverse(time));
+static_assert(detail::find_common_quantity_spec(frequency, inverse(period_duration)) == frequency);
+static_assert(detail::find_common_quantity_spec(inverse(period_duration), frequency) == frequency);
+static_assert(detail::find_common_quantity_spec(kinetic_energy, mass* pow<2>(length) / pow<2>(time)) == kinetic_energy);
+static_assert(detail::find_common_quantity_spec(mass * pow<2>(length) / pow<2>(time), kinetic_energy) ==
+              kinetic_energy);
+static_assert(detail::find_common_quantity_spec(gravitational_potential_energy,
+                                                mass * acceleration_of_free_fall * height) ==
               gravitational_potential_energy);
-static_assert(get_common_quantity_spec(mass * acceleration_of_free_fall * height, gravitational_potential_energy) ==
-              gravitational_potential_energy);
+static_assert(detail::find_common_quantity_spec(mass * acceleration_of_free_fall * height,
+                                                gravitational_potential_energy) == gravitational_potential_energy);
 
-static_assert(get_common_quantity_spec(gravitational_potential_energy, mass * acceleration * length) ==
+static_assert(detail::find_common_quantity_spec(gravitational_potential_energy, mass * acceleration * length) ==
               mass * acceleration * length);
-static_assert(get_common_quantity_spec(mass * acceleration * length, gravitational_potential_energy) ==
+static_assert(detail::find_common_quantity_spec(mass * acceleration * length, gravitational_potential_energy) ==
               mass * acceleration * length);
 
 // two GPE forms (siblings with different equations) share potential_energy as common ancestor
-static_assert(get_common_quantity_spec(gravitational_potential_energy, newtonian_gravitational_potential_energy) ==
-              potential_energy);
-static_assert(get_common_quantity_spec(newtonian_gravitational_potential_energy, gravitational_potential_energy) ==
-              potential_energy);
+static_assert(detail::find_common_quantity_spec(gravitational_potential_energy,
+                                                newtonian_gravitational_potential_energy) == potential_energy);
+static_assert(detail::find_common_quantity_spec(newtonian_gravitational_potential_energy,
+                                                gravitational_potential_energy) == potential_energy);
+
+// the deprecated public name still forwards to the common quantity specification
+MP_UNITS_DIAGNOSTIC_PUSH
+MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
+static_assert(get_common_quantity_spec(width, height, radius) == length);
+template<auto T1, auto T2>
+concept no_deprecated_common_quantity_spec = !requires { get_common_quantity_spec(T1, T2); };
+static_assert(no_deprecated_common_quantity_spec<frequency, activity>);
+MP_UNITS_DIAGNOSTIC_POP
 
 template<auto T1, auto T2>
 concept no_common_quantity_spec = requires {
-  requires !requires { get_common_quantity_spec(T1, T2); };
-  requires !requires { get_common_quantity_spec(T2, T1); };
+  requires !requires { detail::find_common_quantity_spec(T1, T2); };
+  requires !requires { detail::find_common_quantity_spec(T2, T1); };
 };
 static_assert(no_common_quantity_spec<energy, torque>);
 static_assert(no_common_quantity_spec<kind_of<energy>, torque>);

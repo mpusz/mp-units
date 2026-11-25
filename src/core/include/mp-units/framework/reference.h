@@ -252,13 +252,13 @@ namespace detail {
 template<Unit U1, UnitConvertibleTo<U1{}> U2>
 [[nodiscard]] consteval Unit auto find_common_unit(U1 u1, U2 u2);
 
-}  // namespace detail
-
-MP_UNITS_EXPORT_BEGIN
-
-[[nodiscard]] consteval Unit auto get_common_reference(Unit auto u1, Unit auto u2, Unit auto... rest)
+// The common reference of a set of references, the common unit when every argument is a unit.
+// Users reach it through `std::common_type_t` on two quantities. The name differs from the
+// deprecated `mp_units::get_common_reference` for the reason given at `find_common_unit`.
+[[nodiscard]] consteval Unit auto find_common_reference(Unit auto u1, Unit auto u2, Unit auto... rest)
   requires requires {
-    mp_units::get_common_quantity_spec(get_quantity_spec(u1), get_quantity_spec(u2), get_quantity_spec(rest)...);
+    mp_units::detail::find_common_quantity_spec(get_quantity_spec(u1), get_quantity_spec(u2),
+                                                get_quantity_spec(rest)...);
     mp_units::detail::find_common_unit(u1, u2, rest...);
   }
 {
@@ -266,15 +266,30 @@ MP_UNITS_EXPORT_BEGIN
 }
 
 template<Reference R1, Reference R2, Reference... Rest>
-[[nodiscard]] consteval Reference auto get_common_reference(R1 r1, R2 r2, Rest... rest)
+[[nodiscard]] consteval Reference auto find_common_reference(R1 r1, R2 r2, Rest... rest)
   requires(!(Unit<R1> && Unit<R2> && (... && Unit<Rest>))) && requires {
-    mp_units::get_common_quantity_spec(get_quantity_spec(r1), get_quantity_spec(r2), get_quantity_spec(rest)...);
+    mp_units::detail::find_common_quantity_spec(get_quantity_spec(r1), get_quantity_spec(r2),
+                                                get_quantity_spec(rest)...);
     mp_units::detail::find_common_unit(get_unit(r1), get_unit(r2), get_unit(rest)...);
   }
 {
-  return detail::reference_t<mp_units::get_common_quantity_spec(get_quantity_spec(R1{}), get_quantity_spec(R2{}),
-                                                                get_quantity_spec(rest)...),
-                             mp_units::detail::find_common_unit(get_unit(R1{}), get_unit(R2{}), get_unit(rest)...)>{};
+  return reference_t<mp_units::detail::find_common_quantity_spec(get_quantity_spec(R1{}), get_quantity_spec(R2{}),
+                                                                 get_quantity_spec(Rest{})...),
+                     mp_units::detail::find_common_unit(get_unit(R1{}), get_unit(R2{}), get_unit(Rest{})...)>{};
+}
+
+}  // namespace detail
+
+MP_UNITS_EXPORT_BEGIN
+
+/**
+ * The common reference of the arguments. Use `std::common_type_t` on two quantities instead.
+ */
+[[deprecated("2.6.0: Use `std::common_type_t` on two quantities instead")]] [[nodiscard]] consteval Reference auto
+get_common_reference(Reference auto r1, Reference auto r2, Reference auto... rest)
+  requires requires { mp_units::detail::find_common_reference(r1, r2, rest...); }
+{
+  return mp_units::detail::find_common_reference(r1, r2, rest...);
 }
 
 MP_UNITS_EXPORT_END
