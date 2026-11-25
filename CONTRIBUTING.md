@@ -510,6 +510,8 @@ This will run:
   has to be wrapped),
 - `shellcheck` for the shell scripts and `actionlint` for the GitHub Actions workflows,
 - `black`, `isort`, and `flake8` for the Python scripts,
+- the [check of the documentation samples](#code-samples-in-the-documentation), which needs
+  GCC 15 (`SKIP=doc-snippets pre-commit run --all-files` leaves it out),
 - some other checks (e.g., trailing whitespace, YAML and JSON validity, etc.).
 
 The script will run on all the files in the repo and will apply the changes in place when
