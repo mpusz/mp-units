@@ -17,6 +17,9 @@ This page documents the version history and changes for the **mp-units** library
       operation of the quantity then accessed a volatile object. Read a hardware register
       into a plain value and convert that value instead. Checking a reference used to be
       a hard error, and it is now `false`
+- (!) fix: `quantity_spec` takes each property at most once. A second `subkind` or
+      `non_negative` used to compile, and so did two different `quantity_tensor_order` or
+      `quantity_field` values, of which only the first took effect
 - feat: `numerical_value_in<Rep>(unit)` and `numerical_value_in<Rep>(unit, policy)` return
       the numerical value in another representation type, with the rules of
       `in<Rep>(unit)` and `in<Rep>(unit, policy)`, for a quantity and for a point at its

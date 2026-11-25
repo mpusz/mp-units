@@ -26,21 +26,39 @@
 #include <mp-units/bits/config.h>
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
+#include <mp-units/bits/unsatisfied.h>
+#include <mp-units/ext/type_traits.h>
 #include <mp-units/framework/quantity_character.h>
 #include <mp-units/framework/symbolic_expression.h>
 
 namespace mp_units {
 
+namespace detail {
+
+struct quantity_spec_interface_base;
+
+// No two arguments share a type, so a tag, a tensor order or a field is given at most once. Only an
+// argument that is not a quantity specification can repeat, so the pairwise check runs only when
+// two of them are given; the fold reuses the `is_base_of_v` that `QuantitySpec` instantiates anyway.
+template<auto... Args>
+concept QuantitySpecArguments =
+  (std::size_t{0} + ... +
+   std::size_t{!std::is_base_of_v<quantity_spec_interface_base, MP_UNITS_NTTP_HACK(decltype(Args))>}) < 2 ||
+  mp_units::has_unique_types<Args...>() ||
+  unsatisfied<"A quantity specification takes at most one value of each property type">();
+
+}  // namespace detail
+
 #if MP_UNITS_API_NO_CRTP
-MP_UNITS_EXPORT template<auto...>
+MP_UNITS_EXPORT template<auto... Args>
+  requires detail::QuantitySpecArguments<Args...>
 #else
-MP_UNITS_EXPORT template<typename, auto...>
+MP_UNITS_EXPORT template<typename Self, auto... Args>
+  requires detail::QuantitySpecArguments<Args...>
 #endif
 struct quantity_spec;
 
 namespace detail {
-
-struct quantity_spec_interface_base;
 
 #if MP_UNITS_API_NO_CRTP
 

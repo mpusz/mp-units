@@ -1463,4 +1463,22 @@ MP_UNITS_DIAGNOSTIC_POP
 static_assert(get_kind(legacy_storage_capacity) == kind_of<legacy_storage_capacity>);
 static_assert(convertible(legacy_storage_capacity, dimensionless) == explicit_only);
 
+// each property is given at most once
+#if MP_UNITS_API_NO_CRTP
+template<auto... Args>
+concept quantity_spec_args_accepted = requires { typename quantity_spec<Args...>; };
+#else
+struct probe_spec_;
+template<auto... Args>
+concept quantity_spec_args_accepted = requires { typename quantity_spec<probe_spec_, Args...>; };
+#endif
+
+static_assert(quantity_spec_args_accepted<length, quantity_tensor_order::vector, quantity_field::real>);
+static_assert(quantity_spec_args_accepted<dimensionless, area / pow<2>(radius), subkind, non_negative>);
+static_assert(!quantity_spec_args_accepted<length, non_negative, non_negative>);
+static_assert(!quantity_spec_args_accepted<dimensionless, subkind, subkind>);
+static_assert(!quantity_spec_args_accepted<length, quantity_tensor_order::vector, quantity_tensor_order::scalar>);
+static_assert(!quantity_spec_args_accepted<length, quantity_tensor_order::vector, quantity_tensor_order::vector>);
+static_assert(!quantity_spec_args_accepted<electric_current, quantity_field::real, quantity_field::complex>);
+
 }  // namespace
