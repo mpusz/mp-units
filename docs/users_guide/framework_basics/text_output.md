@@ -316,7 +316,7 @@ resulting unit and its impact on the value stored in the quantity.
     2.60934 km
     ```
 
-## `space_before_unit_symbol` customization point
+## No space before the unit symbol
 
 The [SI Brochure](../../reference/bibliography.md#SIBrochure) says:
 
@@ -327,23 +327,27 @@ The [SI Brochure](../../reference/bibliography.md#SIBrochure) says:
     second for plane angle, `°`, `′` and `″`, respectively, for which no space is left between the
     numerical value and the unit symbol.
 
-There are more units with such properties. For example, percent (`%`) and per mille(`‰`).
-
-To support the above and other similar cases, the library exposes `space_before_unit_symbol`
-customization point. By default, its value is `true` for all the units, so the space
-between a number and a unit will be inserted in the output text. To change this
-behavior, we have to
-provide an explicit specialization for a specific unit. The library does it for
-`non_si::degree`, and a unit of our own does it the same way:
+The library prints `non_si::degree`, `non_si::arcminute`, `non_si::arcsecond` and
+`angular::degree` with no space, and `angular::gradian` too, as its superscript symbol
+`ᵍ` is written the same way. Each of them, and any other unit to be printed with no space,
+passes `no_space_before_unit_symbol` to `named_unit`. The tag goes after the other
+arguments, before or after a point origin if the unit has one:
 
 ```cpp
 // right ascension in astronomy is written as 5ʰ 35ᵐ, with no space
 inline constexpr struct hour_angle final :
-    named_unit<{u8"ʰ", "h"}, mag<15> * non_si::degree> {} hour_angle;
+  named_unit<symbol_text{u8"ʰ", "h"}, mag<15> * non_si::degree,
+             no_space_before_unit_symbol> {} hour_angle;
 
-template<>
-inline constexpr bool mp_units::space_before_unit_symbol<hour_angle> = false;
+void print_right_ascension()
+{
+  std::cout << 5 * hour_angle << '\n';  // 5ʰ
+}
 ```
+
+A prefixed unit, or another named unit defined in terms of the degree, has a symbol of
+its own, so it is printed with the space, for example `5 m″`, unless it passes the tag
+itself.
 
 !!! note
 
@@ -351,10 +355,8 @@ inline constexpr bool mp_units::space_before_unit_symbol<hour_angle> = false;
     strings that use `%?` placement field (`std::format("{}", q)` is equivalent to
     `std::format("{:%N%?%U}", q)`).
 
-    In case a user provides custom format specification (e.g., `std::format("{:%N %U}", q)`),
-    the library will always obey this specification for all the units (no matter what the actual
-    value of the `space_before_unit_symbol` customization point is) and the separating space will always
-    be used in this case.
+    A custom format specification without `%?`, such as `std::format("{:%N %U}", q)`, prints
+    exactly what it says for every unit, so `{:%N %U}` puts a space before `°` too.
 
 
 ## Output streams
@@ -597,8 +599,8 @@ In the above grammar:
     - 'N' inserts a default-formatted numerical value of the quantity,
     - 'U' inserts a default-formatted unit of the quantity,
     - 'D' inserts a default-formatted dimension of the quantity,
-    - '?' inserts an optional separator between the number and a unit based on the value of
-      `space_before_unit_symbol` for this unit,
+    - '?' inserts a space between the number and a unit, unless the unit is `one` or was
+      defined with [`no_space_before_unit_symbol`](#no-space-before-the-unit-symbol),
     - '%' just inserts '%' character.
 - `defaults-specs` token allows overwriting defaults for the underlying formatters with the
   custom format string. Each override starts with a subentity identifier ('N', 'U', or 'D')
@@ -678,8 +680,7 @@ std::cout << std::format("Distance: {:%N%?%U}\n", 123 * km);
 !!! note
 
     For some quantities, the `{:%N %U}` format may provide a different output than the default one,
-    as some units have `space_before_unit_symbol` customization point explicitly set to `false`
-    (e.g., `%` and `°`).
+    as some units are defined with `no_space_before_unit_symbol` (e.g., `non_si::degree`).
 
 
 #### Quantity numerical value, unit symbol, or both?

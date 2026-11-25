@@ -608,7 +608,7 @@ struct quantity_iface {
         oss << +q.numerical_value_ref_in(q.unit);
       else
         oss << q.numerical_value_ref_in(q.unit);
-      if constexpr (space_before_unit_symbol<get_unit(R)>) oss << " ";
+      if constexpr (detail::space_before_unit_symbol_v<get_unit(R)>) oss << " ";
       oss << q.unit;
     });
   }
@@ -1517,7 +1517,7 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
     void on_number() { ctx.advance_to(f.rep_formatter_.format(q.numerical_value_ref_in(q.unit), ctx)); }
     void on_maybe_space()
     {
-      if constexpr (mp_units::space_before_unit_symbol<unit>) {
+      if constexpr (mp_units::detail::space_before_unit_symbol_v<unit>) {
         auto it = ctx.out();
         *it++ = ' ';
         ctx.advance_to(it);
@@ -1561,7 +1561,7 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
     }
     void on_maybe_space()
     {
-      if constexpr (mp_units::space_before_unit_symbol<unit>) *out++ = ' ';
+      if constexpr (mp_units::detail::space_before_unit_symbol_v<unit>) *out++ = ' ';
     }
     void on_unit()
     {

@@ -642,4 +642,83 @@ static_assert(std::derived_from<decltype(detail::find_common_reference(mile, kil
 static_assert(std::derived_from<decltype(detail::find_common_reference(kilometre, mile, si::centi<metre>)),
                                 detail::scaled_unit_impl<mag_ratio<1, 500>, metre_>>);
 
+// `named_unit` takes a point origin and `no_space_before_unit_symbol` after the definition, in any order
+// clang-format off
+inline constexpr struct origin_a_ final : absolute_point_origin<isq::thermodynamic_temperature> {} origin_a;
+inline constexpr struct origin_b_ final : relative_point_origin<origin_a + 1 * kelvin> {} origin_b;
+
+inline constexpr struct base_tag_origin_ final : named_unit<"Kt", kind_of<isq::thermodynamic_temperature>, no_space_before_unit_symbol, origin_a> {} base_tag_origin;
+inline constexpr struct base_origin_tag_ final : named_unit<"Ko", kind_of<isq::thermodynamic_temperature>, origin_a, no_space_before_unit_symbol> {} base_origin_tag;
+inline constexpr struct alias_tag_origin_ final : named_unit<"Ct", kelvin, no_space_before_unit_symbol, origin_a> {} alias_tag_origin;
+inline constexpr struct alias_origin_tag_ final : named_unit<"Co", kelvin, origin_a, no_space_before_unit_symbol> {} alias_origin_tag;
+inline constexpr struct restricted_tag_ final : named_unit<"rt", metre / metre, kind_of<isq::angular_measure>, no_space_before_unit_symbol> {} restricted_tag;
+inline constexpr struct restricted_origin_tag_ final : named_unit<"ro", kelvin, kind_of<isq::thermodynamic_temperature>, origin_a, no_space_before_unit_symbol> {} restricted_origin_tag;
+inline constexpr struct spaceless_degree_ final : named_unit<symbol_text{u8"°", "deg"}, mag_ratio<1, 180> * π * radian, no_space_before_unit_symbol> {} spaceless_degree;
+
+// a unit defined in terms of one of the above has a symbol of its own
+inline constexpr struct degree_alias_ final : named_unit<"da", spaceless_degree> {} degree_alias;
+inline constexpr struct scaled_degree_alias_ final : named_unit<"sda", mag<15> * spaceless_degree> {} scaled_degree_alias;
+inline constexpr struct degree_constant_ final : named_constant<"dc", spaceless_degree> {} degree_constant;
+// and replaces the origin it would inherit
+inline constexpr struct origin_replaced_ final : named_unit<"Cr", base_tag_origin, origin_b> {} origin_replaced;
+// clang-format on
+
+static_assert(!space_before_symbol(base_tag_origin));
+static_assert(!space_before_symbol(base_origin_tag));
+static_assert(!space_before_symbol(alias_tag_origin));
+static_assert(!space_before_symbol(alias_origin_tag));
+static_assert(!space_before_symbol(restricted_tag));
+static_assert(!space_before_symbol(restricted_origin_tag));
+static_assert(!space_before_symbol(spaceless_degree));
+static_assert(base_tag_origin._point_origin_ == origin_a);
+static_assert(base_origin_tag._point_origin_ == origin_a);
+static_assert(alias_tag_origin._point_origin_ == origin_a);
+static_assert(alias_origin_tag._point_origin_ == origin_a);
+static_assert(restricted_origin_tag._point_origin_ == origin_a);
+static_assert(origin_replaced._point_origin_ == origin_b);
+template<auto U>
+concept has_point_origin = requires { U._point_origin_; };
+static_assert(!has_point_origin<restricted_tag>);
+
+static_assert(space_before_symbol(metre));
+static_assert(space_before_symbol(degree));
+static_assert(space_before_symbol(percent));
+static_assert(!space_before_symbol(one));
+
+// the space belongs to the symbol, so it does not propagate
+static_assert(space_before_symbol(degree_alias));
+static_assert(space_before_symbol(scaled_degree_alias));
+static_assert(space_before_symbol(degree_constant));
+static_assert(space_before_symbol(origin_replaced));
+static_assert(space_before_symbol(milli<spaceless_degree>));
+static_assert(space_before_symbol(mag<15> * spaceless_degree));
+static_assert(space_before_symbol(spaceless_degree / second));
+static_assert(space_before_symbol(square(spaceless_degree)));
+
+// the deprecated variable reports the definition
+MP_UNITS_DIAGNOSTIC_PUSH
+MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
+static_assert(!space_before_unit_symbol<spaceless_degree>);
+static_assert(space_before_unit_symbol<metre>);
+static_assert(!space_before_unit_symbol<one>);
+MP_UNITS_DIAGNOSTIC_POP
+
+template<auto... Args>
+concept named_unit_args_accepted = requires { typename named_unit<"x", Args...>; };
+
+static_assert(named_unit_args_accepted<kind_of<isq::length>, no_space_before_unit_symbol>);
+static_assert(!named_unit_args_accepted<kind_of<isq::thermodynamic_temperature>, origin_a, origin_b>);
+static_assert(!named_unit_args_accepted<kelvin, origin_a, no_space_before_unit_symbol, origin_b>);
+static_assert(!named_unit_args_accepted<kind_of<isq::length>, 42>);
+static_assert(!named_unit_args_accepted<metre / metre, no_space_before_unit_symbol, kind_of<isq::angular_measure>>);
+static_assert(!named_unit_args_accepted<kelvin, origin_a, kind_of<isq::thermodynamic_temperature>>);
+
+// a common unit prints a list of its units, not the symbol of the unit it derives from
+// clang-format off
+inline constexpr struct spaceless_base_ final : named_unit<"sb", kind_of<isq::length>, no_space_before_unit_symbol> {} spaceless_base;
+struct double_base_ final : named_unit<"db", mag<2> * spaceless_base> {};
+struct triple_base_ final : named_unit<"tb", mag<3> * spaceless_base> {};
+// clang-format on
+static_assert(space_before_symbol(common_unit<double_base_, triple_base_>{}));
+
 }  // namespace

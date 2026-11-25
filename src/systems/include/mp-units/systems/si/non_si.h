@@ -55,9 +55,9 @@ namespace non_si {
 inline constexpr struct minute final : named_unit<"min", mag<60> * si::second> {} minute;
 inline constexpr struct hour final : named_unit<"h", mag<60> * minute> {} hour;
 inline constexpr struct day final : named_unit<"d", mag<24> * hour> {} day;
-inline constexpr struct degree final : named_unit<symbol_text{u8"°", "deg"}, mag_ratio<1, 180> * π * si::radian> {} degree;
-inline constexpr struct arcminute final : named_unit<symbol_text{u8"′", "'"}, mag_ratio<1, 60> * degree> {} arcminute;
-inline constexpr struct arcsecond final : named_unit<symbol_text{u8"″", "''"}, mag_ratio<1, 60> * arcminute> {} arcsecond;
+inline constexpr struct degree final : named_unit<symbol_text{u8"°", "deg"}, mag_ratio<1, 180> * π * si::radian, no_space_before_unit_symbol> {} degree;
+inline constexpr struct arcminute final : named_unit<symbol_text{u8"′", "'"}, mag_ratio<1, 60> * degree, no_space_before_unit_symbol> {} arcminute;
+inline constexpr struct arcsecond final : named_unit<symbol_text{u8"″", "''"}, mag_ratio<1, 60> * arcminute, no_space_before_unit_symbol> {} arcsecond;
 
 // historical names for decimal multiples and submultiples of SI units
 inline constexpr struct are final : named_unit<"a", square(si::deca<si::metre>)> {} are;
@@ -93,22 +93,6 @@ inline constexpr struct var final : named_unit<"var", si::volt * si::ampere, kin
 // clang-format on
 
 }  // namespace non_si
-
-/**
- * The degree of plane angle is written with no space, as in `90°`
- */
-template<>
-inline constexpr bool space_before_unit_symbol<non_si::degree> = false;
-/**
- * The arcminute is written with no space, as in `30′`
- */
-template<>
-inline constexpr bool space_before_unit_symbol<non_si::arcminute> = false;
-/**
- * The arcsecond is written with no space, as in `15″`
- */
-template<>
-inline constexpr bool space_before_unit_symbol<non_si::arcsecond> = false;
 
 namespace non_si::unit_symbols {
 

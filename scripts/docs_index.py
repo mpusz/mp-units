@@ -200,6 +200,9 @@ def _declared_name(head: str) -> str | None:
         if start < 0:
             return None
         head = head[_skip_balanced(head, start, "<", ">") :].strip()
+    # an attribute macro after the template head, such as one wrapping `[[deprecated("...")]]`
+    while m := re.match(r"(?!QUANTITY_SPEC\b)[A-Z][A-Z0-9_]+\s*\(", head):
+        head = head[_skip_balanced(head, m.end() - 1, "(", ")") :].strip()
     if head.startswith("requires"):
         # an unparsed constraint; the declaration starts at its first specifier
         found = re.search(

@@ -374,6 +374,38 @@ MP_UNITS_EXPORT template<symbol_text Symbol, auto... Args>
   requires detail::NamedUnitArguments<Args...>
 struct named_unit;
 
+namespace detail {
+
+template<auto First, auto... Rest>
+[[nodiscard]] consteval auto get_point_origin_property()
+{
+  if constexpr (PointOrigin<MP_UNITS_NONCONST_TYPE(First)>)
+    return First;
+  else
+    return get_point_origin_property<Rest...>();
+}
+
+// Declares `_point_origin_` when `Props` names an origin. The member sits in a layer above `Base`, so
+// a unit defined in terms of another unit replaces the origin it inherits instead of making the
+// name ambiguous.
+template<typename Base, auto... Props>
+struct with_point_origin : Base {};
+
+template<typename Base, auto... Props>
+  requires(... || PointOrigin<MP_UNITS_NONCONST_TYPE(Props)>)
+struct with_point_origin<Base, Props...> : Base {
+  static constexpr auto _point_origin_ = get_point_origin_property<Props...>();
+};
+
+// Each specialization of `named_unit` redeclares the member, which hides the flag of the unit it is
+// defined in terms of. The flag belongs to the symbol, and the new unit has a symbol of its own.
+// `named_constant` and `common_unit` also derive from another unit's base, so they redeclare it too.
+template<auto... Props>
+constexpr bool space_before_symbol_property =
+  !mp_units::contains<struct mp_units::no_space_before_unit_symbol, Props...>();
+
+}  // namespace detail
+
 /**
  * Specialization for unit of a specified base quantity
  *
@@ -389,7 +421,21 @@ struct named_unit;
  *
  * @tparam Symbol a short text representation of the unit
  * @tparam QuantitySpec a specification of a base quantity to be measured with this unit
+ * @tparam Props optionally, in any order, a point origin and @ref no_space_before_unit_symbol
  */
+template<symbol_text Symbol, detail::QuantityKindSpec auto QS, detail::NamedUnitProperty auto Prop,
+         detail::NamedUnitProperty auto... Props>
+  requires(!Symbol.empty()) &&
+          (detail::BaseDimension<MP_UNITS_NONCONST_TYPE(QS._dimension_)> || detail::remove_kind(QS) == dimensionless)
+struct named_unit<Symbol, QS, Prop, Props...> : detail::with_point_origin<detail::unit_interface, Prop, Props...> {
+  using _base_type_ = named_unit;           // exposition only
+  static constexpr auto _symbol_ = Symbol;  ///< Unique base unit identifier
+  static constexpr auto _quantity_spec_ = QS;
+  static constexpr bool _space_before_symbol_ = detail::space_before_symbol_property<Prop, Props...>;
+};
+
+// A unit without properties derives from its base directly: a `with_point_origin` layer would cost
+// every unit a class template instantiation and a constraint check.
 template<symbol_text Symbol, detail::QuantityKindSpec auto QS>
   requires(!Symbol.empty()) &&
           (detail::BaseDimension<MP_UNITS_NONCONST_TYPE(QS._dimension_)> || detail::remove_kind(QS) == dimensionless)
@@ -397,16 +443,7 @@ struct named_unit<Symbol, QS> : detail::unit_interface {
   using _base_type_ = named_unit;           // exposition only
   static constexpr auto _symbol_ = Symbol;  ///< Unique base unit identifier
   static constexpr auto _quantity_spec_ = QS;
-};
-
-template<symbol_text Symbol, detail::QuantityKindSpec auto QS, detail::PointOrigin auto PO>
-  requires(!Symbol.empty()) &&
-          (detail::BaseDimension<MP_UNITS_NONCONST_TYPE(QS._dimension_)> || detail::remove_kind(QS) == dimensionless)
-struct named_unit<Symbol, QS, PO> : detail::unit_interface {
-  using _base_type_ = named_unit;           // exposition only
-  static constexpr auto _symbol_ = Symbol;  ///< Unique base unit identifier
-  static constexpr auto _quantity_spec_ = QS;
-  static constexpr auto _point_origin_ = PO;
+  static constexpr bool _space_before_symbol_ = true;
 };
 
 /**
@@ -416,20 +453,23 @@ struct named_unit<Symbol, QS, PO> : detail::unit_interface {
  *
  * @tparam Symbol a short text representation of the unit
  * @tparam Unit a unit for which we provide a special name
+ * @tparam Props optionally, in any order, a point origin and @ref no_space_before_unit_symbol
  */
+template<symbol_text Symbol, Unit auto U, detail::NamedUnitProperty auto Prop, detail::NamedUnitProperty auto... Props>
+  requires(!Symbol.empty()) && detail::is_positive_canonical_unit_mag<U>
+struct named_unit<Symbol, U, Prop, Props...> :
+    detail::with_point_origin<typename decltype(U)::_base_type_, Prop, Props...> {
+  using _base_type_ = named_unit;           // exposition only
+  static constexpr auto _symbol_ = Symbol;  ///< Unique unit identifier
+  static constexpr bool _space_before_symbol_ = detail::space_before_symbol_property<Prop, Props...>;
+};
+
 template<symbol_text Symbol, Unit auto U>
   requires(!Symbol.empty()) && detail::is_positive_canonical_unit_mag<U>
 struct named_unit<Symbol, U> : decltype(U)::_base_type_ {
   using _base_type_ = named_unit;           // exposition only
   static constexpr auto _symbol_ = Symbol;  ///< Unique unit identifier
-};
-
-template<symbol_text Symbol, Unit auto U, detail::PointOrigin auto PO>
-  requires(!Symbol.empty()) && detail::is_positive_canonical_unit_mag<U>
-struct named_unit<Symbol, U, PO> : decltype(U)::_base_type_ {
-  using _base_type_ = named_unit;           // exposition only
-  static constexpr auto _symbol_ = Symbol;  ///< Unique unit identifier
-  static constexpr auto _point_origin_ = PO;
+  static constexpr bool _space_before_symbol_ = true;
 };
 
 /**
@@ -440,7 +480,20 @@ struct named_unit<Symbol, U, PO> : decltype(U)::_base_type_ {
  * @tparam Symbol a short text representation of the unit
  * @tparam Unit a unit for which we provide a special name
  * @tparam QuantitySpec a specification of a quantity to be measured with this unit
+ * @tparam Props optionally, in any order, a point origin and @ref no_space_before_unit_symbol
  */
+template<symbol_text Symbol, Unit auto U, detail::QuantityKindSpec auto QS, detail::NamedUnitProperty auto Prop,
+         detail::NamedUnitProperty auto... Props>
+  requires(!Symbol.empty()) && (QS._dimension_ == detail::get_associated_quantity(U)._dimension_) &&
+          detail::is_positive_canonical_unit_mag<U>
+struct named_unit<Symbol, U, QS, Prop, Props...> :
+    detail::with_point_origin<typename decltype(U)::_base_type_, Prop, Props...> {
+  using _base_type_ = named_unit;           // exposition only
+  static constexpr auto _symbol_ = Symbol;  ///< Unique unit identifier
+  static constexpr auto _quantity_spec_ = QS;
+  static constexpr bool _space_before_symbol_ = detail::space_before_symbol_property<Prop, Props...>;
+};
+
 template<symbol_text Symbol, Unit auto U, detail::QuantityKindSpec auto QS>
   requires(!Symbol.empty()) && (QS._dimension_ == detail::get_associated_quantity(U)._dimension_) &&
           detail::is_positive_canonical_unit_mag<U>
@@ -448,16 +501,7 @@ struct named_unit<Symbol, U, QS> : decltype(U)::_base_type_ {
   using _base_type_ = named_unit;           // exposition only
   static constexpr auto _symbol_ = Symbol;  ///< Unique unit identifier
   static constexpr auto _quantity_spec_ = QS;
-};
-
-template<symbol_text Symbol, Unit auto U, detail::QuantityKindSpec auto QS, detail::PointOrigin auto PO>
-  requires(!Symbol.empty()) && (QS._dimension_ == detail::get_associated_quantity(U)._dimension_) &&
-          detail::is_positive_canonical_unit_mag<U>
-struct named_unit<Symbol, U, QS, PO> : decltype(U)::_base_type_ {
-  using _base_type_ = named_unit;           // exposition only
-  static constexpr auto _symbol_ = Symbol;  ///< Unique unit identifier
-  static constexpr auto _quantity_spec_ = QS;
-  static constexpr auto _point_origin_ = PO;
+  static constexpr bool _space_before_symbol_ = true;
 };
 
 /**
@@ -551,8 +595,9 @@ standard_uncertainty(U) -> standard_uncertainty<U>;
 template<symbol_text Symbol, Unit auto U>
   requires(!Symbol.empty())
 struct named_constant<Symbol, U> : decltype(U)::_base_type_ {
-  using _base_type_ = named_constant;       // exposition only
-  static constexpr auto _symbol_ = Symbol;  ///< Unique constant identifier
+  using _base_type_ = named_constant;                  // exposition only
+  static constexpr auto _symbol_ = Symbol;             ///< Unique constant identifier
+  static constexpr bool _space_before_symbol_ = true;  // its own symbol, so not inherited from `U`
 };
 
 /**
@@ -572,8 +617,9 @@ struct named_constant<Symbol, U> : decltype(U)::_base_type_ {
 template<symbol_text Symbol, Unit auto U, typename M, relative_standard_uncertainty<M> RSU>
   requires(!Symbol.empty()) && detail::magnitude_is_positive<M{}>
 struct named_constant<Symbol, U, RSU> : decltype(U)::_base_type_ {
-  using _base_type_ = named_constant;       // exposition only
-  static constexpr auto _symbol_ = Symbol;  ///< Unique constant identifier
+  using _base_type_ = named_constant;                  // exposition only
+  static constexpr auto _symbol_ = Symbol;             ///< Unique constant identifier
+  static constexpr bool _space_before_symbol_ = true;  // its own symbol, so not inherited from `U`
   static constexpr auto _relative_standard_uncertainty_ = M{};
 };
 
@@ -622,8 +668,9 @@ template<symbol_text Symbol, Unit auto U, typename SUU, standard_uncertainty<SUU
   requires(!Symbol.empty()) && detail::is_positive_canonical_unit_mag<SUU{}> &&
           (detail::same_unscaled_unit<SUU, MP_UNITS_NONCONST_TYPE(U)> || detail::ConvertibleUnits<SUU{}, U>)
 struct named_constant<Symbol, U, SU> : decltype(U)::_base_type_ {
-  using _base_type_ = named_constant;       // exposition only
-  static constexpr auto _symbol_ = Symbol;  ///< Unique constant identifier
+  using _base_type_ = named_constant;                  // exposition only
+  static constexpr auto _symbol_ = Symbol;             ///< Unique constant identifier
+  static constexpr bool _space_before_symbol_ = true;  // its own symbol, so not inherited from `U`
   static constexpr auto _standard_uncertainty_ = SUU{};
 };
 
@@ -756,6 +803,7 @@ template<Unit U1, Unit U2, Unit... Rest>
 struct common_unit final : decltype(detail::common_unit_scaled_result<U1, U2, Rest...>)::_base_type_ {
   using _base_type_ = common_unit;  // exposition only
   static constexpr auto _common_unit_ = detail::common_unit_scaled_result<U1, U2, Rest...>;
+  static constexpr bool _space_before_symbol_ = true;  // printed as a list, not as the inherited symbol
 };
 
 namespace detail {

@@ -28,6 +28,7 @@
 #include <mp-units/bits/unsatisfied.h>
 #include <mp-units/compat_macros.h>
 #include <mp-units/ext/type_name.h>
+#include <mp-units/framework/point_origin_concepts.h>
 #include <mp-units/framework/quantity_spec_concepts.h>
 #include <mp-units/framework/symbolic_expression.h>
 #include <mp-units/framework/unit_magnitude.h>
@@ -51,8 +52,78 @@ concept QuantitySpecIsAKind =
   unsatisfied<"A unit is defined for a quantity kind, so it takes 'kind_of<{}>' rather than the quantity itself">(
     type_name(V));
 
+}  // namespace detail
+
+/**
+ * Writes a unit's symbol directly after the number, with no space between them
+ *
+ * The SI separates a number from a unit symbol with a space, and makes an exception only for
+ * the degree, minute and second of plane angle: `90°`, `30′`, `15″`. A unit that follows the
+ * same convention passes this tag to @ref named_unit, after the other arguments and before or
+ * after a point origin:
+ *
+ * @code{.cpp}
+ * // right ascension in astronomy is written as 5ʰ 35ᵐ, with no space
+ * inline constexpr struct hour_angle final :
+ *   named_unit<symbol_text{u8"ʰ", "h"}, mag<15> * non_si::degree, no_space_before_unit_symbol> {} hour_angle;
+ *
+ * void print_right_ascension() { std::cout << 5 * hour_angle << '\n'; }  // 5ʰ
+ * @endcode
+ *
+ * A prefixed unit, or another @ref named_unit defined in terms of a unit that passes the tag,
+ * has a symbol of its own, so it is printed with the space unless it passes the tag too.
+ * A format specification without `%?`, such as `{:%N %U}`, ignores the tag.
+ *
+ * @see [Text Output](docs:users_guide/framework_basics/text_output#no-space-before-the-unit-symbol)
+ * in the User's Guide
+ */
+MP_UNITS_EXPORT inline constexpr struct no_space_before_unit_symbol {
+} no_space_before_unit_symbol;
+
+namespace detail {
+
+// Whatever `named_unit` accepts after the unit's definition, in any order.
+template<typename T>
+concept NamedUnitProperty =
+  PointOrigin<T> || std::is_same_v<std::remove_const_t<T>, struct mp_units::no_space_before_unit_symbol>;
+
+template<auto V>
+concept NamedUnitArgument =
+  std::is_base_of_v<unit_interface, MP_UNITS_NTTP_HACK(decltype(V))> ||
+  (QuantitySpec<MP_UNITS_NTTP_HACK(decltype(V))> && QuantitySpecIsAKind<V>) ||
+  NamedUnitProperty<MP_UNITS_NTTP_HACK(decltype(V))> ||
+  unsatisfied<"'{}' is neither a unit, a quantity kind, a point origin nor 'no_space_before_unit_symbol'">(
+    type_name(V));
+
 template<auto... Args>
-concept NamedUnitArguments = (... && QuantitySpecIsAKind<Args>);
+concept AtMostOnePointOrigin =
+  (std::size_t{0} + ... + std::size_t{PointOrigin<MP_UNITS_NTTP_HACK(decltype(Args))>}) <= 1 ||
+  unsatisfied<"A unit takes at most one point origin">();
+
+template<auto... Args>
+[[nodiscard]] consteval bool properties_come_last()
+{
+  bool property_seen = false;
+  bool in_order = true;
+  ((in_order = in_order && (!property_seen || NamedUnitProperty<MP_UNITS_NTTP_HACK(decltype(Args))>),
+    property_seen = property_seen || NamedUnitProperty<MP_UNITS_NTTP_HACK(decltype(Args))>),
+   ...);
+  return in_order;
+}
+
+// Most units take no property, and the fold spares them the function instantiation.
+template<auto... Args>
+concept PropertiesComeLast =
+  !(... || NamedUnitProperty<MP_UNITS_NTTP_HACK(decltype(Args))>) || properties_come_last<Args...>() ||
+  unsatisfied<"A point origin and 'no_space_before_unit_symbol' come after the unit and the quantity kind">();
+
+// Counted with a fold, not `sizeof...`: Clang 22 and later take a constraint in a concept that reads a non-type pack
+// only through `sizeof...` as satisfied (llvm/llvm-project#246501).
+// A single argument is the unit's definition, so most units skip the checks on the properties.
+template<auto... Args>
+concept NamedUnitArguments =
+  (... && NamedUnitArgument<Args>) && ((std::size_t{0} + ... + ((void)Args, std::size_t{1})) == 1 ||
+                                       (AtMostOnePointOrigin<Args...> && PropertiesComeLast<Args...>));
 
 }  // namespace detail
 
@@ -85,7 +156,7 @@ struct named_unit;
  * @endcode
  *
  * @code{.cpp}
- * // a trait keyed by unit, like the library's own `space_before_unit_symbol` customization point
+ * // a trait keyed by unit
  * template<Unit auto U>
  * constexpr std::string_view spelled_name = "";
  *

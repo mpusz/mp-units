@@ -23,6 +23,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers.hpp>
 #include <catch2/matchers/catch_matchers_exception.hpp>
+#include <mp-units/bits/diagnostics.h>
 #include <mp-units/compat_macros.h>
 #include <mp-units/ext/format.h>
 #ifdef MP_UNITS_IMPORT_STD
@@ -39,6 +40,7 @@ import std;
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
+#include <mp-units/systems/angular.h>
 #include <mp-units/systems/cgs.h>
 #include <mp-units/systems/isq/electromagnetism.h>
 #include <mp-units/systems/isq/mechanics.h>
@@ -633,6 +635,46 @@ TEST_CASE("default quantity formatting", "[quantity][ostream][fmt]")
         CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U}", q) == os.str());
       }
     }
+  }
+}
+
+namespace {
+
+// clang-format off
+inline constexpr struct hour_angle final : named_unit<symbol_text{u8"ʰ", "h"}, mag<15> * non_si::degree, no_space_before_unit_symbol> {} hour_angle;
+inline constexpr struct degree_alias final : named_unit<"da", non_si::degree> {} degree_alias;
+inline constexpr struct legacy_unit final : named_unit<"lu", mag<15> * non_si::degree> {} legacy_unit;
+// clang-format on
+
+}  // namespace
+
+// a specialization written for the deprecated variable keeps taking effect
+MP_UNITS_DIAGNOSTIC_PUSH
+MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
+template<>
+inline constexpr bool mp_units::space_before_unit_symbol<legacy_unit> = false;
+MP_UNITS_DIAGNOSTIC_POP
+
+TEST_CASE("space before the unit symbol", "[quantity][ostream][fmt]")
+{
+  const auto check = [](const auto& q, std::string_view expected) {
+    std::ostringstream os;
+    os << q;
+    CHECK(os.str() == expected);
+    CHECK(MP_UNITS_STD_FMT::format("{}", q) == expected);
+    CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U}", q) == expected);
+  };
+
+  SECTION("a unit defined with `no_space_before_unit_symbol`") { check(5 * hour_angle, "5ʰ"); }
+  SECTION("gradian") { check(100 * angular::gradian, "100ᵍ"); }
+  SECTION("a named unit defined in terms of a unit without the space") { check(5 * degree_alias, "5 da"); }
+  SECTION("a prefixed unit") { check(5 * si::milli<non_si::arcsecond>, "5 m″"); }
+  SECTION("a scaled unit") { check(5 * (mag<15> * non_si::degree), "5 (15°)"); }
+  SECTION("a derived unit") { check(5 * non_si::degree / si::second, "5 °/s"); }
+  SECTION("a specialization of the deprecated variable") { check(5 * legacy_unit, "5lu"); }
+  SECTION("an explicit space in the format overrides the tag")
+  {
+    CHECK(MP_UNITS_STD_FMT::format("{:%N %U}", 5 * hour_angle) == "5 ʰ");
   }
 }
 

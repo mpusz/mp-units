@@ -21,6 +21,11 @@ This page documents the version history and changes for the **mp-units** library
       the numerical value in another representation type, with the rules of
       `in<Rep>(unit)` and `in<Rep>(unit, policy)`, for a quantity and for a point at its
       default origin
+- refactor: a unit printed with no space before its symbol, such as `°`, passes the
+      `no_space_before_unit_symbol` tag to `named_unit`, before or after its point origin.
+      The `space_before_unit_symbol` variable template is deprecated. A specialization of
+      it still takes effect, but GCC and Clang don't warn about such a specialization, so
+      replace it with the tag
 - (!) refactor: `QuantityLike` and `QuantityPointLike` are implementation details, as in
       P3045. A type that `quantity_like_traits` or `quantity_point_like_traits` describes
       converts as before. Code that named a concept, such as a `static_assert` checking a
