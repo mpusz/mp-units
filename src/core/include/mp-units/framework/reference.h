@@ -274,8 +274,8 @@ template<Reference R1, Reference R2, Reference... Rest>
   }
 {
   return reference_t<mp_units::detail::find_common_quantity_spec(get_quantity_spec(R1{}), get_quantity_spec(R2{}),
-                                                                 get_quantity_spec(rest)...),
-                     mp_units::detail::find_common_unit(get_unit(R1{}), get_unit(R2{}), get_unit(rest)...)>{};
+                                                                 get_quantity_spec(Rest{})...),
+                     mp_units::detail::find_common_unit(get_unit(R1{}), get_unit(R2{}), get_unit(Rest{})...)>{};
 }
 
 }  // namespace detail
