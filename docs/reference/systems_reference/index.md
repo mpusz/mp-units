@@ -22,17 +22,17 @@ Automatically generated reference documentation for all **mp-units** systems.
 | [Angular](systems/angular.md) | 1 | 2 | — | 5 | — | — |
 | [Astronomy](systems/astronomy.md) | — | — | — | 10 | — | — |
 | [CGS](systems/cgs.md) | — | — | — | 10 | — | — |
-| [CODATA](systems/codata.md) | — | — | — | 8 | 671 | — |
+| [CODATA](systems/codata.md) | — | — | — | 11 | 671 | — |
 | [Core](systems/core.md) | 1 | 1 | — | 5 | 2 | — |
 | [HEP](systems/hep.md) | 8 | 79 | — | 45 | 45 | — |
 | [IAU](systems/iau.md) | — | — | — | 5 | 12 | — |
-| [IEC](systems/iec.md) | — | 31 | 8 | 6 | — | — |
+| [IEC](systems/iec.md) | — | 31 | 10 | 5 | — | — |
 | [Imperial](systems/imperial.md) | — | — | — | 22 | — | — |
 | [ISQ](systems/isq.md) | 8 | 460 | — | — | — | — |
 | [ISQ Angle](systems/isq_angle.md) | — | 20 | — | — | — | — |
 | [IUPAC](systems/iupac.md) | — | — | — | 4 | — | — |
 | [Natural](systems/natural.md) | 1 | 12 | — | 2 | 2 | — |
-| [SI](systems/si.md) | — | — | 24 | 44 | 10 | 5 |
+| [SI](systems/si.md) | — | — | 24 | 50 | 10 | 5 |
 | [Typographic](systems/typographic.md) | — | — | — | 9 | — | — |
 | [USC](systems/usc.md) | — | — | — | 45 | — | 3 |
 | [Yard Pound](systems/yard_pound.md) | — | — | — | 24 | — | — |

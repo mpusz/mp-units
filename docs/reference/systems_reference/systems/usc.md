@@ -17,7 +17,7 @@
 | <span id="barrel"></span><code>barrel</code> | bbl | `bbl` | <code>mag_ratio<315, 10> * <wbr>[gallon](#gallon)</code> |
 | <span id="bushel"></span><code>bushel</code> | bu | `bu` | <code>mag_ratio<3'523'907'016'688, 100'000'000'000> * <wbr>[si::litre](si.md#litre)</code> |
 | <span id="cable"></span><code>cable</code> | cb(us) | `cb` | <code>mag<120> * <wbr>[yard_<wbr>pound::fathom](yard_pound.md#fathom)</code> |
-| <span id="chain"></span><code>chain</code> | ch | `ch` | <code>mag<4> * <wbr>[rod](#survey1893-rod)</code> |
+| <span id="chain"></span><code>chain</code> | ch | `ch` | <code>mag<4> * <wbr>[rod](#rod)</code> |
 | <span id="cup"></span><code>cup</code> | c | `c` | <code>mag_ratio<1, 2> * <wbr>[pint](#pint)</code> |
 | <span id="degree_Fahrenheit"></span><code>degree_<wbr>Fahrenheit</code> | °F (\`F) | `deg_F` | <code>[rankine](#rankine)<br>origin: [fahrenheit_<wbr>zero](#fahrenheit_zero)</code> |
 | <span id="dry_barrel"></span><code>dry_<wbr>barrel</code> | bbl | `dry_bbl` | <code>mag<7056> * <wbr>cubic([yard_<wbr>pound::inch](yard_pound.md#inch))</code> |
@@ -26,7 +26,7 @@
 | <span id="dry_quart"></span><code>dry_<wbr>quart</code> | qt | `dry_qt` | <code>mag_ratio<1, 4> * <wbr>[dry_<wbr>gallon](#dry_gallon)</code> |
 | <span id="fluid_dram"></span><code>fluid_<wbr>dram</code> | fl dr | `fl_dr` | <code>mag<60> * <wbr>[minim](#minim)</code> |
 | <span id="fluid_ounce"></span><code>fluid_<wbr>ounce</code> | fl oz | `fl_oz` | <code>mag_ratio<1, 4> * <wbr>[gill](#gill)</code> |
-| <span id="furlong"></span><code>furlong</code> | fur | `fur` | <code>mag<10> * <wbr>[chain](#survey1893-chain)</code> |
+| <span id="furlong"></span><code>furlong</code> | fur | `fur` | <code>mag<10> * <wbr>[chain](#chain)</code> |
 | <span id="gallon"></span><code>gallon</code> | gal | `gal` | <code>mag<231> * <wbr>cubic([yard_<wbr>pound::inch](yard_pound.md#inch))</code> |
 | <span id="gill"></span><code>gill</code> | gi | `gi` | <code>mag_ratio<1, 2> * <wbr>[cup](#cup)</code> |
 | <span id="hogshead"></span><code>hogshead</code> | hogshead | — | <code>mag<63> * <wbr>[gallon](#gallon)</code> |
@@ -41,7 +41,7 @@
 | <span id="quart"></span><code>quart</code> | qt | `qt` | <code>mag_ratio<1, 2> * <wbr>[pottle](#pottle)</code> |
 | <span id="quarter"></span><code>quarter</code> | qr | `qr` | <code>mag<25> * <wbr>[yard_<wbr>pound::pound](yard_pound.md#pound)</code> |
 | <span id="rankine"></span><code>rankine</code> | °R (\`R) | — | <code>mag_ratio<5, 9> * <wbr>[si::kelvin](si.md#kelvin), [si::absolute_<wbr>zero](si.md#absolute_zero)</code> |
-| <span id="rod"></span><code>rod</code> | rd | `rd` | <code>mag<25> * <wbr>[link](#survey1893-link)</code> |
+| <span id="rod"></span><code>rod</code> | rd | `rd` | <code>mag<25> * <wbr>[link](#link)</code> |
 | <span id="section"></span><code>section</code> | section | `section` | <code>mag<640> * <wbr>[acre](#acre)</code> |
 | <span id="short_hundredweight"></span><code>short_<wbr>hundredweight</code> | cwt | `cwt` | <code>mag<100> * <wbr>[yard_<wbr>pound::pound](yard_pound.md#pound)</code> |
 | <span id="short_ton"></span><code>short_<wbr>ton</code> | t | — | alias to [ton](#ton) |

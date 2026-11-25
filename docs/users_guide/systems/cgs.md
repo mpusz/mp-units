@@ -63,7 +63,7 @@ The CGS system defines several derived units with special names, particularly in
 ```cpp
 namespace mp_units::cgs {
 
-inline constexpr struct gal : named_unit<"Gal", centimetre / square(second)> {} gal;
+using non_si::gal;  // SI Brochure, Table 8
 inline constexpr struct dyne : named_unit<"dyn", gram * centimetre / square(second)> {} dyne;
 inline constexpr struct erg : named_unit<"erg", dyne * centimetre> {} erg;
 inline constexpr struct barye : named_unit<"Ba", gram / (centimetre * square(second))> {} barye;
@@ -84,7 +84,7 @@ namespace mp_units::cgs::unit_symbols {
 inline constexpr auto cm = centimetre;
 inline constexpr auto g = gram;
 inline constexpr auto s = second;
-inline constexpr auto Gal = gal;
+using non_si::unit_symbols::Gal;
 inline constexpr auto dyn = dyne;
 inline constexpr auto Ba = barye;
 inline constexpr auto P = poise;

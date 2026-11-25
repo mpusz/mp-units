@@ -24,12 +24,12 @@
 | <span id="grain"></span><code>grain</code> | gr | `gr` | <code>mag_ratio<1, 7'000> * <wbr>[pound](#pound)</code> |
 | <span id="inch"></span><code>inch</code> | in | `in` | <code>mag_ratio<1, 12> * <wbr>[foot](#foot)</code> |
 | <span id="kip"></span><code>kip</code> | — | `kip` | <code>[si::kilo](si.md#kilo)<[pound_<wbr>force](#pound_force)></code> |
-| <span id="knot"></span><code>knot</code> | kn | `kn`, `kt` | <code>[nautical_<wbr>mile](#nautical_mile) / <wbr>[si::hour](si.md#hour)</code> |
+| <span id="knot"></span><code>knot</code> | kn | — | alias to [non_<wbr>si::knot](si.md#knot) |
 | <span id="league"></span><code>league</code> | lea | `lea` | <code>mag<3> * <wbr>[mile](#mile)</code> |
 | <span id="mechanical_horsepower"></span><code>mechanical_<wbr>horsepower</code> | hp(I) | `hp` | <code>mag<33'000> * <wbr>[foot](#foot) * <wbr>[pound_<wbr>force](#pound_force) / <wbr>[si::minute](si.md#minute)</code> |
 | <span id="mil"></span><code>mil</code> | mil | `mil` | <code>mag_ratio<1, 1'000> * <wbr>[inch](#inch)</code> |
 | <span id="mile"></span><code>mile</code> | mi | `mi` | <code>mag<1760> * <wbr>[yard](#yard)</code> |
-| <span id="nautical_mile"></span><code>nautical_<wbr>mile</code> | nmi | `nmi` | <code>mag<1852> * <wbr>[si::metre](si.md#metre)</code> |
+| <span id="nautical_mile"></span><code>nautical_<wbr>mile</code> | nmi | — | alias to [non_<wbr>si::nautical_<wbr>mile](si.md#nautical_mile) |
 | <span id="ounce"></span><code>ounce</code> | oz | `oz` | <code>mag_ratio<1, 16> * <wbr>[pound](#pound)</code> |
 | <span id="pica"></span><code>pica</code> | P | `P` | <code>mag_ratio<1, 6> * <wbr>[inch](#inch)</code> |
 | <span id="point"></span><code>point</code> | p | `p` | <code>mag_ratio<1, 12> * <wbr>[pica](#pica)</code> |

@@ -237,6 +237,8 @@ class SystemInfo:
     imported_systems: Set[str] = field(
         default_factory=set
     )  # Track systems imported via using declarations (e.g., {"si"})
+    # The `non_si` units that `si` re-exports with using-declarations
+    si_reexports: Set[str] = field(default_factory=set)
     # SI splits its unit symbols across a cheap header and a complete one; both
     # are recorded so the reference can say which include a symbol needs.
     essential_symbols_header: Optional[str] = None
@@ -492,6 +494,17 @@ class SystemsParser:
             return
 
         namespace = namespace_match.group(1)
+        # `non_si` is documented on the SI page, as its header lives in `si/`
+        units_namespace = "auto"
+        reexports = None
+        if namespace == "non_si":
+            namespace = "si"
+            units_namespace = "non_si"
+            reexports = re.search(r"namespace\s+si\s*\{([^{}]*)\}", content)
+            if reexports:
+                si_reexports = set(
+                    re.findall(r"using\s+non_si::(\w+)\s*;", reexports.group(1))
+                )
 
         # Get or create system info
         if namespace not in self.systems:
@@ -500,6 +513,8 @@ class SystemsParser:
         system = self.systems[namespace]
         if header_file not in system.files:
             system.files.append(header_file)
+        if units_namespace == "non_si" and reexports:
+            system.si_reexports |= si_reexports
 
         # Parse content
         self._parse_dimensions(content, system, str(header_file))
@@ -509,7 +524,7 @@ class SystemsParser:
         self._parse_constants(
             content, system, str(header_file)
         )  # Parse constants before units so using declarations can find them
-        self._parse_units(content, system, str(header_file))
+        self._parse_units(content, system, str(header_file), units_namespace)
         self._parse_point_origins(content, system, str(header_file))
         self._parse_prefixes(content, system, str(header_file))
         self._parse_aliases(content, system, str(header_file))
@@ -3312,18 +3327,19 @@ class DocumentationGenerator:
                 # For SI system: split into regular and non_si sections
                 # For other systems: include all units (even if imported from non_si)
                 if namespace == "si":
-                    regular_units = [
-                        u
-                        for u in system.units
-                        if not (
-                            u.origin_namespace and u.origin_namespace.endswith("non_si")
+                    # A unit declared in `si/non_si.h` from elsewhere (the dalton, from
+                    # `codata`) belongs to the non-SI units as well
+                    def is_non_si(u):
+                        return bool(
+                            (
+                                u.origin_namespace
+                                and u.origin_namespace.endswith("non_si")
+                            )
+                            or (u.file and u.file.endswith("si/non_si.h"))
                         )
-                    ]
-                    non_si_units = [
-                        u
-                        for u in system.units
-                        if u.origin_namespace and u.origin_namespace.endswith("non_si")
-                    ]
+
+                    regular_units = [u for u in system.units if not is_non_si(u)]
+                    non_si_units = [u for u in system.units if is_non_si(u)]
                 else:
                     regular_units = system.units
                     non_si_units = []
@@ -3364,7 +3380,7 @@ class DocumentationGenerator:
                 if non_si_units:
                     if need_separator:
                         f.write("\n")
-                    f.write("## Non-SI units accepted for use with the SI\n\n")
+                    f.write("## Non-SI units (SI Brochure, Table 8)\n\n")
                     f.write("| Unit Name | Symbol | unit_symbol | Definition |\n")
                     f.write("|-----------|:------:|:-----------:|------------|\n")
                     for unit in sorted(non_si_units, key=get_unit_display_name):
@@ -3372,9 +3388,11 @@ class DocumentationGenerator:
                     f.write("\n")
                     f.write('!!! note "Namespace"\n\n')
                     f.write(
-                        "    These units are defined in the `mp_units::non_si` namespace "
-                        "and are made available in the `mp_units::si` namespace "
-                        "through a using-directive.\n"
+                        "    These units are defined in the `mp_units::non_si` namespace. "
+                        "The ones in general use with the SI are also available in the "
+                        "`mp_units::si` namespace: "
+                        + ", ".join(f"`{name}`" for name in sorted(system.si_reexports))
+                        + ".\n"
                     )
                     need_separator = True
 
@@ -3951,8 +3969,14 @@ class DocumentationGenerator:
                     all_refs[unit.name] = (origin_link_sys, anchor_id)
 
                 # Add qualified names - always link to the system being documented
-                # (so iau::astronomical_unit links to iau.md, not si.md)
-                all_refs[f"{sys_ns}::{unit.name}"] = (sys_ns, anchor_id)
+                # (so iau::astronomical_unit links to iau.md, not si.md). Where several
+                # sub-namespaces declare the name, `sys::name` resolves through the inline one.
+                qualified = f"{sys_ns}::{unit.name}"
+                if (
+                    qualified not in all_refs
+                    or subns_prefix in system.inline_subnamespaces
+                ):
+                    all_refs[qualified] = (sys_ns, anchor_id)
                 # If there's a subnamespace, also add subnamespace::name format
                 if subns_prefix:
                     all_refs[f"{subns_prefix}::{unit.name}"] = (sys_ns, anchor_id)

@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include "test_tools.h"
 #include <mp-units/bits/compiler.h>
 #include <mp-units/bits/config.h>
 #include <mp-units/bits/hacks.h>
@@ -96,6 +97,25 @@ static_assert(1 * t == 1000 * kg);
 
 static_assert(equivalent(bar, mag_power<10, 5>* Pa));
 static_assert(1 * bar == 100'000 * Pa);
+
+static_assert(equivalent(eV, mag_ratio<1'602'176'634, 1'000'000'000>* mag_power<10, -19>* J));
+
+// the rows of Table 8 that `si` does not provide
+static_assert(equivalent(non_si::barn, mag_power<10, -28>* square(m)));
+static_assert(1 * non_si::barn == 100 * square(fm));
+
+static_assert(equivalent(non_si::unit_symbols::Å, mag_power<10, -10>* m));
+static_assert(10 * non_si::unit_symbols::Å == 1 * nm);
+
+static_assert(100 * non_si::gal == 1 * m / s2);
+
+static_assert(is_of_type<non_si::dalton, struct codata::codata2022::dalton>);
+static_assert(equivalent(non_si::dalton, mag_ratio<166'053'906'892, 100'000'000'000>* mag_power<10, -27>* kg));
+
+static_assert(1 * non_si::nautical_mile == 1852 * m);
+static_assert(3600 * non_si::knot == 1852 * m / s);
+
+static_assert(1 * non_si::var == 1 * V * A);
 
 // invoke_with_prefixed
 #if MP_UNITS_HOSTED && (__cpp_lib_constexpr_cmath || MP_UNITS_COMP_GCC)

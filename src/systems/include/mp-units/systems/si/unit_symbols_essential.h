@@ -25,12 +25,13 @@
 // The `essential` tier of the SI unit symbols.
 //
 // It holds every unprefixed symbol - the base units, the named derived units, and the
-// non-SI units accepted for use with the SI - plus the prefixed spellings that are
-// standard practice in some domain (fm and nm for physics, us and ns for electronics,
-// hPa for meteorology, MPa for materials, kHz..THz for signals, the pF..mF capacitor and
-// mOhm..GOhm resistor decades, uSv for radiation protection, and so on).  What is left
-// for the full <mp-units/systems/si/unit_symbols.h> is the rest of the 24x28 prefix
-// matrix: spellings like `Qkat` or `dasr` that no domain writes.
+// non-SI units that `si` provides (see <mp-units/systems/si/non_si.h>) - plus the
+// prefixed spellings that are standard practice in some domain (fm and nm for physics,
+// us and ns for electronics, hPa for meteorology, MPa for materials, kHz..THz for
+// signals, the pF..mF capacitor and mOhm..GOhm resistor decades, uSv for radiation
+// protection, and so on).  What is left for the full <mp-units/systems/si/unit_symbols.h>
+// is the rest of the 24x28 prefix matrix: spellings like `Qkat` or `dasr` that no domain
+// writes.
 //
 // The split exists because that matrix is not free.  Every prefixed symbol is a distinct
 // class type, and instantiating all 671 of them costs roughly two thirds as much as the
@@ -41,6 +42,7 @@
 // you are likely to reach for.
 
 #include <mp-units/bits/module_macros.h>
+#include <mp-units/systems/si/non_si.h>
 #include <mp-units/systems/si/prefixes.h>
 #include <mp-units/systems/si/units.h>
 
@@ -294,35 +296,6 @@ inline constexpr auto m3 = cubic(metre);
 inline constexpr auto m4 = pow<4>(metre);
 inline constexpr auto s2 = square(second);
 inline constexpr auto s3 = cubic(second);
-
-}  // namespace si::unit_symbols
-
-namespace non_si::unit_symbols {
-
-// TODO Should the following non-SI units have prefixed symbols predefiend as well?
-inline constexpr auto au = astronomical_unit;
-inline constexpr auto deg = degree;
-inline constexpr auto arcmin = arcminute;
-inline constexpr auto arcsec = arcsecond;
-inline constexpr auto a = are;
-inline constexpr auto ha = hectare;
-inline constexpr auto l = litre;
-inline constexpr auto L = litre;  // both versions of litre are allowed
-inline constexpr auto t = tonne;
-inline constexpr auto Da = dalton;
-using non_si::bar;
-inline constexpr auto eV = electronvolt;
-
-// no prefixes should be provided for the below units
-inline constexpr auto min = minute;
-inline constexpr auto h = hour;
-inline constexpr auto d = day;
-
-}  // namespace non_si::unit_symbols
-
-namespace si::unit_symbols {
-
-using namespace non_si::unit_symbols;  // NOLINT(google-build-using-namespace)
 
 }  // namespace si::unit_symbols
 

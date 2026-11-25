@@ -1105,6 +1105,8 @@ concept valid_symbolic_terms = requires {
   typename iec::exbi_<U>;
   typename iec::zebi_<U>;
   typename iec::yobi_<U>;
+  typename iec::robi_<U>;
+  typename iec::quebi_<U>;
 };
 static_assert(
   valid_symbolic_terms<struct si::metre, struct isq::length, struct isq::dim_length,
@@ -1163,6 +1165,8 @@ concept invalid_symbolic_terms = requires {
   requires !requires { typename iec::exbi_<U>; };
   requires !requires { typename iec::zebi_<U>; };
   requires !requires { typename iec::yobi_<U>; };
+  requires !requires { typename iec::robi_<U>; };
+  requires !requires { typename iec::quebi_<U>; };
 };
 static_assert(invalid_symbolic_terms<decltype(si::metre), decltype(isq::length), decltype(isq::dim_length),
                                      decltype(length_in_metres), decltype(mag<10>)>);

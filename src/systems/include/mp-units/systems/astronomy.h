@@ -24,6 +24,7 @@
 
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/systems/iau.h>
+#include <mp-units/systems/si/non_si.h>
 #include <mp-units/systems/si/units.h>
 
 // IWYU pragma: begin_exports

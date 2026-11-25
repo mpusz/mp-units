@@ -17,7 +17,7 @@
 | <span id="centimetre"></span><code>centimetre</code> | — | `cm` | <code>[si::centi](si.md#centi)<[si::metre](si.md#metre)></code> |
 | <span id="dyne"></span><code>dyne</code> | dyn | `dyn` | <code>[gram](#gram) * <wbr>[centimetre](#centimetre) / <wbr>square([second](#second))</code> |
 | <span id="erg"></span><code>erg</code> | erg | `erg` | <code>[dyne](#dyne) * <wbr>[centimetre](#centimetre)</code> |
-| <span id="gal"></span><code>gal</code> | Gal | `Gal` | <code>[centimetre](#centimetre) / <wbr>square([second](#second))</code> |
+| <span id="gal"></span><code>gal</code> | Gal | — | alias to [non_<wbr>si::gal](si.md#gal) |
 | <span id="gram"></span><code>gram</code> | g | — | alias to [si::gram](si.md#gram) |
 | <span id="kayser"></span><code>kayser</code> | K | `K` | <code>[one](core.md#one) / <wbr>[centimetre](#centimetre)</code> |
 | <span id="poise"></span><code>poise</code> | P | `P` | <code>[gram](#gram) / <wbr>([centimetre](#centimetre) * <wbr>[second](#second))</code> |

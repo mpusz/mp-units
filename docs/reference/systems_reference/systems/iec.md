@@ -65,6 +65,8 @@
 | <span id="exbi"></span>`exbi` | Ei | `mag_power<2, 60>` |
 | <span id="zebi"></span>`zebi` | Zi | `mag_power<2, 70>` |
 | <span id="yobi"></span>`yobi` | Yi | `mag_power<2, 80>` |
+| <span id="robi"></span>`robi` | Ri | `mag_power<2, 90>` |
+| <span id="quebi"></span>`quebi` | Qi | `mag_power<2, 100>` |
 
 ## Units
 
@@ -75,7 +77,6 @@
 | <span id="byte"></span><code>byte</code> | B | `B` | <code>mag<8> * <wbr>[bit](#bit)</code> |
 | <span id="erlang"></span><code>erlang</code> | E | `E` | <code>kind: [isq::traffic_<wbr>intensity](isq.md#traffic_intensity)</code> |
 | <span id="octet"></span><code>octet</code> | o | `o` | <code>mag<8> * <wbr>[bit](#bit)</code> |
-| <span id="volt_ampere_reactive_power"></span><code>volt_<wbr>ampere_<wbr>reactive_<wbr>power</code> | var | `var` | <code>[si::volt](si.md#volt) * <wbr>[si::ampere](si.md#ampere)<br>kind: [isq::reactive_<wbr>power](isq.md#reactive_power)</code> |
 
 ## Prefixed unit symbols
 

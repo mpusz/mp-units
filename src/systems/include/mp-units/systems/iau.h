@@ -25,6 +25,7 @@
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/systems/codata/codata2022_essential.h>
 #include <mp-units/systems/si/constants.h>
+#include <mp-units/systems/si/non_si.h>
 #include <mp-units/systems/si/unit_symbols.h>
 #include <mp-units/systems/si/units.h>
 

@@ -27,6 +27,7 @@
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/compat_macros.h>
 #include <mp-units/systems/isq/si_quantities.h>
+#include <mp-units/systems/si/non_si.h>
 #include <mp-units/systems/si/prefixes.h>
 #include <mp-units/systems/si/units.h>
 

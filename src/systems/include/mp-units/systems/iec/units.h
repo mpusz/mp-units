@@ -26,6 +26,7 @@
 #include <mp-units/systems/iec/quantities.h>
 #include <mp-units/systems/isq/electromagnetism.h>
 #include <mp-units/systems/isq/information_science_and_technology.h>
+#include <mp-units/systems/si/non_si.h>
 #include <mp-units/systems/si/units.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
@@ -50,7 +51,7 @@ namespace mp_units::iec {
 
 // clang-format off
 // Electromagnetism
-inline constexpr struct volt_ampere_reactive_power final : named_unit<"var", si::volt * si::ampere, kind_of<isq::reactive_power>> {} volt_ampere_reactive_power;
+inline constexpr auto volt_ampere_reactive_power = non_si::var;
 
 // Information science and technology
 inline constexpr struct erlang final : named_unit<"E", kind_of<isq::traffic_intensity>> {} erlang;
