@@ -1504,6 +1504,17 @@ static_assert((ground_level - same_ground_level1).numerical_value_in(m) == 0);
 inline constexpr auto celsius_fahrenheit_sum = (point<si::degree_Celsius>(0) - point<si::kelvin>(0)) +
                                                (point<usc::degree_Fahrenheit>(0) - point<si::degree_Celsius>(0));
 static_assert(celsius_fahrenheit_sum.numerical_value_in(celsius_fahrenheit_sum.unit) == 45967);
+// the delta side of GH #714: `0 deg_C - 0 K` is `0 ℃`. An offset unit and its reference unit have the
+// offset unit as their common unit, both in arithmetic and in `std::common_type`
+static_assert(is_of_type<delta<deg_C>(1) - delta<K>(1), quantity<deg_C, int>>);
+static_assert(is_of_type<delta<K>(1) + delta<deg_C>(1), quantity<deg_C, int>>);
+static_assert(std::is_same_v<std::common_type_t<quantity<deg_C, int>, quantity<K, int>>, quantity<deg_C, int>>);
+static_assert(std::is_same_v<std::common_type_t<quantity<K, int>, quantity<deg_C, int>>, quantity<deg_C, int>>);
+// two offset units, neither of which divides the other, have a `common_unit`
+static_assert(is_of_type<delta<deg_C>(1) - delta<deg_F>(1),
+                         quantity<common_unit<struct si::degree_Celsius, struct usc::degree_Fahrenheit>{}, int>>);
+static_assert(std::is_same_v<std::common_type_t<quantity<deg_F, int>, quantity<deg_C, int>>,
+                             quantity<common_unit<struct si::degree_Celsius, struct usc::degree_Fahrenheit>{}, int>>);
 
 
 // check for integral types promotion
