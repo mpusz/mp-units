@@ -122,14 +122,6 @@ auto operator/(const symbolic_expression<QS1>& lhs, const symbolic_expression<QS
   return symbolic_expression<result_qs>(std::format("({} / {})", lhs.expression(), rhs.expression()));
 }
 
-template<QuantitySpec auto QS1, QuantitySpec auto QS2>
-auto operator+(const symbolic_expression<QS1>& lhs, const symbolic_expression<QS2>& rhs)
-  requires requires { get_common_quantity_spec(QS1, QS2); }  // Enforce dimensional compatibility for addition
-{
-  constexpr auto result_qs = get_common_quantity_spec(QS1, QS2);
-  return symbolic_expression<result_qs>(std::format("({} + {})", lhs.expression(), rhs.expression()));
-}
-
 void example()
 {
   symbolic_expression<isq::length> distance("d");
@@ -140,13 +132,9 @@ void example()
   auto speed = distance / duration;
   auto acceleration = speed / duration;
   auto force = mass * acceleration;
-  auto length = distance + distance;
 
   static_assert(utility::implicitly_convertible(speed.quantity_spec(), isq::speed));
   static_assert(force.dimension() == get_dimension(isq::force));
-
-  // This would fail to compile due to dimensional mismatch:
-  // auto invalid = distance + duration;  // ❌ cannot add length and time
 }
 ```
 
