@@ -639,11 +639,24 @@ constexpr character_mask representable_character = compute_representable_charact
 // A representation is a cv-unqualified object type. A `const` one cannot be assigned, a `volatile` one
 // would put every arithmetic operation of the quantity on a volatile object, where C++20 deprecates
 // `+=`, `++` and `--`, and a reference would make the quantity a view of a value stored elsewhere. A
-// hardware register is read into a plain value, and that value is converted. This check comes before
+// hardware register is read into a plain value, and that value is converted. The partial
+// specializations of `representation_enabled` reject those types without instantiating
 // `disable_representation`, which is ill-formed for a reference.
 template<typename T>
-concept RepresentationBaseline =
-  std::is_same_v<T, std::remove_cvref_t<T>> && !disable_representation<T> && UnitMagnitudeScalable<T>;
+constexpr bool representation_enabled = !disable_representation<T>;
+template<typename T>
+constexpr bool representation_enabled<const T> = false;
+template<typename T>
+constexpr bool representation_enabled<volatile T> = false;
+template<typename T>
+constexpr bool representation_enabled<const volatile T> = false;
+template<typename T>
+constexpr bool representation_enabled<T&> = false;
+template<typename T>
+constexpr bool representation_enabled<T&&> = false;
+
+template<typename T>
+concept RepresentationBaseline = representation_enabled<T> && UnitMagnitudeScalable<T>;
 
 template<typename T>
 concept ScalarRepresentation = RepresentationBaseline<T> && Scalar<T>;
@@ -685,11 +698,13 @@ MP_UNITS_DIAGNOSTIC_POP
 
 }  // namespace detail
 
-// `!disable_representation<T>` comes first on its own, after only the check that `T` is neither a
-// reference nor cv-qualified, although `SomeRepresentation` asks both again. The reference check has to
-// precede it because `disable_representation` is ill-formed for a reference. A quantity or a point
-// meets every `Value` parameter of an operator, and the one atom is what a diagnostic then shows for
-// it, instead of the three layers of representation concepts under `SomeRepresentation`.
+// `detail::representation_enabled<T>` comes first on its own, although `SomeRepresentation` asks it
+// again. It rejects a reference, a cv-qualified type and an opted-out type in one atom, because the
+// compiler evaluates every atom as a separate constant expression for each new `T`, and a second atom
+// here means about 2% more constant evaluations in a translation unit that uses many units.
+// A quantity or a point meets every `Value` parameter of an operator, and the one atom is what a
+// diagnostic then shows for it, instead of the three layers of representation concepts under
+// `SomeRepresentation`.
 // `SomeRepresentation<T>` follows, so that a non-representation never reaches the character machinery,
 // and the `CharacterConstraint<V>` guard, so a non-character fails early. The character match sits
 // inside a requires-expression so that it is one atom whose operands are substituted only when the
@@ -724,8 +739,7 @@ MP_UNITS_DIAGNOSTIC_POP
  * customization points
  */
 MP_UNITS_EXPORT template<typename T, auto V>
-concept RepresentationOf =
-  std::is_same_v<T, std::remove_cvref_t<T>> && (!disable_representation<T>) && detail::SomeRepresentation<T> &&
-  detail::CharacterConstraint<V> && requires { requires detail::CharacterAdmitted<T, V>; };
+concept RepresentationOf = detail::representation_enabled<T> && detail::SomeRepresentation<T> &&
+                           detail::CharacterConstraint<V> && requires { requires detail::CharacterAdmitted<T, V>; };
 
 }  // namespace mp_units
