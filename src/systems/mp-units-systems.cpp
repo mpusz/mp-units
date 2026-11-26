@@ -51,3 +51,20 @@ import std;
 #include <mp-units/systems/typographic.h>
 #include <mp-units/systems/usc.h>
 #include <mp-units/systems/yard_pound.h>
+
+// Unit conversions need the canonical units of the units involved. Computing them here for the SI
+// base units, the SI units with special names and a few common derived units puts them in the BMI,
+// where an importer finds them instead of instantiating them itself (measured with Clang).
+namespace mp_units::detail {
+
+template<Unit auto... Us>
+constexpr bool warm_canonical_units = (((void)get_canonical_unit(Us), ...), true);
+
+static_assert(
+  warm_canonical_units<si::metre, si::kilogram, si::second, si::ampere, si::kelvin, si::mole, si::candela, si::radian,
+                       si::steradian, si::hertz, si::newton, si::pascal, si::joule, si::watt, si::coulomb, si::volt,
+                       si::farad, si::ohm, si::siemens, si::weber, si::tesla, si::henry, si::lumen, si::lux,
+                       si::becquerel, si::gray, si::sievert, si::katal, square(si::metre), cubic(si::metre),
+                       si::metre / si::second, si::metre / square(si::second)>);
+
+}  // namespace mp_units::detail
