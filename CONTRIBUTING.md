@@ -409,9 +409,10 @@ _scripts/check_doc_snippets.py_. The pre-commit hook runs it on every sample whe
 commit changes a page, a header, or an example, because a header change can break a
 sample on any page. Each result is cached with the files the compile read, so only the
 samples whose inputs changed are compiled again. CI runs it on all of them before the
-documentation is published. It needs GCC 15, which CI pins because whether a marked line
-is rejected, and where, depends on the compiler. The dev container has it. Without it, the
-hook only warns, and CI still checks the samples. To run it yourself:
+documentation is published. It needs GCC 15, which CI pins because the check parses its
+diagnostics: the line it blames for a marked line, and the wording of the message. The dev
+container has it. Without it, the hook only warns, and CI still checks the samples. To run
+it yourself:
 
 ```bash
 python3 scripts/check_doc_snippets.py docs/users_guide/framework_basics/the_affine_space.md

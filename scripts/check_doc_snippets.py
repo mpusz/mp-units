@@ -1163,8 +1163,9 @@ def repro(r, args):
     return f"python3 scripts/check_doc_snippets.py --cxx {args.cxx} --std {args.std} {shlex.quote(r.origin)}"
 
 
-# CI pins the compiler (.github/workflows/documentation.yml), because whether a line marked
-# `❌` is rejected, and on which line, depends on it. The precompiled headers are GCC's too.
+# CI pins the compiler (.github/workflows/documentation.yml), because the check parses its
+# diagnostics: the line it blames for a line marked `❌`, and the wording of the message.
+# The precompiled headers are GCC's too.
 REQUIRED_GCC = 15
 
 
@@ -1206,7 +1207,7 @@ def resolve_compiler(cxx, hook=False):
         sys.exit(0)
     sys.exit(
         f"error: the documentation samples are checked with GCC {REQUIRED_GCC}, which CI pins,\n"
-        f"because whether a line marked `❌` fails, and where, depends on the compiler.\n"
+        f"because the check parses its diagnostics, which differ between compilers.\n"
         f"Found: {found}.\n"
         f"Install g++-{REQUIRED_GCC} and pass it with --cxx if it is not on PATH as g++-{REQUIRED_GCC},\n"
         f"or use the dev container. To commit without the check: SKIP=doc-snippets git commit ..."
