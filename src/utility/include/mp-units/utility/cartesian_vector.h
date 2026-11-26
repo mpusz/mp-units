@@ -457,6 +457,20 @@ using cartesian_vector [[deprecated("moved to mp_units::utility::cartesian_vecto
 
 }  // namespace mp_units
 
+// The zero vector, which a quantity of it and `zero` compare against. Each element is the zero of
+// the element type, which a value-initialized element isn't for every type.
+template<typename T, std::size_t N>
+  requires requires { mp_units::representation_values<T>::zero(); }
+struct mp_units::representation_values<mp_units::utility::cartesian_vector<T, N>> {
+  [[nodiscard]] static constexpr mp_units::utility::cartesian_vector<T, N> zero() noexcept(
+    noexcept(mp_units::representation_values<T>::zero()))
+  {
+    return [&]<std::size_t... Is>(std::index_sequence<Is...>) {
+      return mp_units::utility::cartesian_vector<T, N>{((void)Is, mp_units::representation_values<T>::zero())...};
+    }(std::make_index_sequence<N>{});
+  }
+};
+
 template<typename T, std::size_t N, typename U>
   requires requires { typename std::common_type_t<T, U>; }
 struct std::common_type<mp_units::utility::cartesian_vector<T, N>, mp_units::utility::cartesian_vector<U, N>> {

@@ -203,12 +203,12 @@ TEST_CASE("uncertainty propagation for independent values", "[uncertain]")
   {
     // a measurement consistent with zero is ordinary; the relative-uncertainty form would divide
     // by zero here, so the absolute form must be used
-    const uncertain zero{0.0, 0.1};
-    const auto product = zero * rhs;
+    const uncertain about_zero{0.0, 0.1};
+    const auto product = about_zero * rhs;
     CHECK(product.value() == 0.0);
     CHECK_THAT(product.uncertainty(), WithinRel(4.0 * 0.1));
 
-    const auto quotient = zero / rhs;
+    const auto quotient = about_zero / rhs;
     CHECK(quotient.value() == 0.0);
     CHECK_THAT(quotient.uncertainty(), WithinRel(0.1 / 4.0));
   }
@@ -642,7 +642,7 @@ TEST_CASE("uncertain does not reject a NaN uncertainty", "[uncertain][nan]")
     // The zero comes through a variable rather than a literal on purpose: with a literal, MSVC
     // constant-propagates it into the division inside the header and reports C4723, which that
     // build treats as an error.
-    const double zero = std::stod("0.0");
-    REQUIRE(std::isinf(uncertain{zero, 0.5}.relative_uncertainty()));
+    const double zero_value = std::stod("0.0");
+    REQUIRE(std::isinf(uncertain{zero_value, 0.5}.relative_uncertainty()));
   }
 }

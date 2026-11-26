@@ -83,8 +83,8 @@ inline constexpr struct other_ground_level final : relative_point_origin<mean_se
 inline constexpr struct other_absolute_level final : absolute_point_origin<isq::altitude> {
 } other_absolute_level;
 
-inline constexpr struct zero final : absolute_point_origin<dimensionless> {
-} zero;
+inline constexpr struct zeroth_dimensionless final : absolute_point_origin<dimensionless> {
+} zeroth_dimensionless;
 
 inline constexpr struct my_celsius_point final : relative_point_origin<point<si::degree_Celsius>(21)> {
 } my_celsius_point;
@@ -392,6 +392,17 @@ static_assert(quantity_point<m>::zero().delta_from_zero() == 0 * m);
 static_assert(quantity_point<deg_C>::zero().delta_from_zero() == delta<deg_C>(0));
 static_assert(quantity_point<K>::zero().delta_from_zero() == delta<K>(0));
 
+// A point can't be compared against `zero`: its numerical value depends on the origin, so the
+// same temperature is below 0 °C and above 0 K. `zero` doesn't initialize a point either.
+template<typename QP>
+concept zero_comparable_point =
+  requires(QP qp) { requires requires { qp == zero; } || requires { qp < zero; } || requires { qp <=> zero; }; };
+static_assert(!zero_comparable_point<quantity_point<isq::height[m]>>);
+static_assert(!zero_comparable_point<quantity_point<deg_C>>);
+static_assert(!zero_comparable_point<quantity_point<isq::height[m], mean_sea_level>>);
+static_assert(!std::convertible_to<zero_t, quantity_point<isq::height[m]>>);
+static_assert(!std::constructible_from<quantity_point<isq::height[m]>, zero_t>);
+
 
 //////////////////////////////
 // construction from a value
@@ -404,15 +415,15 @@ static_assert(!std::convertible_to<double, quantity_point<isq::height[m], mean_s
 static_assert(!std::constructible_from<quantity_point<isq::height[m], ground_level, int>, int>);
 static_assert(!std::convertible_to<int, quantity_point<isq::height[m], ground_level, int>>);
 
-static_assert(!std::constructible_from<quantity_point<dimensionless[percent], zero>, double>);
-static_assert(!std::convertible_to<double, quantity_point<dimensionless[percent], zero>>);
+static_assert(!std::constructible_from<quantity_point<dimensionless[percent], zeroth_dimensionless>, double>);
+static_assert(!std::convertible_to<double, quantity_point<dimensionless[percent], zeroth_dimensionless>>);
 
-static_assert(!std::constructible_from<quantity_point<dimensionless[percent], zero, int>, int>);
-static_assert(!std::convertible_to<int, quantity_point<dimensionless[percent], zero, int>>);
-static_assert(!std::constructible_from<quantity_point<dimensionless[one], zero>, double>);
-static_assert(!std::convertible_to<double, quantity_point<dimensionless[one], zero>>);
-static_assert(!std::constructible_from<quantity_point<dimensionless[one], zero, int>, int>);
-static_assert(!std::convertible_to<int, quantity_point<dimensionless[one], zero, int>>);
+static_assert(!std::constructible_from<quantity_point<dimensionless[percent], zeroth_dimensionless, int>, int>);
+static_assert(!std::convertible_to<int, quantity_point<dimensionless[percent], zeroth_dimensionless, int>>);
+static_assert(!std::constructible_from<quantity_point<dimensionless[one], zeroth_dimensionless>, double>);
+static_assert(!std::convertible_to<double, quantity_point<dimensionless[one], zeroth_dimensionless>>);
+static_assert(!std::constructible_from<quantity_point<dimensionless[one], zeroth_dimensionless, int>, int>);
+static_assert(!std::convertible_to<int, quantity_point<dimensionless[one], zeroth_dimensionless, int>>);
 
 
 /////////////////////////////////
@@ -509,8 +520,10 @@ static_assert(!std::convertible_to<quantity<isq::height[m]>, quantity_point<si::
 static_assert(!std::constructible_from<quantity_point<isq::height[m], mean_sea_level>, quantity<special_height[m]>>);
 static_assert(!std::convertible_to<quantity<special_height[m]>, quantity_point<isq::height[m], mean_sea_level>>);
 
-static_assert(!std::constructible_from<quantity_point<dimensionless[one], zero>, quantity<dimensionless[one]>>);
-static_assert(!std::convertible_to<quantity<dimensionless[one]>, quantity_point<dimensionless[one], zero>>);
+static_assert(
+  !std::constructible_from<quantity_point<dimensionless[one], zeroth_dimensionless>, quantity<dimensionless[one]>>);
+static_assert(
+  !std::convertible_to<quantity<dimensionless[one]>, quantity_point<dimensionless[one], zeroth_dimensionless>>);
 
 // quantity_specs with detail::find_common_quantity_spec
 static_assert(!std::constructible_from<quantity_point<isq::width[m], zeroth_length>, quantity<isq::height[m]>>);
@@ -696,19 +709,20 @@ static_assert(
 static_assert(
   std::convertible_to<quantity_point<si::metre, other_ground_level>, quantity_point<si::metre, ground_level>>);
 
-static_assert(
-  std::constructible_from<quantity_point<dimensionless[one], zero>, quantity_point<dimensionless[one], zero>>);
-static_assert(std::convertible_to<quantity_point<dimensionless[one], zero>, quantity_point<dimensionless[one], zero>>);
+static_assert(std::constructible_from<quantity_point<dimensionless[one], zeroth_dimensionless>,
+                                      quantity_point<dimensionless[one], zeroth_dimensionless>>);
+static_assert(std::convertible_to<quantity_point<dimensionless[one], zeroth_dimensionless>,
+                                  quantity_point<dimensionless[one], zeroth_dimensionless>>);
 
-static_assert(
-  std::constructible_from<quantity_point<dimensionless[one], zero>, quantity_point<dimensionless[percent], zero>>);
-static_assert(
-  std::convertible_to<quantity_point<dimensionless[percent], zero>, quantity_point<dimensionless[one], zero>>);
+static_assert(std::constructible_from<quantity_point<dimensionless[one], zeroth_dimensionless>,
+                                      quantity_point<dimensionless[percent], zeroth_dimensionless>>);
+static_assert(std::convertible_to<quantity_point<dimensionless[percent], zeroth_dimensionless>,
+                                  quantity_point<dimensionless[one], zeroth_dimensionless>>);
 
-static_assert(
-  std::constructible_from<quantity_point<dimensionless[percent], zero>, quantity_point<dimensionless[one], zero>>);
-static_assert(
-  std::convertible_to<quantity_point<dimensionless[one], zero>, quantity_point<dimensionless[percent], zero>>);
+static_assert(std::constructible_from<quantity_point<dimensionless[percent], zeroth_dimensionless>,
+                                      quantity_point<dimensionless[one], zeroth_dimensionless>>);
+static_assert(std::convertible_to<quantity_point<dimensionless[one], zeroth_dimensionless>,
+                                  quantity_point<dimensionless[percent], zeroth_dimensionless>>);
 
 static_assert(std::constructible_from<quantity_point<isq::length[m], zeroth_length>,
                                       quantity_point<isq::height[m], zeroth_length>>);
@@ -881,8 +895,8 @@ static_assert((tower_peak + 42 * m).delta_from(mean_sea_level) == 126 * m);
 static_assert((mean_sea_level + 42 * m).delta_from(mean_sea_level) == 42 * m);
 static_assert((mean_sea_level + isq::height(42 * m)).delta_from(mean_sea_level) == 42 * m);
 
-static_assert((zero + 1 * one).delta_from(zero) == 1 * one);
-static_assert((zero + dimensionless(1 * one)).delta_from(zero) == 1 * one);
+static_assert((zeroth_dimensionless + 1 * one).delta_from(zeroth_dimensionless) == 1 * one);
+static_assert((zeroth_dimensionless + dimensionless(1 * one)).delta_from(zeroth_dimensionless) == 1 * one);
 
 static_assert((mean_sea_level + 42 * m).delta_from(mean_sea_level) == 42 * m);
 static_assert((ground_level + 42 * m).delta_from(ground_level) == 42 * m);

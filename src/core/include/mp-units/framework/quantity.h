@@ -42,6 +42,7 @@
 #include <mp-units/framework/unit_concepts.h>
 #include <mp-units/framework/value_cast.h>
 #include <mp-units/framework/vector_components.h>
+#include <mp-units/framework/zero.h>
 #if MP_UNITS_HOSTED
 #include <mp-units/bits/ostream.h>
 #include <mp-units/utility/format.h>
@@ -63,7 +64,6 @@ import std;
 #if !MP_UNITS_USE_FMTLIB
 #include <locale>  // for `vformat_to` in the width path of the quantity formatter
 #endif
-#include <stdexcept>
 #endif
 #endif
 #endif
@@ -87,16 +87,6 @@ import std;
 namespace mp_units {
 
 namespace detail {
-
-// A literal `0` of an arithmetic type that is a valid representation, so neither `false` nor `'\0'`.
-struct zero {
-  template<typename T>
-    requires std::is_arithmetic_v<T> && (!disable_representation<T>)
-  consteval explicit(false) zero(T val)
-  {
-    if (val != T{0}) MP_UNITS_THROW(std::logic_error("not zero"));
-  }
-};
 
 
 template<typename T, typename Arg>
@@ -155,8 +145,8 @@ template<typename Q>
 concept ImplicitFromNumberQuantity = Quantity<Q> && ImplicitFromNumber<Q::reference>;
 
 // The number operand of `+`, `-` and `%`. The comparisons keep the bare `ImplicitFromNumber`, because
-// `q == 0` on a dimensioned quantity is valid and evaluates it to false on the way to the `zero`
-// overload, so a sentence there would be a wrong diagnosis.
+// concepts such as `std::equality_comparable_with<quantity, int>` probe them with valid code, so a
+// sentence there would be a wrong diagnosis.
 template<auto R>
 concept ImplicitFromNumberOperand =
   ImplicitFromNumber<R> ||
@@ -473,7 +463,7 @@ struct quantity_iface {
             CommonlyInvocableQuantities<std::modulus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>
   [[nodiscard]] friend constexpr Quantity auto operator%(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
   {
-    MP_UNITS_PRECONDITION_DEBUG(rhs != 0);
+    MP_UNITS_PRECONDITION_DEBUG(rhs != mp_units::zero);
     using ret = common_quantity_for<std::modulus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>;
     const auto& ret_lhs = to_common_quantity<ret>(lhs);
     const auto& ret_rhs = to_common_quantity<ret>(rhs);
@@ -530,7 +520,7 @@ struct quantity_iface {
     requires InvocableQuantities<std::divides<>, quantity<R1, Rep1>, quantity<R2, Rep2>>
   [[nodiscard]] friend constexpr Quantity auto operator/(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
   {
-    MP_UNITS_PRECONDITION_DEBUG(rhs != 0);
+    MP_UNITS_PRECONDITION_DEBUG(rhs != mp_units::zero);
     return quantity{lhs.numerical_value_ref_in(get_unit(R1)) / rhs.numerical_value_ref_in(get_unit(R2)), R1 / R2};
   }
 
@@ -549,7 +539,7 @@ struct quantity_iface {
             ScalableResultOf<get_quantity_spec(one / R1), std::divides<>, const Value&, Rep1>
   [[nodiscard]] friend constexpr Quantity auto operator/(const Value& val, const quantity<R1, Rep1>& q)
   {
-    MP_UNITS_PRECONDITION_DEBUG(q != 0);
+    MP_UNITS_PRECONDITION_DEBUG(q != mp_units::zero);
     return quantity{
       val / q.numerical_value_ref_in(get_unit(R1)),
       scaled_reference<one / R1,
@@ -572,13 +562,6 @@ struct quantity_iface {
     return lhs.numerical_value_ref_in(get_unit(R1)) == rhs;
   }
 
-  template<auto R1, typename Rep1>
-    requires std::equality_comparable<Rep1> && requires { representation_values<Rep1>::zero(); }
-  [[nodiscard]] friend constexpr bool operator==(const quantity<R1, Rep1>& lhs, zero)
-  {
-    return lhs.numerical_value_ref_in(get_unit(R1)) == representation_values<Rep1>::zero();
-  }
-
   // operator<=>
   template<auto R1, typename Rep1, auto R2, typename Rep2>
     requires CommonlyComparableQuantities<quantity<R1, Rep1>, quantity<R2, Rep2>> &&
@@ -593,13 +576,6 @@ struct quantity_iface {
   [[nodiscard]] friend constexpr auto operator<=>(const quantity<R1, Rep1>& lhs, const Value& rhs)
   {
     return lhs.numerical_value_ref_in(get_unit(R1)) <=> rhs;
-  }
-
-  template<auto R1, typename Rep1>
-    requires std::three_way_comparable<Rep1> && requires { representation_values<Rep1>::zero(); }
-  [[nodiscard]] friend constexpr auto operator<=>(const quantity<R1, Rep1>& lhs, zero)
-  {
-    return lhs.numerical_value_ref_in(get_unit(R1)) <=> representation_values<Rep1>::zero();
   }
 
   // tuple-like decomposition of a vector quantity into 1D-vector components (see
@@ -1198,7 +1174,7 @@ public:
             }
   constexpr quantity& operator%=(const quantity<R2, Rep2>& other) &
   {
-    MP_UNITS_PRECONDITION_DEBUG(other != 0);
+    MP_UNITS_PRECONDITION_DEBUG(other != mp_units::zero);
     if constexpr (equivalent(unit, get_unit(R2)))
       numerical_value_is_an_implementation_detail_ %= other.numerical_value_is_an_implementation_detail_;
     else

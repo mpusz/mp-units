@@ -161,8 +161,9 @@ template<QuantityPoint ToQP, rounding_mode Mode = rounding_mode::truncated, type
     // The offset conversion applies `Mode` too so that a non-representable offset (e.g.
     // -273.15 K with an integral rep) is rounded consistently with the value itself.
     constexpr auto offset_as = [&]<typename Q>(std::type_identity<Q>) {
-      constexpr auto zero = quantity{typename Q::rep{0}, Q::reference};
-      return sudo_cast<Q, Mode>(quantity_point{zero, FromQP::point_origin} - quantity_point{zero, ToQP::point_origin});
+      constexpr auto zero_delta = quantity{typename Q::rep{0}, Q::reference};
+      return sudo_cast<Q, Mode>(quantity_point{zero_delta, FromQP::point_origin} -
+                                quantity_point{zero_delta, ToQP::point_origin});
     };
 
     constexpr auto output_unit_ref = make_reference(FromQP::quantity_spec, ToQP::unit);

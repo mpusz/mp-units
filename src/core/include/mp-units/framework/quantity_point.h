@@ -170,10 +170,10 @@ struct point_origin_interface {
       return PO1::_quantity_point_ == PO2::_quantity_point_;
     else if constexpr (is_derived_from_specialization_of_v<PO1, relative_point_origin>)
       return detail::same_absolute_point_origins(po1, po2) &&
-             PO1::_quantity_point_.delta_from(PO1::_quantity_point_.absolute_point_origin) == 0;
+             PO1::_quantity_point_.delta_from(PO1::_quantity_point_.absolute_point_origin) == mp_units::zero;
     else if constexpr (is_derived_from_specialization_of_v<PO2, relative_point_origin>)
       return detail::same_absolute_point_origins(po1, po2) &&
-             PO2::_quantity_point_.delta_from(PO2::_quantity_point_.absolute_point_origin) == 0;
+             PO2::_quantity_point_.delta_from(PO2::_quantity_point_.absolute_point_origin) == mp_units::zero;
   }
 };
 

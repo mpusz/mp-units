@@ -101,6 +101,34 @@ static_assert(quantity<si::second>{1s} == 1 * s);
 static_assert(quantity<isq::duration[si::second]>{1s} == 1 * s);
 static_assert(quantity<isq::period_duration[si::second]>{1s} == 1 * s);
 
+// `std::chrono::duration` is quantity-like, so it compares against `zero` as a quantity does
+static_assert(0s == zero);
+static_assert(1s > zero);
+static_assert(-1h < zero);
+static_assert(zero != 1min);
+template<typename T>
+constexpr bool is_positive(const T& value)
+{
+  return value > zero;
+}
+static_assert(is_positive(1s) && is_positive(1 * s));
+static_assert(!is_positive(-1s) && !is_positive(0 * s));
+
+// a `std::chrono::time_point` is a point, so it can't be compared against `zero`
+// `zero` converts to a `std::chrono::duration`, so the two have a common reference, and the
+// `std::ranges` algorithms accept it
+constexpr std::chrono::seconds no_time = zero;
+static_assert(no_time == 0s);
+static_assert(std::chrono::milliseconds{zero} == 0ms);
+static_assert(std::equality_comparable_with<std::chrono::seconds, zero_t>);
+static_assert(std::totally_ordered_with<std::chrono::hours, zero_t>);
+static_assert(!std::convertible_to<zero_t, sys_seconds>);
+
+template<typename T>
+concept zero_comparable = requires(T val) { val == zero; };
+static_assert(zero_comparable<std::chrono::seconds>);
+static_assert(!zero_comparable<sys_seconds>);
+
 // CTAD
 static_assert(is_of_type<quantity{1s}, quantity<si::second, std::chrono::seconds::rep>>);
 static_assert(is_of_type<quantity{1h}, quantity<si::hour, std::chrono::hours::rep>>);
@@ -176,3 +204,47 @@ static_assert(to_chrono_time_point(quantity_point{sys_seconds{1s}}) == sys_secon
 static_assert(to_chrono_time_point(quantity_point{sys_days{sys_days::duration{1}}}) == sys_days{sys_days::duration{1}});
 
 }  // namespace
+
+// A scalar type customized for `std::chrono` keeps the zero of its `duration_values`
+// specialization in `representation_values`, even where that zero isn't `Rep(0)`.
+namespace {
+
+struct biased_ticks {
+  long count = 0;
+  constexpr biased_ticks() = default;
+  constexpr explicit biased_ticks(long ticks) : count(ticks) {}
+  friend constexpr bool operator==(biased_ticks, biased_ticks) = default;
+};
+
+}  // namespace
+
+template<>
+struct std::chrono::duration_values<biased_ticks> {
+  static constexpr biased_ticks zero() noexcept { return biased_ticks{100}; }
+  static constexpr biased_ticks min() noexcept { return biased_ticks{-1000}; }
+  static constexpr biased_ticks max() noexcept { return biased_ticks{1000}; }
+};
+
+static_assert(mp_units::representation_values<biased_ticks>::zero() == biased_ticks{100});
+
+// ... and so does a scalar type that can't be constructed from an `int`
+namespace {
+
+struct tagged_ticks {
+  struct from_count_t {};
+  long count = 0;
+  constexpr tagged_ticks() = default;
+  constexpr tagged_ticks(from_count_t, long ticks) : count(ticks) {}
+  friend constexpr bool operator==(tagged_ticks, tagged_ticks) = default;
+};
+
+}  // namespace
+
+template<>
+struct std::chrono::duration_values<tagged_ticks> {
+  static constexpr tagged_ticks zero() noexcept { return {}; }
+};
+
+static_assert(!std::constructible_from<tagged_ticks, int>);
+static_assert(mp_units::representation_values<tagged_ticks>::zero() == tagged_ticks{});
+static_assert(mp_units::representation_values<biased_ticks>::min() == biased_ticks{-1000});
