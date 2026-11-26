@@ -54,6 +54,7 @@
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
+#include <mp-units/framework/customization_points.h>
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
@@ -101,6 +102,12 @@ template<std::size_t Idx, glm::length_t L, typename T, glm::qualifier Q>
   requires(Idx < static_cast<std::size_t>(L))
 struct std::tuple_element<Idx, glm::vec<L, T, Q>> {
   using type = std::remove_cv_t<T>;
+};
+
+// The zero vector, which a quantity of it and `zero` compare against
+template<glm::length_t L, typename T, glm::qualifier Q>
+struct mp_units::representation_values<glm::vec<L, T, Q>> {
+  [[nodiscard]] static constexpr glm::vec<L, T, Q> zero() noexcept { return glm::vec<L, T, Q>(static_cast<T>(0)); }
 };
 
 #endif  // __has_include(<glm/geometric.hpp>)

@@ -255,8 +255,9 @@ struct MP_UNITS_STD_FMT::formatter<geographic::latitude<T>, Char> :
   auto format(geographic::latitude<T> lat, FormatContext& ctx) const -> decltype(ctx.out())
   {
     const auto& q = lat.quantity_ref_from(geographic::equator);
-    ctx.advance_to(formatter<typename geographic::latitude<T>::quantity_type, Char>::format(q >= 0 ? q : -q, ctx));
-    return MP_UNITS_STD_FMT::format_to(ctx.out(), "{}", q >= 0 ? " N" : " S");
+    ctx.advance_to(
+      formatter<typename geographic::latitude<T>::quantity_type, Char>::format(q >= mp_units::zero ? q : -q, ctx));
+    return MP_UNITS_STD_FMT::format_to(ctx.out(), "{}", q >= mp_units::zero ? " N" : " S");
   }
 };
 
@@ -267,8 +268,9 @@ struct MP_UNITS_STD_FMT::formatter<geographic::longitude<T>, Char> :
   auto format(geographic::longitude<T> lon, FormatContext& ctx) const -> decltype(ctx.out())
   {
     const auto& q = lon.quantity_ref_from(geographic::prime_meridian);
-    ctx.advance_to(formatter<typename geographic::longitude<T>::quantity_type, Char>::format(q >= 0 ? q : -q, ctx));
-    return MP_UNITS_STD_FMT::format_to(ctx.out(), "{}", q >= 0 ? " E" : " W");
+    ctx.advance_to(
+      formatter<typename geographic::longitude<T>::quantity_type, Char>::format(q >= mp_units::zero ? q : -q, ctx));
+    return MP_UNITS_STD_FMT::format_to(ctx.out(), "{}", q >= mp_units::zero ? " E" : " W");
   }
 };
 

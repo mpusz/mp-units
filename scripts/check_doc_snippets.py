@@ -41,7 +41,8 @@ checked sample fails.
 
 The outcome of every compile is kept in ~/.cache with the files it read, and reused
 while none of them changed. A second run over unchanged sources compiles again only a
-sample whose `#include` isn't found.
+sample whose `#include` isn't found. A precompiled header whose checkout is gone, or that
+no run has used for a week, is deleted.
 """
 
 import argparse
@@ -799,19 +800,79 @@ def pch_cache():
     return root
 
 
+# A precompiled header takes about 300 MB, and every checkout builds its own.
+PCH_MAX_AGE_DAYS = 7
+
+
+def prune_pch_cache(pch_dir):
+    """Deletes the precompiled headers no run can use any more. Returns how many.
+
+    A header is deleted when the checkout it was built from is gone, or when no run has
+    used it for a week. A run that needs one refreshes its time, so a header that a run
+    is compiling with is never old. Leftovers of interrupted builds are deleted after a
+    day.
+    """
+    now, removed = time.time(), 0
+    for deps in pch_dir.glob("pre_*.h.deps"):
+        h = deps.with_suffix("")
+        gch = Path(f"{h}.gch")
+        try:
+            files = deps.read_text(encoding="utf-8").splitlines()[1:]
+            used = (gch if gch.exists() else deps).stat().st_mtime
+        except OSError:
+            continue
+        # the checkout's own files: every template includes headers from both directories
+        checkout = [
+            f
+            for f in files
+            if "/scripts/snippet_templates/" in f or "/src/core/include/" in f
+        ]
+        gone = checkout and not any(Path(f).exists() for f in checkout)
+        if gone or now - used > PCH_MAX_AGE_DAYS * 86400:
+            for p in (gch, deps, h):
+                p.unlink(missing_ok=True)
+            removed += 1
+    for p in pch_dir.glob("pre_*"):
+        try:
+            age = now - p.stat().st_mtime
+        except OSError:
+            continue
+        unbuilt_stub = (
+            p.suffix == ".h"
+            and not Path(f"{p}.gch").exists()
+            and not Path(f"{p}.deps").exists()
+        )
+        if p.suffix in (".tmp", ".d", ".stub") and age > 86400:
+            p.unlink(missing_ok=True)
+        elif unbuilt_stub and age > PCH_MAX_AGE_DAYS * 86400:
+            p.unlink(missing_ok=True)
+    return removed
+
+
 class ResultCache:
     """The outcome of every compile, kept between runs and reused while nothing it read changed.
 
     An entry is found by the compiler, the command line and the source text. An edited
     sample, or one whose context changed, gets a new entry. It records the files the
     compile read and their contents. It is reused only while every one of them is byte
-    for byte the same, so a changed header recompiles exactly the samples that include it, wherever
-    they live. GCC's list of those files leaves out a precompiled header and everything
-    it was built from, so the caller names the header and its `.deps` record adds them.
+    for byte the same, so a changed header recompiles exactly the samples that include
+    it, wherever they live. GCC's list of those files leaves out a precompiled header and
+    everything it was built from, so the caller names the header and its `.deps` record
+    adds them.
+
+    Paths inside the repository are kept relative to it, so every clone and worktree
+    shares the entries. An entry from another checkout is reused only when the files it
+    read hold the same bytes here. An entry keeps the outcomes of the last few states of
+    those files, so checkouts on different branches don't evict each other, and undoing
+    an edit finds the earlier outcome again.
     """
 
     SRC = "\0SRC\0"  # stands in for the generated source's path, which differs between runs
+    ROOT = "\0ROOT\0"  # stands in for the repository, which differs between checkouts
+    # a precompiled header's stub, whose name holds a hash of this checkout's paths
+    PCH_NAME = re.compile(r"\bpre_(\w+?)_[0-9a-f]{16}\.h\b")
     MAX_AGE_DAYS = 30
+    MAX_VARIANTS = 8  # the outcomes kept for one entry, the latest first
 
     def __init__(self, root, cxx):
         self.root = root / "results"
@@ -828,10 +889,16 @@ class ResultCache:
         self.hits = self.misses = 0
         self.lock = threading.Lock()  # for the counts, updated from every worker
 
+    def portable(self, text):
+        return text.replace(str(ROOT), self.ROOT)
+
+    def local(self, text):
+        return text.replace(self.ROOT, str(ROOT))
+
     def digest(self, name):
-        """One file's contents, read once per run."""
+        """One file's contents, read once per run. `name` is a portable path."""
         if name not in self.digests:
-            path = Path(name)
+            path = Path(self.local(name))
             self.digests[name] = hashlib.sha256(
                 path.read_bytes() if path.exists() else b"<missing>"
             ).hexdigest()
@@ -842,18 +909,33 @@ class ResultCache:
             "\0".join(f"{f}\0{self.digest(f)}" for f in files).encode()
         ).hexdigest()
 
-    def compile(self, cmd, src, text, pch=None):
+    def compile(self, cmd, src, text, pch, stub, prepare):
         """`cmd` run on `src` holding `text`, which includes the precompiled header `pch`.
 
-        The result comes from the cache when nothing the compile read has changed.
+        `stub` is what the header's stub holds. The result comes from the cache when
+        nothing the compile read has changed. Otherwise `prepare` builds the precompiled
+        header first.
         """
         src.write_text(text, encoding="utf-8")
+        # The stub's name differs between checkouts, so its contents identify it instead.
+        # They come from the template, so a pruned stub file changes no key.
+        stub = [hashlib.sha256(stub.encode()).hexdigest()] if pch else []
         key = hashlib.sha256(
-            "\0".join([self.compiler, *cmd, text]).encode()
+            "\0".join(
+                [
+                    self.compiler,
+                    *map(self.portable, cmd),
+                    *stub,
+                    self.PCH_NAME.sub(r"pre_\1.h", self.portable(text)),
+                ]
+            ).encode()
         ).hexdigest()
         entry = self.root / f"{key}.json"
         try:
-            known = json.loads(entry.read_text(encoding="utf-8"))
+            variants = json.loads(entry.read_text(encoding="utf-8"))["variants"]
+        except (OSError, ValueError, KeyError, TypeError):
+            variants = []
+        for known in variants:
             if self.fingerprint(known["deps"]) == known["fingerprint"]:
                 os.utime(entry)
                 with self.lock:
@@ -862,12 +944,11 @@ class ResultCache:
                     cmd,
                     known["returncode"],
                     "",
-                    known["stderr"].replace(self.SRC, str(src)),
+                    self.local(known["stderr"]).replace(self.SRC, str(src)),
                 )
-        except (OSError, ValueError, KeyError):
-            pass
         with self.lock:
             self.misses += 1
+        prepare()
         depfile = src.with_suffix(".d")
         r = subprocess.run(
             [*cmd, "-MD", "-MF", str(depfile), str(src)],
@@ -885,21 +966,25 @@ class ResultCache:
             ) - {str(src)}
             depfile.unlink()
             if pch:
-                deps.add(str(pch))
                 deps.update(
                     Path(f"{pch}.deps").read_text(encoding="utf-8").splitlines()[1:]
                 )
-            deps = sorted(deps)
+            # The precompiled header's own record lists its stub, whose name differs between
+            # checkouts. Its contents are in the key already, so nothing in the cache counts.
+            cached = f"{self.root.parent}{os.sep}"
+            deps = sorted({self.portable(d) for d in deps if not d.startswith(cached)})
+            new = {
+                "returncode": r.returncode,
+                "stderr": self.portable(r.stderr.replace(str(src), self.SRC)),
+                "deps": deps,
+                "fingerprint": self.fingerprint(deps),
+            }
+            variants = [new] + [
+                v for v in variants if v["fingerprint"] != new["fingerprint"]
+            ]
             partial = entry.with_name(f"{entry.name}.{os.getpid()}.{id(src)}.tmp")
             partial.write_text(
-                json.dumps(
-                    {
-                        "returncode": r.returncode,
-                        "stderr": r.stderr.replace(str(src), self.SRC),
-                        "deps": deps,
-                        "fingerprint": self.fingerprint(deps),
-                    }
-                ),
+                json.dumps({"variants": variants[: self.MAX_VARIANTS]}),
                 encoding="utf-8",
             )
             os.replace(partial, entry)
@@ -946,22 +1031,48 @@ def build(args, work, selected):
     }
     wanted = {(tpl, std) for tpl, std in wanted if tpl in templates}
     pch_dir = pch_cache() if not args.no_cache else work
-    preamble = {}
+    if not args.no_cache and (pruned := prune_pch_cache(pch_dir)):
+        print(f"pruned {pruned} unused precompiled headers", flush=True)
+    preamble, stubs = {}, {}
 
-    def precompile(wanted_one):
-        name, std = wanted_one
+    def write_stub(h):
+        if h.exists():
+            os.utime(h)  # in use, so pruning leaves it alone
+        else:
+            partial = pch_dir / f"{h.name}.{os.getpid()}.stub"
+            partial.write_text(stubs[h], encoding="utf-8")
+            os.replace(partial, h)
+
+    for name, std in wanted:
         precompiled, rest = split_preamble(templates[name])
         key = hashlib.sha256(
             "\0".join([*flags(std), precompiled]).encode()
         ).hexdigest()[:16]
         h = pch_dir / f"pre_{name}{std}_{key}.h"
-        gch, deps = Path(f"{h}.gch"), Path(f"{h}.deps")
         preamble[name, std] = (f'#include "{h.name}"', rest, h)
+        stubs[h] = precompiled
+        write_stub(h)
+
+    # A precompiled header is built only when a compile that uses it isn't in the cache,
+    # so a run whose every result is cached builds none of them.
+    pch_locks = {h: threading.Lock() for _, _, h in preamble.values()}
+    pch_ready = set()
+
+    def precompile(name, std):
+        h = preamble[name, std][2]
+        with pch_locks[h]:
+            if h not in pch_ready:
+                build_pch(name, std, h)
+                pch_ready.add(h)
+
+    def build_pch(name, std, h):
+        write_stub(h)  # another run may have pruned it since this one started
+        gch, deps = Path(f"{h}.gch"), Path(f"{h}.deps")
         if not args.no_cache and gch.exists() and deps.exists():
             recorded, *files = deps.read_text(encoding="utf-8").splitlines()
             if fingerprint(files) == recorded:
+                os.utime(gch)  # in use, so pruning leaves it alone
                 return
-        h.write_text(precompiled, encoding="utf-8")
         # moved in place only once complete, so a concurrent run never reads half of one
         partial, depfile = (
             pch_dir / f"{h.name}.{os.getpid()}.tmp",
@@ -998,15 +1109,14 @@ def build(args, work, selected):
         os.replace(partial, gch)
         deps.write_text(fingerprint(files) + "\n" + "\n".join(files), encoding="utf-8")
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=args.jobs) as ex:
-        list(ex.map(precompile, sorted(wanted)))
-
     cache = None if args.no_cache else ResultCache(pch_dir, args.cxx)
 
-    def compile_one(src, text, std, pch):
+    def compile_one(src, text, std, tpl, pch):
         cmd = [*flags(std), f"-I{pch_dir}", "-fsyntax-only"]
+        prepare = (lambda: precompile(tpl, std)) if pch else (lambda: None)
         if cache:
-            return cache.compile(cmd, src, text, pch)
+            return cache.compile(cmd, src, text, pch, stubs.get(pch), prepare)
+        prepare()
         src.write_text(text, encoding="utf-8")
         return subprocess.run([*cmd, str(src)], capture_output=True, text=True)
 
@@ -1020,7 +1130,7 @@ def build(args, work, selected):
         text, linemap = render(
             s, s.body(keep).split("\n"), placement, ctx, pch, prologue, epilogue
         )
-        return src, linemap, compile_one(src, text, s.std, pch_header)
+        return src, linemap, compile_one(src, text, s.std, tpl, pch_header)
 
     def check_rejected(idx, s, ctx):
         """Each group of lines that must not compile, added back alone, has to be what fails."""

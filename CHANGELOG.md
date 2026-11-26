@@ -141,8 +141,7 @@ This page documents the version history and changes for the **mp-units** library
 - (!) refactor: `char`, `wchar_t`, `char8_t`, `char16_t`, and `char32_t` are not
       representation types, as `bool` isn't. A character type holds a character, not a
       number, so `quantity<si::metre, char>` is ill-formed. `signed char` and `unsigned char`,
-      the types of `std::int8_t` and `std::uint8_t`, stay representation types. A literal
-      zero of a character type, such as `'\0'`, doesn't compare against a quantity either
+      the types of `std::int8_t` and `std::uint8_t`, stay representation types
 - feat: a vector quantity composes from a single value holding its components, the
       inverse of its tuple protocol: `quantity<flight_velocity[km / h], vec3> v =
       std::tuple{fwd, lat, vert};`. Any type a structured binding decomposes through
@@ -679,7 +678,10 @@ This page documents the version history and changes for the **mp-units** library
         selected by appending `~` to its `format-spec` (`23.4782(32)`); `precision` states
         the number of significant digits of the uncertainty (two by default, as published
         by CODATA), and the `value ± σ` form remains the default (#464)
-- feat: comparisons against literal `0`
+- feat: `zero` compares against quantities and `std::chrono::duration`, and initializes
+        them
+- (!) feat: `mp_units::zero` makes an unqualified `zero` of user code ambiguous under
+        `using namespace mp_units`, and a local `zero` triggers `-Wshadow`
 - feat: `hep` system refactored to be similar to leading projects in the HEP domain
 - feat: `hep` system extended with new constants and specialized quantities
 - feat: `unit_for`, `reference_for`, and `rep_for` added
@@ -770,6 +772,13 @@ This page documents the version history and changes for the **mp-units** library
 - (!) refactor: `zeroth_degree_Celsius` deprecated (use `ice_point`)
 - (!) refactor: `zeroth_degree_Fahrenheit` deprecated (use `fahrenheit_zero`)
 - (!) refactor: `zeroth_rankine` deprecated (use `si::absolute_zero`)
+- (!) refactor: `is_eq_zero()` and its family deprecated (compare against `zero`)
+- (!) fix: `representation_values` provides `zero()` and `one()` only for scalars; a vector
+        or tensor type specializes it, as `cartesian_vector`, `cartesian_tensor`, and the
+        fixed-size Eigen, GLM, and Blaze types do
+- fix: `quantity::zero()` returned an uninitialized fixed-size Eigen vector (an assertion
+        failure in a debug build) and an empty dynamic-size Eigen or Blaze vector, and didn't
+        compile for an Eigen matrix; a dynamic-size vector or matrix now has no `zero()`
 - refactor: CGS <-> SI interop improved with using declarations
 - refactor: `isq::time` swapped with `isq::duration`
 - refactor: deprecation warnings now include the release version

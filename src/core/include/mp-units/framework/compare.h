@@ -40,7 +40,7 @@ template<typename T>
   requires requires {
     { T::zero() } -> std::equality_comparable_with<T>;
   }
-[[deprecated("2.6.0: compare against literal `0` instead")]] [[nodiscard]] constexpr bool is_eq_zero(T v)
+[[deprecated("2.6.0: compare against `zero` instead")]] [[nodiscard]] constexpr bool is_eq_zero(T v)
 {
   return v == T::zero();
 }
@@ -49,7 +49,7 @@ template<typename T>
   requires requires {
     { T::zero() } -> std::equality_comparable_with<T>;
   }
-[[deprecated("2.6.0: compare against literal `0` instead")]] [[nodiscard]] constexpr bool is_neq_zero(T v)
+[[deprecated("2.6.0: compare against `zero` instead")]] [[nodiscard]] constexpr bool is_neq_zero(T v)
 {
   return v != T::zero();
 }
@@ -58,7 +58,7 @@ template<typename T>
   requires requires {
     { T::zero() } -> std::three_way_comparable_with<T>;
   }
-[[deprecated("2.6.0: compare against literal `0` instead")]] [[nodiscard]] constexpr bool is_lt_zero(T v)
+[[deprecated("2.6.0: compare against `zero` instead")]] [[nodiscard]] constexpr bool is_lt_zero(T v)
 {
   return v < T::zero();
 }
@@ -67,7 +67,7 @@ template<typename T>
   requires requires {
     { T::zero() } -> std::three_way_comparable_with<T>;
   }
-[[deprecated("2.6.0: compare against literal `0` instead")]] [[nodiscard]] constexpr bool is_gt_zero(T v)
+[[deprecated("2.6.0: compare against `zero` instead")]] [[nodiscard]] constexpr bool is_gt_zero(T v)
 {
   return v > T::zero();
 }
@@ -76,7 +76,7 @@ template<typename T>
   requires requires {
     { T::zero() } -> std::three_way_comparable_with<T>;
   }
-[[deprecated("2.6.0: compare against literal `0` instead")]] [[nodiscard]] constexpr bool is_lteq_zero(T v)
+[[deprecated("2.6.0: compare against `zero` instead")]] [[nodiscard]] constexpr bool is_lteq_zero(T v)
 {
   return v <= T::zero();
 }
@@ -85,7 +85,7 @@ template<typename T>
   requires requires {
     { T::zero() } -> std::three_way_comparable_with<T>;
   }
-[[deprecated("2.6.0: compare against literal `0` instead")]] [[nodiscard]] constexpr bool is_gteq_zero(T v)
+[[deprecated("2.6.0: compare against `zero` instead")]] [[nodiscard]] constexpr bool is_gteq_zero(T v)
 {
   return v >= T::zero();
 }

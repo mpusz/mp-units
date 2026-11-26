@@ -734,12 +734,28 @@ struct mp_units::representation_values {
 **Default behavior:**
 
 - In hosted environments: inherits from `std::chrono::duration_values<Rep>`
-- `zero()`: returns `Rep(0)` if Rep is constructible from `int`
-- `one()`: returns `Rep(1)` if Rep is constructible from `int`
+- `zero()`: returns `Rep(0)` if `Rep` is a scalar constructible from `int` (in a hosted
+  environment, `std::chrono::duration_values<Rep>::zero()`, so a specialization of it is used)
+- `one()`: returns `Rep(1)` if `Rep` is a scalar constructible from `int`
 - `min()`: returns `std::numeric_limits<Rep>::lowest()` if available
 - `max()`: returns `std::numeric_limits<Rep>::max()` if available
 
-**When to specialize:** If your type needs custom special values:
+**When to specialize:** If your type needs custom special values. A vector or a tensor
+type gets no default `zero()`, because `Rep(0)` doesn't build a zero vector for every
+library, so it specializes `representation_values` to provide one. Without it, a quantity
+of that type has no `zero()` and doesn't compare against `zero`. The library does this for
+`cartesian_vector`, `cartesian_tensor`, and the fixed-size types of the Eigen, GLM, and
+Blaze integrations:
+
+```cpp
+// snippet-setup: template<typename T, std::size_t N> struct my_vector { T data[N]; };
+template<typename T, std::size_t N>
+struct mp_units::representation_values<my_vector<T, N>> {
+  static constexpr my_vector<T, N> zero() noexcept { return my_vector<T, N>{}; }
+};
+```
+
+A scalar class type may need other values too:
 
 ```cpp
 // snippet-template: none (pseudo-code: specialization for the placeholder template `my_custom_type`, never declared)
@@ -770,6 +786,8 @@ struct mp_units::representation_values<my_custom_type<T>> {
 **Usage:** These values are used by:
 
 - `quantity::zero()`, `quantity::min()`, `quantity::max()` static member functions
+- Comparison against [`zero`](../framework_basics/quantity_arithmetics.md#comparison-against-zero),
+  and the conversion of `zero` to a quantity
 - Mathematical operations like `floor()`, `ceil()`, `round()`
 - Division by zero checks
 

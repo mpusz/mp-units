@@ -319,16 +319,15 @@ if (auto q = q1 / q2; q != q.zero())
 but that is a bit inconvenient, and inexperienced users could be unaware of this technique
 and its reasons.
 
-For the above reasons, the library provides special support for comparisons against the
-literal `0`. Only this one value has elevated privileges and does not have to state the
-unit — the numerical value zero is common to all scaled units of any kind.
-
-Thanks to that, to save typing and not pay for unneeded conversions, our check could be
-implemented as follows:
+For the above reasons, the library provides `zero`, a constant that compares against a
+quantity of any unit without converting it. For a quantity that isn't a point, zero is the
+only value whose meaning doesn't depend on the unit, so it is the only value a quantity may
+be compared against without stating a unit (the exception is a dimensionless quantity in
+`one`, which compares against any number):
 
 ```cpp
 // snippet-template: none (pseudo-code: `q1`, `q2` are placeholders and the `if` has no body)
-if (q1 / q2 != 0)
+if (q1 / q2 != zero)
   // ...
 ```
 
@@ -336,21 +335,50 @@ This works for all six comparison operators (`==`, `!=`, `<`, `>`, `<=`, `>=`):
 
 ```cpp
 // snippet-template: none (pseudo-code: `q` is a placeholder and the `if`s have no body)
-if (q > 0)
+if (q > zero)
   // ...
-if (q <= 0)
+if (q <= zero)
   // ...
 ```
 
+`zero` also initializes or resets a quantity of any unit, and a `std::chrono::duration`:
+
+```cpp
+quantity<si::metre> total = zero;
+std::chrono::seconds elapsed = zero;
+```
+
+It compares against a `std::chrono::duration` as well, so a generic algorithm checks the
+sign of a quantity and of a `std::chrono::duration` in the same way:
+
+```cpp
+template<typename T>
+bool is_positive(const T& value)
+{
+  return value > zero;
+}
+```
+
+`zero` is a tag rather than a number, and it doesn't compare against or convert to `int` or
+`double`. Its value is part of its type, so it keeps working after it is passed to a
+function, as in `std::less<>{}(q, zero)` or `std::ranges::find(v, zero)`. The FAQ
+explains
+[why `q > 0` doesn't compile](../../getting_started/faq.md#why-doesnt-q-0-compile-for-a-quantity-with-a-unit).
+
 !!! tip
 
-    All six comparison operators support comparison against zero without specifying a unit.
-    This works with any representation type `rep` for which
-    `representation_values<rep>::zero()` is provided.
+    `zero` compares against a quantity of a representation type `rep` if
+    `representation_values<rep>::zero()` is provided. `==` and `!=` need an equality
+    comparable `rep`, and the other four operators a three-way comparable scalar one, so a complex
+    quantity only supports `==` and `!=`. So does a vector or a tensor quantity, whose
+    representation type provides its zero by
+    [specializing `representation_values`](../advanced_topics/representation_types.md#representation_values).
+    A `std::chrono::duration` compares against `zero`, and is initialized from it, once
+    `<mp-units/systems/si/chrono.h>` is included.
 
-    Only a compile-time zero is accepted: an integer or floating-point literal that is zero
-    (e.g., `0`, `0.`, `0.f`, `0LL`). Passing another literal or a runtime variable — even one
-    whose value happens to be zero — is rejected at compile time.
+    A quantity point can't be compared against `zero`, because its numerical value depends
+    on its origin. Compare its delta from a named origin instead, such as
+    `qp.delta_from(mean_sea_level) < zero`.
 
 
 ## Other maths

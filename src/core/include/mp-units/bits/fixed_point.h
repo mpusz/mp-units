@@ -181,15 +181,15 @@ struct fixed_point {
     auto quot = res >> fractional_bits;
     if constexpr (Mode != rounding_mode::rounded_down) {
       const res_t frac = res - (quot << fractional_bits);  // fraction bits, always in [0, 2^fractional_bits)
-      const res_t zero{0};
+      const res_t zero_res{0};
       if constexpr (Mode == rounding_mode::truncated) {
         // towards zero: the floor quotient is one too low for negative non-exact values
-        if (res < zero && frac != zero) ++quot;
+        if (res < zero_res && frac != zero_res) ++quot;
       } else if constexpr (Mode == rounding_mode::rounded_up) {
-        if (frac != zero) ++quot;
+        if (frac != zero_res) ++quot;
       } else {  // rounding_mode::rounded (to nearest, ties to even)
         const res_t half = res_t{1} << (fractional_bits - 1);
-        const auto is_odd = quot - (quot / 2) * 2 != zero;
+        const auto is_odd = quot - (quot / 2) * 2 != zero_res;
         if (frac > half || (frac == half && is_odd)) ++quot;
       }
     }

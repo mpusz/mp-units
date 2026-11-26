@@ -679,12 +679,31 @@ template<typename Rep>
 [[deprecated("2.5.0: `is_tensor` is no longer necessary and can simply be removed")]]
 constexpr bool is_tensor = false;
 
+namespace detail {
+
+// A scalar gets a default zero and one, while a vector or a tensor doesn't: for Eigen, `Rep(0)` is
+// an empty vector of a dynamic size, and an uninitialized one of a fixed size (or an assertion
+// failure in a debug build), and `Rep(1)` is `(1, 0, 0)` for a `cartesian_vector`. A vector or
+// tensor type that has a zero specializes `representation_values` to provide it.
+template<typename Rep>
+concept scalar_order = utility::specified<decltype(tensor_order<Rep>)> && (tensor_order<Rep> == 0);
+
+// A scalar whose zero and one are `Rep(0)` and `Rep(1)`
+template<typename Rep>
+concept scalar_values = std::constructible_from<Rep, int> && scalar_order<Rep>;
+
+}  // namespace detail
+
 /**
  * A type trait that defines zero, one, min, and max for a representation type
  *
  * The zero, one, min, and max member functions in mp_units::quantity forward their work to
  * these methods. This type can be specialized if the representation Rep requires a specific
  * implementation to return these quantity objects.
+ *
+ * The primary template provides `zero()` and `one()` only for a scalar type constructible from
+ * `int`. A vector or a tensor type specializes it to provide `zero()`, which is what a quantity
+ * of it, and @ref zero, compare against.
  *
  * @tparam Rep a representation type for which a type trait is defined
  */
@@ -693,12 +712,6 @@ template<typename Rep>
 struct representation_values : std::chrono::duration_values<Rep> {
 #else
 struct representation_values {
-  static constexpr Rep zero() noexcept
-    requires std::constructible_from<Rep, int>
-  {
-    return Rep(0);
-  }
-
   static constexpr Rep min() noexcept
     requires std::numeric_limits<Rep>::is_specialized && requires {
       { std::numeric_limits<Rep>::lowest() } -> std::same_as<Rep>;
@@ -716,8 +729,25 @@ struct representation_values {
   }
 #endif
 
+  // Hides the unconstrained `zero()` of `std::chrono::duration_values` in a hosted build for a
+  // vector or a tensor, but returns its value for any scalar, so a scalar type customized for
+  // `std::chrono` keeps its zero.
+  static constexpr Rep zero() noexcept
+#if MP_UNITS_HOSTED
+    requires detail::scalar_order<Rep>
+#else
+    requires detail::scalar_values<Rep>
+#endif
+  {
+#if MP_UNITS_HOSTED
+    return std::chrono::duration_values<Rep>::zero();
+#else
+    return Rep(0);
+#endif
+  }
+
   static constexpr Rep one() noexcept
-    requires std::constructible_from<Rep, int>
+    requires detail::scalar_values<Rep>
   {
     return Rep(1);
   }

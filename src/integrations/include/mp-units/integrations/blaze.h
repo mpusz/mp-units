@@ -53,13 +53,16 @@
 #include <blaze/math/StaticVector.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsScalar.h>
+#include <blaze/math/typetraits/IsStatic.h>
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/util/IntegralConstant.h>  // blaze::FalseType
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/unit_magnitude_concepts.h>
+#include <mp-units/framework/zero.h>
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
+#include <concepts>
 #include <type_traits>
 #endif
 #endif
@@ -91,6 +94,16 @@ struct representation_canonical_type<T> {
   using type = std::remove_cvref_t<typename T::ResultType>;
 };
 
+// A static Blaze vector or matrix has a zero of a known shape, which its default constructor
+// builds. A dynamic one has none, because its size is known only at run time, so a quantity of it
+// has no `zero()` and doesn't compare against `zero`.
+template<typename T>
+  requires detail::blaze_tensor<T> && blaze::IsStatic_v<T> && requires { typename T::ResultType; } &&
+           std::same_as<T, typename T::ResultType>
+struct representation_values<T> {
+  [[nodiscard]] static T zero() { return T{}; }
+};
+
 }  // namespace mp_units
 
 namespace blaze {
@@ -100,6 +113,11 @@ namespace blaze {
 // operator is not even considered for that probe.
 template<mp_units::UnitMagnitude T>
 struct IsScalar<T> : public FalseType {};
+
+// Nor is `zero`: Blaze would otherwise compare every element of a dynamic-size vector against it,
+// although such a vector has no zero, and a quantity of it doesn't compare against `zero` either.
+template<>
+struct IsScalar<mp_units::zero_t> : public FalseType {};
 
 }  // namespace blaze
 
