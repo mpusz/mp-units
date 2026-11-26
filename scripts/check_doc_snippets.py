@@ -38,11 +38,16 @@ the compiler accepts. Given files, only the samples in those files are checked
 (with the samples they are compiled after), unless one of them is this script or a
 template, which re-checks everything. The exit status is non-zero while any
 checked sample fails.
+
+The outcome of every compile is kept in ~/.cache with the files it read, and reused
+while none of them changed. A second run over unchanged sources compiles again only a
+sample whose `#include` isn't found.
 """
 
 import argparse
 import concurrent.futures
 import hashlib
+import json
 import os
 import re
 import shlex
@@ -51,6 +56,7 @@ import subprocess
 import sys
 import tempfile
 import textwrap
+import threading
 import time
 from pathlib import Path
 
@@ -793,6 +799,113 @@ def pch_cache():
     return root
 
 
+class ResultCache:
+    """The outcome of every compile, kept between runs and reused while nothing it read changed.
+
+    An entry is found by the compiler, the command line and the source text. An edited
+    sample, or one whose context changed, gets a new entry. It records the files the
+    compile read and their contents. It is reused only while every one of them is byte
+    for byte the same, so a changed header recompiles exactly the samples that include it, wherever
+    they live. GCC's list of those files leaves out a precompiled header and everything
+    it was built from, so the caller names the header and its `.deps` record adds them.
+    """
+
+    SRC = "\0SRC\0"  # stands in for the generated source's path, which differs between runs
+    MAX_AGE_DAYS = 30
+
+    def __init__(self, root, cxx):
+        self.root = root / "results"
+        self.root.mkdir(exist_ok=True)
+        stale = time.time() - self.MAX_AGE_DAYS * 86400
+        for p in self.root.glob("*.json"):  # entries no run has used for a month
+            if p.stat().st_mtime < stale:
+                p.unlink(missing_ok=True)
+        version = subprocess.run(
+            [cxx, "--version"], capture_output=True, text=True
+        ).stdout
+        self.compiler = f"{shutil.which(cxx)}\0{version}"
+        self.digests = {}
+        self.hits = self.misses = 0
+        self.lock = threading.Lock()  # for the counts, updated from every worker
+
+    def digest(self, name):
+        """One file's contents, read once per run."""
+        if name not in self.digests:
+            path = Path(name)
+            self.digests[name] = hashlib.sha256(
+                path.read_bytes() if path.exists() else b"<missing>"
+            ).hexdigest()
+        return self.digests[name]
+
+    def fingerprint(self, files):
+        return hashlib.sha256(
+            "\0".join(f"{f}\0{self.digest(f)}" for f in files).encode()
+        ).hexdigest()
+
+    def compile(self, cmd, src, text, pch=None):
+        """`cmd` run on `src` holding `text`, which includes the precompiled header `pch`.
+
+        The result comes from the cache when nothing the compile read has changed.
+        """
+        src.write_text(text, encoding="utf-8")
+        key = hashlib.sha256(
+            "\0".join([self.compiler, *cmd, text]).encode()
+        ).hexdigest()
+        entry = self.root / f"{key}.json"
+        try:
+            known = json.loads(entry.read_text(encoding="utf-8"))
+            if self.fingerprint(known["deps"]) == known["fingerprint"]:
+                os.utime(entry)
+                with self.lock:
+                    self.hits += 1
+                return subprocess.CompletedProcess(
+                    cmd,
+                    known["returncode"],
+                    "",
+                    known["stderr"].replace(self.SRC, str(src)),
+                )
+        except (OSError, ValueError, KeyError):
+            pass
+        with self.lock:
+            self.misses += 1
+        depfile = src.with_suffix(".d")
+        r = subprocess.run(
+            [*cmd, "-MD", "-MF", str(depfile), str(src)],
+            capture_output=True,
+            text=True,
+        )
+        # No depfile when an `#include` isn't found. That outcome isn't kept, so the
+        # file appearing later is noticed.
+        if depfile.exists():
+            deps = set(
+                depfile.read_text(encoding="utf-8")
+                .replace("\\\n", " ")
+                .split(":", 1)[1]
+                .split()
+            ) - {str(src)}
+            depfile.unlink()
+            if pch:
+                deps.add(str(pch))
+                deps.update(
+                    Path(f"{pch}.deps").read_text(encoding="utf-8").splitlines()[1:]
+                )
+            deps = sorted(deps)
+            partial = entry.with_name(f"{entry.name}.{os.getpid()}.{id(src)}.tmp")
+            partial.write_text(
+                json.dumps(
+                    {
+                        "returncode": r.returncode,
+                        "stderr": r.stderr.replace(str(src), self.SRC),
+                        "deps": deps,
+                        "fingerprint": self.fingerprint(deps),
+                    }
+                ),
+                encoding="utf-8",
+            )
+            os.replace(partial, entry)
+        return r
+
+
 def build(args, work, selected):
     inc = [f"-I{d}" for d in INCLUDE_DIRS + EXTRA_INCLUDE_DIRS] + [f"-I{TEMPLATES}"]
 
@@ -843,7 +956,7 @@ def build(args, work, selected):
         ).hexdigest()[:16]
         h = pch_dir / f"pre_{name}{std}_{key}.h"
         gch, deps = Path(f"{h}.gch"), Path(f"{h}.deps")
-        preamble[name, std] = (f'#include "{h.name}"', rest)
+        preamble[name, std] = (f'#include "{h.name}"', rest, h)
         if not args.no_cache and gch.exists() and deps.exists():
             recorded, *files = deps.read_text(encoding="utf-8").splitlines()
             if fingerprint(files) == recorded:
@@ -888,25 +1001,26 @@ def build(args, work, selected):
     with concurrent.futures.ThreadPoolExecutor(max_workers=args.jobs) as ex:
         list(ex.map(precompile, sorted(wanted)))
 
-    def compile_one(src, text, std):
+    cache = None if args.no_cache else ResultCache(pch_dir, args.cxx)
+
+    def compile_one(src, text, std, pch):
+        cmd = [*flags(std), f"-I{pch_dir}", "-fsyntax-only"]
+        if cache:
+            return cache.compile(cmd, src, text, pch)
         src.write_text(text, encoding="utf-8")
-        return subprocess.run(
-            [*flags(std), f"-I{pch_dir}", "-fsyntax-only", str(src)],
-            capture_output=True,
-            text=True,
-        )
+        return subprocess.run([*cmd, str(src)], capture_output=True, text=True)
 
     def attempt(idx, s, tpl, placement, ctx, keep=()):
         where = (
             "split" + str(placement[1]) if isinstance(placement, tuple) else placement
         )
         src = work / f"s{idx}_{tpl}_{where}{'_l' + str(keep[0]) if keep else ''}.cpp"
-        pch, prologue = preamble.get((tpl, s.std), ("", ""))
+        pch, prologue, pch_header = preamble.get((tpl, s.std), ("", "", None))
         epilogue = templates[tpl].split("{{BODY}}", 1)[1] if tpl else ""
         text, linemap = render(
             s, s.body(keep).split("\n"), placement, ctx, pch, prologue, epilogue
         )
-        return src, linemap, compile_one(src, text, s.std)
+        return src, linemap, compile_one(src, text, s.std, pch_header)
 
     def check_rejected(idx, s, ctx):
         """Each group of lines that must not compile, added back alone, has to be what fails."""
@@ -1011,6 +1125,11 @@ def build(args, work, selected):
         for idx, s in enumerate(samples):
             futures[id(s)] = ex.submit(run, idx, s, [futures[id(p)] for p in s.after])
         results = [f.result() for f in futures.values()]
+    if cache:
+        print(
+            f"{cache.hits} of {cache.hits + cache.misses} compiles reused from the cache",
+            flush=True,
+        )
     # embedded files, and the samples compiled only as another one's context, are not reported
     results = [
         r for r in results if not r.embed and (selected is None or r.origin in selected)
@@ -1049,8 +1168,12 @@ def repro(r, args):
 REQUIRED_GCC = 15
 
 
-def resolve_compiler(cxx):
-    """The compiler to check with: `cxx`, or the first GCC 15 found. Exits if there is none."""
+def resolve_compiler(cxx, hook=False):
+    """The compiler to check with: `cxx`, or the first GCC 15 found. Exits if there is none.
+
+    From the hook, a missing compiler only warns, so a machine without GCC 15 can still
+    commit, and CI checks the samples before the documentation is published.
+    """
     found = []
     for name in [cxx] if cxx else [f"g++-{REQUIRED_GCC}", "g++"]:
         if not shutil.which(name):
@@ -1071,10 +1194,20 @@ def resolve_compiler(cxx):
             found.append(f"{name} (GCC {major.group(1)})")
         else:
             return name
+    found = ", ".join(found) or (
+        f"no {cxx}" if cxx else f"neither g++-{REQUIRED_GCC} nor g++"
+    )
+    if hook:
+        print(
+            f"warning: the documentation samples were not checked, because GCC {REQUIRED_GCC} isn't here.\n"
+            f"Found: {found}. CI checks them before the documentation is published.\n"
+            f"To check them here, install g++-{REQUIRED_GCC} or use the dev container."
+        )
+        sys.exit(0)
     sys.exit(
         f"error: the documentation samples are checked with GCC {REQUIRED_GCC}, which CI pins,\n"
         f"because whether a line marked `❌` fails, and where, depends on the compiler.\n"
-        f"Found: {', '.join(found) or (f'no {cxx}' if cxx else f'neither g++-{REQUIRED_GCC} nor g++')}.\n"
+        f"Found: {found}.\n"
         f"Install g++-{REQUIRED_GCC} and pass it with --cxx if it is not on PATH as g++-{REQUIRED_GCC},\n"
         f"or use the dev container. To commit without the check: SKIP=doc-snippets git commit ..."
     )
@@ -1097,11 +1230,17 @@ def main():
     ap.add_argument(
         "--no-cache",
         action="store_true",
-        help="build the precompiled headers afresh rather than in ~/.cache",
+        help="build the precompiled headers and compile every sample afresh, rather than reuse ~/.cache",
     )
     ap.add_argument("--only", help="only samples whose path starts with this prefix")
     ap.add_argument("--limit", type=int, help="stop after N samples (smoke test)")
     ap.add_argument("--list-failures", action="store_true")
+    ap.add_argument(
+        "--hook",
+        action="store_true",
+        help="as the pre-commit hook: warn rather than fail without GCC 15, "
+        "list the failures, and print one line when nothing fails",
+    )
     ap.add_argument(
         "--list-opt-outs",
         action="store_true",
@@ -1119,7 +1258,7 @@ def main():
         "--summary", help="append the failures, as GitHub Markdown, to this file"
     )
     args = ap.parse_args()
-    args.cxx = resolve_compiler(args.cxx)
+    args.cxx = resolve_compiler(args.cxx, args.hook)
 
     selected = None
     if args.files:
@@ -1164,6 +1303,8 @@ def main():
         by_placement[key] = by_placement.get(key, 0) + 1
     rejected = sum(len(r.rejected) for r in ok)
     print(f"\ncompiled {len(ok)}/{len(results)} in {elapsed:.0f} s")
+    if args.hook and not bad:
+        return 0
     for k, v in sorted(by_placement.items()):
         print(f"  {v:5d}  placement={k}")
     print(f"  {sum(1 for r in ok if r.after):5d}  of them compiled after other samples")
@@ -1185,7 +1326,7 @@ def main():
                     f"{r.body()}\n--- diagnostic ---\n{r.error}\n\n"
                 )
         print(f"  failures written to {args.report}")
-    if args.list_failures or bad and args.files:
+    if args.list_failures or bad and (args.files or args.hook):
         for r in bad:
             lines = r.error.splitlines() or ["?"]
             first = next(
@@ -1195,7 +1336,7 @@ def main():
             print(
                 f"    {r.origin}:{r.error_line}  [{r.template}]  {readable(first)[:150]}"
             )
-        if bad and args.files:
+        if bad and (args.files or args.hook):
             print("\nreproduce one with:", repro(bad[0], args), "--report /dev/stdout")
     if args.summary and bad:
         with open(args.summary, "a", encoding="utf-8") as fh:
