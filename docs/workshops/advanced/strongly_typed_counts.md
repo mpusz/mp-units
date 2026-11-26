@@ -216,7 +216,7 @@ int main()
                                                   QuantityOf<resolution_width> auto width,
                                                   QuantityOf<resolution_height> auto height)
     {
-      return x >= 0 && x < width && y >= 0 && y < height;
+      return x >= zero && x < width && y >= zero && y < height;
     }
 
     [[nodiscard]] constexpr QuantityOf<render_rate> auto render_rate_calc(QuantityOf<sprite_count> auto count,
