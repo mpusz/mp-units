@@ -74,7 +74,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  BENCH_REF: d168d5bcfde6263bb6afe12be7aca06eb8aeca4f # mp-units-benchmarks, exact commit - never a branch
+  BENCH_REF: 12eab6497508cd807849e427fd0e999352512323 # mp-units-benchmarks, exact commit - never a branch
   CLANG_VERSION: 23
   SLACK: 3 # per-workflow growth that blocks a change
   MEDIAN_ALARM: 2 # framework-wide median growth that blocks

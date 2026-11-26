@@ -155,9 +155,9 @@ jobs:
         with:
           python-version: 3.x
       - name: Install GCC 15
-        # Pinned, because whether a marked line is rejected, and on which line, depends on the
-        # compiler. The checker refuses any other one (`REQUIRED_GCC` in the script). It is the
-        # same PPA the Conan workflow uses.
+        # Pinned, because the checker parses the compiler's diagnostics: the line it blames for
+        # a marked line, and the wording of the message. The checker refuses any other one
+        # (`REQUIRED_GCC` in the script). It is the same PPA the Conan workflow uses.
         run: |
           echo 'Acquire::Retries "10";' | sudo tee /etc/apt/apt.conf.d/80-retries  # the toolchain PPA returns 503s at times
           sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
