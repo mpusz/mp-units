@@ -41,7 +41,8 @@ checked sample fails.
 
 The outcome of every compile is kept in ~/.cache with the files it read, and reused
 while none of them changed. A second run over unchanged sources compiles again only a
-sample whose `#include` isn't found.
+sample whose `#include` isn't found. A precompiled header whose checkout is gone, or that
+no run has used for a week, is deleted.
 """
 
 import argparse
@@ -799,6 +800,55 @@ def pch_cache():
     return root
 
 
+# A precompiled header takes about 300 MB, and every checkout builds its own.
+PCH_MAX_AGE_DAYS = 7
+
+
+def prune_pch_cache(pch_dir):
+    """Deletes the precompiled headers no run can use any more. Returns how many.
+
+    A header is deleted when the checkout it was built from is gone, or when no run has
+    used it for a week. A run that needs one refreshes its time, so a header that a run
+    is compiling with is never old. Leftovers of interrupted builds are deleted after a
+    day.
+    """
+    now, removed = time.time(), 0
+    for deps in pch_dir.glob("pre_*.h.deps"):
+        h = deps.with_suffix("")
+        gch = Path(f"{h}.gch")
+        try:
+            files = deps.read_text(encoding="utf-8").splitlines()[1:]
+            used = (gch if gch.exists() else deps).stat().st_mtime
+        except OSError:
+            continue
+        # the checkout's own files: every template includes headers from both directories
+        checkout = [
+            f
+            for f in files
+            if "/scripts/snippet_templates/" in f or "/src/core/include/" in f
+        ]
+        gone = checkout and not any(Path(f).exists() for f in checkout)
+        if gone or now - used > PCH_MAX_AGE_DAYS * 86400:
+            for p in (gch, deps, h):
+                p.unlink(missing_ok=True)
+            removed += 1
+    for p in pch_dir.glob("pre_*"):
+        try:
+            age = now - p.stat().st_mtime
+        except OSError:
+            continue
+        unbuilt_stub = (
+            p.suffix == ".h"
+            and not Path(f"{p}.gch").exists()
+            and not Path(f"{p}.deps").exists()
+        )
+        if p.suffix in (".tmp", ".d", ".stub") and age > 86400:
+            p.unlink(missing_ok=True)
+        elif unbuilt_stub and age > PCH_MAX_AGE_DAYS * 86400:
+            p.unlink(missing_ok=True)
+    return removed
+
+
 class ResultCache:
     """The outcome of every compile, kept between runs and reused while nothing it read changed.
 
@@ -859,15 +909,17 @@ class ResultCache:
             "\0".join(f"{f}\0{self.digest(f)}" for f in files).encode()
         ).hexdigest()
 
-    def compile(self, cmd, src, text, pch, prepare):
+    def compile(self, cmd, src, text, pch, stub, prepare):
         """`cmd` run on `src` holding `text`, which includes the precompiled header `pch`.
 
-        The result comes from the cache when nothing the compile read has changed.
-        Otherwise `prepare` builds the precompiled header first.
+        `stub` is what the header's stub holds. The result comes from the cache when
+        nothing the compile read has changed. Otherwise `prepare` builds the precompiled
+        header first.
         """
         src.write_text(text, encoding="utf-8")
         # The stub's name differs between checkouts, so its contents identify it instead.
-        stub = [self.digest(str(pch))] if pch else []
+        # They come from the template, so a pruned stub file changes no key.
+        stub = [hashlib.sha256(stub.encode()).hexdigest()] if pch else []
         key = hashlib.sha256(
             "\0".join(
                 [
@@ -917,7 +969,10 @@ class ResultCache:
                 deps.update(
                     Path(f"{pch}.deps").read_text(encoding="utf-8").splitlines()[1:]
                 )
-            deps = sorted({self.portable(d) for d in deps})
+            # The precompiled header's own record lists its stub, whose name differs between
+            # checkouts. Its contents are in the key already, so nothing in the cache counts.
+            cached = f"{self.root.parent}{os.sep}"
+            deps = sorted({self.portable(d) for d in deps if not d.startswith(cached)})
             new = {
                 "returncode": r.returncode,
                 "stderr": self.portable(r.stderr.replace(str(src), self.SRC)),
@@ -976,7 +1031,18 @@ def build(args, work, selected):
     }
     wanted = {(tpl, std) for tpl, std in wanted if tpl in templates}
     pch_dir = pch_cache() if not args.no_cache else work
-    preamble = {}
+    if not args.no_cache and (pruned := prune_pch_cache(pch_dir)):
+        print(f"pruned {pruned} unused precompiled headers", flush=True)
+    preamble, stubs = {}, {}
+
+    def write_stub(h):
+        if h.exists():
+            os.utime(h)  # in use, so pruning leaves it alone
+        else:
+            partial = pch_dir / f"{h.name}.{os.getpid()}.stub"
+            partial.write_text(stubs[h], encoding="utf-8")
+            os.replace(partial, h)
+
     for name, std in wanted:
         precompiled, rest = split_preamble(templates[name])
         key = hashlib.sha256(
@@ -984,10 +1050,8 @@ def build(args, work, selected):
         ).hexdigest()[:16]
         h = pch_dir / f"pre_{name}{std}_{key}.h"
         preamble[name, std] = (f'#include "{h.name}"', rest, h)
-        if not h.exists():  # the stub, whose contents are part of a cached result's key
-            partial = pch_dir / f"{h.name}.{os.getpid()}.stub"
-            partial.write_text(precompiled, encoding="utf-8")
-            os.replace(partial, h)
+        stubs[h] = precompiled
+        write_stub(h)
 
     # A precompiled header is built only when a compile that uses it isn't in the cache,
     # so a run whose every result is cached builds none of them.
@@ -1002,10 +1066,12 @@ def build(args, work, selected):
                 pch_ready.add(h)
 
     def build_pch(name, std, h):
+        write_stub(h)  # another run may have pruned it since this one started
         gch, deps = Path(f"{h}.gch"), Path(f"{h}.deps")
         if not args.no_cache and gch.exists() and deps.exists():
             recorded, *files = deps.read_text(encoding="utf-8").splitlines()
             if fingerprint(files) == recorded:
+                os.utime(gch)  # in use, so pruning leaves it alone
                 return
         # moved in place only once complete, so a concurrent run never reads half of one
         partial, depfile = (
@@ -1049,7 +1115,7 @@ def build(args, work, selected):
         cmd = [*flags(std), f"-I{pch_dir}", "-fsyntax-only"]
         prepare = (lambda: precompile(tpl, std)) if pch else (lambda: None)
         if cache:
-            return cache.compile(cmd, src, text, pch, prepare)
+            return cache.compile(cmd, src, text, pch, stubs.get(pch), prepare)
         prepare()
         src.write_text(text, encoding="utf-8")
         return subprocess.run([*cmd, str(src)], capture_output=True, text=True)
