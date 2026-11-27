@@ -7,6 +7,8 @@ This chapter explains how to obtain **mp-units** and build your code with it.
 
 Most dependencies are provided via the [Conan Package Manager](https://conan.io/).
 If you obtain them differently you may need to adjust some CMake files.
+To build the tests and examples with vcpkg or plain CMake instead, see
+[Building and Testing Locally](contributing.md#building-and-testing-locally).
 
 
 ??? info "Conan quick intro"
@@ -149,8 +151,8 @@ If you obtain them differently you may need to adjust some CMake files.
 
     If `import_std` defaults to `True`, `contracts` defaults to `none`; otherwise `gsl-lite`.
 
-    `std` uses C++26 contract assertions and requires an experimental compiler
-    (currently only GCC 16 with `-fcontracts`).
+    `std` uses C++26 contract assertions and needs a compiler that supports them (see
+    [Contracts](cpp_compiler_support.md#contracts)).
 
 #### `freestanding`
 
@@ -173,84 +175,79 @@ If you obtain them differently you may need to adjust some CMake files.
     library and the module is not built. Use it when the library does not compile as a C++
     module with your toolchain. The integration headers ship either way.
 
-#### `natural_units`
+### CMake options
 
-:   [:octicons-tag-24: 2.5.0][release-2-5-0] · :octicons-milestone-24: `ON`/`OFF`
-    (Default: `ON`)
+Conan sets all the below CMake options automatically based on its configuration
+(described above).
+Manual setting of the below CMake options is only needed when Conan is not being used.
+[Building and Testing Locally](contributing.md#cmake-options) shows which of them each
+Conan option sets.
 
-    Enables experimental natural units systems.
+[`MP_UNITS_BUILD_CXX_MODULES`](#MP_UNITS_BUILD_CXX_MODULES){ #MP_UNITS_BUILD_CXX_MODULES }
 
-??? info "CMake options to set when Conan is not being used"
+:   [:octicons-tag-24: 2.2.0][release-2-2-0] · :octicons-milestone-24:
+    `ON`/`OFF` (Default: `OFF`)
 
-    ### CMake options
+    Adds C++ modules to the list of default targets.
 
-    Conan sets all the below CMake options automatically based on its configuration
-    (described above).
-    Manual setting of the below CMake options is only needed when Conan is not being used.
+[`MP_UNITS_BUILD_INSTALL`](#MP_UNITS_BUILD_INSTALL){ #MP_UNITS_BUILD_INSTALL }
 
-    [`MP_UNITS_BUILD_CXX_MODULES`](#MP_UNITS_BUILD_CXX_MODULES){ #MP_UNITS_BUILD_CXX_MODULES }
+:   [:octicons-tag-24: 2.5.0][release-2-5-0] · :octicons-milestone-24:
+    `ON`/`OFF` (Default: `ON`)
 
-    :   [:octicons-tag-24: 2.2.0][release-2-2-0] · :octicons-milestone-24:
-        `ON`/`OFF` (Default: `OFF`)
+    Creates an installable target. Users may want to turn this off for example when
+    consuming the library via CMake's `add_subdirectory` or similar mechanisms.
 
-        Adds C++ modules to the list of default targets.
+[`MP_UNITS_API_STD_FORMAT`](#MP_UNITS_API_STD_FORMAT){ #MP_UNITS_API_STD_FORMAT }
 
-    [`MP_UNITS_BUILD_INSTALL`](#MP_UNITS_BUILD_INSTALL){ #MP_UNITS_BUILD_INSTALL }
+:   [:octicons-tag-24: 2.2.0][release-2-2-0] · :octicons-milestone-24:
+    `ON`/`OFF` (Default: auto)
 
-    :   [:octicons-tag-24: 2.5.0][release-2-5-0] · :octicons-milestone-24:
-        `ON`/`OFF` (Default: `ON`)
+    Enables the usage of [`std::format`](https://en.cppreference.com/w/cpp/utility/format/format)
+    and associated facilities for text formatting. If it is not supported, then
+    the [{fmt}](https://github.com/fmtlib/fmt) library is used instead.
 
-        Creates an installable target. Users may want to turn this off for example when
-        consuming the library via CMake's `add_subdirectory` or similar mechanisms.
+[`MP_UNITS_API_NO_CRTP`](#MP_UNITS_API_NO_CRTP){ #MP_UNITS_API_NO_CRTP }
 
-    [`MP_UNITS_API_STD_FORMAT`](#MP_UNITS_API_STD_FORMAT){ #MP_UNITS_API_STD_FORMAT }
+:   [:octicons-tag-24: 2.2.0][release-2-2-0] · :octicons-milestone-24:
+    `ON`/`OFF` (Default: auto)
 
-    :   [:octicons-tag-24: 2.2.0][release-2-2-0] · :octicons-milestone-24:
-        `ON`/`OFF` (Default: auto)
+    Removes the need for the usage of the CRTP idiom in the
+    [`quantity_spec` definitions](../users_guide/framework_basics/systems_of_quantities.md#defining-quantities).
 
-        Enables the usage of [`std::format`](https://en.cppreference.com/w/cpp/utility/format/format)
-        and associated facilities for text formatting. If it is not supported, then
-        the [{fmt}](https://github.com/fmtlib/fmt) library is used instead.
+[`MP_UNITS_API_CONTRACTS`](#MP_UNITS_API_CONTRACTS){ #MP_UNITS_API_CONTRACTS }
 
-    [`MP_UNITS_API_NO_CRTP`](#MP_UNITS_API_NO_CRTP){ #MP_UNITS_API_NO_CRTP }
+:   [:octicons-tag-24: 2.2.0][release-2-2-0] · :octicons-milestone-24:
+    `NONE`/`STD`/`GSL-LITE`/`MS-GSL` (Default: `GSL-LITE`)
 
-    :   [:octicons-tag-24: 2.2.0][release-2-2-0] · :octicons-milestone-24:
-        `ON`/`OFF` (Default: auto)
+    Enables checking of preconditions and additional asserts in the code.
 
-        Removes the need for the usage of the CRTP idiom in the
-        [`quantity_spec` definitions](../users_guide/framework_basics/systems_of_quantities.md#defining-quantities).
+    `STD` uses C++26 contract assertions and needs a compiler that supports them (see
+    [Contracts](cpp_compiler_support.md#contracts)).
 
-    [`MP_UNITS_API_CONTRACTS`](#MP_UNITS_API_CONTRACTS){ #MP_UNITS_API_CONTRACTS }
+[`MP_UNITS_API_FREESTANDING`](#MP_UNITS_API_FREESTANDING){ #MP_UNITS_API_FREESTANDING }
 
-    :   [:octicons-tag-24: 2.2.0][release-2-2-0] · :octicons-milestone-24:
-        `NONE`/`STD`/`GSL-LITE`/`MS-GSL` (Default: `GSL-LITE`)
+:   [:octicons-tag-24: 2.2.0][release-2-2-0] · :octicons-milestone-24:
+    `ON`/`OFF` (Default: `OFF`)
 
-        Enables checking of preconditions and additional asserts in the code.
+    Configures the library in the [freestanding](https://en.cppreference.com/w/cpp/freestanding)
+    mode. When enabled, the library's source code should build with the compiler's
+    [`-ffreestanding`](https://gcc.gnu.org/onlinedocs/gcc/C-Dialect-Options.html)
+    compilation option without any issues.
 
-        `STD` uses C++26 contract assertions and requires an experimental compiler
-        (currently only GCC 16 with `-fcontracts`).
+<!-- markdownlint-disable MD013 -->
+[`MP_UNITS_BUILD_INTEGRATION_EIGEN`](#MP_UNITS_BUILD_INTEGRATION_EIGEN){ #MP_UNITS_BUILD_INTEGRATION_EIGEN },
+[`MP_UNITS_BUILD_INTEGRATION_GLM`](#MP_UNITS_BUILD_INTEGRATION_GLM){ #MP_UNITS_BUILD_INTEGRATION_GLM },
+[`MP_UNITS_BUILD_INTEGRATION_BLAZE`](#MP_UNITS_BUILD_INTEGRATION_BLAZE){ #MP_UNITS_BUILD_INTEGRATION_BLAZE }
 
-    [`MP_UNITS_API_FREESTANDING`](#MP_UNITS_API_FREESTANDING){ #MP_UNITS_API_FREESTANDING }
+:   [:octicons-tag-24: 2.6.0][release-2-6-0] · :octicons-milestone-24:
+    `ON`/`OFF` (Default: `ON`)
 
-    :   [:octicons-tag-24: 2.2.0][release-2-2-0] · :octicons-milestone-24:
-        `ON`/`OFF` (Default: `OFF`)
-
-        Configures the library in the [freestanding](https://en.cppreference.com/w/cpp/freestanding)
-        mode. When enabled, the library's source code should build with the compiler's
-        [`-ffreestanding`](https://gcc.gnu.org/onlinedocs/gcc/C-Dialect-Options.html)
-        compilation option without any issues.
-
-    [`MP_UNITS_BUILD_INTEGRATION_EIGEN`](#MP_UNITS_BUILD_INTEGRATION_EIGEN){ #MP_UNITS_BUILD_INTEGRATION_EIGEN },
-    [`MP_UNITS_BUILD_INTEGRATION_GLM`](#MP_UNITS_BUILD_INTEGRATION_GLM){ #MP_UNITS_BUILD_INTEGRATION_GLM },
-    [`MP_UNITS_BUILD_INTEGRATION_BLAZE`](#MP_UNITS_BUILD_INTEGRATION_BLAZE){ #MP_UNITS_BUILD_INTEGRATION_BLAZE }
-
-    :   [:octicons-tag-24: 2.6.0][release-2-6-0] · :octicons-milestone-24:
-        `ON`/`OFF` (Default: `ON`)
-
-        Builds the [linear algebra integration](../how_to_guides/integration/using_linear_algebra_libraries.md)
-        for Eigen, GLM, or Blaze respectively, if `find_package` finds the library. When `OFF`,
-        the library is not searched for, and neither the `mp-units::integrations-<lib>` target
-        nor its module is created. The integration headers ship either way.
+    Builds the [linear algebra integration](../how_to_guides/integration/using_linear_algebra_libraries.md)
+    for Eigen, GLM, or Blaze respectively, if `find_package` finds the library. When `OFF`,
+    the library is not searched for, and neither the `mp-units::integrations-<lib>` target
+    nor its module is created. The integration headers ship either way.
+<!-- markdownlint-enable MD013 -->
 
 [release-2-2-0]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 [release-2-3-0]: https://github.com/mpusz/mp-units/releases/tag/v2.3.0
