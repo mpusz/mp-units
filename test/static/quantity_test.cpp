@@ -1003,6 +1003,9 @@ static_assert([q = 7.5 * m]() mutable { return q /= 3 * one; }().numerical_value
 static_assert([q = 1 * m]() mutable { return q += 1 * km; }().numerical_value_in(m) == 1001);
 static_assert([q = 2000 * m]() mutable { return q -= 1 * km; }().numerical_value_in(m) == 1000);
 static_assert([q = 3500 * m]() mutable { return q %= 1 * km; }().numerical_value_in(m) == 500);
+// the right operand scales to the unit of the left one only in the representation of the left one
+static_assert([q = 1. * km]() mutable { return q += 500 * m; }().numerical_value_in(km) == 1.5);
+static_assert([q = 1. * km]() mutable { return q -= 500 * m; }().numerical_value_in(km) == 0.5);
 #if MP_UNITS_HOSTED
 static_assert([q = (1000. + 1000i) * V]() mutable { return q += (1. + 1i) * kV; }().numerical_value_in(V) ==
               2000. + 2000i);

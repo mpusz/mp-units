@@ -1145,6 +1145,9 @@ static_assert([qp = mean_sea_level + 2.5 * m]() mutable { return qp += 3 * m; }(
 static_assert([qp = mean_sea_level + 123 * m]() mutable { return qp += 1 * km; }()
                 .delta_from(mean_sea_level)
                 .numerical_value_in(m) == 1123);
+static_assert([qp = mean_sea_level + 1. * km]() mutable { return qp += 500 * m; }()
+                .delta_from(mean_sea_level)
+                .numerical_value_in(km) == 1.5);
 static_assert([qp = mean_sea_level + 5.5 * m]() mutable { return qp -= 3 * m; }()
                 .delta_from(mean_sea_level)
                 .numerical_value_in(m) == 2.5);

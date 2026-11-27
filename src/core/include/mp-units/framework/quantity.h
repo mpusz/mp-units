@@ -1147,8 +1147,12 @@ public:
   {
     if constexpr (equivalent(unit, get_unit(R2)))
       numerical_value_is_an_implementation_detail_ += other.numerical_value_is_an_implementation_detail_;
-    else
+    else if constexpr (requires { other.in(unit); })
       numerical_value_is_an_implementation_detail_ += other.in(unit).numerical_value_is_an_implementation_detail_;
+    else
+      // the value scales to `unit` only in the representation of the left operand (`1. * km += 1 * m`)
+      numerical_value_is_an_implementation_detail_ +=
+        other.template in<rep>(unit).numerical_value_is_an_implementation_detail_;
     return *this;
   }
 
@@ -1161,8 +1165,12 @@ public:
   {
     if constexpr (equivalent(unit, get_unit(R2)))
       numerical_value_is_an_implementation_detail_ -= other.numerical_value_is_an_implementation_detail_;
-    else
+    else if constexpr (requires { other.in(unit); })
       numerical_value_is_an_implementation_detail_ -= other.in(unit).numerical_value_is_an_implementation_detail_;
+    else
+      // the value scales to `unit` only in the representation of the left operand (`1. * km -= 1 * m`)
+      numerical_value_is_an_implementation_detail_ -=
+        other.template in<rep>(unit).numerical_value_is_an_implementation_detail_;
     return *this;
   }
 

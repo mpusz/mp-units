@@ -40,6 +40,9 @@ This page documents the version history and changes for the **mp-units** library
 - refactor: `get_common_unit`, `get_common_reference`, and `get_common_quantity_spec` are
       deprecated, as P3045 no longer proposes them. `std::common_type_t` of two
       quantities names a type that can hold both
+- fix: `q += other` and `q -= other` compile when `other` scales to the unit of `q` only
+      in the representation of `q`, as in `q += 1 * m` for a `q` of `1. * km`. The
+      constraints accepted such operands and the body then failed to compile.
 - fix: `wrap_to_range` and `reflect_in_range` no longer overflow a standard integer
       representation when the length of the range, or the period of the reflection (twice
       that length), exceeds the representation's maximum
