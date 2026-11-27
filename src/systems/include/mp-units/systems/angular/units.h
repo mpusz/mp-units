@@ -60,8 +60,8 @@ QUANTITY_SPEC(solid_angle, pow<2>(angle));
 
 inline constexpr struct radian final : named_unit<"rad", kind_of<angle>> {} radian;
 inline constexpr struct revolution final : named_unit<"rev", mag<2> * π * radian> {} revolution;
-inline constexpr struct degree final : named_unit<symbol_text{u8"°", "deg"}, mag_ratio<1, 360> * revolution> {} degree;
-inline constexpr struct gradian final : named_unit<symbol_text{u8"ᵍ", "grad"}, mag_ratio<1, 400> * revolution> {} gradian;
+inline constexpr struct degree final : named_unit<symbol_text{u8"°", "deg"}, mag_ratio<1, 360> * revolution, no_space_before_unit_symbol> {} degree;
+inline constexpr struct gradian final : named_unit<symbol_text{u8"ᵍ", "grad"}, mag_ratio<1, 400> * revolution, no_space_before_unit_symbol> {} gradian;
 inline constexpr struct steradian final : named_unit<"sr", square(radian)> {} steradian;
 // clang-format on
 
@@ -78,16 +78,5 @@ inline constexpr auto deg2 = square(degree);
 }  // namespace unit_symbols
 
 }  // namespace angular
-
-/**
- * The degree of plane angle is written with no space, as in `90°`
- */
-template<>
-inline constexpr bool space_before_unit_symbol<angular::degree> = false;
-/**
- * The gradian is written with no space, as in `100ᵍ`
- */
-template<>
-inline constexpr bool space_before_unit_symbol<angular::gradian> = false;
 
 }  // namespace mp_units

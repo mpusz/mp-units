@@ -25,6 +25,7 @@
 
 // IWYU pragma: private, include <mp-units/framework/unit.h>
 #include <mp-units/bits/config.h>
+#include <mp-units/bits/diagnostics.h>
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/text_tools.h>
@@ -59,45 +60,44 @@ import std;
 
 namespace mp_units {
 
+namespace detail {
+
+template<Unit U>
+[[nodiscard]] consteval bool space_before_symbol(U)
+{
+  if constexpr (requires { U::_space_before_symbol_; })
+    return U::_space_before_symbol_;
+  else
+    return !std::is_same_v<U, MP_UNITS_NONCONST_TYPE(mp_units::one)>;  // `one` has an empty symbol
+}
+
+}  // namespace detail
+
 MP_UNITS_EXPORT_BEGIN
 
 /**
- * Customization point: whether a space separates a number from the symbol of the unit `U` in text
- * output
+ * Whether a space separates a number from the symbol of the unit `U` in text output
  *
- * `true` by default, as the SI requires. The degree, arcminute, and arcsecond of plane angle are
- * written with no space, as in `90°`, and a unit with that convention gets a specialization:
- *
- * @code{.cpp}
- * // right ascension in astronomy is written as 5ʰ 35ᵐ, with no space
- * inline constexpr struct hour_angle final :
- *   named_unit<symbol_text{u8"ʰ", "h"}, mag<15> * non_si::degree> {} hour_angle;
- *
- * template<>
- * inline constexpr bool mp_units::space_before_unit_symbol<hour_angle> = false;
- *
- * void print_right_ascension() { std::cout << 5 * hour_angle << '\n'; }  // 5ʰ
- * @endcode
- *
- * A format specification that places the symbol itself, as `{:%N %U}` does, overrides it.
+ * It is `false` for a unit defined with @ref no_space_before_unit_symbol and for @ref one. A
+ * specialization of it still takes effect, but a new unit passes the tag instead.
  *
  * @tparam U the unit
- *
- * @see [Text Output](docs:users_guide/framework_basics/text_output#space_before_unit_symbol-customization-point)
- * in the User's Guide
  */
 template<Unit auto U>
-constexpr bool space_before_unit_symbol = true;
-
-/**
- * No space before the symbol of @ref one, which is empty
- */
-template<>
-inline constexpr bool space_before_unit_symbol<one> = false;
+MP_UNITS_DEPRECATED_HACK([[deprecated("2.6.0: Pass `no_space_before_unit_symbol` to `named_unit` instead")]])
+constexpr bool space_before_unit_symbol = detail::space_before_symbol(U);
 
 MP_UNITS_EXPORT_END
 
 namespace detail {
+
+// The library still reads the deprecated variable, so that a specialization a user wrote for it
+// keeps taking effect.
+MP_UNITS_DIAGNOSTIC_PUSH
+MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
+template<Unit auto U>
+constexpr bool space_before_unit_symbol_v = mp_units::space_before_unit_symbol<U>;
+MP_UNITS_DIAGNOSTIC_POP
 
 template<typename CharT, std::output_iterator<CharT> Out, Unit U>
   requires requires { U::_symbol_; }
@@ -112,7 +112,7 @@ template<typename CharT, std::output_iterator<CharT> Out, auto M, typename U>
 {
   *out++ = '(';
   out = magnitude_symbol<CharT>(out, M, fmt);
-  if constexpr (space_before_unit_symbol<scaled_unit<M, U>::_reference_unit_>) *out++ = ' ';
+  if constexpr (space_before_unit_symbol_v<scaled_unit<M, U>::_reference_unit_>) *out++ = ' ';
   out = unit_symbol_impl<CharT>(out, u._reference_unit_, fmt, negative_power);
   *out++ = ')';
   return out;

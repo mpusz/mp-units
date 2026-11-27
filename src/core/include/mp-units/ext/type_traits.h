@@ -29,6 +29,7 @@
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
+#include <cstddef>
 #include <type_traits>
 #include <utility>
 #endif
@@ -147,6 +148,18 @@ template<template<auto...> typename T, typename... Ts>
 [[nodiscard]] consteval bool contains()
 {
   return (false || ... || is_specialization_of_v<Ts, T>);
+}
+
+template<typename T, auto... Vs>
+[[nodiscard]] consteval std::size_t count()
+{
+  return (std::size_t{0} + ... + std::size_t{std::is_same_v<MP_UNITS_NTTP_HACK(decltype(Vs)), T>});
+}
+
+template<auto... Vs>
+[[nodiscard]] consteval bool has_unique_types()
+{
+  return (true && ... && (count<MP_UNITS_NTTP_HACK(decltype(Vs)), Vs...>() == 1));
 }
 
 template<typename T, std::same_as<T> auto V>

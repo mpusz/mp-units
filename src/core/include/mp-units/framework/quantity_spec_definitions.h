@@ -60,9 +60,11 @@ MP_UNITS_EXPORT struct dimensionless;
 
 MP_UNITS_EXPORT
 #if MP_UNITS_API_NO_CRTP
-template<auto...>
+template<auto... Args>
+  requires detail::QuantitySpecArguments<Args...>
 #else
-template<typename, auto...>
+template<typename Self, auto... Args>
+  requires detail::QuantitySpecArguments<Args...>
 #endif
 struct quantity_spec;
 
@@ -539,9 +541,11 @@ inline constexpr struct possibly_negative {
  * to each other.
  */
 #if MP_UNITS_API_NO_CRTP
-template<auto...>
+template<auto... Args>
+  requires detail::QuantitySpecArguments<Args...>
 #else
-template<typename, auto...>
+template<typename Self, auto... Args>
+  requires detail::QuantitySpecArguments<Args...>
 #endif
 struct quantity_spec;
 

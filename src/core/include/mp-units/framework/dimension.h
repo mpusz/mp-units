@@ -225,7 +225,7 @@ MP_UNITS_EXPORT_BEGIN
 MP_UNITS_DIAGNOSTIC_PUSH
 MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
 struct dimension_symbol_formatting {
-  MP_UNITS_DEPRECATED_MEMBER_HACK([[deprecated("2.5.0: Use `char_set` instead")]])
+  MP_UNITS_DEPRECATED_HACK([[deprecated("2.5.0: Use `char_set` instead")]])
   character_set encoding = character_set::unicode;
   character_set char_set = encoding;
 };
