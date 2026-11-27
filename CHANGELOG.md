@@ -825,6 +825,8 @@ This page documents the version history and changes for the **mp-units** library
        eliminate duplication between the Python script and the Conan recipe
 - ci: `generate-matrix-summary.py` added to write a Markdown build matrix table
        and per-value coverage statistics to `GITHUB_STEP_SUMMARY`
+- build: Apple Clang 21 supported
+- ci: released GCC 15 and 16, and arm64 Linux tested
 - chore: `site/` subdirectory added to `.gitignore`
 - chore: persistency for conan and pipx packages added to devcontainer
 - docs: systems reference documentation generator added
