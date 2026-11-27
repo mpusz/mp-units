@@ -92,138 +92,360 @@ For more, see the [official documentation](https://mpusz.github.io/mp-units) and
   page for supported toolchains.
 
 
-??? info "Alternative: Custom Development Environment"
+## Building and Testing Locally
 
-    ## Custom Development Environment
+To work on your own machine instead of in the dev container, build the project with the
+_CMakeLists.txt_ in the top-level directory. Unlike _src/CMakeLists.txt_, which is meant for
+library users, it also builds the examples and all the unit tests. Its dependencies can come
+from Conan, from vcpkg, or from anywhere CMake's `find_package` can find them.
 
-    Alternatively, please refer to our official docs for
-    [download, build, and install instructions](https://mpusz.github.io/mp-units/latest/getting_started/installation_and_usage)
-    with the below changes if you want to set up a development environment on your local machine.
+### Dependencies
 
-    ### Building the entire repository
+| Library           | Needed for                                                          |
+|-------------------|---------------------------------------------------------------------|
+| Catch2 3          | the runtime unit tests                                              |
+| gsl-lite          | `MP_UNITS_API_CONTRACTS=GSL-LITE` (the default)                     |
+| Microsoft.GSL     | `MP_UNITS_API_CONTRACTS=MS-GSL`                                     |
+| {fmt}             | `MP_UNITS_API_STD_FORMAT=OFF`, or when `std::format` is unavailable |
+| Eigen, GLM, Blaze | the linear algebra integrations, skipped when not found             |
 
-    To build all the **mp-units** source code (with unit tests and examples), you should:
+`MP_UNITS_API_CONTRACTS=STD` and `NONE` need no contracts library. The versions CI tests are
+the ones pinned in
+[_conanfile.py_](https://github.com/mpusz/mp-units/blob/master/conanfile.py).
 
-    1. Use the _CMakeLists.txt_ from the top-level directory.
-    2. Run Conan with [`user.mp-units.build:all`](#user.mp-units.build-all) = `True`.
+### CMake options
 
-    ```shell
-    git clone https://github.com/mpusz/mp-units.git && cd mp-units
-    conan build . -pr <your_conan_profile> -s compiler.cppstd=23 -c user.mp-units.build:all=True -b missing
+Conan turns its settings and options into CMake cache variables. With vcpkg or plain CMake,
+you pass them yourself with `-D`. Each Conan option below links to its description:
+
+| Conan                                 | CMake                                                         |
+|---------------------------------------|---------------------------------------------------------------|
+| `compiler.cppstd` setting             | [`CMAKE_CXX_STANDARD`][v cxx standard]                        |
+| [`cxx_modules`][c modules]            | [`MP_UNITS_BUILD_CXX_MODULES=ON`][m modules], [`CMAKE_CXX_SCAN_FOR_MODULES=ON`][v scan] |
+| [`import_std`][c import std]          | [`CMAKE_CXX_SCAN_FOR_MODULES=ON`][v scan], [`CMAKE_CXX_MODULE_STD=ON`][cmake experimental], [`CMAKE_EXPERIMENTAL_CXX_IMPORT_STD=<UUID>`][cmake experimental] |
+| [`std_format`][c std format]          | [`MP_UNITS_API_STD_FORMAT`][m std format]                     |
+| [`no_crtp`][c no crtp]                | [`MP_UNITS_API_NO_CRTP`][m no crtp]                           |
+| [`contracts`][c contracts]            | [`MP_UNITS_API_CONTRACTS`][m contracts]                       |
+| [`freestanding`][c freestanding]      | [`MP_UNITS_API_FREESTANDING=ON`][m freestanding], [`CMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY`][v try compile] |
+| [`integration_*`][c integrations]     | [`MP_UNITS_BUILD_INTEGRATION_*`][m integrations]              |
+| [`user.mp-units.build:all`](#user.mp-units.build-all) | [`CMAKE_COMPILE_WARNING_AS_ERROR=ON`][v werror], [`CMAKE_EXPORT_COMPILE_COMMANDS=ON`][v compile commands], [`CMAKE_VERIFY_INTERFACE_HEADER_SETS=ON`][v verify headers] (not with `import_std`) |
+
+[c modules]: https://mpusz.github.io/mp-units/latest/getting_started/installation_and_usage/#cxx_modules
+[c import std]: https://mpusz.github.io/mp-units/latest/getting_started/installation_and_usage/#import_std
+[c std format]: https://mpusz.github.io/mp-units/latest/getting_started/installation_and_usage/#std_format
+[c no crtp]: https://mpusz.github.io/mp-units/latest/getting_started/installation_and_usage/#no_crtp
+[c contracts]: https://mpusz.github.io/mp-units/latest/getting_started/installation_and_usage/#contracts
+[c freestanding]: https://mpusz.github.io/mp-units/latest/getting_started/installation_and_usage/#freestanding
+[c integrations]: https://mpusz.github.io/mp-units/latest/getting_started/installation_and_usage/#integration_eigen-integration_glm-integration_blaze
+[m modules]: https://mpusz.github.io/mp-units/latest/getting_started/installation_and_usage/#MP_UNITS_BUILD_CXX_MODULES
+[m std format]: https://mpusz.github.io/mp-units/latest/getting_started/installation_and_usage/#MP_UNITS_API_STD_FORMAT
+[m no crtp]: https://mpusz.github.io/mp-units/latest/getting_started/installation_and_usage/#MP_UNITS_API_NO_CRTP
+[m contracts]: https://mpusz.github.io/mp-units/latest/getting_started/installation_and_usage/#MP_UNITS_API_CONTRACTS
+[m freestanding]: https://mpusz.github.io/mp-units/latest/getting_started/installation_and_usage/#MP_UNITS_API_FREESTANDING
+[m integrations]: https://mpusz.github.io/mp-units/latest/getting_started/installation_and_usage/#MP_UNITS_BUILD_INTEGRATION_EIGEN
+[v cxx standard]: https://cmake.org/cmake/help/latest/variable/CMAKE_CXX_STANDARD.html
+[v scan]: https://cmake.org/cmake/help/latest/variable/CMAKE_CXX_SCAN_FOR_MODULES.html
+[v try compile]: https://cmake.org/cmake/help/latest/variable/CMAKE_TRY_COMPILE_TARGET_TYPE.html
+[v werror]: https://cmake.org/cmake/help/latest/variable/CMAKE_COMPILE_WARNING_AS_ERROR.html
+[v compile commands]: https://cmake.org/cmake/help/latest/variable/CMAKE_EXPORT_COMPILE_COMMANDS.html
+[v verify headers]: https://cmake.org/cmake/help/latest/variable/CMAKE_VERIFY_INTERFACE_HEADER_SETS.html
+[cmake experimental]: https://github.com/Kitware/CMake/blob/master/Help/dev/experimental.rst
+
+`<UUID>` is the value that enables `import std` in your CMake version, listed in
+CMake's [experimental features][cmake experimental]; it changes between CMake releases.
+
+The library's own variables are described in [CMake options][all cmake options], and the
+options for developer tools, such as clang-tidy, in
+[Configuration Options for Developers and Contributors](#cmake).
+
+[all cmake options]: https://mpusz.github.io/mp-units/latest/getting_started/installation_and_usage/#cmake-options
+
+Set `CMAKE_CXX_STANDARD` even for a default build. Without it, the library's feature checks
+run in the compiler's default language mode, where MSVC reports `std::format` as
+unavailable. The checks cache their results in the build directory, so add `--fresh` to the
+configure command when you change the standard of an existing one.
+
+Conan also rejects these combinations up front, while CMake lets them through to fail
+during compilation:
+
+- `import std` together with `MP_UNITS_API_CONTRACTS` other than `NONE` or `STD`, or with
+  `MP_UNITS_API_STD_FORMAT=OFF`.
+- `MP_UNITS_API_STD_FORMAT=ON` with MSVC in Debug builds (error C7595).
+
+### With Conan
+
+See
+[Obtaining dependencies](https://mpusz.github.io/mp-units/latest/getting_started/installation_and_usage/#obtaining-dependencies)
+for installing Conan and creating a profile.
+
+To build all the **mp-units** source code (with unit tests and examples), you should:
+
+1. Use the _CMakeLists.txt_ from the top-level directory.
+2. Run Conan with [`user.mp-units.build:all`](#user.mp-units.build-all) = `True`.
+
+```shell
+git clone https://github.com/mpusz/mp-units.git && cd mp-units
+conan build . -pr <your_conan_profile> -s compiler.cppstd=23 -c user.mp-units.build:all=True -b missing
+```
+
+The above will download and install all of the dependencies needed for the development of
+the library, build all of the source code, and run unit tests.
+
+If you prefer to build the project via CMake rather than Conan, then you should replace
+the `conan build` with `conan install` command and then follow with a regular CMake build
+and testing:
+
+```shell
+conan install . -pr <your_conan_profile> -s compiler.cppstd=23 -c user.mp-units.build:all=True -b missing
+cmake --preset conan-default
+cmake --build --preset conan-release
+cmake --build --preset conan-release --target all_verify_interface_header_sets
+cmake --build --preset conan-release --target test
+```
+
+!!! hint
+
+    To ensure that we always build all the targets and to save some typing of the Conan commands,
+    we can set the following in the `~/.conan2/global.conf`:
+
+    ```text
+    user.mp-units.build:all=True
     ```
 
-    The above will download and install all of the dependencies needed for the development of the library,
-    build all of the source code, and run unit tests.
+### With vcpkg
 
-    If you prefer to build the project via CMake rather than Conan, then you should replace
-    the `conan build` with `conan install` command and then follow with a regular CMake build and testing:
+The repository ships a [vcpkg](https://vcpkg.io) manifest (_vcpkg.json_) and a `vcpkg`
+preset in _CMakePresets.json_ that uses it. You need:
+
+- [CMake](https://cmake.org) 3.25 or newer and [Ninja](https://ninja-build.org).
+- vcpkg, with the `VCPKG_ROOT` environment variable pointing at it. Visual Studio includes
+  vcpkg and sets `VCPKG_ROOT` both in the IDE and in its Developer Command Prompt.
+  Elsewhere, follow [vcpkg's getting started guide][vcpkg get started] to clone it and set
+  `VCPKG_ROOT`.
+- On Linux, vcpkg also needs `curl`, `zip`, `unzip`, `tar`, and `pkg-config`.
+
+[vcpkg get started]: https://learn.microsoft.com/vcpkg/get_started/get-started
+
+From the command line (on Windows, from a Developer Command Prompt or Developer PowerShell,
+so that CMake finds MSVC):
+
+```shell
+cmake --preset vcpkg
+cmake --build --preset vcpkg-debug
+ctest --preset vcpkg-debug
+```
+
+The first configure installs the dependencies into the build directory (_out/build/vcpkg_),
+which takes a few minutes. Use `vcpkg-release` instead of `vcpkg-debug` for a release build.
+
+vcpkg always installs Catch2, gsl-lite, and {fmt}. The other libraries from the
+[table above](#dependencies) are optional _features_ of _vcpkg.json_, installed only when
+you turn them on with `VCPKG_MANIFEST_FEATURES`: `ms-gsl` for Microsoft.GSL, and `eigen`,
+`glm`, and `blaze` for the integrations.
+
+In Visual Studio:
+
+1. Choose **File → Open → Folder** and open the repository root.
+2. Select **vcpkg Debug** or **vcpkg Release** in the configuration list on the toolbar.
+   Visual Studio configures the project and installs the dependencies.
+3. Choose **Build → Build All**.
+4. Run the tests from **Test → Test Explorer**.
+
+The preset sets `CMAKE_CXX_STANDARD=20` and `MP_UNITS_API_STD_FORMAT=OFF`, the second one
+because the Ninja Multi-Config generator chooses Debug or Release only at build time. It
+also sets `CMAKE_CATCH_DISCOVER_TESTS_DISCOVERY_MODE=PRE_TEST`, so that the build never runs
+the test programs (see [Troubleshooting](#troubleshooting)). To change the configuration,
+pass `-D` options after the preset, and turn on the vcpkg features that the new
+configuration needs:
+
+```shell
+cmake --preset vcpkg --fresh -DCMAKE_CXX_STANDARD=23 -DVCPKG_MANIFEST_FEATURES="eigen;glm;blaze"
+```
+
+To keep such a configuration in Visual Studio, add a preset that inherits from `vcpkg` to
+_CMakeUserPresets.json_ (ignored by git) next to _CMakePresets.json_:
+
+```json title="CMakeUserPresets.json"
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "vcpkg-cxx23",
+      "inherits": "vcpkg",
+      "cacheVariables": {
+        "CMAKE_CXX_STANDARD": "23",
+        "VCPKG_MANIFEST_FEATURES": "eigen;glm;blaze"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "vcpkg-cxx23-debug",
+      "displayName": "vcpkg C++23 Debug",
+      "configurePreset": "vcpkg-cxx23",
+      "configuration": "Debug"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "vcpkg-cxx23-debug",
+      "configurePreset": "vcpkg-cxx23",
+      "configuration": "Debug"
+    }
+  ]
+}
+```
+
+`conan install` leaves a _CMakeUserPresets.json_ it did not generate untouched, so its own
+presets then stop showing up. To use both, add the presets file that Conan reports as
+`CMakeToolchain generated:` to the `include` list of your file, for example
+`"include": ["build/msvc-195-23/generators/CMakePresets.json"]`.
+
+### With plain CMake
+
+Install the libraries from the [table above](#dependencies), for example with your system's
+package manager, or build each from source and install it into a common prefix. When you
+build them yourself:
+
+- Build Catch2 with the same `CMAKE_CXX_STANDARD` as mp-units. Catch2 compiles its
+  `std::string_view` support only in C++17 and newer, so a Catch2 built in the compiler's
+  older default mode fails to link with the tests.
+- Install both Debug and Release builds, so that each configuration of mp-units links
+  against a matching one. With MSVC, the two use different runtime libraries and cannot be
+  mixed. Catch2 and {fmt} name their Debug libraries differently, so both fit into one
+  prefix.
+
+```shell
+git clone --depth 1 --branch v3.11.0 https://github.com/catchorg/Catch2.git
+cmake -S Catch2 -B Catch2/build -G "Ninja Multi-Config" -DCMAKE_INSTALL_PREFIX=<prefix> -DCMAKE_CXX_STANDARD=20 -DBUILD_TESTING=OFF
+cmake --build Catch2/build --config Debug
+cmake --install Catch2/build --config Debug
+cmake --build Catch2/build --config Release
+cmake --install Catch2/build --config Release
+```
+
+Build and install gsl-lite and {fmt} the same way.
+
+Then point `CMAKE_PREFIX_PATH` at the prefix and set the [CMake options](#cmake-options):
+
+```shell
+cmake -S . -B build -G "Ninja Multi-Config" -DCMAKE_PREFIX_PATH=<prefix> -DCMAKE_CXX_STANDARD=20 -DMP_UNITS_API_STD_FORMAT=OFF
+cmake --build build --config Debug
+ctest --test-dir build -C Debug
+```
+
+### Troubleshooting
+
+- **The vcpkg presets are missing from the list.** `VCPKG_ROOT` is not set in the
+  environment that CMake or the IDE runs in.
+- **On Linux, vcpkg fails to build Catch2 with "Could not find pkg-config".** Install the
+  vcpkg prerequisites listed above.
+- **On Windows, Catch2 reports "Error listing tests from executable".** A policy such as
+  Smart App Control blocks unsigned programs built locally, so Catch2 cannot ask the test
+  programs for their tests. The `vcpkg` preset does that only when the tests run, so its
+  build succeeds and only `ctest` reports the error. In other builds, Catch2 does it right
+  after linking and stops the build, unless you configure with
+  `-DCMAKE_CATCH_DISCOVER_TESTS_DISCOVERY_MODE=PRE_TEST`. The runtime tests cannot run
+  while the policy blocks them.
+- **Linking `unit_tests_runtime` fails on `Catch::StringMaker<std::string_view>`.**
+  Catch2 was built in an older language mode than mp-units. Rebuild it with the same
+  `CMAKE_CXX_STANDARD`.
+- **With C++ modules and a Clang installed from Debian or Ubuntu packages, configuration
+  fails with "`std::format` enabled but not supported".** The feature checks failed with
+  `'version' file not found`, because `clang-scan-deps` looks for libc++ relative to the
+  compiler path it is given, and _/usr/bin/clang++-&lt;N&gt;_ is only a symbolic link. Point
+  `CMAKE_CXX_COMPILER` at the real compiler, _/usr/lib/llvm-&lt;N&gt;/bin/clang++_.
+
+
+## Packaging
+
+To test CMake installation and Conan packaging run:
+
+```shell
+conan create . --user <username> --channel <channel> -pr <your_conan_profile> -s compiler.cppstd=23 \
+               -c user.mp-units.build:all=True -b missing
+```
+
+The above will create a Conan package and run tests provided in _./test_package_ directory.
+
+In case you would like to upload **mp-units** package to the Conan server, do the following:
+
+```shell
+conan upload -r <remote-name> mp-units/<version>@<user>/<channel>
+```
+
+
+## Building the Documentation
+
+We are building our documentation using [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/).
+The easiest way to install all the required dependencies is with `pip` and the
+[`requirements.txt`](https://github.com/mpusz/mp-units/blob/master/requirements.txt) file
+provided in the repository:
+
+```shell
+pip install -U -r requirements.txt
+```
+
+Additionally, a [Cairo Graphics library](https://www.cairographics.org/) is required by
+Material for MkDocs. Please follow the
+[official MkDocs documentation to install it](https://squidfunk.github.io/mkdocs-material/plugins/requirements/image-processing/#cairo-graphics).
+
+After that, you can either:
+
+- easily [start a live server to preview the documentation as you write](https://squidfunk.github.io/mkdocs-material/creating-your-site/#previewing-as-you-write)
 
     ```shell
-    conan install . -pr <your_conan_profile> -s compiler.cppstd=23 -c user.mp-units.build:all=True -b missing
-    cmake --preset conan-default
-    cmake --build --preset conan-release
-    cmake --build --preset conan-release --target all_verify_interface_header_sets
-    cmake --build --preset conan-release --target test
+    properdocs serve
     ```
 
-    !!! hint
-
-        To ensure that we always build all the targets and to save some typing of the Conan commands,
-        we can set the following in the `~/.conan2/global.conf`:
-
-        ```text
-        user.mp-units.build:all=True
-        ```
-
-    ### Packaging
-
-    To test CMake installation and Conan packaging run:
+- [build the documentation](https://squidfunk.github.io/mkdocs-material/creating-your-site/#building-your-site)
 
     ```shell
-    conan create . --user <username> --channel <channel> -pr <your_conan_profile> -s compiler.cppstd=23 \
-                   -c user.mp-units.build:all=True -b missing
+    properdocs build
     ```
 
-    The above will create a Conan package and run tests provided in _./test_package_ directory.
+### Generating the API reference
 
-    In case you would like to upload **mp-units** package to the Conan server, do the following:
+The API reference is generated from the headers with
+[MrDocs](https://www.mrdocs.com), so it cannot drift from the code:
 
-    ```shell
-    conan upload -r <remote-name> mp-units/<version>@<user>/<channel>
-    ```
+```shell
+python scripts/mrdocs/run.py
+```
 
+That is the whole of it. The script downloads the pinned MrDocs release on
+first use and caches it, so nothing has to be installed beforehand, and it
+runs the same way from a Unix shell, PowerShell, cmd.exe or Git Bash. The
+generated pages land in _docs/reference/api_reference/mrdocs/_ and are not
+committed.
 
-    ### Building documentation
+Running it by hand is optional: `properdocs serve` and `properdocs build` call it
+themselves. Either way it regenerates only when something it depends on
+changed, which takes about a minute for the whole library, and otherwise
+costs a hash of the inputs. Pass `--force` to regenerate regardless.
 
-    We are building our documentation using [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/).
-    The easiest way to install all the required dependencies is with `pip` and the
-    [`requirements.txt`](https://github.com/mpusz/mp-units/blob/master/requirements.txt) file
-    provided in the repository:
+The synopses are laid out with clang-format, using the project's own
+_.clang-format_ so that a declaration breaks where it would in a header.
+The version is pinned in _requirements.txt_ to match the clang-format
+hook in _.pre-commit-config.yaml_. Keep the two in step. Without
+clang-format on `PATH` the pages are still generated, with the layout
+MrDocs produced.
 
-    ```shell
-    pip install -U -r requirements.txt
-    ```
+Two environment variables are worth knowing:
 
-    Additionally, a [Cairo Graphics library](https://www.cairographics.org/) is required by
-    Material for MkDocs. Please follow the
-    [official MkDocs documentation to install it](https://squidfunk.github.io/mkdocs-material/plugins/requirements/image-processing/#cairo-graphics).
+- `MRDOCS` points at a MrDocs binary of your own, instead of the pinned one.
+- `MRDOCS_CACHE_DIR` moves the download cache, which otherwise follows the
+  platform convention (`~/.cache` on Linux, `~/Library/Caches` on macOS,
+  `%LOCALAPPDATA%` on Windows).
 
-    After that, you can either:
+The version is pinned in _scripts/mrdocs/run.py_, along with a checksum per
+platform. Page names and section headings move between MrDocs releases, so
+upgrading means bumping the version, regenerating, and reading the diff.
 
-    - easily [start a live server to preview the documentation as you write](https://squidfunk.github.io/mkdocs-material/creating-your-site/#previewing-as-you-write)
-
-        ```shell
-        properdocs serve
-        ```
-
-    - [build the documentation](https://squidfunk.github.io/mkdocs-material/creating-your-site/#building-your-site)
-
-        ```shell
-        properdocs build
-        ```
-
-    ### Generating the API reference
-
-    The API reference is generated from the headers with
-    [MrDocs](https://www.mrdocs.com), so it cannot drift from the code:
-
-    ```shell
-    python scripts/mrdocs/run.py
-    ```
-
-    That is the whole of it. The script downloads the pinned MrDocs release on
-    first use and caches it, so nothing has to be installed beforehand, and it
-    runs the same way from a Unix shell, PowerShell, cmd.exe or Git Bash. The
-    generated pages land in _docs/reference/api_reference/mrdocs/_ and are not
-    committed.
-
-    Running it by hand is optional: `properdocs serve` and `properdocs build` call it
-    themselves. Either way it regenerates only when something it depends on
-    changed, which takes about a minute for the whole library, and otherwise
-    costs a hash of the inputs. Pass `--force` to regenerate regardless.
-
-    The synopses are laid out with clang-format, using the project's own
-    _.clang-format_ so that a declaration breaks where it would in a header.
-    The version is pinned in _requirements.txt_ to match the clang-format
-    hook in _.pre-commit-config.yaml_. Keep the two in step. Without
-    clang-format on `PATH` the pages are still generated, with the layout
-    MrDocs produced.
-
-    Two environment variables are worth knowing:
-
-    - `MRDOCS` points at a MrDocs binary of your own, instead of the pinned one.
-    - `MRDOCS_CACHE_DIR` moves the download cache, which otherwise follows the
-      platform convention (`~/.cache` on Linux, `~/Library/Caches` on macOS,
-      `%LOCALAPPDATA%` on Windows).
-
-    The version is pinned in _scripts/mrdocs/run.py_, along with a checksum per
-    platform. Page names and section headings move between MrDocs releases, so
-    upgrading means bumping the version, regenerating, and reading the diff.
-
-    Source links in the generated pages point at the exact commit they were
-    generated from, so a release's documentation links to that release's code.
-    The script warns when _src/_ has uncommitted changes, because the line
-    numbers then will not match whatever the links point at.
+Source links in the generated pages point at the exact commit they were
+generated from, so a release's documentation links to that release's code.
+The script warns when _src/_ has uncommitted changes, because the line
+numbers then will not match whatever the links point at.
 
 
 ## Configuration Options for Developers and Contributors
