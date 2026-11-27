@@ -61,7 +61,7 @@ def godbolt_url(source: str) -> str:
         "binary:!f,binaryObject:!f,commentOnly:!t,debugCalls:!f,demangle:!t,directives:!t,"
         "execute:!t,intel:!t,labels:!t,libraryCode:!t,trim:!f,verboseDemangling:!t"
     )
-    return (
+    url = (
         "https://godbolt.org/#g:!((g:!((g:!((h:codeEditor,i:(filename:'1',fontScale:15,fontUsePx:!t,j:1,"
         f"lang:c%2B%2B,source:'{code}'),l:'5',n:'0',o:'C%2B%2B+source+%231',t:'0')),k:50,l:'4',n:'0',o:'',"
         "s:0,t:'0'),(g:!((g:!((h:compiler,i:(compiler:"
@@ -84,6 +84,10 @@ def godbolt_url(source: str) -> str:
         "header:(),l:'4',m:50,n:'0',o:'',s:0,t:'0')),k:50,l:'3',n:'0',o:'',t:'0')),l:'2',n:'0',o:'',t:'0')),"
         "version:4"
     )
+    # The URL ends up as a Markdown link target, where a `'` opens a link title and a `)` can close
+    # the target, so the button rendered as a truncated link followed by the rest of the URL as text.
+    # Compiler Explorer percent-decodes the fragment before parsing the Rison, so encoding them is safe.
+    return url.translate({ord("'"): "%27", ord("("): "%28", ord(")"): "%29"})
 
 
 def on_page_markdown(markdown, page, config, files):
