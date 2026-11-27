@@ -145,6 +145,7 @@ inline constexpr bool is_complete = requires { sizeof(T) > 0; };
 //   }
 //   template<int N> constexpr int x = ns::f<ns::R{N}>();  // error C1001 when instantiated
 //   constexpr int y = x<1>;
+// Reported: https://developercommunity.visualstudio.com/t/ICE-C1001-when-a-class-type-non-type-t/11188587
 // Confirmed on MSVC 19.51 and 19.52 (`_MSC_VER` 1951 and 1952). Older versions were not tested and
 // keep the hack. Extend the branch to a newer version only after that version is confirmed to have
 // the same bug.
@@ -154,13 +155,15 @@ inline constexpr bool is_complete = requires { sizeof(T) > 0; };
 #define MP_UNITS_MAG_RATIO_HACK 0
 #endif
 
-// Hack for a compiler bug: MSVC omits the implicit copy deduction candidate of a class template with
+// Hack for a compiler bug: MSVC rejects the implicit copy deduction candidate of a class template with
 // a constrained `auto` non-type template parameter whose constraint depends on an earlier parameter,
-// like `PO` of `quantity_point`. `quantity_point qp = other_qp;` then fails with C2641, so the hack
-// adds an explicit copy deduction guide. Minimal reproducer, accepted by GCC and Clang:
+// like `PO` of `quantity_point`, reporting its constraints as not satisfied. `quantity_point qp =
+// other_qp;` then fails with C2641, so the hack adds an explicit copy deduction guide. Minimal
+// reproducer, accepted by GCC and Clang:
 //   template<typename T, int V> concept C = true;
 //   template<int R, C<R> auto PO> struct X {};
 //   X b = X<0, 1>{};  // error C2641
+// Reported: https://developercommunity.visualstudio.com/t/C2641:-CTAD-rejects-the-copy-deduction-c/11188588
 // Confirmed on MSVC 19.51 and 19.52 (`_MSC_VER` 1951 and 1952). Older versions were not tested and
 // keep the hack. Extend the branch to a newer version only after that version is confirmed to have
 // the same bug.
@@ -175,7 +178,10 @@ inline constexpr bool is_complete = requires { sizeof(T) > 0; };
 // The deprecated `character` members of quantity specifications, `quantity`, and `quantity_point` are
 // ill-formed when the character isn't definite (a quantity kind, a specification with a kind factor,
 // or one defined by a kind equation), so on MSVC every such type fails (C3615 or C2131). The hack omits
-// all of those members there. Confirmed on MSVC 19.51 and 19.52 (`_MSC_VER` 1951 and 1952). Older
+// all of those members there. Reported (older reports, still open):
+// https://developercommunity.visualstudio.com/t/Instantiation-of-class-template-causes-i/10580764 and
+// https://developercommunity.visualstudio.com/t/MSVC-implicitly-instantiate-constexpr-st/1603671
+// Confirmed on MSVC 19.51 and 19.52 (`_MSC_VER` 1951 and 1952). Older
 // versions are untested and keep the hack. Extend the branch to a newer version only after that version
 // is confirmed to have the same bug.
 #if MP_UNITS_COMP_MSVC && MP_UNITS_COMP_MSVC <= 1952
@@ -197,6 +203,7 @@ inline constexpr bool is_complete = requires { sizeof(T) > 0; };
 //   template<auto A> struct B {};
 //   template<auto C> struct X : B<k<s<C>>> {};  // error C7601
 // It broke `si::candela_`, `lumen_`, and `lux_`, whose base is `named_unit<..., kind_of<isq::..._of<C>>>`.
+// Reported: https://developercommunity.visualstudio.com/t/Regression-in-1952-C7601:-constraint/11188589
 // Confirmed on MSVC 19.52 (`_MSC_VER` 1952) only; 19.51 accepts it. Extend the branch to a newer version
 // only after that version is confirmed to have the same bug.
 #if MP_UNITS_COMP_MSVC == 1952
