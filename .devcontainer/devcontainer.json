@@ -10,9 +10,10 @@
     // documentation sample check live there instead of in the home directory
     "XDG_CACHE_HOME": "${containerWorkspaceFolder}/.cache"
   },
+  // A volume is filled from the image only when it is created, so it holds just the Conan
+  // packages. The profiles, remotes and tools come from the current image.
   "mounts": [
-    "source=conan-cache,target=/home/ubuntu/.conan2,type=volume",
-    "source=pipx-cache,target=/home/ubuntu/.pipx,type=volume"
+    "source=mp-units-conan-packages,target=/home/ubuntu/.conan2/p,type=volume"
   ],
   "features": {},
   "customizations": {
