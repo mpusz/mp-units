@@ -91,15 +91,15 @@
 | Unit Name | Symbol | unit_symbol | Definition |
 |-----------|:------:|:-----------:|------------|
 | <span id="angstrom"></span><code>angstrom</code> | Å (angstrom) | `Å`, `angstrom` | <code>mag_power<10, -10> * <wbr>[metre](#metre)</code> |
-| <span id="arcminute"></span><code>arcminute</code> | ′ (') | `arcmin` | <code>mag_ratio<1, 60> * <wbr>[degree](#degree)</code> |
-| <span id="arcsecond"></span><code>arcsecond</code> | ″ ('') | `arcsec` | <code>mag_ratio<1, 60> * <wbr>[arcminute](#arcminute)</code> |
+| <span id="arcminute"></span><code>arcminute</code> | ′ (') | `arcmin` | <code>mag_ratio<1, 60> * <wbr>[degree](#degree)<br>no_space_before_unit_symbol</code> |
+| <span id="arcsecond"></span><code>arcsecond</code> | ″ ('') | `arcsec` | <code>mag_ratio<1, 60> * <wbr>[arcminute](#arcminute)<br>no_space_before_unit_symbol</code> |
 | <span id="are"></span><code>are</code> | a | `a` | <code>square([deca](#deca)<[metre](#metre)>)</code> |
 | <span id="astronomical_unit"></span><code>astronomical_<wbr>unit</code> | au | `au` | <code>mag<149'597'870'700> * <wbr>[metre](#metre)</code> |
 | <span id="bar"></span><code>bar</code> | bar | `bar` | <code>mag_power<10, 5> * <wbr>[pascal](#pascal)</code> |
 | <span id="barn"></span><code>barn</code> | b | `b` | <code>mag_power<10, -28> * <wbr>square([metre](#metre))</code> |
 | <span id="dalton"></span><code>dalton</code> | Da | `Da` | alias to [codata::dalton](codata.md#codata2022-dalton) |
 | <span id="day"></span><code>day</code> | d | `d` | <code>mag<24> * <wbr>[hour](#hour)</code> |
-| <span id="degree"></span><code>degree</code> | ° (deg) | `deg` | <code>mag_ratio<1, 180> * <wbr>[π](core.md#π) * <wbr>[radian](#radian)</code> |
+| <span id="degree"></span><code>degree</code> | ° (deg) | `deg` | <code>mag_ratio<1, 180> * <wbr>[π](core.md#π) * <wbr>[radian](#radian)<br>no_space_before_unit_symbol</code> |
 | <span id="electronvolt"></span><code>electronvolt</code> | eV | `eV` | <code>mag_ratio<1'602'176'634, 1'000'000'000> * <wbr>mag_power<10, -19> * <wbr>[joule](#joule)</code> |
 | <span id="gal"></span><code>gal</code> | Gal | `Gal` | <code>[centi](#centi)<[metre](#metre)> / <wbr>square([second](#second))</code> |
 | <span id="hectare"></span><code>hectare</code> | — | `ha` | <code>[hecto](#hecto)<[are](#are)></code> |

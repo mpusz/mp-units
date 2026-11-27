@@ -3726,6 +3726,16 @@ class DocumentationGenerator:
             # Process definition to add namespace prefixes for units from same subnamespace
             definition = self._add_namespace_prefixes_to_definition(unit)
 
+            # The `no_space_before_unit_symbol` tag is a property of the unit, not part of its
+            # definition. It may come before or after a point origin, so take it out first and
+            # show it on its own line.
+            tag_line = ""
+            definition, tag_count = re.subn(
+                r",\s*no_space_before_unit_symbol\b", "", definition
+            )
+            if tag_count:
+                tag_line = "no_space_before_unit_symbol"
+
             # Format kind_of constraint - handle multiple patterns:
             # 1. "..., kind_of<...>" (comma before kind_of)
             # 2. "kind_of<...>" (starts with kind_of - e.g., ampere, metre)
@@ -3831,6 +3841,8 @@ class DocumentationGenerator:
                 parts.append(kind_line)
             if origin_line:
                 parts.append(origin_line)
+            if tag_line:
+                parts.append(tag_line)
 
             # Join parts and escape pipes
             if parts:
