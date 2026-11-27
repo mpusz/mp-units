@@ -35,9 +35,13 @@ a specific C++ feature:
 
 ??? note "Apple Clang-17.0 unfixable bug"
 
-    Unfortunately, Apple Clang-17.0 (Xcode 16.3, 16.4, 26.0, 26.0.1, 26.1, and 26.2-beta) does not
-    build **mp-units** because it has the same
-    [unfixable bug as Clang-19](https://github.com/llvm/llvm-project/pull/118288).
+    Unfortunately, Apple Clang-17.0 (Xcode 16.3 to 26.3) does not build **mp-units** because it
+    has the same [unfixable bug as Clang-19](https://github.com/llvm/llvm-project/pull/118288).
+
+??? note "Apple Clang-15 is not tested"
+
+    GitHub no longer provides a macOS runner with Xcode 15, so the CI does not build
+    **mp-units** with Apple Clang-15 anymore. It is still supported, but untested.
 
 !!! important
 
