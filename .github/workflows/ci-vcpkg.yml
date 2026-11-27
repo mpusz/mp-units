@@ -1,0 +1,126 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2018 Mateusz Pusz
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+# Builds and tests the project through the `vcpkg` preset from CMakePresets.json, with no
+# Conan involved, so that the documented "Building and Testing Locally - With vcpkg" path
+# cannot rot.
+
+name: vcpkg dev build
+
+on:
+  push:
+    branches:
+      - "**"
+    paths:
+      - "src/**"
+      - "test/**"
+      - "example/**"
+      - "cmake/**"
+      - "CMakeLists.txt"
+      - "CMakePresets.json"
+      - "vcpkg.json"
+      - ".github/workflows/ci-vcpkg.yml"
+  pull_request:
+    branches:
+      - "**"
+    paths:
+      - "src/**"
+      - "test/**"
+      - "example/**"
+      - "cmake/**"
+      - "CMakeLists.txt"
+      - "CMakePresets.json"
+      - "vcpkg.json"
+      - ".github/workflows/ci-vcpkg.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: "vcpkg ${{ matrix.os }} ${{ matrix.config }}"
+    # Same rule as the other workflows: a PR from this repository is already covered by `push`.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+        # MSVC Debug is the configuration that needs {fmt} (C7595 with std::format)
+        config: [debug, release]
+        include:
+          # Release also covers the optional dependencies from vcpkg.json
+          - config: release
+            configure-args: -DMP_UNITS_API_CONTRACTS=MS-GSL "-DVCPKG_MANIFEST_FEATURES=ms-gsl;eigen;glm;blaze"
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install vcpkg prerequisites
+        if: runner.os == 'Linux'
+        run: |
+          # `apt-get update` fails when any source does, and packages.microsoft.com has returned
+          # 403. Nothing here needs that source.
+          grep -l packages.microsoft.com /etc/apt/sources.list.d/* 2>/dev/null | xargs -r sudo rm -f
+          sudo apt-get update
+          sudo apt-get install -y ninja-build pkg-config
+
+      - name: Set up vcpkg
+        shell: pwsh
+        run: |
+          $root = Join-Path $env:RUNNER_TEMP vcpkg
+          git clone --quiet https://github.com/microsoft/vcpkg.git $root
+          if ($IsWindows) { & "$root/bootstrap-vcpkg.bat" -disableMetrics }
+          else { & "$root/bootstrap-vcpkg.sh" -disableMetrics }
+          $cache = Join-Path $env:RUNNER_TEMP vcpkg-binary-cache
+          New-Item -ItemType Directory -Force $cache | Out-Null
+          "VCPKG_ROOT=$root" >> $env:GITHUB_ENV
+          "VCPKG_DEFAULT_BINARY_CACHE=$cache" >> $env:GITHUB_ENV
+
+      - name: Cache vcpkg binaries
+        uses: actions/cache@v5
+        with:
+          path: ${{ runner.temp }}/vcpkg-binary-cache
+          key: vcpkg-${{ matrix.os }}-${{ hashFiles('vcpkg.json') }}
+          restore-keys: vcpkg-${{ matrix.os }}-
+
+      - name: Enter the MSVC developer environment
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $vs = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath
+          Import-Module "$vs\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
+          Enter-VsDevShell -VsInstallPath $vs -SkipAutomaticLocation -DevCmdArguments '-arch=x64 -host_arch=x64'
+          Get-ChildItem env: | ForEach-Object { "$($_.Name)=$($_.Value)" } >> $env:GITHUB_ENV
+
+      - name: Configure
+        run: cmake --preset vcpkg ${{ matrix.configure-args }}
+
+      - name: Build
+        run: cmake --build --preset vcpkg-${{ matrix.config }}
+
+      - name: Test
+        run: ctest --preset vcpkg-${{ matrix.config }}
