@@ -313,9 +313,7 @@ The unit of `q1 * q2` is `U1 * U2`, and the product converts to it as to every u
 kind converts implicitly to its specification. A unit's kind is the product of its
 factors' kinds, and only some named units carry a kind of their own, mainly the base
 units, the angle units, and the ones the SI brochure keeps for one quantity, `Hz`, `Bq`,
-`Gy`, `Sv` and `kat`.
-[The FAQ](../../getting_started/faq.md#why-do-only-some-named-units-carry-a-quantity-kind)
-has the full list and the reasons. Every other named unit has the kind of its definition:
+`Gy`, `Sv` and `kat`. Every other named unit has the kind of its definition:
 `N` is `kg * m / s²`, `J` is `N * m` and `W` is `J / s`, so the kind of `N * m * W` is a
 product of base kinds, and it converts to `torque * power` the way `kg * m² / s²` converts
 to an _energy_. That the joule is not written for a _moment of force_ is a convention ISO

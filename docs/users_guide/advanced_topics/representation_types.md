@@ -40,9 +40,8 @@ of its order.
 
 Independent of character, a representation type must be:
 
-- a **cv-unqualified object type**, so `const int`, `volatile int` (see
-  [Why can't a representation type be `volatile`?](../../getting_started/faq.md#why-cant-a-representation-type-be-volatile)),
-  and `int&` are not representation types,
+- a **cv-unqualified object type**, so `const int`, `volatile int`, and `int&` are not
+  representation types,
 - **copyable** (`std::copyable`) and **equality comparable** (`==`),
 - support **addition and subtraction** (`+`, `-`, unary `-`),
 - **[`UnitMagnitudeScalable`](#how-scaling-works)**, so the library can apply a unit magnitude

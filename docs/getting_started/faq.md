@@ -176,8 +176,7 @@ exists. The units carry no such distinction.
     Some units do restrict the kind on their own, and for those the units alone are enough
     to reject the operation. `Gy` is `kind_of<isq::absorbed_dose>` while `Sv` is
     `kind_of<isq::dose_equivalent>`, so `1.5 * Gy + 2.0 * Sv` is ill-formed even though
-    both are defined as `J / kg`. The same holds for `Hz` and `Bq`. The next question says
-    which units those are and why not more.
+    both are defined as `J / kg`. The same holds for `Hz` and `Bq`.
 
 !!! note
 
@@ -185,64 +184,6 @@ exists. The units carry no such distinction.
     [the Simple and Typed Quantities chapter](../users_guide/framework_basics/simple_and_typed_quantities.md)
     and in
     [the Systems of Quantities chapter](../users_guide/framework_basics/systems_of_quantities.md).
-
-## Why do only some named units carry a quantity kind?
-
-A named unit carries a kind, `named_unit<"Hz", one / second, kind_of<isq::frequency>>`,
-where the SI brochure keeps its name for one quantity. The brochure says the hertz shall
-only be used for periodic phenomena and the becquerel only for the _activity_ of a
-radionuclide, keeps the gray and the sievert for _absorbed dose_ and _dose equivalent_
-rather than the joule per kilogram, so that the two are not confused, and adopted the
-katal for _catalytic activity_. The radian and the steradian carry the angle kinds, `bit`
-and the other IEC units with a quantity of their own, `var`, `baud` and `erlang`, carry
-theirs, the photometric units carry one for their spectral weighting, and the base units
-define the base kinds. Every other named unit, `N`, `Pa`, `J`, `V`, `F`, `Ω`, `S` and `T`
-among them, has the kind of its definition, so `J` has the kind of `kg * m² / s²`.
-
-ISO 80000-1:2009 goes further and notes, in clause 3.9, that the joule is used for
-_energy_ and never for a _moment of force_. The library doesn't follow that one. A
-_torque_ in joules and a _torque_ in newton metres hold the same number, so nothing is at
-risk, and the choice is the author's. A kind on a unit refuses that unit for every other
-quantity of the same dimension, which is worth having where the brochure keeps a name for
-one quantity, and it would refuse the next quantity someone defines on that dimension as
-well. In a product it costs more. With a kind on the joule, `N * m * W` would have the
-kind `energy * force * length / time`, an _energy_ next to a _force_ times a _length_, and
-`isq::torque(2 * N * m) * isq::power(3 * W)` could not be converted to its own unit,
-because the engine would keep the _energy_ and the _torque_ apart. So the rule is the
-brochure's, and the typed quantities keep the distinctions the units don't:
-
-```cpp
-quantity<isq::torque[J]> torque = isq::torque(40 * N * m);   // OK
-// auto f = isq::frequency(1 * Bq);                           // ❌ Bq is reserved for activity
-// auto s = isq::torque(40 * N * m) + isq::energy(40 * J);    // ❌ quantities of different kinds
-```
-
-
-## Why can't I wrap `omega * inertia` in `isq::angular_momentum(...)`?
-
-We want to read the product of an _angular velocity_ in `rad / s` and a _moment of
-inertia_ in `kg * m2` as an _angular momentum_. The problem is the unit. The call
-`isq::angular_momentum(q)` keeps the unit of `q`, here `kg * m² * rad / s`, and that is
-no unit of _angular momentum_: ISQ defines it as a _position vector_ times a _momentum_,
-which holds no angle, while the unit carries a radian. The solution is to name a unit
-without the angle, which says the radian goes:
-
-```cpp
-quantity omega = isq::angular_velocity(2.0 * rad / s);
-quantity inertia = isq::moment_of_inertia(3.0 * kg * m2);
-
-quantity<isq::angular_momentum[kg * m2 / s]> l1 = omega * inertia;                    // OK
-quantity l2 = quantity<isq::angular_momentum[kg * m2 / s]>(omega * inertia);          // OK
-// ❌ kg * m² * rad / s is no unit of angular momentum
-// quantity l3 = isq::angular_momentum(omega * inertia);
-```
-
-The library doesn't drop the radian on its own, because whether it is an angle or just
-a number is the author's decision, and the unit is where it is written. The same holds
-for every ISQ quantity whose definition has no angle while a factor's unit has one, such
-as _power_ from a _torque_ and an _angular velocity_. The `isq_angle` system defines
-_torque_ with the angle, so that case stays implicit there, see
-[Strong Angular System](../users_guide/systems/strong_angular_system.md).
 
 ## Why a Dimensionless Quantity Is Not Just a Fundamental Arithmetic Type
 
@@ -470,40 +411,6 @@ quantity<si::metre, double> storage = 5.0 * m;  // OK
 ```
 
 _This entry is based on discussion [#779](https://github.com/mpusz/mp-units/discussions/779)._
-
-## Why can't a representation type be `volatile`?
-
-On an embedded target a measurement often arrives in a memory-mapped hardware register,
-declared `volatile`. You might want to use the register's type as the representation:
-
-```cpp
-quantity<si::volt, volatile std::uint16_t> reading;  // ❌ a cv-qualified representation
-```
-
-A `quantity` holds its own copy of the numerical value, so `reading` would never touch
-the register. It would be a `volatile` object in ordinary memory, and the compiler would
-have to perform every access to it without combining or removing any. Placing a quantity
-at the register's address is no way out either, as no `quantity` object lives there (see
-[Why can't I convert a `double&` to a `quantity&`?](#why-cant-i-convert-a-double-to-a-quantity)).
-C++20 also deprecates `++`, `--`, and arithmetic compound assignment such as `+=` on a
-`volatile` object, and the quantity's own operators apply those to its numerical value.
-`volatile` describes how a value is accessed, and a quantity models the value itself, so a
-representation type must be cv-unqualified. The same rule rejects `const std::uint16_t`.
-To get a constant quantity, declare the quantity itself `const`.
-
-Read the register once into a plain value, then convert that value:
-
-```cpp
-// snippet-after: example/hw_voltage.cpp:decls
-volatile std::uint16_t hw_voltage_value;  // stands in for a hardware register
-
-std::uint16_t local_copy = hw_voltage_value;  // one volatile read
-quantity_point qp = point<hw_voltage_unit>(local_copy);
-```
-
-The [Hardware Voltage](../examples/hw_voltage.md) example defines `hw_voltage_unit` and
-shows the complete pattern, including a check for an error value before the quantity point
-is constructed.
 
 ## Why shouldn't I instantiate `derived_unit` (or other `derived_XXX` types) myself?
 
