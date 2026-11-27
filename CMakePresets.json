@@ -1,0 +1,79 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 25,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "vcpkg",
+      "displayName": "vcpkg (Ninja Multi-Config)",
+      "description": "Dependencies from vcpkg.json through $env{VCPKG_ROOT}; tests and examples included",
+      "condition": {
+        "type": "notEquals",
+        "lhs": "$env{VCPKG_ROOT}",
+        "rhs": ""
+      },
+      "generator": "Ninja Multi-Config",
+      "binaryDir": "${sourceDir}/out/build/${presetName}",
+      "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+      "cacheVariables": {
+        "CMAKE_CXX_STANDARD": "20",
+        "MP_UNITS_API_STD_FORMAT": "OFF",
+        "CMAKE_CATCH_DISCOVER_TESTS_DISCOVERY_MODE": "PRE_TEST"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "vcpkg-base",
+      "hidden": true,
+      "configurePreset": "vcpkg",
+      "condition": {
+        "type": "notEquals",
+        "lhs": "$env{VCPKG_ROOT}",
+        "rhs": ""
+      }
+    },
+    {
+      "name": "vcpkg-debug",
+      "displayName": "vcpkg Debug",
+      "inherits": "vcpkg-base",
+      "configuration": "Debug"
+    },
+    {
+      "name": "vcpkg-release",
+      "displayName": "vcpkg Release",
+      "inherits": "vcpkg-base",
+      "configuration": "Release"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "vcpkg-base",
+      "hidden": true,
+      "configurePreset": "vcpkg",
+      "condition": {
+        "type": "notEquals",
+        "lhs": "$env{VCPKG_ROOT}",
+        "rhs": ""
+      },
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "vcpkg-debug",
+      "displayName": "vcpkg Debug",
+      "inherits": "vcpkg-base",
+      "configuration": "Debug"
+    },
+    {
+      "name": "vcpkg-release",
+      "displayName": "vcpkg Release",
+      "inherits": "vcpkg-base",
+      "configuration": "Release"
+    }
+  ]
+}
