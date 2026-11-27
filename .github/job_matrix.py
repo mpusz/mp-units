@@ -230,6 +230,19 @@ class CombinationCollector(typing.Generic[T]):
         self.combinations.add(e)
         return True
 
+    def _new_candidates(self, matrix, filter):
+        """Every combination of `matrix` that is allowed and not collected yet."""
+        keys = tuple(matrix.keys())
+        ret = []
+        for combination in itertools.product(*matrix.values()):
+            cand = self.configuration_element_type(**dict(zip(keys, combination)))
+            if cand in self.combinations or (filter and not filter(cand)):
+                continue
+            if self.hard_excludes is not None and self.hard_excludes(cand):
+                continue
+            ret.append(cand)
+        return ret
+
     def all_combinations(
         self,
         *,
@@ -276,63 +289,39 @@ class CombinationCollector(typing.Generic[T]):
                         missing[k, v] -= 1
         for done in [idx for idx, n in missing.items() if n <= 0]:
             del missing[done]
-        n_failed_tries = 0
-        failed_cand = set()
 
-        def try_handle_choice(choice):
-            nonlocal n_failed_tries, n_in_submatrix
-            cand = self.configuration_element_type(**choice)
-            if filter is None or filter(cand):
-                added = self._add_combination(cand)
-            else:
-                added = False
-            if added:
-                n_failed_tries = 0
-                failed_cand.clear()
-            else:
-                if cand not in self.combinations:
-                    failed_cand.add(cand)
-                n_failed_tries += 1
-                return
+        def add(cand):
+            nonlocal n_in_submatrix
+            self._add_combination(cand)
             n_in_submatrix += 1
-            for idx in choice.items():
+            for idx in vars(cand).items():
                 remaining = missing.pop(idx, 0) - 1
-                if remaining <= 0:
-                    continue
-                missing[idx] = remaining
+                if remaining > 0:
+                    missing[idx] = remaining
 
+        # Pick from the allowed combinations rather than drawing every key at random and
+        # retrying: a value that few combinations support, such as an old toolchain, would
+        # otherwise exhaust the retries and leave the values queued after it uncovered.
         while missing:
-            (force_key, force_option), remaining = next(iter(missing.items()))
-            if remaining <= 0:
-                missing.pop((force_key, force_option))
+            (force_key, force_option), _ = next(iter(missing.items()))
+            candidates = self._new_candidates(
+                {**matrix, force_key: [force_option]}, filter
+            )
+            if not candidates:
+                print(
+                    "Unable to reach the requested minimum number of samples for"
+                    f" {force_key}={force_option!s}"
+                )
+                del missing[force_key, force_option]
                 continue
-            choice = {}
-            for key, options in matrix.items():
-                choice[key] = force_option if key == force_key else rgen.choice(options)
-            try_handle_choice(choice)
-            if n_failed_tries > 100:
-                tries = "\n".join(  # noqa: F841
-                    ", ".join(f"{k}:{v!s}" for k, v in vars(cand).items())
-                    + f" -> {cand.is_supported=}"
-                    for cand in sorted(failed_cand)
-                )
+            add(rgen.choice(candidates))
+        if n_in_submatrix < min_samples:
+            candidates = self._new_candidates(matrix, filter)
+            needed = min_samples - n_in_submatrix
+            if len(candidates) < needed:
                 print(
                     "Unable to reach the requested minimum number of samples,"
-                    f" {missing=}"
+                    f" {n_in_submatrix + len(candidates)} of {min_samples}"
                 )
-                n_failed_tries = 0
-                failed_cand.clear()
-                break
-        while n_in_submatrix < min_samples:
-            choice = {}
-            for key, options in matrix.items():
-                choice[key] = rgen.choice(options)
-            try_handle_choice(choice)
-            if n_failed_tries > 100:
-                print(
-                    "Unable to reach the requested minimum number of samples,"
-                    f" {n_in_submatrix=}"
-                )
-                n_failed_tries = 0
-                failed_cand.clear()
-                break
+            for cand in rgen.sample(candidates, min(needed, len(candidates))):
+                add(cand)

@@ -263,8 +263,8 @@ def _guarantee_api_coverage(
 def _supported_values(tc: Toolchain) -> dict[str, typing.Any]:
     """The submatrix of values that `tc` supports on its own.
 
-    `sample_combinations` gives up on a value it cannot reach and stops covering the
-    rest, so a per-value request for one toolchain must not name an unsupported value.
+    A per-value request for one toolchain names only these, so that values the toolchain
+    can never have are not reported as unreachable.
     """
     fs = tc.feature_support
     matrix = ConanOptions.full_matrix()
