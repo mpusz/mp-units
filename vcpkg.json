@@ -1,0 +1,39 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+  "name": "mp-units",
+  "dependencies": [
+    "catch2",
+    "fmt",
+    "gsl-lite"
+  ],
+  "features": {
+    "ms-gsl": {
+      "description": "Microsoft.GSL for MP_UNITS_API_CONTRACTS=MS-GSL",
+      "dependencies": [
+        "ms-gsl"
+      ]
+    },
+    "eigen": {
+      "description": "Eigen for MP_UNITS_BUILD_INTEGRATION_EIGEN",
+      "dependencies": [
+        "eigen3"
+      ]
+    },
+    "glm": {
+      "description": "GLM for MP_UNITS_BUILD_INTEGRATION_GLM",
+      "dependencies": [
+        "glm"
+      ]
+    },
+    "blaze": {
+      "description": "Blaze for MP_UNITS_BUILD_INTEGRATION_BLAZE",
+      "dependencies": [
+        {
+          "name": "blaze",
+          "default-features": false
+        }
+      ]
+    }
+  },
+  "builtin-baseline": "99541cc939bf01ae3c42f928266d648f5acb88fd"
+}
