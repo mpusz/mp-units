@@ -5,7 +5,10 @@
   "image": "trainiteu/mp-units:latest",
   "remoteUser": "ubuntu",
   "containerEnv": {
-    "CI_NEVER_BUILD": "${localEnv:CI_NEVER_BUILD}"
+    "CI_NEVER_BUILD": "${localEnv:CI_NEVER_BUILD}",
+    // Only the workspace survives a container rebuild, so the caches of pre-commit and of the
+    // documentation sample check live there instead of in the home directory
+    "XDG_CACHE_HOME": "${containerWorkspaceFolder}/.cache"
   },
   "mounts": [
     "source=conan-cache,target=/home/ubuntu/.conan2,type=volume",

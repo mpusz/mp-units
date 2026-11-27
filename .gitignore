@@ -43,6 +43,7 @@
 /build/
 /out/
 _build/
+/.cache/
 
 # CMake
 CMakeUserPresets.json
