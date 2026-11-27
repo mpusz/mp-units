@@ -132,6 +132,9 @@ jobs:
         shell: bash
         working-directory: ${{ env.HOME }}
         run: |
+          # llvm.sh runs `apt update`, which fails when any source does, and packages.microsoft.com
+          # has returned 403. Nothing here needs that source.
+          grep -l packages.microsoft.com /etc/apt/sources.list.d/* 2>/dev/null | xargs -r sudo rm -f
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
           sudo ./llvm.sh ${{ matrix.toolchain.compiler.version }}

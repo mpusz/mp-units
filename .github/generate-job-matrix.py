@@ -55,15 +55,27 @@ def _make_feature_support(
     )
 
 
-def make_gcc_config(version: int) -> Toolchain:
+def make_gcc_config(
+    version: int, architecture: typing.Literal["x86-64", "arm64"] = "x86-64"
+) -> Toolchain:
+    # Ubuntu 24.04 packages GCC up to 14. Newer releases come from Homebrew, which ships
+    # the released compilers, while the toolchain PPA carries only GCC 16 snapshots.
+    pfx = "/home/linuxbrew/.linuxbrew/bin/" if version >= 15 else ""
+    match architecture:
+        case "x86-64":
+            name, os = f"GCC-{version}", "ubuntu-24.04"
+        case "arm64":
+            name, os = f"GCC-{version} (arm64)", "ubuntu-24.04-arm"
+        case _:
+            raise KeyError(f"Unsupported architecture {architecture!r} for GCC")
     return Toolchain(
-        name=f"GCC-{version}",
-        os="ubuntu-24.04",
+        name=name,
+        os=os,
         compiler=Compiler(
             type="GCC",
             version=version,
-            cc=f"gcc-{version}",
-            cxx=f"g++-{version}",
+            cc=f"{pfx}gcc-{version}",
+            cxx=f"{pfx}g++-{version}",
         ),
         feature_support=_make_feature_support(
             "gcc",
@@ -75,11 +87,17 @@ def make_gcc_config(version: int) -> Toolchain:
     )
 
 
+# The newest LLVM in Homebrew is the unversioned `llvm` formula; older ones are `llvm@N`.
+# The install step checks the version, so a newer `llvm` fails the job instead of
+# silently testing a different compiler.
+_BREW_LATEST_LLVM = 23
+
+
 def make_clang_config(
-    version: int, architecture: typing.Literal["x86-64", "arm64"] = "x86-64"
+    version: int, platform: typing.Literal["x86-64", "arm64", "macOS"] = "x86-64"
 ) -> Toolchain:
     cfg = SimpleNamespace(
-        name=f"Clang-{version} ({architecture})",
+        name=f"Clang-{version} ({platform})",
         compiler=SimpleNamespace(
             type="CLANG",
             version=version,
@@ -93,14 +111,19 @@ def make_clang_config(
             max_std=26 if version >= 17 else 23,
         ),
     )
-    match architecture:
+    match platform:
         case "x86-64":
             cfg.os = "ubuntu-22.04" if version < 17 else "ubuntu-24.04"
             cfg.compiler.cc = f"clang-{version}"
             cfg.compiler.cxx = f"clang++-{version}"
         case "arm64":
-            cfg.os = "macos-15"
-            pfx = f"/opt/homebrew/opt/llvm@{version}/bin"
+            cfg.os = "ubuntu-24.04-arm"
+            cfg.compiler.cc = f"clang-{version}"
+            cfg.compiler.cxx = f"clang++-{version}"
+        case "macOS":
+            cfg.os = "macos-26"
+            formula = "llvm" if version == _BREW_LATEST_LLVM else f"llvm@{version}"
+            pfx = f"/opt/homebrew/opt/{formula}/bin"
             cfg.compiler.cc = f"{pfx}/clang"
             cfg.compiler.cxx = f"{pfx}/clang++"
             # macOS uses the SDK's libc++ which has no std.cppm; import_std only
@@ -115,7 +138,7 @@ def make_clang_config(
                 max_std=cfg.feature_support.max_std,
             )
         case _:
-            raise KeyError(f"Unsupported architecture {architecture!r} for Clang")
+            raise KeyError(f"Unsupported platform {platform!r} for Clang")
     ret = cfg
     ret.compiler = Compiler(**vars(cfg.compiler))
     return Toolchain(**vars(ret))
@@ -163,14 +186,15 @@ def make_msvc_config(release: str) -> Toolchain:
 toolchains = {
     t.name: t
     for t in [make_gcc_config(ver) for ver in [12, 13, 14, 15, 16]]
+    + [make_clang_config(ver) for ver in [16, 17, 18, 20, 21, 23]]
+    # One newest compiler per arm64 platform. Linux arm64 has a 128-bit `long double`
+    # (80-bit on x86-64, 64-bit on macOS and MSVC); macOS runners run few jobs at once.
+    + [make_gcc_config(16, "arm64")]
+    + [make_clang_config(23, "arm64"), make_clang_config(23, "macOS")]
     + [
-        make_clang_config(ver, architecture)
-        for ver in [16, 17, 18, 20, 21, 23]
-        for architecture in ["x86-64", "arm64"]
-        # arm64 runners are expensive; only consider one version
-        if ver == 18 or architecture != "arm64"
+        make_apple_clang_config("macos-15", "16", xcode_version="16.1"),
+        make_apple_clang_config("macos-26", "21", xcode_version="26.6"),
     ]
-    + [make_apple_clang_config("macos-15", "16", xcode_version="16.1")]
     + [make_msvc_config(release="14.5")]
 }
 
@@ -236,6 +260,25 @@ def _guarantee_api_coverage(
             )
 
 
+def _supported_values(tc: Toolchain) -> dict[str, typing.Any]:
+    """The submatrix of values that `tc` supports on its own.
+
+    `sample_combinations` gives up on a value it cannot reach and stops covering the
+    rest, so a per-value request for one toolchain must not name an unsupported value.
+    """
+    fs = tc.feature_support
+    matrix = ConanOptions.full_matrix()
+    return dict(
+        toolchain=tc,
+        std=[s for s in full_matrix["std"] if s <= fs.max_std],
+        cxx_modules=[v for v in matrix["cxx_modules"] if fs.cxx_modules or not v],
+        import_std=[v for v in matrix["import_std"] if fs.import_std or not v],
+        std_format=[v for v in matrix["std_format"] if fs.std_format or not v],
+        no_crtp=[v for v in matrix["no_crtp"] if fs.explicit_this or not v],
+        contracts=[c for c in matrix["contracts"] if fs.std_contracts or c != "std"],
+    )
+
+
 def main():
     parser = argparse.ArgumentParser()
     #    parser.add_argument("-I","--include",nargs="+",action="append")
@@ -294,6 +337,17 @@ def main():
             _guarantee_api_coverage(
                 collector, rgen, toolchains.values(), freestanding=False
             )
+            # MSVC is the only Windows toolchain, and the per-value sampling below is
+            # spread over all toolchains, so it would get only one or two jobs. Cover
+            # every value MSVC supports at least once.
+            for tc in toolchains.values():
+                if tc.compiler.type == "MSVC":
+                    collector.sample_combinations(
+                        rgen=rgen,
+                        min_samples_per_value=1,
+                        **_supported_values(tc),
+                        freestanding=False,
+                    )
             collector.sample_combinations(
                 rgen=rgen,
                 min_samples_per_value=1,
@@ -312,7 +366,7 @@ def main():
                 (
                     tc
                     for tc in toolchains.values()
-                    if tc.compiler.type == "CLANG" and tc.os.startswith("ubuntu")
+                    if tc.compiler.type == "CLANG" and tc.os == "ubuntu-24.04"
                 ),
                 key=lambda tc: tc.compiler.version,
             )

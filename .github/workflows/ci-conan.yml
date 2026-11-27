@@ -135,16 +135,27 @@ jobs:
         if: matrix.toolchain.compiler.type == 'GCC'
         shell: bash
         run: |
-          echo 'Acquire::Retries "10";' | sudo tee /etc/apt/apt.conf.d/80-retries  # the toolchain PPA returns 503s at times
           if [[ "${{ matrix.toolchain.compiler.version }}" -ge 15 ]]; then
-            sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-            sudo apt update
+            # Ubuntu 24.04 packages GCC up to 14 and the toolchain PPA only GCC 16 snapshots, so
+            # the released compilers come from Homebrew. The arm64 runner image lacks Homebrew.
+            BREW=/home/linuxbrew/.linuxbrew/bin/brew
+            [[ -x $BREW ]] || NONINTERACTIVE=1 bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+            FORMULA=gcc@${{ matrix.toolchain.compiler.version }}
+            $BREW info --formula $FORMULA &>/dev/null || FORMULA=gcc  # the newest GCC is unversioned
+            # GCC 16 emits `.base64`, which Ubuntu 24.04's binutils 2.42 cannot assemble.
+            $BREW install $FORMULA binutils
+            echo "$($BREW --prefix binutils)/bin" >> "$GITHUB_PATH"
+          else
+            sudo apt install -y g++-${{ matrix.toolchain.compiler.version }}
           fi
-          sudo apt install -y g++-${{ matrix.toolchain.compiler.version }}
+          "$CXX" --version  # fails if Homebrew's newest GCC is no longer this version
       - name: Install Clang with apt
         if: matrix.toolchain.compiler.type == 'CLANG' && !startsWith(matrix.toolchain.os, 'macos')
         shell: bash
         run: |
+          # llvm.sh runs `apt update`, which fails when any source does, and packages.microsoft.com
+          # has returned 403. Nothing here needs that source.
+          grep -l packages.microsoft.com /etc/apt/sources.list.d/* 2>/dev/null | xargs -r sudo rm -f
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
           sudo ./llvm.sh ${{ matrix.toolchain.compiler.version }}
@@ -153,8 +164,10 @@ jobs:
         if: matrix.toolchain.compiler.type == 'CLANG' && startsWith(matrix.toolchain.os, 'macos')
         shell: bash
         run: |
-          brew install llvm@${{ matrix.toolchain.compiler.version }}
-          brew link --force --overwrite llvm@${{ matrix.toolchain.compiler.version }}
+          FORMULA=$(basename "$(dirname "$(dirname "$CXX")")")  # llvm@N, or llvm for the newest
+          brew install $FORMULA
+          brew link --force --overwrite $FORMULA
+          "$CXX" --version | grep -q "clang version ${{ matrix.toolchain.compiler.version }}\." || { "$CXX" --version; exit 1; }
       - name: Install Libc++
         if: matrix.toolchain.compiler.type == 'CLANG' && matrix.toolchain.lib == 'libc++' && !startsWith(matrix.toolchain.os, 'macos')
         shell: bash
