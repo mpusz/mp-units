@@ -2,13 +2,18 @@
 
 This chapter explains how to obtain **mp-units** and build your code with it.
 
+!!! note "Building mp-units itself"
+
+    To build the library with all its unit tests and examples, for example to try it on
+    your compiler or to work on a change, follow
+    [Building and Testing Locally](contributing.md#building-and-testing-locally) in the
+    Contributing guide instead. It covers Conan, vcpkg, and plain CMake.
+
 
 ## Obtaining dependencies
 
 Most dependencies are provided via the [Conan Package Manager](https://conan.io/).
 If you obtain them differently you may need to adjust some CMake files.
-To build the tests and examples with vcpkg or plain CMake instead, see
-[Building and Testing Locally](contributing.md#building-and-testing-locally).
 
 
 ??? info "Conan quick intro"
