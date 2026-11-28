@@ -310,13 +310,13 @@ struct propagate_point_origin {};
 
 template<Unit U>
 struct propagate_point_origin<U, true> {
-  static constexpr auto _point_origin_ = U::_point_origin_;
+  static constexpr decltype(U::_point_origin_) _point_origin_ = U::_point_origin_;
 };
 
 template<UnitMagnitude auto M, Unit U>
 struct scaled_unit_impl : detail::unit_interface, detail::propagate_point_origin<U> {
   using _base_type_ = scaled_unit_impl;  // exposition only
-  static constexpr UnitMagnitude auto _mag_ = M;
+  static constexpr decltype(M) _mag_ = M;
   static constexpr U _reference_unit_{};
 };
 
@@ -394,7 +394,8 @@ struct with_point_origin : Base {};
 template<typename Base, auto... Props>
   requires(... || PointOrigin<MP_UNITS_NONCONST_TYPE(Props)>)
 struct with_point_origin<Base, Props...> : Base {
-  static constexpr auto _point_origin_ = get_point_origin_property<Props...>();
+  static constexpr decltype(get_point_origin_property<Props...>()) _point_origin_ =
+    get_point_origin_property<Props...>();
 };
 
 // Each specialization of `named_unit` redeclares the member, which hides the flag of the unit it is
@@ -425,24 +426,26 @@ constexpr bool space_before_symbol_property =
  */
 template<symbol_text Symbol, detail::QuantityKindSpec auto QS, detail::NamedUnitProperty auto Prop,
          detail::NamedUnitProperty auto... Props>
-  requires(!Symbol.empty()) &&
-          (detail::BaseDimension<MP_UNITS_NONCONST_TYPE(QS._dimension_)> || detail::remove_kind(QS) == dimensionless)
+  requires(!Symbol.empty()) && (detail::BaseDimension<MP_UNITS_NONCONST_TYPE(detail::dimension_of<decltype(QS)>)> ||
+                                detail::remove_kind(QS) == dimensionless)
 struct named_unit<Symbol, QS, Prop, Props...> : detail::with_point_origin<detail::unit_interface, Prop, Props...> {
-  using _base_type_ = named_unit;           // exposition only
-  static constexpr auto _symbol_ = Symbol;  ///< Unique base unit identifier
-  static constexpr auto _quantity_spec_ = QS;
+  using _base_type_ = named_unit;  // exposition only
+  // `decltype(X)` and not `auto`, here and in the specializations below: the initializer of an `auto` static
+  // member is evaluated with every instantiation of the class, the one of a typed member only when it is first used.
+  static constexpr decltype(Symbol) _symbol_ = Symbol;  ///< Unique base unit identifier
+  static constexpr decltype(QS) _quantity_spec_ = QS;
   static constexpr bool _space_before_symbol_ = detail::space_before_symbol_property<Prop, Props...>;
 };
 
 // A unit without properties derives from its base directly: a `with_point_origin` layer would cost
 // every unit a class template instantiation and a constraint check.
 template<symbol_text Symbol, detail::QuantityKindSpec auto QS>
-  requires(!Symbol.empty()) &&
-          (detail::BaseDimension<MP_UNITS_NONCONST_TYPE(QS._dimension_)> || detail::remove_kind(QS) == dimensionless)
+  requires(!Symbol.empty()) && (detail::BaseDimension<MP_UNITS_NONCONST_TYPE(detail::dimension_of<decltype(QS)>)> ||
+                                detail::remove_kind(QS) == dimensionless)
 struct named_unit<Symbol, QS> : detail::unit_interface {
-  using _base_type_ = named_unit;           // exposition only
-  static constexpr auto _symbol_ = Symbol;  ///< Unique base unit identifier
-  static constexpr auto _quantity_spec_ = QS;
+  using _base_type_ = named_unit;                       // exposition only
+  static constexpr decltype(Symbol) _symbol_ = Symbol;  ///< Unique base unit identifier
+  static constexpr decltype(QS) _quantity_spec_ = QS;
   static constexpr bool _space_before_symbol_ = true;
 };
 
@@ -459,16 +462,16 @@ template<symbol_text Symbol, Unit auto U, detail::NamedUnitProperty auto Prop, d
   requires(!Symbol.empty()) && detail::is_positive_canonical_unit_mag<U>
 struct named_unit<Symbol, U, Prop, Props...> :
     detail::with_point_origin<typename decltype(U)::_base_type_, Prop, Props...> {
-  using _base_type_ = named_unit;           // exposition only
-  static constexpr auto _symbol_ = Symbol;  ///< Unique unit identifier
+  using _base_type_ = named_unit;                       // exposition only
+  static constexpr decltype(Symbol) _symbol_ = Symbol;  ///< Unique unit identifier
   static constexpr bool _space_before_symbol_ = detail::space_before_symbol_property<Prop, Props...>;
 };
 
 template<symbol_text Symbol, Unit auto U>
   requires(!Symbol.empty()) && detail::is_positive_canonical_unit_mag<U>
 struct named_unit<Symbol, U> : decltype(U)::_base_type_ {
-  using _base_type_ = named_unit;           // exposition only
-  static constexpr auto _symbol_ = Symbol;  ///< Unique unit identifier
+  using _base_type_ = named_unit;                       // exposition only
+  static constexpr decltype(Symbol) _symbol_ = Symbol;  ///< Unique unit identifier
   static constexpr bool _space_before_symbol_ = true;
 };
 
@@ -484,23 +487,27 @@ struct named_unit<Symbol, U> : decltype(U)::_base_type_ {
  */
 template<symbol_text Symbol, Unit auto U, detail::QuantityKindSpec auto QS, detail::NamedUnitProperty auto Prop,
          detail::NamedUnitProperty auto... Props>
-  requires(!Symbol.empty()) && (QS._dimension_ == detail::get_associated_quantity(U)._dimension_) &&
+  requires(!Symbol.empty()) &&
+          (detail::dimension_of<decltype(QS)> ==
+           detail::dimension_of<MP_UNITS_NONCONST_TYPE(detail::get_associated_quantity(U))>) &&
           detail::is_positive_canonical_unit_mag<U>
 struct named_unit<Symbol, U, QS, Prop, Props...> :
     detail::with_point_origin<typename decltype(U)::_base_type_, Prop, Props...> {
-  using _base_type_ = named_unit;           // exposition only
-  static constexpr auto _symbol_ = Symbol;  ///< Unique unit identifier
-  static constexpr auto _quantity_spec_ = QS;
+  using _base_type_ = named_unit;                       // exposition only
+  static constexpr decltype(Symbol) _symbol_ = Symbol;  ///< Unique unit identifier
+  static constexpr decltype(QS) _quantity_spec_ = QS;
   static constexpr bool _space_before_symbol_ = detail::space_before_symbol_property<Prop, Props...>;
 };
 
 template<symbol_text Symbol, Unit auto U, detail::QuantityKindSpec auto QS>
-  requires(!Symbol.empty()) && (QS._dimension_ == detail::get_associated_quantity(U)._dimension_) &&
+  requires(!Symbol.empty()) &&
+          (detail::dimension_of<decltype(QS)> ==
+           detail::dimension_of<MP_UNITS_NONCONST_TYPE(detail::get_associated_quantity(U))>) &&
           detail::is_positive_canonical_unit_mag<U>
 struct named_unit<Symbol, U, QS> : decltype(U)::_base_type_ {
-  using _base_type_ = named_unit;           // exposition only
-  static constexpr auto _symbol_ = Symbol;  ///< Unique unit identifier
-  static constexpr auto _quantity_spec_ = QS;
+  using _base_type_ = named_unit;                       // exposition only
+  static constexpr decltype(Symbol) _symbol_ = Symbol;  ///< Unique unit identifier
+  static constexpr decltype(QS) _quantity_spec_ = QS;
   static constexpr bool _space_before_symbol_ = true;
 };
 
@@ -595,9 +602,9 @@ standard_uncertainty(U) -> standard_uncertainty<U>;
 template<symbol_text Symbol, Unit auto U>
   requires(!Symbol.empty())
 struct named_constant<Symbol, U> : decltype(U)::_base_type_ {
-  using _base_type_ = named_constant;                  // exposition only
-  static constexpr auto _symbol_ = Symbol;             ///< Unique constant identifier
-  static constexpr bool _space_before_symbol_ = true;  // its own symbol, so not inherited from `U`
+  using _base_type_ = named_constant;                   // exposition only
+  static constexpr decltype(Symbol) _symbol_ = Symbol;  ///< Unique constant identifier
+  static constexpr bool _space_before_symbol_ = true;   // its own symbol, so not inherited from `U`
 };
 
 /**
@@ -617,9 +624,9 @@ struct named_constant<Symbol, U> : decltype(U)::_base_type_ {
 template<symbol_text Symbol, Unit auto U, typename M, relative_standard_uncertainty<M> RSU>
   requires(!Symbol.empty()) && detail::magnitude_is_positive<M{}>
 struct named_constant<Symbol, U, RSU> : decltype(U)::_base_type_ {
-  using _base_type_ = named_constant;                  // exposition only
-  static constexpr auto _symbol_ = Symbol;             ///< Unique constant identifier
-  static constexpr bool _space_before_symbol_ = true;  // its own symbol, so not inherited from `U`
+  using _base_type_ = named_constant;                   // exposition only
+  static constexpr decltype(Symbol) _symbol_ = Symbol;  ///< Unique constant identifier
+  static constexpr bool _space_before_symbol_ = true;   // its own symbol, so not inherited from `U`
   static constexpr auto _relative_standard_uncertainty_ = M{};
 };
 
@@ -628,21 +635,27 @@ namespace detail {
 // The unit expression with every magnitude dropped. Magnitudes never change the reference unit,
 // so two units that are the same type here are always convertible.
 template<typename U>
-struct unscaled_unit_impl : std::type_identity<U> {};
+struct unscaled_unit_impl {
+  using type = U;
+};
 
 template<auto M, typename U>
 struct unscaled_unit_impl<scaled_unit<M, U>> : unscaled_unit_impl<U> {};
 
 template<typename... Us>
-struct unscaled_unit_impl<derived_unit<Us...>> :
-    std::type_identity<derived_unit<typename unscaled_unit_impl<Us>::type...>> {};
+struct unscaled_unit_impl<derived_unit<Us...>> {
+  using type = derived_unit<typename unscaled_unit_impl<Us>::type...>;
+};
 
 template<typename... Us>
-struct unscaled_unit_impl<per<Us...>> : std::type_identity<per<typename unscaled_unit_impl<Us>::type...>> {};
+struct unscaled_unit_impl<per<Us...>> {
+  using type = per<typename unscaled_unit_impl<Us>::type...>;
+};
 
 template<typename F, int Num, int... Den>
-struct unscaled_unit_impl<power<F, Num, Den...>> :
-    std::type_identity<power<typename unscaled_unit_impl<F>::type, Num, Den...>> {};
+struct unscaled_unit_impl<power<F, Num, Den...>> {
+  using type = power<typename unscaled_unit_impl<F>::type, Num, Den...>;
+};
 
 // A measured constant checks this before `ConvertibleUnits`. Every constant in the CODATA headers
 // writes its value and its uncertainty in the same unit, and recognizing that without computing two
@@ -668,9 +681,9 @@ template<symbol_text Symbol, Unit auto U, typename SUU, standard_uncertainty<SUU
   requires(!Symbol.empty()) && detail::is_positive_canonical_unit_mag<SUU{}> &&
           (detail::same_unscaled_unit<SUU, MP_UNITS_NONCONST_TYPE(U)> || detail::ConvertibleUnits<SUU{}, U>)
 struct named_constant<Symbol, U, SU> : decltype(U)::_base_type_ {
-  using _base_type_ = named_constant;                  // exposition only
-  static constexpr auto _symbol_ = Symbol;             ///< Unique constant identifier
-  static constexpr bool _space_before_symbol_ = true;  // its own symbol, so not inherited from `U`
+  using _base_type_ = named_constant;                   // exposition only
+  static constexpr decltype(Symbol) _symbol_ = Symbol;  ///< Unique constant identifier
+  static constexpr bool _space_before_symbol_ = true;   // its own symbol, so not inherited from `U`
   static constexpr auto _standard_uncertainty_ = SUU{};
 };
 
@@ -751,9 +764,11 @@ MP_UNITS_EXPORT template<symbol_text Symbol, UnitMagnitude auto M, PrefixableUni
 // output dispatch on `prefixed_unit` next to `scaled_unit_impl`.
 struct prefixed_unit : detail::unit_interface, detail::propagate_point_origin<MP_UNITS_NTTP_HACK(decltype(U))> {
   using _base_type_ = prefixed_unit;  // exposition only
-  static constexpr UnitMagnitude auto _mag_ = M;
+  static constexpr decltype(M) _mag_ = M;
   static constexpr MP_UNITS_NTTP_HACK(decltype(U)) _reference_unit_{};
-  static constexpr auto _symbol_ = Symbol + U._symbol_;
+  // The type is spelled out because the initializer of an `auto` static member is evaluated with every instantiation of
+  // the class, and most programs never print the symbols of the prefixed units they include.
+  static constexpr decltype(Symbol + U._symbol_) _symbol_ = Symbol + U._symbol_;
 };
 
 namespace detail {

@@ -132,7 +132,15 @@ struct reference {
     return {};
   }
 
-  [[nodiscard]] friend consteval detail::reference_t<inverse(Q{}), inverse(U{})> inverse(reference) { return {}; }
+  // `inverse`, `sqrt` and `cbrt` are templates so that each return type is computed only when that function is called.
+  // The return type of a non-template friend is computed when its class is instantiated, which computes the three
+  // results for every `reference<Q, U>` a program uses: nearly 30 % of the instantiations of code that uses typed
+  // references.
+  template<std::same_as<reference> R>
+  [[nodiscard]] friend consteval detail::reference_t<inverse(get_quantity_spec(R{})), inverse(get_unit(R{}))> inverse(R)
+  {
+    return {};
+  }
 
   /**
    * Computes the value of a reference raised to the `Num/Den` power
@@ -150,12 +158,20 @@ struct reference {
   /**
    * Computes the square root of a reference
    */
-  [[nodiscard]] friend consteval detail::reference_t<sqrt(Q{}), sqrt(U{})> sqrt(reference) { return {}; }
+  template<std::same_as<reference> R>
+  [[nodiscard]] friend consteval detail::reference_t<sqrt(get_quantity_spec(R{})), sqrt(get_unit(R{}))> sqrt(R)
+  {
+    return {};
+  }
 
   /**
    * Computes the cubic root of a reference
    */
-  [[nodiscard]] friend consteval detail::reference_t<cbrt(Q{}), cbrt(U{})> cbrt(reference) { return {}; }
+  template<std::same_as<reference> R>
+  [[nodiscard]] friend consteval detail::reference_t<cbrt(get_quantity_spec(R{})), cbrt(get_unit(R{}))> cbrt(R)
+  {
+    return {};
+  }
 };
 
 

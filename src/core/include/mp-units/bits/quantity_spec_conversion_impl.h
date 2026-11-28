@@ -48,8 +48,8 @@ template<QuantitySpec From, QuantitySpec To>
   using enum conversion_rank;
   if constexpr (std::is_same_v<From, To>)
     return implicit;
-  else if constexpr (!std::is_same_v<MP_UNITS_NONCONST_TYPE(From::_dimension_),
-                                     MP_UNITS_NONCONST_TYPE(To::_dimension_)>)
+  else if constexpr (!std::is_same_v<MP_UNITS_NONCONST_TYPE(dimension_of<From>),
+                                     MP_UNITS_NONCONST_TYPE(dimension_of<To>)>)
     return none;
   else if constexpr (QuantityKindSpec<From> || QuantityKindSpec<To>) {
     // The kind rules with a `kind_of<>` on at least one side. A kind root `K` is a named quantity or a

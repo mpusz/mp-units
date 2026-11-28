@@ -77,8 +77,20 @@ constexpr bool is_specialization_of_quantity_spec<quantity_spec<Derived, Params.
 
 }  // namespace detail
 
-// `is_base_of_v` rather than `derived_from`: one constraint atom instead of two, evaluated per type; the base is
-// always public and unambiguous, so the convertibility atom `derived_from` adds can never fail here.
+namespace detail {
+
+// One variable template behind `QuantitySpec`, for a single atomic constraint (see `detail::is_unit`).
+// `is_base_of_v` rather than `derived_from`: the base is always public and unambiguous, so the convertibility check
+// that `derived_from` adds can never fail here.
+template<typename T, bool = std::is_base_of_v<quantity_spec_interface_base, T>>
+constexpr bool is_quantity_spec = false;
+
+template<typename T>
+constexpr bool is_quantity_spec<T, true> =
+  symbolic_constant_traits<T> && !is_specialization_of_quantity_spec<std::remove_const_t<T>>;
+
+}  // namespace detail
+
 /**
  * A concept matching every quantity specification
  *
@@ -121,8 +133,7 @@ constexpr bool is_specialization_of_quantity_spec<quantity_spec<Derived, Params.
  * @see [Concepts](docs:users_guide/advanced_topics/concepts#QuantitySpec) in the User's Guide
  */
 MP_UNITS_EXPORT template<typename T>
-concept QuantitySpec = std::is_base_of_v<detail::quantity_spec_interface_base, T> && detail::SymbolicConstant<T> &&
-                       !detail::is_specialization_of_quantity_spec<std::remove_const_t<T>>;
+concept QuantitySpec = detail::is_quantity_spec<T>;
 
 template<typename Q>
 struct kind_of_;

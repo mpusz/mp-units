@@ -364,7 +364,10 @@ This page documents the version history and changes for the **mp-units** library
       so they are ill-formed for every simple quantity such as `30.0 * km / h`. MSVC up
       to 19.51 instantiates the initializer of every such member eagerly, so there none
       of these `character` members exist
-- (!) refactor: `quantity_spec::dimension` is deprecated in favour of `get_dimension(qs)`
+- (!) refactor: `quantity_spec::dimension` is deprecated in favour of `get_dimension(qs)`.
+      A derived quantity spec such as `isq::length / isq::time` loses the member outright,
+      because declaring it computed a dimension for every intermediate result of a
+      quantity equation
 - feat: the GLM integration models the tuple protocol for `glm::vec`. GLM states a
       vector's length only through its static `length()`, so the plugin maps that onto
       `std::tuple_size` and adds the matching `std::tuple_element` and `get<I>`. A GLM

@@ -138,8 +138,23 @@ MP_UNITS_EXPORT template<symbol_text Symbol, auto... Args>
   requires detail::NamedUnitArguments<Args...>
 struct named_unit;
 
-// `is_base_of_v` rather than `derived_from`: one constraint atom instead of two, evaluated per type; the base is
-// always public and unambiguous, so the convertibility atom `derived_from` adds can never fail here.
+namespace detail {
+
+// The whole test behind `Unit` is one variable template, so the concept has a single atomic constraint. Written in the
+// concept as an `&&` chain it is four atoms, all of them evaluated for every type that satisfies `Unit`. The defaulted
+// parameter keeps the remaining traits from being instantiated for a type that doesn't derive from the interface.
+// `is_base_of_v` rather than `derived_from`: the base is always public and unambiguous, so the convertibility check
+// that `derived_from` adds can never fail here.
+template<typename T, bool = std::is_base_of_v<unit_interface, T>>
+constexpr bool is_unit = false;
+
+template<typename T>
+constexpr bool is_unit<T, true> =
+  symbolic_constant_traits<T> && !is_specialization_of_v<std::remove_const_t<T>, named_unit> &&
+  !is_specialization_of_prefixed_unit<std::remove_const_t<T>>;
+
+}  // namespace detail
+
 /**
  * A concept matching every unit
  *
@@ -189,9 +204,7 @@ struct named_unit;
  * @see [Concepts](docs:users_guide/advanced_topics/concepts#Unit) in the User's Guide
  */
 MP_UNITS_EXPORT template<typename T>
-concept Unit = std::is_base_of_v<detail::unit_interface, T> && detail::SymbolicConstant<T> &&
-               !is_specialization_of_v<std::remove_const_t<T>, named_unit> &&
-               !detail::is_specialization_of_prefixed_unit<std::remove_const_t<T>>;
+concept Unit = detail::is_unit<T>;
 
 /**
  * A concept matching the units that `prefixed_unit` accepts

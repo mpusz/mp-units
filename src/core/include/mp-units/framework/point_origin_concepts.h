@@ -42,12 +42,19 @@ constexpr bool is_specialization_of_relative_point_origin = false;
 // Every point origin. Exposition-only: an interface needs `PointOriginFor`, which pins the quantity,
 // or the library's own checks that two origins share an absolute one, never this concept alone.
 //
-// `is_base_of_v` rather than `derived_from`: one constraint atom instead of two, evaluated per type; the base is
-// always public and unambiguous, so the convertibility atom `derived_from` adds can never fail here.
+// One variable template behind `PointOrigin`, for a single atomic constraint (see `detail::is_unit`).
+// `is_base_of_v` rather than `derived_from`: the base is always public and unambiguous, so the convertibility check
+// that `derived_from` adds can never fail here.
+template<typename T, bool = std::is_base_of_v<point_origin_interface, T>>
+constexpr bool is_point_origin = false;
+
 template<typename T>
-concept PointOrigin = std::is_base_of_v<point_origin_interface, T> && SymbolicConstant<T> &&
-                      !is_specialization_of_absolute_point_origin<std::remove_const_t<T>> &&
-                      !is_specialization_of_relative_point_origin<std::remove_const_t<T>>;
+constexpr bool is_point_origin<T, true> =
+  symbolic_constant_traits<T> && !is_specialization_of_absolute_point_origin<std::remove_const_t<T>> &&
+  !is_specialization_of_relative_point_origin<std::remove_const_t<T>>;
+
+template<typename T>
+concept PointOrigin = is_point_origin<T>;
 
 }  // namespace detail
 

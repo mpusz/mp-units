@@ -41,8 +41,20 @@ struct dimension_interface;
 MP_UNITS_EXPORT template<symbol_text Symbol>
 struct base_dimension;
 
-// `is_base_of_v` rather than `derived_from`: one constraint atom instead of two, evaluated per type; the base is
-// always public and unambiguous, so the convertibility atom `derived_from` adds can never fail here.
+namespace detail {
+
+// One variable template behind `Dimension`, for a single atomic constraint (see `detail::is_unit`).
+// `is_base_of_v` rather than `derived_from`: the base is always public and unambiguous, so the convertibility check
+// that `derived_from` adds can never fail here.
+template<typename T, bool = std::is_base_of_v<dimension_interface, T>>
+constexpr bool is_dimension = false;
+
+template<typename T>
+constexpr bool is_dimension<T, true> =
+  symbolic_constant_traits<T> && !is_specialization_of_v<std::remove_const_t<T>, base_dimension>;
+
+}  // namespace detail
+
 /**
  * A concept matching every dimension
  *
@@ -77,8 +89,7 @@ struct base_dimension;
  * @see [Concepts](docs:users_guide/advanced_topics/concepts#Dimension) in the User's Guide
  */
 MP_UNITS_EXPORT template<typename T>
-concept Dimension = std::is_base_of_v<detail::dimension_interface, T> && detail::SymbolicConstant<T> &&
-                    !is_specialization_of_v<std::remove_const_t<T>, base_dimension>;
+concept Dimension = detail::is_dimension<T>;
 
 namespace detail {
 

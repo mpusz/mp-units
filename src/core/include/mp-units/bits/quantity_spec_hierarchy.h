@@ -103,7 +103,6 @@ struct open_factor_equation<N> {
 template<typename N>
 struct open_factor : open_factor_equation<N> {
   using _open_ = N;
-  static constexpr auto _dimension_ = N::_dimension_;
 };
 
 // Checked as a concept so that a typed factor costs no instantiation.

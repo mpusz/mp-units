@@ -150,7 +150,7 @@ struct dimension_interface {
  */
 MP_UNITS_EXPORT template<symbol_text Symbol>
 struct base_dimension : detail::dimension_interface {
-  static constexpr auto _symbol_ = Symbol;  ///< Unique base dimension identifier
+  static constexpr decltype(Symbol) _symbol_ = Symbol;  ///< Unique base dimension identifier
 };
 
 /**
