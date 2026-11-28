@@ -979,16 +979,18 @@ One further integer-specific hazard deserves mention:
 [**divide-before-convert**](understanding-safety-levels.md#level-3-representation-safety).
 
 ```cpp
-// snippet-template: none (not this library: Au/chrono-style hours(8) / minutes(40) expression)
-// Apparent time ratio — how many 40-minute intervals in 8 hours?
-hours(8) / minutes(40)   // Expected: 12. Actual with integer division:
-                         // 8 / 40 = 0, then unit factor applied → wrong!
+// snippet-template: systems
+using namespace mp_units::si::unit_symbols;
+
+// How many 40-minute intervals are there in 8 hours?
+quantity ratio = 8 * h / (40 * min);  // Expected: 12. Actual: 0 h/min (8 / 40 = 0)
 ```
 
 The Au library [forbids this category of division](https://aurora-opensource.github.io/au/main/troubleshooting/#integer-division-forbidden)
-by default, requiring an explicit opt-in. **mp-units** currently follows plain C++
-and allows it, consistent with `std::chrono::duration`. Whether to adopt a stricter
-stance is an open design question.
+by default, requiring an explicit opt-in. `std::chrono::duration` converts both operands
+to their common type first, so `8h / 40min` is `12`. **mp-units** currently divides the
+stored numbers and keeps `h/min` as the unit, so the result is `0 h/min`. Whether to
+adopt a stricter stance is an open design question.
 
 ---
 

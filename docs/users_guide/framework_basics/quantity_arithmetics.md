@@ -191,7 +191,7 @@ static_assert(5. * h / (120 * min) == 2.5 * one);
 
     **This is why we often prefer floating-point representation types when dealing with units.**
     Some popular physical units libraries even
-    [forbid integer division at all](https://aurora-opensource.github.io/au/main/troubleshooting/#integer-division-forbidden).
+    [refuse to divide two integer quantities unless their units are equivalent](https://aurora-opensource.github.io/au/main/troubleshooting/#integer-division-forbidden).
 
 
 ## Modulo

@@ -52,7 +52,7 @@ int bad2 = weekly_units + trucks_needed;   // Mixing units and trucks!
 1. Define custom dimensionless units for `unit` and `carton` with fixed
    compile-time scaling (1 carton = 12 units).
 2. Given:
-    - Production rate: `3 * unit / min`
+    - Production rate: `3. * unit / min`
     - Working hours per day: `14 * h`
     - Working days per week: `5`
     - Truck capacity: `60 * carton / truck`
@@ -130,7 +130,7 @@ int main()
       using namespace mp_units;
       using namespace mp_units::si::unit_symbols;
 
-      quantity production_rate = 3 * unit / min;
+      quantity production_rate = 3. * unit / min;
       quantity hours_per_day = 14 * h;
       quantity days_per_week = 5;
       quantity truck_capacity = 60 * carton / truck;
@@ -217,7 +217,7 @@ int main()
     // snippet-setup: inline constexpr struct unit : named_unit<"unit", kind_of<dimensionless>> {} unit;
     // snippet-setup: inline constexpr struct carton : named_unit<"carton", mag<12> * unit> {} carton;
     // snippet-setup: inline constexpr struct truck : named_unit<"truck", kind_of<dimensionless>> {} truck;
-    // snippet-setup: quantity production_rate = 3 * unit / min;
+    // snippet-setup: quantity production_rate = 3. * unit / min;
     // snippet-setup: quantity hours_per_day = 14 * h;
     // snippet-setup: quantity days_per_week = 5;
     // snippet-setup: quantity truck_capacity = 60 * carton / truck;
