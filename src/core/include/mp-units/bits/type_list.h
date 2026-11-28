@@ -49,6 +49,9 @@ constexpr bool is_type_list<T<Types...>> = true;
 template<typename T>
 concept TypeList = is_type_list<T>;
 
+// The helpers below don't constrain their lists with `TypeList`. Every caller passes a list, and the type-constraint
+// is one more satisfaction check for every list type.
+
 // size
 template<typename List>
 struct type_list_size_impl;
@@ -56,7 +59,7 @@ struct type_list_size_impl;
 template<template<typename...> typename List, typename... Types>
 struct type_list_size_impl<List<Types...>> : std::integral_constant<std::size_t, sizeof...(Types)> {};
 
-template<TypeList List>
+template<typename List>
 constexpr std::size_t type_list_size = type_list_size_impl<List>::value;
 
 // Every actual list hits this partial specialization, so no class is instantiated per list.
@@ -72,7 +75,7 @@ struct type_list_map_impl<From<Args...>, To> {
   using type = To<Args...>;
 };
 
-template<TypeList From, template<typename...> typename To>
+template<typename From, template<typename...> typename To>
 using type_list_map = type_list_map_impl<From, To>::type;
 
 
@@ -89,7 +92,7 @@ struct type_list_element_impl<List<Types...>, I> {
   using type = Types...[I];
 };
 
-template<TypeList List, std::size_t I>
+template<typename List, std::size_t I>
 using type_list_element = type_list_element_impl<List, I>::type;
 
 #elif MP_UNITS_HAS_BUILTIN(__type_pack_element)
@@ -103,7 +106,7 @@ struct type_list_element_impl<List<Types...>, I> {
   using type = __type_pack_element<I, Types...>;
 };
 
-template<TypeList List, std::size_t I>
+template<typename List, std::size_t I>
 using type_list_element = type_list_element_impl<List, I>::type;
 
 #else
@@ -127,10 +130,10 @@ std::type_identity<T> type_list_element_func(const type_list_leaf<I, T>&);
 template<typename... Ts>
 struct indexed_type_list : indexed_type_list_impl<std::index_sequence_for<Ts...>, Ts...> {};
 
-template<TypeList List, std::size_t I>
+template<typename List, std::size_t I>
 using type_list_element_indexed = typename decltype(type_list_element_func<I>(std::declval<List>()))::type;
 
-template<TypeList List, std::size_t I>
+template<typename List, std::size_t I>
 using type_list_element = type_list_element_indexed<type_list_map<List, indexed_type_list>, I>;
 
 #endif
@@ -144,7 +147,7 @@ struct type_list_front_impl<List<T, Ts...>> {
   using type = T;
 };
 
-template<TypeList List>
+template<typename List>
 using type_list_front = type_list_front_impl<List>::type;
 
 // pop_front
@@ -156,11 +159,11 @@ struct type_list_pop_front_impl<List<T, Ts...>> {
   using type = List<Ts...>;
 };
 
-template<TypeList List>
+template<typename List>
 using type_list_pop_front = type_list_pop_front_impl<List>::type;
 
 // back
-template<TypeList List>
+template<typename List>
 using type_list_back = type_list_element<List, type_list_size<List> - 1>;
 
 // push_front
@@ -172,7 +175,7 @@ struct type_list_push_front_impl<List<OldTypes...>, NewTypes...> {
   using type = List<NewTypes..., OldTypes...>;
 };
 
-template<TypeList List, typename... Types>
+template<typename List, typename... Types>
 using type_list_push_front = type_list_push_front_impl<List, Types...>::type;
 
 // push_back
@@ -184,7 +187,7 @@ struct type_list_push_back_impl<List<OldTypes...>, NewTypes...> {
   using type = List<OldTypes..., NewTypes...>;
 };
 
-template<TypeList List, typename... Types>
+template<typename List, typename... Types>
 using type_list_push_back = type_list_push_back_impl<List, Types...>::type;
 
 // join
@@ -216,7 +219,7 @@ struct type_list_join_impl<List<First...>, List<Second...>, List<Third...>, List
   using type = List<First..., Second..., Third..., Fourth...>;
 };
 
-template<TypeList... Lists>
+template<typename... Lists>
 using type_list_join = type_list_join_impl<Lists...>::type;
 
 // split
@@ -252,13 +255,13 @@ struct type_list_split_impl<List<Args...>, std::index_sequence<First...>, std::i
 
 #endif
 
-template<TypeList List, std::size_t N>
+template<typename List, std::size_t N>
   requires(N <= type_list_size<List>)
 struct type_list_split :
     type_list_split_impl<List, std::make_index_sequence<N>, std::make_index_sequence<type_list_size<List> - N>> {};
 
 // split_half
-template<TypeList List>
+template<typename List>
 struct type_list_split_half;
 
 template<template<typename...> typename List, typename... Types>
@@ -283,7 +286,7 @@ struct type_list_extract_impl<List<Args...>, std::index_sequence<Pre...>, std::i
   using rest = List<Args...[Pre]..., Args...[sizeof...(Pre) + 1 + Post]...>;
 };
 
-template<TypeList List, std::size_t N>
+template<typename List, std::size_t N>
   requires(type_list_size<List> > N)
 struct type_list_extract :
     type_list_extract_impl<List, std::make_index_sequence<N>, std::make_index_sequence<type_list_size<List> - N - 1>> {
@@ -300,7 +303,7 @@ struct type_list_extract_impl<List<Args...>, std::index_sequence<Pre...>, std::i
   using rest = List<__type_pack_element<Pre, Args...>..., __type_pack_element<sizeof...(Pre) + 1 + Post, Args...>...>;
 };
 
-template<TypeList List, std::size_t N>
+template<typename List, std::size_t N>
   requires(type_list_size<List> > N)
 struct type_list_extract :
     type_list_extract_impl<List, std::make_index_sequence<N>, std::make_index_sequence<type_list_size<List> - N - 1>> {
@@ -308,7 +311,7 @@ struct type_list_extract :
 
 #else
 
-template<TypeList, TypeList>
+template<typename, typename>
 struct type_list_extract_impl;
 
 template<template<typename...> typename List, typename... Pre, typename Element, typename... Post>
@@ -317,7 +320,7 @@ struct type_list_extract_impl<List<Pre...>, List<Element, Post...>> {
   using rest = List<Pre..., Post...>;
 };
 
-template<TypeList List, std::size_t N>
+template<typename List, std::size_t N>
   requires(type_list_size<List> > N)
 struct type_list_extract :
     type_list_extract_impl<typename type_list_split<List, N>::first_list,
@@ -359,7 +362,7 @@ struct type_list_merge_sorted_impl<List<Lhs1, LhsRest...>, List<Rhs1, RhsRest...
     typename type_list_merge_sorted_impl<List<Lhs1, LhsRest...>, List<RhsRest...>, Pred>::type, Rhs1>::type;
 };
 
-template<TypeList SortedList1, TypeList SortedList2, template<typename, typename> typename Pred>
+template<typename SortedList1, typename SortedList2, template<typename, typename> typename Pred>
 using type_list_merge_sorted = type_list_merge_sorted_impl<SortedList1, SortedList2, Pred>::type;
 
 // merge_many_sorted
@@ -374,7 +377,7 @@ struct type_list_merge_many_sorted_impl<Pred, Acc, Head, Rest...> {
   using type = typename type_list_merge_many_sorted_impl<Pred, type_list_merge_sorted<Acc, Head, Pred>, Rest...>::type;
 };
 
-template<template<typename, typename> typename Pred, TypeList Acc, TypeList... Lists>
+template<template<typename, typename> typename Pred, typename Acc, typename... Lists>
 using type_list_merge_many_sorted = typename type_list_merge_many_sorted_impl<Pred, Acc, Lists...>::type;
 
 // sort
@@ -400,7 +403,7 @@ struct type_list_sort_impl<List<Types...>, Pred> {
   using type = type_list_merge_sorted_impl<sorted_left, sorted_right, Pred>::type;
 };
 
-template<TypeList List, template<typename, typename> typename Pred>
+template<typename List, template<typename, typename> typename Pred>
 using type_list_sort = type_list_sort_impl<List, Pred>::type;
 
 // sort
@@ -422,7 +425,7 @@ struct type_list_unique_impl<List<T, T, Rest...>> {
   using type = type_list_unique_impl<List<T, Rest...>>::type;
 };
 
-template<TypeList List>
+template<typename List>
 using type_list_unique = type_list_unique_impl<List>::type;
 
 }  // namespace mp_units::detail

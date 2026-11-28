@@ -83,7 +83,7 @@ struct fixed_string_iface {
     CharT* it = txt;
     for (CharT ch : lhs) *it++ = ch;
     for (CharT ch : rhs) *it++ = ch;
-    return basic_fixed_string<CharT, N + N2>(txt, it);
+    return fixed_string_iface::concat<CharT, N + N2>(txt);
   }
 
   template<typename CharT, std::size_t N>
@@ -94,7 +94,7 @@ struct fixed_string_iface {
     CharT* it = txt;
     for (CharT ch : lhs) *it++ = ch;
     *it++ = rhs;
-    return basic_fixed_string<CharT, N + 1>(txt, it);
+    return fixed_string_iface::concat<CharT, N + 1>(txt);
   }
 
   template<typename CharT, std::size_t N>
@@ -105,7 +105,7 @@ struct fixed_string_iface {
     CharT* it = txt;
     *it++ = lhs;
     for (CharT ch : rhs) *it++ = ch;
-    return basic_fixed_string<CharT, 1 + N>(txt, it);
+    return fixed_string_iface::concat<CharT, 1 + N>(txt);
   }
 
   // Deferred reason 1: hidden friend in a class template.
@@ -191,6 +191,15 @@ struct fixed_string_iface {
     return os << str.c_str();
   }
 #endif
+
+private:
+  // A member and not a friend, because GCC 12 doesn't give a friend function defined in this class the access that
+  // `basic_fixed_string` grants to the class.
+  template<typename CharT, std::size_t N>
+  [[nodiscard]] static constexpr basic_fixed_string<CharT, N> concat(const CharT* ptr) noexcept
+  {
+    return basic_fixed_string<CharT, N>(nullptr, ptr);
+  }
 };
 
 }  // namespace detail
@@ -322,6 +331,17 @@ public:
   }
   // NOLINTNEXTLINE(*-explicit-conversions, google-explicit-constructor)
   [[nodiscard]] constexpr explicit(false) operator std::basic_string_view<CharT>() const noexcept { return view(); }
+
+private:
+  friend struct detail::fixed_string_iface;
+
+  // Concatenation builds its result through this constructor and not through the iterator-pair constructor, a
+  // constrained template that costs up to 466 constant evaluations per translation unit (Clang 23). `std::nullptr_t`
+  // comes first because a `(const CharT*, std::size_t)` signature saved only 32 of them.
+  constexpr basic_fixed_string(std::nullptr_t, const CharT* ptr) noexcept
+  {
+    for (std::size_t idx = 0; idx < N; ++idx) data_[idx] = ptr[idx];
+  }
 };
 
 // deduction guides

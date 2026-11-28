@@ -55,8 +55,19 @@ struct identity_fn {
   }
 };
 
+// A variable template whose partial specializations reject `const` and references, so that `SymbolicArg` is one
+// atomic constraint and not two. It is checked for every element of every `type_list`.
 template<typename T>
-concept SymbolicArg = !std::is_const_v<T> && !std::is_reference_v<T>;
+constexpr bool symbolic_arg = true;
+template<typename T>
+constexpr bool symbolic_arg<const T> = false;
+template<typename T>
+constexpr bool symbolic_arg<T&> = false;
+template<typename T>
+constexpr bool symbolic_arg<T&&> = false;
+
+template<typename T>
+concept SymbolicArg = symbolic_arg<T>;
 
 // This concept is checked for every unit, dimension and quantity spec, so each `std` trait it names
 // costs one class template instantiation per symbolic constant. On libc++ that is ~8% of a translation
@@ -99,7 +110,16 @@ concept SymbolicConstant = symbolic_constant_traits<T>;
 // A term of a symbolic expression must not be const-qualified, or `const second / second` would not
 // simplify, because `const second` and `second` are different types.
 template<typename T>
-concept SymbolicTerm = SymbolicArg<T> && SymbolicConstant<T>;
+constexpr bool symbolic_term = symbolic_constant_traits<T>;
+template<typename T>
+constexpr bool symbolic_term<const T> = false;
+template<typename T>
+constexpr bool symbolic_term<T&> = false;
+template<typename T>
+constexpr bool symbolic_term<T&&> = false;
+
+template<typename T>
+concept SymbolicTerm = symbolic_term<T>;
 
 /**
  * Type list type used by the expression template framework
@@ -173,10 +193,14 @@ struct power final {
 namespace detail {
 
 template<typename T>
-struct expr_type_impl : std::type_identity<T> {};
+struct expr_type_impl {
+  using type = T;
+};
 
 template<typename T, int... Ints>
-struct expr_type_impl<power<T, Ints...>> : std::type_identity<T> {};
+struct expr_type_impl<power<T, Ints...>> {
+  using type = T;
+};
 
 }  // namespace detail
 

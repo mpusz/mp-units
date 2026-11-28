@@ -187,13 +187,15 @@ template<auto... Args>
   return mask;
 }
 
-template<QuantitySpec auto... From, QuantitySpec Q>
+// `clone_kind_of` and `close_kinds` take their operands as types because only the types are read, and a value of a
+// class type as a template argument costs a constant evaluation for each call.
+template<QuantitySpec... From, QuantitySpec Q>
 [[nodiscard]] consteval QuantitySpec auto clone_kind_of(Q q);
 
 template<QuantitySpec Q>
 [[nodiscard]] consteval QuantitySpec auto open_kinds(Q q);
 
-template<QuantitySpec auto... Operands, QuantitySpec Q>
+template<QuantitySpec... Operands, QuantitySpec Q>
 [[nodiscard]] consteval QuantitySpec auto close_kinds(Q q);
 
 template<typename List>
@@ -265,22 +267,51 @@ struct quantity_spec_less : std::bool_constant<quantity_spec_less_value<Lhs, Rhs
 template<typename T1, typename T2>
 using type_list_of_quantity_spec_less = expr_less<T1, T2, quantity_spec_less>;
 
+// The dimension of a quantity specification. Only a base quantity stores its dimension. Every other
+// specification gets it here, from its parent, its equation or its factors. A derived specification has no
+// member for it, so its dimension is computed only when something asks for it. A member would compute it for
+// each intermediate result of a quantity equation, and most of those never need one.
+template<typename Q>
+constexpr auto dimension_of = Q::_dimension_;
+
+template<typename Q>
+  requires requires { Q::_parent_; }
+constexpr auto dimension_of<Q> = dimension_of<std::remove_const_t<decltype(Q::_parent_)>>;
+
+template<typename Q>
+  requires(!requires { Q::_parent_; }) && requires { Q::_equation_; }
+constexpr auto dimension_of<Q> = dimension_of<std::remove_const_t<decltype(Q::_equation_)>>;
+
+template<typename Q>
+constexpr auto dimension_of<kind_of_<Q>> = dimension_of<Q>;
+
+template<typename N>
+constexpr auto dimension_of<open_factor<N>> = dimension_of<N>;
+
+template<QuantitySpec Q>
+using to_dimension = MP_UNITS_NONCONST_TYPE(dimension_of<Q>);
+
+template<typename... Expr>
+constexpr auto dimension_of<derived_quantity_spec<Expr...>> =
+  detail::expr_map<to_dimension, derived_dimension, struct dimension_one>(
+    expr_fractions<struct dimensionless, Expr...>{});
+
 struct quantity_spec_interface_base {
   template<QuantitySpec QS>
-  [[nodiscard]] friend consteval Dimension auto get_dimension(QS qs)
+  [[nodiscard]] friend consteval Dimension auto get_dimension(QS)
   {
-    return qs._dimension_;
+    return dimension_of<QS>;
   }
 
   template<QuantitySpec Lhs, QuantitySpec Rhs>
   [[nodiscard]] friend consteval QuantitySpec auto operator*(Lhs lhs, Rhs rhs)
   {
     if constexpr (detail::kinds_per_factor<Lhs, Rhs>)
-      return detail::close_kinds<Lhs{}, Rhs{}>(
+      return detail::close_kinds<Lhs, Rhs>(
         detail::expr_multiply<derived_quantity_spec, dimensionless, type_list_of_quantity_spec_less>(
           detail::open_kinds(lhs), detail::open_kinds(rhs)));
     else
-      return detail::clone_kind_of<Lhs{}, Rhs{}>(
+      return detail::clone_kind_of<Lhs, Rhs>(
         detail::expr_multiply<derived_quantity_spec, dimensionless, type_list_of_quantity_spec_less>(
           detail::remove_kind(lhs), detail::remove_kind(rhs)));
   }
@@ -289,11 +320,11 @@ struct quantity_spec_interface_base {
   [[nodiscard]] friend consteval QuantitySpec auto operator/(Lhs lhs, Rhs rhs)
   {
     if constexpr (detail::kinds_per_factor<Lhs, Rhs>)
-      return detail::close_kinds<Lhs{}, Rhs{}>(
+      return detail::close_kinds<Lhs, Rhs>(
         detail::expr_divide<derived_quantity_spec, dimensionless, type_list_of_quantity_spec_less>(
           detail::open_kinds(lhs), detail::open_kinds(rhs)));
     else
-      return detail::clone_kind_of<Lhs{}, Rhs{}>(
+      return detail::clone_kind_of<Lhs, Rhs>(
         detail::expr_divide<derived_quantity_spec, dimensionless, type_list_of_quantity_spec_less>(
           detail::remove_kind(lhs), detail::remove_kind(rhs)));
   }
@@ -312,7 +343,7 @@ struct quantity_spec_interface_base {
   //     requires(Den != 0)
   //   [[nodiscard]] friend consteval QuantitySpec auto pow(Q q)
   //   {
-  //     return detail::clone_kind_of<Q{}>(
+  //     return detail::clone_kind_of<Q>(
   //       detail::expr_pow<Num, Den, derived_quantity_spec, struct dimensionless,
   //                        detail::type_list_of_quantity_spec_less>(detail::remove_kind(q)));
   //   }
@@ -321,10 +352,10 @@ struct quantity_spec_interface_base {
   [[nodiscard]] friend consteval QuantitySpec auto pow(Q q)
   {
     if constexpr (detail::kinds_per_factor<Q>)
-      return detail::close_kinds<Q{}>(detail::expr_pow<Num, Den, derived_quantity_spec, struct dimensionless,
-                                                       detail::type_list_of_quantity_spec_less>(detail::open_kinds(q)));
+      return detail::close_kinds<Q>(detail::expr_pow<Num, Den, derived_quantity_spec, struct dimensionless,
+                                                     detail::type_list_of_quantity_spec_less>(detail::open_kinds(q)));
     else
-      return detail::clone_kind_of<Q{}>(
+      return detail::clone_kind_of<Q>(
         detail::expr_pow<Num, Den, derived_quantity_spec, struct dimensionless,
                          detail::type_list_of_quantity_spec_less>(detail::remove_kind(q)));
   }
@@ -333,11 +364,11 @@ struct quantity_spec_interface_base {
   [[nodiscard]] friend consteval QuantitySpec auto pow(Q q)
   {
     if constexpr (detail::kinds_per_factor<Q>)
-      return detail::close_kinds<Q{}>(
+      return detail::close_kinds<Q>(
         detail::expr_pow<Num, 1, derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
           detail::open_kinds(q)));
     else
-      return detail::clone_kind_of<Q{}>(
+      return detail::clone_kind_of<Q>(
         detail::expr_pow<Num, 1, derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
           detail::remove_kind(q)));
   }
@@ -350,9 +381,9 @@ struct quantity_spec_interface_base {
   [[nodiscard]] friend consteval QuantitySpec auto inverse(Q q)
   {
     if constexpr (detail::kinds_per_factor<Q>)
-      return detail::close_kinds<Q{}>(detail::expr_invert<derived_quantity_spec, dimensionless>(detail::open_kinds(q)));
+      return detail::close_kinds<Q>(detail::expr_invert<derived_quantity_spec, dimensionless>(detail::open_kinds(q)));
     else
-      return detail::clone_kind_of<Q{}>(
+      return detail::clone_kind_of<Q>(
         detail::expr_invert<derived_quantity_spec, dimensionless>(detail::remove_kind(q)));
   }
 };
@@ -593,7 +624,7 @@ template<typename Self, detail::BaseDimension auto Dim, detail::QSProperty auto.
 struct quantity_spec<Self, Dim, Args...> : detail::quantity_spec_interface<Self> {
 #endif
   using _base_type_ = quantity_spec;
-  static constexpr detail::BaseDimension auto _dimension_ = Dim;
+  static constexpr decltype(Dim) _dimension_ = Dim;
   static constexpr detail::character_mask _character_ =
     detail::quantity_character_init<Args...>(detail::character_mask{});
   static_assert(!mp_units::contains<struct non_negative, Args...>() || detail::is_real_scalar(_character_),
@@ -648,8 +679,7 @@ template<typename Self, detail::DerivedQuantitySpec auto Eq, detail::QSProperty 
 struct quantity_spec<Self, Eq, Args...> : detail::quantity_spec_interface<Self> {
 #endif
   using _base_type_ = quantity_spec;
-  static constexpr auto _equation_ = Eq;
-  static constexpr Dimension auto _dimension_ = Eq._dimension_;
+  static constexpr decltype(Eq) _equation_ = Eq;
 
   static constexpr detail::character_mask _character_ = detail::quantity_character_init<Args...>(Eq._character_);
   static_assert(!mp_units::contains<struct non_negative, Args...>() || detail::is_real_scalar(_character_),
@@ -659,7 +689,8 @@ struct quantity_spec<Self, Eq, Args...> : detail::quantity_spec_interface<Self> 
                 "non_negative and possibly_negative are mutually exclusive");
   static constexpr bool _is_non_negative_ = mp_units::contains<struct non_negative, Args...>();
 
-  [[deprecated("2.6.0: use `get_dimension(qs)` instead")]] static constexpr Dimension auto dimension = _dimension_;
+  [[deprecated("2.6.0: use `get_dimension(qs)` instead")]] static constexpr Dimension auto dimension =
+    detail::dimension_of<MP_UNITS_NONCONST_TYPE(Eq)>;
 #if !MP_UNITS_EAGER_STATIC_MEMBER_INIT_HACK
   [[deprecated(
     "2.6.0: character is no longer part of the public interface; ask the named quantity concepts "
@@ -674,7 +705,7 @@ struct propagate_equation {};
 
 template<QuantitySpec auto Q>
 struct propagate_equation<Q, true> {
-  static constexpr auto _equation_ = Q._equation_;
+  static constexpr decltype(Q._equation_) _equation_ = Q._equation_;
 };
 
 }  // namespace detail
@@ -717,8 +748,7 @@ template<typename Self, detail::NamedQuantitySpec auto QS, detail::QSProperty au
 struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail::quantity_spec_interface<Self> {
 #endif
   using _base_type_ = quantity_spec;
-  static constexpr auto _parent_ = QS;
-  static constexpr Dimension auto _dimension_ = _parent_._dimension_;
+  static constexpr decltype(QS) _parent_ = QS;
   static constexpr detail::character_mask _character_ = detail::quantity_character_init<Args...>(QS._character_);
   static_assert(!mp_units::contains<struct non_negative, Args...>() || detail::is_real_scalar(_character_),
                 "non_negative can only be applied to real scalar quantities");
@@ -729,7 +759,8 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
     mp_units::contains<struct non_negative, Args...>() || (!mp_units::contains<struct possibly_negative, Args...>() &&
                                                            detail::is_real_scalar(_character_) && QS._is_non_negative_);
 
-  [[deprecated("2.6.0: use `get_dimension(qs)` instead")]] static constexpr Dimension auto dimension = _dimension_;
+  [[deprecated("2.6.0: use `get_dimension(qs)` instead")]] static constexpr Dimension auto dimension =
+    detail::dimension_of<MP_UNITS_NONCONST_TYPE(QS)>;
 #if !MP_UNITS_EAGER_STATIC_MEMBER_INIT_HACK
   [[deprecated(
     "2.6.0: character is no longer part of the public interface; ask the named quantity concepts "
@@ -778,9 +809,8 @@ template<typename Self, detail::NamedQuantitySpec auto QS, detail::DerivedQuanti
 struct quantity_spec<Self, QS, Eq, Args...> : detail::quantity_spec_interface<Self> {
 #endif
   using _base_type_ = quantity_spec;
-  static constexpr auto _parent_ = QS;
-  static constexpr auto _equation_ = Eq;
-  static constexpr Dimension auto _dimension_ = _parent_._dimension_;
+  static constexpr decltype(QS) _parent_ = QS;
+  static constexpr decltype(Eq) _equation_ = Eq;
 
   static constexpr detail::character_mask _character_ = detail::quantity_character_init<Args...>(Eq._character_);
   static_assert(!mp_units::contains<struct non_negative, Args...>() || detail::is_real_scalar(_character_),
@@ -792,7 +822,8 @@ struct quantity_spec<Self, QS, Eq, Args...> : detail::quantity_spec_interface<Se
     mp_units::contains<struct non_negative, Args...>() || (!mp_units::contains<struct possibly_negative, Args...>() &&
                                                            detail::is_real_scalar(_character_) && QS._is_non_negative_);
 
-  [[deprecated("2.6.0: use `get_dimension(qs)` instead")]] static constexpr Dimension auto dimension = _dimension_;
+  [[deprecated("2.6.0: use `get_dimension(qs)` instead")]] static constexpr Dimension auto dimension =
+    detail::dimension_of<MP_UNITS_NONCONST_TYPE(QS)>;
 #if !MP_UNITS_EAGER_STATIC_MEMBER_INIT_HACK
   [[deprecated(
     "2.6.0: character is no longer part of the public interface; ask the named quantity concepts "
@@ -801,10 +832,6 @@ struct quantity_spec<Self, QS, Eq, Args...> : detail::quantity_spec_interface<Se
 };
 
 namespace detail {
-
-template<QuantitySpec Q>
-  requires requires { Q::_dimension_; }
-using to_dimension = MP_UNITS_NONCONST_TYPE(Q::_dimension_);
 
 template<typename... Expr>
 struct derived_quantity_spec_impl :
@@ -817,13 +844,10 @@ struct derived_quantity_spec_impl :
   using _base_type_ = derived_quantity_spec_impl;
   using _base_ = expr_fractions<dimensionless, Expr...>;
 
-  static constexpr Dimension auto _dimension_ =
-    detail::expr_map<to_dimension, derived_dimension, struct dimension_one>(_base_{});
   static constexpr detail::character_mask _character_ =
     detail::derived_quantity_character(typename _base_::_num_{}, typename _base_::_den_{});
   static constexpr bool _is_non_negative_ = false;
 
-  [[deprecated("2.6.0: use `get_dimension(qs)` instead")]] static constexpr Dimension auto dimension = _dimension_;
   // A specification with a kind factor admits several characters, like a quantity kind, so its
   // member is ill-formed on use like a kind's, and the MSVC hack omits it for the same reason
 #if !MP_UNITS_EAGER_STATIC_MEMBER_INIT_HACK
@@ -929,7 +953,7 @@ struct kind_of_<Q> : Q::_base_type_ {
 struct kind_of_<Q> : quantity_spec<kind_of_<Q>, Q{}>::_base_type_ {
 #endif
   using _base_type_ = kind_of_;
-  static constexpr auto _quantity_spec_ = Q{};
+  static constexpr Q _quantity_spec_{};
   // A kind encompasses the *entire* quantity tree — including vector quantities and signed
   // coordinates (e.g. displacement, altitude, depth) — so it can never be universally
   // non-negative, even when the tree root carries a non_negative tag.
@@ -1022,10 +1046,10 @@ template<typename... Ts>
 constexpr bool all_kind_factors<type_list<Ts...>> = (... && QuantityKindSpec<expr_type<Ts>>);
 
 // A result of operands that are all kinds is a kind; any other result is what the product gave.
-template<QuantitySpec auto... From, QuantitySpec Q>
+template<QuantitySpec... From, QuantitySpec Q>
 [[nodiscard]] consteval QuantitySpec auto clone_kind_of(Q q)
 {
-  if constexpr ((... && QuantityKindSpec<MP_UNITS_NTTP_HACK(decltype(From))>))
+  if constexpr ((... && QuantityKindSpec<From>))
     return kind_of<Q{}>;
   else
     return q;
@@ -1036,14 +1060,14 @@ template<QuantitySpec auto... From, QuantitySpec Q>
 // at least one typed factor keeps its kind factors as they are: a kind factor and a typed factor of
 // one tree are different factors, like `width` and `length`, and only the conversion engine relates
 // them.
-template<QuantitySpec auto... Operands, QuantitySpec Q>
+template<QuantitySpec... Operands, QuantitySpec Q>
 [[nodiscard]] consteval QuantitySpec auto close_kinds(Q q)
 {
   if constexpr (QuantityKindSpec<Q>)
     return q;
   else if constexpr (std::is_same_v<Q, struct dimensionless>) {
     // everything canceled: a kind only when every operand was one
-    if constexpr ((... && QuantityKindSpec<MP_UNITS_NTTP_HACK(decltype(Operands))>))
+    if constexpr ((... && QuantityKindSpec<Operands>))
       return kind_of<Q{}>;
     else
       return q;

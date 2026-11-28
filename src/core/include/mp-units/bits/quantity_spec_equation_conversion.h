@@ -244,8 +244,8 @@ struct carried_kinds<open_factor<N>> : carried_kinds<N> {};
 template<typename... Ts>
 [[nodiscard]] consteval auto open_bases(type_list<Ts...>)
 {
-  return type_list_join<
-    type_list<>, std::conditional_t<OpenFactor<expr_type<Ts>>, type_list<open_base<expr_type<Ts>>>, type_list<>>...>{};
+  return type_list_join<type_list<>,
+                        conditional<OpenFactor<expr_type<Ts>>, type_list<open_base<expr_type<Ts>>>, type_list<>>...>{};
 }
 
 template<typename G, typename... Bs>
@@ -749,8 +749,8 @@ template<typename Lhs, typename Rhs>
 {
   if constexpr (std::is_same_v<hierarchy_root<Lhs>, hierarchy_root<Rhs>>)
     return false;
-  else if constexpr (!std::is_same_v<MP_UNITS_NONCONST_TYPE(Lhs::_dimension_),
-                                     MP_UNITS_NONCONST_TYPE(Rhs::_dimension_)>)
+  else if constexpr (!std::is_same_v<MP_UNITS_NONCONST_TYPE(dimension_of<Lhs>),
+                                     MP_UNITS_NONCONST_TYPE(dimension_of<Rhs>)>)
     return false;
   else
     return !detail::equation_mentions<hierarchy_root<Rhs>, Lhs>() &&
@@ -786,8 +786,8 @@ template<typename N, typename DenPre, typename DenPost>
     return cancel_result<false, type_list<N>, DenPre>{};
   else {
     using D = type_list_front<DenPost>;
-    if constexpr (std::is_same_v<MP_UNITS_NONCONST_TYPE(expr_type<N>::_dimension_),
-                                 MP_UNITS_NONCONST_TYPE(expr_type<D>::_dimension_)>) {
+    if constexpr (std::is_same_v<MP_UNITS_NONCONST_TYPE(dimension_of<expr_type<N>>),
+                                 MP_UNITS_NONCONST_TYPE(dimension_of<expr_type<D>>)>) {
       constexpr ratio num_exp = detail::get_exponent(N{});
       constexpr ratio den_exp = detail::get_exponent(D{});
       constexpr ratio common = num_exp < den_exp ? num_exp : den_exp;
@@ -883,8 +883,7 @@ template<int Depth, bool Source, bool InNum, std::size_t I, conversion_rank Rank
          typename ToNum, typename ToDen, bool SourceIsKind>
 [[nodiscard]] consteval conversion_rank best_expansion()
 {
-  using list =
-    std::conditional_t<Source, std::conditional_t<InNum, FromNum, FromDen>, std::conditional_t<InNum, ToNum, ToDen>>;
+  using list = conditional<Source, conditional<InNum, FromNum, FromDen>, conditional<InNum, ToNum, ToDen>>;
   if constexpr (I == type_list_size<list>)
     return conversion_rank::none;
   else {
@@ -986,8 +985,7 @@ template<bool Source, bool InNum, std::size_t I, conversion_rank Rank, typename 
          typename ToNum, typename ToDen, bool SourceIsKind>
 [[nodiscard]] consteval conversion_rank best_own_tree_expansion()
 {
-  using list =
-    std::conditional_t<Source, std::conditional_t<InNum, FromNum, FromDen>, std::conditional_t<InNum, ToNum, ToDen>>;
+  using list = conditional<Source, conditional<InNum, FromNum, FromDen>, conditional<InNum, ToNum, ToDen>>;
   if constexpr (I == type_list_size<list>)
     return conversion_rank::none;
   else {

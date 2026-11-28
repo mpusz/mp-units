@@ -47,7 +47,7 @@ MP_UNITS_EXPORT_BEGIN
 
 template<symbol_text Symbol>
 struct mag_constant {
-  static constexpr auto _symbol_ = Symbol;
+  static constexpr decltype(Symbol) _symbol_ = Symbol;
 };
 
 #else
@@ -55,7 +55,7 @@ struct mag_constant {
 template<symbol_text Symbol, long double Value>
   requires(Value > 0)
 struct mag_constant {
-  static constexpr auto _symbol_ = Symbol;
+  static constexpr decltype(Symbol) _symbol_ = Symbol;
   static constexpr long double _value_ = Value;
 };
 
